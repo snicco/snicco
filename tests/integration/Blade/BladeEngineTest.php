@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\Blade;
 
-use Tests\stubs\TestApp;
 use Snicco\Blade\BladeView;
-use Snicco\View\Contracts\ViewFactoryInterface;
-use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+use Snicco\View\ViewEngine;
+use Snicco\View\Exceptions\ViewNotFoundException;
 
 class BladeEngineTest extends BladeTestCase
 {
@@ -17,8 +16,8 @@ class BladeEngineTest extends BladeTestCase
     {
         $this->bootApp();
         
-        /** @var ViewFactoryInterface $view_service */
-        $view_service = TestApp::resolve(ViewFactoryInterface::class);
+        /** @var ViewEngine $view_service */
+        $view_service = $this->app->resolve(ViewEngine::class);
         
         $this->assertInstanceOf(BladeView::class, $view_service->make('foo'));
     }
@@ -28,12 +27,12 @@ class BladeEngineTest extends BladeTestCase
     {
         $this->bootApp();
         
-        /** @var ViewFactoryInterface $view_service */
-        $view_service = TestApp::resolve(ViewFactoryInterface::class);
+        /** @var ViewEngine $view_factory */
+        $view_factory = $this->app->resolve(ViewEngine::class);
         
         $this->expectException(ViewNotFoundException::class);
         
-        $this->assertInstanceOf(BladeView::class, $view_service->make('bogus'));
+        $this->assertInstanceOf(BladeView::class, $view_factory->make('bogus'));
     }
     
 }

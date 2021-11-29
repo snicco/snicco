@@ -14,8 +14,7 @@ class MagicLinkLoginMail extends Email
     public WP_User $user;
     public string  $site_name;
     public string  $magic_link;
-    // public int $expires;
-    public int $expiration;
+    public int     $expiration;
     
     public function __construct(WP_User $user, string $magic_link, int $expiration)
     {
@@ -25,16 +24,11 @@ class MagicLinkLoginMail extends Email
         $this->site_name = WP::siteName();
     }
     
-    public function unique() :bool
+    public function configure()
     {
-        return true;
-    }
-    
-    public function configure() :MagicLinkLoginMail
-    {
-        return $this
-            ->subject(sprintf(__('[%s] Login Link'), WP::siteName()))
-            ->view('framework.mail.magic-link-login');
+        $this
+            ->subject(sprintf('[%s] Login Link', WP::siteName()))
+            ->htmlTemplate('framework.mail.magic-link-login');
     }
     
 }

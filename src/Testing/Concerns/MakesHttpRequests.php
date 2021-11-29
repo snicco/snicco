@@ -10,6 +10,7 @@ use Snicco\Support\Url;
 use Snicco\Support\Arr;
 use Snicco\Http\HttpKernel;
 use Snicco\Session\Session;
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use InvalidArgumentException;
 use Snicco\Application\Config;
@@ -377,11 +378,11 @@ trait MakesHttpRequests
     {
         $response = new TestResponse($response);
         
-        /** @var ViewFactoryInterface $view_factory */
-        $view_factory = $this->app->resolve(ViewFactoryInterface::class);
+        /** @var ViewEngine $view_factory */
+        $view_factory = $this->app->resolve(ViewEngine::class);
         
-        if ($view_factory->renderedView() instanceof ViewInterface) {
-            $response->setRenderedView($view_factory->renderedView());
+        if ($view_factory->rootView() instanceof ViewInterface) {
+            $response->setRenderedView($view_factory->rootView());
         }
         
         if ($this->session instanceof Session) {

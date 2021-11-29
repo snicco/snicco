@@ -13,6 +13,7 @@ use Tests\concerns\HashesSessionIds;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Auth\Middleware\AuthenticateSession;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 
 class AuthenticateSessionTest extends MiddlewareTestCase
 {
@@ -44,7 +45,7 @@ class AuthenticateSessionTest extends MiddlewareTestCase
         $session->put('auth.confirm.foo', 'bar');
         
         $this->session_manager->shouldReceive('idleTimeout')->andReturn(300);
-        $middleware = new AuthenticateSession($this->session_manager);
+        $middleware = new AuthenticateSession($this->session_manager, new EventDispatcher());
         
         $response = $this->runMiddleware($middleware, $this->request->withSession($session));
         
@@ -62,7 +63,7 @@ class AuthenticateSessionTest extends MiddlewareTestCase
         $session->setLastActivity(time());
         
         $this->session_manager->shouldReceive('idleTimeout')->andReturn(300);
-        $middleware = new AuthenticateSession($this->session_manager);
+        $middleware = new AuthenticateSession($this->session_manager, new EventDispatcher());
         
         $response = $this->runMiddleware($middleware, $this->request->withSession($session));
         
@@ -81,7 +82,11 @@ class AuthenticateSessionTest extends MiddlewareTestCase
         $session->put('biz', 'boo');
         
         $this->session_manager->shouldReceive('idleTimeout')->andReturn(300);
-        $middleware = new AuthenticateSession($this->session_manager, ['foo.bar', 'biz']);
+        $middleware = new AuthenticateSession(
+            $this->session_manager,
+            new EventDispatcher(),
+            ['foo.bar', 'biz']
+        );
         
         $response = $this->runMiddleware($middleware, $this->request->withSession($session));
         

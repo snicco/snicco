@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Listeners;
 
-use Snicco\Session\Events\SessionRegenerated;
+use Snicco\Session\Events\SessionWasRegenerated;
 
 class RefreshAuthCookies
 {
     
-    public function __invoke(SessionRegenerated $event)
+    public function __invoke(SessionWasRegenerated $event)
     {
         $session = $event->session;
         

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Factories;
 
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Support\ReflectionDependencies;
 

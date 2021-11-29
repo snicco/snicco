@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
 use Tests\stubs\TestApp;
 use Snicco\Auth\Fail2Ban\Syslogger;
+use Snicco\Mail\Testing\TestableEmail;
 use Snicco\Auth\Mail\ResetPasswordMail;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
@@ -60,7 +60,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
     {
         $this->bootApp();
         
-        $this->mailFake();
         $token = $this->withCsrfToken();
         
         $url = $this->routeUrl();
@@ -70,13 +69,17 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $response = $this->post($url, $token + ['login' => $calvin->user_login]);
         $response->assertRedirectToRoute('auth.forgot.password');
         
-        $mail = $this->assertMailSent(ResetPasswordMail::class);
+        $this->fake_mailer->assertSentTo($calvin, ResetPasswordMail::class);
         
         $expected_link = TestApp::url()->toRoute('auth.reset.password', [], true, true);
         
-        $mail->assertTo($calvin)
-             ->assertView('framework.mail.password-reset')
-             ->assertSee("$expected_link?expires=");
+        $this->fake_mailer->assertSent(
+            ResetPasswordMail::class,
+            function (TestableEmail $email) use ($calvin, $expected_link) {
+                return $email->hasTo($calvin)
+                       && strpos($email->getHtmlBody(), "$expected_link?expires=") !== false;
+            }
+        );
     }
     
     /** @test */
@@ -84,7 +87,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
     {
         $this->bootApp();
         
-        $this->mailFake();
         $token = $this->withCsrfToken();
         
         $url = $this->routeUrl();
@@ -95,13 +97,17 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $response->assertRedirectToRoute('auth.forgot.password');
         $response->assertSessionHas('password.reset.processed', true);
         
-        $mail = $this->assertMailSent(ResetPasswordMail::class);
+        $this->fake_mailer->assertSentTo($calvin, ResetPasswordMail::class);
         
         $expected_link = TestApp::url()->toRoute('auth.reset.password', [], true, true);
         
-        $mail->assertTo($calvin)
-             ->assertView('framework.mail.password-reset')
-             ->assertSee("$expected_link?expires=");
+        $this->fake_mailer->assertSent(
+            ResetPasswordMail::class,
+            function (TestableEmail $email) use ($calvin, $expected_link) {
+                return $email->hasTo($calvin)
+                       && strpos($email->getHtmlBody(), "$expected_link?expires=") !== false;
+            }
+        );
     }
     
     /** @test */
@@ -109,13 +115,12 @@ class ForgotPasswordControllerTest extends AuthTestCase
     {
         $this->bootApp();
         
-        $this->mailFake();
         $token = $this->withCsrfToken();
         
         $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
         
         $response->assertRedirectToRoute('auth.forgot.password');
-        $this->assertMailNotSent(ResetPasswordMail::class);
+        $this->fake_mailer->assertNotSent(ResetPasswordMail::class);
     }
     
     /** @test */
@@ -123,13 +128,13 @@ class ForgotPasswordControllerTest extends AuthTestCase
     {
         $this->bootApp();
         
-        Event::fake();
+        $this->dispatcher->fake(FailedPasswordResetLinkRequest::class);
         $token = $this->withCsrfToken();
         
         $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
         
         $response->assertRedirectToRoute('auth.forgot.password');
-        Event::assertDispatched(
+        $this->dispatcher->assertDispatched(
             FailedPasswordResetLinkRequest::class,
             function (FailedPasswordResetLinkRequest $event) {
                 return $event->request()->post('login') === 'bogus@web.de';

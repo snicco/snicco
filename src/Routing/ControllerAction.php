@@ -6,7 +6,7 @@ namespace Snicco\Routing;
 
 use Snicco\Http\Controller;
 use Snicco\View\ViewEngine;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\RouteAction;
 use Snicco\Support\ReflectionDependencies;

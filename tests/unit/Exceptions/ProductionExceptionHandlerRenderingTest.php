@@ -17,7 +17,7 @@ use Snicco\View\ViewEngine;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Testing\TestResponse;
 use Tests\stubs\TestViewFactory;

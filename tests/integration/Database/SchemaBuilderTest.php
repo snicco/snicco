@@ -4,34 +4,66 @@ namespace Tests\integration\Database;
 
 use mysqli_sql_exception;
 use Illuminate\Support\Str;
-use Snicco\Database\WPConnection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Container\Container;
+use Codeception\TestCase\WPTestCase;
+use Snicco\Database\MysqliConnection;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
-use Snicco\Database\Illuminate\MySqlSchemaBuilder;
-use Snicco\Database\Contracts\WPConnectionInterface;
-use Snicco\Database\Testing\Assertables\AssertableWpDB;
+use Snicco\Database\WPEloquentStandalone;
+use Illuminate\Database\Schema\MySqlBuilder;
+use Tests\integration\Database\Concerns\AssertableWpDB;
+use Tests\integration\Database\Concerns\WPDBTestHelpers;
 
 /**
  * NOTE: This TestClass is expecting a mysql version "^8.0.0".
  */
-class SchemaBuilderTest extends DatabaseTestCase
+class SchemaBuilderTest extends WPTestCase
 {
     
-    private MySqlSchemaBuilder $builder;
-    private WPConnection       $wp_conn;
+    use WPDBTestHelpers;
+    
+    /**
+     * @var MySqlBuilder
+     */
+    private $builder;
+    
+    /**
+     * @var MysqliConnection
+     */
+    private $mysqli_connection;
     
     protected function setUp() :void
     {
-        $this->afterApplicationBooted(function () {
-            $this->wp_conn = $this->app->resolve(WPConnectionInterface::class)();
-            $this->builder = new MySqlSchemaBuilder($this->wp_conn);
-        });
-        
         parent::setUp();
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
         
-        $this->bootApp();
+        $this->withDatabaseExceptions();
         
+        (new WPEloquentStandalone())->bootstrap();
+        
+        $this->builder = Schema::connection('wp_mysqli_connection');
+        $this->mysqli_connection = DB::connection();
+        
+        if ($this->builder->hasTable('books')) {
+            $this->builder->drop('books');
+        }
+        if ($this->builder->hasTable('authors')) {
+            $this->builder->drop('authors');
+        }
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
         if ($this->builder->hasTable('books')) {
             $this->builder->drop('books');
         }
@@ -44,31 +76,34 @@ class SchemaBuilderTest extends DatabaseTestCase
     /** @test */
     public function a_basic_table_can_be_created()
     {
+        $this->assertFalse($this->builder->hasTable('books'));
+        
         $this->builder->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('email');
         });
         
-        self::assertTrue($this->builder->hasTable('books'));
+        $this->assertTrue($this->builder->hasTable('books'));
     }
     
     /** @test */
     public function table_existence_can_be_checked()
     {
-        self::assertFalse($this->builder->hasTable('books'));
+        $this->assertFalse($this->builder->hasTable('books'));
         
         $this->builder->create('books', function (Blueprint $table) {
             $table->id();
             $table->string('email');
         });
         
-        self::assertTrue($this->builder->hasTable('books'));
+        $this->assertTrue($this->builder->hasTable('books'));
     }
     
     /** @test */
     public function all_table_names_can_be_retrieved()
     {
-        $tables = $this->builder->getAllTables();
+        $pluck = "Tables_in_".$this->mysqli_connection->getDatabaseName();
+        $tables = collect($this->builder->getAllTables())->pluck($pluck)->toArray();
         
         $expected_core_tables = [
             0 => 'wp_commentmeta',
@@ -97,26 +132,16 @@ class SchemaBuilderTest extends DatabaseTestCase
     /** @test */
     public function column_existence_can_be_checked()
     {
-        self::assertTrue($this->builder->hasColumn('users', 'user_login'));
-        self::assertFalse($this->builder->hasColumn('users', 'user_profile_pic'));
+        $this->assertTrue($this->builder->hasColumn('users', 'user_login'));
+        $this->assertFalse($this->builder->hasColumn('users', 'user_profile_pic'));
         
-        self::assertFalse(
+        $this->assertFalse(
             $this->builder->hasColumns('users', [
                 'user_login',
                 'user_profile_pic',
             ])
         );
-        self::assertTrue($this->builder->hasColumns('users', ['user_login', 'user_email']));
-    }
-    
-    /** @test */
-    public function the_column_type_can_be_found()
-    {
-        $this->assertSame('varchar(60)', $this->builder->getColumnType('users', 'user_login'));
-        $this->assertSame('varchar(255)', $this->builder->getColumnType('users', 'user_pass'));
-        $this->assertSame('int', $this->builder->getColumnType('users', 'user_status'));
-        $this->assertSame('datetime', $this->builder->getColumnType('users', 'user_registered'));
-        $this->assertSame('bigint unsigned', $this->builder->getColumnType('users', 'ID'));
+        $this->assertTrue($this->builder->hasColumns('users', ['user_login', 'user_email']));
     }
     
     /** @test */
@@ -153,9 +178,9 @@ class SchemaBuilderTest extends DatabaseTestCase
             3 => 'published',
             4 => 'excerpt',
             5 => 'bio',
-        ], $this->builder->getColumnsByOrdinalPosition('books'));
+        ], $this->getColumnsByOrdinalPosition('books'));
         
-        $this->builder->modify('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table) {
             $table->dropColumn(['title', 'published']);
             $table->dropColumn('bio');
         });
@@ -164,13 +189,13 @@ class SchemaBuilderTest extends DatabaseTestCase
             0 => 'book_id',
             1 => 'page_count',
             2 => 'excerpt',
-        ], $this->builder->getColumnsByOrdinalPosition('books'));
+        ], $this->getColumnsByOrdinalPosition('books'));
         
         $this->builder->dropColumns('books', ['page_count', 'excerpt']);
         
         $this->assertSame([
             0 => 'book_id',
-        ], $this->builder->getColumnsByOrdinalPosition('books'));
+        ], $this->getColumnsByOrdinalPosition('books'));
     }
     
     /** @test */
@@ -196,14 +221,14 @@ class SchemaBuilderTest extends DatabaseTestCase
             $table->bigIncrements('book_id');
         });
         
-        $this->builder->modify('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table) {
             $table->string('title');
         });
         
         $this->assertSame([
             'book_id',
             'title',
-        ], $this->builder->getColumnsByOrdinalPosition('books'));
+        ], $this->getColumnsByOrdinalPosition('books'));
     }
     
     /** @test */
@@ -977,17 +1002,17 @@ class SchemaBuilderTest extends DatabaseTestCase
         });
         
         // With after() method
-        $this->builder->modify('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table) {
             $table->string('last_name')->after('first_name');
             $table->string('phone')->after('last_name');
         });
         
         $this->assertSame(
             ['first_name', 'last_name', 'phone', 'email'],
-            $this->builder->getColumnsByOrdinalPosition('books')
+            $this->getColumnsByOrdinalPosition('books')
         );
         
-        $this->builder->modify('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table) {
             $table->after('phone', function ($table) {
                 $table->string('address_line1');
                 $table->string('city');
@@ -996,7 +1021,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $this->assertSame(
             ['first_name', 'last_name', 'phone', 'address_line1', 'city', 'email'],
-            $this->builder->getColumnsByOrdinalPosition('books')
+            $this->getColumnsByOrdinalPosition('books')
         );
     }
     
@@ -1053,7 +1078,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $columns = $builder->getFullColumnInfo('books');
         
-        $this->assertSame('latin1', Str::before($columns['name']['Collation'], '_'));
+        $this->assertSame('latin1', Str::before($columns['name']->Collation, '_'));
     }
     
     /**
@@ -1066,16 +1091,17 @@ class SchemaBuilderTest extends DatabaseTestCase
         $builder = $this->newTestBuilder('books');
         
         $builder->create('books', function (Blueprint $table) {
-            $table->collation = 'utf8mb4_unicode_ci';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_520_ci';
             $table->id();
             $table->string('name')->collation('latin1_german1_ci');
         });
         
-        $this->assertSame('utf8mb4_unicode_ci', $builder->getTableCollation('books'));
+        $this->assertSame('utf8mb4_unicode_520_ci', $builder->getTableCollation('books'));
         
         $columns = $builder->getFullColumnInfo('books');
         
-        $this->assertSame('latin1_german1_ci', $columns['name']['Collation']);
+        $this->assertSame('latin1_german1_ci', $columns['name']->Collation);
     }
     
     /** @test */
@@ -1090,7 +1116,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $name_col = $builder->getFullColumnInfo('books')['name'];
         
-        $this->assertSame('My comment', $name_col['Comment']);
+        $this->assertSame('My comment', $name_col->Comment);
     }
     
     /** @test */
@@ -1134,7 +1160,7 @@ class SchemaBuilderTest extends DatabaseTestCase
             'name',
         ], $builder->getColumnsByOrdinalPosition('books'));
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->string('email')->first();
         });
         
@@ -1166,7 +1192,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $builder->dropColumns('books', 'email');
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->string('email')->nullable(true);
         });
         
@@ -1323,7 +1349,7 @@ class SchemaBuilderTest extends DatabaseTestCase
             $builder->getColumnsByOrdinalPosition('books')
         );
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropMorphs('taggable');
         });
         
@@ -1345,7 +1371,7 @@ class SchemaBuilderTest extends DatabaseTestCase
             'remember_token',
         ], $builder->getColumnsByOrdinalPosition('books'));
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropRememberToken();
         });
         
@@ -1364,7 +1390,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $this->assertSame(['id', 'deleted_at'], $builder->getColumnsByOrdinalPosition('books'));
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropSoftDeletes();
         });
         
@@ -1387,7 +1413,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $this->assertSame(['id', 'deleted_at'], $builder->getColumnsByOrdinalPosition('books'));
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropSoftDeletesTz();
         });
         
@@ -1409,7 +1435,7 @@ class SchemaBuilderTest extends DatabaseTestCase
             $builder->getColumnsByOrdinalPosition('books')
         );
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropTimestamps();
         });
         
@@ -1431,7 +1457,7 @@ class SchemaBuilderTest extends DatabaseTestCase
             $builder->getColumnsByOrdinalPosition('books')
         );
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropTimestampsTz();
         });
         
@@ -1451,7 +1477,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $builder->seeUniqueColumn('email');
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->unique('name');
         });
         
@@ -1473,7 +1499,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $builder->seeIndexColumn('email');
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->index('address');
         });
         
@@ -1492,7 +1518,7 @@ class SchemaBuilderTest extends DatabaseTestCase
             $table->string('address');
         });
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->index(['name', 'email', 'address']);
         });
         
@@ -1529,7 +1555,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $builder->seeIndexColumn('name');
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->renameIndex('books_name_index', 'new_index');
         });
         
@@ -1553,7 +1579,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         $builder->seeUniqueColumn('email');
         $builder->seeIndexColumn('phone');
         
-        $builder->modify('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table) {
             $table->dropPrimary('books_amount_primary');
             $table->dropUnique('books_email_unique');
             $table->dropIndex(['phone']);
@@ -1561,20 +1587,20 @@ class SchemaBuilderTest extends DatabaseTestCase
         });
         
         $name = $builder->getFullColumnInfo('books')['amount'];
-        $this->assertEmpty($name['Key']);
+        $this->assertEmpty($name->Key);
         
         $name = $builder->getFullColumnInfo('books')['name'];
-        $this->assertEmpty($name['Key']);
+        $this->assertEmpty($name->Key);
         
         $email = $builder->getFullColumnInfo('books')['email'];
-        $this->assertEmpty($email['Key']);
+        $this->assertEmpty($email->Key);
         
         $phone = $builder->getFullColumnInfo('books')['phone'];
-        $this->assertEmpty($phone['Key']);
+        $this->assertEmpty($phone->Key);
     }
     
     /** @test */
-    public function foreign_key_can_be_created()
+    public function foreign_keys_can_be_created()
     {
         $builder1 = $this->newTestBuilder('authors');
         
@@ -1680,7 +1706,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         $this->wpdbInsert('wp_authors', ['author_name' => 'calvin alkan']);
         $this->wpdbInsert('wp_books', ['id' => 1, 'author_id' => 1]);
         
-        $builder2->modify('books', function (Blueprint $table) {
+        $builder2->table('books', function (Blueprint $table) {
             $table->dropForeign(['author_id']);
         });
         
@@ -1701,7 +1727,24 @@ class SchemaBuilderTest extends DatabaseTestCase
     
     private function newTestBuilder(string $table) :TestSchemaBuilder
     {
-        return new TestSchemaBuilder($this->wp_conn, $table);
+        return new TestSchemaBuilder($this->mysqli_connection, $table);
+    }
+    
+    private function getColumnsByOrdinalPosition(string $table_name) :array
+    {
+        global $wpdb;
+        $table_name = "$wpdb->prefix".trim($table_name, $wpdb->prefix);
+        
+        $columns = collect($this->getFullColumnInfo($table_name));
+        
+        return $columns->pluck('Field')->toArray();
+    }
+    
+    private function getFullColumnInfo(string $table_with_prefix)
+    {
+        global $wpdb;
+        
+        return $wpdb->get_results("show full columns from $table_with_prefix", ARRAY_A);
     }
     
 }
@@ -1709,9 +1752,9 @@ class SchemaBuilderTest extends DatabaseTestCase
 /**
  * Class TestSchemaBuilder
  *
- * @see MySqlSchemaBuilder
+ * @see MySqlBuilder
  */
-class TestSchemaBuilder extends MySqlSchemaBuilder
+class TestSchemaBuilder extends MySqlBuilder
 {
     
     /**
@@ -1744,26 +1787,90 @@ class TestSchemaBuilder extends MySqlSchemaBuilder
     public function seePrimaryKey($column)
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
-        PHPUnit::assertTrue($col['Key'] === 'PRI');
+        PHPUnit::assertTrue($col->Key === 'PRI');
     }
     
     public function seeNullableColumn(string $column) :bool
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
         
-        return $col['Null'] === 'YES';
+        return $col->Null === 'YES';
     }
     
     public function seeUniqueColumn(string $column)
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
-        PHPUnit::assertTrue($col['Key'] === 'UNI');
+        PHPUnit::assertTrue($col->Key === 'UNI');
     }
     
     public function seeIndexColumn(string $column)
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
-        PHPUnit::assertTrue($col['Key'] === 'MUL');
+        PHPUnit::assertTrue($col->Key === 'MUL');
+    }
+    
+    public function getAllTables() :array
+    {
+        $parent = collect(parent::getAllTables());
+        
+        $key = 'Tables_in_'.$this->connection->getDatabaseName();
+        
+        return $parent->pluck($key)->toArray();
+    }
+    
+    public function getColumnsByOrdinalPosition($table)
+    {
+        $query = "show full columns from ".$this->connection->getTablePrefix().$table;
+        
+        $col_info = collect($this->connection->select($query));
+        
+        return $col_info->pluck('Field')->toArray();
+    }
+    
+    public function getTableCharset($table) :string
+    {
+        $collation = $this->getTableCollation($table);
+        
+        return Str::before($collation, '_');
+    }
+    
+    public function getTableCollation($table)
+    {
+        $query = "show table status where name like ?";
+        
+        $bindings = [$this->connection->getTablePrefix().$table];
+        $results = $this->connection->select($query, $bindings);
+        return $results[0]->Collation;
+    }
+    
+    /**
+     * Get the data type for the given column name.
+     *
+     * @param  string  $table
+     * @param  string  $column
+     *
+     * @return string
+     */
+    public function getColumnType($table, $column) :string
+    {
+        return $this->getFullColumnInfo($table)[$column]->Type ?? '';
+    }
+    
+    public function getFullColumnInfo($table) :array
+    {
+        $query = "show full columns from ?";
+        
+        $binding = $this->connection->getTablePrefix().$table;
+        
+        $col_info = collect(
+            $this->connection->select(
+                Str::replaceArray('?', [$binding], $query)
+            )
+        );
+        
+        $field_names = $col_info->pluck('Field');
+        
+        return $field_names->combine($col_info)->toArray();
     }
     
 }

@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Tests\integration\Blade;
 
 use Tests\stubs\TestApp;
-use Snicco\Blade\BladeEngine;
-use Snicco\View\Contracts\ViewEngineInterface;
-use Snicco\ExceptionHandling\Exceptions\ViewException;
+use Snicco\View\ViewEngine;
+use Snicco\Http\ResponseFactory;
+use Snicco\View\Exceptions\ViewRenderingException;
 
 class BladeViewTest extends BladeTestCase
 {
     
-    private BladeEngine $engine;
+    private ViewEngine $engine;
     
     protected function setUp() :void
     {
         $this->afterApplicationBooted(function () {
-            $this->engine = TestApp::resolve(ViewEngineInterface::class);
+            $this->engine = $this->app->resolve(ViewEngine::class);
         });
         
         parent::setUp();
@@ -33,11 +33,14 @@ class BladeViewTest extends BladeTestCase
     }
     
     /** @test */
-    public function a_blade_view_can_be_transformed_to_a_responsable()
+    public function a_blade_view_can_be_transformed()
     {
         $view = $this->engine->make('foo');
         
-        $this->assertViewContent('FOO', $view->toResponsable());
+        /** @var ResponseFactory $response_factory */
+        $response_factory = $this->app->resolve(ResponseFactory::class);
+        
+        $this->assertSame('FOO', $response_factory->toResponse($view)->getBody()->__toString());
     }
     
     /** @test */
@@ -52,7 +55,7 @@ class BladeViewTest extends BladeTestCase
     /** @test */
     public function view_errors_are_caught()
     {
-        $this->expectException(ViewException::class);
+        $this->expectException(ViewRenderingException::class);
         
         $view = $this->engine->make('variables');
         $view->with('bogus', 'calvin');

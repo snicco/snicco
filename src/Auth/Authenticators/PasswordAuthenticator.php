@@ -8,12 +8,20 @@ use WP_User;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 
 class PasswordAuthenticator extends Authenticator
 {
     
     use ResolvesUser;
+    
+    private Dispatcher $dispatcher;
+    
+    public function __construct(Dispatcher $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
     
     public function attempt(Request $request, $next)
     {
@@ -25,13 +33,19 @@ class PasswordAuthenticator extends Authenticator
         $password = $request->post('pwd');
         
         if ( ! ($user = $this->getUserByLogin($login)) instanceof WP_User) {
-            FailedPasswordAuthentication::dispatch([$request, $login, $password, $user_id = null]);
+            $this->dispatcher->dispatch(
+                new FailedPasswordAuthentication($request, $login, $password)
+            );
             
             return $this->unauthenticated();
         }
         
         if ( ! $this->isValidPassword($password, $user)) {
-            FailedPasswordAuthentication::dispatch([$request, $login, $password, $user->ID]);
+            $this->dispatcher->dispatch(
+                new FailedPasswordAuthentication(
+                    $request, $login, $password, $user->ID
+                )
+            );
             
             return $this->unauthenticated();
         }

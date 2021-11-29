@@ -24,16 +24,11 @@ class ResetPasswordMail extends Email
         $this->expires = $expires;
     }
     
-    public function unique() :bool
+    public function configure()
     {
-        return true;
-    }
-    
-    public function configure() :Email
-    {
-        return $this
-            ->subject($title = sprintf(__('[%s] Password Reset'), WP::siteName()))
-            ->view('framework.mail.password-reset');
+        $this
+            ->subject(sprintf('[%s] Password Reset', WP::siteName()))
+            ->htmlTemplate('framework.mail.password-reset');
     }
     
 }

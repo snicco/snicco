@@ -27,12 +27,13 @@ use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Responses\PasswordLoginView;
 use Snicco\Auth\Middleware\TwoFactorDisbaled;
 use Snicco\Auth\Listeners\RefreshAuthCookies;
-use Snicco\Session\Events\SessionRegenerated;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Events\FailedAuthConfirmation;
 use Snicco\Auth\Middleware\AuthenticateSession;
+use Snicco\Session\Events\SessionWasRegenerated;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Listeners\GenerateNewAuthCookie;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Responses\TwoFactorChallengeView;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
@@ -194,7 +195,7 @@ class AuthServiceProvider extends ServiceProvider
             SettingAuthCookie::class => [
                 GenerateNewAuthCookie::class,
             ],
-            SessionRegenerated::class => [
+            SessionWasRegenerated::class => [
                 RefreshAuthCookies::class,
             ],
         ]);
@@ -223,6 +224,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(ConfirmedAuthSessionController::class, function () {
             return new ConfirmedAuthSessionController(
                 $this->container->make(AuthConfirmation::class),
+                $this->container->make(Dispatcher::class),
                 $this->config->get('auth.confirmation.duration')
             );
         });

@@ -79,7 +79,9 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindMethodField()
     {
-        $this->container->singleton(MethodField::class, fn() => new MethodField($this->appKey()));
+        $this->container->singleton(MethodField::class, fn() => new MethodField(
+            $this->appKey()
+        ));
     }
     
 }

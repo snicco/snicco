@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\unit\Support;
 
 use Tests\UnitTest;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Tests\concerns\CreateContainer;
 use Tests\fixtures\TestDependencies\Bar;
 use Tests\fixtures\TestDependencies\Foo;

@@ -11,7 +11,10 @@ use Snicco\Mail\Contracts\Mailer;
 use Snicco\Mail\Testing\FakeMailer;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Mail\Mailer\WordPressMailer;
+use Snicco\Mail\Contracts\MailRenderer;
 use Snicco\Mail\ValueObjects\MailDefaults;
+use Snicco\Mail\Renderer\AggregateRenderer;
+use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Contracts\MailEventDispatcher;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
@@ -26,6 +29,7 @@ class MailServiceProvider extends ServiceProvider
         $this->bindMailBuilder();
         $this->bindMailDefaults();
         $this->bindMailEventDispatcher();
+        $this->bindMailRenderer();
     }
     
     public function bootstrap() :void
@@ -74,6 +78,16 @@ class MailServiceProvider extends ServiceProvider
         $this->container->singleton(MailEventDispatcher::class, function () {
             return new FrameworkMailEventDispatcher(
                 $this->container[Dispatcher::class]
+            );
+        });
+    }
+    
+    private function bindMailRenderer()
+    {
+        $this->container->singleton(MailRenderer::class, function () {
+            return new AggregateRenderer(
+                $this->container->make(ViewBasedMailRenderer::class),
+                new FilesystemRenderer()
             );
         });
     }

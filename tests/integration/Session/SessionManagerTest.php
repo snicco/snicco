@@ -10,7 +10,7 @@ use Snicco\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
 use Illuminate\Support\InteractsWithTime;
 use Snicco\Session\SessionServiceProvider;
-use Snicco\Session\Events\SessionRegenerated;
+use Snicco\Session\Events\SessionWasRegenerated;
 
 class SessionManagerTest extends FrameworkTestCase
 {
@@ -185,7 +185,7 @@ class SessionManagerTest extends FrameworkTestCase
     /** @test */
     public function the_regenerate_session_event_gets_dispatched()
     {
-        $this->dispatcher->fake(SessionRegenerated::class);
+        $this->dispatcher->fake(SessionWasRegenerated::class);
         
         $this->manager->start($this->request, 1);
         $this->manager->save();
@@ -195,7 +195,7 @@ class SessionManagerTest extends FrameworkTestCase
         $this->backToPresent();
         
         $this->dispatcher->assertDispatched(
-            function (SessionRegenerated $event) {
+            function (SessionWasRegenerated $event) {
                 return $event->session === $this->session;
             }
         );
