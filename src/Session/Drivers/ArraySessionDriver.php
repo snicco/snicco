@@ -6,7 +6,7 @@ namespace Snicco\Session\Drivers;
 
 use Snicco\Support\WP;
 use Snicco\Http\Psr7\Request;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 
 class ArraySessionDriver implements SessionDriver
@@ -107,20 +107,16 @@ class ArraySessionDriver implements SessionDriver
     
     public function getAllByUserId(int $user_id) :array
     {
-        return collect($this->storage)
-            ->map(function ($session, $key) use ($user_id) {
-                if ($session['user_id'] === $user_id) {
-                    $session = (object) $session;
-                    $session->id = $key;
-                    
-                    return $session;
-                }
-                
-                return null;
-            })
-            ->whereNotNull()
-            ->values()
-            ->all();
+        $user_sessions = [];
+        
+        foreach ($this->storage as $key => $session) {
+            if ($session['user_id'] === $user_id) {
+                $session = (object) $session;
+                $session->id = $key;
+                $user_sessions[] = $session;
+            }
+        }
+        return $user_sessions;
     }
     
     public function destroyOthersForUser(string $hashed_token, int $user_id)

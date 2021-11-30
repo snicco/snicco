@@ -17,8 +17,6 @@ use Whoops\Handler\HandlerInterface;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\ExceptionHandler;
 
-use function Snicco\Support\Functions\tap;
-
 class ExceptionServiceProvider extends ServiceProvider
 {
     
@@ -82,11 +80,11 @@ class ExceptionServiceProvider extends ServiceProvider
     {
         if ($this->config->get('app.debug') === true && class_exists(Whoops::class)) {
             $this->container->singleton(RunInterface::class, function () {
-                return tap(new Whoops(), function (Whoops $whoops) {
-                    $whoops->appendHandler($this->whoopsHandler());
-                    $whoops->writeToOutput(false);
-                    $whoops->allowQuit(false);
-                });
+                $whoops = new Whoops();
+                $whoops->appendHandler($this->whoopsHandler());
+                $whoops->writeToOutput(false);
+                $whoops->allowQuit(false);
+                return $whoops;
             });
         }
     }

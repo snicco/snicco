@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Contracts\Encryptor;
+use Snicco\Shared\Encryptor;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\ExceptionHandling\Exceptions\EncryptException;
-use Snicco\ExceptionHandling\Exceptions\DecryptException;
 
 class EncryptedSession extends Session
 {
@@ -30,11 +29,7 @@ class EncryptedSession extends Session
      */
     protected function prepareForUnserialize(string $data) :string
     {
-        try {
-            return $this->encryptor->decrypt($data);
-        } catch (DecryptException $e) {
-            return serialize([]);
-        }
+        return $this->encryptor->decrypt($data);
     }
     
     /**

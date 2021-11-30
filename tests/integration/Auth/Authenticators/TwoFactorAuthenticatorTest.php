@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Authenticators;
 
 use Tests\AuthTestCase;
+use Snicco\Shared\Encryptor;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Fail2Ban\TestSysLogger;

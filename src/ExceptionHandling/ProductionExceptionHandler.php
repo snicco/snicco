@@ -8,22 +8,22 @@ use Closure;
 use Throwable;
 use RuntimeException;
 use Snicco\Support\WP;
+use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
-use Illuminate\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Snicco\Shared\ContainerAdapter;
+use Snicco\Traits\ReflectsCallable;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Support\ReflectionDependencies;
-use Snicco\Contracts\ExceptionHandler;
-use Illuminate\Support\Traits\ReflectsClosures;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class ProductionExceptionHandler implements ExceptionHandler
 {
     
-    use ReflectsClosures;
+    use ReflectsCallable;
     
     public const STOP_REPORTING = false;
     
@@ -245,9 +245,9 @@ class ProductionExceptionHandler implements ExceptionHandler
             'exception' => get_class($e),
             'file' => $e->getFile(),
             'line' => $e->getLine(),
-            'trace' => collect($e->getTrace())->map(function ($trace) {
+            'trace' => array_map(function ($trace) {
                 return Arr::except($trace, ['args']);
-            })->all(),
+            }, $e->getTrace()),
         ];
     }
     

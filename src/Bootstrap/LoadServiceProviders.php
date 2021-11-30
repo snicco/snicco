@@ -35,12 +35,23 @@ class LoadServiceProviders implements Bootstrapper
     public function bootstrap(Application $app) :void
     {
         $user_providers = $app->config('app.providers', []);
-        $providers = collect($this->providers)->merge($user_providers);
+        $providers = array_merge($this->providers, $user_providers);
         
-        $providers->each(fn($provider) => $this->isValid($provider))
-                  ->map(fn($provider) => $this->instantiate($provider, $app))
-                  ->each(fn(ServiceProvider $provider) => $provider->register())
-                  ->each(fn(ServiceProvider $provider) => $provider->bootstrap());
+        array_walk($providers, function ($provider) {
+            $this->isValid($provider);
+        });
+        
+        $providers = array_map(function ($provider) use ($app) {
+            return $this->instantiate($provider, $app);
+        }, $providers);
+        
+        array_walk($providers, function (ServiceProvider $provider) {
+            $provider->register();
+        }, $providers);
+        
+        array_walk($providers, function (ServiceProvider $provider) {
+            $provider->bootstrap();
+        }, $providers);
     }
     
     /**

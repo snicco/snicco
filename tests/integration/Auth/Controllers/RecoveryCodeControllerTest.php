@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
+use Snicco\Shared\Encryptor;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\Encryptor;
 
 class RecoveryCodeControllerTest extends AuthTestCase
 {

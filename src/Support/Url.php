@@ -67,7 +67,7 @@ class Url
     }
     
     /**
-     * Stringify a url parsed with parse_url()
+     * Stringify an url parsed with parse_url()
      */
     public static function unParseUrl(array $url) :string
     {

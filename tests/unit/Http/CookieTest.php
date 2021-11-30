@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\unit\Http;
 
 use DateTime;
-use Carbon\Carbon;
 use LogicException;
 use Tests\UnitTest;
 use Snicco\Http\Cookie;
+use Snicco\Support\Carbon;
 use InvalidArgumentException;
 
 class CookieTest extends UnitTest

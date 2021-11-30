@@ -2,8 +2,8 @@
 
 namespace Tests\integration\Database;
 
+use Snicco\Support\Str;
 use mysqli_sql_exception;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
@@ -1864,7 +1864,7 @@ class TestSchemaBuilder extends MySqlBuilder
         
         $col_info = collect(
             $this->connection->select(
-                Str::replaceArray('?', [$binding], $query)
+                str_replace('?', $binding, $query)
             )
         );
         

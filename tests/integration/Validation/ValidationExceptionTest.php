@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\integration\Validation;
 
 use Tests\FrameworkTestCase;
-use Snicco\Session\SessionServiceProvider;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Contracts\ExceptionHandler;
+use Snicco\Session\SessionServiceProvider;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Validation\Exceptions\ValidationException;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationExceptionTest extends FrameworkTestCase
 {
@@ -92,7 +92,7 @@ class ValidationExceptionTest extends FrameworkTestCase
             'foo' => 'foo must have a length between 5 and 10.',
         ], 'login_form');
         
-        $response->assertSessionDoesntHaveErrors('foo', 'default');
+        $response->assertSessionDoesntHaveErrors('foo');
     }
     
     /** @test */

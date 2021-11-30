@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-/** @var Illuminate\Support\ViewErrorBag $errors */
+/** @var Snicco\Support\ViewErrorBag $errors */
 /** @var Snicco\Session\Session $session */
 
 ?>

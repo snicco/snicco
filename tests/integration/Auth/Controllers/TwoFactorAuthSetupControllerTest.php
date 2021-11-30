@@ -3,8 +3,8 @@
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
+use Snicco\Shared\Encryptor;
 use PragmaRX\Google2FA\Google2FA;
-use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Google2FaAuthenticationProvider;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -81,7 +81,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         
         $response_body = json_decode($response->body(), true);
         
-        $this->assertSame('secret', $this->encryptor->decryptString($this->getUserSecret($calvin)));
+        $this->assertSame('secret', $this->encryptor->decrypt($this->getUserSecret($calvin)));
         $this->assertSame('secret', $response_body['secret']);
         
         // "code" comes from the TestTwoFactorProvider::class.
@@ -143,7 +143,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
             $key = get_user_meta($calvin->ID, 'two_factor_secret', true),
             'Two factor secret stored as plain text.'
         );
-        $this->assertSame('secret', $this->encryptor->decryptString($key));
+        $this->assertSame('secret', $this->encryptor->decrypt($key));
     }
     
     /** @test */

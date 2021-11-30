@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Snicco\Http\Controller;
+use Snicco\Shared\Encryptor;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 

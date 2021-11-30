@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Confirmation;
 
 use Tests\AuthTestCase;
+use Snicco\Shared\Encryptor;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\Encryptor;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 

@@ -9,8 +9,8 @@ use Snicco\Session\Session;
 use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Auth\Mail\ConfirmAuthMail;
-use Illuminate\Support\InteractsWithTime;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 
 class AuthConfirmationEmailController extends Controller

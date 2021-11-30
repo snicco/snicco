@@ -6,9 +6,8 @@ namespace Snicco\Core\Events\EventObjects;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\EventDispatcher\Contracts\MappedAction;
-use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 
-abstract class IncomingRequest extends CoreEvent implements MappedAction, DispatchesConditionally
+abstract class IncomingRequest extends CoreEvent implements MappedAction
 {
     
     protected Request $request;

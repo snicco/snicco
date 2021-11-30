@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Session\Drivers;
 
 use wpdb;
-use Carbon\Carbon;
 use Snicco\Support\WP;
+use Snicco\Support\Carbon;
 use Snicco\Http\Psr7\Request;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 
 class DatabaseSessionDriver implements SessionDriver
@@ -94,17 +94,15 @@ class DatabaseSessionDriver implements SessionDriver
         
         $sessions = $this->db->get_results($query, OBJECT) ?? [];
         
-        $sessions = collect($sessions)->map(function (object $session) {
+        $sessions = array_map(function (object $session) {
             if ( ! $session->payload) {
                 return null;
             }
-            
             $session->payload = base64_decode($session->payload);
-            
             return $session;
-        })->whereNotNull()->all();
+        }, $sessions);
         
-        return $sessions;
+        return array_filter($sessions);
     }
     
     public function destroyOthersForUser(string $hashed_token, int $user_id)

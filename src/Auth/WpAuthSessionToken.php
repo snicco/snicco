@@ -62,10 +62,9 @@ class WpAuthSessionToken extends WP_Session_Tokens
             return $this->all_sessions_for_user;
         }
         
-        $sessions = collect($this->session_manager->getAllForUser());
-        $sessions =
-            $sessions->map(fn(array $payload) => Arr::get($payload, static::wp_auth_key, []))
-                     ->all();
+        $sessions = array_map(function (array $payload) {
+            return Arr::get($payload, static::wp_auth_key, []);
+        }, $this->session_manager->getAllForUser());
         
         $this->all_sessions_for_user = is_array($sessions) ? $sessions : [];
         

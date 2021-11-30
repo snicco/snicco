@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Support;
 
-use function collect;
-
 class UrlParser
 {
     
@@ -23,21 +21,6 @@ class UrlParser
         'posts' => 'edit.php',
         'dashboard' => 'index.php',
     ];
-    
-    public static function parseModelsFromUrl(string $url_pattern) :array
-    {
-        preg_match_all('/[^{]+(?=})/', $url_pattern, $matches);
-        
-        $matches = collect($matches)->flatten();
-        
-        $model_blueprint = $matches->flatMap(function ($value) {
-            $key = static::containsDot($value) ? Str::after($value, ':') : static::default_key;
-            
-            return [Str::before($value, ':') => $key];
-        });
-        
-        return $model_blueprint->all();
-    }
     
     public static function normalize(string $url) :string
     {
@@ -58,14 +41,15 @@ class UrlParser
     {
         preg_match_all('/[^{]+\w(?=})/', $url_pattern, $matches);
         
-        return collect($matches)->flatten()->all();
+        return Arr::flattenOnePreserveKeys($matches);
     }
     
     public static function getOptionalSegments(string $url_pattern) :array
     {
         preg_match_all('/(\/{[^\/{]+[?]})/', $url_pattern, $matches);
         
-        return collect($matches)->flatten()->unique()->all();
+        $matches = Arr::flatten($matches);
+        return array_unique($matches);
     }
     
     public static function replaceAdminAliases(string $url) :string
@@ -86,21 +70,16 @@ class UrlParser
     {
         $segments = static::segments($url);
         
-        return collect($segments)->map(function ($segment) {
+        return array_map(function ($segment) {
             return trim($segment, '?');
-        })->all();
+        }, $segments);
     }
     
     public static function segments(string $url_pattern) :array
     {
         preg_match_all('/[^{]+(?=})/', $url_pattern, $matches);
         
-        return collect($matches)->flatten()->all();
-    }
-    
-    private static function containsDot($string) :bool
-    {
-        return Str::contains($string, ':');
+        return Arr::flatten($matches);
     }
     
 }

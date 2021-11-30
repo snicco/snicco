@@ -95,10 +95,12 @@ class Route
     
     public function satisfiedBy(Request $request) :bool
     {
-        $failed_condition = collect($this->instantiated_conditions)
-            ->first(fn(Condition $condition) => ! $condition->isSatisfied($request));
-        
-        return $failed_condition === null;
+        foreach ($this->instantiated_conditions as $condition) {
+            if ( ! $condition->isSatisfied($request)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     public function setCapturedParameters(array $captured_parameters)

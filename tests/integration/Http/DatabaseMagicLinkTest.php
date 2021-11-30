@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Http;
 
 use wpdb;
-use Carbon\Carbon;
+use Snicco\Support\Carbon;
 use Tests\stubs\TestRequest;
 use Tests\FrameworkTestCase;
 use Snicco\Http\DatabaseMagicLink;
