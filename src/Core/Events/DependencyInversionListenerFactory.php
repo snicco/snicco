@@ -16,7 +16,6 @@ final class DependencyInversionListenerFactory implements ListenerFactory
     
     private ContainerAdapter $container_adapter;
     
-    /** @todo replace after betterwphooks removal */
     public function __construct(ContainerAdapter $container_adapter)
     {
         $this->container_adapter = $container_adapter;
@@ -33,7 +32,7 @@ final class DependencyInversionListenerFactory implements ListenerFactory
         } catch (Throwable $e) {
             throw ListenerCreationException::becauseTheListenerWasNotInstantiatable(
                 $listener,
-                $event->getName(),
+                $event_name,
                 $e
             );
         }

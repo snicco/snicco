@@ -43,10 +43,9 @@ trait ExportsRoute
         
         $asArray['wp_query_filter'] = $this->serializeAttribute($asArray['wp_query_filter']);
         
-        $asArray['condition_blueprints'] = collect($asArray['condition_blueprints'])
-            ->map(function (ConditionBlueprint $condition) {
-                return $this->serializeCustomConditions($condition);
-            })->all();
+        $asArray['condition_blueprints'] = array_map(function (ConditionBlueprint $condition) {
+            return $this->serializeCustomConditions($condition);
+        }, $asArray['condition_blueprints']);
         
         return $asArray;
     }

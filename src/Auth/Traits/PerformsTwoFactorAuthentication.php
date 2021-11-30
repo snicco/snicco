@@ -42,9 +42,12 @@ trait PerformsTwoFactorAuthentication
             return false;
         }
         
-        return collect($codes)->first(
-            fn($code) => hash_equals($provided_code, $code) ? $code : null
-        );
+        foreach ($codes as $code) {
+            if (hash_equals($provided_code, $code)) {
+                return $provided_code;
+            }
+        }
+        return null;
     }
     
     private function replaceRecoveryCode($code, int $user_id)

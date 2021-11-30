@@ -118,9 +118,8 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
     
     private function stripBrackets(string $pattern) :string
     {
-        $pattern = Str::of($pattern)->between('{{', '}}')->before(':');
-        
-        return $pattern->__toString();
+        $pattern = Str::between($pattern, '{{', '}}');
+        return Str::before($pattern, ':');
     }
     
     private function isOptional(string $pattern) :bool

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
+use Snicco\Shared\Encryptor;
 use Snicco\Http\Psr7\Request;
 use Snicco\Middleware\Secure;
-use Snicco\Contracts\Encryptor;
 use Snicco\Http\ResponseFactory;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Session\SessionManager;

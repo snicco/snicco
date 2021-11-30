@@ -4,9 +4,11 @@ namespace Snicco\Support;
 
 use DateInterval;
 use DateTimeInterface;
-use Illuminate\Support\InteractsWithTime;
+use Carbon\Carbon as BaseCarbon;
+use Snicco\Traits\InteractsWithTime;
+use Carbon\CarbonImmutable as BaseCarbonImmutable;
 
-class Carbon extends \Illuminate\Support\Carbon
+class Carbon extends BaseCarbon
 {
     
     use InteractsWithTime;
@@ -34,6 +36,15 @@ class Carbon extends \Illuminate\Support\Carbon
     {
         $timestamp = self::availableAt($delay);
         return parent::createFromTimestampUTC($timestamp)->format('D, d M Y H:i:s').' GMT';
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public static function setTestNow($testNow = null)
+    {
+        BaseCarbon::setTestNow($testNow);
+        BaseCarbonImmutable::setTestNow($testNow);
     }
     
     /**

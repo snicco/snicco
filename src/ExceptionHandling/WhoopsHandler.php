@@ -2,12 +2,9 @@
 
 namespace Snicco\ExceptionHandling;
 
+use Snicco\Support\Arr;
 use Snicco\Support\Finder;
-use Illuminate\Support\Arr;
 use Snicco\Application\Application;
-use Whoops\Handler\PrettyPageHandler;
-
-use function Snicco\Support\Functions\tap as tap;
 
 class WhoopsHandler
 {
@@ -16,24 +13,22 @@ class WhoopsHandler
     {
         $hide_frames = $app->config('app.hide_debug_traces', []);
         
-        return tap(
-            new FilterablePrettyPageHandler($hide_frames),
-            function (PrettyPageHandler $handler) use ($app) {
-                $handler->handleUnconditionally(true);
-                
-                if ($editor = $app->config('app.editor')) {
-                    $handler->setEditor($editor);
-                    $handler->setApplicationRootPath($app->basePath());
-                    $handler->setApplicationPaths(self::allDirsExpectVendor($app));
-                }
-                
-                foreach ($app->config('app.debug_blacklist', []) as $key => $secrets) {
-                    foreach ($secrets as $secret) {
-                        $handler->blacklist($key, $secret);
-                    }
-                }
+        $handler = new FilterablePrettyPageHandler($hide_frames);
+        $handler->handleUnconditionally(true);
+        
+        if ($editor = $app->config('app.editor')) {
+            $handler->setEditor($editor);
+            $handler->setApplicationRootPath($app->basePath());
+            $handler->setApplicationPaths(self::allDirsExpectVendor($app));
+        }
+        
+        foreach ($app->config('app.debug_blacklist', []) as $key => $secrets) {
+            foreach ($secrets as $secret) {
+                $handler->blacklist($key, $secret);
             }
-        );
+        }
+        
+        return $handler;
     }
     
     public static function allDirsExpectVendor(Application $app) :array

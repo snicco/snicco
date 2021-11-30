@@ -28,16 +28,14 @@ class RoutingResult
     public function capturedUrlSegmentValues() :array
     {
         if ( ! isset($this->compiled_segments)) {
-            $values = collect($this->captured_segments)->map(function ($value) {
+            $this->compiled_segments = array_map(function ($value) {
                 $value = ( ! is_int($value)) ? rawurldecode($value) : $value;
                 
                 if (is_numeric($value)) {
                     $value = intval($value);
                 }
                 return $value;
-            });
-            
-            $this->compiled_segments = $values->all();
+            }, $this->captured_segments);
         }
         
         return $this->compiled_segments;

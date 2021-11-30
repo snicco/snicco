@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\unit\Middleware;
 
 use Mockery;
-use Carbon\Carbon;
 use Snicco\Support\WP;
 use Snicco\Routing\Route;
+use Snicco\Support\Carbon;
 use Tests\MiddlewareTestCase;
 use Snicco\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;

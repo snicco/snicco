@@ -10,8 +10,8 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Contracts\RouteUrlGenerator;
-use Illuminate\Support\InteractsWithTime;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class UrlGenerator

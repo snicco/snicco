@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\integration\Database\Concerns;
 
-use Illuminate\Support\Facades\DB;
+use Snicco\Support\Facades\DB;
 
 trait WithTestTransactions
 {

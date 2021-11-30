@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Session;
 
 use Closure;
-use stdClass;
 use DateInterval;
-use Carbon\Carbon;
 use DateTimeInterface;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Illuminate\Support\MessageBag;
-use Illuminate\Support\ViewErrorBag;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Support\Carbon;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
-use Illuminate\Contracts\Support\MessageProvider;
 
 class Session
 {
@@ -142,15 +138,15 @@ class Session
     
     public function exists($key) :bool
     {
-        $placeholder = new stdClass;
+        $keys = Arr::wrap($key);
         
-        return ! collect(
-            is_array($key)
-                ? $key
-                : func_get_args()
-        )->contains(function ($key) use ($placeholder) {
-            return $this->get($key, $placeholder) === $placeholder;
-        });
+        foreach ($keys as $key) {
+            if ( ! Arr::has($this->attributes, $key)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     public function hasOldInput(string $key = null) :bool
@@ -178,9 +174,9 @@ class Session
             return $value;
         }
         
-        return tap($callback(), function ($value) use ($key) {
-            $this->put($key, $value);
-        });
+        $value = $callback();
+        $this->put($key, $value);
+        return $value;
     }
     
     public function decrement($key, $amount = 1) :int
@@ -199,15 +195,9 @@ class Session
         return $value;
     }
     
-    public function has($key) :bool
+    public function has(string $key) :bool
     {
-        return ! collect(
-            is_array($key)
-                ? $key
-                : func_get_args()
-        )->contains(function ($key) {
-            return is_null($this->get($key));
-        });
+        return Arr::get($this->attributes, $key) !== null;
     }
     
     public function boolean(string $key, bool $default = false) :bool
@@ -347,8 +337,7 @@ class Session
     /**
      * Flash a container of errors to the session.
      *
-     * @param  MessageProvider|array  $provider
-     * @param  string  $bag
+     * @param  array|MessageBag  $provider
      *
      * @return $this
      */
@@ -361,12 +350,12 @@ class Session
         return $this;
     }
     
-    public function errors() :ViewErrorBag
+    public function errors() :ViewErrors
     {
-        $errors = $this->get('errors', new ViewErrorBag());
+        $errors = $this->get('errors', new ViewErrors());
         
-        if ( ! $errors instanceof ViewErrorBag) {
-            $errors = new ViewErrorBag;
+        if ( ! $errors instanceof ViewErrors) {
+            $errors = new ViewErrors;
         }
         
         return $errors;
@@ -574,11 +563,11 @@ class Session
     
     private function toMessageBag($provider) :MessageBag
     {
-        if ($provider instanceof MessageProvider) {
-            return $provider->getMessageBag();
+        if ($provider instanceof MessageBag) {
+            return $provider;
         }
         
-        return new MessageBag((array) $provider);
+        return new MessageBag($provider);
     }
     
     private function allowedRoutes() :array

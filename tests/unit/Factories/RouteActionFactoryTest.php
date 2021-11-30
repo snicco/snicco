@@ -87,17 +87,6 @@ class RouteActionFactoryTest extends UnitTest
     }
     
     /** @test */
-    public function passing_an_array_with_the_method_prefixed_with_an_at_sign_also_works()
-    {
-        $controller = [WebController::class, '@handle'];
-        
-        $handler = $this->factory->create($controller, '');
-        
-        $this->assertInstanceOf(ControllerAction::class, $handler);
-        $this->assertEquals('web_controller', $handler->execute([]));
-    }
-    
-    /** @test */
     public function controllers_can_be_resolved_without_the_full_namespace()
     {
         $controller = ['WebController', 'handle'];

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
-use Snicco\Contracts\Encryptor;
+use Snicco\Shared\Encryptor;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 

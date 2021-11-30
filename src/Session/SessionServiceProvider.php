@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Contracts\Encryptor;
+use Snicco\Shared\Encryptor;
 use Snicco\Contracts\Redirector;
 use Snicco\View\GlobalViewContext;
 use Snicco\Application\Application;
@@ -12,6 +12,7 @@ use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\Session\Events\NewLogout;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\DefuseBridge\DefuseEncryptor;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
@@ -149,7 +150,7 @@ class SessionServiceProvider extends ServiceProvider
     private function bindEncryptor()
     {
         $this->container->singleton(Encryptor::class, function () {
-            return new IlluminateEncryptor($this->config->get('app.key'));
+            return new DefuseEncryptor($this->config->get('app.encryption_key'));
         });
     }
     

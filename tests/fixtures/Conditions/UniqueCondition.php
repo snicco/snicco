@@ -10,6 +10,13 @@ use Snicco\Contracts\Condition;
 class UniqueCondition implements Condition
 {
     
+    private $foo;
+    
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+    
     public function isSatisfied(Request $request) :bool
     {
         $count = $GLOBALS['test']['unique_condition'] ?? 0;

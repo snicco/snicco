@@ -7,7 +7,6 @@ namespace Snicco\Blade;
 use Snicco\Support\Arr;
 use Illuminate\View\ViewName;
 use InvalidArgumentException;
-use Illuminate\Support\Collection;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\View\Exceptions\ViewNotFoundException;
@@ -63,9 +62,9 @@ class BladeViewFactory implements ViewFactory
      */
     private function normalizeNames($names) :array
     {
-        return (new Collection($names))->map(function ($name) {
+        return array_map(function ($name) {
             return ViewName::normalize($name);
-        })->all();
+        }, Arr::wrap($names));
     }
     
 }

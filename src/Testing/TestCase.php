@@ -8,20 +8,21 @@ use Mockery;
 use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
+use Snicco\Support\Str;
 use Snicco\Http\Delegate;
-use Illuminate\Support\Str;
 use Snicco\Http\HttpKernel;
 use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Snicco\Contracts\Middleware;
 use Snicco\Mail\Contracts\Mailer;
-use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent;
 use Snicco\Application\Application;
+use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Contracts\ServiceProvider;
-use Illuminate\Support\Facades\Facade;
 use Snicco\Contracts\ExceptionHandler;
+use Illuminate\Support\Facades\Facade;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
 use Snicco\Testing\Concerns\TravelsTime;
@@ -37,6 +38,8 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Concerns\InteractsWithContainer;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
+
+use function Snicco\Support\Functions\classUsesRecursive;
 
 abstract class TestCase extends WPTestCase
 {
@@ -84,10 +87,10 @@ abstract class TestCase extends WPTestCase
             Container::setInstance();
         }
         
-        if (class_exists(Model::class)) {
-            Model::clearBootedModels();
-            Model::unsetConnectionResolver();
-            Model::unsetEventDispatcher();
+        if (class_exists(Eloquent::class)) {
+            Eloquent::clearBootedModels();
+            Eloquent::unsetConnectionResolver();
+            Eloquent::unsetEventDispatcher();
         }
         
         WP::reset();
@@ -134,7 +137,7 @@ abstract class TestCase extends WPTestCase
             try {
                 Mockery::close();
             } catch (InvalidCountException $e) {
-                if ( ! Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
+                if ( ! Str::contains((string) $e->getMethodName(), ['doWrite', 'askQuestion'])) {
                     throw $e;
                 }
             }
@@ -147,6 +150,12 @@ abstract class TestCase extends WPTestCase
         
         if (class_exists(Container::class)) {
             Container::setInstance();
+        }
+        
+        if (class_exists(Eloquent::class)) {
+            Eloquent::clearBootedModels();
+            Eloquent::unsetConnectionResolver();
+            Eloquent::unsetEventDispatcher();
         }
         
         $this->backToPresent();
@@ -398,7 +407,7 @@ abstract class TestCase extends WPTestCase
     
     private function setUpTraits()
     {
-        $traits = array_flip(class_uses_recursive(static::class));
+        $traits = array_flip(classUsesRecursive(static::class));
         
         if (in_array(WithDatabaseExceptions::class, $traits)) {
             $this->withDatabaseExceptions();
