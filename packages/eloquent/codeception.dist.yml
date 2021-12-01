@@ -1,0 +1,9 @@
+namespace: Tests\Database
+extends: "%CODECEPTION_PACKAGE_YML%"
+
+params:
+  - ../../codeception/.env.testing
+
+groups:
+  db: [ tests/integration ]
+  eloquent: [ tests/integration ]

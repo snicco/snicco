@@ -1,0 +1,5 @@
+namespace: Tests\BetterWPHooks
+extends: "%CODECEPTION_PACKAGE_YML%"
+
+params:
+  - ../../codeception/.env.testing

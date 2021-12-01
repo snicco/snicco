@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/defuse-php-encryption-bundle",
+  "description": "Integrates the defuse encryption library with sniccowp",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-only",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "sniccowp/core": "dev-master",
+    "defuse/php-encryption": "^2.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\DefuseEncryption\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\DefuseEncryption\\": "tests"
+    }
+  }
+}

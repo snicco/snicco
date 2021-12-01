@@ -1,0 +1,10 @@
+namespace: Tests\EloquentBundle
+extends: "%CODECEPTION_PACKAGE_YML%"
+
+params:
+  - ../../codeception/.env.testing
+
+groups:
+  db: [ tests/integration ]
+
+bootstrap: _bootstrap.php

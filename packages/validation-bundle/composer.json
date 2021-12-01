@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/validation-bundle",
+  "description": "Powerful integration of respect/validation with snicco/core",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-only",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "sniccowp/core": "dev-master",
+    "respect/validation": "^2.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Validation\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Validation\\": "tests"
+    }
+  }
+}
