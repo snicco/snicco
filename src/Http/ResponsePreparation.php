@@ -43,12 +43,10 @@ class ResponsePreparation
     
     public function prepare(Psr7\Response $response, Psr7\Request $request) :Psr7\Response
     {
-        return collect([$response])
-            ->map(fn($response) => $this->fixDate($response))
-            ->map(fn($response) => $this->fixCacheControl($response))
-            ->map(fn($response) => $this->fixContent($response, $request))
-            ->map(fn($response) => $this->fixProtocol($response, $request))
-            ->first();
+        $response = $this->fixDate($response);
+        $response = $this->fixCacheControl($response);
+        $response = $this->fixContent($response, $request);
+        return $this->fixProtocol($response, $request);
     }
     
     private function fixDate($response)

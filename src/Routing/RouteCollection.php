@@ -14,8 +14,6 @@ use Snicco\Factories\RouteConditionFactory;
 use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
 
-use function collect;
-
 class RouteCollection implements RouteCollectionInterface
 {
     
@@ -219,21 +217,20 @@ class RouteCollection implements RouteCollectionInterface
     
     private function reindexRoutes(array $routes)
     {
-        collect($routes)
-            ->flatten()
-            ->filter(
-                fn(Route $route) => ! empty(
-                    $route->getName()
-                    && ! isset($this->name_list[$route->getName()])
-                )
-            )
-            ->each(function (Route $route) {
-                if (isset($this->name_list[$name = $route->getName()])) {
-                    return;
-                }
-                
-                $this->name_list[$name] = $route;
-            });
+        $routes = array_filter(Arr::flatten($routes), function (Route $route) {
+            return ! empty(
+                $route->getName()
+                && ! isset($this->name_list[$route->getName()])
+            );
+        });
+        
+        array_walk($routes, function (Route $route) {
+            if (isset($this->name_list[$name = $route->getName()])) {
+                return;
+            }
+            
+            $this->name_list[$name] = $route;
+        });
     }
     
     /**

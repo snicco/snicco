@@ -6,7 +6,7 @@ namespace Snicco\Factories;
 
 use Closure;
 use RuntimeException;
-use Illuminate\Support\Reflector;
+use Snicco\Support\Reflector;
 use Snicco\Routing\ClosureAction;
 use Snicco\Contracts\RouteAction;
 use Snicco\Routing\ControllerAction;

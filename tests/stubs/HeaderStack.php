@@ -50,10 +50,14 @@ class HeaderStack
     {
         self::assertHas($header_name);
         
-        $header =
-            collect(self::$data)->pluck('header')->first(function ($header) use ($header_name) {
-                return Str::startsWith($header, $header_name);
-            });
+        $header = '';
+        
+        foreach (self::$data as $sent_header) {
+            if (Str::startsWith($sent_header['header'], $header_name)) {
+                $header = $sent_header['header'];
+                break;
+            }
+        }
         
         Assert::assertStringContainsString(
             $value,
@@ -117,9 +121,16 @@ class HeaderStack
     
     public static function assertNoStatusCodeSent()
     {
-        Assert::assertSame(
-            [],
-            collect(self::$data)->pluck('status_code')->whereNotNull()->all(),
+        $headers_with_status_code = [];
+        
+        foreach (self::$data as $sent_header) {
+            if ( ! is_null($sent_header['status_code'])) {
+                $headers_with_status_code[] = $sent_header;
+            }
+        }
+        
+        Assert::assertEmpty(
+            $headers_with_status_code,
             'status code header was sent unexpectedly.'
         );
     }

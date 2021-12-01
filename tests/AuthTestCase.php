@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Tests;
 
 use WP_User;
+use Snicco\Shared\Encryptor;
 use Snicco\Auth\RecoveryCode;
-use Illuminate\Support\Collection;
+use Snicco\Support\Collection;
 use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Auth\AuthServiceProvider;
@@ -23,7 +24,7 @@ class AuthTestCase extends FrameworkTestCase
     
     protected array $codes;
     
-    protected IlluminateEncryptor $encryptor;
+    protected Encryptor $encryptor;
     
     protected string $valid_one_time_code = '123456';
     
@@ -95,15 +96,17 @@ class AuthTestCase extends FrameworkTestCase
     
     protected function generateTestSecret(WP_User $user) :self
     {
-        update_user_meta($user->ID, 'two_factor_secret', $this->encryptor->encryptString('secret'));
+        update_user_meta($user->ID, 'two_factor_secret', $this->encryptor->encrypt('secret'));
         return $this;
     }
     
     protected function generateTestRecoveryCodes() :array
     {
-        return Collection::times(8, function () {
-            return RecoveryCode::generate();
-        })->all();
+        $codes = [];
+        for ($i = 0; $i < 8; $i++) {
+            $codes[] = RecoveryCode::generate();
+        }
+        return $codes;
     }
     
     protected function enable2Fa(WP_User $user) :self

@@ -10,9 +10,10 @@ use Snicco\Routing\UrlGenerator;
 class Controller
 {
     
-    protected ViewEngine      $view_factory;
+    protected ViewEngine $view_factory;
     protected ResponseFactory $response_factory;
-    protected UrlGenerator    $url;
+    protected UrlGenerator $url;
+    
     /**
      * @var ControllerMiddleware[]
      */
@@ -20,11 +21,18 @@ class Controller
     
     public function getMiddleware(string $method = null) :array
     {
-        return collect($this->middleware)
-            ->filter(fn(ControllerMiddleware $middleware) => $middleware->appliesTo($method))
-            ->map(fn(ControllerMiddleware $middleware) => $middleware->name())
-            ->values()
-            ->all();
+        $middleware = array_filter(
+            $this->middleware,
+            function (ControllerMiddleware $controller_middleware) use ($method) {
+                return $controller_middleware->appliesTo($method);
+            }
+        );
+        
+        return array_values(
+            array_map(function (ControllerMiddleware $middleware) {
+                return $middleware->name();
+            }, $middleware)
+        );
     }
     
     public function giveViewEngine(ViewEngine $view_factory)

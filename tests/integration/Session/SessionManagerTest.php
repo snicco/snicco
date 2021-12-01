@@ -8,7 +8,7 @@ use Snicco\Http\Cookies;
 use Tests\FrameworkTestCase;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Events\SessionWasRegenerated;
 

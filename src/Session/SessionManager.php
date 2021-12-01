@@ -9,7 +9,7 @@ use Snicco\Http\Cookies;
 use Snicco\Http\Psr7\Request;
 use Snicco\Traits\HasLottery;
 use Snicco\Http\ResponseEmitter;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Session\Events\SessionWasRegenerated;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Contracts\SessionManagerInterface;

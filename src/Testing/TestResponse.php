@@ -326,15 +326,17 @@ class TestResponse
         $this->assertHeader('Set-Cookie');
         
         $header = $this->psr_response->getHeader('Set-Cookie');
-        $headers = collect($header)->filter(fn($header) => Str::startsWith($header, $cookie_name));
-        
-        if ($headers->count() > 1) {
+        $headers = array_filter($header, function ($header) use ($cookie_name) {
+            return Str::startsWith($header, $cookie_name);
+        });
+        $count = count($headers);
+        if ($count > 1) {
             PHPUnit::fail(
-                "The cookie [$cookie_name] was set [{$headers->count()} times on the response.]"
+                "The cookie [$cookie_name] was set [$count} times on the response.]"
             );
         }
         
-        return new AssertableCookie($headers->first());
+        return new AssertableCookie($headers[0]);
     }
     
     /**

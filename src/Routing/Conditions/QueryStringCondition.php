@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Routing\Conditions;
 
+use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
-use Illuminate\Support\Collection;
 use Snicco\Contracts\Condition;
 
 class QueryStringCondition implements Condition
 {
     
-    protected Collection $query_string_arguments;
+    protected array $query_string_arguments;
     
     public function __construct($query_string_arguments)
     {
-        $this->query_string_arguments = collect($query_string_arguments);
+        $this->query_string_arguments = Arr::wrap($query_string_arguments);
     }
     
     /**
@@ -31,17 +31,18 @@ class QueryStringCondition implements Condition
             }
         }
         
-        $failed_value =
-            $this->query_string_arguments->first(fn($value, $key) => $value !== $query_args[$key]);
+        foreach ($this->query_string_arguments as $key => $value) {
+            if ($value !== $query_args[$key]) {
+                return false;
+            }
+        }
         
-        return $failed_value === null;
+        return true;
     }
     
     public function getArguments(Request $request) :array
     {
-        return collect($request->getQueryParams())
-            ->only($this->query_string_arguments->keys())
-            ->all();
+        return Arr::only($request->getQueryParams(), array_keys($this->query_string_arguments));
     }
     
 }

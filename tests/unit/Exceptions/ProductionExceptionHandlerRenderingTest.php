@@ -12,16 +12,16 @@ use Tests\UnitTest;
 use RuntimeException;
 use Snicco\Support\WP;
 use Psr\Log\NullLogger;
-use Illuminate\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\View\ViewEngine;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Testing\TestResponse;
 use Tests\stubs\TestViewFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Shared\ContainerAdapter;
 use Tests\concerns\CreateContainer;
 use Snicco\Application\Application;
 use Tests\concerns\CreatePsr17Factories;
@@ -280,9 +280,9 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
                 'exception' => HttpException::class,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => collect($e->getTrace())->map(function ($trace) {
+                'trace' => array_map(function ($trace) {
                     return Arr::except($trace, ['args']);
-                })->all(),
+                }, $e->getTrace()),
             ]);
         }
     }
@@ -335,11 +335,11 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $app->shouldReceive('config')->once()->with('app.debug_blacklist', [])->andReturn([]);
         $app->shouldReceive('config')->once()->with('app.hide_debug_traces', [])->andReturn([]);
         
-        return \Snicco\Support\Functions\tap(new Run(), function (Run $whoops) use ($app) {
-            $whoops->writeToOutput(false);
-            $whoops->allowQuit(false);
-            $whoops->pushHandler(WhoopsHandler::get($app));
-        });
+        $whoops = new Run();
+        $whoops->writeToOutput(false);
+        $whoops->allowQuit(false);
+        $whoops->pushHandler(WhoopsHandler::get($app));
+        return $whoops;
     }
     
 }

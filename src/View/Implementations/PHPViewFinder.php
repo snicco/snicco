@@ -36,10 +36,7 @@ class PHPViewFinder
             return $view_name;
         }
         
-        $view_name = (string) Str::of($view_name)
-                                 ->before('.php')
-                                 ->trim('/')
-                                 ->replace('.', '/');
+        $view_name = $this->normalizeViewName($view_name);
         
         foreach ($this->directories as $directory) {
             $path = rtrim($directory, '/').'/'.$view_name.'.php';
@@ -73,6 +70,12 @@ class PHPViewFinder
                 'removeTrailingSlash',
             ], $directories)
         );
+    }
+    
+    private function normalizeViewName(string $view_name)
+    {
+        $view_name = trim(Str::before($view_name, '.php'), '/');
+        return str_replace('.', '/', $view_name);
     }
     
 }

@@ -7,8 +7,8 @@ namespace Snicco\Traits;
 use Closure;
 use Snicco\Support\Arr;
 use Snicco\Routing\Route;
-use Snicco\Routing\ConditionBlueprint;
 use Snicco\Contracts\Condition;
+use Snicco\Routing\ConditionBlueprint;
 use Snicco\Controllers\FallBackController;
 
 trait SetsRouteAttributes
@@ -152,9 +152,10 @@ trait SetsRouteAttributes
     
     private function addRegexToSegment($segments, string $pattern) :Route
     {
-        collect($segments)
-            ->flatten()
-            ->each(fn($segment) => $this->and($segment, $pattern));
+        $segments = Arr::flatten(Arr::wrap($segments));
+        array_walk($segments, function ($segment) use ($pattern) {
+            $this->and($segment, $pattern);
+        });
         
         return $this;
     }

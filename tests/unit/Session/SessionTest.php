@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\unit\Session;
 
 use Mockery;
-use Carbon\Carbon;
 use Tests\UnitTest;
 use Snicco\Support\WP;
+use Snicco\Support\Carbon;
 use Snicco\Session\Session;
 use SessionHandlerInterface;
 use Tests\concerns\HashesSessionIds;

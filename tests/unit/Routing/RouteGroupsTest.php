@@ -143,13 +143,13 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->createRoutes(function () {
             $this->router
-                ->where(new UniqueCondition())
+                ->where(new UniqueCondition('foo'))
                 ->group(function () {
                     $this->router
                         ->get('/*', function () {
                             return 'get_foo';
                         })
-                        ->where(new UniqueCondition());
+                        ->where(new UniqueCondition('foo'));
                 });
         });
         
@@ -164,13 +164,13 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->createRoutes(function () {
             $this->router
-                ->where('unique')
+                ->where('unique', 'foo')
                 ->group(function () {
                     $this->router
                         ->get('/*', function () {
                             return 'get_bar';
                         })
-                        ->where('unique');
+                        ->where('unique', 'foo');
                 });
         });
         

@@ -55,15 +55,13 @@ class RouteCache
      */
     public function create(array $url_routes, array $condition_routes, array $named_routes, array $route_url_data)
     {
-        $_name_list = collect($named_routes)
-            ->flatten()
-            ->filter(fn(Route $route) => $route->getName() !== null && $route->getName() !== '')
-            ->flatMap(function (Route $route) {
-                return [
-                    $route->getName() => $route->asArray(),
-                ];
-            })
-            ->all();
+        $_name_list = array_filter($named_routes, function (Route $route) {
+            return ! empty($route->getName());
+        });
+        
+        $_name_list = array_map(function (Route $route) {
+            return $route->asArray();
+        }, $_name_list);
         
         $_url_routes = [];
         

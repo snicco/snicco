@@ -104,10 +104,14 @@ class RouteFileRegistrar implements RouteRegistrar
     
     private function apiRoutes(Config $config) :array
     {
-        $api_dirs = collect($config->get('routing.definitions', []))
-            ->map(fn($dir) => rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'api')
-            ->filter(fn($dir) => is_dir($dir))
-            ->all();
+        $api_dirs = $config->get('routing.definitions', []);
+        
+        $api_dirs = array_map(
+            fn($dir) => rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'api',
+            $api_dirs
+        );
+        
+        $api_dirs = array_filter($api_dirs, fn($dir) => is_dir($dir));
         
         $endpoints = Arr::wrap($config->get('routing.api.endpoints', []));
         
@@ -121,13 +125,13 @@ class RouteFileRegistrar implements RouteRegistrar
                ->depth(0)
                ->name(static::SEARCH_PATTERN);
         
-        return collect(iterator_to_array($finder))
-            ->reject(function (SplFileInfo $file) use ($endpoints) {
+        return array_filter(
+            iterator_to_array($finder),
+            function (SplFileInfo $file) use ($endpoints) {
                 $name = Str::before($file->getRelativePathname(), '.');
-                
-                return ! isset($endpoints[$name]);
-            })
-            ->all();
+                return isset($endpoints[$name]);
+            }
+        );
     }
     
 }

@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Factories;
 
-use Closure;
 use RuntimeException;
 use Snicco\Support\Str;
+use Snicco\Support\Reflector;
 use Snicco\Shared\ContainerAdapter;
-use Illuminate\Support\Reflector;
 use Snicco\Traits\ReflectsCallable;
-
-use function collect;
 
 /**
  * This factory is a base class to build callables/closure from the DI-Container.
@@ -36,17 +33,11 @@ abstract class AbstractFactory
     
     protected function normalizeInput($raw_handler) :array
     {
-        return collect($raw_handler)
-            ->flatMap(function ($value) {
-                if ($value instanceof Closure || ! Str::contains($value, '@')) {
-                    return [$value];
-                }
-                
-                return [Str::before($value, '@'), Str::after($value, '@')];
-            })
-            ->filter(fn($value) => ! empty($value))
-            ->values()
-            ->all();
+        if (is_string($raw_handler)) {
+            return Str::parseCallback($raw_handler, '__invoke');
+        }
+        
+        return $raw_handler;
     }
     
     protected function checkIfCallable(array $handler) :?array
@@ -61,15 +52,13 @@ abstract class AbstractFactory
         
         [$class, $method] = $handler;
         
-        $matched = collect($this->namespaces)
-            ->map(function ($namespace) use ($class, $method) {
-                if (Reflector::isCallable([$namespace.'\\'.$class, $method])) {
-                    return [$namespace.'\\'.$class, $method];
-                }
-            })
-            ->filter(fn($value) => $value !== null);
+        foreach ($this->namespaces as $namespace) {
+            if (Reflector::isCallable([$namespace.'\\'.$class, $method])) {
+                return [$namespace.'\\'.$class, $method];
+            }
+        }
         
-        return $matched->isNotEmpty() ? $matched->first() : null;
+        return null;
     }
     
     protected function fail($class, $method)

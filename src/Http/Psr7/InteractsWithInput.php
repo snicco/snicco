@@ -8,6 +8,8 @@ use stdClass;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 
+use function Snicco\Support\Functions\dataGet;
+
 trait InteractsWithInput
 {
     
@@ -74,7 +76,7 @@ trait InteractsWithInput
     
     public function input($key = null, $default = null)
     {
-        return data_get($this->all(), $key, $default);
+        return dataGet($this->all(), $key, $default);
     }
     
     /**
@@ -89,7 +91,7 @@ trait InteractsWithInput
         $placeholder = new stdClass;
         
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
-            $value = data_get($input, $key, $placeholder);
+            $value = dataGet($input, $key, $placeholder);
             
             if ($value !== $placeholder) {
                 Arr::set($results, $key, $value);
