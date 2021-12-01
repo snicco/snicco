@@ -335,11 +335,11 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $app->shouldReceive('config')->once()->with('app.debug_blacklist', [])->andReturn([]);
         $app->shouldReceive('config')->once()->with('app.hide_debug_traces', [])->andReturn([]);
         
-        return \Snicco\Support\Functions\tap(new Run(), function (Run $whoops) use ($app) {
-            $whoops->writeToOutput(false);
-            $whoops->allowQuit(false);
-            $whoops->pushHandler(WhoopsHandler::get($app));
-        });
+        $whoops = new Run();
+        $whoops->writeToOutput(false);
+        $whoops->allowQuit(false);
+        $whoops->pushHandler(WhoopsHandler::get($app));
+        return $whoops;
     }
     
 }
