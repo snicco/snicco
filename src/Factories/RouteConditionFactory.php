@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Factories;
 
+use Snicco\Contracts\Condition;
 use Snicco\Shared\ContainerAdapter;
 use Snicco\Routing\ConditionBlueprint;
-use Snicco\Contracts\Condition;
 use Snicco\Support\ReflectionDependencies;
 use Snicco\Routing\Conditions\NegateCondition;
 use Snicco\Routing\Conditions\CustomCondition;
@@ -35,19 +35,15 @@ class RouteConditionFactory
      */
     public function buildConditions(array $condition_blueprints) :array
     {
-        $conditions = collect($condition_blueprints);
+        $conditions = array_map(function (ConditionBlueprint $condition) {
+            if ($compiled = $this->alreadyCompiled($condition)) {
+                return $compiled;
+            }
+            
+            return $this->new($condition);
+        }, $condition_blueprints);
         
-        $conditions = $conditions
-            ->map(function (ConditionBlueprint $condition) {
-                if ($compiled = $this->alreadyCompiled($condition)) {
-                    return $compiled;
-                }
-                
-                return $this->new($condition);
-            })
-            ->unique();
-        
-        return $conditions->all();
+        return array_unique($conditions, SORT_REGULAR);
     }
     
     private function alreadyCompiled(ConditionBlueprint $condition) :?object

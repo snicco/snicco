@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Auth\Traits;
 
 use Snicco\Auth\RecoveryCode;
-use Illuminate\Support\Collection;
 
 trait InteractsWithTwoFactorCodes
 {
@@ -30,9 +29,11 @@ trait InteractsWithTwoFactorCodes
     
     private function generateNewRecoveryCodes() :array
     {
-        return Collection::times(8, function () {
-            return RecoveryCode::generate();
-        })->all();
+        $codes = [];
+        for ($i = 0; $i < 8; $i++) {
+            $codes[] = RecoveryCode::generate();
+        }
+        return $codes;
     }
     
 }

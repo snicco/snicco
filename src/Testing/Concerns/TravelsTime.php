@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
+use Snicco\Support\Carbon;
 
 trait TravelsTime
 {
@@ -14,10 +13,6 @@ trait TravelsTime
     {
         if (class_exists(Carbon::class)) {
             Carbon::setTestNow();
-        }
-        
-        if (class_exists(CarbonImmutable::class)) {
-            CarbonImmutable::setTestNow();
         }
     }
     

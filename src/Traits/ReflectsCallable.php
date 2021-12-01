@@ -8,8 +8,10 @@ use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
+use Snicco\Support\Str;
 use ReflectionException;
-use Illuminate\Support\Str;
+use ReflectionParameter;
+use InvalidArgumentException;
 use ReflectionFunctionAbstract;
 
 trait ReflectsCallable
@@ -61,6 +63,25 @@ trait ReflectsCallable
         if (is_object($class_name_or_object)) return true;
         
         return class_exists($class_name_or_object);
+    }
+    
+    private function firstClosureParameterType(Closure $closure) :string
+    {
+        $reflection = new ReflectionFunction($closure);
+        
+        $parameters = (array) $reflection->getParameters();
+        
+        if ( ! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
+            throw new InvalidArgumentException(
+                "Closure does not have first parameter typehinted."
+            );
+        }
+        
+        $param = $parameters[0];
+        
+        $type = $param->getType();
+        
+        return $type->getName();
     }
     
 }

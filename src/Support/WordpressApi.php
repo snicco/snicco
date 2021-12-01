@@ -13,7 +13,7 @@ use BadMethodCallException;
 class WordpressApi
 {
     
-    public static function usesTrailingSlashes() :bool
+    public function usesTrailingSlashes() :bool
     {
         $permalink_structure = get_option('permalink_structure');
         

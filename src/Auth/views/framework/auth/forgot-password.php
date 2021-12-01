@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 use Snicco\Session\Session;
-use Illuminate\Support\ViewErrorBag;
+use Snicco\Support\ViewErrorBag;
 
 /** @var ViewErrorBag $errors */
 

@@ -8,10 +8,7 @@ use Closure;
 use ReflectionException;
 use ReflectionParameter;
 use Snicco\Shared\ContainerAdapter;
-use Illuminate\Support\Reflector;
 use Snicco\Traits\ReflectsCallable;
-
-use function collect;
 
 /**
  * This class is used to build the dependencies for route actions, middleware, conditions and view
@@ -103,12 +100,12 @@ class ReflectionDependencies
     
     private function filterClasses(array $args, array $added_classes) :array
     {
-        return collect($args)
-            ->reject(
-                fn($value) => is_object($value) && in_array(get_class($value), $added_classes, true)
-            )
-            ->values()
-            ->all();
+        return array_filter($args, function ($value) use ($added_classes) {
+            if (is_object($value) && in_array(get_class($value), $added_classes, true)) {
+                return false;
+            }
+            return true;
+        });
     }
     
 }

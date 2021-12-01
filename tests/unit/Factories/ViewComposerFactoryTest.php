@@ -7,7 +7,6 @@ namespace Tests\unit\Factories;
 use Tests\UnitTest;
 use Tests\stubs\TestView;
 use Tests\concerns\CreateContainer;
-use Snicco\Contracts\PhpViewInterface;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;
 use Tests\fixtures\ViewComposers\FooComposer;

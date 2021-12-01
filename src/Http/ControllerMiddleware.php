@@ -73,7 +73,7 @@ class ControllerMiddleware
     
     public function appliesTo(string $method = null) :bool
     {
-        if (Arr::isValue($method, $this->blacklist)) {
+        if (in_array($method, $this->blacklist, true)) {
             return false;
         }
         
@@ -81,7 +81,7 @@ class ControllerMiddleware
             return true;
         }
         
-        return Arr::isValue($method, $this->whitelist);
+        return in_array($method, $this->whitelist, true);
     }
     
     public function name()

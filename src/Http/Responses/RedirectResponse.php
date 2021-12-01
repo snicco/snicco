@@ -7,7 +7,7 @@ namespace Snicco\Http\Responses;
 use LogicException;
 use Snicco\Session\Session;
 use Snicco\Http\Psr7\Response;
-use Illuminate\Support\MessageBag;
+use Snicco\Support\MessageBag;
 use Illuminate\Contracts\Support\MessageProvider;
 
 class RedirectResponse extends Response
@@ -68,10 +68,7 @@ class RedirectResponse extends Response
     /**
      * Flash a container of errors to the session.
      *
-     * @param  MessageProvider|array  $provider
-     * @param  string  $key
-     *
-     * @return $this
+     * @param  \Snicco\Session\MessageBag|array  $provider
      */
     public function withErrors($provider, string $bag = 'default') :RedirectResponse
     {

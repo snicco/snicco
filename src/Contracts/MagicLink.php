@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Contracts;
 
-use Carbon\Carbon;
 use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Http\Cookie;
+use Snicco\Support\Carbon;
 use Snicco\Http\Psr7\Request;
 use InvalidArgumentException;
 use Snicco\Traits\HasLottery;
 use Snicco\Http\Psr7\Response;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Traits\InteractsWithTime;
 
 abstract class MagicLink
 {

@@ -21,20 +21,6 @@ class UrlParserTest extends UnitTest
     }
     
     /** @test */
-    public function possible_models_contained_in_the_url_gets_parsed_to_an_array()
-    {
-        $input = '/{country:name}/{team:slug}/{member}';
-        
-        $expected = [
-            'country' => 'name',
-            'team' => 'slug',
-            'member' => 'id',
-        ];
-        
-        $this->assertSame($expected, UrlParser::parseModelsFromUrl($input));
-    }
-    
-    /** @test */
     public function the_dynamic_route_segments_can_be_parsed()
     {
         $input = 'https://foobar.com/users/{user}';

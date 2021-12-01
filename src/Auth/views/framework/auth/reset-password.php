@@ -11,7 +11,7 @@ declare(strict_types=1);
 /** @var Session $session */
 
 use Snicco\Session\Session;
-use Illuminate\Support\ViewErrorBag;
+use Snicco\Support\ViewErrorBag;
 
 ?>
 

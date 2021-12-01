@@ -6,11 +6,11 @@ namespace Snicco\Auth;
 
 use Snicco\Support\WP;
 use BaconQrCode\Writer;
+use Snicco\Shared\Encryptor;
 use PragmaRX\Google2FA\Google2FA;
 use BaconQrCode\Renderer\Color\Rgb;
 use Snicco\Auth\Traits\ResolvesUser;
 use BaconQrCode\Renderer\ImageRenderer;
-use Snicco\Contracts\Encryptor;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Traits;
 
 use WP_User;
-use Snicco\Contracts\Encryptor;
+use Snicco\Shared\Encryptor;
 use Snicco\ExceptionHandling\Exceptions\DecryptException;
 
 /**
@@ -31,7 +31,7 @@ trait InteractsWithTwoFactorSecrets
             return '';
         }
         
-        return $this->encryptor->decryptString($secret);
+        return $this->encryptor->decrypt($secret);
     }
     
     private function userHasTwoFactorEnabled(WP_User $user) :bool
@@ -60,7 +60,7 @@ trait InteractsWithTwoFactorSecrets
     
     private function saveSecret(int $user_id, string $secret)
     {
-        $encrypted_secret = $this->encryptor->encryptString($secret);
+        $encrypted_secret = $this->encryptor->encrypt($secret);
         update_user_meta($user_id, 'two_factor_secret', $encrypted_secret);
     }
     

@@ -9,7 +9,7 @@ use Snicco\Support\Arr;
 use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
 use Snicco\Session\SessionManager;
-use Illuminate\Support\InteractsWithTime;
+use Snicco\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
@@ -76,10 +76,16 @@ class AuthSessionManager implements SessionManagerInterface
     {
         $sessions = $this->active_session->getAllForUser();
         
-        return collect($sessions)
-            ->flatMap(fn(object $session) => [$session->id => $session->payload])
-            ->filter(fn(array $payload) => $this->valid($payload))
-            ->all();
+        $_s = [];
+        
+        foreach ($sessions as $session) {
+            $session = (object) $session;
+            if ($this->valid($session->payload)) {
+                $_s[$session->id] = $session->payload;
+            }
+        }
+        
+        return $_s;
     }
     
     public function idleTimeout()

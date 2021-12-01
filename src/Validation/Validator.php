@@ -7,9 +7,8 @@ namespace Snicco\Validation;
 use LogicException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
+use Snicco\Session\MessageBag;
 use Respect\Validation\Rules\Not;
-use Illuminate\Support\Collection;
-use Illuminate\Support\MessageBag;
 use Respect\Validation\Validator as v;
 use Respect\Validation\Exceptions\ValidationException as RespectValidationError;
 
@@ -108,36 +107,37 @@ class Validator
     
     private function normalizeRules(array $rules) :array
     {
-        return collect($rules)
-            ->map(fn($rule) => Arr::wrap($rule))
-            ->map(function (array $rule, $key) {
-                $optional = false;
-                
-                if ( ! isset($rule[2])) {
-                    $optional = ($rule[1] ?? 'required') === 'optional';
-                }
-                else {
-                    $optional = ($rule[2] ?? 'required') === 'optional';
-                }
-                
-                if (isset($rule[1]) && ! Str::contains($rule[1], ['optional', 'required'])) {
-                    $this->custom_messages[trim($key, '*')] = $rule[1];
-                }
-                
-                if ($optional) {
-                    return v::nullable($rule[0]);
-                }
-                
-                return $rule[0];
-            })
-            ->all();
+        $_r = [];
+        
+        foreach ($rules as $key => $rule) {
+            $rule = Arr::wrap($rule);
+            
+            if ( ! isset($rule[2])) {
+                $optional = ($rule[1] ?? 'required') === 'optional';
+            }
+            else {
+                $optional = ($rule[2] ?? 'required') === 'optional';
+            }
+            
+            if (isset($rule[1]) && ! Str::contains($rule[1], ['optional', 'required'])) {
+                $this->custom_messages[trim($key, '*')] = $rule[1];
+            }
+            
+            if ($optional) {
+                $rule[0] = v::nullable($rule[0]);
+            }
+            
+            $_r[$key] = $rule[0];
+        }
+        
+        return $_r;
     }
     
     private function inputToBeValidated(array $pool) :array
     {
-        $keys = collect($this->rules)->keys()->reject(function ($key) {
-            return is_int($key);
-        })->all();
+        $keys = array_filter(array_keys($this->rules), function ($key) {
+            return ! is_int($key);
+        });
         
         $validate = [];
         
@@ -168,22 +168,20 @@ class Validator
     {
         $negated_template = $e->getParam('rules')[0] instanceof Not;
         
-        collect($e->getChildren())->each(
-            function (RespectValidationError $e) use ($input, $name, $negated_template) {
-                if ( ! isset($this->global_message_replacements[$e->getId()])) {
-                    return;
-                }
-                
-                if ($negated_template) {
-                    $e->updateMode(RespectValidationError::MODE_NEGATIVE);
-                    $e->updateTemplate($this->global_message_replacements[$e->getId()][1]);
-                    
-                    return;
-                }
-                
-                $e->updateTemplate($this->global_message_replacements[$e->getId()][0]);
+        foreach ($e->getChildren() as $e) {
+            if ( ! isset($this->global_message_replacements[$e->getId()])) {
+                return;
             }
-        );
+            
+            if ($negated_template) {
+                $e->updateMode(RespectValidationError::MODE_NEGATIVE);
+                $e->updateTemplate($this->global_message_replacements[$e->getId()][1]);
+                
+                return;
+            }
+            
+            $e->updateTemplate($this->global_message_replacements[$e->getId()][0]);
+        }
     }
     
     private function addToErrors(RespectValidationError $e, $key, $input)
@@ -201,21 +199,25 @@ class Validator
     {
         $exceptions = $e->getChildren();
         
-        $messages = new Collection($exceptions);
+        $messages = $exceptions;
         
         $rule_id = null;
         
-        return $messages
-            ->map(function (RespectValidationError $e) use ($name, &$rule_id) {
-                $rule_id = $e->getId();
-                
-                return $this->replaceWithCustomMessage($e, $name);
-            })
-            ->map(fn($message) => $this->replaceRawInputWithAttributeName($input, $name, $message))
-            ->map(fn($message) => $this->swapOutPlaceHolders($message, $name, $input, $rule_id))
-            ->map(fn($message) => $this->addTrailingPoint($message))
-            ->values()
-            ->all();
+        $messages = array_map(function (RespectValidationError $e) use ($name, &$rule_id) {
+            $rule_id = $e->getId();
+            return $this->replaceWithCustomMessage($e, $name);
+        }, $messages);
+        
+        $messages = array_map(function ($message) use ($input, $name) {
+            return $this->replaceRawInputWithAttributeName($input, $name, $message);
+        }, $messages);
+        
+        $messages = array_map(function ($message) use ($input, $name, $rule_id) {
+            $message = $this->swapOutPlaceHolders($message, $name, $input, $rule_id);
+            return $this->addTrailingPoint($message);
+        }, $messages);
+        
+        return array_values($messages);
     }
     
     private function replaceWithCustomMessage($e, $attribute_name)

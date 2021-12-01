@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\unit\Middleware;
 
 use Mockery;
-use Carbon\Carbon;
 use Snicco\Support\WP;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
+use Snicco\Support\Carbon;
 use Snicco\Session\Session;
 use Snicco\Routing\Pipeline;
 use Tests\MiddlewareTestCase;
@@ -176,10 +176,13 @@ class ValidateSignatureTest extends MiddlewareTestCase
                              ])
                              ->then(fn() => $this->response_factory->make());
         
-        $cookies = $response->getHeaderLine('Set-Cookie');
-        $cookie = collect(explode(';', $cookies))->flatMap(function ($value) {
-            return [trim(Str::before($value, '=')) => trim(Str::after($value, '='))];
-        })->all();
+        $cookie_header = $response->getHeaderLine('Set-Cookie');
+        
+        $cookie = [];
+        
+        foreach (explode(";", $cookie_header) as $part) {
+            $cookie[trim(Str::before($part, '='))] = trim(Str::after($part, '='));
+        }
         
         $this->assertSame('/foo', $cookie['path']);
         $this->assertSame('secure', $cookie['secure']);
@@ -221,10 +224,13 @@ class ValidateSignatureTest extends MiddlewareTestCase
                              ])
                              ->then(fn() => $this->response_factory->make());
         
-        $cookies = $response->getHeaderLine('Set-Cookie');
-        $cookie = collect(explode(';', $cookies))->flatMap(function ($value) {
-            return [trim(Str::before($value, '=')) => trim(Str::after($value, '='))];
-        })->all();
+        $cookie_header = $response->getHeaderLine('Set-Cookie');
+        
+        $cookie = [];
+        
+        foreach (explode(';', $cookie_header) as $part) {
+            $cookie[trim(Str::before($part, '='))] = trim(Str::after($part, '='));
+        }
         
         $this->assertSame('/foo', $cookie['path']);
         $this->assertSame('secure', $cookie['secure']);

@@ -13,11 +13,9 @@ use Snicco\Http\Psr7\Request;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Factories\MiddlewareFactory;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Contracts\ExceptionHandler;
-
-use function collect;
 
 class Pipeline
 {
@@ -69,29 +67,29 @@ class Pipeline
     
     private function normalizeMiddleware(array $middleware) :array
     {
-        return collect($middleware)
-            ->map(function ($middleware) {
-                if ($middleware instanceof Closure) {
-                    return new Delegate($middleware);
-                }
-                
-                return $middleware;
-            })
-            ->map(function ($middleware) {
-                $middleware = Arr::wrap($middleware);
-                
-                if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
-                    throw new InvalidArgumentException(
-                        "Unsupported middleware type: {$middleware[0]})"
-                    );
-                }
-                
-                return $middleware;
-            })
-            ->map(function ($middleware) {
-                return $this->getMiddlewareAndParams($middleware);
-            })
-            ->all();
+        $middleware = array_map(function ($middleware) {
+            if ($middleware instanceof Closure) {
+                return new Delegate($middleware);
+            }
+            
+            return $middleware;
+        }, $middleware);
+        
+        $middleware = array_map(function ($middleware) {
+            $middleware = Arr::wrap($middleware);
+            
+            if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
+                throw new InvalidArgumentException(
+                    "Unsupported middleware type: {$middleware[0]})"
+                );
+            }
+            
+            return $middleware;
+        }, $middleware);
+        
+        return array_map(function ($middleware) {
+            return $this->getMiddlewareAndParams($middleware);
+        }, $middleware);
     }
     
     /**

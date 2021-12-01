@@ -50,9 +50,11 @@ class HtmlErrorRenderer
             return $views;
         }
         
-        return collect($views)
-            ->map(fn($view) => "$view-admin")
-            ->merge($views)->all();
+        $admin_views = array_map(function ($view) {
+            return "$view-admin";
+        }, $views);
+        
+        return array_merge($admin_views, $views);
     }
     
 }
