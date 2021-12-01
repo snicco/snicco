@@ -1,0 +1,28 @@
+{
+  "name": "sniccowp/better-wp-hooks",
+  "description": "The WordPress hook API rewritten in 2021.",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\EventDispatcher\\": "src"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\BetterWPHooks\\": "tests"
+    }
+  }
+}

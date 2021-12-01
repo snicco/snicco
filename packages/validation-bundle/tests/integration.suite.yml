@@ -1,0 +1,4 @@
+namespace: Tests\Validation\integration
+extends: "%CODECEPTION_INTEGRATION_YML%"
+
+bootstrap: _bootstrap.php

@@ -1,0 +1,45 @@
+{
+  "name": "sniccowp/core",
+  "description": "The core of the sniccowp framework",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "sniccowp/better-wp-hooks": "dev-master",
+    "akrabat/ip-address-middleware": "^2.0",
+    "nesbot/carbon": "^2.31",
+    "nikic/fast-route": "1.3.0",
+    "psr/http-message": "^1.0.0",
+    "psr/http-server-middleware": "1.0.0",
+    "psr/log": "^1.0.0",
+    "symfony/finder": "^5.0-stable",
+    "opis/closure": "3.6.2"
+  },
+  "require-dev": {
+    "nyholm/psr7-server": "^1.0-stable",
+    "adriansuter/php-autoload-override": "^1.2",
+    "filp/whoops": "^2.2",
+    "illuminate/container": "^8.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\": "src"
+    },
+    "files": [
+      "src/Support/functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Core\\": "tests"
+    }
+  }
+}

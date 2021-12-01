@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/view-bundle",
+  "description": "Integrates sniccowp/view with the sniccowp/core package",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-only",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "sniccowp/view": "dev-master",
+    "sniccowp/core": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\ViewBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\ViewBundle\\": "tests"
+    }
+  }
+}

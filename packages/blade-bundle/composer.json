@@ -1,0 +1,28 @@
+{
+  "name": "sniccowp/blade-bundle",
+  "description": "Integrates sniccowp/blade with the sniccowp/core package.",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "sniccowp/blade": "dev-master",
+    "sniccowp/view-bundle": "dev-master",
+    "sniccowp/core": "dev-master",
+    "php": "^7.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\BladeBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\BladeBundle\\": "tests"
+    }
+  }
+}
