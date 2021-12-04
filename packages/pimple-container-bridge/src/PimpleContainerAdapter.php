@@ -7,6 +7,7 @@ namespace Snicco\PimpleContainer;
 use Closure;
 use Pimple\Container;
 use Snicco\Shared\ContainerAdapter;
+use Pimple\Exception\FrozenServiceException;
 
 final class PimpleContainerAdapter extends ContainerAdapter
 {
@@ -21,14 +22,22 @@ final class PimpleContainerAdapter extends ContainerAdapter
         $this->pimple = $container ?? new Container();
     }
     
-    public function factory(string $abstract, Closure $concrete) :void
+    public function factory(string $id, Closure $service) :void
     {
-        $this->pimple[$abstract] = $this->pimple->factory($concrete);
+        try {
+            $this->pimple[$id] = $this->pimple->factory($service);
+        } catch (FrozenServiceException $e) {
+            throw \Snicco\Shared\FrozenServiceException::from($e);
+        }
     }
     
-    public function singleton(string $abstract, Closure $concrete) :void
+    public function singleton(string $id, Closure $service) :void
     {
-        $this->pimple[$abstract] = $concrete;
+        try {
+            $this->pimple[$id] = $service;
+        } catch (FrozenServiceException $e) {
+            throw \Snicco\Shared\FrozenServiceException::from($e);
+        }
     }
     
     public function get(string $id)
@@ -36,12 +45,12 @@ final class PimpleContainerAdapter extends ContainerAdapter
         return $this->pimple[$id];
     }
     
-    public function primitive(string $abstract, $value) :void
+    public function primitive(string $id, $value) :void
     {
-        $this->pimple[$abstract] = $value;
+        $this->pimple[$id] = $value;
     }
     
-    public function offsetExists($offset)
+    public function offsetExists($offset) :bool
     {
         return $this->pimple->offsetExists($offset);
     }
@@ -51,7 +60,7 @@ final class PimpleContainerAdapter extends ContainerAdapter
         $this->pimple->offsetUnset($offset);
     }
     
-    public function has(string $id)
+    public function has(string $id) :bool
     {
         return $this->pimple->offsetExists($id);
     }

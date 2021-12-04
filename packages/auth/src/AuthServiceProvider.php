@@ -460,7 +460,8 @@ class AuthServiceProvider extends ServiceProvider
     
     private function bindTwoFactorChallengeResponse()
     {
-        $this->container->singleton(AbstractTwoFactorChallengeResponse::class,
+        $this->container->singleton(
+            AbstractTwoFactorChallengeResponse::class,
             fn() => $this->container->get(Google2FaChallengeResponse::class)
         );
     }

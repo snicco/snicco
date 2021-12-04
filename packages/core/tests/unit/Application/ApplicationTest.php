@@ -364,14 +364,14 @@ class TestContainer extends ContainerAdapter
      */
     private $store;
     
-    public function factory(string $abstract, Closure $concrete) :void
+    public function factory(string $id, Closure $service) :void
     {
-        $this->store[$abstract] = $concrete;
+        $this->store[$id] = $service;
     }
     
-    public function singleton(string $abstract, Closure $concrete) :void
+    public function singleton(string $id, Closure $service) :void
     {
-        $this->store[$abstract] = $concrete;
+        $this->store[$id] = $service;
     }
     
     public function get(string $abstract)
@@ -379,9 +379,9 @@ class TestContainer extends ContainerAdapter
         return $this->store[$abstract];
     }
     
-    public function primitive(string $abstract, $value) :void
+    public function primitive(string $id, $value) :void
     {
-        $this->store[$abstract] = $value;
+        $this->store[$id] = $value;
     }
     
     public function offsetExists($offset)
