@@ -271,7 +271,6 @@ class RoutingTestCase extends UnitTest
         $this->container->instance(
             RouteRunner::class,
             new RouteRunner(
-                $this->container,
                 new Pipeline(
                     $middleware_factory,
                     $this->error_handler,

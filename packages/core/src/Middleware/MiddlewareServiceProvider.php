@@ -182,7 +182,6 @@ class MiddlewareServiceProvider extends ServiceProvider
     {
         $this->container->singleton(RouteRunner::class, function () {
             return new RouteRunner(
-                $this->container,
                 $this->container[Pipeline::class],
                 $this->container[MiddlewareStack::class],
                 $this->container[RouteActionFactory::class]
