@@ -10,6 +10,7 @@ use Snicco\Factories\RouteConditionFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Tests\View\fixtures\ViewComposers\FooComposer;
+use Tests\Codeception\shared\TestDependencies\Bar;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 
 class FactoryServiceProviderTest extends FrameworkTestCase
@@ -68,6 +69,10 @@ class FactoryServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_view_composer_namespace_can_be_configured_correctly()
     {
+        $this->app->container()->singleton(FooComposer::class, function () {
+            return new FooComposer(new Bar());
+        });
+        
         /** @var DependencyInjectionViewComposerFactory $factory */
         $factory = TestApp::resolve(DependencyInjectionViewComposerFactory::class);
         

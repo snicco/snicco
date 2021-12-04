@@ -7,6 +7,7 @@ namespace Snicco\EventDispatcher;
 use Closure;
 use Throwable;
 use Snicco\Shared\ContainerAdapter;
+use Psr\Container\NotFoundExceptionInterface;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 
@@ -26,8 +27,9 @@ final class DependencyInversionListenerFactory implements ListenerFactory
             return new Listener($listener);
         }
         try {
-            $instance = $this->container_adapter->make($listener[0]);
-            $this->container_adapter->instance(get_class($instance), $instance);
+            $instance = $this->container_adapter->get($listener[0]);
+        } catch (NotFoundExceptionInterface $e) {
+            $instance = new $listener[0];
         } catch (Throwable $e) {
             throw ListenerCreationException::becauseTheListenerWasNotInstantiatable(
                 $listener,
@@ -36,7 +38,11 @@ final class DependencyInversionListenerFactory implements ListenerFactory
             );
         }
         
-        return new Listener(fn(...$payload) => $instance->{$listener[1]}(...$payload));
+        return new Listener(
+            function (...$payload) use ($instance, $listener) {
+                return $instance->{$listener[1]}(...$payload);
+            }
+        );
     }
     
 }

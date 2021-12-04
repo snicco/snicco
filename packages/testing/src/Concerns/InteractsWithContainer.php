@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use Snicco\Http\ResponseEmitter;
+use Snicco\Http\ResponsePreparation;
 use Snicco\Testing\TestResponseEmitter;
 
 trait InteractsWithContainer
@@ -20,6 +21,7 @@ trait InteractsWithContainer
      */
     protected function swap(string $abstract, $instance)
     {
+        unset($this->app->container()[$abstract]);
         return $this->instance($abstract, $instance);
     }
     
@@ -40,7 +42,7 @@ trait InteractsWithContainer
     private function replaceBindings()
     {
         $this->app->container()->singleton(ResponseEmitter::class, function () {
-            return $this->app->resolve(TestResponseEmitter::class);
+            return new TestResponseEmitter($this->app->resolve(ResponsePreparation::class));
         });
     }
     

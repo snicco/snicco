@@ -12,16 +12,16 @@ use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 class TwoFactorConfirmationView extends Abstract2FAuthConfirmationView
 {
     
-    private ViewEngine $view_factory;
+    private ViewEngine $view_engine;
     
-    public function __construct(ViewEngine $view_factory)
+    public function __construct(ViewEngine $view_engine)
     {
-        $this->view_factory = $view_factory;
+        $this->view_engine = $view_engine;
     }
     
     public function toView(Request $request) :ViewInterface
     {
-        return $this->view_factory->make('framework.auth.two-factor-challenge')->with([
+        return $this->view_engine->make('framework.auth.two-factor-challenge')->with([
             'post_to' => $request->path(),
         ]);
     }

@@ -200,7 +200,11 @@ class Route
     
     private function compiledParameters(Request $request) :array
     {
-        return $this->routableByUrl() ? $this->captured_parameters : $this->conditionArgs($request);
+        $args = $this->routableByUrl()
+            ? $this->captured_parameters
+            : $this->conditionArgs($request);
+        
+        return array_merge([$request], $args);
     }
     
 }

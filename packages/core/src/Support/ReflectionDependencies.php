@@ -54,7 +54,7 @@ class ReflectionDependencies
         }
         
         if ( ! $this->firstParameterIsClass($params)) {
-            return $this->filterClasses($parsed_parameters, $added_instances);
+            return $this->filterClasses($parsed_parameters, []);
         }
         
         foreach ($params as $reflection_parameter) {
@@ -73,7 +73,7 @@ class ReflectionDependencies
                 continue;
             }
             
-            $route_dependencies[] = $class = $this->container->make($class_name);
+            $route_dependencies[] = $class = $this->container->get($class_name);
             $added_instances[] = get_class($class);
         }
         

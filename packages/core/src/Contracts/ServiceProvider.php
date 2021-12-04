@@ -114,7 +114,7 @@ abstract class ServiceProvider
     protected function responseFactory()
     {
         if ( ! $this->response_factory instanceof ResponseFactory) {
-            $factory = $this->container->make(ResponseFactory::class);
+            $factory = $this->container->get(ResponseFactory::class);
             $this->container->instance(ResponseFactory::class, $factory);
             $this->response_factory = $factory;
             
@@ -132,7 +132,7 @@ abstract class ServiceProvider
     protected function currentRequest()
     {
         if ( ! $this->current_request instanceof Request) {
-            $this->current_request = $this->container->make(Request::class);
+            $this->current_request = $this->container->get(Request::class);
         }
         
         return $this->current_request;

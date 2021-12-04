@@ -14,6 +14,33 @@ use Tests\Core\fixtures\Controllers\Web\ControllerWithDependencies;
 class RouteActionDependencyInjectionTest extends RoutingTestCase
 {
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->container->instance(TeamsController::class, new TeamsController());
+        $this->container->instance(Foo::class, new Foo());
+        $this->container->instance(Bar::class, new Bar());
+        $this->container->instance(
+            ControllerWithDependencies::class,
+            new ControllerWithDependencies($this->container[Foo::class])
+        );
+    }
+    
+    /** @test */
+    public function the_request_does_not_have_to_be_bound_in_the_container()
+    {
+        $this->assertFalse($this->container->has(Request::class));
+        
+        $this->createRoutes(function () {
+            $this->router->get('foo', function (Request $request) {
+                return $request->path();
+            });
+        });
+        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('/foo', $request);
+    }
+    
     /** @test */
     public function its_not_required_to_have_class_dependencies()
     {

@@ -4,11 +4,24 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware;
 
+use Snicco\Routing\Pipeline;
+use Snicco\Http\MethodField;
+use Snicco\Contracts\MagicLink;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Factories\MiddlewareFactory;
+use Snicco\Middleware\Core\RouteRunner;
+use Snicco\Factories\RouteActionFactory;
+use Snicco\Middleware\Core\ShareCookies;
+use Snicco\Middleware\Core\MethodOverride;
+use Snicco\Factories\RouteConditionFactory;
 use Psr\Http\Message\StreamFactoryInterface;
+use Snicco\Middleware\Core\RoutingMiddleware;
+use Snicco\Contracts\RouteCollectionInterface;
+use Snicco\Middleware\Core\SetRequestAttributes;
 use Snicco\Middleware\Core\OpenRedirectProtection;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
+use Snicco\Middleware\Core\AppendSpecialPathSuffix;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
@@ -30,7 +43,23 @@ class MiddlewareServiceProvider extends ServiceProvider
         
         $this->bindOpenRedirectProtection();
         
+        $this->bindValidateSignature();
+        
         $this->bindOutputBufferMiddleware();
+        
+        $this->bindMiddlewareFactory();
+        
+        $this->bindRoutingMiddleware();
+        
+        $this->bindRouteRunnerMiddleware();
+        
+        $this->bindSetRequestAttributes();
+        
+        $this->bindMethodOverride();
+        
+        $this->bindShareCookies();
+        
+        $this->bindRoutingPathSuffixMiddleware();
     }
     
     function bootstrap() :void
@@ -136,9 +165,75 @@ class MiddlewareServiceProvider extends ServiceProvider
     {
         $this->container->singleton(OutputBufferMiddleware::class, function () {
             return new OutputBufferMiddleware(
-                $this->container->make(ResponseEmitter::class),
-                $this->container->make(StreamFactoryInterface::class)
+                $this->container->get(ResponseEmitter::class),
+                $this->container->get(StreamFactoryInterface::class)
             );
+        });
+    }
+    
+    private function bindMiddlewareFactory()
+    {
+        $this->container->singleton(MiddlewareFactory::class, function () {
+            return new MiddlewareFactory($this->container);
+        });
+    }
+    
+    private function bindRouteRunnerMiddleware()
+    {
+        $this->container->singleton(RouteRunner::class, function () {
+            return new RouteRunner(
+                $this->container,
+                $this->container[Pipeline::class],
+                $this->container[MiddlewareStack::class],
+                $this->container[RouteActionFactory::class]
+            );
+        });
+    }
+    
+    private function bindSetRequestAttributes()
+    {
+        $this->container->singleton(SetRequestAttributes::class, function () {
+            return new SetRequestAttributes();
+        });
+    }
+    
+    private function bindMethodOverride()
+    {
+        $this->container->singleton(MethodOverride::class, function () {
+            return new MethodOverride(
+                $this->container[MethodField::class]
+            );
+        });
+    }
+    
+    private function bindShareCookies()
+    {
+        $this->container->singleton(ShareCookies::class, function () {
+            return new ShareCookies();
+        });
+    }
+    
+    private function bindRoutingPathSuffixMiddleware()
+    {
+        $this->container->singleton(AppendSpecialPathSuffix::class, function () {
+            return new AppendSpecialPathSuffix();
+        });
+    }
+    
+    private function bindRoutingMiddleware()
+    {
+        $this->container->singleton(RoutingMiddleware::class, function () {
+            return new RoutingMiddleware(
+                $this->container[RouteCollectionInterface::class],
+                $this->container[RouteConditionFactory::class]
+            );
+        });
+    }
+    
+    private function bindValidateSignature()
+    {
+        $this->container->singleton(ValidateSignature::class, function () {
+            return new ValidateSignature($this->container[MagicLink::class]);
         });
     }
     

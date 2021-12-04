@@ -26,6 +26,10 @@ class RouteCachingTest extends RoutingTestCase
         $this->assertFalse(file_exists($this->route_cache_file));
         
         $this->createCachedRouteCollection($this->route_cache_file);
+        
+        $this->container->singleton(Controller::class, function () {
+            return new Controller();
+        });
     }
     
     protected function tearDown() :void

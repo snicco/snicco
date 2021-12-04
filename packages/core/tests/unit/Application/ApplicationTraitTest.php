@@ -9,10 +9,13 @@ use BadMethodCallException;
 use Snicco\Application\Application;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Application\ApplicationTrait;
+use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationTraitTest extends UnitTest
 {
+    
+    use CreateContainer;
     
     private string $base_path;
     
@@ -33,18 +36,18 @@ class ApplicationTraitTest extends UnitTest
     /** @test */
     public function a_new_app_instance_can_be_created()
     {
-        $app = FooApp::make($this->base_path);
+        $app = FooApp::make($this->base_path, $this->createContainer());
         $this->assertInstanceOf(Application::class, $app);
     }
     
     /** @test */
     public function an_application_can_not_be_created_twice()
     {
-        $app = FooApp::make($this->base_path);
+        $app = FooApp::make($this->base_path, $this->createContainer());
         $this->assertInstanceOf(Application::class, $app);
         
         try {
-            $app = FooApp::make($this->base_path);
+            $app = FooApp::make($this->base_path, $this->createContainer());
             $this->fail("App created twice.");
         } catch (LogicException $e) {
             $this->assertStringStartsWith(
@@ -57,8 +60,14 @@ class ApplicationTraitTest extends UnitTest
     /** @test */
     public function multiple_app_instances_can_exists_independently()
     {
-        $this->assertInstanceOf(Application::class, $foo = FooApp::make($this->base_path));
-        $this->assertInstanceOf(Application::class, $bar = BarApp::make($this->base_path));
+        $this->assertInstanceOf(
+            Application::class,
+            $foo = FooApp::make($this->base_path, $this->createContainer())
+        );
+        $this->assertInstanceOf(
+            Application::class,
+            $bar = BarApp::make($this->base_path, $this->createContainer())
+        );
         
         $this->assertNotSame($foo, $bar);
     }
@@ -78,14 +87,14 @@ class ApplicationTraitTest extends UnitTest
         $this->expectExceptionMessage('does not exist');
         $this->expectException(BadMethodCallException::class);
         
-        FooApp::make($this->base_path);
+        FooApp::make($this->base_path, $this->createContainer());
         FooApp::badMethod();
     }
     
     /** @test */
     public function static_method_calls_get_forwarded_to_the_application_with()
     {
-        FooApp::make($this->base_path);
+        FooApp::make($this->base_path, $this->createContainer());
         FooApp::alias('application_method', fn($foo, $bar, $baz) => $foo.$bar.$baz);
         
         $this->assertSame('foobarbaz', FooApp::application_method('foo', 'bar', 'baz'));
@@ -94,7 +103,7 @@ class ApplicationTraitTest extends UnitTest
     /** @test */
     public function the_application_trait_is_bound()
     {
-        $app = FooApp::make($this->base_path);
+        $app = FooApp::make($this->base_path, $this->createContainer());
         
         $this->assertSame(FooApp::class, $app->resolve(ApplicationTrait::class));
     }
