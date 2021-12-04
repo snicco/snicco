@@ -10,8 +10,8 @@ use Snicco\Routing\Route;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Shared\ContainerAdapter;
 use Snicco\Contracts\Middleware;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Middleware\MiddlewareStack;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Factories\RouteActionFactory;
@@ -34,8 +34,6 @@ class RouteRunner extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $this->rebindRequest($request);
-        
         if ( ! $route = $request->route()) {
             return $this->delegateToWordPress($request);
         }
@@ -50,16 +48,9 @@ class RouteRunner extends Middleware
             ->then($this->runRoute($route));
     }
     
-    private function rebindRequest(Request $request)
-    {
-        $this->container->instance(Request::class, $request);
-    }
-    
     private function runRoute(Route $route) :Closure
     {
         return function (Request $request) use ($route) {
-            $this->rebindRequest($request);
-            
             return $this->response_factory->toResponse(
                 $route->run($request)
             );
@@ -77,7 +68,9 @@ class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(fn() => $this->response_factory->delegateToWP());
+            ->then(function () {
+                return $this->response_factory->delegateToWP();
+            });
     }
     
 }

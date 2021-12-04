@@ -35,6 +35,8 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         parent::setUp();
         
         $this->container = $this->createContainer();
+        $this->container->instance(Foo::class, new Foo());
+        
         $this->request = TestRequest::from('GET', 'foo');
         WP::shouldReceive('userId')->andReturn(10);
         WP::shouldReceive('isUserLoggedIn')->andReturnTrue()->byDefault();

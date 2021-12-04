@@ -7,9 +7,9 @@ namespace Snicco\Validation;
 use Snicco\Http\Psr7\Request;
 use Respect\Validation\Factory;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\Validation\Exceptions\ValidationException;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;
 
 class ValidationServiceProvider extends ServiceProvider
@@ -20,6 +20,7 @@ class ValidationServiceProvider extends ServiceProvider
         $this->bindConfig();
         $this->bindValidator();
         $this->addRuleNamespace();
+        $this->bindShareValidationMiddleware();
     }
     
     function bootstrap() :void
@@ -55,7 +56,7 @@ class ValidationServiceProvider extends ServiceProvider
     
     private function renderValidationExceptions()
     {
-        $error_handler = $this->container->make(ExceptionHandler::class);
+        $error_handler = $this->container->get(ExceptionHandler::class);
         
         if ( ! $error_handler instanceof ProductionExceptionHandler) {
             return;
@@ -73,6 +74,15 @@ class ValidationServiceProvider extends ServiceProvider
         $error_handler->renderable(
             $callback->bindTo($error_handler, ProductionExceptionHandler::class)
         );
+    }
+    
+    private function bindShareValidationMiddleware()
+    {
+        $this->container->singleton(ShareValidatorWithRequest::class, function () {
+            return new ShareValidatorWithRequest(
+                $this->container[Validator::class],
+            );
+        });
     }
     
 }

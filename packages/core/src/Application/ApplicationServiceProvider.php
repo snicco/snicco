@@ -15,6 +15,7 @@ use Snicco\Contracts\Redirector;
 use Snicco\View\GlobalViewContext;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\View\ViewComposerCollection;
+use Snicco\Support\ReflectionDependencies;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -24,6 +25,9 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $this->bindConfig();
         $this->bindAliases();
+        $this->container->singleton(ReflectionDependencies::class, function () {
+            return new ReflectionDependencies($this->container);
+        });
     }
     
     public function bootstrap() :void
@@ -52,7 +56,7 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function bindAliases()
     {
-        $app = $this->container->make(Application::class);
+        $app = $this->container->get(Application::class);
         
         $this->applicationAliases($app);
         $this->responseAliases($app);
@@ -119,13 +123,13 @@ class ApplicationServiceProvider extends ServiceProvider
         });
         $app->alias('view', function () use ($app) {
             /** @var ViewEngine $view_service */
-            $view_service = $app->container()->make(ViewEngine::class);
+            $view_service = $app->container()->get(ViewEngine::class);
             
             return call_user_func_array([$view_service, 'make'], func_get_args());
         });
         $app->alias('render', function () use ($app) {
             /** @var ViewEngine $view_service */
-            $view_service = $app->container()->make(ViewEngine::class);
+            $view_service = $app->container()->get(ViewEngine::class);
             
             $view_as_string = call_user_func_array([$view_service, 'render',], func_get_args());
             

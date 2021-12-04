@@ -87,6 +87,10 @@ class ApiRoutesTest extends FrameworkTestCase
         );
         $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
         $this->bootApp();
+        $this->swap(
+            TestApiMiddleware::class,
+            new TestApiMiddleware($this->app->resolve(ResponseFactory::class))
+        );
         
         do_action('init');
         

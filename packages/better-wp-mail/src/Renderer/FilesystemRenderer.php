@@ -6,9 +6,6 @@ namespace Snicco\Mail\Renderer;
 
 use Snicco\Mail\Contracts\MailRenderer;
 
-/**
- * @internal
- */
 final class FilesystemRenderer implements MailRenderer
 {
     

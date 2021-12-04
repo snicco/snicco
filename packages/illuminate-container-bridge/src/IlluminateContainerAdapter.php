@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Illuminate;
 
+use Closure;
 use Snicco\Shared\ContainerAdapter;
 use Illuminate\Container\Container;
 
@@ -17,14 +18,9 @@ final class IlluminateContainerAdapter implements ContainerAdapter
         $this->container = $container ?? new Container();
     }
     
-    public function make($abstract, array $parameters = [])
+    public function get($abstract)
     {
         return $this->container->make($abstract, $parameters);
-    }
-    
-    public function swapInstance($abstract, $concrete)
-    {
-        return $this->instance($abstract, $concrete);
     }
     
     public function instance($abstract, $instance)
@@ -33,12 +29,12 @@ final class IlluminateContainerAdapter implements ContainerAdapter
         return $instance;
     }
     
-    public function bind($abstract, $concrete)
+    public function factory($abstract, $concrete)
     {
         $this->container->bind($abstract, $concrete);
     }
     
-    public function singleton($abstract, $concrete)
+    public function singleton($abstract, Closure $concrete)
     {
         $this->container->singleton($abstract, $concrete);
     }

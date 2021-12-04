@@ -45,7 +45,7 @@ class SessionManagerTest extends FrameworkTestCase
         
         $this->assertNoResponse();
         
-        // Session Id not the same
+        // Session id not the same
         $this->assertNotSame($new_id = $this->session->getId(), $id_before_login);
         
         // Session cookie got sent

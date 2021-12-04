@@ -47,6 +47,7 @@ class AuthTestCase extends FrameworkTestCase
     // instance of Session:class
     protected function refreshSessionManager()
     {
+        unset($this->app[SessionManagerInterface::class]);
         $this->instance(
             SessionManagerInterface::class,
             $m = new AuthSessionManager(

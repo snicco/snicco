@@ -14,9 +14,9 @@ class TwoFactorChallengeView extends Abstract2FaChallengeView
     private ViewEngine   $view_engine;
     private UrlGenerator $url;
     
-    public function __construct(ViewEngine $view_factory, UrlGenerator $url)
+    public function __construct(ViewEngine $view_engine, UrlGenerator $url)
     {
-        $this->view_engine = $view_factory;
+        $this->view_engine = $view_engine;
         $this->url = $url;
     }
     

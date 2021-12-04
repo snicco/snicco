@@ -12,18 +12,38 @@ use Snicco\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
+use Tests\Codeception\shared\TestDependencies\Baz;
 use Tests\Core\fixtures\Middleware\MiddlewareWithDependencies;
 use Tests\Core\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
 
-/**
- * @todo Tests for parameters + dependencies.
- */
 class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
 {
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        
+        $this->container->instance(
+            MiddlewareWithDependencies::class,
+            new MiddlewareWithDependencies(new Foo(), new Bar())
+        );
+        $this->container->singleton(AdminControllerWithMiddleware::class, function () {
+            return new AdminControllerWithMiddleware(new Baz());
+        }
+        );
+    }
     
     /** @test */
     public function middleware_is_resolved_from_the_service_container()
     {
+        $this->container->instance(
+            MiddlewareWithDependencies::class,
+            new MiddlewareWithDependencies(
+                new Foo(),
+                new Bar()
+            )
+        );
+        
         $this->createRoutes(function () {
             $this->router->get('/foo', function (Request $request) {
                 return $request->body;
@@ -63,6 +83,9 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     /** @test */
     public function middleware_arguments_are_passed_after_any_class_dependencies()
     {
+        $this->container->instance(Foo::class, new Foo());
+        $this->container->instance(Bar::class, new Bar());
+        
         $this->withMiddlewareAlias([
             'm' => MiddlewareWithClassAndParamDependencies::class,
         ]);

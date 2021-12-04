@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
 use Snicco\Http\ResponseFactory;
-use Snicco\Contracts\Middleware;
-use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\EventDispatcher\Events\ResponseSent;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
@@ -107,62 +103,6 @@ class HttpKernelTest extends RoutingTestCase
         $this->event_dispatcher->assertDispatched(ResponseSent::class, function ($event) {
             return $event->response instanceof RedirectResponse;
         });
-    }
-    
-    /** @test */
-    public function the_request_is_rebound_in_the_container_before_any_application_middleware_is_run()
-    {
-        $this->createRoutes(function () {
-            //
-            
-        });
-        
-        $request = $this->adminAjaxRequest('GET', 'test_form');
-        
-        $this->assertSame('/wp-admin/admin-ajax.php', $request->routingPath());
-        
-        $this->container->instance(Request::class, $request);
-        
-        $this->assertResponse('', $request);
-        
-        /** @var Request $request */
-        $request = $this->container->make(Request::class);
-        
-        $this->assertSame('/wp-admin/admin-ajax.php/test_form', $request->routingPath());
-    }
-    
-    /** @test */
-    public function the_request_is_rebound_in_the_container_before_the_route_is_run()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return 'foo';
-            })->middleware('foobar');
-        });
-        
-        $this->withMiddlewareGroups([
-            'foobar' => [
-                ChangeRequestMiddleware::class,
-            ],
-        ]);
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        
-        $this->assertResponse('foo', $request);
-        
-        /** @var Request $request */
-        $request = $this->container->make(Request::class);
-        $this->assertSame('bar', $request->getAttribute('foo'));
-    }
-    
-}
-
-class ChangeRequestMiddleware extends Middleware
-{
-    
-    public function handle(Request $request, Delegate $next) :ResponseInterface
-    {
-        return $next($request->withAttribute('foo', 'bar'));
     }
     
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Application;
 
+use Closure;
 use Throwable;
 use Mockery as m;
 use RuntimeException;
@@ -89,6 +90,10 @@ class ApplicationTest extends UnitTest
             $this->assertStringStartsWith('Your app.key config value is', $exception->getMessage());
         }
         // set this to disable undefined constant WP_CONTENT_DIR;
+        
+        $this->container = $this->createContainer();
+        $app = $this->newApplication();
+        
         $app->config()->set('app.exception_handling', false);
         $app->config()->set('app.key', $key = Application::generateKey());
         $app->boot();
@@ -351,64 +356,47 @@ class ApplicationTest extends UnitTest
     
 }
 
-class TestContainer implements ContainerAdapter
+class TestContainer extends ContainerAdapter
 {
     
-    private array $bindings = [];
+    /**
+     * @var array
+     */
+    private $store;
     
-    public function make($abstract, array $parameters = [])
+    public function factory(string $abstract, Closure $concrete) :void
     {
-        return $this->bindings[$abstract];
+        $this->store[$abstract] = $concrete;
     }
     
-    public function swapInstance($abstract, $concrete)
+    public function singleton(string $abstract, Closure $concrete) :void
     {
-        $this->bindings[$abstract] = $concrete;
+        $this->store[$abstract] = $concrete;
     }
     
-    public function instance($abstract, $instance)
+    public function get(string $abstract)
     {
-        $this->bindings[$abstract] = $instance;
+        return $this->store[$abstract];
     }
     
-    public function call($callable, array $parameters = [])
+    public function primitive(string $abstract, $value) :void
     {
-        //
-    }
-    
-    public function bind($abstract, $concrete)
-    {
-        $this->bindings[$abstract] = $concrete;
-    }
-    
-    public function singleton($abstract, $concrete)
-    {
-        $this->bindings[$abstract] = $concrete;
+        $this->store[$abstract] = $value;
     }
     
     public function offsetExists($offset)
     {
-        return isset($this->bindings[$offset]);
-    }
-    
-    public function offsetGet($offset)
-    {
-        return $this->bindings[$offset];
-    }
-    
-    public function offsetSet($offset, $value)
-    {
-        $this->bindings[$offset] = $value;
+        return isset($this->store[$offset]);
     }
     
     public function offsetUnset($offset)
     {
-        unset($this->bindings[$offset]);
+        unset($this->store[$offset]);
     }
     
-    public function implementation()
+    public function has(string $id)
     {
-        return $this;
+        return isset($this->store[$id]);
     }
     
 }

@@ -38,7 +38,7 @@ class BladeServiceProvider extends ServiceProvider
         ($blade = (new BladeStandalone(
             $cache_dir,
             $this->config['view.paths'],
-            $this->container->make(ViewComposerCollection::class)
+            $this->container->get(ViewComposerCollection::class)
         )))->boostrap();
         return $blade;
     }
@@ -47,14 +47,14 @@ class BladeServiceProvider extends ServiceProvider
     {
         if ($this->sessionEnabled()) {
             Blade::directive('csrf', function () {
-                $app = $this->container->make(ApplicationTrait::class);
+                $app = $this->container->get(ApplicationTrait::class);
                 return "<?php echo {$app}::csrfField() ?>";
             });
         }
         
         Blade::directive('method', function ($method) {
             $method = str_replace("'", '', $method);
-            $app = $this->container->make(ApplicationTrait::class);
+            $app = $this->container->get(ApplicationTrait::class);
             return "<?php echo {$app}::methodField('$method') ?>";
         });
     }

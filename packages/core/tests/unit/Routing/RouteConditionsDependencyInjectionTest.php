@@ -13,6 +13,11 @@ class RouteConditionsDependencyInjectionTest extends RoutingTestCase
     /** @test */
     public function a_condition_gets_dependencies_injected_after_the_passed_arguments()
     {
+        $this->container->instance(
+            \Tests\Codeception\shared\TestDependencies\Foo::class,
+            new \Tests\Codeception\shared\TestDependencies\Foo()
+        );
+        
         $this->createRoutes(function () {
             $this->router->get('*', function () {
                 return 'foo';

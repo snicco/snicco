@@ -9,6 +9,7 @@ use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\Conditions\TrueCondition;
 use Tests\Core\fixtures\Conditions\FalseCondition;
 use Tests\Core\fixtures\Conditions\UniqueCondition;
+use Tests\Core\fixtures\Controllers\Web\RoutingController;
 
 class RouteGroupsTest extends RoutingTestCase
 {
@@ -77,6 +78,10 @@ class RouteGroupsTest extends RoutingTestCase
     /** @test */
     public function the_group_namespace_is_applied_to_child_routes()
     {
+        $this->container->singleton(RoutingController::class, function () {
+            return new RoutingController();
+        });
+        
         $this->createRoutes(function () {
             $this->router
                 ->namespace(self::namespace)
@@ -265,6 +270,9 @@ class RouteGroupsTest extends RoutingTestCase
     /** @test */
     public function the_namespace_is_always_overwritten_by_child_routes()
     {
+        $this->container->singleton(RoutingController::class, function () {
+            return new RoutingController();
+        });
         $this->createRoutes(function () {
             $this->router
                 ->namespace('Tests\FalseNamespace')

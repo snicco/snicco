@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Factories;
 
 use Snicco\Routing\ClosureAction;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Routing\ControllerAction;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Factories\RouteActionFactory;
@@ -18,6 +19,11 @@ class RouteActionFactoryTest extends UnitTest
     
     private RouteActionFactory $factory;
     
+    /**
+     * @var ContainerAdapter
+     */
+    private $container;
+    
     protected function setUp() :void
     {
         parent::setUp();
@@ -26,7 +32,14 @@ class RouteActionFactoryTest extends UnitTest
             'Tests\\Core\\fixtures\\Controllers\\Web',
             'Tests\\Core\\fixtures\\Controllers\\Admin',
             'Tests\\Core\\fixtures\\Controllers\\Ajax',
-        ], $this->createContainer());
+        ], $this->container = $this->createContainer());
+        
+        $this->container->singleton(WebController::class, function () {
+            return new WebController();
+        });
+        $this->container->singleton(InvokableController::class, function () {
+            return new InvokableController();
+        });
     }
     
     /** @test */

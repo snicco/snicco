@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\integration\Routing;
 
 use Snicco\Routing\Router;
+use Snicco\Routing\Pipeline;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\RouteRegistrar;
 use Snicco\Contracts\RouteUrlMatcher;
@@ -206,6 +207,20 @@ class RoutingServiceProviderTest extends FrameworkTestCase
         $routes = TestApp::config('routing.definitions');
         
         $this->assertSame(PACKAGES_DIR.DS.'core'.DS.'routes', end($routes));
+    }
+    
+    /** @test */
+    public function the_routing_pipeline_is_not_a_singleton()
+    {
+        $this->bootApp();
+        
+        $pipeline1 = $this->app->resolve(Pipeline::class);
+        $pipeline2 = $this->app->resolve(Pipeline::class);
+        
+        $this->assertInstanceOf(Pipeline::class, $pipeline1);
+        $this->assertInstanceOf(Pipeline::class, $pipeline2);
+        
+        $this->assertNotSame($pipeline1, $pipeline2);
     }
     
 }

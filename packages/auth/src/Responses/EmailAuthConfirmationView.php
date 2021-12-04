@@ -13,19 +13,19 @@ use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 class EmailAuthConfirmationView extends AbstractEmailAuthConfirmationView
 {
     
-    private ViewEngine   $view_factory;
+    private ViewEngine   $view_engine;
     private UrlGenerator $url;
     
-    public function __construct(ViewEngine $view_factory, UrlGenerator $url)
+    public function __construct(ViewEngine $view_engine, UrlGenerator $url)
     {
-        $this->view_factory = $view_factory;
+        $this->view_engine = $view_engine;
         $this->url = $url;
     }
     
     public function toView(Request $request) :ViewInterface
     {
-        return $this->view_factory->make('framework.auth.confirm-with-email')
-                                  ->with('post_to', $this->url->toRoute('auth.confirm.email'));
+        return $this->view_engine->make('framework.auth.confirm-with-email')
+                                 ->with('post_to', $this->url->toRoute('auth.confirm.email'));
     }
     
 }

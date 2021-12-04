@@ -60,9 +60,11 @@ class DependencyInjectionViewComposerFactory implements ViewComposerFactory
     
     private function composerClass($composer) :ViewComposer
     {
-        $composer = $this->container->make($composer);
-        $this->container->instance(get_class($composer), $composer);
-        return $composer;
+        $instance = $this->container->get($composer);
+        if ( ! $this->container->has($composer)) {
+            $this->container->instance($composer, $instance);
+        }
+        return $instance;
     }
     
 }
