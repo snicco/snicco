@@ -19,6 +19,8 @@
     }
   },
   "autoload-dev": {
-    "Tests\\IllumianteContainerBridge\\": "tests"
+    "psr-4": {
+      "Tests\\IllumianteContainerBridge\\": "tests"
+    }
   }
 }

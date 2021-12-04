@@ -28,6 +28,7 @@
         "phpunit/phpunit": "^9.5",
         "pimple/pimple": "^3.0.0",
         "pragmarx/google2fa": "8.0.0",
+        "psr/container": "^1.0.0",
         "psr/http-message": "^1.0.0",
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.0.0",
@@ -75,7 +76,6 @@
         }
     },
     "autoload-dev": {
-        "Tests\\IllumianteContainerBridge\\": "tests",
         "psr-4": {
             "Tests\\Auth\\": "packages/auth/tests",
             "Tests\\BetterWPHooks\\": "packages/better-wp-hooks/tests",
@@ -88,6 +88,7 @@
             "Tests\\Database\\": "packages/eloquent/tests",
             "Tests\\DefuseEncryption\\": "packages/defuse-php-encryption-bundle/tests",
             "Tests\\EloquentBundle\\": "packages/eloquent-bundle/tests",
+            "Tests\\IllumianteContainerBridge\\": "packages/illuminate-container-bridge/tests",
             "Tests\\PimpleContainer\\": "packages/pimple-container-bridge/tests",
             "Tests\\Session\\": "packages/session/tests",
             "Tests\\Testing\\": "packages/testing/tests",
