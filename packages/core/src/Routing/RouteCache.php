@@ -14,7 +14,7 @@ class RouteCache
     {
         $this->cache_file = $cache_file;
         
-        if ($cache_file && file_exists($cache_file)) {
+        if ($cache_file && is_file($cache_file)) {
             $this->cache = require $cache_file;
         }
         else {
