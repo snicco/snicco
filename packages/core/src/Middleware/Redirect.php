@@ -23,7 +23,7 @@ class Redirect extends Middleware
             return;
         }
         
-        if ( ! file_exists($cache_file)) {
+        if ( ! is_file($cache_file)) {
             $this->redirects = $this->normalize($redirects);
             file_put_contents($cache_file, json_encode($this->redirects));
             
