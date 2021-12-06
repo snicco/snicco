@@ -7,16 +7,16 @@ namespace Tests\View\integration;
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
 use Codeception\TestCase\WPTestCase;
+use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\View\Implementations\PHPView;
 use Snicco\View\Contracts\ViewInterface;
+use Tests\Core\fixtures\TestDoubles\TestView;
 use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Implementations\PHPViewFactory;
 use Snicco\View\Exceptions\ViewNotFoundException;
 use Snicco\View\Exceptions\ViewRenderingException;
 use Snicco\View\Implementations\NewableInstanceViewComposerFactory;
-
-use const VIEW_TEST_DIR;
 
 class ViewEngineTest extends WPTestCase
 {
@@ -52,12 +52,13 @@ class ViewEngineTest extends WPTestCase
             new NewableInstanceViewComposerFactory(),
             $this->global_view_context
         );
-        $this->view_engine = new ViewEngine(
-            new PHPViewFactory(
-                new PHPViewFinder([$this->view_dir]),
-                $this->composers
-            )
+        
+        $this->php_view_factory = new PHPViewFactory(
+            new PHPViewFinder([$this->view_dir]),
+            $this->composers
         );
+        
+        $this->view_engine = new ViewEngine($this->php_view_factory);
     }
     
     protected function tearDown() :void
@@ -95,7 +96,9 @@ class ViewEngineTest extends WPTestCase
     /** @test */
     public function non_existing_views_throw_an_exception()
     {
-        $this->expectExceptionMessage('Non of the provided views exists. Tried: [bogus.php]');
+        $this->expectExceptionMessage(
+            'None of the used view factories supports any of the views [bogus.php]'
+        );
         $this->expectException(ViewNotFoundException::class);
         
         $this->view_engine->make('bogus.php');
@@ -293,6 +296,52 @@ class ViewEngineTest extends WPTestCase
         $this->assertSame('Hello World', $view->toString());
         
         $this->assertSame($view, $this->view_engine->rootView());
+    }
+    
+    /** @test */
+    public function multiple_view_factories_can_be_used_together()
+    {
+        $view_engine = new ViewEngine($this->php_view_factory, new TestTwigViewFactory());
+        
+        $php_view = $view_engine->make('view');
+        $this->assertInstanceOf(PHPView::class, $php_view);
+        
+        $twig_view = $view_engine->make('test.twig');
+        $this->assertInstanceOf(TestView::class, $twig_view);
+        
+        $this->assertInstanceOf(PHPView::class, $view_engine->make(['view', 'test.twig']));
+        
+        // Since the php view is passed It's still rendered.
+        $this->assertInstanceOf(PHPView::class, $view_engine->make(['test.twig', 'view']));
+    }
+    
+    /** @test */
+    public function test_exception_when_no_view_factory_can_render_a_view()
+    {
+        $view_engine = new ViewEngine($this->php_view_factory, new TestTwigViewFactory());
+        
+        try {
+            $view_engine->make(['foo.xml', 'bar.xml']);
+        } catch (ViewNotFoundException $e) {
+            $this->assertStringStartsWith(
+                'None of the used view factories supports any of the views [foo.xml,bar.xml]',
+                $e->getMessage()
+            );
+        }
+    }
+    
+}
+
+class TestTwigViewFactory implements ViewFactory
+{
+    
+    public function make(array $views) :ViewInterface
+    {
+        $view = $views[0];
+        if ( ! strpos($view, 'twig')) {
+            throw new ViewNotFoundException();
+        }
+        return new TestView($views[0]);
     }
     
 }
