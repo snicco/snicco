@@ -58,4 +58,16 @@ class BladeViewTest extends BladeTestCase
         $this->assertViewContent('hello calvin', $html);
     }
     
+    /** @test */
+    public function a_blade_view_can_be_created_from_an_absolute_path()
+    {
+        $path = realpath($this->blade_views.'/foo.blade.php');
+        
+        $view = $this->view_engine->make($path);
+        
+        $this->assertInstanceOf(BladeView::class, $view);
+        $this->assertInstanceOf(ViewInterface::class, $view);
+        $this->assertViewContent('FOO', $view->toString());
+    }
+    
 }

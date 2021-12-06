@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Blade;
 
 use Snicco\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\View\ViewName;
 use InvalidArgumentException;
 use Snicco\View\Contracts\ViewFactory;
@@ -23,9 +24,15 @@ class BladeViewFactory implements ViewFactory
      */
     private $view_factory;
     
-    public function __construct(IlluminateViewFactory $view_factory)
+    /**
+     * @var array
+     */
+    private $view_directories;
+    
+    public function __construct(IlluminateViewFactory $view_factory, array $view_directories)
     {
         $this->view_factory = $view_factory;
+        $this->view_directories = $view_directories;
     }
     
     /**
@@ -38,7 +45,7 @@ class BladeViewFactory implements ViewFactory
     {
         try {
             $view = $this->view_factory->first(
-                $this->normalizeNames($views)
+                $this->normalizeNames((array) $views)
             );
             
             return new BladeView($view);
@@ -53,18 +60,34 @@ class BladeViewFactory implements ViewFactory
         }
     }
     
-    /**
-     * Normalize a view name.
-     *
-     * @param  string|string[]  $names
-     *
-     * @return array
-     */
-    private function normalizeNames($names) :array
+    private function normalizeNames(array $names) :array
     {
+        $names = array_map(function ($path) {
+            if ( ! is_file($path)) {
+                return $path;
+            }
+            return $this->convertAbsolutePathToName($path);
+        }, $names);
+        
         return array_map(function ($name) {
             return ViewName::normalize($name);
-        }, Arr::wrap($names));
+        }, $names);
+    }
+    
+    // We need to do this because Blade only supports views by name relative to one of the view directories.
+    private function convertAbsolutePathToName($path) :string
+    {
+        foreach ($this->view_directories as $view_directory) {
+            if (Str::startsWith($path, $view_directory)) {
+                return (string) Str::of($path)
+                                   ->after($view_directory)
+                                   ->replace('/', '.')
+                                   ->ltrim('.')
+                                   ->before('.blade');
+            }
+        }
+        
+        return $path;
     }
     
 }
