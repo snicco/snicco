@@ -7,7 +7,6 @@ namespace Snicco\Auth\Controllers;
 use WP_User;
 use Snicco\Support\WP;
 use Snicco\Http\Controller;
-use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
@@ -42,7 +41,7 @@ class ForgotPasswordController extends Controller
         ]);
     }
     
-    public function store(Request $request, MailBuilder $mail) :RedirectResponse
+    public function store(Request $request) :RedirectResponse
     {
         $validated = $request->validate([
             'login' => v::notEmpty(),
@@ -53,8 +52,8 @@ class ForgotPasswordController extends Controller
         if ($user instanceof WP_User) {
             $magic_link = $this->generateSignedUrl($user);
             
-            $mail->to($user->user_email)
-                 ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
+            $this->mail_builder->to($user->user_email)
+                               ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
         }
         else {
             $this->dispatcher->dispatch(

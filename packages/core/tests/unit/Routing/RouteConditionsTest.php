@@ -310,6 +310,10 @@ class RouteConditionsTest extends RoutingTestCase
     /** @test */
     public function conditions_can_be_resolved_using_the_service_container()
     {
+        $this->container->instance(
+            \Tests\Codeception\shared\TestDependencies\Foo::class,
+            new \Tests\Codeception\shared\TestDependencies\Foo()
+        );
         $this->createRoutes(function () {
             $this->router
                 ->where('dependency_condition', true)

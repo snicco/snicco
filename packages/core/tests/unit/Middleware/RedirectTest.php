@@ -79,7 +79,7 @@ class RedirectTest extends MiddlewareTestCase
     public function the_redirect_map_can_create_a_cache_file()
     {
         $file = __DIR__.DIRECTORY_SEPARATOR.'redirects.json';
-        $this->assertFalse(file_exists($file));
+        $this->assertFalse(is_file($file));
         
         $middleware = $this->getMiddleware([
             301 => [
@@ -97,7 +97,7 @@ class RedirectTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         $response->assertRedirect('/bar', 301);
         
-        $this->assertTrue(file_exists($file), 'Redirect map not cached.');
+        $this->assertTrue(is_file($file), 'Redirect map not cached.');
     }
     
     /** @test */
@@ -114,7 +114,7 @@ class RedirectTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         $response->assertRedirect('/bar', 301);
         
-        $this->assertTrue(file_exists($file), 'Redirect map not cached.');
+        $this->assertTrue(is_file($file), 'Redirect map not cached.');
         
         $middleware = $this->getMiddleware([
             301 => [

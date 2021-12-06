@@ -13,11 +13,14 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Tests\Codeception\shared\helpers\CreateContainer;
 
 use function add_filter;
 
 class FrameworkTestCase extends BaseTestCase
 {
+    
+    use CreateContainer;
     
     protected array $mail_data;
     
@@ -42,7 +45,7 @@ class FrameworkTestCase extends BaseTestCase
     
     protected function createApplication() :Application
     {
-        $app = TestApp::make(__DIR__.'/TestApp');
+        $app = TestApp::make(__DIR__.'/TestApp', $this->createContainer());
         $f = new Psr17Factory();
         $app->setServerRequestFactory($f);
         $app->setStreamFactory($f);

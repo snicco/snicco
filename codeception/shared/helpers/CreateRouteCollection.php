@@ -25,6 +25,7 @@ trait CreateRouteCollection
     {
         $this->routes = $this->createRouteCollection($cache_file);
         $this->container->instance(RouteCollectionInterface::class, $this->routes);
+        unset($this->container[RouteUrlGenerator::class]);
         $this->container->instance(
             RouteUrlGenerator::class,
             new FastRouteUrlGenerator($this->routes)

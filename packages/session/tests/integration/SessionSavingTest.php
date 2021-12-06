@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Session\integration;
 
-use Snicco\Session\SessionManager;
 use Snicco\Session\SessionServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 class SessionSavingTest extends FrameworkTestCase
 {
-    
-    private SessionManager $manager;
     
     public function setUp() :void
     {
@@ -19,9 +16,6 @@ class SessionSavingTest extends FrameworkTestCase
             $this->withSessionCookie();
             $this->bootApp();
             $this->withRequest($this->frontendRequest('GET', '/delegate'));
-        });
-        $this->afterApplicationBooted(function () {
-            $this->manager = $this->app->resolve(SessionManager::class);
         });
         
         parent::setUp();

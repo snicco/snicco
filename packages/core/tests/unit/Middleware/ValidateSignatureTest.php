@@ -163,6 +163,7 @@ class ValidateSignatureTest extends MiddlewareTestCase
         $url = $this->url->signed('foo');
         $request = $this->frontendRequest('GET', $url);
         $c = $this->createContainer();
+        $c->instance(ShareCookies::class, new ShareCookies());
         
         $pipeline = new Pipeline(
             new MiddlewareFactory($c),
@@ -211,6 +212,7 @@ class ValidateSignatureTest extends MiddlewareTestCase
         $url = $this->url->signed('foo', 500);
         $request = $this->frontendRequest('GET', $url);
         $c = $this->createContainer();
+        $c->instance(ShareCookies::class, new ShareCookies());
         
         $pipeline = new Pipeline(
             new MiddlewareFactory($c),

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Snicco\Http\Controller;
-use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Responsable;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
+use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 
 class RegistrationLinkController extends Controller
@@ -27,7 +27,7 @@ class RegistrationLinkController extends Controller
         return $response->forRequest($request);
     }
     
-    public function store(Request $request, MailBuilder $mail_builder) :RedirectResponse
+    public function store(Request $request, MailBuilderInterface $mail_builder) :RedirectResponse
     {
         $email = $request->input('email', '');
         

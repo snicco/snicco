@@ -31,7 +31,8 @@ class DatabaseServiceProvider extends ServiceProvider
         
         );
         $resolver = $eloquent->bootstrap();
-        $this->container->singleton(ConnectionResolverInterface::class,
+        $this->container->singleton(
+            ConnectionResolverInterface::class,
             function () use ($resolver) {
                 return $resolver;
             }

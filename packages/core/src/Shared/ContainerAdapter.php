@@ -6,60 +6,72 @@ namespace Snicco\Shared;
 
 use Closure;
 use ArrayAccess;
+use Psr\Container\ContainerInterface;
 
-interface ContainerAdapter extends ArrayAccess
+abstract class ContainerAdapter implements ArrayAccess, ContainerInterface
 {
-    
-    /**
-     * Resolves the given type from the container.
-     *
-     * @param  string  $abstract
-     * @param  array  $parameters
-     *
-     * @return mixed
-     */
-    public function make(string $abstract, array $parameters = []);
-    
-    /**
-     * Hotswap an underlying Container Instance
-     *
-     * @param $abstract
-     * @param $concrete
-     *
-     * @return mixed
-     */
-    public function swapInstance($abstract, $concrete);
-    
-    /**
-     * Register an existing instance as shared in the container.
-     *
-     * @param  string  $abstract
-     * @param  mixed  $instance
-     *
-     * @return mixed
-     */
-    public function instance(string $abstract, $instance);
     
     /**
      * Register a binding with the container.
      * This will not be a singleton but a new object everytime it gets resolved.
      *
-     * @param  string  $abstract
-     * @param  Closure|string  $concrete
+     * @param  string  $id
+     * @param  Closure  $service
      *
-     * @return void
+     * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
      */
-    public function bind(string $abstract, $concrete);
+    abstract public function factory(string $id, Closure $service) :void;
     
     /**
      * Register a shared binding in the container.
      * This object will be a singleton always
      *
-     * @param  string  $abstract
-     * @param  Closure|string  $concrete
+     * @param  string  $id
+     * @param  Closure  $service  When trying to overwrite an already resolved singleton.
      *
-     * @return void
+     * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
      */
-    public function singleton(string $abstract, $concrete);
+    abstract public function singleton(string $id, Closure $service) :void;
+    
+    /**
+     * @param  string  $id
+     * @param  array|string|int|float|bool  $value
+     */
+    abstract public function primitive(string $id, $value) :void;
+    
+    /**
+     * Register an existing instance as shared in the container.
+     *
+     * @param  string  $id
+     * @param  object  $service  When trying to overwrite an already resolved singleton.
+     *
+     * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
+     */
+    public function instance(string $id, object $service) :void
+    {
+        $this->singleton($id, function () use ($service) {
+            return $service;
+        });
+    }
+    
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+    
+    public function offsetSet($offset, $value)
+    {
+        if ($value instanceof Closure) {
+            $this->singleton($offset, $value);
+            return;
+        }
+        
+        if (is_object($value)) {
+            $this->instance($offset, $value);
+            return;
+        }
+        
+        $this->primitive($offset, $value);
+    }
     
 }

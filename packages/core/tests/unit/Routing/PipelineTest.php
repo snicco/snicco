@@ -111,6 +111,11 @@ class PipelineTest extends RoutingTestCase
     /** @test */
     public function middleware_can_be_resolved_from_the_container()
     {
+        $this->container->instance(
+            MiddlewareDependency::class,
+            new MiddlewareDependency(new \Tests\Codeception\shared\TestDependencies\Bar())
+        );
+        
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareDependency::class])

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\MailBundle;
 
 use Snicco\Support\WP;
+use Snicco\View\ViewEngine;
 use Snicco\Mail\MailBuilder;
 use Snicco\Application\Config;
 use Snicco\Mail\Contracts\Mailer;
@@ -51,7 +52,7 @@ class MailServiceProvider extends ServiceProvider
     
     private function bindConfig()
     {
-        $this->app->alias('mail', MailBuilder::class);
+        $this->app->alias('mail', MailBuilderInterface::class);
         $this->config->extendIfEmpty(
             'mail.from',
             fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
@@ -61,7 +62,14 @@ class MailServiceProvider extends ServiceProvider
     
     private function bindMailBuilder()
     {
-        $this->container->singleton(MailBuilderInterface::class, MailBuilder::class);
+        $this->container->singleton(MailBuilderInterface::class, function () {
+            return new MailBuilder(
+                $this->container[Mailer::class],
+                $this->container[MailRenderer::class],
+                $this->container[MailEventDispatcher::class],
+                $this->container[MailDefaults::class],
+            );
+        });
     }
     
     private function bindMailDefaults()
@@ -89,7 +97,7 @@ class MailServiceProvider extends ServiceProvider
     {
         $this->container->singleton(MailRenderer::class, function () {
             return new AggregateRenderer(
-                $this->container->make(ViewBasedMailRenderer::class),
+                new ViewBasedMailRenderer($this->container[ViewEngine::class]),
                 new FilesystemRenderer()
             );
         });

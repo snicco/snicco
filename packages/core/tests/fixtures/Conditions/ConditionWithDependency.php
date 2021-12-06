@@ -26,7 +26,7 @@ class ConditionWithDependency implements Condition
             return false;
         }
         
-        return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
+        return $this->make_it_pass === true;
     }
     
     public function getArguments(Request $request) :array

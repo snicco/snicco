@@ -8,6 +8,7 @@ use Psr\Log\NullLogger;
 use Whoops\Run as Whoops;
 use Whoops\RunInterface;
 use Snicco\Http\Delegate;
+use Snicco\View\ViewEngine;
 use Psr\Log\LoggerInterface;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\ResponseFactory;
@@ -26,6 +27,7 @@ class ExceptionServiceProvider extends ServiceProvider
         $this->bindErrorHandler();
         $this->bindPsr3Logger();
         $this->bindWhoops();
+        $this->bindHtmlRenderer();
     }
     
     public function bootstrap() :void
@@ -58,8 +60,8 @@ class ExceptionServiceProvider extends ServiceProvider
             
             return new ProductionExceptionHandler(
                 $this->container,
-                $this->container->make(LoggerInterface::class),
-                $this->container->make(ResponseFactory::class),
+                $this->container->get(LoggerInterface::class),
+                $this->container->get(ResponseFactory::class),
                 $with_whoops ? $this->container[RunInterface::class] : null
             );
         });
@@ -96,6 +98,15 @@ class ExceptionServiceProvider extends ServiceProvider
         }
         
         return $this->app[HandlerInterface::class] = WhoopsHandler::get($this->app);
+    }
+    
+    private function bindHtmlRenderer()
+    {
+        $this->container->singleton(HtmlErrorRenderer::class, function () {
+            return new HtmlErrorRenderer(
+                $this->container[ViewEngine::class],
+            );
+        });
     }
     
 }

@@ -39,6 +39,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
     /** @test */
     public function the_route_cant_be_accessed_authenticated()
     {
+        $this->withoutExceptionHandling();
         $this->actingAs($this->createAdmin())->bootApp();
         
         $response = $this->get('/auth/register');
@@ -57,8 +58,11 @@ class RegistrationLinkControllerTest extends AuthTestCase
     /** @test */
     public function a_link_cant_be_requested_with_invalid_email()
     {
-        $response =
-            $this->post('/auth/register', ['email' => 'bogus.de'], ['referer' => '/auth/register']);
+        $response = $this->post(
+            '/auth/register',
+            ['email' => 'bogus.de'],
+            ['referer' => '/auth/register']
+        );
         $response->assertRedirect('/auth/register')->assertSessionHasErrors('email');
     }
     

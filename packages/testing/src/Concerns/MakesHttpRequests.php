@@ -486,7 +486,7 @@ trait MakesHttpRequests
         $request = $this->addCookies($request);
         $request = $this->addHeaders($request, $headers);
         $request = $this->addAttributes($request);
-        $this->instance(Request::class, $request);
+        $this->swap(Request::class, $request);
         return $request;
     }
     

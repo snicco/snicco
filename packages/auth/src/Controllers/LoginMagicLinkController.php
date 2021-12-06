@@ -6,7 +6,6 @@ namespace Snicco\Auth\Controllers;
 
 use WP_User;
 use Snicco\Http\Controller;
-use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
@@ -29,7 +28,7 @@ class LoginMagicLinkController extends Controller
         $this->dispatcher = $dispatcher;
     }
     
-    public function store(Request $request, MailBuilder $mail_builder) :Response
+    public function store(Request $request) :Response
     {
         $user = $this->getUserByLogin($login = $request->post('login', ''));
         
@@ -45,8 +44,8 @@ class LoginMagicLinkController extends Controller
                 $redirect_to
             );
             
-            $mail_builder->to($user)
-                         ->send(new MagicLinkLoginMail($user, $magic_link, $expiration));
+            $this->mail_builder->to($user)
+                               ->send(new MagicLinkLoginMail($user, $magic_link, $expiration));
         }
         
         return $request->isExpectingJson()

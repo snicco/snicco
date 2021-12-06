@@ -19,7 +19,6 @@ use Snicco\Middleware\Core\SetRequestAttributes;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
-use Snicco\Middleware\Core\SubstituteRouteBindings;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class HttpKernel
@@ -35,7 +34,6 @@ class HttpKernel
         AppendSpecialPathSuffix::class,
         OutputBufferMiddleware::class,
         RoutingMiddleware::class,
-        SubstituteRouteBindings::class,
         RouteRunner::class,
     ];
     

@@ -21,6 +21,7 @@ use Snicco\Shared\ContainerAdapter;
 use Snicco\Application\Application;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\ExceptionHandling\WhoopsHandler;
+use Snicco\ExceptionHandling\HtmlErrorRenderer;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\View\Exceptions\ViewRenderingException;
 use Tests\Core\fixtures\TestDoubles\TestViewFactory;
@@ -47,7 +48,11 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $this->container = $this->createContainer();
         $this->request = TestRequest::from('GET', 'foo');
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        $this->container->instance(ViewEngine::class, new ViewEngine(new TestViewFactory()));
+        $this->container->instance(
+            ViewEngine::class,
+            $engine = new ViewEngine(new TestViewFactory())
+        );
+        $this->container->instance(HtmlErrorRenderer::class, new HtmlErrorRenderer($engine));
     }
     
     protected function tearDown() :void
@@ -236,7 +241,8 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $view_factory->shouldReceive('make')->once()->andThrow(
             $view_exception = new ViewRenderingException()
         );
-        $this->container->instance(ViewEngine::class, new ViewEngine($view_factory));
+        $this->container->instance(ViewEngine::class, $e = new ViewEngine($view_factory));
+        $this->container->instance(HtmlErrorRenderer::class, new HtmlErrorRenderer($e));
         
         $handler = $this->newErrorHandler();
         

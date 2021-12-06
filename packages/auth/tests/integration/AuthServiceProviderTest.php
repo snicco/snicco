@@ -221,6 +221,7 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function wp_login_php_is_a_permanent_redirected_for_all_requests_expect_personal_privacy_deletions()
     {
+        $this->withoutExceptionHandling();
         $this->default_server_variables = [
             'REQUEST_METHOD' => 'GET',
             'SCRIPT_NAME' => 'wp-login.php',
@@ -488,7 +489,7 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->bootApp();
         $this->assertInstanceOf(
             Fail2Ban::class,
-            $this->app->container()->make(Fail2Ban::class)
+            $this->app->container()->get(Fail2Ban::class)
         );
     }
     

@@ -351,6 +351,7 @@ abstract class TestCase extends WPTestCase
     protected function withoutExceptionHandling() :TestCase
     {
         $this->config->set('app.exception_handling', false);
+        unset($this->app[ExceptionHandler::class]);
         $this->instance(ExceptionHandler::class, new NullExceptionHandler());
         
         return $this;
