@@ -8,14 +8,13 @@ use Psr\Log\NullLogger;
 use Whoops\Run as Whoops;
 use Whoops\RunInterface;
 use Snicco\Http\Delegate;
-use Snicco\View\ViewEngine;
 use Psr\Log\LoggerInterface;
 use Snicco\Routing\Pipeline;
-use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\Middleware;
 use Illuminate\Container\Container;
 use Whoops\Handler\HandlerInterface;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Contracts\ExceptionHandler;
 
 class ExceptionServiceProvider extends ServiceProvider
@@ -102,10 +101,8 @@ class ExceptionServiceProvider extends ServiceProvider
     
     private function bindHtmlRenderer()
     {
-        $this->container->singleton(HtmlErrorRenderer::class, function () {
-            return new HtmlErrorRenderer(
-                $this->container[ViewEngine::class],
-            );
+        $this->container->singleton(HtmlErrorRender::class, function () {
+            return new PlainTextHtmlErrorRenderer();
         });
     }
     

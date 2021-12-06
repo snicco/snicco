@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 
 class Google2FaChallengeResponse extends AbstractTwoFactorChallengeResponse
 {
     
-    private ResponseFactory $response_factory;
+    /**
+     * @var ResponseFactory
+     */
+    private $response_factory;
     
     public function __construct(ResponseFactory $response_factory)
     {

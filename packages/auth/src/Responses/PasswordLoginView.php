@@ -47,7 +47,7 @@ class PasswordLoginView extends AbstractLoginView
                                              ? $this->url->toRoute('auth.register')
                                              : null,
                                      ], fn($value) => $value !== null),
-                                 );
+                                 )->toString();
     }
     
 }

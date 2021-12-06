@@ -7,21 +7,21 @@ namespace Snicco\Testing;
 use Closure;
 use RuntimeException;
 use Snicco\Http\Delegate;
-use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Middleware;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Http\ResponseFactory;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Http\StatelessRedirector;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Testing\TestDoubles\TestMagicLink;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
+use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 /**
  * Use this test to unit test your middlewares
@@ -40,18 +40,22 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
         
-        $this->response_factory = new ResponseFactory(
-            $this->viewEngine(),
-            $this->psrResponseFactory(),
-            $this->psrStreamFactory(),
-            new StatelessRedirector($this->url = $this->urlGenerator(), $this->psrResponseFactory())
-        );
+        $this->response_factory = $this->responseFactory();
         
         $this->next_middleware_response = fn(Response $response) => $response;
         $GLOBALS['test']['_next_middleware_called'] = false;
     }
     
-    abstract protected function psrResponseFactory() :ResponseFactoryInterface;
+    protected function responseFactory() :ResponseFactory
+    {
+        return new BaseResponseFactory(
+            $this->psrResponseFactory(),
+            $this->psrStreamFactory(),
+            new StatelessRedirector($this->url = $this->urlGenerator(), $this->psrResponseFactory())
+        );
+    }
+    
+    abstract protected function psrResponseFactory() :Psr17ResponseFactory;
     
     abstract protected function psrServerRequestFactory() :ServerRequestFactoryInterface;
     
@@ -60,8 +64,6 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     abstract protected function psrStreamFactory() :StreamFactoryInterface;
     
     abstract protected function routeUrlGenerator() :RouteUrlGenerator;
-    
-    abstract protected function viewEngine() :ViewEngine;
     
     /**
      * Overwrite this function if you want to specify a custom response that should be returned by

@@ -7,7 +7,8 @@ namespace Tests\Core\integration\Routing;
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
-use Snicco\Http\ResponseFactory;
+use Snicco\Http\BaseResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\EventDispatcher\Events\ResponseSent;
@@ -127,7 +128,7 @@ class ApiRoutesTest extends FrameworkTestCase
 class TestApiMiddleware extends Middleware
 {
     
-    public function __construct(ResponseFactory $factory)
+    public function __construct(BaseResponseFactory $factory)
     {
         $this->factory = $factory;
     }

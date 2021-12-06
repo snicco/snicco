@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Http;
 
 use RuntimeException;
-use Snicco\View\ViewEngine;
 use Snicco\Routing\Pipeline;
 use RKA\Middleware\IpAddress;
 use Snicco\Contracts\Redirector;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Controllers\ViewController;
 use Snicco\Controllers\RedirectController;
 use Snicco\Controllers\FallBackController;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
+use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 class HttpServiceProvider extends ServiceProvider
 {
@@ -45,7 +45,7 @@ class HttpServiceProvider extends ServiceProvider
         $this->container->singleton(Redirector::class, function () {
             return new StatelessRedirector(
                 $this->container[UrlGenerator::class],
-                $this->container[ResponseFactoryInterface::class]
+                $this->container[Psr17ResponseFactory::class]
             );
         });
     }
@@ -120,20 +120,22 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindResponseFactory()
     {
-        $this->container->singleton(ResponseFactory::class, function () {
-            return new ResponseFactory(
-                $this->container[ViewEngine::class],
-                $this->container[ResponseFactoryInterface::class],
-                $this->container[StreamFactoryInterface::class],
+        $this->container->singleton(BaseResponseFactory::class, function () {
+            return new BaseResponseFactory(
+                $this->container[Psr17ResponseFactory::class],
+                $this->container[Psr17StreamFactory::class],
                 $this->container[Redirector::class]
             );
+        });
+        $this->container->singleton(ResponseFactory::class, function () {
+            return $this->container[BaseResponseFactory::class];
         });
     }
     
     private function bindResponsePreparation()
     {
         $this->container->singleton(ResponsePreparation::class, function () {
-            return new ResponsePreparation($this->container[StreamFactoryInterface::class]);
+            return new ResponsePreparation($this->container[Psr17StreamFactory::class]);
         });
     }
     

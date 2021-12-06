@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Routing;
 
 use Snicco\Http\Controller;
-use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\RouteAction;
 use Snicco\Shared\ContainerAdapter;
 use Snicco\Traits\ReflectsCallable;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Support\ReflectionDependencies;
 
 class ControllerAction implements RouteAction
@@ -38,7 +37,6 @@ class ControllerAction implements RouteAction
         if ($controller instanceof Controller) {
             $controller->giveResponseFactory($this->container->get(ResponseFactory::class));
             $controller->giveUrlGenerator($this->container->get(UrlGenerator::class));
-            $controller->giveViewEngine($this->container->get(ViewEngine::class));
         }
         
         if ($this->firstParameterType($this->class_callable) !== Request::class) {

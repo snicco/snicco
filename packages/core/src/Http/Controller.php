@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
-use Snicco\View\ViewEngine;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\ResponseFactory;
 
 class Controller
 {
     
-    protected ViewEngine $view_factory;
-    protected ResponseFactory $response_factory;
-    protected UrlGenerator $url;
+    /**
+     * @var ResponseFactory
+     */
+    protected $response_factory;
+    
+    /**
+     * @var UrlGenerator
+     */
+    protected $url;
     
     /**
      * @var ControllerMiddleware[]
      */
-    private array $middleware = [];
+    private $middleware = [];
     
     public function getMiddleware(string $method = null) :array
     {
@@ -33,11 +39,6 @@ class Controller
                 return $middleware->name();
             }, $middleware)
         );
-    }
-    
-    public function giveViewEngine(ViewEngine $view_factory)
-    {
-        $this->view_factory = $view_factory;
     }
     
     public function giveResponseFactory(ResponseFactory $response_factory)

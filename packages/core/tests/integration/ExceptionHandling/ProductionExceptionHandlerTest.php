@@ -6,6 +6,7 @@ namespace Tests\Core\integration\ExceptionHandling;
 
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
+use Snicco\ViewBundle\ViewServiceProvider;
 use Tests\Core\fixtures\TestDoubles\TestLogger;
 use Tests\Codeception\shared\FrameworkTestCase;
 
@@ -73,6 +74,11 @@ class ProductionExceptionHandlerTest extends FrameworkTestCase
         $response->assertSee('VIEW:error.php,STATUS:500,MESSAGE:Something went wrong.');
         $response->assertStatus(500);
         $response->assertIsHtml();
+    }
+    
+    protected function packageProviders() :array
+    {
+        return [ViewServiceProvider::class];
     }
     
 }

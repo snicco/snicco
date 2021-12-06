@@ -13,11 +13,11 @@ use Snicco\Mail\MailBuilder;
 use Snicco\Http\MethodField;
 use Snicco\Session\CsrfField;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\Redirector;
 use Snicco\View\GlobalViewContext;
 use Snicco\Shared\ContainerAdapter;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Http\Responses\RedirectResponse;
 
@@ -224,7 +224,6 @@ final class ApplicationMixin
      * Returns a response factory instance.
      *
      * @return  ResponseFactory
-     * @see \Snicco\Http\ResponseFactory
      */
     public static function response() :ResponseFactory
     {

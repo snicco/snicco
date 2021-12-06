@@ -192,6 +192,10 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindViewContext()
     {
+        if ( ! $this->container->has(GlobalViewContext::class)) {
+            return;
+        }
+        
         /** @var GlobalViewContext $global_context */
         $global_context = $this->container->get(GlobalViewContext::class);
         

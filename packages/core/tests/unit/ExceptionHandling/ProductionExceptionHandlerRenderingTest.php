@@ -11,26 +11,24 @@ use RuntimeException;
 use Snicco\Support\WP;
 use Psr\Log\NullLogger;
 use Snicco\Support\Arr;
-use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
 use Snicco\Testing\TestResponse;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Shared\ContainerAdapter;
 use Snicco\Application\Application;
+use Snicco\Http\BaseResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\ExceptionHandling\WhoopsHandler;
-use Snicco\ExceptionHandling\HtmlErrorRenderer;
+use Snicco\ExceptionHandling\HtmlErrorRender;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\View\Exceptions\ViewRenderingException;
-use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\ExceptionHandling\PlainTextHtmlErrorRenderer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Tests\Codeception\shared\helpers\CreateRouteCollection;
-use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
 
 class ProductionExceptionHandlerRenderingTest extends UnitTest
 {
@@ -39,20 +37,26 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     use CreateContainer;
     use CreatePsr17Factories;
     
-    private ContainerAdapter $container;
-    private Request          $request;
+    /**
+     * @var ContainerAdapter
+     */
+    private $container;
+    
+    /**
+     * @var Request|TestRequest
+     */
+    private $request;
     
     protected function setUp() :void
     {
         parent::setUp();
         $this->container = $this->createContainer();
         $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
+        $this->container->instance(BaseResponseFactory::class, $this->createResponseFactory());
         $this->container->instance(
-            ViewEngine::class,
-            $engine = new ViewEngine(new TestViewFactory())
+            HtmlErrorRender::class,
+            new PlainTextHtmlErrorRenderer()
         );
-        $this->container->instance(HtmlErrorRenderer::class, new HtmlErrorRenderer($engine));
     }
     
     protected function tearDown() :void
@@ -73,11 +77,11 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $this->assertInstanceOf(Response::class, $response->psr_response);
         $response->assertSeeHtml(
-            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
+            '<h1>Something went wrong.</h1>'
         );
         $response->assertDontSee('Sensitive Info');
         $response->assertStatus(500);
-        $response->assertHeader('content-type', 'text/html');
+        $response->assertContentType('text/html');
     }
     
     /** @test */
@@ -96,24 +100,6 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     }
     
     /** @test */
-    public function in_production_the_a_custom_json_message_is_rendered_if_present_on_exception()
-    {
-        $e = new HttpException(403, 'Sensible Info');
-        $e->withMessageForUsers('Sorry, something went wrong');
-        $e->withJsonMessageForUsers('Sorry, this didnt work');
-        
-        $handler = $this->newErrorHandler();
-        $request = $this->request->withAddedHeader('Accept', 'application/json');
-        
-        $response = new TestResponse(
-            $handler->toHttpResponse($e, $request)
-        );
-        
-        $response->assertIsJson()->assertForbidden();
-        $response->assertExactJson(['message' => 'Sorry, this didnt work']);
-    }
-    
-    /** @test */
     public function a_non_http_exception_always_gets_transformed_into_generic_error_screen()
     {
         $handler = $this->newErrorHandler();
@@ -124,17 +110,18 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $this->assertInstanceOf(Response::class, $response->psr_response);
         $response->assertSeeHtml(
-            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
+            '<h1>Something went wrong.</h1>'
         );
         $response->assertDontSee('Sensitive Info');
         $response->assertStatus(500);
-        $response->assertHeader('content-type', 'text/html');
+        $response->assertContentType('text/html');
     }
     
     /** @test */
     public function an_exception_can_have_custom_rendering_logic()
     {
         $handler = $this->newErrorHandler();
+        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         
         $response = new TestResponse(
             $handler->toHttpResponse(
@@ -147,7 +134,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $response->assertSee('Foo');
         $response->assertDontSee('Sensitive Info');
         $response->assertStatus(500);
-        $response->assertHeader('content-type', 'text/html');
+        $response->assertContentType('text/html');
     }
     
     /** @test */
@@ -182,7 +169,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         );
         
         $response->assertStatus(403);
-        $response->assertHeader('content-type', 'text/html');
+        $response->assertContentType('text/html');
         $response->assertSee('bar');
     }
     
@@ -192,7 +179,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = new fixtures\TestExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[ResponseFactory::class]
+            $this->container[BaseResponseFactory::class]
         );
         
         $response = new TestResponse(
@@ -204,7 +191,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $response->assertStatus(500);
         $response->assertSeeHtml(
-            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Custom Error Message]'
+            '<h1>Custom Error Message</h1>'
         );
     }
     
@@ -214,7 +201,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = $this->newErrorHandler();
         
         $handler->renderable(
-            function (fixtures\RenderableException $e, Request $request, ResponseFactory $response_factory) {
+            function (fixtures\RenderableException $e, Request $request, BaseResponseFactory $response_factory) {
                 return $response_factory->html('FOO_CUSTOMIZED')->withStatus(403);
             }
         );
@@ -224,7 +211,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
             new TestResponse($handler->toHttpResponse(new Exception('Error'), $this->request));
         $response->assertStatus(500);
         $response->assertSeeHtml(
-            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
+            '<h1>Something went wrong.</h1>'
         );
         
         $response = new TestResponse(
@@ -235,36 +222,29 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     }
     
     /** @test */
-    public function an_exception_while_trying_to_render_a_default_error_view_will_throw_an_special_error_view_exception()
+    public function custom_messages_for_users_are_displayed_instead_of_debug_messages()
     {
-        $view_factory = Mockery::mock(TestViewFactory::class);
-        $view_factory->shouldReceive('make')->once()->andThrow(
-            $view_exception = new ViewRenderingException()
-        );
-        $this->container->instance(ViewEngine::class, $e = new ViewEngine($view_factory));
-        $this->container->instance(HtmlErrorRenderer::class, new HtmlErrorRenderer($e));
+        $e = new HttpException(403, 'Sensible Info');
+        $e->withMessageForUsers('Sorry, something went wrong');
+        $e->withJsonMessageForUsers('Sorry, this didnt work');
         
         $handler = $this->newErrorHandler();
         
-        try {
-            $response = new TestResponse(
-                $handler->toHttpResponse(
-                    new Exception('Sensitive Info'),
-                    $this->request
-                )
-            );
-        } catch (ErrorViewException $e) {
-            $this->assertSame($e->getPrevious(), $view_exception);
-            
-            $response = new TestResponse(
-                $handler->toHttpResponse($e, $this->request)
-            );
-            
-            $response->assertSeeHtml('<h1> Server Error </h1>');
-            $response->assertDontSee('Sensitive Info');
-            $response->assertStatus(500);
-            $response->assertHeader('content-type', 'text/html');
-        }
+        $response = new TestResponse(
+            $handler->toHttpResponse($e, $this->request)
+        );
+        
+        $response->assertForbidden()->assertContentType('text/html');
+        $response->assertSee('Sorry, something went wrong');
+        
+        $request = $this->request->withAddedHeader('Accept', 'application/json');
+        
+        $response = new TestResponse(
+            $handler->toHttpResponse($e, $request)
+        );
+        
+        $response->assertIsJson()->assertForbidden();
+        $response->assertExactJson(['message' => 'Sorry, this didnt work']);
     }
     
     /**
@@ -325,7 +305,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         return new ProductionExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[ResponseFactory::class],
+            $this->container[BaseResponseFactory::class],
             $debug_mode ? $this->getWhoops() : null
         );
     }

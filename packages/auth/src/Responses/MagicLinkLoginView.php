@@ -33,7 +33,7 @@ class MagicLinkLoginView extends AbstractLoginView
                 'register_url' => $this->config->get('auth.features.registration')
                     ? $this->url->toRoute('auth.register') : null,
             ])
-        );
+        )->toString();
     }
     
 }

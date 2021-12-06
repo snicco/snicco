@@ -2,7 +2,7 @@
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\EventDispatcher\Events\DoShutdown;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\EventDispatcher\Events\ResponseSent;

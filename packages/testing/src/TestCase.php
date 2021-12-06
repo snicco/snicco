@@ -15,7 +15,6 @@ use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Snicco\Contracts\Middleware;
-use Snicco\Mail\Contracts\Mailer;
 use Snicco\Application\Application;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
@@ -49,7 +48,6 @@ abstract class TestCase extends WPTestCase
     use InteractsWithSession;
     use InteractsWithAuthentication;
     use InteractsWithWordpressUsers;
-    use InteractsWithMail;
     use TravelsTime;
     
     protected Application                   $app;
@@ -108,7 +106,6 @@ abstract class TestCase extends WPTestCase
             $this->replaceBindings();
             $this->setProperties();
             $this->dispatcher = $this->app[Dispatcher::class];
-            $this->fake_mailer = $this->app[Mailer::class];
         });
         
         foreach ($this->after_application_created as $callback) {
@@ -411,6 +408,10 @@ abstract class TestCase extends WPTestCase
         
         if (in_array(WithDatabaseExceptions::class, $traits)) {
             $this->withDatabaseExceptions();
+        }
+        
+        if (in_array(InteractsWithMail::class, $traits)) {
+            $this->withFakeMailer();
         }
     }
     

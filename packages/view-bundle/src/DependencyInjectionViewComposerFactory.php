@@ -19,8 +19,12 @@ class DependencyInjectionViewComposerFactory implements ViewComposerFactory
      *
      * @var string[]
      */
-    private array            $namespaces;
-    private ContainerAdapter $container;
+    private $namespaces;
+    
+    /**
+     * @var ContainerAdapter
+     */
+    private $container;
     
     public function __construct(ContainerAdapter $container, array $namespaces = [])
     {

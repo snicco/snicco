@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Http;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\EventDispatcher\Events\ResponseSent;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;

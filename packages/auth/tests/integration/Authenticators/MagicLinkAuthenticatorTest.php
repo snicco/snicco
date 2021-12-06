@@ -106,6 +106,7 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     /** @test */
     public function failed_attempts_will_dispatch_and_event_and_redirect_to_login()
     {
+        $this->withoutExceptionHandling();
         $this->followingRedirects();
         $calvin = $this->createAdmin();
         

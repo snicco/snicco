@@ -7,7 +7,6 @@ namespace Tests\Testing\unit;
 use Mockery;
 use RuntimeException;
 use Snicco\Http\Delegate;
-use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
 use Snicco\Testing\TestResponse;
@@ -16,7 +15,6 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Contracts\RouteUrlGenerator;
 use PHPUnit\Framework\ExpectationFailedException;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
-use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
@@ -292,11 +290,6 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     protected function routeUrlGenerator() :RouteUrlGenerator
     {
         return Mockery::mock(FastRouteUrlGenerator::class);
-    }
-    
-    protected function viewEngine() :ViewEngine
-    {
-        return new ViewEngine(new TestViewFactory());
     }
     
 }

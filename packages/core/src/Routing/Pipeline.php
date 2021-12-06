@@ -12,7 +12,7 @@ use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\Factories\MiddlewareFactory;
 use Psr\Http\Server\MiddlewareInterface;

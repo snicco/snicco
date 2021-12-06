@@ -6,10 +6,17 @@ namespace Tests\ViewBundle\integration;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
+use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\ViewBundle\ViewResponseFactory;
+use Snicco\ExceptionHandling\HtmlErrorRender;
+use Snicco\ViewBundle\ResponseFactoryWithViews;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Implementations\PHPViewFactory;
+use Snicco\ViewBundle\ViewBasedHtmlErrorRenderer;
 
 use const DS;
 
@@ -86,6 +93,44 @@ class ViewServiceProviderTest extends FrameworkTestCase
             $this->app->config('app.package_root').DS.'resources'.DS.'views'.DS.'framework',
             end($views)
         );
+    }
+    
+    /** @test */
+    public function the_response_factory_is_replaced()
+    {
+        $this->bootApp();
+        $this->assertInstanceOf(
+            ResponseFactoryWithViews::class,
+            $f1 = $this->app->resolve(ResponseFactory::class)
+        );
+        
+        $this->assertInstanceOf(
+            ResponseFactoryWithViews::class,
+            $f2 = $this->app->resolve(ViewResponseFactory::class)
+        );
+        
+        $this->assertInstanceOf(
+            ResponseFactoryWithViews::class,
+            $f3 = $this->app->resolve(CreatesHtmlResponse::class)
+        );
+        
+        $this->assertSame($f1, $f2);
+        $this->assertSame($f1, $f3);
+    }
+    
+    /** @test */
+    public function the_html_error_renderer_is_bound()
+    {
+        $this->bootApp();
+        $this->assertInstanceOf(
+            ViewBasedHtmlErrorRenderer::class,
+            $this->app->resolve(HtmlErrorRender::class)
+        );
+    }
+    
+    protected function packageProviders() :array
+    {
+        return [ViewServiceProvider::class];
     }
     
 }

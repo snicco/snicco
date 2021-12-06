@@ -8,8 +8,8 @@ use Mockery;
 use Snicco\Http\Cookie;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Http\BaseResponseFactory;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
@@ -19,8 +19,8 @@ class ResponseTest extends UnitTest
     
     use CreatePsr17Factories;
     
-    private ResponseFactory $factory;
-    private Response        $response;
+    private BaseResponseFactory $factory;
+    private Response            $response;
     
     protected function setUp() :void
     {
@@ -73,7 +73,7 @@ class ResponseTest extends UnitTest
         
         $response = $this->factory->make()->html($stream);
         
-        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
     }
     

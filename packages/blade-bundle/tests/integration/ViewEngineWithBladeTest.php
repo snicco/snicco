@@ -4,19 +4,33 @@ declare(strict_types=1);
 
 namespace Tests\BladeBundle\integration;
 
+use Snicco\View\ViewEngine;
+use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\BladeBundle\BladeServiceProvider;
-use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 
-class AppAliasTest extends FrameworkTestCase
+class ViewEngineWithBladeTest extends FrameworkTestCase
 {
+    
+    /**
+     * @var ViewEngine
+     */
+    private $view_engine;
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->afterApplicationBooted(function () {
+            $this->view_engine = $this->app->resolve(ViewEngine::class);
+        });
+    }
     
     /** @test */
     public function nested_views_can_be_rendered_relative_to_the_views_directory()
     {
         $this->withAddedConfig('view.paths', [dirname(__DIR__).'/fixtures/views']);
         $this->bootApp();
-        $view = TestApp::view('nested.nested-blade-view');
+        $view = $this->view_engine->make('nested.nested-blade-view');
         
         $this->assertViewContent('FOO', $view);
     }
@@ -27,7 +41,7 @@ class AppAliasTest extends FrameworkTestCase
         $this->withAddedConfig('view.paths', [dirname(__DIR__).'/fixtures/views']);
         $this->bootApp();
         
-        $first = TestApp::view(['bogus1', 'bogus2', 'blade-view']);
+        $first = $this->view_engine->make(['bogus1', 'bogus2', 'blade-view']);
         
         $this->assertViewContent('FOO', $first);
     }
@@ -38,9 +52,7 @@ class AppAliasTest extends FrameworkTestCase
         $this->withAddedConfig('view.paths', [dirname(__DIR__).'/fixtures/views']);
         $this->bootApp();
         
-        ob_start();
-        TestApp::render(['bogus1', 'bogus2', 'blade-view']);
-        $html = ob_get_clean();
+        $html = $this->view_engine->render(['bogus1', 'bogus2', 'blade-view']);
         
         $this->assertViewContent('FOO', $html);
     }
@@ -49,6 +61,7 @@ class AppAliasTest extends FrameworkTestCase
     {
         return [
             BladeServiceProvider::class,
+            ViewServiceProvider::class,
         ];
     }
     

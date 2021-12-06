@@ -24,7 +24,7 @@ class TwoFactorChallengeView extends Abstract2FaChallengeView
     {
         return $this->view_engine->make('framework.auth.two-factor-challenge')->with([
             'post_to' => $this->url->toLogin(),
-        ]);
+        ])->toString();
     }
     
 }

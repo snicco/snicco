@@ -6,8 +6,7 @@ namespace Snicco\Auth\Confirmation;
 
 use Snicco\Shared\Encryptor;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
-use Snicco\View\Contracts\ViewInterface;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
@@ -20,10 +19,14 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
     
     private AuthConfirmation                $fallback;
     private TwoFactorAuthenticationProvider $provider;
-    private ResponseFactory                 $response_factory;
-    private Encryptor                       $encryptor;
-    private string                          $user_secret;
-    private Abstract2FAuthConfirmationView  $response;
+    
+    /**
+     * @var ResponseFactory
+     */
+    private                                $response_factory;
+    private Encryptor                      $encryptor;
+    private string                         $user_secret;
+    private Abstract2FAuthConfirmationView $response;
     
     public function __construct(
         AuthConfirmation $fallback,
@@ -52,13 +55,13 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
         );
     }
     
-    public function viewResponse(Request $request) :ViewInterface
+    public function view(Request $request) :string
     {
         if ( ! $this->userHasTwoFactorEnabled($request->user())) {
-            return $this->fallback->viewResponse($request);
+            return $this->fallback->view($request);
         }
         
-        return $this->response->toView($request);
+        return $this->response->toView($request)->toString();
     }
     
 }

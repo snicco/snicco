@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Tests\Core\fixtures\Conditions\IsPost;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Core\fixtures\Middleware\FooMiddleware;

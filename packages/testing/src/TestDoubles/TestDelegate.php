@@ -7,7 +7,7 @@ namespace Snicco\Testing\TestDoubles;
 use Closure;
 use Snicco\Http\Psr7\Request;
 use Snicco\Testing\Assertable;
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 
 class TestDelegate
 {

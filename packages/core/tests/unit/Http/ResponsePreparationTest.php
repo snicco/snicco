@@ -5,8 +5,8 @@ namespace Tests\Core\unit\Http;
 use Mockery;
 use Snicco\Support\Carbon;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Http\ResponsePreparation;
 use Tests\Codeception\shared\UnitTest;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
@@ -17,9 +17,9 @@ class ResponsePreparationTest extends UnitTest
     
     use CreatePsr17Factories;
     
-    private ResponseFactory $factory;
+    private BaseResponseFactory $factory;
     private ResponsePreparation $preparation;
-    private Request $request;
+    private Request             $request;
     
     protected function setUp() :void
     {

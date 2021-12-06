@@ -18,9 +18,9 @@ class WPLoginRedirectController extends Controller
             return $this->response_factory->delegateToWP();
         }
         
-        return $this->response_factory->redirectToLogin(
-            $request->boolean('reauth'),
+        return $this->response_factory->redirect()->toLogin(
             $request->query('redirect_to', ''),
+            $request->boolean('reauth'),
             301
         );
     }

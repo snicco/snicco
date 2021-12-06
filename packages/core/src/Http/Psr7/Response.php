@@ -6,9 +6,9 @@ namespace Snicco\Http\Psr7;
 
 use Snicco\Http\Cookie;
 use Snicco\Http\Cookies;
+use Snicco\Contracts\Responsable;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Contracts\Responsable;
 use Psr\Http\Message\StreamFactoryInterface;
 
 class Response implements ResponseInterface, Responsable
@@ -87,7 +87,7 @@ class Response implements ResponseInterface, Responsable
     
     public function html(StreamInterface $html) :Response
     {
-        return $this->withHeader('Content-Type', 'text/html')
+        return $this->withHeader('Content-Type', 'text/html; charset=UTF-8')
                     ->withBody($html);
     }
     

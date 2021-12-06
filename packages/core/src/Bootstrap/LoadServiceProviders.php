@@ -7,8 +7,6 @@ use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
 use Snicco\Http\HttpServiceProvider;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\MailBundle\MailServiceProvider;
-use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\Routing\RoutingServiceProvider;
 use Snicco\Factories\FactoryServiceProvider;
 use Snicco\EventDispatcher\EventServiceProvider;
@@ -28,8 +26,6 @@ class LoadServiceProviders implements Bootstrapper
         RoutingServiceProvider::class,
         HttpServiceProvider::class,
         MiddlewareServiceProvider::class,
-        ViewServiceProvider::class,
-        MailServiceProvider::class,
     ];
     
     public function bootstrap(Application $app) :void

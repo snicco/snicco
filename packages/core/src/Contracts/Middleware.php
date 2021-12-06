@@ -6,7 +6,6 @@ namespace Snicco\Contracts;
 
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -15,7 +14,10 @@ use Psr\Http\Message\ServerRequestInterface;
 abstract class Middleware implements MiddlewareInterface
 {
     
-    protected ResponseFactory $response_factory;
+    /**
+     * @var ResponseFactory
+     */
+    protected $response_factory;
     
     public function setResponseFactory(ResponseFactory $response_factory)
     {

@@ -8,9 +8,10 @@ use ReflectionClass;
 use Snicco\Http\HttpKernel;
 use Snicco\Http\MethodField;
 use RKA\Middleware\IpAddress;
-use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\Redirector;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Http\StatelessRedirector;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Http\ResponsePostProcessor;
 use Psr\Http\Server\MiddlewareInterface;
 use Tests\Codeception\shared\TestApp\TestApp;
@@ -37,7 +38,15 @@ class HttpServiceProviderTest extends FrameworkTestCase
     public function the_response_factory_can_be_resolved()
     {
         $this->bootApp();
-        $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(ResponseFactory::class));
+        $this->assertInstanceOf(
+            BaseResponseFactory::class,
+            TestApp::resolve(ResponseFactory::class)
+        );
+        
+        $this->assertInstanceOf(
+            BaseResponseFactory::class,
+            TestApp::resolve(BaseResponseFactory::class)
+        );
     }
     
     /** @test */

@@ -8,10 +8,10 @@ use Snicco\Mail\Email;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Event\EmailWasSent;
 use Snicco\Mail\ValueObjects\Address;
-use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Mail\Contracts\MailBuilderInterface;
+use Tests\BetterWPMailBundle\MailBundleTestCase;
 
-final class MailEventsTest extends FrameworkTestCase
+final class MailEventsTest extends MaiLBundleTestCase
 {
     
     /** @test */
