@@ -7,3 +7,4 @@ phpunit.xml
 !/tests/integration/Blade/cache/.gitkeep
 composer.lock
 /packages/**/codeception.yml
+codeception.ymll

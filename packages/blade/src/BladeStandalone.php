@@ -172,7 +172,7 @@ final class BladeStandalone
         );
         
         $this->illuminate_container->bindIf(BladeViewFactory::class, function ($container) {
-            return new BladeViewFactory($container->make('view'));
+            return new BladeViewFactory($container->make('view'), $this->view_directories);
         }, true);
     }
     
