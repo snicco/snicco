@@ -33,7 +33,7 @@ class RedirectIfAuthenticated extends Middleware
                                               ->to($this->url);
             }
             
-            return $this->response_factory->redirectToRoute('dashboard');
+            return $this->response_factory->redirect()->toRoute('dashboard');
         }
         
         return $next($request);

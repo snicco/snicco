@@ -15,4 +15,11 @@ trait InteractsWithMail
      */
     protected Mailer $fake_mailer;
     
+    protected function withFakeMailer()
+    {
+        $this->afterApplicationBooted(function () {
+            $this->fake_mailer = $this->app[Mailer::class];
+        });
+    }
+    
 }

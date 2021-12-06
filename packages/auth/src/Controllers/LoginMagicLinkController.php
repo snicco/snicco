@@ -52,7 +52,7 @@ class LoginMagicLinkController extends Controller
             ? $this->response_factory->json(
                 ['message' => 'If the credentials match our system we will send you a login link email.']
             )
-            : $this->response_factory->back($this->url->toRoute('auth.login'))
+            : $this->response_factory->redirect()->back(302, $this->url->toRoute('auth.login'))
                                      ->with('login.link.processed', true);
     }
     

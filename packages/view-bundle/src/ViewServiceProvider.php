@@ -6,9 +6,13 @@ namespace Snicco\ViewBundle;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
+use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\ExceptionHandling\HtmlErrorRender;
 use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Contracts\ViewComposerFactory;
 use Snicco\View\Implementations\PHPViewFactory;
@@ -30,6 +34,12 @@ class ViewServiceProvider extends ServiceProvider
         $this->bindViewEngine();
         
         $this->bindViewComposerCollection();
+        
+        $this->bindResponseFactory();
+        
+        $this->bindCreateHtmlResponse();
+        
+        $this->bindHtmlErrorRenderer();
     }
     
     public function bootstrap() :void
@@ -79,6 +89,36 @@ class ViewServiceProvider extends ServiceProvider
             return new ViewComposerCollection(
                 $this->container[DependencyInjectionViewComposerFactory::class],
                 $this->container[GlobalViewContext::class]
+            );
+        });
+    }
+    
+    private function bindResponseFactory()
+    {
+        $this->container->singleton(ViewResponseFactory::class, function () {
+            return new ResponseFactoryWithViews(
+                $this->container[ViewEngine::class],
+                $this->container[BaseResponseFactory::class]
+            );
+        });
+        
+        $this->container->singleton(ResponseFactory::class, function () {
+            return $this->container[ViewResponseFactory::class];
+        });
+    }
+    
+    private function bindCreateHtmlResponse()
+    {
+        $this->container->singleton(CreatesHtmlResponse::class, function () {
+            return $this->container[ViewResponseFactory::class];
+        });
+    }
+    
+    private function bindHtmlErrorRenderer()
+    {
+        $this->container->singleton(HtmlErrorRender::class, function () {
+            return new ViewBasedHtmlErrorRenderer(
+                $this->container[ViewEngine::class]
             );
         });
     }

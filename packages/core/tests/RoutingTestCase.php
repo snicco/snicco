@@ -15,12 +15,12 @@ use Snicco\Routing\Pipeline;
 use Snicco\Http\MethodField;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
-use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Middleware;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponsePreparation;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Middleware\MiddlewareStack;
 use Snicco\Contracts\ExceptionHandler;
 use Tests\Codeception\shared\UnitTest;
@@ -31,6 +31,7 @@ use Snicco\Factories\MiddlewareFactory;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Middleware\Core\ShareCookies;
+use Snicco\Routing\FileBasedHtmlResponse;
 use Snicco\Middleware\Core\MethodOverride;
 use Snicco\Routing\RoutingServiceProvider;
 use Snicco\Controllers\FallBackController;
@@ -54,10 +55,12 @@ use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Tests\Core\fixtures\Conditions\UniqueCondition;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
 use Tests\Core\fixtures\Middleware\FooBarMiddleware;
+use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+use Tests\Codeception\shared\helpers\AssertViewContent;
 use Tests\Codeception\shared\helpers\CreateRouteMatcher;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Tests\Codeception\shared\helpers\CreateRouteCollection;
@@ -70,6 +73,7 @@ use const TEST_APP_KEY;
 class RoutingTestCase extends UnitTest
 {
     
+    use AssertViewContent;
     use CreatePsr17Factories;
     use CreateContainer;
     use CreateRouteMatcher;
@@ -77,9 +81,14 @@ class RoutingTestCase extends UnitTest
     use CreateDefaultWpApiMocks;
     use CreatePsrRequests;
     
-    protected MiddlewareStack          $middleware_stack;
-    protected ExceptionHandler         $error_handler;
-    protected ResponseFactory          $response_factory;
+    protected MiddlewareStack  $middleware_stack;
+    protected ExceptionHandler $error_handler;
+    
+    /**
+     * @var ResponseFactory
+     */
+    protected ResponseFactory $response_factory;
+    
     protected HttpKernel               $kernel;
     protected Router                   $router;
     protected ContainerAdapter         $container;
@@ -124,11 +133,7 @@ class RoutingTestCase extends UnitTest
     
     protected function assertResponse($expected, Request $request)
     {
-        $this->assertSame(
-            $expected,
-            $actual = $this->runKernel($request),
-            "Expected output:[{$expected}] Received:['{$actual}']."
-        );
+        $this->assertViewContent($expected, $this->runKernel($request));
     }
     
     protected function withMiddlewareGroups(array $middlewares)
@@ -237,7 +242,10 @@ class RoutingTestCase extends UnitTest
         
         $this->container->instance(MagicLink::class, $magic_link = new TestMagicLink());
         
-        $this->container->instance(ViewEngine::class, $this->view_engine);
+        $this->container->instance(
+            ViewEngine::class,
+            $this->view_engine = new ViewEngine(new TestViewFactory())
+        );
         
         $this->container->instance(
             UrlGenerator::class,
@@ -288,7 +296,10 @@ class RoutingTestCase extends UnitTest
         $this->container->instance(ShareCookies::class, new ShareCookies());
         $this->container->instance(AppendSpecialPathSuffix::class, new AppendSpecialPathSuffix());
         $this->container->instance(FallBackController::class, new FallBackController());
-        $this->container->instance(ViewController::class, new ViewController());
+        $this->container->instance(
+            ViewController::class,
+            new ViewController(new FileBasedHtmlResponse())
+        );
     }
     
     private function outputBufferMiddleware() :Middleware

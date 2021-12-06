@@ -41,7 +41,7 @@ class TrailingSlash extends Middleware
             ? Url::addTrailing($path)
             : Url::removeTrailing($path);
         
-        return $this->response_factory->permanentRedirectTo($redirect_to);
+        return $this->response_factory->redirect($redirect_to, 301);
     }
     
 }

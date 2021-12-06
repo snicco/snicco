@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Http\StatelessRedirector;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Snicco\Contracts\ResponseFactory;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Testing\TestDoubles\TestMagicLink;
@@ -18,7 +18,6 @@ use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
-use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 
 /**
  * @internal
@@ -48,8 +47,7 @@ trait CreatePsr17Factories
     
     public function createResponseFactory() :ResponseFactory
     {
-        return new ResponseFactory(
-            $this->view_engine = new ViewEngine(new TestViewFactory()),
+        return new BaseResponseFactory(
             $f = $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             new StatelessRedirector($this->newUrlGenerator(), $f),

@@ -28,7 +28,7 @@ class ConfirmedAuthSessionController extends Controller
     
     public function create(Request $request)
     {
-        return $this->auth_confirmation->viewResponse($request);
+        return $this->auth_confirmation->view($request);
     }
     
     public function store(Request $request) :Response
@@ -45,7 +45,7 @@ class ConfirmedAuthSessionController extends Controller
             
             return $request->isExpectingJson()
                 ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
-                : $this->response_factory->redirectToRoute('auth.confirm')
+                : $this->response_factory->redirect()->toRoute('auth.confirm')
                                          ->withErrors(
                                              ['auth.confirmation' => 'We could not authenticate you.']
                                          );

@@ -11,11 +11,11 @@ use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\ValueObjects\MailDefaults;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Snicco\Mail\Contracts\MailEventDispatcher;
-use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Mail\Contracts\MailBuilderInterface;
+use Tests\BetterWPMailBundle\MailBundleTestCase;
 use Snicco\MailBundle\FrameworkMailEventDispatcher;
 
-class MailServiceProviderTest extends FrameworkTestCase
+class MailServiceProviderTest extends MaiLBundleTestCase
 {
     
     /** @test */

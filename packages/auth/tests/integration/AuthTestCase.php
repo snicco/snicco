@@ -11,7 +11,10 @@ use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\Session\SessionServiceProvider;
+use Snicco\MailBundle\MailServiceProvider;
+use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Testing\Concerns\InteractsWithMail;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Session\Contracts\SessionManagerInterface;
@@ -25,13 +28,17 @@ class AuthTestCase extends FrameworkTestCase
     
     protected AuthSessionManager $session_manager;
     
-    protected array $codes;
+    use InteractsWithMail;
     
+    protected array     $codes;
     protected Encryptor $encryptor;
+    protected string    $valid_one_time_code   = '123456';
+    protected string    $invalid_one_time_code = '111111';
     
-    protected string $valid_one_time_code = '123456';
-    
-    protected string $invalid_one_time_code = '111111';
+    protected function setUp() :void
+    {
+        parent::setUp();
+    }
     
     protected function packageProviders() :array
     {
@@ -40,6 +47,8 @@ class AuthTestCase extends FrameworkTestCase
             SessionServiceProvider::class,
             AuthServiceProvider::class,
             DefuseEncryptionServiceProvider::class,
+            MailServiceProvider::class,
+            ViewServiceProvider::class,
         ];
     }
     

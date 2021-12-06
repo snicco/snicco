@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Contracts;
 
-use Snicco\Http\ResponseFactory;
-
 interface RouteAction
 {
     

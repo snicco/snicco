@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Auth\integration\Controllers;
 
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
@@ -25,7 +26,10 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         });
         
         $this->afterApplicationBooted(function () {
-            $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
+            $this->instance(
+                AuthConfirmation::class,
+                new TestAuthConfirmation($this->app[ViewEngine::class])
+            );
         });
         parent::setUp();
         $this->bootApp();
@@ -224,6 +228,16 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
 class TestAuthConfirmation implements AuthConfirmation
 {
     
+    /**
+     * @var ViewEngine
+     */
+    private $view_engine;
+    
+    public function __construct(ViewEngine $view_engine)
+    {
+        $this->view_engine = $view_engine;
+    }
+    
     public function confirm(Request $request) :bool
     {
         if ($request->input('secret') === 'bypass') {
@@ -233,7 +247,7 @@ class TestAuthConfirmation implements AuthConfirmation
         return false;
     }
     
-    public function viewResponse(Request $request)
+    public function view(Request $request)
     {
         return '[Test] Confirm your authentication.';
     }

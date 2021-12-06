@@ -12,9 +12,9 @@ use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
 use Snicco\Shared\ContainerAdapter;
 use Snicco\Traits\ReflectsCallable;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Contracts\ExceptionHandler;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Support\ReflectionDependencies;
@@ -31,7 +31,12 @@ class ProductionExceptionHandler implements ExceptionHandler
     protected Psr3Logger       $logger;
     protected array            $dont_report = [];
     protected array            $dont_flash  = [];
-    private ResponseFactory    $response_factory;
+    
+    /**
+     * @var ResponseFactory
+     */
+    private $response_factory;
+    
     /** @var Whoops|null */
     private $whoops;
     /**
@@ -45,9 +50,6 @@ class ProductionExceptionHandler implements ExceptionHandler
     private array $custom_reporters = [];
     
     /**
-     * @param  ContainerAdapter  $container
-     * @param  Psr3Logger  $logger
-     * @param  ResponseFactory  $response_factory
      * @param  null|Whoops  $whoops
      */
     public function __construct(ContainerAdapter $container, Psr3Logger $logger, ResponseFactory $response_factory, $whoops = null)
@@ -263,7 +265,7 @@ class ProductionExceptionHandler implements ExceptionHandler
                                           ->withStatus($status);
         }
         
-        $content = $this->container[HtmlErrorRenderer::class]->render($e, $request);
+        $content = $this->container[HtmlErrorRender::class]->render($e, $request);
         
         return $this->response_factory->html($content)->withStatus($e->httpStatusCode());
     }

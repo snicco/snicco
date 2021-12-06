@@ -25,7 +25,10 @@ class AuthUnconfirmed extends Middleware
         $session = $request->session();
         
         if ($session->hasValidAuthConfirmToken()) {
-            return $this->response_factory->back($this->url->toRoute('dashboard'));
+            return $this->response_factory->redirect()->back(
+                302,
+                $this->url->toRoute('dashboard')
+            );
         }
         
         return $next($request);

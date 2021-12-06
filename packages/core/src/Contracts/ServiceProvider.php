@@ -9,7 +9,6 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
-use Snicco\Http\ResponseFactory;
 use Snicco\Shared\ContainerAdapter;
 use Snicco\Application\Application;
 use Snicco\Session\SessionServiceProvider;
@@ -22,8 +21,6 @@ abstract class ServiceProvider
     protected Config $config;
     
     protected Application $app;
-    
-    protected ?ResponseFactory $response_factory = null;
     
     protected ?Request $current_request = null;
     
@@ -109,19 +106,6 @@ abstract class ServiceProvider
         }
         
         return $slashes;
-    }
-    
-    protected function responseFactory()
-    {
-        if ( ! $this->response_factory instanceof ResponseFactory) {
-            $factory = $this->container->get(ResponseFactory::class);
-            $this->container->instance(ResponseFactory::class, $factory);
-            $this->response_factory = $factory;
-            
-            return $factory;
-        }
-        
-        return $this->response_factory;
     }
     
     protected function siteUrl()

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\BladeBundle\integration;
 
 use Illuminate\View\Factory;
-use Snicco\Http\ResponseFactory;
 use Snicco\Blade\BladeViewFactory;
 use Illuminate\Support\MessageBag;
 use Illuminate\View\FileViewFinder;
@@ -13,6 +12,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\ViewErrorBag;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\Session\SessionServiceProvider;
+use Snicco\ViewBundle\ViewServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Compilers\BladeCompiler;
 use Snicco\BladeBundle\BladeServiceProvider;
@@ -78,21 +78,6 @@ class BladeServiceProviderTest extends FrameworkTestCase
         $this->withAddedConfig('view.blade_cache', __DIR__)->bootApp();
         
         $this->assertSame(__DIR__, Container::getInstance()['config']['view.compiled']);
-    }
-    
-    /** @test */
-    public function a_blade_view_can_be_transformed()
-    {
-        $this->bootApp();
-        $view = TestApp::view('blade-view');
-        
-        /** @var ResponseFactory $response_factory */
-        $response_factory = $this->app->resolve(ResponseFactory::class);
-        
-        $this->assertViewContent(
-            'FOO',
-            $response_factory->toResponse($view)->getBody()->__toString()
-        );
     }
     
     /**
@@ -180,6 +165,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
         return [
             BladeServiceProvider::class,
             SessionServiceProvider::class,
+            ViewServiceProvider::class,
         ];
     }
     

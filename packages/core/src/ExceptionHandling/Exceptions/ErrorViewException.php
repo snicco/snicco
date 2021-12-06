@@ -5,7 +5,7 @@ namespace Snicco\ExceptionHandling\Exceptions;
 use Throwable;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 
 class ErrorViewException extends HttpException
 {

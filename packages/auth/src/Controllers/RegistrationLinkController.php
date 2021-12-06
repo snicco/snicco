@@ -33,7 +33,7 @@ class RegistrationLinkController extends Controller
         
         if ( ! (filter_var($email, FILTER_VALIDATE_EMAIL))) {
             return $this->response_factory
-                ->back()
+                ->redirect()->back()
                 ->withErrors(
                     ['email' => 'That email address does not seem to be valid.']
                 );
@@ -49,7 +49,7 @@ class RegistrationLinkController extends Controller
         
         $mail_builder->to($email)->send(new ConfirmRegistrationEmail($link));
         
-        return $this->response_factory->back()
+        return $this->response_factory->redirect()->back()
                                       ->with('registration.link.success', true);
     }
     

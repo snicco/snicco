@@ -6,14 +6,15 @@ namespace Tests\Session\integration;
 
 use Snicco\Session\Session;
 use Snicco\Session\CsrfField;
-use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\Redirector;
 use Snicco\View\GlobalViewContext;
 use Snicco\Session\SessionManager;
 use Snicco\Http\StatelessRedirector;
 use Snicco\Session\EncryptedSession;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Session\StatefulRedirector;
 use Snicco\Session\SessionServiceProvider;
+use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
@@ -366,6 +367,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         return [
             SessionServiceProvider::class,
             DefuseEncryptionServiceProvider::class,
+            ViewServiceProvider::class,
         ];
     }
     

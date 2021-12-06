@@ -7,11 +7,11 @@ namespace Tests\Core\integration\Application;
 use Snicco\Support\WP;
 use Snicco\Routing\Router;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Application\Application;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Http\StatelessRedirector;
-use Snicco\View\Contracts\ViewInterface;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Http\Responses\RedirectResponse;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
@@ -188,47 +188,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function a_composer_can_be_added_as_an_alias()
-    {
-        $this->bootApp();
-        
-        TestApp::addComposer('foo', function () {
-            // Assert no exception.
-        });
-        
-        $this->assertTrue(true);
-    }
-    
-    /** @test */
-    public function a_view_can_be_created_as_an_alias()
-    {
-        $this->bootApp();
-        
-        $this->assertInstanceOf(ViewInterface::class, TestApp::view('view'));
-    }
-    
-    /** @test */
-    public function a_view_can_be_rendered_and_echoed()
-    {
-        $this->bootApp();
-        
-        ob_start();
-        TestApp::render('view');
-        
-        $this->assertSame('Foobar', ob_get_clean());
-    }
-    
-    /** @test */
-    public function a_nested_view_can_be_included()
-    {
-        $this->bootApp();
-        
-        $view = TestApp::view('subdirectory.subview.php');
-        
-        $this->assertSame('Hello World', $view->toString());
-    }
-    
-    /** @test */
     public function a_method_override_field_can_be_outputted()
     {
         $this->bootApp();
@@ -253,6 +212,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
+        $this->assertInstanceOf(BaseResponseFactory::class, TestApp::response());
     }
     
     /** @test */

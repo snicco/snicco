@@ -7,11 +7,11 @@ namespace Snicco\Auth\Controllers;
 use WP_User;
 use Snicco\Support\WP;
 use Snicco\Http\Controller;
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
-use Snicco\View\Contracts\ViewInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
@@ -33,12 +33,12 @@ class ForgotPasswordController extends Controller
         $this->dispatcher = $dispatcher;
     }
     
-    public function create() :ViewInterface
+    public function create(ViewEngine $view_engine) :string
     {
-        return $this->view_factory->make('framework.auth.forgot-password')->with([
+        return $view_engine->make('framework.auth.forgot-password')->with([
             'post_to' => $this->url->toRoute('auth.forgot.password'),
             'title' => 'Forgot Password | '.WP::siteName(),
-        ]);
+        ])->toString();
     }
     
     public function store(Request $request) :RedirectResponse

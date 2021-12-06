@@ -33,7 +33,7 @@ class Authenticate extends Middleware
         
         $redirect_after_login = $this->url ?? $request->fullPath();
         
-        return $this->response_factory->redirectToLogin(true, $redirect_after_login);
+        return $this->response_factory->redirect()->toLogin($redirect_after_login, true);
     }
     
 }

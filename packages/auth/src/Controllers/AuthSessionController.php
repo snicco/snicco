@@ -12,10 +12,10 @@ use Snicco\Session\Session;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Contracts\Responsable;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\Contracts\Responsable;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
@@ -75,7 +75,7 @@ class AuthSessionController extends Controller
         
         return $request->isExpectingJson()
             ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
-            : $this->response_factory->redirectToLogin()
+            : $this->response_factory->redirect()->toLogin()
                                      ->withErrors(
                                          ['login' => 'We could not authenticate you with the provided credentials']
                                      );

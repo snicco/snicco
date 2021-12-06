@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Contracts;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 
 interface AuthConfirmation
 {
@@ -17,6 +17,6 @@ interface AuthConfirmation
      *
      * @see ResponseFactory::toResponse()
      */
-    public function viewResponse(Request $request);
+    public function view(Request $request);
     
 }

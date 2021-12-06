@@ -9,16 +9,12 @@ use stdClass;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\Responsable;
+use Snicco\Http\BaseResponseFactory;
 use Snicco\Http\StatelessRedirector;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Http\Responses\NullResponse;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Contracts\Support\Arrayable;
-use Tests\Core\fixtures\TestDoubles\TestView;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponseFactoryTest extends UnitTest
@@ -26,7 +22,7 @@ class ResponseFactoryTest extends UnitTest
     
     use CreatePsr17Factories;
     
-    private ResponseFactory $factory;
+    private BaseResponseFactory $factory;
     
     protected function setUp() :void
     {
@@ -47,17 +43,6 @@ class ResponseFactoryTest extends UnitTest
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(204, $response->getStatusCode());
         $this->assertSame('Hello', $response->getReasonPhrase());
-    }
-    
-    public function testView()
-    {
-        $response = $this->factory->view('test_view', ['foo' => 'bar'], 205, ['header1' => 'foo']);
-        
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame(205, $response->getStatusCode());
-        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
-        $this->assertSame('VIEW:test_view,CONTEXT:[foo=>bar]', (string) $response->getBody());
-        $this->assertSame('foo', $response->getHeaderLine('header1'));
     }
     
     public function testJson()
@@ -101,7 +86,7 @@ class ResponseFactoryTest extends UnitTest
         $response = $this->factory->toResponse('foo');
         $this->assertInstanceOf(Response::class, $response);
         
-        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', (string) $response->getBody());
     }
     
@@ -116,44 +101,6 @@ class ResponseFactoryTest extends UnitTest
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         
         $this->assertSame(json_encode($input), (string) $response->getBody());
-    }
-    
-    /** @test */
-    public function testToResponseWithArrayable()
-    {
-        $input = new class implements Arrayable
-        {
-            
-            public function toArray()
-            {
-                return ['foo', 'bar'];
-            }
-            
-        };
-        
-        $response = $this->factory->toResponse($input);
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode(['foo', 'bar']), (string) $response->getBody());
-    }
-    
-    /** @test */
-    public function testToResponseWithJsonAble()
-    {
-        $input = new class implements Jsonable
-        {
-            
-            public function toJson($options = 0)
-            {
-                return json_encode(['foo', 'bar']);
-            }
-            
-        };
-        
-        $response = $this->factory->toResponse($input);
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode(['foo', 'bar']), (string) $response->getBody());
     }
     
     /** @test */
@@ -184,26 +131,15 @@ class ResponseFactoryTest extends UnitTest
         $response = $this->factory->toResponse($class);
         
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', (string) $response->getBody());
     }
     
     /** @test */
     public function testToResponse_is_invalid()
     {
-        $this->expectException(HttpException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->factory->toResponse(1);
-    }
-    
-    /** @test */
-    public function testViewToResponse()
-    {
-        $view = new TestView('foo');
-        
-        $response = $this->factory->toResponse($view);
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
-        $this->assertSame('VIEW:foo,CONTEXT:[]', (string) $response->getBody());
     }
     
     /** @test */

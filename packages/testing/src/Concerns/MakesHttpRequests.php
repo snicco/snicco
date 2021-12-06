@@ -378,10 +378,12 @@ trait MakesHttpRequests
         $response = new TestResponse($response);
         
         /** @var ViewEngine $view_factory */
-        $view_factory = $this->app->resolve(ViewEngine::class);
-        
-        if ($view_factory->rootView() instanceof ViewInterface) {
-            $response->setRenderedView($view_factory->rootView());
+        if ($this->app->container()->has(ViewEngine::class)) {
+            $view_factory = $this->app->resolve(ViewEngine::class);
+            
+            if ($view_factory->rootView() instanceof ViewInterface) {
+                $response->setRenderedView($view_factory->rootView());
+            }
         }
         
         if ($this->session instanceof Session) {

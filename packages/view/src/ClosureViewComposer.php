@@ -8,10 +8,7 @@ use Closure;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;
 
-/**
- * @internal
- */
-class ClosureViewComposer implements ViewComposer
+final class ClosureViewComposer implements ViewComposer
 {
     
     /**

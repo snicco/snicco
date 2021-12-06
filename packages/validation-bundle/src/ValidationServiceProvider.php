@@ -7,6 +7,7 @@ namespace Snicco\Validation;
 use Snicco\Http\Psr7\Request;
 use Respect\Validation\Factory;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\Validation\Exceptions\ValidationException;
 use Snicco\ExceptionHandling\ProductionExceptionHandler;
@@ -65,7 +66,7 @@ class ValidationServiceProvider extends ServiceProvider
         $callback = function (ValidationException $e, Request $request) {
             return (new ValidationExceptionRenderer(
                 
-                $this->response_factory,
+                $this->container->get(ResponseFactory::class),
                 $this->dont_flash
             
             ))->render($e, $request);

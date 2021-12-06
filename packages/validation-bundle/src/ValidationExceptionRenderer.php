@@ -4,7 +4,7 @@ namespace Snicco\Validation;
 
 use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ResponseFactory;
 use Snicco\Validation\Exceptions\ValidationException;
 
 class ValidationExceptionRenderer

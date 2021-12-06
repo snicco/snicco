@@ -4,27 +4,36 @@ declare(strict_types=1);
 
 namespace Snicco\BladeBundle;
 
+use RuntimeException;
 use Snicco\Blade\BladeStandalone;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\Application\ApplicationTrait;
+use Snicco\ViewBundle\ViewServiceProvider;
 
 class BladeServiceProvider extends ServiceProvider
 {
     
     public function register() :void
     {
+        $foo = 'bar';
+    }
+    
+    function bootstrap() :void
+    {
+        if ( ! class_exists(ViewServiceProvider::class)) {
+            throw new RuntimeException(
+                "sniccowp/blade-bundle needs sniccowp/view-bundle. Did you forget to add the ViewServiceProvider?"
+            );
+        }
+        
         $blade = $this->registerBlade();
         
         $this->container->singleton(ViewFactory::class, function () use ($blade) {
             return $blade->getBladeViewFactory();
         });
-    }
-    
-    function bootstrap() :void
-    {
         $this->createFrameworkViewDirectives();
     }
     

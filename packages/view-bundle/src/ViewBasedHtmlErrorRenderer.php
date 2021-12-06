@@ -1,17 +1,21 @@
 <?php
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\ViewBundle;
 
 use Throwable;
 use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
+use Snicco\ExceptionHandling\HtmlErrorRender;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
 
-class HtmlErrorRenderer
+class ViewBasedHtmlErrorRenderer implements HtmlErrorRender
 {
     
-    private ViewEngine $view_engine;
+    /**
+     * @var ViewEngine
+     */
+    private $view_engine;
     
     public function __construct(ViewEngine $view_engine)
     {
