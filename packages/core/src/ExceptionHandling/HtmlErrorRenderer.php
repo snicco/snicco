@@ -13,9 +13,9 @@ class HtmlErrorRenderer
     
     private ViewEngine $view_engine;
     
-    public function __construct(ViewEngine $view_factory)
+    public function __construct(ViewEngine $view_engine)
     {
-        $this->view_engine = $view_factory;
+        $this->view_engine = $view_engine;
     }
     
     /**

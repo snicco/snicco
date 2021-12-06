@@ -8,6 +8,7 @@ use Snicco\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
+use Tests\Core\fixtures\Controllers\Web\RoutingController;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class RouteAttributesTest extends RoutingTestCase
@@ -196,6 +197,10 @@ class RouteAttributesTest extends RoutingTestCase
     /** @test */
     public function http_verbs_can_be_defined_after_attributes_and_finalize_the_route()
     {
+        $this->container->singleton(RoutingController::class, function () {
+            return new RoutingController();
+        });
+        
         $this->createRoutes(function () {
             $this->router->namespace(self::controller_namespace)
                          ->get('/foo', 'RoutingController@foo');

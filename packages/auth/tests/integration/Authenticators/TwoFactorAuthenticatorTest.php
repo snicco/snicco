@@ -40,12 +40,12 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         
         $this->afterApplicationBooted(function () {
             $this->withoutMiddleware('csrf');
-            $this->instance(
+            $this->swap(
                 AbstractTwoFactorChallengeResponse::class,
-                $this->app->resolve(TestChallengeResponse::class)
+                new TestChallengeResponse()
             );
             $this->encryptor = $this->app->resolve(Encryptor::class);
-            $this->instance(
+            $this->swap(
                 TwoFactorAuthenticationProvider::class,
                 new TestTwoFactorProvider($this->encryptor)
             );

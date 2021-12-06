@@ -5,9 +5,17 @@ declare(strict_types=1);
 namespace Snicco\Http;
 
 use RuntimeException;
+use Snicco\View\ViewEngine;
+use Snicco\Routing\Pipeline;
 use RKA\Middleware\IpAddress;
 use Snicco\Contracts\Redirector;
+use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Controllers\ViewController;
+use Snicco\Controllers\RedirectController;
+use Snicco\Controllers\FallBackController;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class HttpServiceProvider extends ServiceProvider
@@ -16,10 +24,15 @@ class HttpServiceProvider extends ServiceProvider
     public function register() :void
     {
         $this->bindConfig();
+        $this->bindResponseEmitter();
+        $this->bindKernel();
         $this->bindRedirector();
         $this->bindResponsePostProcessor();
         $this->bindIpAddressMiddleware();
         $this->bindMethodField();
+        $this->bindResponseFactory();
+        $this->bindResponsePreparation();
+        $this->bindCoreControllers();
     }
     
     public function bootstrap() :void
@@ -29,10 +42,12 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindRedirector()
     {
-        $this->container->singleton(
-            Redirector::class,
-            fn() => $this->container->make(StatelessRedirector::class)
-        );
+        $this->container->singleton(Redirector::class, function () {
+            return new StatelessRedirector(
+                $this->container[UrlGenerator::class],
+                $this->container[ResponseFactoryInterface::class]
+            );
+        });
     }
     
     private function bindConfig()
@@ -81,6 +96,58 @@ class HttpServiceProvider extends ServiceProvider
         $this->container->singleton(MethodField::class, fn() => new MethodField(
             $this->appKey()
         ));
+    }
+    
+    private function bindKernel()
+    {
+        $this->container->singleton(HttpKernel::class, function () {
+            return new HttpKernel(
+                $this->container[Pipeline::class],
+                $this->container[ResponseEmitter::class],
+                $this->container[Dispatcher::class],
+            );
+        });
+    }
+    
+    private function bindResponseEmitter()
+    {
+        $this->container->singleton(ResponseEmitter::class, function () {
+            return new ResponseEmitter(
+                $this->container[ResponsePreparation::class]
+            );
+        });
+    }
+    
+    private function bindResponseFactory()
+    {
+        $this->container->singleton(ResponseFactory::class, function () {
+            return new ResponseFactory(
+                $this->container[ViewEngine::class],
+                $this->container[ResponseFactoryInterface::class],
+                $this->container[StreamFactoryInterface::class],
+                $this->container[Redirector::class]
+            );
+        });
+    }
+    
+    private function bindResponsePreparation()
+    {
+        $this->container->singleton(ResponsePreparation::class, function () {
+            return new ResponsePreparation($this->container[StreamFactoryInterface::class]);
+        });
+    }
+    
+    private function bindCoreControllers()
+    {
+        $this->container->singleton(RedirectController::class, function () {
+            return new RedirectController();
+        });
+        $this->container->singleton(ViewController::class, function () {
+            return new ViewController();
+        });
+        $this->container->singleton(FallBackController::class, function () {
+            return new FallBackController();
+        });
     }
     
 }

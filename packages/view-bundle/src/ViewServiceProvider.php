@@ -47,16 +47,21 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewFactoryInterface() :void
     {
-        $this->container->singleton(ViewFactory::class, PHPViewFactory::class);
+        $this->container->singleton(ViewFactory::class, function () {
+            return $this->container[PHPViewFactory::class];
+        });
     }
     
     private function bindViewEngine() :void
     {
-        $this->container->singleton(ViewEngine::class, ViewEngine::class);
+        $this->container->singleton(ViewEngine::class, function () {
+            return new ViewEngine($this->container[ViewFactory::class]);
+        });
+        
         $this->container->singleton(PHPViewFactory::class, function () {
             return new PHPViewFactory(
                 new PHPViewFinder($this->config->get('view.paths', [])),
-                $this->container->make(ViewComposerCollection::class),
+                $this->container->get(ViewComposerCollection::class),
             );
         });
     }
@@ -70,7 +75,12 @@ class ViewServiceProvider extends ServiceProvider
             );
         });
         
-        $this->container->singleton(ViewComposerCollection::class, ViewComposerCollection::class);
+        $this->container->singleton(ViewComposerCollection::class, function () {
+            return new ViewComposerCollection(
+                $this->container[DependencyInjectionViewComposerFactory::class],
+                $this->container[GlobalViewContext::class]
+            );
+        });
     }
     
 }

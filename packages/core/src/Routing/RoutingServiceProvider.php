@@ -8,11 +8,14 @@ use Snicco\Support\WP;
 use Snicco\Support\FilePath;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
+use Snicco\Http\ResponseFactory;
 use Snicco\Http\DatabaseMagicLink;
 use Snicco\Contracts\RouteRegistrar;
 use Snicco\Contracts\RouteUrlMatcher;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Contracts\RouteUrlGenerator;
+use Snicco\Factories\MiddlewareFactory;
 use Snicco\Testing\TestDoubles\TestMagicLink;
 use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\Routing\Conditions\CustomCondition;
@@ -62,6 +65,8 @@ class RoutingServiceProvider extends ServiceProvider
         $this->bindUrlGenerator();
         
         $this->bindRouteRegistrar();
+        
+        $this->bindRoutingPipeline();
     }
     
     public function bootstrap() :void
@@ -88,7 +93,9 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindRouteMatcher() :void
     {
-        $this->container->singleton(RouteUrlMatcher::class, FastRouteUrlMatcher::class);
+        $this->container->singleton(RouteUrlMatcher::class, function () {
+            return new FastRouteUrlMatcher();
+        });
     }
     
     private function bindRouteCollection() :void
@@ -96,7 +103,7 @@ class RoutingServiceProvider extends ServiceProvider
         $this->container->singleton(RouteCollectionInterface::class, function () {
             if ( ! $this->config->get('routing.cache', false)) {
                 return new RouteCollection(
-                    $this->container->make(RouteUrlMatcher::class),
+                    $this->container->get(RouteUrlMatcher::class),
                     null
                 );
             }
@@ -104,7 +111,7 @@ class RoutingServiceProvider extends ServiceProvider
             $cache_dir = $this->config->get('routing.cache_dir', '');
             
             return new RouteCollection(
-                $this->container->make(RouteUrlMatcher::class),
+                $this->container->get(RouteUrlMatcher::class),
                 FilePath::addTrailingSlash($cache_dir).'__generated:snicco_wp_route_collection',
             );
         });
@@ -114,7 +121,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(Router::class, function () {
             return new Router(
-                $this->container->make(RouteCollectionInterface::class),
+                $this->container->get(RouteCollectionInterface::class),
                 $this->withSlashes()
             );
         });
@@ -122,7 +129,9 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindRouteUrlGenerator() :void
     {
-        $this->container->singleton(RouteUrlGenerator::class, FastRouteUrlGenerator::class);
+        $this->container->singleton(RouteUrlGenerator::class, function () {
+            return new FastRouteUrlGenerator($this->container[RouteCollectionInterface::class]);
+        });
     }
     
     private function bindMagicLink()
@@ -143,12 +152,12 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(UrlGenerator::class, function () {
             $generator = new UrlGenerator(
-                $this->container->make(RouteUrlGenerator::class),
-                $this->container->make(MagicLink::class),
+                $this->container->get(RouteUrlGenerator::class),
+                $this->container->get(MagicLink::class),
                 $this->withSlashes(),
             );
             
-            $generator->setRequestResolver(fn() => $this->container->make(Request::class));
+            $generator->setRequestResolver(fn() => $this->container->get(Request::class));
             
             return $generator;
         });
@@ -158,7 +167,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(RouteRegistrar::class, function () {
             $registrar = new RouteFileRegistrar(
-                $this->container->make(Router::class),
+                $this->container->get(Router::class),
             );
             
             if ( ! $this->config->get('routing.cache', false)) {
@@ -210,6 +219,17 @@ class RoutingServiceProvider extends ServiceProvider
                 ]
             );
         }
+    }
+    
+    private function bindRoutingPipeline()
+    {
+        $this->container->factory(Pipeline::class, function () {
+            return new Pipeline(
+                $this->container[MiddlewareFactory::class],
+                $this->container[ExceptionHandler::class],
+                $this->container[ResponseFactory::class]
+            );
+        });
     }
     
 }

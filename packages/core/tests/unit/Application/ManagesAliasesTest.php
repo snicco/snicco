@@ -8,7 +8,6 @@ use stdClass;
 use Snicco\Shared\ContainerAdapter;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Application\ManagesAliases;
-use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\helpers\CreateContainer;
 
 class ManagesAliasesTest extends UnitTest
@@ -71,7 +70,7 @@ class ManagesAliasesTest extends UnitTest
     public function aliases_can_be_used_to_resolve_objects_from_the_ioc_container()
     {
         $container = $this->createContainer();
-        $container->bind('foobar', fn() => new stdClass());
+        $container->factory('foobar', fn() => new stdClass());
         
         $this->subject->container = $container;
         
@@ -84,7 +83,7 @@ class ManagesAliasesTest extends UnitTest
     public function methods_can_be_called_on_objects_in_the_ioc_container()
     {
         $container = $this->createContainer();
-        $container->bind('foobar', fn() => new Foobar());
+        $container->factory('foobar', fn() => new Foobar());
         
         $this->subject->container = $container;
         
@@ -96,7 +95,8 @@ class ManagesAliasesTest extends UnitTest
     /** @test */
     public function services_can_be_resolved_from_the_container()
     {
-        $this->assertInstanceOf(Foo::class, $this->subject->resolve(Foo::class));
+        $this->subject->container->primitive('foo', 'bar');
+        $this->assertSame('bar', $this->subject->resolve('foo'));
     }
     
 }
@@ -110,7 +110,7 @@ class ManagesAliasImplementation
     
     public function resolve(string $key)
     {
-        return $this->container->make($key);
+        return $this->container->get($key);
     }
     
 }

@@ -7,9 +7,6 @@ namespace Snicco\EventDispatcher;
 use Closure;
 use Snicco\EventDispatcher\Contracts\Event;
 
-/**
- * @internal
- */
 final class Listener
 {
     

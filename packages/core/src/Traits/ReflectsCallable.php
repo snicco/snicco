@@ -46,6 +46,10 @@ trait ReflectsCallable
             return new ReflectionFunction($callback_or_class_name);
         }
         
+        if (is_string($callback_or_class_name)) {
+            $callback_or_class_name = Str::parseCallback($callback_or_class_name);
+        }
+        
         [$class, $method] = ($this->classExists($callback_or_class_name[0]))
             ? [$callback_or_class_name[0], $callback_or_class_name[1] ?? $default_method]
             : Str::parseCallback($callback_or_class_name[0], $default_method);
@@ -82,6 +86,23 @@ trait ReflectsCallable
         $type = $param->getType();
         
         return $type->getName();
+    }
+    
+    private function firstParameterType($callable) :?string
+    {
+        $reflection = $this->getCallReflector($callable);
+        
+        $parameters = $reflection->getParameters();
+        
+        if ( ! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
+            return null;
+        }
+        
+        $param = $parameters[0];
+        
+        $type = $param->getType();
+        
+        return $type ? $type->getName() : null;
     }
     
 }

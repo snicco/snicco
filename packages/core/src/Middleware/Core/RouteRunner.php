@@ -10,7 +10,6 @@ use Snicco\Routing\Route;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Shared\ContainerAdapter;
 use Snicco\Contracts\Middleware;
 use Snicco\Middleware\MiddlewareStack;
 use Psr\Http\Message\ResponseInterface;
@@ -21,21 +20,17 @@ class RouteRunner extends Middleware
     
     private Pipeline           $pipeline;
     private MiddlewareStack    $middleware_stack;
-    private ContainerAdapter   $container;
     private RouteActionFactory $factory;
     
-    public function __construct(ContainerAdapter $container, Pipeline $pipeline, MiddlewareStack $middleware_stack, RouteActionFactory $factory)
+    public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack, RouteActionFactory $factory)
     {
         $this->pipeline = $pipeline;
         $this->middleware_stack = $middleware_stack;
-        $this->container = $container;
         $this->factory = $factory;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $this->rebindRequest($request);
-        
         if ( ! $route = $request->route()) {
             return $this->delegateToWordPress($request);
         }
@@ -50,16 +45,9 @@ class RouteRunner extends Middleware
             ->then($this->runRoute($route));
     }
     
-    private function rebindRequest(Request $request)
-    {
-        $this->container->instance(Request::class, $request);
-    }
-    
     private function runRoute(Route $route) :Closure
     {
         return function (Request $request) use ($route) {
-            $this->rebindRequest($request);
-            
             return $this->response_factory->toResponse(
                 $route->run($request)
             );
@@ -77,7 +65,9 @@ class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(fn() => $this->response_factory->delegateToWP());
+            ->then(function () {
+                return $this->response_factory->delegateToWP();
+            });
     }
     
 }

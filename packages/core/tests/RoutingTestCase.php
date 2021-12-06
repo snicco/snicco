@@ -18,22 +18,30 @@ use Snicco\Contracts\MagicLink;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Middleware;
+use Snicco\Routing\UrlGenerator;
 use Snicco\Shared\ContainerAdapter;
+use Snicco\Http\ResponsePreparation;
 use Snicco\Middleware\MiddlewareStack;
 use Snicco\Contracts\ExceptionHandler;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Controllers\ViewController;
 use Snicco\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Factories\MiddlewareFactory;
+use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Factories\RouteActionFactory;
+use Snicco\Middleware\Core\ShareCookies;
 use Snicco\Middleware\Core\MethodOverride;
 use Snicco\Routing\RoutingServiceProvider;
+use Snicco\Controllers\FallBackController;
 use Snicco\Factories\RouteConditionFactory;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Testing\TestDoubles\TestMagicLink;
+use Snicco\Middleware\Core\RoutingMiddleware;
 use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
+use Snicco\Middleware\Core\SetRequestAttributes;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
@@ -44,10 +52,12 @@ use Tests\Core\fixtures\Conditions\FalseCondition;
 use Tests\Core\fixtures\Conditions\MaybeCondition;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Tests\Core\fixtures\Conditions\UniqueCondition;
+use Snicco\Middleware\Core\AppendSpecialPathSuffix;
 use Tests\Core\fixtures\Middleware\FooBarMiddleware;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 use Tests\Codeception\shared\helpers\CreateRouteMatcher;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Tests\Codeception\shared\helpers\CreateRouteCollection;
@@ -192,40 +202,93 @@ class RoutingTestCase extends UnitTest
         
         $this->middleware_stack = new MiddlewareStack();
         
-        $condition_factory =
-            new RouteConditionFactory($this->defaultConditions(), $this->container);
+        $condition_factory = new RouteConditionFactory(
+            $this->defaultConditions(),
+            $this->container
+        );
+        
         $handler_factory = new RouteActionFactory([], $this->container);
+        
         $this->container->instance(RouteConditionFactory::class, $condition_factory);
+        
         $this->container->instance(RouteActionFactory::class, $handler_factory);
+        
         $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
+        
         $this->container->instance(ResponseFactory::class, $this->response_factory);
+        
         $this->container->instance(StreamFactoryInterface::class, $this->response_factory);
+        
         $this->container->instance(
             MethodOverride::class,
             new MethodOverride(new MethodField(TEST_APP_KEY))
         );
+        
         $this->container->instance(RouteCollectionInterface::class, $this->routes);
+        
         $this->container->instance(ExceptionHandler::class, $this->error_handler);
+        
         $this->container->instance(OutputBufferMiddleware::class, $this->outputBufferMiddleware());
+        
         $this->container->instance(
             RouteUrlGenerator::class,
             new FastRouteUrlGenerator($this->routes)
         );
-        $this->container->instance(MagicLink::class, new TestMagicLink());
+        
+        $this->container->instance(MagicLink::class, $magic_link = new TestMagicLink());
+        
         $this->container->instance(ViewEngine::class, $this->view_engine);
+        
+        $this->container->instance(
+            UrlGenerator::class,
+            new UrlGenerator(
+                $this->container[RouteUrlGenerator::class],
+                $magic_link
+            )
+        );
         
         $this->kernel = new HttpKernel(
             new Pipeline(
-                new MiddlewareFactory($this->container),
+                $middleware_factory = new MiddlewareFactory($this->container),
                 $this->error_handler,
                 $this->response_factory,
             ),
-            $this->container->make(ResponseEmitter::class),
+            new ResponseEmitter(new ResponsePreparation($this->psrStreamFactory())),
             $this->event_dispatcher =
                 new FakeDispatcher(
                     new EventDispatcher(new DependencyInversionListenerFactory($this->container))
                 )
         );
+        
+        // Middleware
+        $this->container->singleton(RoutingMiddleware::class, function () use ($condition_factory) {
+            return new RoutingMiddleware(
+                $this->routes,
+                $condition_factory
+            );
+        }
+        );
+        $this->container->instance(
+            RouteRunner::class,
+            new RouteRunner(
+                new Pipeline(
+                    $middleware_factory,
+                    $this->error_handler,
+                    $this->response_factory,
+                ),
+                $this->middleware_stack,
+                $handler_factory
+            )
+        );
+        $this->container->instance(SetRequestAttributes::class, new SetRequestAttributes());
+        $this->container->instance(
+            EvaluateResponseMiddleware::class,
+            new EvaluateResponseMiddleware()
+        );
+        $this->container->instance(ShareCookies::class, new ShareCookies());
+        $this->container->instance(AppendSpecialPathSuffix::class, new AppendSpecialPathSuffix());
+        $this->container->instance(FallBackController::class, new FallBackController());
+        $this->container->instance(ViewController::class, new ViewController());
     }
     
     private function outputBufferMiddleware() :Middleware

@@ -15,9 +15,9 @@ class StatefulRedirector extends Redirector
     
     private Session $session;
     
-    public function __construct(Session $session, UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
+    public function __construct(Session $session, UrlGenerator $url_generator, Psr17ResponseFactory $psr_response_factory)
     {
-        parent::__construct($url_generator, $response_factory);
+        parent::__construct($url_generator, $psr_response_factory);
         $this->session = $session;
     }
     

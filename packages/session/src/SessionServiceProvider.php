@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Session;
 
 use Snicco\Shared\Encryptor;
+use Snicco\Http\Psr7\Request;
+use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Redirector;
+use Snicco\Routing\UrlGenerator;
 use Snicco\View\GlobalViewContext;
 use Snicco\Application\Application;
 use Snicco\Session\Events\NewLogin;
@@ -15,6 +18,7 @@ use Snicco\Contracts\ServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Session\Listeners\InvalidateSession;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
@@ -38,7 +42,10 @@ class SessionServiceProvider extends ServiceProvider
         $this->bindSession();
         $this->bindAliases();
         $this->bindEvents();
+        $this->bindListeners();
+        $this->bindCsrfField();
         $this->bindStatefulRedirector();
+        $this->bindSessionMiddleware();
     }
     
     function bootstrap() :void
@@ -113,7 +120,9 @@ class SessionServiceProvider extends ServiceProvider
             );
         });
         
-        $this->container->singleton(SessionManagerInterface::class, SessionManager::class);
+        $this->container->singleton(SessionManagerInterface::class, function () {
+            return $this->container[SessionManager::class];
+        });
     }
     
     private function bindSession()
@@ -121,12 +130,12 @@ class SessionServiceProvider extends ServiceProvider
         $this->container->singleton(Session::class, function () {
             if ($this->config->get('session.encrypt')) {
                 $store = new EncryptedSession(
-                    $this->container->make(SessionDriver::class),
-                    $this->container->make(Encryptor::class)
+                    $this->container->get(SessionDriver::class),
+                    $this->container->get(Encryptor::class)
                 );
             }
             else {
-                $store = new Session($this->container->make(SessionDriver::class));
+                $store = new Session($this->container->get(SessionDriver::class));
             }
             
             $this->container->instance(Session::class, $store);
@@ -138,7 +147,7 @@ class SessionServiceProvider extends ServiceProvider
     private function bindAliases()
     {
         /** @var Application $app */
-        $app = $this->container->make(Application::class);
+        $app = $this->container->get(Application::class);
         
         $app->alias('session', Session::class);
         $app->alias('csrfField', CsrfField::class, 'asHtml');
@@ -157,19 +166,12 @@ class SessionServiceProvider extends ServiceProvider
         ]);
         
         $this->config->extend('events.listeners', [
-            
             NewLogin::class => [
-                
                 [InvalidateSession::class, 'handleLogin'],
-            
             ],
-            
             NewLogout::class => [
-                
                 [InvalidateSession::class, 'handleLogout'],
-            
             ],
-        
         ]);
     }
     
@@ -179,17 +181,56 @@ class SessionServiceProvider extends ServiceProvider
             return;
         }
         
-        $this->container->singleton(Redirector::class, StatefulRedirector::class);
+        $this->container->singleton(Redirector::class, function () {
+            return new StatefulRedirector(
+                $this->container[Session::class],
+                $this->container[UrlGenerator::class],
+                $this->container[ResponseFactoryInterface::class]
+            );
+        });
     }
     
     private function bindViewContext()
     {
         /** @var GlobalViewContext $global_context */
-        $global_context = $this->container->make(GlobalViewContext::class);
+        $global_context = $this->container->get(GlobalViewContext::class);
         
-        $global_context->add('csrf', fn() => $this->container->make(CsrfField::class));
-        $global_context->add('session', fn() => $this->container->make(Session::class));
-        $global_context->add('errors', fn() => $this->container->make(Session::class)->errors());
+        $global_context->add('csrf', function () {
+            return $this->container->get(CsrfField::class);
+        });
+        $global_context->add('session', function () {
+            return $this->container->get(Session::class);
+        });
+        $global_context->add('errors', function () {
+            return $this->container->get(Session::class)
+                                   ->errors();
+        });
+    }
+    
+    private function bindListeners()
+    {
+        $this->container->singleton(InvalidateSession::class, function () {
+            return new InvalidateSession(
+                $this->container[Request::class],
+                $this->container[ResponseEmitter::class],
+                $this->container[SessionManagerInterface::class],
+                $this->container[Session::class]
+            );
+        });
+    }
+    
+    private function bindCsrfField()
+    {
+        $this->container->singleton(CsrfField::class, function () {
+            return new CsrfField($this->container[Session::class]);
+        });
+    }
+    
+    private function bindSessionMiddleware()
+    {
+        $this->container->singleton(StartSessionMiddleware::class, function () {
+            return new StartSessionMiddleware($this->container[SessionManagerInterface::class]);
+        });
     }
     
 }

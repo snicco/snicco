@@ -7,6 +7,7 @@ namespace Tests\Core\unit\Routing;
 use Tests\Core\RoutingTestCase;
 use Snicco\Contracts\Redirector;
 use Snicco\Http\StatelessRedirector;
+use Snicco\Controllers\RedirectController;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
 
 class RedirectRoutesTest extends RoutingTestCase
@@ -16,6 +17,7 @@ class RedirectRoutesTest extends RoutingTestCase
     {
         parent::setUp();
         $this->bindRedirector();
+        $this->container->instance(RedirectController::class, new RedirectController());
     }
     
     /** @test */

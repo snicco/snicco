@@ -4,63 +4,74 @@ declare(strict_types=1);
 
 namespace Snicco\Illuminate;
 
+use Closure;
 use Snicco\Shared\ContainerAdapter;
 use Illuminate\Container\Container;
+use Snicco\Shared\FrozenServiceException;
 
-final class IlluminateContainerAdapter implements ContainerAdapter
+final class IlluminateContainerAdapter extends ContainerAdapter
 {
     
-    private Container $container;
+    /**
+     * @var Container
+     */
+    private $illuminate_container;
     
     public function __construct(Container $container = null)
     {
-        $this->container = $container ?? new Container();
+        $this->illuminate_container = $container ?? new Container();
     }
     
-    public function make($abstract, array $parameters = [])
+    public function factory(string $id, Closure $service) :void
     {
-        return $this->container->make($abstract, $parameters);
+        $this->checkIfCanBeOverwritten($id);
+        $this->illuminate_container->bind($id, $service);
     }
     
-    public function swapInstance($abstract, $concrete)
+    public function singleton(string $id, Closure $service) :void
     {
-        return $this->instance($abstract, $concrete);
+        $this->checkIfCanBeOverwritten($id);
+        $this->illuminate_container->singleton($id, $service);
     }
     
-    public function instance($abstract, $instance)
+    public function primitive(string $id, $value) :void
     {
-        $this->container->instance($abstract, $instance);
-        return $instance;
+        $this->illuminate_container->instance($id, $value);
     }
     
-    public function bind($abstract, $concrete)
+    public function get(string $id)
     {
-        $this->container->bind($abstract, $concrete);
+        return $this->illuminate_container->get($id);
     }
     
-    public function singleton($abstract, $concrete)
+    public function has(string $id)
     {
-        $this->container->singleton($abstract, $concrete);
+        $this->illuminate_container->has($id);
     }
     
     public function offsetExists($offset)
     {
-        return $this->container->offsetExists($offset);
-    }
-    
-    public function offsetGet($offset)
-    {
-        return $this->container->offsetGet($offset);
-    }
-    
-    public function offsetSet($offset, $value)
-    {
-        $this->container->offsetSet($offset, $value);
+        $this->illuminate_container->offsetExists($offset);
     }
     
     public function offsetUnset($offset)
     {
-        $this->container->offsetUnset($offset);
+        $this->illuminate_container->offsetUnset($offset);
+    }
+    
+    private function checkIfCanBeOverwritten(string $id)
+    {
+        if ( ! $this->illuminate_container->resolved($id)) {
+            return;
+        }
+        
+        if ( ! $this->illuminate_container->isShared($id)) {
+            return;
+        }
+        
+        throw new FrozenServiceException(
+            sprintf('Singleton [%s] was already resolved and can not be overwritten.', $id)
+        );
     }
     
 }

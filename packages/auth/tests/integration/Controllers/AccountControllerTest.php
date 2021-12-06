@@ -33,7 +33,10 @@ class AccountControllerTest extends AuthTestCase
             $this->instance(AbstractRegistrationResponse::class, new TestRegisteredResponse());
             $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
             $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
-            $this->instance(DeletesUsers::class, $this->app->resolve(TestDeletesUser::class));
+            $this->instance(
+                DeletesUsers::class,
+                new TestDeletesUser($this->app->resolve(ResponseFactory::class))
+            );
         });
         
         parent::setUp();

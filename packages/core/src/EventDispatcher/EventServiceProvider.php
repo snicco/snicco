@@ -8,11 +8,15 @@ use Snicco\Support\Arr;
 use Snicco\Http\HttpKernel;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Http\ResponsePostProcessor;
+use Snicco\Support\ReflectionDependencies;
 use Snicco\EventDispatcher\Events\PreWP404;
 use Snicco\EventDispatcher\Events\AdminInit;
+use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\EventDispatcher\Events\ResponseSent;
 use Snicco\EventDispatcher\Listeners\Manage404s;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\EventDispatcher\Contracts\EventParser;
+use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Listeners\FilterWpQuery;
 use Snicco\EventDispatcher\Events\WPQueryFilterable;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
@@ -91,6 +95,7 @@ class EventServiceProvider extends ServiceProvider
         $this->bindMappedEventFactory();
         $this->bindEventMapper();
         $this->bindConfig();
+        $this->bindCoreListeners();
     }
     
     public function bootstrap() :void
@@ -142,7 +147,13 @@ class EventServiceProvider extends ServiceProvider
     
     private function bindEventDispatcher()
     {
-        $this->container->singleton(EventDispatcher::class, EventDispatcher::class);
+        $this->container->singleton(EventDispatcher::class, function () {
+            return new EventDispatcher(
+                $this->container[ListenerFactory::class],
+                $this->container[EventParser::class] ?? null,
+                $this->container[ObjectCopier::class] ?? null,
+            );
+        });
         
         $this->container->singleton(Dispatcher::class, function () {
             return $this->app->isRunningUnitTest()
@@ -153,18 +164,18 @@ class EventServiceProvider extends ServiceProvider
     
     private function bindEventListenerFactory()
     {
-        $this->container->singleton(
-            ListenerFactory::class,
-            DependencyInversionListenerFactory::class
-        );
+        $this->container->singleton(ListenerFactory::class, function () {
+            return new DependencyInversionListenerFactory($this->container);
+        });
     }
     
     private function bindMappedEventFactory()
     {
-        $this->container->singleton(
-            MappedEventFactory::class,
-            DependencyInversionEventFactory::class
-        );
+        $this->container->singleton(MappedEventFactory::class, function () {
+            return new DependencyInversionEventFactory(
+                $this->container[ReflectionDependencies::class]
+            );
+        });
     }
     
     private function bindEventMapper()
@@ -176,6 +187,23 @@ class EventServiceProvider extends ServiceProvider
                 $this->container[MappedEventFactory::class]
             )
         );
+    }
+    
+    private function bindCoreListeners()
+    {
+        $this->container->singleton(CreateDynamicHooks::class, function () {
+            return new CreateDynamicHooks($this->container[EventMapper::class]);
+        });
+        
+        $this->container->singleton(Manage404s::class, function () {
+            return new Manage404s($this->container[Dispatcher::class]);
+        });
+        
+        $this->container->singleton(FilterWpQuery::class, function () {
+            return new FilterWpQuery(
+                $this->container[RouteCollectionInterface::class]
+            );
+        });
     }
     
 }

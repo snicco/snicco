@@ -23,16 +23,20 @@ class RouteCachingTest extends RoutingTestCase
         
         $this->route_cache_file = __DIR__.DS.'__generated_snicco_wp_routes.php';
         
-        $this->assertFalse(file_exists($this->route_cache_file));
+        $this->assertFalse(is_file($this->route_cache_file));
         
         $this->createCachedRouteCollection($this->route_cache_file);
+        
+        $this->container->singleton(Controller::class, function () {
+            return new Controller();
+        });
     }
     
     protected function tearDown() :void
     {
         parent::tearDown();
         
-        if (file_exists($this->route_cache_file)) {
+        if (is_file($this->route_cache_file)) {
             unlink($this->route_cache_file);
         }
     }
@@ -57,7 +61,7 @@ class RouteCachingTest extends RoutingTestCase
         $request = $this->frontendRequest('GET', 'foo');
         $this->assertResponse('foo', $request);
         
-        $this->assertTrue(file_exists($this->route_cache_file));
+        $this->assertTrue(is_file($this->route_cache_file));
     }
     
     /** @test */
@@ -107,7 +111,7 @@ class RouteCachingTest extends RoutingTestCase
             });
         });
         
-        $this->assertTrue(file_exists($this->route_cache_file));
+        $this->assertTrue(is_file($this->route_cache_file));
         
         $this->createCachedRouteCollection($this->route_cache_file);
         $this->routes->addToUrlMatcher();
