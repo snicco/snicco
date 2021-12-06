@@ -9,15 +9,15 @@ use Snicco\View\Contracts\ViewInterface;
 use Snicco\View\Exceptions\ViewNotFoundException;
 
 /**
- * @api This class is a facade to the underlying ViewFactory.
+ * @api This class is a facade to the underlying ViewFactories.
  */
 final class ViewEngine
 {
     
     /**
-     * @var ViewFactory
+     * @var ViewFactory[]
      */
-    private $view_factory;
+    private $view_factories;
     
     /**
      * The root view that was rendered.
@@ -26,9 +26,9 @@ final class ViewEngine
      */
     private $rendered_view;
     
-    public function __construct(ViewFactory $view_factory)
+    public function __construct(ViewFactory ...$view_factories)
     {
-        $this->view_factory = $view_factory;
+        $this->view_factories = $view_factories;
     }
     
     /**
@@ -53,11 +53,14 @@ final class ViewEngine
      * @param  string|string[]  $views
      *
      * @return ViewInterface
-     * @throws ViewNotFoundException
+     * @throws ViewNotFoundException When no view can be created with any view factory
      */
     public function make($views) :ViewInterface
     {
-        $view = $this->view_factory->make((array) $views);
+        $views = (array) $views;
+        
+        $view = $this->getView($views);
+        
         if ( ! isset($this->rendered_view)) {
             $this->rendered_view = $view;
         }
@@ -73,6 +76,30 @@ final class ViewEngine
     public function rootView() :?ViewInterface
     {
         return $this->rendered_view ?? null;
+    }
+    
+    private function getView(array $views) :ViewInterface
+    {
+        foreach ($this->view_factories as $view_factory) {
+            try {
+                return $view_factory->make($views);
+            } catch (ViewNotFoundException $e) {
+                //
+            }
+        }
+        
+        throw new ViewNotFoundException(
+            sprintf(
+                "None of the used view factories supports any of the views [%s].\nTried with:\n%s",
+                implode(',', $views),
+                implode(
+                    "\n",
+                    array_map(function (ViewFactory $v) {
+                        return get_class($v);
+                    }, $this->view_factories)
+                )
+            )
+        );
     }
     
 }
