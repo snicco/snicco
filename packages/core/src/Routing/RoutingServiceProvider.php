@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Snicco\Core\Support\WP;
-use Snicco\View\FilePath;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Http\DatabaseMagicLink;
@@ -112,7 +111,9 @@ class RoutingServiceProvider extends ServiceProvider
             
             return new RouteCollection(
                 $this->container->get(RouteUrlMatcher::class),
-                FilePath::addTrailingSlash($cache_dir).'__generated:snicco_wp_route_collection',
+                rtrim($cache_dir, DIRECTORY_SEPARATOR)
+                .DIRECTORY_SEPARATOR
+                .'__generated:snicco_wp_route_collection',
             );
         });
     }

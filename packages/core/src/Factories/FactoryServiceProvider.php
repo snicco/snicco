@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Factories;
 
 use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 
 class FactoryServiceProvider extends ServiceProvider
 {
@@ -13,7 +12,6 @@ class FactoryServiceProvider extends ServiceProvider
     public function register() :void
     {
         $this->bindRouteActionFactory();
-        $this->bindViewComposerFactory();
     }
     
     public function bootstrap() :void
@@ -27,16 +25,6 @@ class FactoryServiceProvider extends ServiceProvider
             return new RouteActionFactory(
                 $this->config['routing.controllers'] ?? [],
                 $this->container
-            );
-        });
-    }
-    
-    private function bindViewComposerFactory() :void
-    {
-        $this->container->singleton(DependencyInjectionViewComposerFactory::class, function () {
-            return new DependencyInjectionViewComposerFactory(
-                $this->container,
-                $this->config['view.composers'] ?? []
             );
         });
     }
