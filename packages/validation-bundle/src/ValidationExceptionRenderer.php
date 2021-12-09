@@ -2,9 +2,9 @@
 
 namespace Snicco\Validation;
 
-use Snicco\Support\Arr;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Validation\Exceptions\ValidationException;
 
 class ValidationExceptionRenderer

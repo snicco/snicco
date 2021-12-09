@@ -2,7 +2,7 @@
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Http\ResponseEmitter;
+use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Testing\TestResponseEmitter;
 use Tests\Codeception\shared\FrameworkTestCase;
 

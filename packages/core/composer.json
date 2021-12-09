@@ -31,7 +31,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\": "src"
+      "Snicco\\Core\\": "src"
     },
     "files": [
       "src/Support/functions.php"

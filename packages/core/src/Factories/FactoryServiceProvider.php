@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Factories;
+namespace Snicco\Core\Factories;
 
-use Snicco\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 
 class FactoryServiceProvider extends ServiceProvider

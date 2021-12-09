@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Psr7;
+namespace Snicco\Core\Http\Psr7;
 
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Support\Str;
 
 trait InspectsRequest
 {

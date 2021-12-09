@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Blade;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Blade\BladeStandalone;
 use Snicco\View\GlobalViewContext;

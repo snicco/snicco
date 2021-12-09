@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Contracts;
 
-use Snicco\Http\Cookie;
+use Snicco\Core\Http\Cookie;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 
 interface SessionManagerInterface
 {

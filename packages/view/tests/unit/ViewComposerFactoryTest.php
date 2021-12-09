@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\View\unit;
 
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;

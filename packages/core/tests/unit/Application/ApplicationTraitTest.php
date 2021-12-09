@@ -6,11 +6,11 @@ namespace Tests\Core\unit\Application;
 
 use LogicException;
 use BadMethodCallException;
-use Snicco\Application\Application;
+use Snicco\Core\Application\Application;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Application\ApplicationTrait;
+use Snicco\Core\Application\ApplicationTrait;
 use Tests\Codeception\shared\helpers\CreateContainer;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationTraitTest extends UnitTest
 {

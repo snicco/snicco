@@ -3,10 +3,10 @@
 namespace Tests\Core\integration\Routing;
 
 use Mockery;
-use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseEmitter;
-use Snicco\Http\ResponsePreparation;
-use Snicco\EventDispatcher\Events\AdminInit;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Http\ResponsePreparation;
+use Snicco\Core\EventDispatcher\Events\AdminInit;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 class AdminRoutesTest extends FrameworkTestCase

@@ -8,17 +8,17 @@ use Throwable;
 use Psr\Log\LogLevel;
 use Nyholm\Psr7\Stream;
 use Nyholm\Psr7\Response;
-use Snicco\Routing\Pipeline;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Factories\MiddlewareFactory;
+use Snicco\Core\Factories\MiddlewareFactory;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Snicco\Http\Psr7\Response as AppResponse;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\Http\Psr7\Response as AppResponse;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class PipelineTest extends RoutingTestCase

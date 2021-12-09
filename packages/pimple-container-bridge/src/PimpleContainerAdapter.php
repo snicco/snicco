@@ -6,7 +6,7 @@ namespace Snicco\PimpleContainer;
 
 use Closure;
 use Pimple\Container;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Pimple\Exception\FrozenServiceException;
 
 final class PimpleContainerAdapter extends ContainerAdapter
@@ -27,7 +27,7 @@ final class PimpleContainerAdapter extends ContainerAdapter
         try {
             $this->pimple[$id] = $this->pimple->factory($service);
         } catch (FrozenServiceException $e) {
-            throw \Snicco\Shared\FrozenServiceException::from($e);
+            throw \Snicco\Core\Shared\FrozenServiceException::from($e);
         }
     }
     
@@ -36,7 +36,7 @@ final class PimpleContainerAdapter extends ContainerAdapter
         try {
             $this->pimple[$id] = $service;
         } catch (FrozenServiceException $e) {
-            throw \Snicco\Shared\FrozenServiceException::from($e);
+            throw \Snicco\Core\Shared\FrozenServiceException::from($e);
         }
     }
     

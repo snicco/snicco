@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Support\Arr;
-use Snicco\Support\Url;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Support\Url;
 
 class RouteGroup
 {

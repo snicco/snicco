@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
-use Snicco\Support\FilePath;
+use Snicco\View\FilePath;
 use Tests\Codeception\shared\UnitTest;
 
 class PathTest extends UnitTest

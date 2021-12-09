@@ -1,7 +1,7 @@
 <?php
 
-use Snicco\Http\ResponseEmitter;
-use Snicco\Http\ResponsePreparation;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Http\ResponsePreparation;
 use AdrianSuter\Autoload\Override\Override;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
 

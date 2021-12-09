@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Mockery;
-use Snicco\Routing\Route;
+use Snicco\Core\Routing\Route;
 use PHPUnit\Framework\TestCase;
-use Snicco\Routing\RoutingResult;
+use Snicco\Core\Routing\RoutingResult;
 
 class RoutingResultTest extends TestCase
 {

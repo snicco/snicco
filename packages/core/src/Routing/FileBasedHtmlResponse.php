@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\Core\Contracts\CreatesHtmlResponse;
 
 final class FileBasedHtmlResponse implements CreatesHtmlResponse
 {

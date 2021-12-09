@@ -7,14 +7,14 @@ namespace Tests\Core\unit\Http;
 use Mockery;
 use stdClass;
 use InvalidArgumentException;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\Responsable;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Http\StatelessRedirector;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\Responsable;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Http\StatelessRedirector;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Http\Responses\NullResponse;
+use Snicco\Core\Http\Responses\NullResponse;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponseFactoryTest extends UnitTest

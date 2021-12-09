@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\View;
 
-use Snicco\Support\Repository;
+use Snicco\Core\Support\Repository;
 
 /**
  * @api

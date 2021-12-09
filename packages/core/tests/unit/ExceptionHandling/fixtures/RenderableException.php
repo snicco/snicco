@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\ExceptionHandling\fixtures;
 
 use Exception;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 
 class RenderableException extends Exception
 {

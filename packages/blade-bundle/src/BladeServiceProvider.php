@@ -6,11 +6,11 @@ namespace Snicco\BladeBundle;
 
 use RuntimeException;
 use Snicco\Blade\BladeStandalone;
-use Snicco\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Application\ApplicationTrait;
+use Snicco\Core\Application\ApplicationTrait;
 use Snicco\ViewBundle\ViewServiceProvider;
 
 class BladeServiceProvider extends ServiceProvider

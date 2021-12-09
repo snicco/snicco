@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Http;
 
 use RuntimeException;
-use Snicco\Support\WP;
-use Snicco\Routing\Route;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Route;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
-use Snicco\Support\Repository;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Support\Repository;
 use Snicco\Validation\Validator;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Session\Drivers\ArraySessionDriver;

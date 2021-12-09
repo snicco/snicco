@@ -6,9 +6,9 @@ namespace Tests\Core\unit\Http;
 
 use Mockery;
 use RuntimeException;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Validation\Validator;
 use Respect\Validation\Validator as v;
 use Tests\Codeception\shared\UnitTest;

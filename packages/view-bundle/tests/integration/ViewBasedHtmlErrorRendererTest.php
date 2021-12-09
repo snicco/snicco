@@ -7,13 +7,13 @@ namespace Tests\ViewBundle\integration;
 use Mockery;
 use Snicco\Testing\TestResponse;
 use Snicco\View\Contracts\ViewFactory;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Exceptions\ViewRenderingException;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
-use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Core\ExceptionHandling\Exceptions\ErrorViewException;
 
 final class ViewBasedHtmlErrorRendererTest extends FrameworkTestCase
 {

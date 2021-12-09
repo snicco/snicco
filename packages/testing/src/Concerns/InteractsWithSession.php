@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Support\Str;
 use Snicco\Session\Session;
-use Snicco\Application\Application;
+use Snicco\Core\Application\Application;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;

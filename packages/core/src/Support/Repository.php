@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
 
 use ArrayAccess;
 

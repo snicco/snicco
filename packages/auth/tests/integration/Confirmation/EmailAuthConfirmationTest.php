@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Auth\integration\Confirmation;
 
-use Snicco\Contracts\MagicLink;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Routing\UrlGenerator;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Testing\TestDoubles\TestMagicLink;
 

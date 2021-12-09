@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Support\WP;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
 
 class AdminRoutesTest extends RoutingTestCase

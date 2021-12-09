@@ -6,13 +6,13 @@ namespace Tests\ViewBundle\integration;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\Core\Contracts\CreatesHtmlResponse;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\ViewBundle\ViewResponseFactory;
-use Snicco\ExceptionHandling\HtmlErrorRender;
+use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Snicco\ViewBundle\ResponseFactoryWithViews;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Implementations\PHPViewFactory;

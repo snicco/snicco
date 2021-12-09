@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 trait GathersMiddleware
 {

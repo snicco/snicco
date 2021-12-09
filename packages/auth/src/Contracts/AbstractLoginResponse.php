@@ -6,7 +6,7 @@ namespace Snicco\Auth\Contracts;
 
 use WP_User;
 use Snicco\Auth\Traits\UsesCurrentRequest;
-use Snicco\Contracts\Responsable;
+use Snicco\Core\Contracts\Responsable;
 
 abstract class AbstractLoginResponse implements Responsable
 {

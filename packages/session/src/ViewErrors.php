@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Support\Arr;
+use Snicco\Core\Support\Arr;
 
 /**
  * @mixin MessageBag

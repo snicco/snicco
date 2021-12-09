@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Mail\MailBuilder;
-use Snicco\Application\Config;
+use Snicco\Core\Application\Config;
 use Snicco\Mail\Contracts\Mailer;
 use Snicco\Mail\Testing\FakeMailer;
-use Snicco\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Contracts\MailRenderer;
 use Snicco\Mail\ValueObjects\MailDefaults;

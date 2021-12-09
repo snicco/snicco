@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\View\Implementations;
 
 use Throwable;
-use Snicco\Support\Arr;
 use Snicco\View\ChildContent;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
@@ -80,7 +79,9 @@ final class PHPViewFactory implements ViewFactory
         
         if ($view->parent() !== null) {
             $view->parent()
-                 ->with(Arr::except($view->context(), '__content'))
+                 ->with(array_filter($view->context(), function ($value) {
+                     return !$value instanceof ChildContent;
+                 }))
                  ->with(
                      '__content',
                      new ChildContent(function () use ($view) {

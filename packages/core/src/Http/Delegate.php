@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;

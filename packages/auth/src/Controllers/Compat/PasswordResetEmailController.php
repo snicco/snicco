@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers\Compat;
 
 use WP_User;
-use Snicco\Support\WP;
-use Snicco\Http\Controller;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Controller;
 use Snicco\Mail\MailBuilder;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Traits\SendsPasswordResetMails;
 

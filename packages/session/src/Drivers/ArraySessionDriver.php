@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Drivers;
 
-use Snicco\Support\WP;
-use Snicco\Http\Psr7\Request;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 
 class ArraySessionDriver implements SessionDriver

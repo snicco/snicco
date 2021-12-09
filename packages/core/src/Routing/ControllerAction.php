@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\RouteAction;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Traits\ReflectsCallable;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Support\ReflectionDependencies;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\RouteAction;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Traits\ReflectsCallable;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Support\ReflectionDependencies;
 
 class ControllerAction implements RouteAction
 {

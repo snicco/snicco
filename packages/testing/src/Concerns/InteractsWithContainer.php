@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Http\ResponseEmitter;
-use Snicco\Http\ResponsePreparation;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Testing\TestResponseEmitter;
 
 trait InteractsWithContainer

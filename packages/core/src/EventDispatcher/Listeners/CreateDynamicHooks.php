@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Listeners;
+namespace Snicco\Core\EventDispatcher\Listeners;
 
 use Snicco\EventDispatcher\EventMapper;
-use Snicco\EventDispatcher\Events\AdminInit;
-use Snicco\EventDispatcher\Events\IncomingAdminRequest;
+use Snicco\Core\EventDispatcher\Events\AdminInit;
+use Snicco\Core\EventDispatcher\Events\IncomingAdminRequest;
 
 class CreateDynamicHooks
 {

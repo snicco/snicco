@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\ViewBundle;
 
 use Snicco\View\ViewEngine;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\ResponseFactory;
 use Psr\Http\Message\StreamInterface;
-use Snicco\Http\Responses\NullResponse;
-use Snicco\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Responses\NullResponse;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 
 /**

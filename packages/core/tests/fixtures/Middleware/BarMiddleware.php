@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\Middleware;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
 class BarMiddleware extends Middleware

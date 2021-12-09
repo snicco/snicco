@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Factories;
+namespace Snicco\Core\Factories;
 
-use Snicco\Contracts\Condition;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Routing\ConditionBlueprint;
-use Snicco\Support\ReflectionDependencies;
-use Snicco\Routing\Conditions\NegateCondition;
-use Snicco\Routing\Conditions\CustomCondition;
+use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Routing\ConditionBlueprint;
+use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Routing\Conditions\NegateCondition;
+use Snicco\Core\Routing\Conditions\CustomCondition;
 
 class RouteConditionFactory
 {

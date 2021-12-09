@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Illuminate;
 
 use Closure;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Illuminate\Container\Container;
-use Snicco\Shared\FrozenServiceException;
+use Snicco\Core\Shared\FrozenServiceException;
 
 final class IlluminateContainerAdapter extends ContainerAdapter
 {

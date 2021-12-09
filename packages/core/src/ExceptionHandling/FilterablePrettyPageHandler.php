@@ -1,8 +1,8 @@
 <?php
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
-use Snicco\Support\Str;
+use Snicco\Core\Support\Str;
 use Whoops\Exception\Frame;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Exception\FrameCollection;

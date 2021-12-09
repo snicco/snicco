@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
 
 /**
  * @internal

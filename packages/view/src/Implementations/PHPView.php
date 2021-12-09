@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\View\Implementations;
 
-use Snicco\Support\WP;
-use Snicco\Support\Arr;
 use Snicco\View\Contracts\ViewInterface;
+
+use function \get_file_data;
 
 /**
  * @api
@@ -109,7 +109,11 @@ class PHPView implements ViewInterface
             return $this->context;
         }
         
-        return Arr::get($this->context, $key, $default);
+        if(isset($this->context[$key])) {
+            return $this->context[$key];
+        }
+        
+        return $default;
     }
     
     /**
@@ -131,7 +135,7 @@ class PHPView implements ViewInterface
     private function parseFileHeaders() :array
     {
         return array_filter(
-            WP::fileHeaderData(
+            get_file_data(
                 $this->filepath,
                 [self::PARENT_FILE_INDICATOR]
             )

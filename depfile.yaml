@@ -1,0 +1,26 @@
+paths:
+  - ./packages
+exclude_files:
+  - '#.*Test.*#'
+layers:
+
+  - name: core
+    collectors:
+      - type: bool
+        must:
+          - type: directory
+            regex: packages/core/.*
+        must_not:
+          - type: className
+            regex: .*ApplicationMixin.*
+
+  - name: view
+    collectors:
+      - type: className
+        regex: .*Snicco\\View\\.*
+
+
+ruleset: [ ]
+
+
+

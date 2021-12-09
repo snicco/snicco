@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\TestDoubles;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
 
 class TestMagicLink extends MagicLink
 {

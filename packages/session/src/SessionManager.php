@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Http\Cookie;
-use Snicco\Http\Cookies;
-use Snicco\Http\Psr7\Request;
-use Snicco\Traits\HasLottery;
-use Snicco\Http\ResponseEmitter;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Http\Cookie;
+use Snicco\Core\Http\Cookies;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Traits\HasLottery;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Events\SessionWasRegenerated;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Contracts\SessionManagerInterface;

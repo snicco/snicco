@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Responses;
+namespace Snicco\Core\Http\Responses;
 
 use LogicException;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Response;
-use Snicco\Support\MessageBag;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Support\MessageBag;
 use Illuminate\Contracts\Support\MessageProvider;
 
 class RedirectResponse extends Response

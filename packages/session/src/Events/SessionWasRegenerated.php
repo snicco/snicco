@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Session\Events;
 
 use Snicco\Session\Session;
-use Snicco\EventDispatcher\Events\CoreEvent;
+use Snicco\Core\EventDispatcher\Events\CoreEvent;
 
 class SessionWasRegenerated extends CoreEvent
 {

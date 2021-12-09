@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
-use Snicco\Support\Arr;
-use Snicco\Routing\Pipeline;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Http\Responses\NullResponse;
-use Snicco\Middleware\Core\RouteRunner;
-use Snicco\Middleware\Core\ShareCookies;
-use Snicco\Middleware\Core\MethodOverride;
-use Snicco\Http\Responses\DelegatedResponse;
-use Snicco\Middleware\Core\RoutingMiddleware;
-use Snicco\EventDispatcher\Events\ResponseSent;
-use Snicco\Middleware\Core\SetRequestAttributes;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Http\Responses\NullResponse;
+use Snicco\Core\Middleware\Core\RouteRunner;
+use Snicco\Core\Middleware\Core\ShareCookies;
+use Snicco\Core\Middleware\Core\MethodOverride;
+use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Middleware\Core\RoutingMiddleware;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Middleware\Core\AppendSpecialPathSuffix;
-use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
+use Snicco\Core\Middleware\Core\AppendSpecialPathSuffix;
+use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
 
 class HttpKernel
 {

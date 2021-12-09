@@ -5,24 +5,24 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Mockery;
-use Snicco\Support\WP;
-use Snicco\Support\Str;
-use Snicco\Support\Arr;
-use Snicco\Support\Carbon;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Support\Carbon;
 use Snicco\Session\Session;
-use Snicco\Routing\Pipeline;
-use Snicco\Contracts\MagicLink;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Routing\UrlGenerator;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Factories\MiddlewareFactory;
-use Snicco\Middleware\Core\ShareCookies;
-use Snicco\Middleware\ValidateSignature;
+use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Middleware\Core\ShareCookies;
+use Snicco\Core\Middleware\ValidateSignature;
 use Snicco\Testing\TestDoubles\TestMagicLink;
 use Snicco\Session\Drivers\ArraySessionDriver;
-use Snicco\ExceptionHandling\NullExceptionHandler;
+use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
-use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
+use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class ValidateSignatureTest extends MiddlewareTestCase
 {

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use WP_User;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Responsable;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Responsable;
 use Snicco\Auth\Events\UserDeleted;
 use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Auth\Contracts\DeletesUsers;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\CreatesNewUser;

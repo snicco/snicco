@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
-use Snicco\Support\Arr;
-use Snicco\Routing\Route;
-use Snicco\Routing\Router;
-use Snicco\Contracts\Condition;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\Router;
+use Snicco\Core\Contracts\Condition;
 
 trait HoldsRouteBlueprint
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\ExceptionHandling\Exceptions;
+namespace Snicco\Core\ExceptionHandling\Exceptions;
 
 use Throwable;
 use RuntimeException;

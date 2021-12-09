@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 
 class ApiRoutesTest extends FrameworkTestCase
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
 
 use WP_User;
 
 /**
  * mixin class for ide support.
  *
- * @see \Snicco\Support\WordpressApi
+ * @see \Snicco\Core\Support\WordpressApi
  * @codeCoverageIgnore
  */
 class WordpressApiMixin
@@ -105,7 +105,7 @@ class WordpressApiMixin
      * Get the current user's ID
      *
      * @return int The current user's ID, or 0 if no user is logged in.
-     * @see \Snicco\Support\WordpressApi::userId()
+     * @see \Snicco\Core\Support\WordpressApi::userId()
      */
     public static function userId() :int
     {
@@ -150,7 +150,7 @@ class WordpressApiMixin
      *                             Default false.
      *
      * @return string The login URL. Not HTML-encoded.
-     * @see \Snicco\Support\WordpressApi::loginUrl()
+     * @see \Snicco\Core\Support\WordpressApi::loginUrl()
      */
     public static function loginUrl(string $redirect_on_login_to = '', bool $force_auth = false) :string
     {
@@ -168,7 +168,7 @@ class WordpressApiMixin
      *     ID.
      *
      * @return bool
-     * @see \Snicco\Support\WordpressApi::currentUserCan()
+     * @see \Snicco\Core\Support\WordpressApi::currentUserCan()
      * @see \current_user_can()
      */
     public static function currentUserCan(string $cap, ...$args) :bool
@@ -184,7 +184,7 @@ class WordpressApiMixin
      *
      * @return string[]
      * @see \get_file_data()
-     * @see \Snicco\Support\WordpressApi::fileHeaderData();
+     * @see \Snicco\Core\Support\WordpressApi::fileHeaderData();
      */
     public static function fileHeaderData(string $file, array $default_headers = [], string $context = '') :array
     {

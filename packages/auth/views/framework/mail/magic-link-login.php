@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 
 ?>
 

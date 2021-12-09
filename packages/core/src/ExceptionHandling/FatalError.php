@@ -1,6 +1,6 @@
 <?php
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 /*
  * Exact copy of the Symfony Fatal Error class

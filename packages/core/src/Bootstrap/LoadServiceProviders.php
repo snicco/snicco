@@ -1,19 +1,19 @@
 <?php
 
-namespace Snicco\Bootstrap;
+namespace Snicco\Core\Bootstrap;
 
-use Snicco\Application\Config;
-use Snicco\Contracts\Bootstrapper;
-use Snicco\Application\Application;
-use Snicco\Http\HttpServiceProvider;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Routing\RoutingServiceProvider;
-use Snicco\Factories\FactoryServiceProvider;
-use Snicco\EventDispatcher\EventServiceProvider;
-use Snicco\Middleware\MiddlewareServiceProvider;
-use Snicco\Application\ApplicationServiceProvider;
-use Snicco\ExceptionHandling\ExceptionServiceProvider;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Contracts\Bootstrapper;
+use Snicco\Core\Application\Application;
+use Snicco\Core\Http\HttpServiceProvider;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Routing\RoutingServiceProvider;
+use Snicco\Core\Factories\FactoryServiceProvider;
+use Snicco\Core\EventDispatcher\EventServiceProvider;
+use Snicco\Core\Middleware\MiddlewareServiceProvider;
+use Snicco\Core\Application\ApplicationServiceProvider;
+use Snicco\Core\ExceptionHandling\ExceptionServiceProvider;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class LoadServiceProviders implements Bootstrapper
 {
