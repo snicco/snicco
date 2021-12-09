@@ -6,7 +6,6 @@ if ( ! defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
 
-$root_dir = getenv('WP_FOLDER').DIRECTORY_SEPARATOR.'framework';
 $repository_root_dir = getenv('REPOSITORY_ROOT_DIR');
 
 if ( ! defined('REPOSITORY_ROOT_DIR')) {
@@ -22,7 +21,7 @@ if ( ! defined('SHARED_FIXTURES_DIR')) {
 }
 
 if ( ! defined('PACKAGES_DIR')) {
-    define('PACKAGES_DIR', $root_dir.DS.'packages');
+    define('PACKAGES_DIR', $repository_root_dir.DS.'packages');
 }
 
 if ( ! defined('SITE_URL')) {
