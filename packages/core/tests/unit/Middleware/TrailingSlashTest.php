@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Core\Routing\UrlGenerator;
 use Tests\Core\MiddlewareTestCase;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Middleware\TrailingSlash;
 use Snicco\Core\Http\StatelessRedirector;
-use Snicco\Testing\TestDoubles\TestMagicLink;
+use Snicco\Core\Routing\InMemoryMagicLink;
 
 class TrailingSlashTest extends MiddlewareTestCase
 {
@@ -20,7 +20,7 @@ class TrailingSlashTest extends MiddlewareTestCase
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             new StatelessRedirector(
-                $url = new UrlGenerator($this->routeUrlGenerator(), new TestMagicLink(), true),
+                $url = new UrlGenerator($this->routeUrlGenerator(), new InMemoryMagicLink(), true),
                 $this->psrResponseFactory()
             )
         );

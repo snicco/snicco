@@ -2,12 +2,97 @@ paths:
   - ./packages
 exclude_files:
   - '#.*Test.*#'
+
+#temporary @todo remove after validation refactoring
+skip_violations:
+  Snicco\Core\Http\Psr7\Request:
+    - Snicco\Validation\Validator
+
 layers:
+
+  - name: auth
+    collectors:
+      - type: className
+        regex: .*Snicco\\Auth\\.*
+
+  - name: better_wp_hooks
+    collectors:
+      - type: className
+        regex: .*Snicco\\EventDispatcher\\.*
+
+  - name: better_wp_mail
+    collectors:
+      - type: className
+        regex: .*Snicco\\Mail\\.*
+
+
+  - name: better_wp_mail_bundle
+    collectors:
+      - type: className
+        regex: .*Snicco\\MailBundle\\.*
+
+
+  - name: blade
+    collectors:
+      - type: className
+        regex: .*Snicco\\Blade\\.*
+
+
+  - name: blade_bundle
+    collectors:
+      - type: className
+        regex: .*Snicco\\BladeBundle\\.*
 
   - name: core
     collectors:
       - type: className
         regex: .*Snicco\\Core\\.*
+
+  - name: defuse
+    collectors:
+      - type: className
+        regex: .*Snicco\\DefuseEncryption\\.*
+
+  - name: eloquent
+    collectors:
+      - type: className
+        regex: .*Snicco\\Database\\.*
+
+  - name: eloquent_bundle
+    collectors:
+      - type: className
+        regex: .*Snicco\\EloquentBundle\\.*
+
+  - name: illuminate_container_bridge
+    collectors:
+      - type: className
+        regex: .*Snicco\\Illuminate\\.*
+
+  - name: pimple_container_bridge
+    collectors:
+      - type: className
+        regex: .*Snicco\\PimpleContainer\\.*
+
+  # @todo deptrac sessions
+  #  - name: session
+  #    collectors:
+  #      - type: className
+  #        regex: .*Snicco\\Session\\.*
+
+  - name: support
+    collectors:
+      - type: className
+        regex: .*Snicco\\Support\\.*
+
+  - name: testing
+    collectors:
+      - type: className
+        regex: .*Snicco\\Testing\\.*
+
+  - name: validation_bundle
+    collectors:
+      - type: className
+        regex: .*Snicco\\Validation\\.*
 
   - name: view
     collectors:
@@ -19,15 +104,10 @@ layers:
       - type: className
         regex: .*Snicco\\ViewBundle\\.*
 
-
-  - name: support
-    collectors:
-      - type: className
-        regex: .*Snicco\\Support\\.*
-
 ruleset:
   core:
     - support
+    - better_wp_hooks
 
   view:
     - support
@@ -36,4 +116,46 @@ ruleset:
     - +core
     - view
 
+  auth:
+    - +core
+    - +view_bundle
+    - +better_wp_mail_bundle
+    - validation_bundle
 
+  blade:
+    - view
+
+  blade_bundle:
+    - +view_bundle
+    - blade
+    - core
+
+  defuse:
+    - +core
+
+  better_wp_mail_bundle:
+    - +core
+    - +view_bundle
+    - better_wp_mail
+
+  eloquent_bundle:
+    - +core
+    - eloquent
+
+  illuminate_container_bridge:
+    - +core
+
+  pimple_container_bridge:
+    - +core
+
+  validation_bundle:
+    - +core
+
+  testing:
+    - +core
+    - +view_bundle
+    - +better_wp_mail_bundle
+
+# @todo deptrac sessions
+#  session:
+#    - +core

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Database\Illuminate;
 
-use Snicco\Support\Str;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory as WithEloquentFactory;
 

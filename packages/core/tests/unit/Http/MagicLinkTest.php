@@ -6,8 +6,8 @@ namespace Tests\Core\unit\Http;
 
 use Snicco\Core\Support\Carbon;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Routing\InMemoryMagicLink;
 use Tests\Core\unit\Routing\UrlGeneratorTest;
-use Snicco\Testing\TestDoubles\TestMagicLink;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 
 /**
@@ -17,13 +17,13 @@ use Tests\Core\fixtures\TestDoubles\TestRequest;
 class MagicLinkTest extends UnitTest
 {
     
-    private TestMagicLink $magic_link;
-    private TestRequest   $request;
-    private Carbon        $expires;
+    private InMemoryMagicLink $magic_link;
+    private TestRequest       $request;
+    private Carbon            $expires;
     
     protected function setUp() :void
     {
-        $this->magic_link = new TestMagicLink();
+        $this->magic_link = new InMemoryMagicLink();
         $this->magic_link->setLottery([0, 100]);
         $this->request = TestRequest::from('GET', 'foo');
         $this->expires = Carbon::now();

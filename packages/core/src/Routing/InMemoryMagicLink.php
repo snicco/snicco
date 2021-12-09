@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Testing\TestDoubles;
+namespace Snicco\Core\Routing;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 
-class TestMagicLink extends MagicLink
+class InMemoryMagicLink extends MagicLink
 {
     
     private array $links = [];

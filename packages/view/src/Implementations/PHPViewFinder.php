@@ -6,9 +6,6 @@ namespace Snicco\View\Implementations;
 
 use Snicco\View\FilePath;
 
-/**
- * @internal
- */
 class PHPViewFinder
 {
     
@@ -24,11 +21,17 @@ class PHPViewFinder
         $this->directories = $this->normalize($directories);
     }
     
+    /**
+     * @interal
+     */
     public function exists(string $view_name) :bool
     {
         return $this->filePath($view_name) !== null;
     }
     
+    /**
+     * @interal
+     */
     public function filePath(string $view_name) :?string
     {
         if (is_file($view_name)) {
@@ -50,6 +53,9 @@ class PHPViewFinder
         return null;
     }
     
+    /**
+     * @interal
+     */
     public function includeFile(string $path, array $context)
     {
         return (static function () use ($path, $context) {
@@ -74,8 +80,8 @@ class PHPViewFinder
     private function normalizeViewName(string $view_name)
     {
         $name = strstr($view_name, '.php', true);
-        $name = ($name===false) ? $view_name : $name;
-    
+        $name = ($name === false) ? $view_name : $name;
+        
         $name = trim($name, '/');
         return str_replace('.', '/', $name);
     }
