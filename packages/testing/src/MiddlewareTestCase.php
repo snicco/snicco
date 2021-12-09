@@ -13,11 +13,11 @@ use Snicco\Core\Contracts\Middleware;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Http\StatelessRedirector;
-use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\UriFactoryInterface;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Routing\InMemoryMagicLink;
+use Snicco\Core\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Testing\TestDoubles\TestMagicLink;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
@@ -98,7 +98,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     {
         return new UrlGenerator(
             $this->routeUrlGenerator(),
-            new TestMagicLink(),
+            new InMemoryMagicLink(),
             false
         );
     }

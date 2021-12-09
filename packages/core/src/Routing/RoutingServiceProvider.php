@@ -15,7 +15,6 @@ use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Contracts\RouteUrlGenerator;
 use Snicco\Core\Factories\MiddlewareFactory;
-use Snicco\Testing\TestDoubles\TestMagicLink;
 use Snicco\Core\Contracts\RouteCollectionInterface;
 use Snicco\Core\Routing\Conditions\CustomCondition;
 use Snicco\Core\Routing\Conditions\NegateCondition;
@@ -139,7 +138,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(MagicLink::class, function () {
             if ($this->app->isRunningUnitTest()) {
-                return new TestMagicLink();
+                return new InMemoryMagicLink();
             }
             
             $magic_link = new DatabaseMagicLink('magic_links');

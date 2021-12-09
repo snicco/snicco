@@ -14,6 +14,7 @@
     "sniccowp/core": "dev-master",
     "sniccowp/defuse-php-encryption-bundle": "dev-master",
     "sniccowp/session": "dev-master",
+    "sniccowp/validation-bundle": "dev-master",
     "sniccowp/view-bundle": "dev-master",
     "sniccowp/better-wp-mail-bundle": "dev-master",
     "akrabat/ip-address-middleware": "^2.0",

@@ -7,7 +7,6 @@ namespace Snicco\Core\Application;
 use Closure;
 use LogicException;
 use Snicco\Session\Session;
-use Snicco\Mail\MailBuilder;
 use Snicco\Session\CsrfField;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Routing\Router;
@@ -140,13 +139,6 @@ final class ApplicationMixin
      * @see Redirector
      */
     public static function redirect(?string $path = null, int $status = 302)
-    {
-    }
-    
-    /**
-     * @return MailBuilder
-     */
-    public static function mail() :MailBuilder
     {
     }
     

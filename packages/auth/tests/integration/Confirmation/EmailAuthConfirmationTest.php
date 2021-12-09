@@ -7,7 +7,7 @@ namespace Tests\Auth\integration\Confirmation;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Routing\UrlGenerator;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Testing\TestDoubles\TestMagicLink;
+use Snicco\Core\Routing\InMemoryMagicLink;
 
 class EmailAuthConfirmationTest extends AuthTestCase
 {
@@ -46,7 +46,7 @@ class EmailAuthConfirmationTest extends AuthTestCase
         $this->travelIntoFuture(10);
         $this->assertFalse($response->session()->hasValidAuthConfirmToken());
         
-        /** @var TestMagicLink $magic_link */
+        /** @var InMemoryMagicLink $magic_link */
         $magic_link = $this->app->resolve(MagicLink::class);
         $this->assertCount(0, $magic_link->getStored());
     }

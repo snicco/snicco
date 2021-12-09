@@ -6,13 +6,13 @@ namespace Tests\Codeception\shared\helpers;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\UrlGenerator;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Http\StatelessRedirector;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Snicco\Core\Contracts\ResponseFactory;
 use Psr\Http\Message\UriFactoryInterface;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Routing\InMemoryMagicLink;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Testing\TestDoubles\TestMagicLink;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Psr\Http\Message\UploadedFileFactoryInterface;
@@ -66,7 +66,7 @@ trait CreatePsr17Factories
     
     protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
     {
-        $magic_link = new TestMagicLink();
+        $magic_link = new InMemoryMagicLink();
         
         $this->magic_link = $magic_link;
         

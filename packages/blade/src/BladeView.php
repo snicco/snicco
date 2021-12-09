@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Blade;
 
 use Throwable;
-use Snicco\Support\Arr;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\View\Exceptions\ViewRenderingException;
 use Illuminate\Contracts\View\View as IlluminateViewContract;
@@ -65,11 +64,17 @@ final class BladeView implements ViewInterface, IlluminateViewContract
     
     public function context(string $key = null, $default = null)
     {
+        $data = $this->illuminate_view->getData();
+        
         if ($key === null) {
-            return $this->illuminate_view->getData();
+            return $data;
         }
         
-        return Arr::get($this->illuminate_view->getData(), $key, $default);
+        if (isset($data[$key])) {
+            return $data[$key];
+        }
+        
+        return $default;
     }
     
     public function getData() :array
