@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Http\Psr7\Request as Request;
+use Snicco\Core\Http\Psr7\Request as Request;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\Routing\Conditions\QueryStringCondition;
+use Snicco\Core\Routing\Conditions\QueryStringCondition;
 
 class RouteSegmentsTest extends RoutingTestCase
 {

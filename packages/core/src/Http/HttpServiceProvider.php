@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
 use RuntimeException;
-use Snicco\Routing\Pipeline;
+use Snicco\Core\Routing\Pipeline;
 use RKA\Middleware\IpAddress;
-use Snicco\Contracts\Redirector;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Controllers\ViewController;
-use Snicco\Controllers\RedirectController;
-use Snicco\Controllers\FallBackController;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Controllers\ViewController;
+use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Controllers\FallBackController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Shared;
+namespace Snicco\Core\Shared;
 
 use Throwable;
 use RuntimeException;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Snicco\ExceptionHandling\Exceptions;
+namespace Snicco\Core\ExceptionHandling\Exceptions;
 
 use Throwable;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\ResponseFactory;
 
 class ErrorViewException extends HttpException
 {

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Mockery;
-use Snicco\Support\WP;
-use Snicco\Http\Psr7\Request;
-use Snicco\Middleware\Authorize;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Authorize;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AuthorizeTest extends MiddlewareTestCase
 {

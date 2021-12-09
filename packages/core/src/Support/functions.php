@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support\Functions
+namespace Snicco\Core\Support\Functions
 {
     
     use Closure;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Contracts\Redirector;
-use Snicco\Http\StatelessRedirector;
-use Snicco\Controllers\RedirectController;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Http\StatelessRedirector;
+use Snicco\Core\Controllers\RedirectController;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
 
 class RedirectRoutesTest extends RoutingTestCase

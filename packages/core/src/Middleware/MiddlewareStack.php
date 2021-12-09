@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Routing\Route;
-use Snicco\Http\Psr7\Request;
-use Snicco\Traits\GathersMiddleware;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Traits\GathersMiddleware;
 
 class MiddlewareStack
 {

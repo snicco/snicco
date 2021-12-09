@@ -6,11 +6,11 @@ namespace Tests\Core\unit\Routing;
 
 use WP;
 use Mockery;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\EventDispatcher\Listeners\FilterWpQuery;
-use Snicco\EventDispatcher\Events\WPQueryFilterable;
+use Snicco\Core\EventDispatcher\Listeners\FilterWpQuery;
+use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 
 class RouteCachingTest extends RoutingTestCase
 {

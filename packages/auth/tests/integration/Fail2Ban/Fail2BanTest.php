@@ -2,7 +2,7 @@
 
 namespace Tests\Auth\integration\Fail2Ban;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Auth\Fail2Ban\Bannable;
 use Snicco\Auth\Fail2Ban\TestSysLogger;

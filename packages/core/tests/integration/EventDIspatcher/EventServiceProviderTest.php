@@ -10,8 +10,8 @@ use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
-use Snicco\EventDispatcher\DependencyInversionEventFactory;
-use Snicco\EventDispatcher\DependencyInversionListenerFactory;
+use Snicco\Core\EventDispatcher\DependencyInversionEventFactory;
+use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
 
 final class EventServiceProviderTest extends FrameworkTestCase
 {

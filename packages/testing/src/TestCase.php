@@ -6,20 +6,20 @@ namespace Snicco\Testing;
 
 use Mockery;
 use RuntimeException;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Snicco\Http\Delegate;
-use Snicco\Http\HttpKernel;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\HttpKernel;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
-use Snicco\Application\Config;
-use Snicco\Contracts\Middleware;
-use Snicco\Application\Application;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Application\Application;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Illuminate\Support\Facades\Facade;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -31,13 +31,13 @@ use Snicco\Testing\Concerns\MakesHttpRequests;
 use Snicco\Testing\Concerns\InteractsWithEvents;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Testing\Concerns\InteractsWithSession;
-use Snicco\ExceptionHandling\NullExceptionHandler;
+use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Concerns\InteractsWithContainer;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 
-use function Snicco\Support\Functions\classUsesRecursive;
+use function Snicco\Core\Support\Functions\classUsesRecursive;
 
 abstract class TestCase extends WPTestCase
 {

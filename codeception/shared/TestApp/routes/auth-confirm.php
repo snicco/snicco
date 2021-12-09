@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Routing\Router;
+use Snicco\Core\Routing\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
 
 TestApp::route()->prefix('auth-confirm')->name('auth.confirm.test')->group(

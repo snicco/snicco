@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Contracts;
 
 use WP_User;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 
 interface CreatesNewUser
 {

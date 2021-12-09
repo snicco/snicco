@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Mockery;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Middleware\Authenticate;
+use Snicco\Core\Middleware\Authenticate;
 
 class AuthenticateTest extends MiddlewareTestCase
 {

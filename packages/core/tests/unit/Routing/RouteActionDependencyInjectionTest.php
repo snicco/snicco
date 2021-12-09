@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\TestDependencies\Foo;

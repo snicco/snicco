@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Http;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Http\Responses\RedirectResponse;
-use Snicco\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
-use Snicco\Middleware\Core\EvaluateResponseMiddleware;
-use Snicco\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
 
 class HttpKernelTest extends RoutingTestCase
 {

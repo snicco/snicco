@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
+use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class ValidateSignature extends Middleware
 {

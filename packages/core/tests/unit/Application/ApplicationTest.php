@@ -8,17 +8,17 @@ use Closure;
 use Throwable;
 use Mockery as m;
 use RuntimeException;
-use Snicco\Support\WP;
-use Snicco\Http\Psr7\Request;
-use Snicco\Application\Config;
-use Snicco\Application\Application;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Application\Application;
+use Snicco\Core\Shared\ContainerAdapter;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Illuminate\IlluminateContainerAdapter;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationTest extends UnitTest
 {

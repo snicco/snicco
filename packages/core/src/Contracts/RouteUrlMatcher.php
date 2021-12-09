@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
-use Snicco\Routing\Route;
-use Snicco\Routing\RoutingResult;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\RoutingResult;
 
 interface RouteUrlMatcher
 {

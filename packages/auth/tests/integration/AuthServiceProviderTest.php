@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Auth\integration;
 
 use WP_Session_Tokens;
-use Snicco\Middleware\Secure;
+use Snicco\Core\Middleware\Secure;
 use Snicco\Session\SessionManager;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Auth\AuthSessionManager;
@@ -16,13 +16,13 @@ use Snicco\Session\Events\NewLogout;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Responses\PasswordLoginView;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Middleware\AuthenticateSession;
-use Snicco\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
@@ -36,7 +36,7 @@ use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class AuthServiceProviderTest extends AuthTestCase
 {

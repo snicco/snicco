@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Routing\Router;
+use Snicco\Core\Routing\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace Snicco\Bootstrap;
+namespace Snicco\Core\Bootstrap;
 
 use Throwable;
 use ErrorException;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseEmitter;
-use Snicco\Contracts\Bootstrapper;
-use Snicco\Application\Application;
-use Snicco\ExceptionHandling\FatalError;
-use Snicco\ExceptionHandling\PHPErrorLevel;
-use Snicco\Contracts\ExceptionHandler;
-use Snicco\ExceptionHandling\NativeErrorLogger;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Contracts\Bootstrapper;
+use Snicco\Core\Application\Application;
+use Snicco\Core\ExceptionHandling\FatalError;
+use Snicco\Core\ExceptionHandling\PHPErrorLevel;
+use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\ExceptionHandling\NativeErrorLogger;
 
 class HandlesExceptions implements Bootstrapper
 {

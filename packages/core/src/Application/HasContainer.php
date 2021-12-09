@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Core\Application;
 
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 
 trait HasContainer
 {

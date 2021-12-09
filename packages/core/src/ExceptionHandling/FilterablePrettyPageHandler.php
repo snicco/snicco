@@ -1,6 +1,6 @@
 <?php
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 use Snicco\Support\Str;
 use Whoops\Exception\Frame;

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\Core;
+namespace Snicco\Core\Middleware\Core;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Http\Responses\NullResponse;
-use Snicco\Http\Responses\DelegatedResponse;
-use Snicco\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Core\Http\Responses\NullResponse;
+use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
 
 class EvaluateResponseMiddleware extends Middleware
 {

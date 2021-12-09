@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
-use Snicco\Application\Config;
+use Snicco\Core\Application\Config;
 
 interface RouteRegistrar
 {

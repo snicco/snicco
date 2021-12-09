@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Controllers;
+namespace Snicco\Core\Controllers;
 
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
-use Snicco\Http\Responses\RedirectResponse;
-use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class RedirectController extends Controller
 {

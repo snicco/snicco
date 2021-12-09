@@ -7,14 +7,14 @@ namespace Tests\Core\integration\ExceptionHandling;
 use Whoops\Run;
 use ReflectionClass;
 use Whoops\RunInterface;
-use Snicco\Routing\Pipeline;
+use Snicco\Core\Routing\Pipeline;
 use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\ExceptionHandling\NullExceptionHandler;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Core\ExceptionHandling\NullExceptionHandler;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 
 class ExceptionServiceProviderTest extends FrameworkTestCase
 {

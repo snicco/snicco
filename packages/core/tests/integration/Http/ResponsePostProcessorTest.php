@@ -2,10 +2,10 @@
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Contracts\ResponseFactory;
-use Snicco\EventDispatcher\Events\DoShutdown;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 
 class ResponsePostProcessorTest extends FrameworkTestCase
 {

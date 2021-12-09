@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Auth\integration\Authenticators;
 
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;

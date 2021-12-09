@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\Controllers\Admin;
 
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\TestDependencies\Baz;
 use Tests\Core\fixtures\Middleware\MiddlewareWithDependencies;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing\FastRoute;
+namespace Snicco\Core\Routing\FastRoute;
 
 use Snicco\Support\Str;
-use Snicco\Support\Url;
-use Snicco\Routing\Route;
-use Snicco\Support\UrlParser;
+use Snicco\Core\Support\Url;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Support\UrlParser;
 
 class FastRouteSyntax
 {

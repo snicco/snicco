@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\EventDispatcher\Events\DoShutdown;
+use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 class RedirectRoutesTest extends FrameworkTestCase

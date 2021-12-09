@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Session\Drivers;
 
 use wpdb;
-use Snicco\Support\WP;
-use Snicco\Support\Carbon;
-use Snicco\Http\Psr7\Request;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Carbon;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 
 class DatabaseSessionDriver implements SessionDriver

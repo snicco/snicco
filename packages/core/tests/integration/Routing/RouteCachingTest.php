@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\integration\Routing;
 
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class RouteCachingTest extends FrameworkTestCase
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
-use Snicco\Application\Config;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Contracts\AbstractLoginView;
 
 class PasswordLoginView extends AbstractLoginView

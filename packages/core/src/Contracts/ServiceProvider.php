@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
-use Snicco\Support\WP;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
-use Snicco\Http\Psr7\Request;
-use Snicco\Application\Config;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Application\Application;
-use Snicco\Session\SessionServiceProvider;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Application\Application;
 
 abstract class ServiceProvider
 {
@@ -52,8 +51,7 @@ abstract class ServiceProvider
     /** Only use this function after all providers have been registered. */
     protected function sessionEnabled() :bool
     {
-        return $this->config->get('session.enabled', false)
-               && in_array(SessionServiceProvider::class, $this->config->get('app.providers', []));
+        return $this->config->get('session.enabled', false);
     }
     
     protected function validAppKey() :bool

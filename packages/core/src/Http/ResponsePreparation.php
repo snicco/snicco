@@ -1,11 +1,11 @@
 <?php
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\StreamFactoryInterface;
 
 use function headers_list;

@@ -6,17 +6,21 @@ namespace Tests\ViewBundle\integration;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
-use Snicco\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\ViewBundle\ViewResponseFactory;
-use Snicco\ExceptionHandling\HtmlErrorRender;
+use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\Core\Contracts\CreatesHtmlResponse;
 use Snicco\ViewBundle\ResponseFactoryWithViews;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Implementations\PHPViewFactory;
 use Snicco\ViewBundle\ViewBasedHtmlErrorRenderer;
+use Snicco\Core\ExceptionHandling\HtmlErrorRender;
+use Tests\View\fixtures\ViewComposers\FooComposer;
+use Tests\Codeception\shared\TestDependencies\Bar;
+use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 
 use const DS;
 
@@ -70,6 +74,32 @@ class ViewServiceProviderTest extends FrameworkTestCase
         );
         
         $this->assertSame($composers, $this->app->resolve(ViewComposerCollection::class));
+    }
+    
+    /** @test */
+    public function the_view_composer_factory_is_bound()
+    {
+        $this->bootApp();
+        $this->assertInstanceOf(
+            DependencyInjectionViewComposerFactory::class,
+            TestApp::resolve(DependencyInjectionViewComposerFactory::class)
+        );
+    }
+    
+    /** @test */
+    public function the_view_composer_namespace_can_be_configured_correctly()
+    {
+        $this->bootApp();
+        $this->app->container()->singleton(FooComposer::class, function () {
+            return new FooComposer(new Bar());
+        });
+        
+        /** @var DependencyInjectionViewComposerFactory $factory */
+        $factory = TestApp::resolve(DependencyInjectionViewComposerFactory::class);
+        
+        $composer = $factory->create('FooComposer');
+        
+        $this->assertInstanceOf(FooComposer::class, $composer);
     }
     
     /** @test */

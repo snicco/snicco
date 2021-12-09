@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Psr7;
+namespace Snicco\Core\Http\Psr7;
 
 use stdClass;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 
-use function Snicco\Support\Functions\dataGet;
+use function Snicco\Core\Support\Functions\dataGet;
 
 trait InteractsWithInput
 {

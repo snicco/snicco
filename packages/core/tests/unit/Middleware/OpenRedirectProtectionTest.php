@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Mockery;
-use Snicco\Support\WP;
-use Snicco\Routing\Route;
-use Snicco\Support\Carbon;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Support\Carbon;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Controllers\RedirectController;
-use Snicco\Middleware\Core\OpenRedirectProtection;
+use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Middleware\Core\OpenRedirectProtection;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class OpenRedirectProtectionTest extends MiddlewareTestCase

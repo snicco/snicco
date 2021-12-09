@@ -1,10 +1,10 @@
 <?php
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 use Snicco\Support\Arr;
-use Snicco\Support\Finder;
-use Snicco\Application\Application;
+use Snicco\Core\Support\Finder;
+use Snicco\Core\Application\Application;
 
 class WhoopsHandler
 {

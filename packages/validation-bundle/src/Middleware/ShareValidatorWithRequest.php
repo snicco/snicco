@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Validation\Middleware;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Snicco\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
 

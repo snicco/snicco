@@ -2,20 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\View;
+
 
 class FilePath
 {
     
-    /**
-     * Ensure path has a trailing slash.
-     *
-     * @param  string  $path
-     * @param  string  $slash
-     *
-     * @return string
-     */
-    public static function addTrailingSlash($path, string $slash = DIRECTORY_SEPARATOR) :string
+    public static function addTrailingSlash(string $path, string $slash = DIRECTORY_SEPARATOR) :string
     {
         $path = static::removeTrailingSlash($path);
         
@@ -23,14 +16,6 @@ class FilePath
         return preg_replace('~'.preg_quote($slash, '~').'*$~', $slash, $path);
     }
     
-    /**
-     * Ensure path does not have a trailing slash.
-     *
-     * @param  string  $path
-     * @param  string  $slash
-     *
-     * @return string
-     */
     public static function removeTrailingSlash(string $path, string $slash = DIRECTORY_SEPARATOR) :string
     {
         $path = static::normalize($path, $slash);
@@ -38,15 +23,6 @@ class FilePath
         return preg_replace('~'.preg_quote($slash, '~').'+$~', '', $path);
     }
     
-    /**
-     * Normalize a path's slashes according to the current OS.
-     * Solves mixed slashes that are sometimes returned by WordPress core functions.
-     *
-     * @param  string  $path
-     * @param  string  $slash
-     *
-     * @return string
-     */
     public static function normalize(string $path, string $slash = DIRECTORY_SEPARATOR) :string
     {
         return preg_replace('~['.preg_quote('/\\', '~').']+~', $slash, $path);
@@ -61,7 +37,7 @@ class FilePath
     
     public static function removeExtensions($file_name) :string
     {
-        return Str::beforeLast($file_name, '.');
+        return static::beforeLast($file_name, '.');
     }
     
     public static function name($file_path, string $ending = '')
@@ -69,10 +45,36 @@ class FilePath
         $name = pathinfo($file_path, PATHINFO_BASENAME);
         
         if ($ending) {
-            return Str::before($name, '.'.trim($ending, '.'));
+            return static::before($name, '.'.trim($ending, '.'));
         }
         
         return $name;
+    }
+    
+    private static function before(string $subject, string $search) :string
+    {
+        if ($search === '') {
+            return $subject;
+        }
+        
+        $result = strstr($subject, $search, true);
+        
+        return $result === false ? $subject : $result;
+    }
+    
+    private static function beforeLast(string $subject, string $search) :string
+    {
+        if ($search === '') {
+            return $subject;
+        }
+        
+        $pos = mb_strrpos($subject, $search);
+        
+        if ($pos === false) {
+            return $subject;
+        }
+        
+        return strstr($subject, 0, $pos);
     }
     
 }

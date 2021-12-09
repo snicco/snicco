@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Contracts\ConvertsToUrl;
+use Snicco\Core\Contracts\ConvertsToUrl;
 
 class AdminRoute extends Route implements ConvertsToUrl
 {

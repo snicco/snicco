@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
 use Closure;
 use Throwable;
 use LogicException;
 use Snicco\Support\Arr;
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
 use InvalidArgumentException;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Contracts\ExceptionHandler;
-use Snicco\Factories\MiddlewareFactory;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\Factories\MiddlewareFactory;
 use Psr\Http\Server\MiddlewareInterface;
 
 class Pipeline

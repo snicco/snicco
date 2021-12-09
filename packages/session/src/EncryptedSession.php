@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Shared\Encryptor;
+use Snicco\Core\Shared\Encryptor;
 use Snicco\Session\Contracts\SessionDriver;
-use Snicco\ExceptionHandling\Exceptions\EncryptException;
+use Snicco\Core\ExceptionHandling\Exceptions\EncryptException;
 
 class EncryptedSession extends Session
 {

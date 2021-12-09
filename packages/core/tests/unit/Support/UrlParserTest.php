@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
-use Snicco\Support\UrlParser;
+use Snicco\Core\Support\UrlParser;
 use Tests\Codeception\shared\UnitTest;
 
 class UrlParserTest extends UnitTest

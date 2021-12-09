@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Routing\RouteCollection;
-use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Contracts\RouteCollectionInterface;
-use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
-use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\Core\Routing\RouteCollection;
+use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
 
 /**
  * @internal

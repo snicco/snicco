@@ -6,8 +6,8 @@ namespace Tests\Core\unit\Http;
 
 use DateTime;
 use LogicException;
-use Snicco\Http\Cookie;
-use Snicco\Support\Carbon;
+use Snicco\Core\Http\Cookie;
+use Snicco\Core\Support\Carbon;
 use InvalidArgumentException;
 use Tests\Codeception\shared\UnitTest;
 

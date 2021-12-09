@@ -1,9 +1,10 @@
 <?php
 
-namespace Snicco\EventDispatcher\Events;
+namespace Snicco\Core\EventDispatcher\Events;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
+
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\EventDispatcher\Contracts\Mutable;
 
 class DoShutdown extends CoreEvent implements Mutable

@@ -2,32 +2,30 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Support\WP;
-use Snicco\Support\FilePath;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
-use Snicco\Http\DatabaseMagicLink;
-use Snicco\Contracts\RouteRegistrar;
-use Snicco\Contracts\RouteUrlMatcher;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Contracts\ExceptionHandler;
-use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Factories\MiddlewareFactory;
-use Snicco\Testing\TestDoubles\TestMagicLink;
-use Snicco\Contracts\RouteCollectionInterface;
-use Snicco\Routing\Conditions\CustomCondition;
-use Snicco\Routing\Conditions\NegateCondition;
-use Snicco\Routing\Conditions\PostIdCondition;
-use Snicco\Routing\Conditions\PostSlugCondition;
-use Snicco\Routing\Conditions\PostTypeCondition;
-use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
-use Snicco\Routing\Conditions\PostStatusCondition;
-use Snicco\Routing\Conditions\QueryStringCondition;
-use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
-use Snicco\Routing\Conditions\PostTemplateCondition;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Http\DatabaseMagicLink;
+use Snicco\Core\Contracts\RouteRegistrar;
+use Snicco\Core\Contracts\RouteUrlMatcher;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Routing\Conditions\CustomCondition;
+use Snicco\Core\Routing\Conditions\NegateCondition;
+use Snicco\Core\Routing\Conditions\PostIdCondition;
+use Snicco\Core\Routing\Conditions\PostSlugCondition;
+use Snicco\Core\Routing\Conditions\PostTypeCondition;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Routing\Conditions\PostStatusCondition;
+use Snicco\Core\Routing\Conditions\QueryStringCondition;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\Core\Routing\Conditions\PostTemplateCondition;
 
 class RoutingServiceProvider extends ServiceProvider
 {
@@ -112,7 +110,9 @@ class RoutingServiceProvider extends ServiceProvider
             
             return new RouteCollection(
                 $this->container->get(RouteUrlMatcher::class),
-                FilePath::addTrailingSlash($cache_dir).'__generated:snicco_wp_route_collection',
+                rtrim($cache_dir, DIRECTORY_SEPARATOR)
+                .DIRECTORY_SEPARATOR
+                .'__generated:snicco_wp_route_collection',
             );
         });
     }
@@ -138,7 +138,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(MagicLink::class, function () {
             if ($this->app->isRunningUnitTest()) {
-                return new TestMagicLink();
+                return new InMemoryMagicLink();
             }
             
             $magic_link = new DatabaseMagicLink('magic_links');

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
 interface Responsable
 {

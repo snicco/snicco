@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Support\ReflectionDependencies;
+use Snicco\Core\Support\ReflectionDependencies;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\helpers\CreateContainer;

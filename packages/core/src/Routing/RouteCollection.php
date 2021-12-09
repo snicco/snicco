@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
 use RuntimeException;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
-use Snicco\Http\Psr7\Request;
-use Snicco\Traits\ValidatesRoutes;
-use Snicco\Contracts\RouteUrlMatcher;
-use Snicco\Factories\RouteConditionFactory;
-use Snicco\Contracts\RouteCollectionInterface;
-use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Traits\ValidatesRoutes;
+use Snicco\Core\Contracts\RouteUrlMatcher;
+use Snicco\Core\Factories\RouteConditionFactory;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
 
 class RouteCollection implements RouteCollectionInterface
 {

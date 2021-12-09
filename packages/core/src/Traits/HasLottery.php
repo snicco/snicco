@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
 trait HasLottery
 {

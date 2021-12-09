@@ -6,7 +6,7 @@ namespace Tests\Core\unit\Http;
 
 use LogicException;
 use Snicco\Support\Str;
-use Snicco\Http\MethodField;
+use Snicco\Core\Http\MethodField;
 use Tests\Codeception\shared\UnitTest;
 
 use const TEST_APP_KEY;

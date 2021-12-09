@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
 use LogicException;
 

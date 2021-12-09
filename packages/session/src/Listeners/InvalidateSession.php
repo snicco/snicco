@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Listeners;
 
-use Snicco\Http\Cookies;
+use Snicco\Core\Http\Cookies;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseEmitter;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
 use Snicco\Session\Events\NewLogin;
 use Snicco\Session\Events\NewLogout;

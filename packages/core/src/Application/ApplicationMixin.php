@@ -2,24 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Core\Application;
 
 use Closure;
 use LogicException;
-use Snicco\Routing\Route;
-use Snicco\Routing\Router;
 use Snicco\Session\Session;
-use Snicco\Mail\MailBuilder;
-use Snicco\Http\MethodField;
 use Snicco\Session\CsrfField;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\Redirector;
-use Snicco\View\GlobalViewContext;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\View\Contracts\ViewInterface;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\Router;
+use Snicco\Core\Http\MethodField;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\Responses\RedirectResponse;
 
 /**
  * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -146,13 +143,6 @@ final class ApplicationMixin
     }
     
     /**
-     * @return MailBuilder
-     */
-    public static function mail() :MailBuilder
-    {
-    }
-    
-    /**
      * Creates hidden csrf input fields based on the current user session.
      * If a csrf token is present in the session its used if not a new hash is created and saved
      * in the session.
@@ -226,54 +216,6 @@ final class ApplicationMixin
      * @return  ResponseFactory
      */
     public static function response() :ResponseFactory
-    {
-    }
-    
-    /**
-     * Create a view
-     *
-     * @param  string|string[]  $views
-     *
-     * @return ViewInterface
-     */
-    public static function view($views) :ViewInterface
-    {
-    }
-    
-    /**
-     * Output the specified view.
-     *
-     * @param  string|string[]  $views
-     * @param  array<string, mixed>  $context
-     *
-     * @return string
-     * @see    \Snicco\View\Contracts\ViewInterface::toString()
-     */
-    public static function render($views, array $context = []) :string
-    {
-    }
-    
-    /**
-     * Add a new view composer to the given views
-     *
-     * @param  string|string[]  $views
-     * @param  string|array|callable|Closure  $callable
-     *
-     * @return void
-     * @see \Snicco\View\ViewComposerCollection::addComposer()
-     */
-    public static function addComposer($views, $callable) :void
-    {
-    }
-    
-    /**
-     * Returns the global variable bag available to all views.
-     * Arrays are converted to an instance of Repository.
-     * Returns the global context if no args are passed
-     *
-     * @see GlobalViewContext::add()
-     */
-    public static function globals(?string $name = null, $context = null) :GlobalViewContext
     {
     }
     

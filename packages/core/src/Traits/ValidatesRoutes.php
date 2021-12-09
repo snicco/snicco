@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
-use Snicco\Routing\Route;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 trait ValidatesRoutes
 {

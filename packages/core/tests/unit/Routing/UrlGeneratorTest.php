@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Snicco\Support\Str;
-use Snicco\Support\Carbon;
+use Snicco\Core\Support\Carbon;
 use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 

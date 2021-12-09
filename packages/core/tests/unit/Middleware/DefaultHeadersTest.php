@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Response;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Middleware\DefaultHeaders;
+use Snicco\Core\Middleware\DefaultHeaders;
 
 class DefaultHeadersTest extends MiddlewareTestCase
 {

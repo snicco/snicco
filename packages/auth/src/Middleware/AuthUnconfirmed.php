@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Routing\UrlGenerator;
 use Psr\Http\Message\ResponseInterface;
 
 class AuthUnconfirmed extends Middleware

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing\Conditions;
+namespace Snicco\Core\Routing\Conditions;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Condition;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Condition;
 
 class PostTemplateCondition implements Condition
 {

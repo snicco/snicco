@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Application;
 
-use Snicco\Application\Config;
+use Snicco\Core\Application\Config;
 use Tests\Codeception\shared\UnitTest;
 
 class ConfigTest extends UnitTest

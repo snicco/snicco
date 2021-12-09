@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\ExceptionHandling\fixtures;
 
 use Throwable;
-use Snicco\Http\Psr7\Request;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 
 class TestExceptionHandler extends ProductionExceptionHandler
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Session\integration;
 
-use Snicco\Http\Cookies;
-use Snicco\Http\ResponseEmitter;
+use Snicco\Core\Http\Cookies;
+use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\SessionServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Session\Events\SessionWasRegenerated;

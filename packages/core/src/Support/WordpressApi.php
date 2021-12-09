@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
 
 use WP_User;
 use BadMethodCallException;

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Support\WP;
-use Snicco\Support\Url;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Url;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
-use Snicco\Traits\InteractsWithTime;
-use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Traits\InteractsWithTime;
+use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class UrlGenerator
 {

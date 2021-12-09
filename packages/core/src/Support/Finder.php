@@ -1,6 +1,6 @@
 <?php
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
 
 class Finder
 {

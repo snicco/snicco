@@ -6,12 +6,12 @@ namespace Tests\Session\integration;
 
 use Snicco\Session\Session;
 use Snicco\Session\CsrfField;
-use Snicco\Contracts\Redirector;
+use Snicco\Core\Contracts\Redirector;
 use Snicco\View\GlobalViewContext;
 use Snicco\Session\SessionManager;
-use Snicco\Http\StatelessRedirector;
+use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Session\EncryptedSession;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Session\StatefulRedirector;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;

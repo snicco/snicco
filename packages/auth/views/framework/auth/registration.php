@@ -20,7 +20,7 @@ declare(strict_types=1);
 		
 		<div class="notification is-info is-light">
 			Provide your favorite email address to register at <?= esc_html(
-					\Snicco\Support\WP::siteName()
+					\Snicco\Core\Support\WP::siteName()
 			) ?>. <br> We will sent you a confirmation email with a link to finish you registration.
 		</div>
 	<?php endif; ?>

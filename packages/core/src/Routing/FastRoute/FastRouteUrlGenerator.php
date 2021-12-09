@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing\FastRoute;
+namespace Snicco\Core\Routing\FastRoute;
 
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Snicco\Routing\Route;
-use Snicco\Contracts\ConvertsToUrl;
-use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Contracts\RouteCollectionInterface;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Contracts\ConvertsToUrl;
+use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class FastRouteUrlGenerator implements RouteUrlGenerator
 {

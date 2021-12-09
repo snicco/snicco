@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
-use Snicco\Application\Config;
+use Snicco\Core\Application\Config;
 use Symfony\Component\Finder\Finder;
-use Snicco\Contracts\RouteRegistrar;
+use Snicco\Core\Contracts\RouteRegistrar;
 use Symfony\Component\Finder\SplFileInfo;
 
 class RouteFileRegistrar implements RouteRegistrar
