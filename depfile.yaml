@@ -6,21 +6,34 @@ layers:
 
   - name: core
     collectors:
-      - type: bool
-        must:
-          - type: directory
-            regex: packages/core/.*
-        must_not:
-          - type: className
-            regex: .*ApplicationMixin.*
+      - type: className
+        regex: .*Snicco\\Core\\.*
 
   - name: view
     collectors:
       - type: className
         regex: .*Snicco\\View\\.*
 
+  - name: view_bundle
+    collectors:
+      - type: className
+        regex: .*Snicco\\ViewBundle\\.*
 
-ruleset: [ ]
 
+  - name: support
+    collectors:
+      - type: className
+        regex: .*Snicco\\Support\\.*
+
+ruleset:
+  core:
+    - support
+
+  view:
+    - support
+
+  view_bundle:
+    - +core
+    - view
 
 

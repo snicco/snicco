@@ -6,15 +6,12 @@ namespace Snicco\Core\Application;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
-use Snicco\View\ViewEngine;
 use Snicco\Core\Http\MethodField;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\View\GlobalViewContext;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\View\ViewComposerCollection;
 use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -101,40 +98,6 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function viewAliases(Application $app)
     {
-        //$app->alias('globals', function () use ($app) {
-        //    /** @var GlobalViewContext $globals */
-        //    $globals = $app->resolve(GlobalViewContext::class);
-        //
-        //    $args = func_get_args();
-        //    if (empty($args) || (is_null($args[0] && is_null($args[1])))) {
-        //        return $globals;
-        //    }
-        //
-        //    $globals->add(...array_values(func_get_args()));
-        //
-        //    return $globals;
-        //});
-        //$app->alias('addComposer', function () use ($app) {
-        //    $composer_collection = $app->resolve(ViewComposerCollection::class);
-        //
-        //    $args = func_get_args();
-        //
-        //    $composer_collection->addComposer(...$args);
-        //});
-        //$app->alias('view', function () use ($app) {
-        //    /** @var ViewEngine $view_service */
-        //    $view_service = $app->container()->get(ViewEngine::class);
-        //
-        //    return call_user_func_array([$view_service, 'make'], func_get_args());
-        //});
-        //$app->alias('render', function () use ($app) {
-        //    /** @var ViewEngine $view_service */
-        //    $view_service = $app->container()->get(ViewEngine::class);
-        //
-        //    $view_as_string = call_user_func_array([$view_service, 'render',], func_get_args());
-        //
-        //    echo $view_as_string;
-        //});
         $app->alias('methodField', MethodField::class, 'html');
     }
     
