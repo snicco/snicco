@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\Core;
+namespace Snicco\Core\Middleware\Core;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Middleware;
-use Snicco\Http\ResponseEmitter;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Http\ResponseEmitter;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Http\Responses\NullResponse;
+use Snicco\Core\Http\Responses\NullResponse;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 
 use function add_action;
 

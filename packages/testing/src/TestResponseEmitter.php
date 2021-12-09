@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Testing;
 
-use Snicco\Http\Cookies;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseEmitter;
+use Snicco\Core\Http\Cookies;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Http\ResponseEmitter;
 
 class TestResponseEmitter extends ResponseEmitter
 {

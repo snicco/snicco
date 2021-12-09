@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Auth\integration;
 
 use WP_User;
-use Snicco\Shared\Encryptor;
+use Snicco\Core\Shared\Encryptor;
 use Snicco\Auth\RecoveryCode;
 use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthSessionManager;

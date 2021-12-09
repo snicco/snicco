@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Confirmation;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 

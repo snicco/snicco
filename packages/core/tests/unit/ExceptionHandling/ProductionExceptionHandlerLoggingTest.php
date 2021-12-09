@@ -8,16 +8,16 @@ use Mockery;
 use WP_User;
 use Exception;
 use Psr\Log\LogLevel;
-use Snicco\Support\WP;
-use Snicco\Http\Psr7\Request;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Http\BaseResponseFactory;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Http\BaseResponseFactory;
 use Tests\Codeception\shared\UnitTest;
 use Tests\Core\fixtures\TestDoubles\TestLogger;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\helpers\CreateContainer;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class ProductionExceptionHandlerLoggingTest extends UnitTest

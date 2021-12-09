@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Validation\integration;
 
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Session\SessionServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Validation\Exceptions\ValidationException;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationExceptionTest extends FrameworkTestCase
 {

@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Events;
+namespace Snicco\Core\EventDispatcher\Events;
+
 
 use Snicco\Support\Str;
 

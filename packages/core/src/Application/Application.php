@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Core\Application;
 
 use ArrayAccess;
 use RuntimeException;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Bootstrap\CaptureRequest;
-use Snicco\Bootstrap\LoadConfiguration;
-use Snicco\Bootstrap\DetectEnvironment;
-use Snicco\Bootstrap\HandlesExceptions;
-use Snicco\Bootstrap\LoadServiceProviders;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Bootstrap\CaptureRequest;
+use Snicco\Core\Bootstrap\LoadConfiguration;
+use Snicco\Core\Bootstrap\DetectEnvironment;
+use Snicco\Core\Bootstrap\HandlesExceptions;
+use Snicco\Core\Bootstrap\LoadServiceProviders;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 use const PHP_SAPI;
 

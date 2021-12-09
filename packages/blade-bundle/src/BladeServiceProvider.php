@@ -6,19 +6,18 @@ namespace Snicco\BladeBundle;
 
 use RuntimeException;
 use Snicco\Blade\BladeStandalone;
-use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Application\ApplicationTrait;
+use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Core\Application\ApplicationTrait;
 
 class BladeServiceProvider extends ServiceProvider
 {
     
     public function register() :void
     {
-        $foo = 'bar';
     }
     
     function bootstrap() :void

@@ -8,7 +8,7 @@ use ArrayAccess;
 use InvalidArgumentException;
 
 use function array_filter;
-use function Snicco\Support\Functions\value;
+use function Snicco\Core\Support\Functions\value;
 
 use const ARRAY_FILTER_USE_KEY;
 

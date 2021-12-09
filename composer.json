@@ -56,10 +56,10 @@
             "packages/core/src/Support/functions.php"
         ],
         "psr-4": {
-            "Snicco\\": "packages/core/src",
             "Snicco\\Auth\\": "packages/auth/src",
             "Snicco\\BladeBundle\\": "packages/blade-bundle/src",
             "Snicco\\Blade\\": "packages/blade/src",
+            "Snicco\\Core\\": "packages/core/src",
             "Snicco\\Database\\": "packages/eloquent/src",
             "Snicco\\DefuseEncryption\\": "packages/defuse-php-encryption-bundle/src",
             "Snicco\\EloquentBundle\\": "packages/eloquent-bundle/src",
@@ -69,6 +69,7 @@
             "Snicco\\Mail\\": "packages/better-wp-mail/src",
             "Snicco\\PimpleContainer\\": "packages/pimple-container-bridge/src",
             "Snicco\\Session\\": "packages/session/src",
+            "Snicco\\Support\\": "packages/support/src",
             "Snicco\\Testing\\": "packages/testing/src",
             "Snicco\\Validation\\": "packages/validation-bundle/src",
             "Snicco\\ViewBundle\\": "packages/view-bundle/src",
@@ -91,6 +92,7 @@
             "Tests\\IllumianteContainerBridge\\": "packages/illuminate-container-bridge/tests",
             "Tests\\PimpleContainer\\": "packages/pimple-container-bridge/tests",
             "Tests\\Session\\": "packages/session/tests",
+            "Tests\\Support\\": "packages/support/tests",
             "Tests\\Testing\\": "packages/testing/tests",
             "Tests\\Validation\\": "packages/validation-bundle/tests",
             "Tests\\ViewBundle\\": "packages/view-bundle/tests",
@@ -111,6 +113,7 @@
         "sniccowp/illuminate-container-brige": "self.version",
         "sniccowp/pimple-container-brige": "self.version",
         "sniccowp/session": "self.version",
+        "sniccowp/support": "self.version",
         "sniccowp/testing": "self.version",
         "sniccowp/validation-bundle": "self.version",
         "sniccowp/view": "self.version",
@@ -127,7 +130,8 @@
         "merge": [
             "vendor/bin/monorepo-builder merge",
             "composer dump-autoload"
-        ]
+        ],
+        "deptrac": "php /usr/local/bin/deptrac"
     },
     "minimum-stability": "stable",
     "prefer-stable": true

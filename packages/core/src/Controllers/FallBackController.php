@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Controllers;
+namespace Snicco\Core\Controllers;
 
-use Snicco\Http\Controller;
-use Snicco\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 
 class FallBackController extends Controller
 {

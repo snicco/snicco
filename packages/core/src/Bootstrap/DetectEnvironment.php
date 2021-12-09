@@ -1,11 +1,11 @@
 <?php
 
-namespace Snicco\Bootstrap;
+namespace Snicco\Core\Bootstrap;
 
 use Closure;
 use Snicco\Support\Str;
-use Snicco\Contracts\Bootstrapper;
-use Snicco\Application\Application;
+use Snicco\Core\Contracts\Bootstrapper;
+use Snicco\Core\Application\Application;
 
 class DetectEnvironment implements Bootstrapper
 {

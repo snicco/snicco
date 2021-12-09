@@ -6,7 +6,7 @@ namespace Tests\Auth\unit\Middleware;
 
 use Mockery as m;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Testing\Concerns\TravelsTime;

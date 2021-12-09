@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Events;
+namespace Snicco\Core\EventDispatcher\Events;
+
 
 use Snicco\Support\Str;
-use Snicco\Http\Psr7\Request;
-use Snicco\Application\Config;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Application\Config;
 
 class IncomingApiRequest extends IncomingRequest
 {

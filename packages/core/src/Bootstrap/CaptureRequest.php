@@ -1,10 +1,10 @@
 <?php
 
-namespace Snicco\Bootstrap;
+namespace Snicco\Core\Bootstrap;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Bootstrapper;
-use Snicco\Application\Application;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Bootstrapper;
+use Snicco\Core\Application\Application;
 use Psr\Http\Message\UriFactoryInterface;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\StreamFactoryInterface;

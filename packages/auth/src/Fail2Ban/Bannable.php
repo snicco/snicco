@@ -2,7 +2,7 @@
 
 namespace Snicco\Auth\Fail2Ban;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 
 interface Bannable
 {

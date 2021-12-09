@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Contracts;
 
 use Snicco\Auth\Traits\UsesCurrentRequest;
-use Snicco\Contracts\Responsable;
+use Snicco\Core\Contracts\Responsable;
 
 abstract class CreateAccountView implements Responsable
 {

@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 use Closure;
 use Throwable;
 use RuntimeException;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Traits\ReflectsCallable;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Traits\ReflectsCallable;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Psr\Log\LoggerInterface as Psr3Logger;
-use Snicco\Support\ReflectionDependencies;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
 class ProductionExceptionHandler implements ExceptionHandler
 {

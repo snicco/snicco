@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Routing\Router;
-use Snicco\Routing\Pipeline;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\RouteRegistrar;
-use Snicco\Contracts\RouteUrlMatcher;
-use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Factories\RouteConditionFactory;
-use Snicco\Routing\CachedRouteFileRegistrar;
+use Snicco\Core\Routing\Router;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\RouteRegistrar;
+use Snicco\Core\Contracts\RouteUrlMatcher;
+use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\Factories\RouteConditionFactory;
+use Snicco\Core\Routing\CachedRouteFileRegistrar;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
-use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
 
 use const DS;
 

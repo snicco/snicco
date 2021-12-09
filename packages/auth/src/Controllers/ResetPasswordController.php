@@ -6,12 +6,12 @@ namespace Snicco\Auth\Controllers;
 
 use WP_User;
 use ZxcvbnPhp\Zxcvbn;
-use Snicco\Http\Controller;
-use Snicco\Http\MethodField;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\MethodField;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Validation\Exceptions\ValidationException;
 
 class ResetPasswordController extends Controller

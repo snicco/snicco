@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Middleware\JsonPayload;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\Middleware\JsonPayload;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
 class JsonPayloadTest extends MiddlewareTestCase
 {

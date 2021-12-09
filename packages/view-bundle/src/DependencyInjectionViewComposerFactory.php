@@ -6,7 +6,7 @@ namespace Snicco\ViewBundle;
 
 use Closure;
 use RuntimeException;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\View\ClosureViewComposer;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewComposerFactory;

@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Responses;
+namespace Snicco\Core\Http\Responses;
 
 use LogicException;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Response;
-use Snicco\Support\MessageBag;
-use Illuminate\Contracts\Support\MessageProvider;
+use Snicco\Session\MessageBag;
+use Snicco\Core\Http\Psr7\Response;
 
 class RedirectResponse extends Response
 {
@@ -68,7 +67,7 @@ class RedirectResponse extends Response
     /**
      * Flash a container of errors to the session.
      *
-     * @param  \Snicco\Session\MessageBag|array  $provider
+     * @param  MessageBag|array  $provider
      */
     public function withErrors($provider, string $bag = 'default') :RedirectResponse
     {
@@ -99,15 +98,6 @@ class RedirectResponse extends Response
                 "The method: [RedirectResponse::{$called_method}] can only be used if session are enabled in the config."
             );
         }
-    }
-    
-    private function toMessageBag($provider) :MessageBag
-    {
-        if ($provider instanceof MessageProvider) {
-            return $provider->getMessageBag();
-        }
-        
-        return new MessageBag((array) $provider);
     }
     
 }

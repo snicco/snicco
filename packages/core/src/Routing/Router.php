@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
 use Closure;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Support\Url;
+use Snicco\Core\Support\Url;
 use Snicco\Support\Arr;
-use Snicco\Controllers\ViewController;
-use Snicco\Traits\HoldsRouteBlueprint;
-use Snicco\Controllers\RedirectController;
-use Snicco\Contracts\RouteCollectionInterface;
+use Snicco\Core\Controllers\ViewController;
+use Snicco\Core\Traits\HoldsRouteBlueprint;
+use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Contracts\RouteCollectionInterface;
 
 class Router
 {

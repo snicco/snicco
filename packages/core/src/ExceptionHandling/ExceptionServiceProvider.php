@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 use Psr\Log\NullLogger;
 use Whoops\Run as Whoops;
 use Whoops\RunInterface;
-use Snicco\Http\Delegate;
+use Snicco\Core\Http\Delegate;
 use Psr\Log\LoggerInterface;
-use Snicco\Routing\Pipeline;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Contracts\Middleware;
 use Illuminate\Container\Container;
 use Whoops\Handler\HandlerInterface;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ExceptionHandler;
 
 class ExceptionServiceProvider extends ServiceProvider
 {

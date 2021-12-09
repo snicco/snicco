@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
 use RuntimeException;
-use Snicco\Support\WP;
-use Snicco\Http\Cookie;
-use Snicco\Support\Carbon;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Cookie;
+use Snicco\Core\Support\Carbon;
+use Snicco\Core\Http\Psr7\Request;
 use InvalidArgumentException;
-use Snicco\Traits\HasLottery;
-use Snicco\Http\Psr7\Response;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Traits\HasLottery;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Traits\InteractsWithTime;
 
 abstract class MagicLink
 {

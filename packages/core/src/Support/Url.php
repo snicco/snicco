@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
+
+use Snicco\Support\Arr;
+use Snicco\Support\Str;
 
 class Url
 {

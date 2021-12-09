@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
 use stdClass;
 use JsonSerializable;
 use InvalidArgumentException;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Redirector;
-use Snicco\Contracts\Responsable;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Http\Responses\NullResponse;
-use Snicco\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Contracts\Responsable;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\Responses\NullResponse;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;

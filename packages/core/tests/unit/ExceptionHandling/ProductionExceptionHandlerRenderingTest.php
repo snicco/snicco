@@ -8,25 +8,25 @@ use Mockery;
 use Exception;
 use Whoops\Run;
 use RuntimeException;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Psr\Log\NullLogger;
 use Snicco\Support\Arr;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Application\Application;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Application\Application;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\ExceptionHandling\WhoopsHandler;
-use Snicco\ExceptionHandling\HtmlErrorRender;
+use Snicco\Core\ExceptionHandling\WhoopsHandler;
+use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Tests\Codeception\shared\helpers\CreateContainer;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
-use Snicco\ExceptionHandling\PlainTextHtmlErrorRenderer;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Core\ExceptionHandling\PlainTextHtmlErrorRenderer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Tests\Codeception\shared\helpers\CreateRouteCollection;
 
@@ -145,8 +145,9 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             sprintf(
-                "Return value of %s::render() has to be an instance of [Snicco\Http\Psr7\Response]",
-                fixtures\ReturnsStringException::class
+                "Return value of %s::render() has to be an instance of [%s]",
+                fixtures\ReturnsStringException::class,
+                Response::class
             )
         );
         

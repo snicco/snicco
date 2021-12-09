@@ -6,9 +6,9 @@ namespace Snicco\DefuseEncryption;
 
 use Defuse\Crypto\Key;
 use Defuse\Crypto\Crypto;
-use Snicco\Shared\Encryptor;
+use Snicco\Core\Shared\Encryptor;
 use Defuse\Crypto\Exception\CryptoException;
-use Snicco\Shared\Exceptions\EncryptException;
+use Snicco\Core\Shared\Exceptions\EncryptException;
 
 final class DefuseEncryptor implements Encryptor
 {

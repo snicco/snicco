@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Events;
+namespace Snicco\Core\EventDispatcher\Events;
 
-use Snicco\Http\Psr7\Request;
+
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\EventDispatcher\Contracts\MappedAction;
 
 abstract class IncomingRequest extends CoreEvent implements MappedAction

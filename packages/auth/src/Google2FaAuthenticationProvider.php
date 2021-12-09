@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use BaconQrCode\Writer;
-use Snicco\Shared\Encryptor;
+use Snicco\Core\Shared\Encryptor;
 use PragmaRX\Google2FA\Google2FA;
 use BaconQrCode\Renderer\Color\Rgb;
 use Snicco\Auth\Traits\ResolvesUser;

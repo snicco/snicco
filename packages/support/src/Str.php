@@ -4,10 +4,19 @@ declare(strict_types=1);
 
 namespace Snicco\Support;
 
+
+use function \mb_strpos;
+use function \mb_substr;
+use function \mb_strrpos;
+use function \random_bytes;
+
 class Str
 {
     
-    private static array $studly_cache = [];
+    /**
+     * @var array
+     */
+    private static $studly_cache = [];
     
     public static function doesNotEndWith(string $path, string $string) :bool
     {

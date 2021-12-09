@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\TestApp;
 
-use Snicco\Application\ApplicationTrait;
+use Snicco\Core\Application\ApplicationTrait;
 
 class TestApp
 {

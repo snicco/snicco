@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing\FastRoute;
+namespace Snicco\Core\Routing\FastRoute;
 
-use Snicco\Routing\Route;
+use Snicco\Core\Routing\Route;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use Snicco\Routing\RoutingResult;
-use Snicco\Contracts\RouteUrlMatcher;
+use Snicco\Core\Routing\RoutingResult;
+use Snicco\Core\Contracts\RouteUrlMatcher;
 use FastRoute\RouteParser\Std as RouteParser;
 use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Middleware\NoRobots;
+use Snicco\Core\Middleware\NoRobots;
 use Tests\Core\MiddlewareTestCase;
 
 class NoRobotsTest extends MiddlewareTestCase

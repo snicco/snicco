@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Routing\Pipeline;
-use Snicco\Http\MethodField;
-use Snicco\Contracts\MagicLink;
-use Snicco\Http\ResponseEmitter;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Factories\MiddlewareFactory;
-use Snicco\Middleware\Core\RouteRunner;
-use Snicco\Factories\RouteActionFactory;
-use Snicco\Middleware\Core\ShareCookies;
-use Snicco\Middleware\Core\MethodOverride;
-use Snicco\Factories\RouteConditionFactory;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\MethodField;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Middleware\Core\RouteRunner;
+use Snicco\Core\Factories\RouteActionFactory;
+use Snicco\Core\Middleware\Core\ShareCookies;
+use Snicco\Core\Middleware\Core\MethodOverride;
+use Snicco\Core\Factories\RouteConditionFactory;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Middleware\Core\RoutingMiddleware;
-use Snicco\Contracts\RouteCollectionInterface;
-use Snicco\Middleware\Core\SetRequestAttributes;
-use Snicco\Middleware\Core\OpenRedirectProtection;
-use Snicco\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Middleware\Core\AppendSpecialPathSuffix;
-use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\RoutingMiddleware;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Middleware\Core\SetRequestAttributes;
+use Snicco\Core\Middleware\Core\OpenRedirectProtection;
+use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
+use Snicco\Core\Middleware\Core\AppendSpecialPathSuffix;
+use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
 {

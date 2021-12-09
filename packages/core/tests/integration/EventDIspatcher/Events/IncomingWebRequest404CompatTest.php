@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\EventDispatcher\Events;
 
-use Snicco\EventDispatcher\Events\DoShutdown;
+use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 use function add_filter;

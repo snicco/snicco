@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\ViewBundle\integration;
 
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\ViewBundle\ViewResponseFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;

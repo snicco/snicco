@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use Snicco\View\ViewEngine;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;

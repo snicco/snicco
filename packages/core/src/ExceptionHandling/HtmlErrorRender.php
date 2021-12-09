@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
 interface HtmlErrorRender
 {

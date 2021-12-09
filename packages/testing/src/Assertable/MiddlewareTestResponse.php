@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Testing\Assertable;
 
 use PHPUnit\Framework\Assert;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 
 class MiddlewareTestResponse extends TestResponse

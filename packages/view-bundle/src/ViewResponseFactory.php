@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\ViewBundle;
 
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\CreatesHtmlResponse;
 
 interface ViewResponseFactory extends ResponseFactory, CreatesHtmlResponse
 {

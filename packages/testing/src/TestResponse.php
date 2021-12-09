@@ -7,17 +7,17 @@ namespace Snicco\Testing;
 use Closure;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Snicco\Support\Url;
+use Snicco\Core\Support\Url;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Support\Repository;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Application\Application;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Application\Application;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Http\Responses\NullResponse;
+use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\Constraints\SeeInOrder;
-use Snicco\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
 
 class TestResponse

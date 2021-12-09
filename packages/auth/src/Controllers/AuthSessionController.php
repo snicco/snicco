@@ -6,20 +6,20 @@ namespace Snicco\Auth\Controllers;
 
 use Closure;
 use Snicco\Support\Arr;
-use Snicco\Support\Url;
-use Snicco\Http\Controller;
+use Snicco\Core\Support\Url;
+use Snicco\Core\Http\Controller;
 use Snicco\Session\Session;
-use Snicco\Routing\Pipeline;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Responsable;
-use Snicco\Http\Responses\NullResponse;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\Responsable;
+use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
-use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
+use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionController extends Controller
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /** @var Router $router */
 
-use Snicco\Routing\Router;
-use Snicco\Controllers\RedirectController;
+use Snicco\Core\Routing\Router;
+use Snicco\Core\Controllers\RedirectController;
 
 $router->get('/')->noAction()->name('home');
 

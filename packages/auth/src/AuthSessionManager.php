@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
-use Snicco\Http\Cookie;
+use Snicco\Core\Http\Cookie;
 use Snicco\Support\Arr;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\SessionManager;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Contracts\SessionManagerInterface;
 

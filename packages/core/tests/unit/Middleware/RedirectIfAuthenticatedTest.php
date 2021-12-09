@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Mockery;
-use Snicco\Support\WP;
-use Snicco\Routing\Route;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Route;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Middleware\RedirectIfAuthenticated;
+use Snicco\Core\Middleware\RedirectIfAuthenticated;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class RedirectIfAuthenticatedTest extends MiddlewareTestCase

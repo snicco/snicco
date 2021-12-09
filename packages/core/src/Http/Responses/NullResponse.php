@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Responses;
+namespace Snicco\Core\Http\Responses;
 
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Response;
 
 /**
  * Returning this response class will result in the framework not doing anything at all.

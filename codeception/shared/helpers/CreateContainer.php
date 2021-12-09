@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\PimpleContainer\PimpleContainerAdapter;
 
 /**

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
 use LogicException;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 abstract class Redirector

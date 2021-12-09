@@ -2,7 +2,7 @@
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 
 class FailedLoginLinkCreationRequest extends BannableEvent
 {

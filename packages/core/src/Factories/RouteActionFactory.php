@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Factories;
+namespace Snicco\Core\Factories;
 
 use Closure;
 use RuntimeException;
-use Snicco\Support\Reflector;
-use Snicco\Routing\ClosureAction;
-use Snicco\Contracts\RouteAction;
-use Snicco\Routing\ControllerAction;
-use Snicco\Support\ReflectionDependencies;
+use Snicco\Core\Support\Reflector;
+use Snicco\Core\Routing\ClosureAction;
+use Snicco\Core\Contracts\RouteAction;
+use Snicco\Core\Routing\ControllerAction;
+use Snicco\Core\Support\ReflectionDependencies;
 
 class RouteActionFactory extends AbstractFactory
 {

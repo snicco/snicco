@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Snicco\Support;
 
 use ArrayAccess;
+use Snicco\Support\Arr;
 
 class Repository implements ArrayAccess
 {

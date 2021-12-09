@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
 use DateInterval;
 use DateTimeInterface;
-use Snicco\Support\Carbon;
+use Snicco\Core\Support\Carbon;
 
 trait InteractsWithTime
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\Core;
+namespace Snicco\Core\Middleware\Core;
 
-use Snicco\Http\Delegate;
-use Snicco\Http\MethodField;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\MethodField;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
 class MethodOverride extends Middleware

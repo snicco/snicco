@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Session\unit;
 
 use Mockery;
-use Snicco\Support\WP;
-use Snicco\Support\Carbon;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Carbon;
 use Snicco\Session\Session;
 use SessionHandlerInterface;
 use Tests\Codeception\shared\UnitTest;

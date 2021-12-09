@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
 use Closure;
 use Snicco\Support\Arr;
-use Snicco\Routing\Route;
-use Snicco\Contracts\Condition;
-use Snicco\Routing\ConditionBlueprint;
-use Snicco\Controllers\FallBackController;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Routing\ConditionBlueprint;
+use Snicco\Core\Controllers\FallBackController;
 
 trait SetsRouteAttributes
 {

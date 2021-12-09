@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Support\Url;
+use Snicco\Core\Support\Url;
 use Snicco\Support\Arr;
-use Snicco\Http\HttpKernel;
+use Snicco\Core\Http\HttpKernel;
 use Snicco\Session\Session;
 use Snicco\View\ViewEngine;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use InvalidArgumentException;
-use Snicco\Application\Config;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 use Psr\Http\Message\UriInterface;
-use Snicco\Application\Application;
+use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;

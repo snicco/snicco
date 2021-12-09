@@ -6,16 +6,16 @@ namespace Snicco\ViewBundle;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\CreatesHtmlResponse;
-use Snicco\ExceptionHandling\HtmlErrorRender;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\CreatesHtmlResponse;
 use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Contracts\ViewComposerFactory;
 use Snicco\View\Implementations\PHPViewFactory;
+use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -40,11 +40,23 @@ class ViewServiceProvider extends ServiceProvider
         $this->bindCreateHtmlResponse();
         
         $this->bindHtmlErrorRenderer();
+        
+        $this->bindViewComposerFactory();
     }
     
     public function bootstrap() :void
     {
         //
+    }
+    
+    private function bindViewComposerFactory() :void
+    {
+        $this->container->singleton(DependencyInjectionViewComposerFactory::class, function () {
+            return new DependencyInjectionViewComposerFactory(
+                $this->container,
+                $this->config['view.composers'] ?? []
+            );
+        });
     }
     
     private function bindGlobalContext()

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
-use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\ResponseFactory;
 
 class Controller
 {

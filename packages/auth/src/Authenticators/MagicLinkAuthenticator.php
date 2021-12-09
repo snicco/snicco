@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Authenticators;
 
 use WP_User;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\EventDispatcher\Contracts\Dispatcher;

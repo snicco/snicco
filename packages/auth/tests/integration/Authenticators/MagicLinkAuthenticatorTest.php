@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Auth\integration\Authenticators;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;

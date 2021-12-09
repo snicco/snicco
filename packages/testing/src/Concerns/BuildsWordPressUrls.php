@@ -2,8 +2,8 @@
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Support\WP;
-use Snicco\Support\Url;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Url;
 
 trait BuildsWordPressUrls
 {

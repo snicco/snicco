@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
-use Snicco\EventDispatcher\Events\DoShutdown;
-use Snicco\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\EventDispatcher\Events\DoShutdown;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class ResponsePostProcessor

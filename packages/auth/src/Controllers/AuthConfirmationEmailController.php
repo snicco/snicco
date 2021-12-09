@@ -6,10 +6,10 @@ namespace Snicco\Auth\Controllers;
 
 use WP_User;
 use Snicco\Session\Session;
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Auth\Mail\ConfirmAuthMail;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 

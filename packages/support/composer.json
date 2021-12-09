@@ -1,0 +1,25 @@
+{
+  "name": "sniccowp/support",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Support\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Support\\": "tests"
+    }
+  }
+}

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Listeners;
+namespace Snicco\Core\EventDispatcher\Listeners;
 
-use Snicco\EventDispatcher\Events\PreWP404;
+use Snicco\Core\EventDispatcher\Events\PreWP404;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 /**

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Responsable;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Responsable;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\Auth\Contracts\AbstractRegistrationView;

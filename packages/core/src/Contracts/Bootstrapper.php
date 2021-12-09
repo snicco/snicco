@@ -1,8 +1,8 @@
 <?php
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
-use Snicco\Application\Application;
+use Snicco\Core\Application\Application;
 
 interface Bootstrapper
 {

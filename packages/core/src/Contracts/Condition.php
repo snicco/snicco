@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\Core\Contracts;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 
 interface Condition
 {

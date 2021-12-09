@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Core\Application;
 
 use LogicException;
 use BadMethodCallException;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 /**
  * @mixin ApplicationMixin

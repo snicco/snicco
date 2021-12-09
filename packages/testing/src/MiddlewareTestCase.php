@@ -6,18 +6,18 @@ namespace Snicco\Testing;
 
 use Closure;
 use RuntimeException;
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Middleware;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Http\StatelessRedirector;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Contracts\RouteUrlGenerator;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Http\StatelessRedirector;
 use Psr\Http\Message\UriFactoryInterface;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Routing\InMemoryMagicLink;
+use Snicco\Core\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Testing\TestDoubles\TestMagicLink;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
@@ -98,7 +98,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     {
         return new UrlGenerator(
             $this->routeUrlGenerator(),
-            new TestMagicLink(),
+            new InMemoryMagicLink(),
             false
         );
     }

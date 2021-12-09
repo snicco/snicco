@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Http\Cookie;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Cookie;
+use Snicco\Core\Http\Psr7\Response;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Middleware\Core\ShareCookies;
+use Snicco\Core\Middleware\Core\ShareCookies;
 
 class ShareCookiesTest extends MiddlewareTestCase
 {

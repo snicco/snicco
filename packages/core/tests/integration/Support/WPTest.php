@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\integration\Support;
 
 use Mockery;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Codeception\TestCase\WPTestCase;
 
 use function get_bloginfo;
