@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
 use wpdb;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\MagicLink;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\MagicLink;
 
 use function wp_cache_add;
 use function wp_cache_get;

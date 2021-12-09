@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use WP_User;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Routing\UrlGenerator;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Auth\Controllers\AuthSessionController;
-use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
+use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 /** @see AuthSessionController */
 class AuthSessionControllerLogoutTest extends AuthTestCase

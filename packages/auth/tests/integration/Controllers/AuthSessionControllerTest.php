@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use WP_User;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Events\UserWasLoggedIn;

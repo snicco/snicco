@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
 use Tests\Core\fixtures\Controllers\Web\RoutingController;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class RouteAttributesTest extends RoutingTestCase
 {

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Psr7;
+namespace Snicco\Core\Http\Psr7;
 
 use WP_User;
 use RuntimeException;
-use Snicco\Support\WP;
-use Snicco\Support\Str;
-use Snicco\Support\Url;
-use Snicco\Http\Cookies;
-use Snicco\Routing\Route;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Support\Url;
+use Snicco\Core\Http\Cookies;
+use Snicco\Core\Routing\Route;
 use Snicco\Session\Session;
-use Snicco\Support\Repository;
+use Snicco\Core\Support\Repository;
 use Snicco\Validation\Validator;
 use Psr\Http\Message\UriInterface;
-use Snicco\Traits\ValidatesWordpressNonces;
+use Snicco\Core\Traits\ValidatesWordpressNonces;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Request implements ServerRequestInterface

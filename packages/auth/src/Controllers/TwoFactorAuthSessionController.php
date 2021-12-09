@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\Http\Controller;
-use Snicco\Shared\Encryptor;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Shared\Encryptor;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Auth\integration\Stubs;
 
-use Snicco\Shared\Encryptor;
+use Snicco\Core\Shared\Encryptor;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
 class TestTwoFactorProvider implements TwoFactorAuthenticationProvider

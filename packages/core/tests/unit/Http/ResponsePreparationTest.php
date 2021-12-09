@@ -3,11 +3,11 @@
 namespace Tests\Core\unit\Http;
 
 use Mockery;
-use Snicco\Support\Carbon;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Http\ResponsePreparation;
+use Snicco\Core\Support\Carbon;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Http\ResponsePreparation;
 use Tests\Codeception\shared\UnitTest;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;

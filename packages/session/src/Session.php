@@ -7,10 +7,10 @@ namespace Snicco\Session;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
-use Snicco\Support\Carbon;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Support\Carbon;
+use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
 

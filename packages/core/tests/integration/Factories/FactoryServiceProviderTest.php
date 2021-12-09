@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Factories;
 
-use Snicco\Routing\ControllerAction;
-use Snicco\Factories\RouteActionFactory;
-use Snicco\Factories\RouteConditionFactory;
+use Snicco\Core\Routing\ControllerAction;
+use Snicco\Core\Factories\RouteActionFactory;
+use Snicco\Core\Factories\RouteConditionFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Tests\View\fixtures\ViewComposers\FooComposer;

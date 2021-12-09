@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Application;
 
-use Snicco\Support\WP;
-use Snicco\Routing\Router;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Application\Application;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Http\StatelessRedirector;
-use Snicco\Contracts\ResponseFactory;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Router;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Application\Application;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Http\StatelessRedirector;
+use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 use const DS;
 use const SITE_URL;
@@ -232,7 +232,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->withAddedProvider($provider);
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage(
-            "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Application\Application::generateKey()"
+            "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Core\Application\Application::generateKey()"
         );
         $this->bootApp();
     }

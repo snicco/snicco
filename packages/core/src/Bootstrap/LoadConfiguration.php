@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bootstrap;
+namespace Snicco\Core\Bootstrap;
 
 use Exception;
 use RuntimeException;
-use Snicco\Contracts\Bootstrapper;
-use Snicco\Application\Application;
+use Snicco\Core\Contracts\Bootstrapper;
+use Snicco\Core\Application\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 

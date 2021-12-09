@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\Conditions;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Condition;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Condition;
 use Tests\Codeception\shared\TestDependencies\Foo;
 
 class ConditionWithDependency implements Condition

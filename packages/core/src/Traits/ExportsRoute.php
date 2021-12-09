@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
 use Closure;
 use Opis\Closure\SerializableClosure;
-use Snicco\Routing\ConditionBlueprint;
+use Snicco\Core\Routing\ConditionBlueprint;
 
 trait ExportsRoute
 {

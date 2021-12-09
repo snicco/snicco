@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Events\UserDeleted;
 use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Traits\ResolvesUser;
@@ -15,7 +15,7 @@ use Snicco\Auth\Contracts\CreatesNewUser;
 use Snicco\Auth\Contracts\CreateAccountView;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
-use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AccountController extends Controller
 {

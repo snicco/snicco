@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\BladeBundle\integration;
 
+use Snicco\View\ViewEngine;
 use Illuminate\View\Factory;
 use Snicco\Blade\BladeViewFactory;
 use Illuminate\Support\MessageBag;
@@ -21,6 +22,7 @@ use Tests\Codeception\shared\FrameworkTestCase;
 
 class BladeServiceProviderTest extends FrameworkTestCase
 {
+    
     
     protected function setUp() :void
     {
@@ -87,7 +89,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
     {
         $this->withAddedConfig('session.enabled', true)->bootApp();
         TestApp::session()->start();
-        $view = TestApp::view('csrf');
+        $view = $this->view('csrf');
         $content = $view->toString();
         
         $this->assertStringContainsString('_token', $content);
@@ -101,7 +103,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
     public function method_directive_works()
     {
         $this->bootApp();
-        $view = TestApp::view('method');
+        $view = $this->view('method');
         $content = $view->toString();
         $this->assertStringContainsString("<input type='hidden' name='_method", $content);
         $this->assertStringContainsString("value='PUT|", $content);
@@ -118,12 +120,12 @@ class BladeServiceProviderTest extends FrameworkTestCase
         $default = new MessageBag();
         $default->add('title', 'ERROR_WITH_YOUR_TITLE');
         $error_bag->put('default', $default);
-        $view = TestApp::view('error');
+        $view = $this->view('error');
         $view->with('errors', $error_bag);
         
         $this->assertViewContent('ERROR_WITH_YOUR_TITLE', $view);
         
-        $view = TestApp::view('error');
+        $view = $this->view('error');
         $error_bag = new ViewErrorBag();
         $default = new MessageBag();
         $error_bag->put('default', $default);
@@ -144,7 +146,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
         $custom = new MessageBag();
         $custom->add('title', 'CUSTOM_BAG_ERROR');
         $error_bag->put('custom', $custom);
-        $view = TestApp::view('error-custom-bag');
+        $view = $this->view('error-custom-bag');
         $view->with('errors', $error_bag);
         
         $this->assertViewContent('CUSTOM_BAG_ERROR', $view);
@@ -154,7 +156,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
         $bogus = new MessageBag();
         $bogus->add('title', 'CUSTOM_BAG_ERROR');
         $error_bag->put('bogus', $bogus);
-        $view = TestApp::view('error-custom-bag');
+        $view = $this->view('error-custom-bag');
         $view->with('errors', $error_bag);
         
         $this->assertViewContent('NO ERRORS IN CUSTOM BAG', $view);
@@ -167,6 +169,10 @@ class BladeServiceProviderTest extends FrameworkTestCase
             SessionServiceProvider::class,
             ViewServiceProvider::class,
         ];
+    }
+    
+    private function view(string $name) {
+        return $this->app->resolve(ViewEngine::class)->make($name);
     }
     
 }

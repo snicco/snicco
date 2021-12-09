@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
 use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
-use Snicco\Support\Str;
+use Snicco\Core\Support\Str;
 use ReflectionException;
 use ReflectionParameter;
 use InvalidArgumentException;

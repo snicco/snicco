@@ -2,7 +2,7 @@
 
 namespace Tests\Auth\integration\Controllers;
 
-use Snicco\Shared\Encryptor;
+use Snicco\Core\Shared\Encryptor;
 use PragmaRX\Google2FA\Google2FA;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Google2FaAuthenticationProvider;

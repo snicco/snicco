@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher;
+namespace Snicco\Core\EventDispatcher;
 
 use Throwable;
-use Snicco\Support\ReflectionDependencies;
+use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 use Snicco\EventDispatcher\Exceptions\MappedEventCreationException;

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Events;
+namespace Snicco\Core\EventDispatcher\Events;
 
-use Snicco\Support\Str;
+
+use Snicco\Core\Support\Str;
 
 use function rest_get_url_prefix;
 

@@ -56,10 +56,10 @@
             "packages/core/src/Support/functions.php"
         ],
         "psr-4": {
-            "Snicco\\": "packages/core/src",
             "Snicco\\Auth\\": "packages/auth/src",
             "Snicco\\BladeBundle\\": "packages/blade-bundle/src",
             "Snicco\\Blade\\": "packages/blade/src",
+            "Snicco\\Core\\": "packages/core/src",
             "Snicco\\Database\\": "packages/eloquent/src",
             "Snicco\\DefuseEncryption\\": "packages/defuse-php-encryption-bundle/src",
             "Snicco\\EloquentBundle\\": "packages/eloquent-bundle/src",
@@ -127,7 +127,8 @@
         "merge": [
             "vendor/bin/monorepo-builder merge",
             "composer dump-autoload"
-        ]
+        ],
+        "deptrac": "php /usr/local/bin/deptrac"
     },
     "minimum-stability": "stable",
     "prefer-stable": true

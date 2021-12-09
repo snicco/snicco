@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
-use Snicco\Support\Str;
+use Snicco\Core\Support\Str;
 use InvalidArgumentException;
-use Snicco\Contracts\Condition;
-use Snicco\Routing\Conditions\CustomCondition;
+use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Routing\Conditions\CustomCondition;
 
 class ConditionBlueprint
 {

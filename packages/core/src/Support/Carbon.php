@@ -1,11 +1,11 @@
 <?php
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
 
 use DateInterval;
 use DateTimeInterface;
 use Carbon\Carbon as BaseCarbon;
-use Snicco\Traits\InteractsWithTime;
+use Snicco\Core\Traits\InteractsWithTime;
 use Carbon\CarbonImmutable as BaseCarbonImmutable;
 
 class Carbon extends BaseCarbon

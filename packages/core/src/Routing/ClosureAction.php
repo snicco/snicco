@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
 use Closure;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\RouteAction;
-use Snicco\Traits\ReflectsCallable;
-use Snicco\Support\ReflectionDependencies;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\RouteAction;
+use Snicco\Core\Traits\ReflectsCallable;
+use Snicco\Core\Support\ReflectionDependencies;
 
 class ClosureAction implements RouteAction
 {

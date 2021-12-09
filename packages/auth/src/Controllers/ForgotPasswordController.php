@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
-use Snicco\Support\WP;
-use Snicco\Http\Controller;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Controller;
 use Snicco\View\ViewEngine;
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;

@@ -8,3 +8,4 @@ phpunit.xml
 composer.lock
 /packages/**/codeception.yml
 codeception.ymll
+/.deptrac.cache

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Middleware\Www;
-use Snicco\Routing\Pipeline;
-use Snicco\Middleware\Secure;
-use Snicco\Middleware\TrailingSlash;
-use Snicco\Middleware\MiddlewareStack;
-use Snicco\Middleware\Core\RouteRunner;
+use Snicco\Core\Middleware\Www;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Middleware\Secure;
+use Snicco\Core\Middleware\TrailingSlash;
+use Snicco\Core\Middleware\MiddlewareStack;
+use Snicco\Core\Middleware\Core\RouteRunner;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Middleware\Core\OpenRedirectProtection;
-use Snicco\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\OpenRedirectProtection;
+use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
+use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
 
 class MiddlewareServiceProviderTest extends FrameworkTestCase
 {

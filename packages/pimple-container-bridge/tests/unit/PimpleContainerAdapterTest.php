@@ -6,7 +6,7 @@ namespace Tests\PimpleContainer\unit;
 
 use Pimple\Container;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Shared\FrozenServiceException;
+use Snicco\Core\Shared\FrozenServiceException;
 use Snicco\PimpleContainer\PimpleContainerAdapter;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;

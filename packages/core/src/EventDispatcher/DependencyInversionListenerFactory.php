@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher;
+namespace Snicco\Core\EventDispatcher;
 
 use Closure;
 use Throwable;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\EventDispatcher\Listener;
+use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Container\NotFoundExceptionInterface;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;

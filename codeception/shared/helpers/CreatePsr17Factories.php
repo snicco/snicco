@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Http\StatelessRedirector;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Http\StatelessRedirector;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Testing\TestDoubles\TestMagicLink;
@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
-use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
 
 /**
  * @internal

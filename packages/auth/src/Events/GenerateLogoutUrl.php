@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Events;
 
-use Snicco\EventDispatcher\Events\CoreEvent;
+use Snicco\Core\EventDispatcher\Events\CoreEvent;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 
 class GenerateLogoutUrl extends CoreEvent implements MappedFilter

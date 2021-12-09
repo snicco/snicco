@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Support\WP;
-use Snicco\Support\Arr;
-use Snicco\Contracts\ServiceProvider;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Contracts\ServiceProvider;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\EventDispatcher\Events\IncomingAjaxRequest;
-use Snicco\EventDispatcher\Events\IncomingAdminRequest;
+use Snicco\Core\EventDispatcher\Events\IncomingAjaxRequest;
+use Snicco\Core\EventDispatcher\Events\IncomingAdminRequest;
 
 class RouteRegistrationTest extends FrameworkTestCase
 {

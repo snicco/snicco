@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\TestDoubles;
 
-use Snicco\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Request;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
 /**

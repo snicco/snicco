@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Controllers;
+namespace Snicco\Core\Controllers;
 
-use Snicco\Http\Controller;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\CreatesHtmlResponse;
+use Snicco\Core\Http\Controller;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\CreatesHtmlResponse;
 
 class ViewController extends Controller
 {

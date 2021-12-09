@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Routing;
+namespace Snicco\Core\Routing;
 
 use Closure;
-use Snicco\Support\Url;
-use Snicco\Http\Psr7\Request;
-use Snicco\Support\UrlParser;
-use Snicco\Traits\ExportsRoute;
-use Snicco\Contracts\Condition;
-use Snicco\Traits\HydratesRoute;
-use Snicco\Contracts\RouteAction;
-use Snicco\Traits\SetsRouteAttributes;
-use Snicco\Factories\RouteActionFactory;
-use Snicco\Factories\RouteConditionFactory;
+use Snicco\Core\Support\Url;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Support\UrlParser;
+use Snicco\Core\Traits\ExportsRoute;
+use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Traits\HydratesRoute;
+use Snicco\Core\Contracts\RouteAction;
+use Snicco\Core\Traits\SetsRouteAttributes;
+use Snicco\Core\Factories\RouteActionFactory;
+use Snicco\Core\Factories\RouteConditionFactory;
 
 class Route
 {

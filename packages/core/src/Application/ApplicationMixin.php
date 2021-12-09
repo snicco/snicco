@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Core\Application;
 
 use Closure;
 use LogicException;
-use Snicco\Routing\Route;
-use Snicco\Routing\Router;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\Router;
 use Snicco\Session\Session;
 use Snicco\Mail\MailBuilder;
-use Snicco\Http\MethodField;
+use Snicco\Core\Http\MethodField;
 use Snicco\Session\CsrfField;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\Redirector;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\Redirector;
 use Snicco\View\GlobalViewContext;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Responses\RedirectResponse;
 
 /**
  * Can be applied to your App class via a "@mixin" annotation for better IDE support.

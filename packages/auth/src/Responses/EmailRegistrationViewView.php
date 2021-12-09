@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 

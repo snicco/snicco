@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Psr7;
+namespace Snicco\Core\Http\Psr7;
 
-use Snicco\Http\Cookie;
-use Snicco\Http\Cookies;
-use Snicco\Contracts\Responsable;
+use Snicco\Core\Http\Cookie;
+use Snicco\Core\Http\Cookies;
+use Snicco\Core\Contracts\Responsable;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;

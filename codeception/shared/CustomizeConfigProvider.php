@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared;
 
-use Snicco\Application\Config;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Contracts\ServiceProvider;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Contracts\ServiceProvider;
 
 final class CustomizeConfigProvider extends ServiceProvider
 {

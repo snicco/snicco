@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Middleware\Redirect;
+use Snicco\Core\Middleware\Redirect;
 use Tests\Core\MiddlewareTestCase;
 
 class RedirectTest extends MiddlewareTestCase

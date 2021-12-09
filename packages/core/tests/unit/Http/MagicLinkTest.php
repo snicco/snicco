@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Support\Carbon;
+use Snicco\Core\Support\Carbon;
 use Tests\Codeception\shared\UnitTest;
 use Tests\Core\unit\Routing\UrlGeneratorTest;
 use Snicco\Testing\TestDoubles\TestMagicLink;

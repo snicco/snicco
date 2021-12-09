@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Routing\UrlGenerator;
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Http\BaseResponseFactory;
-use Snicco\Middleware\TrailingSlash;
-use Snicco\Http\StatelessRedirector;
+use Snicco\Core\Http\BaseResponseFactory;
+use Snicco\Core\Middleware\TrailingSlash;
+use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Testing\TestDoubles\TestMagicLink;
 
 class TrailingSlashTest extends MiddlewareTestCase

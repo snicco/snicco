@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Application;
 
 use stdClass;
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Application\ManagesAliases;
+use Snicco\Core\Application\ManagesAliases;
 use Tests\Codeception\shared\helpers\CreateContainer;
 
 class ManagesAliasesTest extends UnitTest

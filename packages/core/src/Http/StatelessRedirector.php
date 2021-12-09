@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http;
+namespace Snicco\Core\Http;
 
-use Snicco\Contracts\Redirector;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Http\Responses\RedirectResponse;
 
 class StatelessRedirector extends Redirector
 {

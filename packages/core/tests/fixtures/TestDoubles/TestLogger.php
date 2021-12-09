@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\TestDoubles;
 
-use Snicco\Support\Arr;
+use Snicco\Core\Support\Arr;
 use Psr\Log\AbstractLogger;
 use PHPUnit\Framework\Assert;
 

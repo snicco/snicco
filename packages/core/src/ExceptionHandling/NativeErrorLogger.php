@@ -1,9 +1,9 @@
 <?php
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 use Throwable;
-use Snicco\Support\Str;
+use Snicco\Core\Support\Str;
 use Psr\Log\AbstractLogger;
 
 class NativeErrorLogger extends AbstractLogger

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Shared\Encryptor;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseEmitter;
-use Snicco\Contracts\Redirector;
-use Snicco\Routing\UrlGenerator;
+use Snicco\Core\Shared\Encryptor;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\View\GlobalViewContext;
-use Snicco\Application\Application;
+use Snicco\Core\Application\Application;
 use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\Session\Events\NewLogout;
-use Snicco\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;

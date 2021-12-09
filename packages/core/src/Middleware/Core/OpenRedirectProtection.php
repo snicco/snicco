@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\Core;
+namespace Snicco\Core\Middleware\Core;
 
-use Snicco\Support\Str;
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Http\Responses\RedirectResponse;
 
 class OpenRedirectProtection extends Middleware
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Factories;
+namespace Snicco\Core\Factories;
 
 use RuntimeException;
-use Snicco\Support\Str;
-use Snicco\Support\Reflector;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Traits\ReflectsCallable;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Support\Reflector;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Traits\ReflectsCallable;
 
 /**
  * This factory is a base class to build callables/closure from the DI-Container.

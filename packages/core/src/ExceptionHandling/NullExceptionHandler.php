@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Core\ExceptionHandling;
 
 use Throwable;
 use Psr\Log\LogLevel;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\ExceptionHandler;
 
 class NullExceptionHandler implements ExceptionHandler
 {

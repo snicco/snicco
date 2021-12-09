@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Http\Controller;
+use Snicco\Core\Http\Controller;
 use Tests\Codeception\shared\UnitTest;
 
 class ControllerTest extends UnitTest

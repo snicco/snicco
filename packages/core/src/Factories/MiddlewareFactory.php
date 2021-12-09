@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Factories;
+namespace Snicco\Core\Factories;
 
-use Snicco\Shared\ContainerAdapter;
+use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Support\ReflectionDependencies;
+use Snicco\Core\Support\ReflectionDependencies;
 use Psr\Container\NotFoundExceptionInterface;
 
 class MiddlewareFactory

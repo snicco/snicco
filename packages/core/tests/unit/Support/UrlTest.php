@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
-use Snicco\Support\Url;
+use Snicco\Core\Support\Url;
 use Tests\Codeception\shared\UnitTest;
 
 class UrlTest extends UnitTest

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\Core\Support;
 
 use Closure;
 use ReflectionException;
 use ReflectionParameter;
-use Snicco\Shared\ContainerAdapter;
-use Snicco\Traits\ReflectsCallable;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Traits\ReflectsCallable;
 
 /**
  * This class is used to build the dependencies for route actions, middleware, conditions and view

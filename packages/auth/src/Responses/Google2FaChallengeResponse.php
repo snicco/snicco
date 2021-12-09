@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 
 class Google2FaChallengeResponse extends AbstractTwoFactorChallengeResponse

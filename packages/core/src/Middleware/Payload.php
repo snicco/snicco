@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware;
+namespace Snicco\Core\Middleware;
 
 use RuntimeException;
-use Snicco\Support\Str;
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
 abstract class Payload extends Middleware
 {

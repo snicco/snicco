@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Http;
 
 use Mockery;
-use Snicco\Http\Cookie;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Routing\UrlGenerator;
-use Snicco\Http\BaseResponseFactory;
+use Snicco\Core\Http\Cookie;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Http\BaseResponseFactory;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;

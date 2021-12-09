@@ -6,7 +6,7 @@ namespace Tests\Session\unit\Drivers;
 
 use Mockery;
 use stdClass;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\Drivers\ArraySessionDriver;

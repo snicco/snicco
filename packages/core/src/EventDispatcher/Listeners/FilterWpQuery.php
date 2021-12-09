@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher\Listeners;
+namespace Snicco\Core\EventDispatcher\Listeners;
 
-use Snicco\Support\WP;
-use Snicco\Routing\Route;
-use Snicco\Contracts\RouteCollectionInterface;
-use Snicco\EventDispatcher\Events\WPQueryFilterable;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 
 class FilterWpQuery
 {

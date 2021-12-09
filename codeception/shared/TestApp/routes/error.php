@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /** @var Router $router */
 
-use Snicco\Routing\Router;
-use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Core\Routing\Router;
+use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 use Snicco\Session\Exceptions\InvalidCsrfTokenException;
 
 $router->get('error/500', function () {

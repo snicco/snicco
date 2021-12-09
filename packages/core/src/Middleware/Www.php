@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Support\Str;
-use Snicco\Http\Delegate;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
 class Www extends Middleware

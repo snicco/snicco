@@ -1,8 +1,8 @@
 <?php
 
-namespace Snicco\Http\Responses;
+namespace Snicco\Core\Http\Responses;
 
-use Snicco\Http\Psr7\Response;
+use Snicco\Core\Http\Psr7\Response;
 
 /**
  * This response class can be returned to indicate the output of a response

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Shared;
+namespace Snicco\Core\Shared;
 
-use Snicco\Shared\Exceptions\EncryptException;
+use Snicco\Core\Shared\Exceptions\EncryptException;
 
 interface Encryptor
 {

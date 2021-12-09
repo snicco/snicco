@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Middleware;
 
-use Snicco\Http\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Session\Session;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
-use Snicco\Http\Responses\NullResponse;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Http\Responses\NullResponse;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Http\Responses\InvalidResponse;
-use Snicco\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Responses\InvalidResponse;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
 /**

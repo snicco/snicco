@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\Core;
+namespace Snicco\Core\Middleware\Core;
 
 use Closure;
-use Snicco\Http\Delegate;
-use Snicco\Routing\Route;
-use Snicco\Routing\Pipeline;
-use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Middleware;
-use Snicco\Middleware\MiddlewareStack;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Middleware\MiddlewareStack;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Factories\RouteActionFactory;
+use Snicco\Core\Factories\RouteActionFactory;
 
 class RouteRunner extends Middleware
 {

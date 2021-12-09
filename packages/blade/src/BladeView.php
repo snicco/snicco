@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Blade;
 
 use Throwable;
-use Snicco\Support\Arr;
+use Snicco\Core\Support\Arr;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\View\Exceptions\ViewRenderingException;
 use Illuminate\Contracts\View\View as IlluminateViewContract;

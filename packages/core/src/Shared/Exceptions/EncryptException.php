@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Shared\Exceptions;
+namespace Snicco\Core\Shared\Exceptions;
 
 use RuntimeException;
 

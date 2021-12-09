@@ -6,7 +6,7 @@ namespace Tests\Session\integration;
 
 use wpdb;
 use Mockery;
-use Snicco\Support\WP;
+use Snicco\Core\Support\WP;
 use Snicco\Testing\Concerns\TravelsTime;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Tests\Core\fixtures\TestDoubles\TestRequest;

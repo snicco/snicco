@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Http\Psr7;
+namespace Snicco\Core\Http\Psr7;
 
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;

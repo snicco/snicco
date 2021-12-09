@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Traits;
+namespace Snicco\Core\Traits;
 
-use Snicco\Support\Str;
-use Snicco\Support\Arr;
-use Snicco\Routing\Route;
-use Snicco\Routing\ConditionBlueprint;
+use Snicco\Core\Support\Str;
+use Snicco\Core\Support\Arr;
+use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\ConditionBlueprint;
 
 trait HydratesRoute
 {
