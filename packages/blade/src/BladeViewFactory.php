@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Blade;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\ViewName;
 use InvalidArgumentException;

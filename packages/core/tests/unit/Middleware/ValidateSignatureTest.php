@@ -6,8 +6,8 @@ namespace Tests\Core\unit\Middleware;
 
 use Mockery;
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Str;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Str;
+use Snicco\Support\Arr;
 use Snicco\Core\Support\Carbon;
 use Snicco\Session\Session;
 use Snicco\Core\Routing\Pipeline;

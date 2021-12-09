@@ -8,7 +8,7 @@ use Closure;
 use Throwable;
 use RuntimeException;
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;

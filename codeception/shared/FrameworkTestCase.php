@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use PHPUnit\Framework\Assert;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\ResponseEmitter;

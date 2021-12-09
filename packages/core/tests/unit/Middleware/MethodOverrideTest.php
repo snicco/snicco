@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Http\MethodField;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\Core\MethodOverride;

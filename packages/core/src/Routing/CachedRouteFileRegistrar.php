@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Application\Config;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;

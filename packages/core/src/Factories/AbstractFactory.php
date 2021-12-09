@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Factories;
 
 use RuntimeException;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Support\Reflector;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Traits\ReflectsCallable;

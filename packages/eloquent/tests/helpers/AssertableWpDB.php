@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Database\helpers;
 
 use wpdb;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 use const ARRAY_A;

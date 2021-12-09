@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Application;
 
 use Closure;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use BadMethodCallException;
 
 trait ManagesAliases

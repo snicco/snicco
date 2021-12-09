@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth;
 
 use Snicco\Core\Http\Cookie;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\SessionManager;

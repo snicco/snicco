@@ -6,7 +6,7 @@ namespace Snicco\Core\Support\Functions
 {
     
     use Closure;
-    use Snicco\Core\Support\Arr;
+    use Snicco\Support\Arr;
     
     /**
      * @internal

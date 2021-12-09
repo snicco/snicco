@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Traits;
 
 use Closure;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Contracts\Condition;
 use Snicco\Core\Routing\ConditionBlueprint;

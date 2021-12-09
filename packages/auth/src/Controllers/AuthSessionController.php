@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Closure;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Controller;
 use Snicco\Session\Session;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Validation;
 
 use LogicException;
-use Snicco\Core\Support\Arr;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Arr;
+use Snicco\Support\Str;
 use Snicco\Session\MessageBag;
 use Respect\Validation\Rules\Not;
 use Respect\Validation\Validator as v;

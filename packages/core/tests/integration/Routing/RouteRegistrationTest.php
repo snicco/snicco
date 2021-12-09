@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\integration\Routing;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Contracts\ServiceProvider;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;

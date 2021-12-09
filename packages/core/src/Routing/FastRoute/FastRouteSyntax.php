@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\FastRoute;
 
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Support\UrlParser;

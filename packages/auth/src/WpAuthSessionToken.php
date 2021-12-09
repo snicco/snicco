@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth;
 
 use WP_Session_Tokens;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 
 class WpAuthSessionToken extends WP_Session_Tokens
 {

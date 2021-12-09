@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 
 class RecoveryCode
 {

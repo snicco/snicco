@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
-use Snicco\Core\Support\Repository;
+use Snicco\Support\Repository;
 use Tests\Codeception\shared\UnitTest;
 
 class RepositoryTest extends UnitTest

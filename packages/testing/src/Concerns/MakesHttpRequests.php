@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Session\Session;
 use Snicco\View\ViewEngine;

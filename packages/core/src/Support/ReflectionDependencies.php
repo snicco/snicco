@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Support;
 
 use Closure;
+use Snicco\Support\Arr;
 use ReflectionException;
 use ReflectionParameter;
 use Snicco\Core\Shared\ContainerAdapter;
