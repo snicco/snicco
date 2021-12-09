@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Support\Url;
 
 class RouteGroup

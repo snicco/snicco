@@ -2,8 +2,8 @@
 
 namespace Snicco\Core\Http;
 
-use Snicco\Core\Support\Str;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Str;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\StreamFactoryInterface;

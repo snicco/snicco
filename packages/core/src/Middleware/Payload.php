@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use RuntimeException;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;

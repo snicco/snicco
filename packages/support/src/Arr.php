@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Support;
+namespace Snicco\Support;
 
 use ArrayAccess;
 use InvalidArgumentException;

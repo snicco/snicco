@@ -2,7 +2,7 @@
 
 namespace Snicco\Core\ExceptionHandling;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Support\Finder;
 use Snicco\Core\Application\Application;
 

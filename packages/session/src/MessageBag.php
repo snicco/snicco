@@ -6,8 +6,8 @@ namespace Snicco\Session;
 
 use Countable;
 use JsonSerializable;
-use Snicco\Core\Support\Arr;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Arr;
+use Snicco\Support\Str;
 
 final class MessageBag implements JsonSerializable, Countable
 {

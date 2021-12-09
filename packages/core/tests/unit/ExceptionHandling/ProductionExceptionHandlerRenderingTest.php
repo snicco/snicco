@@ -10,7 +10,7 @@ use Whoops\Run;
 use RuntimeException;
 use Snicco\Core\Support\WP;
 use Psr\Log\NullLogger;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;

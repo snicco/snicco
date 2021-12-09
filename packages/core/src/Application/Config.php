@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Application;
 
 use Closure;
-use Snicco\Core\Support\Arr;
-use Snicco\Core\Support\Repository;
+use Snicco\Support\Arr;
+use Snicco\Support\Repository;
 
 class Config extends Repository
 {

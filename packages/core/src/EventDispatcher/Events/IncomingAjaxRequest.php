@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher\Events;
 
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 
 class IncomingAjaxRequest extends IncomingRequest
 {

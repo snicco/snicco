@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Validation\unit;
 
 use LogicException;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Respect\Validation\Factory;
 use Snicco\Validation\Validator;
 use Respect\Validation\Validator as v;

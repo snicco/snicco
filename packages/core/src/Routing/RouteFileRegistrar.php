@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Support\Str;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Str;
+use Snicco\Support\Arr;
 use Snicco\Core\Application\Config;
 use Symfony\Component\Finder\Finder;
 use Snicco\Core\Contracts\RouteRegistrar;

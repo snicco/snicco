@@ -2,8 +2,8 @@
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Support\Arr;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Arr;
+use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;

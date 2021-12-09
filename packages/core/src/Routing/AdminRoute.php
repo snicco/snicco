@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Contracts\ConvertsToUrl;
 
 class AdminRoute extends Route implements ConvertsToUrl

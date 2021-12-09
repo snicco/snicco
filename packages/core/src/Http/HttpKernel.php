@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;

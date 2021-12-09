@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\EventDispatcher;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\Core\Contracts\ServiceProvider;

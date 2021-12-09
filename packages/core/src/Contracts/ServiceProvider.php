@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Contracts;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Str;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Str;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Application\Config;
 use Snicco\Core\Shared\ContainerAdapter;

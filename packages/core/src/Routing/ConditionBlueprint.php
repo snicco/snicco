@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use InvalidArgumentException;
 use Snicco\Core\Contracts\Condition;
 use Snicco\Core\Routing\Conditions\CustomCondition;

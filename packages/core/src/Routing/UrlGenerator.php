@@ -6,8 +6,8 @@ namespace Snicco\Core\Routing;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Support\Str;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Str;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Traits\InteractsWithTime;

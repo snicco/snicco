@@ -7,7 +7,7 @@ namespace Snicco\Core\Routing;
 use Closure;
 use Throwable;
 use LogicException;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use InvalidArgumentException;

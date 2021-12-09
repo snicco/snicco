@@ -9,7 +9,7 @@ use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
 use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Support\Repository;
+use Snicco\Support\Repository;
 use Snicco\Validation\Validator;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Session\Drivers\ArraySessionDriver;

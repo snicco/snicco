@@ -3,7 +3,7 @@
 namespace Snicco\Core\Bootstrap;
 
 use Closure;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Contracts\Bootstrapper;
 use Snicco\Core\Application\Application;
 

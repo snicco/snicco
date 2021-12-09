@@ -12,7 +12,7 @@ use Snicco\Session\Session;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Support\Repository;
+use Snicco\Support\Repository;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Session\SessionManager;
 use Snicco\Core\Factories\MiddlewareFactory;

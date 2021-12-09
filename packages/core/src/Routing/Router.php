@@ -6,9 +6,9 @@ namespace Snicco\Core\Routing;
 
 use Closure;
 use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Traits\HoldsRouteBlueprint;
 use Snicco\Core\Controllers\RedirectController;

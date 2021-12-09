@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Validation\Rules;
 
-use Snicco\Core\Support\Arr;
+use Snicco\Support\Arr;
 use Respect\Validation\Rules\AbstractRule;
 
 /**

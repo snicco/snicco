@@ -8,7 +8,7 @@ use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
-use Snicco\Core\Support\Str;
+use Snicco\Support\Str;
 use ReflectionException;
 use ReflectionParameter;
 use InvalidArgumentException;
