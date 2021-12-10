@@ -4,214 +4,368 @@ declare(strict_types=1);
 
 namespace Tests\Session\integration;
 
-use Snicco\Core\Http\Cookies;
-use Snicco\Core\Http\ResponseEmitter;
+use Carbon\Carbon;
+use DateTimeImmutable;
+use Snicco\Session\Session;
+use Tests\Session\TestClock;
 use Snicco\Session\SessionManager;
-use Snicco\Core\Traits\InteractsWithTime;
-use Snicco\Session\SessionServiceProvider;
-use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Session\Events\SessionWasRegenerated;
+use Codeception\TestCase\WPTestCase;
+use Snicco\Session\Events\SessionRotated;
+use Snicco\Session\ValueObjects\SessionId;
+use Snicco\Session\Contracts\SessionClock;
+use Snicco\Session\Exceptions\BadSessionID;
+use Snicco\Session\ValueObjects\CookiePool;
+use Snicco\Session\ValueObjects\SessionConfig;
+use Snicco\Session\ValueObjects\SessionCookie;
+use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\Session\EventDispatcherUsingWPHooks;
+use Snicco\Session\Contracts\SessionEventDispatcher;
+use Snicco\Session\ValueObjects\SerializedSessionData;
+use Snicco\Session\ValueObjects\ClockUsingDateTimeImmutable;
 
-class SessionManagerTest extends FrameworkTestCase
+final class SessionManagerTest extends WPTestCase
 {
     
-    use InteractsWithTime;
+    private $absolute_lifetime        = 10;
+    private $idle_timeout             = 3;
+    private $gc_collection_percentage = 0;
+    private $rotation_interval        = 5;
     
-    private SessionManager $manager;
+    private $cookie_name = 'sniccowp_session';
     
-    public function setUp() :void
+    /**
+     * @var ArraySessionDriver
+     */
+    private $driver;
+    
+    protected function setUp() :void
     {
-        $this->afterApplicationCreated(function () {
-            $this->withSessionCookie();
-            $this->withRequest($this->frontendRequest('POST', '/wp-login.php'));
-            $this->bootApp();
-        });
-        $this->afterApplicationBooted(function () {
-            $this->manager = $this->app->resolve(SessionManager::class);
-        });
-        
         parent::setUp();
+        $this->driver = new ArraySessionDriver();
+        unset($_COOKIE[$this->cookie_name]);
+    }
+    
+    protected function tearDown() :void
+    {
+        unset($_COOKIE[$this->cookie_name]);
+        parent::tearDown();
     }
     
     /** @test */
-    public function the_session_id_is_regenerated_on_a_login_event()
+    public function starting_a_session_without_an_existing_id_works()
     {
-        $this->withDataInSession(['foo' => 'bar']);
+        $manager = $this->getSessionManager();
         
-        $id_before_login = $this->testSessionId();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
         
-        $calvin = $this->createAdmin();
-        do_action('wp_login', $calvin->user_login, $calvin);
-        
-        $this->assertNoResponse();
-        
-        // Session id not the same
-        $this->assertNotSame($new_id = $this->session->getId(), $id_before_login);
-        
-        // Session cookie got sent
-        $cookies = $this->sentCookies()->toHeaders();
-        $this->assertStringContainsString("snicco_test_session=$new_id", $cookies[0]);
-        
-        $this->assertSame($this->session->userId(), $calvin->ID);
-        
-        // Driver got updated.
-        $this->assertDriverHas('bar', 'foo', $new_id);
-        $this->assertDriverEmpty($id_before_login);
+        $this->assertInstanceOf(Session::class, $session);
     }
     
     /** @test */
-    public function session_are_invalidated_on_logout()
+    public function starting_a_session_with_a_wrong_id_will_generate_a_new_id()
     {
-        $this->withDataInSession(['foo' => 'bar']);
+        $_COOKIE[$this->cookie_name] = 'foobar';
         
-        $calvin = $this->createAdmin();
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
         
-        $id_before_logout = $this->testSessionId();
-        
-        do_action('wp_logout', $calvin->ID);
-        
-        // Session Id not the same
-        $this->assertNotSame($new_id = $this->session->getId(), $id_before_logout);
-        
-        // Session cookie got sent
-        $cookies = $this->sentCookies()->toHeaders();
-        $this->assertStringContainsString("snicco_test_session=$new_id", $cookies[0]);
-        
-        // Data is for the new id is not in the driver.
-        $this->assertDriverNotHas('bar', $new_id);
-        
-        $this->assertSame(0, $this->session->userId());
-        
-        // The old session is gone.
-        $this->assertDriverEmpty($id_before_logout);
+        $this->assertInstanceOf(Session::class, $session);
+        $this->assertNotSame('foobar', $session->id());
     }
     
     /** @test */
-    public function the_provided_user_id_is_set_on_the_session()
+    public function retrieving_the_session_twice_will_not_return_the_same_object_reference()
     {
-        $this->assertSessionUserId(0);
+        $manager = $this->getSessionManager();
+        $session1 = $manager->start(CookiePool::fromSuperGlobals());
+        $session2 = $manager->start(CookiePool::fromSuperGlobals());
         
-        $this->manager->start($this->request, 2);
-        
-        $this->assertSessionUserId(2);
+        $this->assertNotSame($session1, $session2);
     }
     
     /** @test */
-    public function initial_session_rotation_is_set()
+    public function data_can_be_read_from_the_session_driver()
     {
-        $this->manager->start($this->request, 1);
+        $id = $this->writeSessionWithData(['foo' => 'bar']);
         
-        $this->assertSame(0, $this->session->rotationDueAt());
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
         
-        $this->manager->save();
-        
-        // 3600 set in fixtures/config/session.php
-        $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
+        $this->assertSame('bar', $session->all()['foo']);
+        $this->assertSame($id->asString(), $session->id()->asString());
     }
     
     /** @test */
-    public function absolute_session_timeout_is_set()
+    public function updated_session_data_is_saved_to_the_driver()
     {
-        $this->manager->start($this->request, 1);
+        $id = $this->writeSessionWithData(['foo' => 'bar']);
         
-        $this->assertSame(0, $this->session->absoluteTimeout());
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
         
-        $this->manager->save();
+        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame($id->asString(), $session->id()->asString());
         
-        $this->assertSame($this->availableAt(7200), $this->session->absoluteTimeout());
+        $session->put('baz', 'biz');
+        
+        $manager->save($session);
+        
+        $new_manager = $this->getSessionManager();
+        $session = $new_manager->start(CookiePool::fromSuperGlobals());
+        
+        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('biz', $session->get('baz'));
+        $this->assertSame($id->asString(), $session->id()->asString());
     }
     
     /** @test */
-    public function absolute_session_timeout_can_be_customized_at_runtime()
+    public function the_session_cookie_has_the_same_id_as_the_active_session()
     {
-        $this->manager->start($this->request, 1);
-        $this->manager->setAbsoluteTimeoutResolver(function ($timout) {
-            return $timout * 2;
+        $id = $this->writeSessionWithData(['foo' => 'bar']);
+        
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $manager->save($session);
+        
+        $cookie = $manager->toCookie($session);
+        $this->assertInstanceOf(SessionCookie::class, $cookie);
+        $this->assertSame($id->asString(), $cookie->value());
+        $this->assertSame($this->cookie_name, $cookie->name());
+    }
+    
+    /** @test */
+    public function invalidating_deletes_the_old_session_and_clears_the_current_session()
+    {
+        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        
+        $session->invalidate();
+        $manager->save($session);
+        
+        $data = $this->driver->read($session->id()->asHash())->asArray();
+        $this->assertArrayNotHasKey('foo', $data);
+        
+        $this->expectException(BadSessionID::class);
+        $this->driver->read($old_id->asHash());
+    }
+    
+    /** @test */
+    public function the_old_session_is_deleted_after_migrating_a_session()
+    {
+        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $session->rotate();
+        $manager->save($session);
+        $new_id = $session->id();
+        
+        $this->assertNotNull($this->driver->read($new_id->asHash()));
+        $this->expectException(BadSessionID::class);
+        $this->driver->read($old_id->asHash());
+    }
+    
+    /** @test */
+    public function an_idle_session_is_not_started()
+    {
+        $this->writeSessionWithData(['foo' => 'bar']);
+        
+        $test_clock = new TestClock(Carbon::now()->addSeconds($this->idle_timeout));
+        
+        $manager = $this->getSessionManager($test_clock);
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $this->assertSame('bar', $session->get('foo'));
+        
+        $test_clock = new TestClock(Carbon::now()->addSeconds($this->idle_timeout + 1));
+        
+        $manager = $this->getSessionManager($test_clock);
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $this->assertSame(null, $session->get('foo'));
+    }
+    
+    /** @test */
+    public function a_session_with_activity_can_not_be_started_after_it_has_expired_absolutely()
+    {
+        $this->absolute_lifetime = 6;
+        $this->idle_timeout = 3;
+        // We are not interested in this here
+        $this->rotation_interval = 1000;
+        
+        // Session creation time equals system time.
+        $this->writeSessionWithData(['foo' => 'bar']);
+        
+        // The session is about to expire
+        $test_time = Carbon::now()->addSeconds($this->idle_timeout);
+        $manager = $this->getSessionManager(new TestClock($test_time));
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $manager->save($session);
+        
+        $this->assertSame('bar', $session->get('foo'));
+        
+        // The session is about to expire again, but we don't exceed the 3 sec idle timeout.
+        $test_time = Carbon::now()->addSeconds($this->absolute_lifetime);
+        $manager = $this->getSessionManager(new TestClock($test_time));
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $manager->save($session);
+        
+        $this->assertSame('bar', $session->get('foo'));
+        
+        // The session is still active, only one seconds has passed since the last save() but
+        // its expired absolutely
+        $test_time = Carbon::now()->addSeconds($this->absolute_lifetime + 1);
+        $manager = $this->getSessionManager(new TestClock($test_time));
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        
+        $this->assertSame(null, $session->get('foo'));
+    }
+    
+    /** @test */
+    public function session_ids_are_rotated_if_needed()
+    {
+        $count = 0;
+        add_action(SessionRotated::class, function (SessionRotated $event) use (&$count) {
+            $count++;
+            $this->assertSame('bar', $event->session->get('foo'));
         });
         
-        $this->assertSame(0, $this->session->absoluteTimeout());
+        // Irrelevant here
+        $this->idle_timeout = 1000;
         
-        $this->manager->save();
+        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_session =
+            $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
         
-        // 7200 is the default in our test config fixture
-        $this->assertSame($this->availableAt(7200 * 2), $this->session->absoluteTimeout());
+        $test_clock = new TestClock(
+            Carbon::now()->addSeconds($this->rotation_interval)
+        );
+        
+        $manager = $this->getSessionManager($test_clock);
+        $new_session = $manager->start(CookiePool::fromSuperGlobals());
+        $new_id = $new_session->id();
+        
+        $this->assertTrue($old_id->sameAs($new_id));
+        $this->assertSame(0, $count);
+        
+        $test_clock = new TestClock(
+            Carbon::now()->addSeconds($this->rotation_interval + 1)
+        );
+        
+        $manager = $this->getSessionManager($test_clock);
+        $new_session = $manager->start(CookiePool::fromSuperGlobals());
+        $manager->save($new_session);
+        
+        $new_id = $new_session->id();
+        
+        $this->assertSame('bar', $new_session->get('foo'));
+        $this->assertSame($old_session->createdAt(), $new_session->createdAt());
+        $this->assertSame($test_clock->currentTimestamp(), $new_session->lastRotation());
+        $this->assertFalse($old_id->sameAs($new_id));
+        $this->assertSame(1, $count);
     }
     
     /** @test */
-    public function the_cookie_expiration_is_equal_to_the_max_lifetime()
+    public function garbage_collection_works()
     {
-        $this->manager->start($this->request, 1);
-        $this->manager->save();
+        $test_clock = new TestClock(Carbon::now());
+        $this->driver = new ArraySessionDriver($test_clock);
+        $this->gc_collection_percentage = 100;
         
-        $cookie = $this->manager->sessionCookie()->properties();
-        $this->assertSame($this->availableAt(7200), $cookie['expires']);
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        
+        $manager->save($session);
+        $old_id = $session->id();
+        
+        $test_clock->setCurrentTime(Carbon::now()->addSeconds($this->idle_timeout));
+        $manager = $this->getSessionManager();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        
+        $manager->save($session);
+        
+        $this->assertNotNull($this->driver->read($old_id->asHash()));
+        
+        $test_clock->setCurrentTime(Carbon::now()->addSeconds($this->idle_timeout + 1));
+        $manager = $this->getSessionManager($test_clock);
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $manager->save($session);
+        
+        $this->expectException(BadSessionID::class);
+        $this->driver->read($old_id->asHash());
     }
     
     /** @test */
-    public function sessions_are_not_rotated_before_the_interval_passes()
+    public function testSessionCookie()
     {
-        // Arrange
-        $this->withDataInSession(['foo' => 'bar']);
+        $manager = $this->getSessionManager(null, [
+            'cookie_name' => 'foobar_cookie',
+            'path' => '/foo',
+            'same_site' => 'lax',
+            'domain' => 'foo.com',
+            'absolute_lifetime_in_sec' => 30,
+        ]);
         
-        // Act
-        $this->manager->start($this->request, 1);
-        $this->manager->save();
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $manager->save($session);
         
-        // Assert
-        $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
-        $this->assertSame($this->session->getId(), $this->testSessionId());
+        $cookie = $manager->toCookie($session);
         
-        // Arrange
-        $this->travelIntoFuture(3599);
-        
-        // Act
-        $this->manager->save();
-        
-        // Assert
-        $this->backToPresent();
-        $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
-        $this->assertSame($this->session->getId(), $this->testSessionId());
-        
-        // Arrange
-        $this->travelIntoFuture(3601);
-        
-        // Act
-        $this->manager->save();
-        
-        // Assert
-        $this->assertNotSame($this->session->getId(), $this->testSessionId());
+        $this->assertSame('foobar_cookie', $cookie->name());
+        $this->assertSame($session->id()->asString(), $cookie->value());
+        $this->assertSame('Lax', $cookie->sameSite());
+        $this->assertSame('/foo', $cookie->path());
+        $this->assertSame('foo.com', $cookie->domain());
+        $this->assertTrue($cookie->secureOnly());
+        $this->assertTrue($cookie->httpOnly());
+        $this->assertSame(time() + 30, $cookie->expiryTimestamp());
+        $this->assertSame(30, $cookie->lifetime());
     }
     
-    /** @test */
-    public function the_regenerate_session_event_gets_dispatched()
+    private function getSessionManager(SessionClock $clock = null, array $config = null, SessionEventDispatcher $event_dispatcher = null) :SessionManager
     {
-        $this->dispatcher->fake(SessionWasRegenerated::class);
+        $default = [
+            'path' => '/',
+            'cookie_name' => $this->cookie_name,
+            'domain' => 'foo.com',
+            'http_only' => true,
+            'secure' => true,
+            'same_site' => 'lax',
+            'absolute_lifetime_in_sec' => $this->absolute_lifetime,
+            'idle_timeout_in_sec' => $this->idle_timeout,
+            'rotation_interval_in_sec' => $this->rotation_interval,
+            'garbage_collection_percentage' => $this->gc_collection_percentage,
+        ];
         
-        $this->manager->start($this->request, 1);
-        $this->manager->save();
+        if ($config) {
+            $default = array_merge($default, $config);
+        }
         
-        $this->travelIntoFuture(3601);
-        $this->manager->save();
-        $this->backToPresent();
-        
-        $this->dispatcher->assertDispatched(
-            function (SessionWasRegenerated $event) {
-                return $event->session === $this->session;
-            }
+        return new SessionManager(
+            new SessionConfig($default),
+            $this->driver,
+            $clock ?? new ClockUsingDateTimeImmutable(),
+            $event_dispatcher ?? new EventDispatcherUsingWPHooks()
         );
     }
     
-    protected function packageProviders() :array
+    private function now() :int
     {
-        return [
-            SessionServiceProvider::class,
-        ];
+        return (new DateTimeImmutable())->getTimestamp();
     }
     
-    private function sentCookies() :Cookies
+    private function writeSessionWithData(array $data) :SessionId
     {
-        $emitter = $this->app->resolve(ResponseEmitter::class);
-        return $emitter->cookies;
+        $manager = $this->getSessionManager();
+        $id = SessionId::createFresh();
+        $data = SerializedSessionData::fromArray($data, $this->now());
+        
+        $session = new Session($id, $data->asArray(), $data->lastActivity());
+        $manager->save($session);
+        
+        $_COOKIE[$this->cookie_name] = $id->asString();
+        return $id;
     }
     
 }
+

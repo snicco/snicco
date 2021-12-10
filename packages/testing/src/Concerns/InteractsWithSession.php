@@ -7,10 +7,10 @@ namespace Snicco\Testing\Concerns;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Session\Session;
-use Snicco\Core\Application\Application;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Snicco\Core\Application\Application;
+use Snicco\Session\ValueObjects\CsrfToken;
 use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Middleware\VerifyCsrfToken;
 
 /**
  * @property Session|null $session
@@ -21,22 +21,31 @@ use Snicco\Session\Middleware\VerifyCsrfToken;
 trait InteractsWithSession
 {
     
-    protected array $internal_keys = [
+    /**
+     * @var array
+     */
+    protected $internal_keys = [
         '_user',
         '_url.previous',
         '_rotate_at',
         '_expires_at',
         '_last_activity',
-        VerifyCsrfToken::TOKEN_KEY,
+        CsrfToken::INPUT_KEY,
     ];
     
-    private ?string $session_id = null;
+    /**
+     * @var string|null
+     */
+    private $session_id = null;
     
-    private bool $data_saved_to_driver = false;
+    /**
+     * @var bool
+     */
+    private $data_saved_to_driver = false;
     
     protected function withCsrfToken() :array
     {
-        $this->withDataInSession($data = [VerifyCsrfToken::TOKEN_KEY => Str::random(40)]);
+        $this->withDataInSession($data = [CsrfToken::INPUT_KEY => Str::random(40)]);
         
         return $data;
     }

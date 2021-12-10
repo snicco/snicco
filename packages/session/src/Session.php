@@ -5,84 +5,165 @@ declare(strict_types=1);
 namespace Snicco\Session;
 
 use Closure;
-use DateInterval;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Snicco\Support\Arr;
-use Snicco\Support\Str;
-use Snicco\Core\Support\Carbon;
-use Snicco\Core\Traits\InteractsWithTime;
+use Snicco\Session\Events\SessionRotated;
+use Snicco\Session\ValueObjects\SessionId;
+use Snicco\Session\ValueObjects\CsrfToken;
 use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Middleware\VerifyCsrfToken;
+use Snicco\Session\Exceptions\SessionIsLocked;
+use Snicco\Session\Contracts\SessionInterface;
+use Snicco\Session\Contracts\SessionManagerInterface;
+use Snicco\Session\ValueObjects\SerializedSessionData;
 
-class Session
+use function md5;
+use function count;
+use function is_null;
+use function is_array;
+use function array_diff;
+use function filter_var;
+use function array_merge;
+use function array_unique;
+use function func_get_args;
+
+/**
+ * @interal Don't depend on this class in your code. Depend on {@see SessionInterface}
+ */
+final class Session implements SessionInterface
 {
     
-    use InteractsWithTime;
+    /**
+     * @var SessionId
+     */
+    private $id;
     
-    private string $id;
+    /**
+     * @var array
+     */
+    private $attributes;
     
-    private array $attributes = [];
+    /**
+     * @var array
+     */
+    private $original_attributes;
     
-    private SessionDriver $driver;
+    /**
+     * @var DateTimeImmutable
+     */
+    private $last_activity;
     
-    private bool $started = false;
+    /**
+     * @var bool
+     */
+    private $locked = false;
     
-    private bool $saved = false;
+    /**
+     * @var bool
+     */
+    private $is_new = false;
     
-    private array $initial_attributes = [];
+    /**
+     * @var null|SessionId
+     */
+    private $invalidated_id = null;
     
-    private array $loaded_data_from_handler = [];
+    /**
+     * @var <array,object>
+     */
+    private $stored_events = [];
     
-    private int $token_strength_in_bytes;
-    
-    public function __construct(SessionDriver $handler, int $token_strength_in_bytes = 32)
+    /**
+     * @interal Sessions MUST only be started from a {@see SessionManagerInterface}
+     */
+    public function __construct(SessionId $id, array $data, DateTimeImmutable $last_activity)
     {
-        $this->driver = $handler;
-        $this->token_strength_in_bytes = $token_strength_in_bytes;
-    }
-    
-    public function start(string $session_id = '') :bool
-    {
-        $this->setId($session_id);
-        $this->loadDataFromDriver();
+        $this->id = $id;
+        $this->attributes = $data;
         
-        $this->started = true;
-        
-        if ( ! $this->has(VerifyCsrfToken::TOKEN_KEY)) {
-            $this->regenerateCsrfToken();
+        if ( ! $this->has('_sniccowp.timestamps.created_at')) {
+            $this->put('_sniccowp.timestamps.created_at', $last_activity->getTimestamp());
+            $this->is_new = true;
+        }
+        if ( ! $this->has('_sniccowp.timestamps.last_rotated')) {
+            $this->put('_sniccowp.timestamps.last_rotated', $last_activity->getTimestamp());
+        }
+        if ( ! $this->has('_sniccowp.csrf_token')) {
+            $this->refreshCsrfToken();
         }
         
-        $this->initial_attributes = $this->attributes;
-        
-        return $this->started;
+        $this->original_attributes = $this->attributes;
+        $this->last_activity = $last_activity;
     }
     
-    public function getId() :string
+    public function all() :array
     {
-        return $this->id;
+        return Arr::except($this->attributes, '_sniccowp');
     }
     
-    public function setId(string $id) :Session
+    public function boolean(string $key, bool $default = false) :bool
     {
-        $this->id = $this->isValidId($id)
-            ? $id
-            : $this->generateSessionId();
-        
-        return $this;
+        return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
     
-    public function save() :void
+    public function createdAt() :int
     {
-        $this->ageFlashData();
+        return $this->get('_sniccowp.timestamps.created_at');
+    }
+    
+    public function csrfToken() :CsrfToken
+    {
+        return new CsrfToken($this->get('_sniccowp.csrf_token'));
+    }
+    
+    public function decrement($key, $amount = 1) :void
+    {
+        $this->increment($key, $amount * -1);
+    }
+    
+    public function errors() :SessionErrors
+    {
+        $errors = $this->get('errors', new SessionErrors());
         
-        $this->setLastActivity($this->currentTime());
+        if ( ! $errors instanceof SessionErrors) {
+            $errors = new SessionErrors;
+        }
         
-        $this->driver->write(
-            $this->hash($this->getId()),
-            $this->prepareForStorage(serialize($this->attributes))
-        );
+        return clone $errors;
+    }
+    
+    public function exists($keys) :bool
+    {
+        $keys = Arr::wrap($keys);
         
-        $this->saved = true;
+        foreach ($keys as $key) {
+            if ( ! Arr::has($this->attributes, $key)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    public function flash(string $key, $value = true) :void
+    {
+        $this->put($key, $value);
+        
+        $this->push('_flash.new', $key);
+        
+        $this->removeFromOldFlashData([$key]);
+    }
+    
+    public function flashInput(array $input) :void
+    {
+        $this->flash('_old_input', $input);
+    }
+    
+    public function flush() :void
+    {
+        $this->checkLocked();
+        $internal = $this->get('_sniccowp');
+        $this->attributes = [];
+        $this->put('_sniccowp', $internal);
     }
     
     public function forget($keys) :void
@@ -95,142 +176,38 @@ class Session
         return Arr::get($this->attributes, $key, $default);
     }
     
-    public function put($key, $value = null) :void
+    public function has(string $key) :bool
     {
-        if ( ! is_array($key)) {
-            $key = [$key => $value];
-        }
-        
-        foreach ($key as $arrayKey => $arrayValue) {
-            Arr::set($this->attributes, $arrayKey, $arrayValue);
-        }
-    }
-    
-    public function setLastActivity(int $timestamp)
-    {
-        $this->put('_last_activity', $timestamp);
-    }
-    
-    public function wasChanged() :bool
-    {
-        return $this->initial_attributes !== $this->attributes;
-    }
-    
-    public function wasSaved() :bool
-    {
-        return $this->saved;
-    }
-    
-    public function all() :array
-    {
-        return $this->attributes;
-    }
-    
-    public function only($keys) :array
-    {
-        return Arr::only($this->attributes, $keys);
-    }
-    
-    public function missing($key) :bool
-    {
-        return ! $this->exists($key);
-    }
-    
-    public function exists($key) :bool
-    {
-        $keys = Arr::wrap($key);
-        
-        foreach ($keys as $key) {
-            if ( ! Arr::has($this->attributes, $key)) {
-                return false;
-            }
-        }
-        
-        return true;
+        return Arr::get($this->attributes, $key) !== null;
     }
     
     public function hasOldInput(string $key = null) :bool
     {
-        $old = $this->getOldInput($key);
+        $old = $this->oldInput($key);
         
         return is_null($key)
             ? count($old) > 0
             : ! is_null($old);
     }
     
-    public function getOldInput(string $key = null, $default = null)
+    public function id() :SessionId
     {
-        return Arr::get($this->get('_old_input', []), $key, $default);
+        return $this->id;
     }
     
-    public function replace(array $attributes) :void
-    {
-        $this->put($attributes);
-    }
-    
-    public function remember(string $key, Closure $callback)
-    {
-        if ( ! is_null($value = $this->get($key))) {
-            return $value;
-        }
-        
-        $value = $callback();
-        $this->put($key, $value);
-        return $value;
-    }
-    
-    public function decrement($key, $amount = 1) :int
-    {
-        return $this->increment($key, $amount * -1);
-    }
-    
-    public function increment(string $key, int $amount = 1, int $start_value = 0) :int
+    public function increment(string $key, int $amount = 1, int $start_value = 0) :void
     {
         if ( ! $this->has($key)) {
             $this->put($key, $start_value);
         }
         
-        $this->put($key, $value = $this->get($key, 0) + $amount);
-        
-        return $value;
+        $this->put($key, $this->get($key, 0) + $amount);
     }
     
-    public function has(string $key) :bool
+    public function invalidate() :void
     {
-        return Arr::get($this->attributes, $key) !== null;
-    }
-    
-    public function boolean(string $key, bool $default = false) :bool
-    {
-        return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
-    }
-    
-    public function flashInputNow(array $input)
-    {
-        $this->now('_old_input', $input);
-    }
-    
-    public function now(string $key, $value) :void
-    {
-        $this->put($key, $value);
-        
-        $this->push('_flash.old', $key);
-    }
-    
-    public function push(string $key, $value) :void
-    {
-        $array = $this->get($key, []);
-        
-        $array[] = $value;
-        
-        $this->put($key, $array);
-    }
-    
-    public function reflash() :void
-    {
-        $this->mergeNewFlashes($this->get('_flash.old', []));
-        
-        $this->put('_flash.old', []);
+        $this->rotate();
+        $this->flush();
     }
     
     public function keep($keys = null) :void
@@ -244,283 +221,168 @@ class Session
         $this->removeFromOldFlashData($keys);
     }
     
-    public function flashInput(array $value) :void
+    public function lastActivity() :int
     {
-        $this->flash('_old_input', $value);
+        return $this->last_activity->getTimestamp();
     }
     
-    public function flash(string $key, $value = true) :void
+    public function lastRotation() :int
+    {
+        return $this->get('_sniccowp.timestamps.last_rotated');
+    }
+    
+    public function missing($keys) :bool
+    {
+        return ! $this->exists($keys);
+    }
+    
+    public function flashNow(string $key, $value) :void
     {
         $this->put($key, $value);
         
-        $this->push('_flash.new', $key);
-        
-        $this->removeFromOldFlashData([$key]);
+        $this->push('_flash.old', $key);
     }
     
-    public function invalidate() :bool
+    public function oldInput(string $key = null, $default = null)
     {
-        $this->flush();
-        $this->regenerateCsrfToken();
-        return $this->migrate();
+        return Arr::get($this->get('_old_input', []), $key, $default);
     }
     
-    public function flush() :void
+    public function only($keys) :array
     {
-        $this->attributes = [];
-    }
-    
-    public function regenerate(bool $destroy_old = true) :bool
-    {
-        $success = $this->migrate($destroy_old);
-        $this->regenerateCsrfToken();
-        return $success;
-    }
-    
-    public function isStarted() :bool
-    {
-        return $this->started;
-    }
-    
-    public function setUserId(int $user_id)
-    {
-        $this->put('_user.id', $user_id);
-    }
-    
-    public function isValidId(string $id) :bool
-    {
-        return (strlen($id) === 2 * $this->token_strength_in_bytes)
-               && ctype_alnum($id)
-               && $this->getDriver()->isValid($this->hash($id));
-    }
-    
-    public function getPreviousUrl(?string $fallback = '/') :?string
-    {
-        return $this->get('_url.previous', $fallback);
-    }
-    
-    public function setPreviousUrl(string $url) :void
-    {
-        $this->put('_url.previous', $url);
-    }
-    
-    public function getIntendedUrl(string $default = '')
-    {
-        return $this->pull('_url.intended', $default);
+        return Arr::only($this->attributes, $keys);
     }
     
     public function pull(string $key, $default = null)
     {
+        $this->checkLocked();
         return Arr::pull($this->attributes, $key, $default);
     }
     
-    /**
-     * @param  DateTimeInterface|DateInterval|int  $delay
-     */
-    public function confirmAuthUntil($delay)
+    public function push(string $key, $value) :void
     {
-        $ts = $this->availableAt($delay);
+        $array = $this->get($key, []);
         
-        $this->put('auth.confirm.until', $ts);
+        $array[] = $value;
+        
+        $this->put($key, $array);
     }
     
-    public function hasValidAuthConfirmToken() :bool
+    public function put($key, $value = null) :void
     {
-        return Carbon::now()->getTimestamp() < $this->get('auth.confirm.until', 0);
-    }
-    
-    public function setIntendedUrl(string $encoded_url)
-    {
-        $this->put('_url.intended', $encoded_url);
-    }
-    
-    /**
-     * Flash a container of errors to the session.
-     *
-     * @param  array|MessageBag  $provider
-     *
-     * @return $this
-     */
-    public function withErrors($provider, string $bag = 'default') :Session
-    {
-        $value = $this->toMessageBag($provider);
+        $this->checkLocked();
         
-        $this->flash('errors', $this->errors()->put($bag, $value));
-        
-        return $this;
-    }
-    
-    public function errors() :ViewErrors
-    {
-        $errors = $this->get('errors', new ViewErrors());
-        
-        if ( ! $errors instanceof ViewErrors) {
-            $errors = new ViewErrors;
+        if ( ! is_array($key)) {
+            $key = [$key => $value];
         }
         
-        return $errors;
-    }
-    
-    public function allowAccessToRoute(string $path, $expires)
-    {
-        $allowed = $this->allowedRoutes();
-        
-        $allowed[$path] = (int) $expires;
-        
-        $this->put('_allow_routes', $allowed);
-    }
-    
-    public function canAccessRoute(string $path) :bool
-    {
-        $expires = $this->allowedRoutes()[$path] ?? null;
-        
-        if ( ! $expires) {
-            return false;
+        foreach ($key as $array_key => $array_value) {
+            Arr::set($this->attributes, $array_key, $array_value);
         }
-        
-        if ($expires < $this->currentTime()) {
-            $this->remove('_allow_routes.'.$path);
-            
-            return false;
+    }
+    
+    public function putIfMissing(string $key, Closure $callback) :void
+    {
+        if ($this->missing($key)) {
+            $this->put($key, $callback());
         }
+    }
+    
+    public function reflash() :void
+    {
+        $this->mergeNewFlashes($this->get('_flash.old', []));
         
-        return true;
+        $this->put('_flash.old', []);
     }
     
-    public function remove(string $key)
+    public function releaseEvents() :array
     {
-        return Arr::pull($this->attributes, $key);
+        $events = $this->stored_events;
+        $this->stored_events = [];
+        return $events;
     }
     
-    /**
-     * @param  DateTimeInterface|DateInterval|int  $delay
-     */
-    public function setNextRotation($delay)
+    public function remove(string $key) :void
     {
-        $ts = $this->availableAt($delay);
-        $this->put('_rotate_at', $ts);
+        $this->pull($key);
     }
     
-    public function rotationDueAt() :int
+    public function replace(array $attributes) :void
     {
-        return $this->get('_rotate_at', 0);
+        $this->put($attributes);
     }
     
-    /**
-     * @param  DateTimeInterface|DateInterval|int  $delay
-     */
-    public function setAbsoluteTimeout($delay)
+    public function rotate() :void
     {
-        $ts = $this->availableAt($delay);
-        $this->put('_expires_at', $ts);
+        $this->checkLocked();
+        $this->invalidated_id = $this->id;
+        $this->id = SessionId::createFresh();
+        $this->refreshCsrfToken();
+        $this->recordEvent(new SessionRotated(ImmutableSession::fromSession($this)));
     }
     
-    public function absoluteTimeout() :int
+    public function saveUsing(SessionDriver $driver, DateTimeImmutable $now) :void
     {
-        return $this->get('_expires_at', 0);
-    }
-    
-    public function getAllForUser() :array
-    {
-        $sessions = $this->getDriver()->getAllByUserId($this->userId());
+        $this->last_activity = $now;
         
-        $collection = [];
-        
-        foreach ($sessions as $session) {
-            $payload = @unserialize($this->prepareForUnserialize($session->payload));
-            
-            if ($payload !== false && ! is_null($payload) && is_array($payload)) {
-                $session->payload = $payload;
-            }
-            else {
-                $session->payload = [];
-            }
-            
-            $collection[] = $session;
-        }
-        
-        return $collection;
-    }
-    
-    public function getDriver() :SessionDriver
-    {
-        return $this->driver;
-    }
-    
-    public function userId()
-    {
-        return $this->get('_user.id', 0);
-    }
-    
-    public function isIdle(int $idle_timeout) :bool
-    {
-        return ($this->currentTime() - $this->lastActivity()) > $idle_timeout;
-    }
-    
-    public function lastActivity() :int
-    {
-        return $this->get('_last_activity', 0);
-    }
-    
-    public function hasRememberMeToken() :bool
-    {
-        return $this->get('auth.has_remember_token', false);
-    }
-    
-    public function challengedUser() :int
-    {
-        return $this->get('auth.2fa.challenged_user', 0);
-    }
-    
-    public function csrfToken()
-    {
-        return $this->get(VerifyCsrfToken::TOKEN_KEY);
-    }
-    
-    public function regenerateCsrfToken()
-    {
-        $this->put(VerifyCsrfToken::TOKEN_KEY, Str::random(40));
-    }
-    
-    protected function prepareForUnserialize(string $data) :string
-    {
-        return $data;
-    }
-    
-    protected function prepareForStorage(string $data) :string
-    {
-        return $data;
-    }
-    
-    private function loadDataFromDriver()
-    {
-        $data = $this->readFromDriver();
-        
-        $this->loaded_data_from_handler = $data;
-        
-        $this->attributes = Arr::mergeRecursive($this->attributes, $data);
-    }
-    
-    private function readFromDriver() :array
-    {
-        if ($data = $this->driver->read($this->hash($this->getId()))) {
-            $data = @unserialize($this->prepareForUnserialize($data));
-            
-            if ($data !== false && ! is_null($data) && is_array($data)) {
-                return $data;
-            }
-        }
-        
-        return [];
-    }
-    
-    private function hash(string $id)
-    {
-        if (function_exists('hash')) {
-            return hash('sha256', $id);
+        if ( ! $this->isDirty()) {
+            $driver->touch($this->id->asHash(), $now);
         }
         else {
-            return sha1($id);
+            if ($this->invalidated_id instanceof SessionId) {
+                $driver->destroy([$this->invalidated_id->asHash()]);
+                $this->put('_sniccowp.timestamps.last_rotated', $now->getTimestamp());
+            }
+            
+            $this->ageFlashData();
+            
+            $driver->write(
+                $this->id->asHash(),
+                SerializedSessionData::fromArray(
+                    $this->attributes,
+                    $this->last_activity->getTimestamp(),
+                ),
+            );
+        }
+        
+        $this->lock();
+    }
+    
+    public function withErrors($provider, string $bag = 'default') :void
+    {
+        $value = $this->toMessageBag($provider);
+    
+        $errors = $this->errors();
+        $errors->put($bag, $value);
+        $this->flash('errors', $errors);
+    }
+    
+    public function isDirty() :bool
+    {
+        if ($this->is_new) {
+            return true;
+        }
+        
+        $is_dirty = $this->attributes !== $this->original_attributes;
+        
+        if ($is_dirty) {
+            return true;
+        }
+        
+        if ($this->invalidated_id instanceof SessionId) {
+            return true;
+        }
+        
+        return count(Arr::get($this->attributes, '_flash.old', [])) > 0;
+    }
+    
+    /**
+     * @throws SessionIsLocked
+     */
+    private function checkLocked()
+    {
+        if ($this->locked) {
+            throw new SessionIsLocked();
         }
     }
     
@@ -531,6 +393,11 @@ class Session
         $this->put('_flash.old', $this->get('_flash.new', []));
         
         $this->put('_flash.new', []);
+    }
+    
+    private function lock() :void
+    {
+        $this->locked = true;
     }
     
     private function mergeNewFlashes(array $keys) :void
@@ -545,22 +412,6 @@ class Session
         $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
     }
     
-    private function migrate(bool $destroy_old = true) :bool
-    {
-        if ($destroy_old) {
-            $this->driver->destroy($this->hash($this->getId()));
-        }
-        
-        $this->setId($this->generateSessionId());
-        
-        return true;
-    }
-    
-    private function generateSessionId() :string
-    {
-        return bin2hex(random_bytes($this->token_strength_in_bytes));
-    }
-    
     private function toMessageBag($provider) :MessageBag
     {
         if ($provider instanceof MessageBag) {
@@ -570,9 +421,14 @@ class Session
         return new MessageBag($provider);
     }
     
-    private function allowedRoutes() :array
+    private function refreshCsrfToken() :void
     {
-        return $this->get('_allow_routes', []);
+        $this->put('_sniccowp.csrf_token', md5($this->id->asString()));
+    }
+    
+    private function recordEvent(object $event)
+    {
+        $this->stored_events[] = $event;
     }
     
 }

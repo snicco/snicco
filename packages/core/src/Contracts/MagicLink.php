@@ -7,13 +7,17 @@ namespace Snicco\Core\Contracts;
 use RuntimeException;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Cookie;
+use InvalidArgumentException;
 use Snicco\Core\Support\Carbon;
 use Snicco\Core\Http\Psr7\Request;
-use InvalidArgumentException;
 use Snicco\Core\Traits\HasLottery;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Traits\InteractsWithTime;
 
+/**
+ * @todo extract a MagicLinkStorage interface and make
+ * @todo Remove dependency on request class
+ */
 abstract class MagicLink
 {
     
@@ -22,9 +26,8 @@ abstract class MagicLink
     
     public const QUERY_STRING_ID = 'signature';
     
-    protected string  $app_key;
-    protected Request $request;
-    protected array   $lottery = [4, 100];
+    protected string $app_key;
+    protected array  $lottery = [4, 100];
     
     public function setAppKey(string $app_key)
     {
@@ -79,6 +82,8 @@ abstract class MagicLink
         
         $cookie = $request->cookies()->get($this->accessCookieName($request), '');
         
+        /** @todo remove sessions from here */
+        /** @todo hash method seems no longer valid for cookies */
         return $cookie === $this->hash($request->fullPath(), $request)
                && $request->expires() > $this->currentTime();
     }

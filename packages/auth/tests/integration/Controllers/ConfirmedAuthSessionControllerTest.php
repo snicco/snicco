@@ -11,7 +11,7 @@ use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Events\FailedAuthConfirmation;
-use Snicco\Session\Events\SessionWasRegenerated;
+use Snicco\SessionBundle\Events\SessionWasRegenerated;
 
 class ConfirmedAuthSessionControllerTest extends AuthTestCase
 {
@@ -167,7 +167,7 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         $this->travelIntoFuture(10);
         $this->assertFalse($this->session->hasValidAuthConfirmToken());
         
-        $this->assertNotSame($id_before_confirmation, $response->session()->getId());
+        $this->assertNotSame($id_before_confirmation, $response->session()->id());
         $this->dispatcher->assertDispatched(SessionWasRegenerated::class);
     }
     

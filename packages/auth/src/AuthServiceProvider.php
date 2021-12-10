@@ -7,18 +7,16 @@ namespace Snicco\Auth;
 use Snicco\Session\Session;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Shared\Encryptor;
+use PragmaRX\Google2FA\Google2FA;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Secure;
+use Snicco\Auth\Fail2Ban\Fail2Ban;
+use Snicco\Session\SessionManager;
 use Snicco\Core\Application\Config;
+use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
-use PragmaRX\Google2FA\Google2FA;
-use Snicco\Auth\Fail2Ban\Fail2Ban;
-use Snicco\Session\SessionManager;
-use Snicco\Auth\Fail2Ban\Syslogger;
-use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Auth\Listeners\WPLoginLinks;
@@ -26,6 +24,8 @@ use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\Auth\Events\SettingAuthCookie;
+use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
 use Snicco\Session\Contracts\SessionDriver;
@@ -39,7 +39,6 @@ use Snicco\Auth\Events\FailedAuthConfirmation;
 use Snicco\Auth\Controllers\AccountController;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Mail\Contracts\MailBuilderInterface;
-use Snicco\Session\Events\SessionWasRegenerated;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Listeners\GenerateNewAuthCookie;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
@@ -57,11 +56,11 @@ use Snicco\Auth\Controllers\ResetPasswordController;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 use Snicco\Auth\Responses\Google2FaChallengeResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
-use Snicco\Session\Middleware\StartSessionMiddleware;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 use Snicco\Auth\Controllers\ForgotPasswordController;
 use Snicco\Auth\Controllers\LoginMagicLinkController;
+use Snicco\SessionBundle\Events\SessionWasRegenerated;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
@@ -73,18 +72,30 @@ use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Controllers\TwoFactorAuthSetupController;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+use Snicco\SessionBundle\Middleware\StartSessionMiddleware;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
 use Snicco\Auth\Controllers\TwoFactorAuthSessionController;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 use Snicco\Auth\Controllers\AuthConfirmationEmailController;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\Auth\Controllers\TwoFactorAuthPreferenceController;
-use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 use Snicco\Auth\Controllers\Compat\PasswordResetEmailController;
+use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 use Snicco\Auth\Controllers\Compat\BulkPasswordResetEmailController;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    
+    public function bootstrap() :void
+    {
+        if ( ! $this->config->get('session.enabled')) {
+            throw new ConfigurationException(
+                'Sessions need to be enabled if you want to use the auth features.'
+            );
+        }
+        
+        $this->bindSessionManagerInterface();
+    }
     
     public function register() :void
     {
@@ -109,17 +120,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->bindAuthenticators();
         $this->bindAuthenticateSessionMiddleware();
         $this->bindAuthMiddlewares();
-    }
-    
-    public function bootstrap() :void
-    {
-        if ( ! $this->config->get('session.enabled')) {
-            throw new ConfigurationException(
-                'Sessions need to be enabled if you want to use the auth features.'
-            );
-        }
-        
-        $this->bindSessionManagerInterface();
     }
     
     private function bindConfig()

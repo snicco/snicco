@@ -53,7 +53,7 @@ class LoginMagicLinkController extends Controller
                 ['message' => 'If the credentials match our system we will send you a login link email.']
             )
             : $this->response_factory->redirect()->back(302, $this->url->toRoute('auth.login'))
-                                     ->with('login.link.processed', true);
+                                     ->withFlashMessages('login.link.processed', true);
     }
     
     protected function createMagicLink($user, $expiration = 300, string $redirect_to = null) :string

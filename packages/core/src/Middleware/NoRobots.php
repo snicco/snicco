@@ -30,15 +30,15 @@ class NoRobots extends Middleware
         $response = $next($request);
         
         if ( ! $this->archive) {
-            $response = $response->noArchive();
+            $response = $response->withNoArchive();
         }
         
         if ( ! $this->index) {
-            $response = $response->noIndex();
+            $response = $response->withNoIndex();
         }
         
         if ( ! $this->follow) {
-            $response = $response->noFollow();
+            $response = $response->withNoFollow();
         }
         
         return $response;

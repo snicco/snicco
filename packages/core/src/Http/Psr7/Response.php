@@ -6,19 +6,25 @@ namespace Snicco\Core\Http\Psr7;
 
 use Snicco\Core\Http\Cookie;
 use Snicco\Core\Http\Cookies;
-use Snicco\Core\Contracts\Responsable;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
-class Response implements ResponseInterface, Responsable
+class Response implements ResponseInterface
 {
     
     use ImplementsPsr7Response;
     
-    protected ?Cookies $cookies = null;
+    /**
+     * @var Cookies
+     */
+    private $cookies;
     
-    protected StreamFactoryInterface $response_factory;
+    private $flash_messages = [];
+    
+    private $old_input = [];
+    
+    private $errors = [];
     
     public function __construct(ResponseInterface $psr7_response)
     {
@@ -27,53 +33,125 @@ class Response implements ResponseInterface, Responsable
             ($psr7_response instanceof Response) ? $psr7_response->cookies() : new Cookies();
     }
     
-    public function toResponsable()
-    {
-        return $this;
-    }
-    
-    public function noIndex(?string $bot = null) :self
+    public function withNoIndex(?string $bot = null) :self
     {
         $value = $bot ? $bot.': noindex' : 'noindex';
-        
+    
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
     
-    public function noFollow(?string $bot = null) :self
+    public function withNoFollow(?string $bot = null) :self
     {
         $value = $bot ? $bot.': nofollow' : 'nofollow';
         
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
     
-    public function noRobots(?string $bot = null) :self
+    public function withNoRobots(?string $bot = null) :self
     {
         $value = $bot ? $bot.': none' : 'none';
         
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
     
-    public function noArchive(?string $bot = null) :self
+    public function withNoArchive(?string $bot = null) :self
     {
         $value = $bot ? $bot.': noarchive' : 'noarchive';
         
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
     
-    // makes no sense to copy the object here since we can't
-    // change the object property reference anyway without extra libraries.
-    public function withCookie(Cookie $cookie) :self
+    public function withContentType(string $content_type) :self
     {
-        $this->cookies->set($cookie->name(), $cookie->properties());
-        return $this;
+        return $this->withHeader('content-type', $content_type);
     }
     
-    public function withoutCookie(string $name, string $path = '/') :Response
+    public function withCookie(Cookie $cookie) :self
+    {
+        $response = clone $this;
+        $response->cookies->add($cookie);
+        
+        return $response;
+    }
+    
+    public function withoutCookie(string $name, string $path = '/') :self
     {
         $cookie = new Cookie($name, 'deleted');
         $cookie->expires(1)->path($path);
-        $this->cookies->add($cookie);
-        return $this;
+        
+        $response = clone $this;
+        $response->cookies->add($cookie);
+        
+        return $response;
+    }
+    
+    /**
+     * @param  string|array  $key
+     * @param  mixed  $value
+     */
+    public function withFlashMessages($key, $value = null) :self
+    {
+        $key = is_array($key) ? $key : [$key => $value];
+        
+        $flash_messages = $this->flash_messages;
+        foreach ($key as $k => $v) {
+            if ( ! is_string($k)) {
+                throw new InvalidArgumentException('Keys have to be strings');
+            }
+            $flash_messages[$k] = $v;
+        }
+        
+        $response = clone $this;
+        
+        $response->flash_messages = $flash_messages;
+        
+        return $response;
+    }
+    
+    /**
+     * @param  string|array  $key
+     * @param  mixed  $value
+     */
+    public function withOldInput($key, $value = null) :self
+    {
+        $input = is_array($key) ? $key : [$key => $value];
+        $_input = $this->old_input;
+        foreach ($input as $k => $v) {
+            if ( ! is_string($k)) {
+                throw new InvalidArgumentException('Keys have to be strings');
+            }
+            $_input[$k] = $v;
+        }
+        
+        $response = clone $this;
+        
+        $response->old_input = $_input;
+        
+        return $response;
+    }
+    
+    /**
+     * @param  array<string,string>|<array<string,array<string>>  $errors
+     */
+    public function withErrors($errors, string $namespace = 'default') :self
+    {
+        $_errors = $this->errors;
+        foreach ($errors as $key => $messages) {
+            if ( ! is_string($key)) {
+                throw new InvalidArgumentException("Keys have to be strings");
+            }
+            
+            $messages = (array) $messages;
+            foreach ($messages as $message) {
+                $_errors[$namespace][$key][] = $message;
+            }
+        }
+        
+        $response = clone $this;
+        
+        $response->errors = $_errors;
+        
+        return $response;
     }
     
     public function cookies() :Cookies
@@ -85,13 +163,13 @@ class Response implements ResponseInterface, Responsable
         return $this->cookies;
     }
     
-    public function html(StreamInterface $html) :Response
+    public function html(StreamInterface $html) :self
     {
         return $this->withHeader('Content-Type', 'text/html; charset=UTF-8')
                     ->withBody($html);
     }
     
-    public function json(StreamInterface $json) :Response
+    public function json(StreamInterface $json) :self
     {
         return $this->withHeader('Content-Type', 'application/json')
                     ->withBody($json);
@@ -156,21 +234,31 @@ class Response implements ResponseInterface, Responsable
         return (intval($this->getBody()->getSize())) === 0;
     }
     
-    public function withContentType(string $content_type) :self
+    public function flashMessages() :array
     {
-        return $this->withHeader('content-type', $content_type);
+        return $this->flash_messages;
     }
     
-    protected function new(ResponseInterface $new_psr_response) :self
+    public function oldInput() :array
+    {
+        return $this->old_input;
+    }
+    
+    public function errors() :array
+    {
+        return $this->errors;
+    }
+    
+    public function __clone()
+    {
+        $this->cookies = clone $this->cookies;
+    }
+    
+    protected function new(ResponseInterface $new_psr_response) :Response
     {
         $new = clone $this;
-        $new->setPsr7Response($new_psr_response);
+        $new->psr7_response = $new_psr_response;
         return $new;
-    }
-    
-    protected function setPsr7Response(ResponseInterface $psr_response)
-    {
-        $this->psr7_response = $psr_response;
     }
     
 }
