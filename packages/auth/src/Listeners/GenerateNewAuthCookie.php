@@ -28,7 +28,7 @@ class GenerateNewAuthCookie
         $user = $event->user;
         $expiration = $event->expiration;
         $scheme = $event->scheme;
-        $token = $this->current_session->getId();
+        $token = $this->current_session->id();
         
         $pass_frag = substr($user->user_pass, 8, 4);
         

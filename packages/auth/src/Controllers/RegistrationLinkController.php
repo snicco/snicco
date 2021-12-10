@@ -7,9 +7,9 @@ namespace Snicco\Auth\Controllers;
 use Snicco\Core\Http\Controller;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Responsable;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
 use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 
 class RegistrationLinkController extends Controller
@@ -48,9 +48,9 @@ class RegistrationLinkController extends Controller
         );
         
         $mail_builder->to($email)->send(new ConfirmRegistrationEmail($link));
-        
+    
         return $this->response_factory->redirect()->back()
-                                      ->with('registration.link.success', true);
+                                      ->withFlashMessages('registration.link.success', true);
     }
     
 }

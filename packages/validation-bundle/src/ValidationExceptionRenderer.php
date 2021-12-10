@@ -38,7 +38,7 @@ class ValidationExceptionRenderer
         }
         
         return $response->withErrors($exception->messages(), $exception->namedBag())
-                        ->withInput(Arr::except($request->input(), $this->dont_flash));
+                        ->withOldInput(Arr::except($request->input(), $this->dont_flash));
     }
     
 }

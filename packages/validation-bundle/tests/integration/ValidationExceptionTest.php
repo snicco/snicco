@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Validation\integration;
 
 use Snicco\Core\Contracts\ExceptionHandler;
-use Snicco\Session\SessionServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\SessionBundle\SessionServiceProvider;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Validation\Exceptions\ValidationException;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;

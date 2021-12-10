@@ -38,6 +38,28 @@ class WpAuthSessionToken extends WP_Session_Tokens
     }
     
     /**
+     * Destroys all sessions for the user.
+     *
+     * @since 4.0.0
+     */
+    protected function destroy_all_sessions() :void
+    {
+        $this->session_manager->destroyAllForUser($this->user_id);
+    }
+    
+    /**
+     * Destroys all sessions for this user, except the single session with the given verifier.
+     *
+     * @param  string  $verifier  Verifier of the session to keep.
+     *
+     * @since 4.0.0
+     */
+    protected function destroy_other_sessions($verifier) :void
+    {
+        $this->session_manager->destroyOthersForUser($verifier, $this->user_id);
+    }
+    
+    /**
      * Retrieves a session FROM THE CURRENT USER based on its verifier (token hash).
      *
      * @param  string  $verifier  Verifier for the session to retrieve. NOTE:Already hashed.
@@ -87,31 +109,10 @@ class WpAuthSessionToken extends WP_Session_Tokens
     {
         if ( ! $session) {
             $this->session_manager->activeSession()->invalidate();
+            return;
         }
         
         $this->session_manager->activeSession()->put(static::wp_auth_key, $session);
-    }
-    
-    /**
-     * Destroys all sessions for this user, except the single session with the given verifier.
-     *
-     * @param  string  $verifier  Verifier of the session to keep.
-     *
-     * @since 4.0.0
-     */
-    protected function destroy_other_sessions($verifier) :void
-    {
-        $this->session_manager->destroyOthersForUser($verifier, $this->user_id);
-    }
-    
-    /**
-     * Destroys all sessions for the user.
-     *
-     * @since 4.0.0
-     */
-    protected function destroy_all_sessions() :void
-    {
-        $this->session_manager->destroyAllForUser($this->user_id);
     }
     
 }

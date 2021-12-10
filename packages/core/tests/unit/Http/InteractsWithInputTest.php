@@ -8,8 +8,8 @@ use Mockery;
 use RuntimeException;
 use Snicco\Core\Support\WP;
 use Snicco\Session\Session;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Validation\Validator;
+use Snicco\Core\Http\Psr7\Request;
 use Respect\Validation\Validator as v;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Session\Drivers\ArraySessionDriver;
@@ -281,7 +281,7 @@ class InteractsWithInputTest extends UnitTest
         WP::shouldReceive('userId')->andReturn(1)->byDefault();
         $session->start('a');
         $session->flashInput(['foo' => 'bar', 'bar' => 'baz']);
-        $session->save();
+        $session->saveUsing();
         
         $request = $this->request->withAttribute('session', $session);
         $this->assertSame(['foo' => 'bar', 'bar' => 'baz'], $request->old());

@@ -11,7 +11,10 @@ use Psr\Http\Message\ServerRequestInterface;
 trait ImplementsPsr7Request
 {
     
-    private ServerRequestInterface $psr_request;
+    /**
+     * @var ServerRequestInterface
+     */
+    private $psr_request;
     
     public function withProtocolVersion($version)
     {

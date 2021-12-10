@@ -29,14 +29,23 @@ use function strtolower;
 use function array_replace;
 use function array_key_exists;
 
-class Cookies
+final class Cookies
 {
     
-    protected array $request_cookies = [];
+    /**
+     * @var array
+     */
+    private $request_cookies;
     
-    protected array $response_cookies = [];
+    /**
+     * @var array
+     */
+    private $response_cookies = [];
     
-    protected array $defaults = [
+    /**
+     * @var array
+     */
+    private $defaults = [
         'value' => '',
         'domain' => null,
         'hostonly' => true,
@@ -95,20 +104,6 @@ class Cookies
     }
     
     /**
-     * Set default cookie properties
-     *
-     * @param  array  $settings
-     *
-     * @return static
-     */
-    public function setDefaults(array $settings) :self
-    {
-        $this->defaults = array_replace($this->defaults, $settings);
-        
-        return $this;
-    }
-    
-    /**
      * Get cookie
      *
      * @param  string  $name
@@ -141,7 +136,7 @@ class Cookies
         return $this;
     }
     
-    public function add(Cookie $cookie)
+    public function add(Cookie $cookie) :Cookies
     {
         $this->response_cookies[$cookie->name()] = $cookie->properties();
         return $this;
@@ -171,7 +166,7 @@ class Cookies
      *
      * @return string
      */
-    protected function toHeader(string $name, array $properties) :string
+    private function toHeader(string $name, array $properties) :string
     {
         $result = urlencode($name).'='.$properties['value'];
         

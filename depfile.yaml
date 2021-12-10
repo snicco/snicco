@@ -5,8 +5,11 @@ exclude_files:
 
 #temporary @todo remove after validation refactoring
 skip_violations:
-  Snicco\Core\Http\Psr7\Request:
-    - Snicco\Validation\Validator
+  Snicco\SessionBundle\Middleware\ShareSessionWithViews:
+    - Snicco\View\GlobalViewContext
+  Snicco\SessionBundle\SessionServiceProvider:
+    - Snicco\View\GlobalViewContext
+    - Snicco\Auth\AuthServiceProvider
 
 layers:
 
@@ -73,26 +76,32 @@ layers:
       - type: className
         regex: .*Snicco\\PimpleContainer\\.*
 
-  # @todo deptrac sessions
-  #  - name: session
-  #    collectors:
-  #      - type: className
-  #        regex: .*Snicco\\Session\\.*
+  - name: session
+    collectors:
+      - type: className
+        regex: .*Snicco\\Session\\.*
+
+  - name: session_bundle
+    collectors:
+      - type: className
+        regex: .*Snicco\\SessionBundle\\.*
 
   - name: support
     collectors:
       - type: className
         regex: .*Snicco\\Support\\.*
 
-  - name: testing
-    collectors:
-      - type: className
-        regex: .*Snicco\\Testing\\.*
+    # @todo testing layer
+    #  - name: testing
+    #    collectors:
+    #      - type: className
+    #        regex: .*Snicco\\Testing\\.*
 
-  - name: validation_bundle
-    collectors:
-      - type: className
-        regex: .*Snicco\\Validation\\.*
+    # @todo validation layer
+    #  - name: validation_bundle
+    #    collectors:
+    #      - type: className
+    #        regex: .*Snicco\\Validation\\.*
 
   - name: view
     collectors:
@@ -120,7 +129,8 @@ ruleset:
     - +core
     - +view_bundle
     - +better_wp_mail_bundle
-    - validation_bundle
+    - +session_bundle
+  #    - validation_bundle
 
   blade:
     - view
@@ -148,14 +158,20 @@ ruleset:
   pimple_container_bridge:
     - +core
 
-  validation_bundle:
-    - +core
+  #  validation_bundle:
+  #    - +core
 
-  testing:
-    - +core
-    - +view_bundle
-    - +better_wp_mail_bundle
+  # @todo testing layer
+  #  testing:
+  #    - +core
+  #    - +view_bundle
+  #    - +better_wp_mail_bundle
 
-# @todo deptrac sessions
-#  session:
-#    - +core
+  session:
+    - support
+
+  session_bundle:
+    - session
+    - core
+    - support
+    - better_wp_hooks

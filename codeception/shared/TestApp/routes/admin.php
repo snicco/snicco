@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Snicco\Session\Exceptions\InvalidCsrfTokenException;
+use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 $router = TestApp::route();

@@ -13,16 +13,6 @@ use function Snicco\Core\Support\Functions\dataGet;
 trait InteractsWithInput
 {
     
-    public function validate(array $rules, array $attributes = [], array $messages = [])
-    {
-        $v = $this->validator();
-        $v->rules($rules)
-          ->messages($messages)
-          ->attributes($attributes);
-        
-        return $v->validate($this->all());
-    }
-    
     public function all() :array
     {
         return $this->inputSource();
@@ -92,13 +82,31 @@ trait InteractsWithInput
         
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             $value = dataGet($input, $key, $placeholder);
-            
+    
             if ($value !== $placeholder) {
                 Arr::set($results, $key, $value);
             }
         }
-        
+    
         return $results;
+    }
+    
+    /**
+     * Determine if the request contains a non-empty value for an input item.
+     *
+     * @param  string|string[]  $keys
+     */
+    public function filled($keys) :bool
+    {
+        $keys = is_array($keys) ? $keys : [$keys];
+        
+        foreach ($keys as $value) {
+            if ($this->isEmptyString($value)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     /**
@@ -125,22 +133,6 @@ trait InteractsWithInput
     }
     
     /**
-     * Determine if the request contains a non-empty value for an input item.
-     */
-    public function filled(string $key) :bool
-    {
-        $keys = is_array($key) ? $key : func_get_args();
-        
-        foreach ($keys as $value) {
-            if ($this->isEmptyString($value)) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    /**
      * Will return falls if any of the provided keys is missing.
      */
     public function missing($key) :bool
@@ -163,13 +155,6 @@ trait InteractsWithInput
         }
         
         return true;
-    }
-    
-    public function old($key = null, $default = null)
-    {
-        $old = $this->session()->getOldInput();
-        
-        return $key ? Arr::get($old, $key, $default) : $old;
     }
     
     private function inputSource() :array

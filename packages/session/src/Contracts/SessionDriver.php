@@ -4,57 +4,45 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Contracts;
 
-use stdClass;
-use SessionHandlerInterface;
+use DateTimeImmutable;
+use Snicco\Session\Exceptions\BadSessionID;
+use Snicco\Session\Exceptions\CantDestroySession;
+use Snicco\Session\Exceptions\CantReadSessionContent;
+use Snicco\Session\Exceptions\CantWriteSessionContent;
+use Snicco\Session\ValueObjects\SerializedSessionData;
 
-/**
- * NOTE: for all methods that return a session or multiple sessions the driver MUST ONLY
- * validate that the session is not expired absolutely. Session idle/rotation timeouts are
- * handled in the @see SessionManager
- */
-interface SessionDriver extends SessionHandlerInterface
+interface SessionDriver
 {
     
     /**
-     * This function takes the session id from the session cookie.
-     * The function should return true if the session driver has a valid
-     * and NOT expired session for the provided session id.
-     * If no session is present for the given id OR the session is expired false should be returned.
-     * The session ID is user provided. The driver has to sanitize the input.
+     * Returns the data of the session with the given id.
+     * It is NOT required to check if the session can still be considered active.
      *
-     * @param  string  $hashed_id
-     *
-     * @return bool
+     * @throws BadSessionID
+     * @throws CantReadSessionContent
      */
-    public function isValid(string $hashed_id) :bool;
+    public function read(string $session_id) :SerializedSessionData;
     
     /**
-     * @param  int  $user_id
-     *
-     * @return array<stdClass> An array of serialized session data as plain objects.
-     * The objects MUST contain a "payload" property and an "id" property
+     * @throws CantWriteSessionContent
      */
-    public function getAllByUserId(int $user_id) :array;
+    public function write(string $session_id, SerializedSessionData $data) :void;
     
     /**
-     * Destroy all session for the user with the provided id
-     * except the the one for the provided token.
-     *
-     * @param  string  $hashed_token
-     * @param  int  $user_id
+     * @throws CantDestroySession
      */
-    public function destroyOthersForUser(string $hashed_token, int $user_id);
+    public function destroy(array $session_ids) :void;
     
     /**
-     * Destroy all session for the user with the provided id
-     *
-     * @param  int  $user_id
+     * @throws CantDestroySession
      */
-    public function destroyAllForUser(int $user_id);
+    public function gc(int $seconds_without_activity) :void;
     
     /**
-     * Destroy all sessions for every user.
+     * Update the last activity of the session
+     *
+     * @throws BadSessionID
      */
-    public function destroyAll();
+    public function touch(string $session_id, DateTimeImmutable $now) :void;
     
 }

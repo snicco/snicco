@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Validation\integration;
 
 use Snicco\Validation\Validator;
-use Snicco\Session\SessionServiceProvider;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\SessionBundle\SessionServiceProvider;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;
 

@@ -10,8 +10,7 @@
     }
   ],
   "require": {
-    "php": "^7.3",
-    "sniccowp/core": "dev-master"
+    "php": "^7.3"
   },
   "autoload": {
     "psr-4": {

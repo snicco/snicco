@@ -12,17 +12,16 @@ use Illuminate\View\FileViewFinder;
 use Illuminate\Container\Container;
 use Illuminate\Support\ViewErrorBag;
 use Snicco\View\Contracts\ViewFactory;
-use Snicco\Session\SessionServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Compilers\BladeCompiler;
 use Snicco\BladeBundle\BladeServiceProvider;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\SessionBundle\SessionServiceProvider;
 
 class BladeServiceProviderTest extends FrameworkTestCase
 {
-    
     
     protected function setUp() :void
     {
@@ -171,7 +170,8 @@ class BladeServiceProviderTest extends FrameworkTestCase
         ];
     }
     
-    private function view(string $name) {
+    private function view(string $name)
+    {
         return $this->app->resolve(ViewEngine::class)->make($name);
     }
     

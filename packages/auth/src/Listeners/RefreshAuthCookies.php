@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Listeners;
 
-use Snicco\Session\Events\SessionWasRegenerated;
+use Snicco\SessionBundle\Events\SessionWasRegenerated;
 
 class RefreshAuthCookies
 {
@@ -21,7 +21,7 @@ class RefreshAuthCookies
             return;
         }
         
-        wp_set_auth_cookie($user_id, $session->hasRememberMeToken(), true, $session->getId());
+        wp_set_auth_cookie($user_id, $session->hasRememberMeToken(), true, $session->id());
     }
     
 }
