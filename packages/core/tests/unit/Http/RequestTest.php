@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use RuntimeException;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
-use Snicco\Session\Session;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Support\Repository;
-use Snicco\Validation\Validator;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Session\Drivers\ArraySessionDriver;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 
 class RequestTest extends UnitTest
 {
     
-    private Request $request;
+    /**
+     * @var Request
+     */
+    private $request;
     
     protected function setUp() :void
     {
@@ -126,32 +125,6 @@ class RequestTest extends UnitTest
         $this->assertSame(['foo' => 'bar'], $cookies->all());
     }
     
-    public function testSession()
-    {
-        try {
-            $this->request->session();
-            
-            $this->fail('Missing session did not throw an exception');
-        } catch (RuntimeException $e) {
-            $this->assertSame('A session has not been set on the request.', $e->getMessage());
-        }
-        
-        $request = $this->request->withSession($session = new Session(new ArraySessionDriver(10)));
-        
-        $request = $request->withMethod('POST');
-        
-        $this->assertSame($session, $request->session());
-    }
-    
-    public function testHasSession()
-    {
-        $this->assertFalse($this->request->hasSession());
-        
-        $request = $this->request->withSession(new Session(new ArraySessionDriver(10)));
-        
-        $this->assertTrue($request->hasSession());
-    }
-    
     public function testGetLoadingScript()
     {
         $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
@@ -208,26 +181,6 @@ class RequestTest extends UnitTest
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
         $this->assertFalse($request->isWpFrontend());
-    }
-    
-    public function testValidator()
-    {
-        try {
-            $this->request->validator();
-            
-            $this->fail('Missing validator did not throw an exception');
-        } catch (RuntimeException $e) {
-            $this->assertSame(
-                'A validator instance has not been set on the request.',
-                $e->getMessage()
-            );
-        }
-        
-        $request = $this->request->withValidator($v = new Validator());
-        
-        $request = $request->withMethod('POST');
-        
-        $this->assertSame($v, $request->validator());
     }
     
     public function testRouteIs()

@@ -138,12 +138,12 @@ abstract class MagicLink
     private function addAccessCookie(Response $response, Request $request) :Response
     {
         $value = $this->hash($request->fullPath(), $request);
-        
+    
         $cookie = new Cookie($this->accessCookieName($request), $value);
-        $cookie->expires($request->expires())
-               ->path($request->path())
-               ->onlyHttp();
-        
+        $cookie->withExpiryTimestamp($request->expires())
+               ->withPath($request->path())
+               ->withOnlyHttpAccess();
+    
         return $response->withCookie($cookie);
     }
     
