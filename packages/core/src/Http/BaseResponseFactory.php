@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
  * @interal You should never depend on this concrete response factory implementation.
  * Depend on the interface always.
  */
-class BaseResponseFactory implements ResponseFactory
+final class BaseResponseFactory implements ResponseFactory
 {
     
     /**

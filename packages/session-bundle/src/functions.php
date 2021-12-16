@@ -55,20 +55,18 @@ namespace Snicco\SessionBundle
     function sessionCookieToHttpCookie(SessionCookie $session_cookie) :Cookie
     {
         $http_cookie = new Cookie($session_cookie->name(), $session_cookie->value());
-        $http_cookie->path($session_cookie->path());
-        $http_cookie->domain($session_cookie->domain());
-        
+        $http_cookie = $http_cookie->withPath($session_cookie->path());
+        $http_cookie = $http_cookie->withDomain($session_cookie->domain());
+    
         if ( ! $session_cookie->httpOnly()) {
-            $http_cookie->allowJs();
+            $http_cookie = $http_cookie->withJsAccess();
         }
-        
+    
         if ( ! $session_cookie->secureOnly()) {
-            $http_cookie->allowUnsecure();
+            $http_cookie = $http_cookie->withUnsecureHttp();
         }
-        
-        $http_cookie->sameSite($session_cookie->sameSite());
-        $http_cookie->expires($session_cookie->expiryTimestamp());
-        
-        return $http_cookie;
+    
+        $http_cookie = $http_cookie->withSameSite($session_cookie->sameSite());
+        return $http_cookie->withExpiryTimestamp($session_cookie->expiryTimestamp());
     }
 }

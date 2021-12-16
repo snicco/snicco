@@ -8,10 +8,13 @@ use LogicException;
 use DateTimeInterface;
 use InvalidArgumentException;
 
-class Cookie
+final class Cookie
 {
     
-    private array  $defaults = [
+    /**
+     * @var array
+     */
+    private $defaults = [
         'value' => '',
         'domain' => null,
         'hostonly' => true,
@@ -21,8 +24,16 @@ class Cookie
         'httponly' => true,
         'samesite' => 'Lax',
     ];
-    private array  $properties;
-    private string $name;
+    
+    /**
+     * @var array
+     */
+    private $properties;
+    
+    /**
+     * @var string
+     */
+    private $name;
     
     public function __construct(string $name, string $value, bool $url_encode = true)
     {
@@ -38,51 +49,52 @@ class Cookie
         return $this->properties;
     }
     
-    public function setProperties(array $array)
-    {
-        $this->properties = array_merge($this->properties, $array);
-    }
-    
     public function name() :string
     {
         return $this->name;
     }
     
-    public function allowJs() :Cookie
+    public function withJsAccess() :Cookie
     {
-        $this->properties['httponly'] = false;
+        $cookie = clone $this;
+        $cookie->properties['httponly'] = false;
         
-        return $this;
+        return $cookie;
     }
     
-    public function onlyHttp() :Cookie
+    public function withOnlyHttpAccess() :Cookie
     {
+        $cookie = clone $this;
         $this->properties['httponly'] = true;
-        return $this;
+        return $cookie;
     }
     
-    public function allowUnsecure() :Cookie
+    public function withUnsecureHttp() :Cookie
     {
-        $this->properties['secure'] = false;
+        $cookie = clone $this;
+        $cookie->properties['secure'] = false;
         
-        return $this;
+        return $cookie;
     }
     
-    public function path(string $path) :Cookie
+    public function withPath(string $path) :Cookie
     {
-        $this->properties['path'] = $path;
+        $cookie = clone $this;
+        $cookie->properties['path'] = $path;
         
-        return $this;
+        return $cookie;
     }
     
-    public function domain(?string $domain) :Cookie
+    public function withDomain(?string $domain) :Cookie
     {
-        $this->properties['domain'] = $domain;
+        $cookie = clone $this;
         
-        return $this;
+        $cookie->properties['domain'] = $domain;
+        
+        return $cookie;
     }
     
-    public function sameSite(string $same_site) :Cookie
+    public function withSameSite(string $same_site) :Cookie
     {
         $same_site = ucwords($same_site);
         
@@ -96,19 +108,21 @@ class Cookie
             );
         }
         
-        $this->properties['samesite'] = $same_site;
+        $cookie = clone $this;
+        
+        $cookie->properties['samesite'] = $same_site;
         
         if ($same_site === 'None') {
             $this->properties['secure'] = true;
         }
         
-        return $this;
+        return $cookie;
     }
     
     /**
      * @param  int|DateTimeInterface|$timestamp
      */
-    public function expires($timestamp) :Cookie
+    public function withExpiryTimestamp($timestamp) :Cookie
     {
         if ( ! is_int($timestamp) && ! $timestamp instanceof DateTimeInterface) {
             throw new InvalidArgumentException('timestamp must be an integer or DataTimeInterface');
@@ -118,9 +132,11 @@ class Cookie
             ? $timestamp->getTimestamp()
             : $timestamp;
         
-        $this->properties['expires'] = $timestamp;
+        $cookie = clone $this;
         
-        return $this;
+        $cookie->properties['expires'] = $timestamp;
+        
+        return $cookie;
     }
     
 }
