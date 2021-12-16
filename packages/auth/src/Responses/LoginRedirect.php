@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Session\StatefulRedirector;
+use Snicco\SessionBundle\StatefulRedirector;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 

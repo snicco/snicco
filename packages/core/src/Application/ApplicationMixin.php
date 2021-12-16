@@ -6,8 +6,6 @@ namespace Snicco\Core\Application;
 
 use Closure;
 use LogicException;
-use Snicco\Session\Session;
-use Snicco\Session\CsrfField;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\MethodField;
@@ -100,15 +98,6 @@ final class ApplicationMixin
     }
     
     /**
-     * Return the currently active session instance
-     *
-     * @return Session
-     */
-    public static function session() :Session
-    {
-    }
-    
-    /**
      * Returns the current request going through the application.
      *
      * @note DO NOT USE THIS FUNCTION ANYWHERE BESIDES INSIDE YOUR CONTROLLERS OR VIEWS.
@@ -139,23 +128,6 @@ final class ApplicationMixin
      * @see Redirector
      */
     public static function redirect(?string $path = null, int $status = 302)
-    {
-    }
-    
-    /**
-     * Creates hidden csrf input fields based on the current user session.
-     * If a csrf token is present in the session its used if not a new hash is created and saved
-     * in the session.
-     * Does NOT echo the output but returns the html as a string.
-     *
-     * @return string
-     * @see CsrfField::asHtml()
-     */
-    public static function csrfField() :string
-    {
-    }
-    
-    public static function csrf() :CsrfField
     {
     }
     

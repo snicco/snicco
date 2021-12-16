@@ -6,6 +6,7 @@ namespace Snicco\Core\Http;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -46,12 +47,12 @@ class Delegate implements RequestHandlerInterface, MiddlewareInterface
      *
      * @return Response
      */
-    public function handle(ServerRequestInterface $request) :Response
+    public function handle(ServerRequestInterface $request) :ResponseInterface
     {
         return ($this->callback)($request);
     }
     
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :Response
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
     {
         return $this->handle($request);
     }

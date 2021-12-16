@@ -4,150 +4,85 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Drivers;
 
-use Snicco\Core\Support\WP;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Traits\InteractsWithTime;
+use DateTimeImmutable;
+use Snicco\Session\Contracts\SessionClock;
 use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Session\Exceptions\BadSessionID;
+use Snicco\Session\ValueObjects\SerializedSessionData;
+use Snicco\Session\ValueObjects\ClockUsingDateTimeImmutable;
 
-class ArraySessionDriver implements SessionDriver
+use function function_exists;
+use function get_current_user_id;
+
+/**
+ * @api
+ * @todo Cleanup uncommented code
+ */
+final class ArraySessionDriver implements SessionDriver
 {
     
-    use InteractsWithTime;
+    /**
+     * @var array
+     */
+    private $storage = [];
     
-    private array   $storage = [];
-    private int     $lifetime_in_seconds;
-    private Request $request;
+    /**
+     * @var SessionClock
+     */
+    private $clock;
     
-    public function __construct(int $lifetime_in_seconds)
+    public function __construct(SessionClock $clock = null)
     {
-        $this->lifetime_in_seconds = $lifetime_in_seconds;
+        $this->clock = $clock ?? new ClockUsingDateTimeImmutable();
     }
     
-    public function open($savePath, $sessionName)
+    public function destroy(array $session_ids) :void
     {
-        return true;
-    }
-    
-    public function close()
-    {
-        return true;
-    }
-    
-    public function read($sessionId)
-    {
-        if ( ! isset($this->storage[$sessionId])) {
-            return '';
+        foreach ($session_ids as $session_id) {
+            if (isset($this->storage[$session_id])) {
+                unset($this->storage[$session_id]);
+            }
         }
-        
-        $session = $this->storage[$sessionId];
-        
-        $expiration = $this->calculateExpiration($this->lifetime_in_seconds);
-        
-        if (isset($session['time']) && $session['time'] >= $expiration) {
-            return $session['payload'];
-        }
-        
-        return '';
     }
     
-    public function isValid(string $id) :bool
+    public function gc(int $seconds_without_activity) :void
     {
-        if ( ! isset($this->storage[$id])) {
-            return false;
-        }
-        
-        $session = $this->storage[$id];
-        
-        $expiration = $this->calculateExpiration($this->lifetime_in_seconds);
-        
-        if ( ! isset($session['time']) && $session['time'] < $expiration) {
-            return false;
-        }
-        
-        return true;
-    }
-    
-    public function write($sessionId, $data)
-    {
-        $this->storage[$sessionId] = [
-            'payload' => $data,
-            'time' => $this->currentTime(),
-            'user_id' => WP::userId(),
-        ];
-        
-        return true;
-    }
-    
-    public function destroy($sessionId)
-    {
-        if (isset($this->storage[$sessionId])) {
-            unset($this->storage[$sessionId]);
-        }
-        
-        return true;
-    }
-    
-    public function gc($lifetime)
-    {
-        $expiration = $this->calculateExpiration($lifetime);
+        $expiration = $this->calculateExpiration($seconds_without_activity);
         
         foreach ($this->storage as $sessionId => $session) {
-            if ($session['time'] < $expiration) {
+            if ($session['last_activity'] < $expiration) {
                 unset($this->storage[$sessionId]);
             }
         }
+    }
+    
+    public function read(string $session_id) :SerializedSessionData
+    {
+        if ( ! isset($this->storage[$session_id])) {
+            throw BadSessionID::forID($session_id, 'array');
+        }
+        return SerializedSessionData::fromSerializedString(
+            $this->storage[$session_id]['data'],
+            $this->storage[$session_id]['last_activity'],
+        );
+    }
+    
+    public function touch(string $session_id, DateTimeImmutable $now) :void
+    {
+        if ( ! isset($this->storage[$session_id])) {
+            throw BadSessionID::forId($session_id, 'array');
+        }
         
-        return true;
+        $this->storage[$session_id]['last_activity'] = $now->getTimestamp();
     }
     
-    public function setRequest(Request $request)
+    public function write(string $session_id, SerializedSessionData $data) :void
     {
-        $this->request = $request;
-    }
-    
-    public function getAllByUserId(int $user_id) :array
-    {
-        $user_sessions = [];
-        
-        foreach ($this->storage as $key => $session) {
-            if ($session['user_id'] === $user_id) {
-                $session = (object) $session;
-                $session->id = $key;
-                $user_sessions[] = $session;
-            }
-        }
-        return $user_sessions;
-    }
-    
-    public function destroyOthersForUser(string $hashed_token, int $user_id)
-    {
-        foreach ($this->storage as $id => $session) {
-            if ($session['user_id'] !== $user_id) {
-                continue;
-            }
-            
-            if ($id === $hashed_token) {
-                continue;
-            }
-            
-            unset($this->storage[$id]);
-        }
-    }
-    
-    public function destroyAllForUser(int $user_id)
-    {
-        foreach ($this->storage as $id => $session) {
-            if ($session['user_id'] !== $user_id) {
-                continue;
-            }
-            
-            unset($this->storage[$id]);
-        }
-    }
-    
-    public function destroyAll()
-    {
-        $this->storage = [];
+        $this->storage[$session_id] = [
+            'data' => $data->asString(),
+            'last_activity' => $data->lastActivity()->getTimestamp(),
+            'user_id' => function_exists('get_current_user_id') ? get_current_user_id() : 0,
+        ];
     }
     
     public function all() :array
@@ -155,9 +90,53 @@ class ArraySessionDriver implements SessionDriver
         return $this->storage;
     }
     
+    //public function getAllByUserId(int $user_id) :SessionInfos
+    //{
+    //    $user_sessions = [];
+    //
+    //    foreach ($this->storage as $id => $session_record) {
+    //        if ($session_record['user_id'] === $user_id) {
+    //            $session = new SessionInfo($id, $session_record['data']);
+    //            $user_sessions[] = $session;
+    //        }
+    //    }
+    //    return new SessionInfos($user_sessions);
+    //}
+    
+    //public function destroyOthersForUser(string $hashed_token, int $user_id) :void
+    //{
+    //    foreach ($this->storage as $id => $session) {
+    //        if ($session['user_id'] !== $user_id) {
+    //            continue;
+    //        }
+    //
+    //        if ($id === $hashed_token) {
+    //            continue;
+    //        }
+    //
+    //        unset($this->storage[$id]);
+    //    }
+    //}
+    
+    //public function destroyAllForUser(int $user_id) :void
+    //{
+    //    foreach ($this->storage as $id => $session) {
+    //        if ($session['user_id'] !== $user_id) {
+    //            continue;
+    //        }
+    //
+    //        unset($this->storage[$id]);
+    //    }
+    //}
+    
+    //public function destroyAll() :void
+    //{
+    //    $this->storage = [];
+    //}
+    
     private function calculateExpiration(int $seconds) :int
     {
-        return $this->currentTime() - $seconds;
+        return $this->clock->currentTimestamp() - $seconds;
     }
     
 }

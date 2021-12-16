@@ -64,7 +64,7 @@ class ResetPasswordController extends Controller
         
         return $this->response_factory->redirect()
                                       ->refresh()
-                                      ->with('_password_reset.success', true);
+                                      ->withFlashMessages('_password_reset.success', true);
     }
     
     protected function provideMessages(array $result) :array

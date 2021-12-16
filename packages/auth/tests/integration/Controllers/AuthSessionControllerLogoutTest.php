@@ -112,7 +112,7 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
         $response->assertRedirectToRoute('home', 302);
         $response->assertInstance(LogoutResponse::class);
         
-        $id_after_logout = $this->session->getId();
+        $id_after_logout = $this->session->id();
         
         // Session id not the same
         $this->assertNotSame($id_before_logout, $id_after_logout);

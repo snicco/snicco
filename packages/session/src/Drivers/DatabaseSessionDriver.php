@@ -5,219 +5,257 @@ declare(strict_types=1);
 namespace Snicco\Session\Drivers;
 
 use wpdb;
-use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Carbon;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Traits\InteractsWithTime;
+use stdClass;
+use Throwable;
+use RuntimeException;
+use DateTimeImmutable;
+use Snicco\Session\Contracts\SessionClock;
 use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Session\Exceptions\BadSessionID;
+use Snicco\Session\Exceptions\CantDestroySession;
+use Snicco\Session\Exceptions\CantWriteSessionContent;
+use Snicco\Session\ValueObjects\SerializedSessionData;
+use Snicco\Session\ValueObjects\ClockUsingDateTimeImmutable;
 
-class DatabaseSessionDriver implements SessionDriver
+use function rtrim;
+use function count;
+use function is_object;
+use function filter_var;
+use function str_repeat;
+use function array_merge;
+use function base64_encode;
+use function base64_decode;
+use function get_current_user_id;
+
+/**
+ * @api
+ * @todo Cleanup uncommented code
+ */
+final class DatabaseSessionDriver implements SessionDriver
 {
     
-    use InteractsWithTime;
+    /**
+     * @var wpdb
+     */
+    private $db;
     
-    private wpdb    $db;
-    private int     $absolute_lifetime_in_seconds;
-    private Request $request;
-    private string  $table;
-    private object  $session;
+    /**
+     * @var string
+     */
+    private $table;
     
-    public function __construct(wpdb $db, string $table, int $lifetime_in_sec)
+    /**
+     * @var SessionClock
+     */
+    private $clock;
+    
+    public function __construct(wpdb $db, string $table, SessionClock $clock = null)
     {
         $this->db = $db;
         $this->table = $this->db->prefix.$table;
-        $this->absolute_lifetime_in_seconds = $lifetime_in_sec;
+        $this->clock = $clock ?? new ClockUsingDateTimeImmutable();
     }
     
-    public function close() :bool
+    public function destroy(array $session_ids) :void
     {
-        return true;
-    }
-    
-    public function destroy($hased_id) :bool
-    {
-        $result = $this->db->delete($this->table, ['id' => $hased_id], ['%s']);
+        $count = count($session_ids);
         
-        return $result !== false;
+        if ($count < 1) {
+            return;
+        }
+        
+        $placeholders = rtrim(str_repeat('%s,', $count), ',');
+        $q = "DELETE FROM $this->table WHERE id in ($placeholders)";
+        
+        $success = $this->db->query(
+            $this->db->prepare($q, $session_ids)
+        );
+        
+        if ($success === false) {
+            throw CantDestroySession::forSessionIDs($session_ids, 'database');
+        }
     }
     
-    public function gc($max_lifetime) :bool
+    public function gc(int $seconds_without_activity) :void
     {
-        $must_be_newer_than = $this->currentTime() - $max_lifetime;
+        $must_be_newer_than = $this->currentTime() - $seconds_without_activity;
         
         $query = $this->db->prepare(
-            "DELETE FROM $this->table WHERE last_activity <= %d",
+            "DELETE FROM $this->table WHERE last_activity < %d",
             $must_be_newer_than
         );
         
-        return $this->db->query($query) !== false;
+        $this->db->query($query);
     }
     
-    public function open($path, $name) :bool
+    public function read(string $session_id) :SerializedSessionData
     {
-        return true;
-    }
-    
-    public function read($hashed_id)
-    {
-        $session = $this->findSession($hashed_id);
+        $session = $this->findSession($session_id);
         
-        if ( ! isset($session->payload) || $this->isExpired($session)) {
-            return '';
+        if ( ! isset($session->data)) {
+            throw BadSessionID::forID($session_id, 'database');
         }
         
-        return base64_decode($session->payload);
-    }
-    
-    public function write($hashed_id, $data) :bool
-    {
-        if ($this->exists($hashed_id)) {
-            return $this->performUpdate($hashed_id, $data);
-        }
-        
-        return $this->performInsert($hashed_id, $data);
-    }
-    
-    public function isValid(string $hashed_id) :bool
-    {
-        return $this->hasSessionId($hashed_id);
-    }
-    
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-    }
-    
-    public function getAllByUserId(int $user_id) :array
-    {
-        $query = $this->db->prepare("SELECT * FROM `$this->table` WHERE `user_id` = %d", $user_id);
-        
-        $sessions = $this->db->get_results($query, OBJECT) ?? [];
-        
-        $sessions = array_map(function (object $session) {
-            if ( ! $session->payload) {
-                return null;
-            }
-            $session->payload = base64_decode($session->payload);
-            return $session;
-        }, $sessions);
-        
-        return array_filter($sessions);
-    }
-    
-    public function destroyOthersForUser(string $hashed_token, int $user_id)
-    {
-        $query = $this->db->prepare(
-            "DELETE FROM $this->table WHERE user_id = %d AND NOT `id` = %s",
-            $user_id,
-            $hashed_token
+        return SerializedSessionData::fromSerializedString(
+            base64_decode($session->data),
+            (int) $session->last_activity,
         );
-        
-        $this->db->query($query);
     }
     
-    public function destroyAllForUser(int $user_id)
+    public function touch(string $session_id, DateTimeImmutable $now) :void
     {
-        $query = $this->db->prepare("DELETE FROM $this->table WHERE user_id = %d", $user_id);
+        $query = "UPDATE $this->table SET last_activity = %d where id = %s";
+        $query = $this->db->prepare($query, $now->getTimestamp(), $session_id);
         
-        $this->db->query($query);
+        $res = $this->db->query($query);
+        
+        if ($res === false) {
+            throw CantWriteSessionContent::forId(
+                $session_id,
+                'database',
+                new RuntimeException($this->db->last_error)
+            );
+        }
+        
+        if ($res < 1) {
+            throw BadSessionID::forId($session_id, 'database');
+        }
     }
     
-    public function destroyAll()
+    public function write(string $session_id, SerializedSessionData $data) :void
     {
-        $this->db->query("TRUNCATE TABLE $this->table");
+        try {
+            if ($this->exists($session_id)) {
+                $this->performUpdate($session_id, $data);
+            }
+            else {
+                $this->performInsert($session_id, $data);
+            }
+        } catch (RuntimeException $e) {
+            throw CantWriteSessionContent::forId($session_id, 'database', $e);
+        }
     }
     
     private function findSession(string $id) :object
     {
         $query = $this->db->prepare("SELECT * FROM `$this->table` WHERE `id` = %s", $id);
         
-        return (object) $this->db->get_row($query, ARRAY_A);
+        $val = $this->db->get_row($query, OBJECT);
+        return is_object($val) ? $val : new stdClass();
     }
     
-    private function isExpired(object $session) :bool
+    /**
+     * @throws RuntimeException
+     */
+    private function performUpdate(string $id, SerializedSessionData $data) :void
     {
-        return isset($session->last_activity)
-               && $session->last_activity < Carbon::now()->subSeconds(
-                $this->absolute_lifetime_in_seconds
-            )
-                                                  ->getTimestamp();
+        try {
+            $data = array_merge($this->getPayloadData($id, $data), [$id]);
+            
+            $query = $this->db->prepare(
+                "UPDATE `$this->table` SET id = %s, user_id = %d, data = %s, last_activity = %d WHERE id= %s",
+                $data
+            );
+            
+            $success = ($this->db->query($query) !== false);
+        } catch (Throwable $e) {
+            throw new RuntimeException($this->db->last_error, $e->getCode(), $e);
+        }
+        
+        if ( ! $success) {
+            throw new RuntimeException($this->db->last_error);
+        }
+    }
+    
+    /**
+     * @throws RuntimeException
+     */
+    private function performInsert(string $session_id, SerializedSessionData $payload) :void
+    {
+        try {
+            $data = $this->getPayloadData($session_id, $payload);
+            
+            $query = $this->db->prepare(
+                "INSERT INTO `$this->table` (`id`,`user_id`, `data`, `last_activity`) VALUES(%s, %d, %s, %d)",
+                $data
+            );
+            
+            $success = ($this->db->query($query) !== false);
+        } catch (Throwable $e) {
+            throw new RuntimeException($this->db->last_error, $e->getCode(), $e);
+        }
+        
+        if ( ! $success) {
+            throw new RuntimeException($this->db->last_error);
+        }
+    }
+    
+    private function getPayloadData(string $session_id, SerializedSessionData $data) :array
+    {
+        return [
+            'id' => $session_id,
+            'user_id' => get_current_user_id(),
+            'data' => base64_encode($data->asString()),
+            'last_activity' => $data->lastActivity()->getTimestamp(),
+        ];
     }
     
     private function exists(string $session_id) :bool
     {
         $query = $this->db->prepare(
-            "SELECT `id` FROM `$this->table` WHERE `id` = %s",
-            $session_id
-        );
-        
-        return $this->db->get_var($query) !== null;
-    }
-    
-    private function performUpdate(string $id, string $payload) :bool
-    {
-        $data = array_merge($this->getPayloadData($id, $payload), [$id]);
-        
-        $query = $this->db->prepare(
-            "UPDATE `$this->table`
-SET
-    id=%s, user_id=%d, ip_address=%s , user_agent=%s , payload = %s, last_activity = %d
-WHERE
-      id=%s",
-            $data
-        );
-        
-        return $this->db->query($query) !== false;
-    }
-    
-    private function getPayloadData(string $session_id, string $payload) :array
-    {
-        return [
-            'id' => $session_id,
-            'user_id' => WP::userId(),
-            'ip_address' => isset($this->request) ? $this->request->getAttribute('ip_address', '')
-                : '',
-            'user_agent' => $this->userAgent(),
-            'payload' => base64_encode($payload),
-            'last_activity' => $this->currentTime(),
-        ];
-    }
-    
-    private function userAgent() :string
-    {
-        if ( ! isset($this->request)) {
-            return '';
-        }
-        
-        return substr($this->request->getHeaderLine('User-Agent'), 0, 500);
-    }
-    
-    private function performInsert(string $session_id, string $payload) :bool
-    {
-        $data = $this->getPayloadData($session_id, $payload);
-        
-        $query = $this->db->prepare(
-            "INSERT INTO `$this->table` (`id`,`user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES(%s, %d, %s, %s, %s, %d)",
-            $data
-        );
-        
-        return $this->db->query($query) !== false;
-    }
-    
-    private function hasSessionId(string $id) :bool
-    {
-        $must_be_newer_than = Carbon::now()->subSeconds($this->absolute_lifetime_in_seconds)
-                                    ->getTimestamp();
-        
-        $query = $this->db->prepare(
-            "SELECT EXISTS(SELECT 1 FROM $this->table WHERE id = %s AND last_activity > %d LIMIT 1)",
-            $id,
-            $must_be_newer_than
+            "SELECT EXISTS(SELECT 1 FROM $this->table WHERE id = %s)",
+            $session_id,
         );
         
         $exists = $this->db->get_var($query);
         
-        return (is_string($exists) && $exists === '1');
+        return filter_var($exists, FILTER_VALIDATE_BOOLEAN);
     }
+    
+    private function currentTime() :int
+    {
+        return $this->clock->currentTimestamp();
+    }
+    
+    //public function getAllByUserId(int $user_id) :array
+    //{
+    //    $query = $this->db->prepare("SELECT * FROM `$this->table` WHERE `user_id` = %d", $user_id);
+    //
+    //    $sessions = $this->db->get_results($query, OBJECT_K) ?? [];
+    //
+    //    $sessions = array_map(function (object $session) {
+    //        if ( ! $session->data) {
+    //            return null;
+    //        }
+    //        $id = SessionId::fromCookieId($session->id);
+    //        $data = SerializedSessionData::fromSerializedString(base64_decode($session->data));
+    //        return new Session($id, $data->asArray());
+    //    }, $sessions);
+    //
+    //    return array_filter($sessions);
+    //}
+    //
+    //public function destroyOthersForUser(string $hashed_token, int $user_id) :void
+    //{
+    //    $query = $this->db->prepare(
+    //        "DELETE FROM $this->table WHERE user_id = %d AND NOT `id` = %s",
+    //        $user_id,
+    //        $hashed_token
+    //    );
+    //
+    //    $this->db->query($query);
+    //}
+    //
+    //public function destroyAllForUser(int $user_id) :void
+    //{
+    //    $query = $this->db->prepare("DELETE FROM $this->table WHERE user_id = %d", $user_id);
+    //
+    //    $this->db->query($query);
+    //}
+    //
+    //public function destroyAll() :void
+    //{
+    //    $this->db->query("TRUNCATE TABLE $this->table");
+    //}
     
 }

@@ -34,7 +34,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         
         $this->session_manager->save();
         
-        $session = $instance->get($this->session->getId());
+        $session = $instance->get($this->session->id());
         
         $this->assertSame([
             'expiration' => 1000,
@@ -54,7 +54,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         
         $this->session_manager->save();
         
-        $session = $instance->get($this->session->getId());
+        $session = $instance->get($this->session->id());
         
         $this->assertEquals([
             'expiration' => 1000,
@@ -98,7 +98,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance->create(1000);
         $this->session_manager->save();
         
-        $token = $this->session_manager->activeSession()->getId();
+        $token = $this->session_manager->activeSession()->id();
         
         $this->assertTrue($instance->verify($token));
     }
@@ -108,7 +108,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $session = $instance->get($token = $this->session->getId());
+        $session = $instance->get($token = $this->session->id());
         $this->assertSame([
             'expiration' => 1000,
             'ip' => '127.0.0.1',
@@ -122,7 +122,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         
         // get new instance or session will be cached in memory
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
-        $session = $instance->get($this->session->getId());
+        $session = $instance->get($this->session->id());
         $this->assertSame([
             'foo' => 'bar',
         ], $session);
@@ -134,7 +134,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance->create(1000);
         $this->session_manager->save();
         
-        $id = $this->session_manager->activeSession()->getId();
+        $id = $this->session_manager->activeSession()->id();
         
         $this->assertTrue($instance->verify($id));
         
@@ -150,14 +150,14 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $first_id = $this->session_manager->activeSession()->getId();
+        $first_id = $this->session_manager->activeSession()->id();
         
         $this->refreshSessionManager();
         
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $second_id = $this->session_manager->activeSession()->getId();
+        $second_id = $this->session_manager->activeSession()->id();
         
         $this->assertTrue($instance->verify($first_id));
         $this->assertTrue($instance->verify($second_id));
@@ -175,14 +175,14 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $first_id = $this->session_manager->activeSession()->getId();
+        $first_id = $this->session_manager->activeSession()->id();
         
         $this->refreshSessionManager();
         
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $second_id = $this->session_manager->activeSession()->getId();
+        $second_id = $this->session_manager->activeSession()->id();
         
         $this->assertTrue($instance->verify($first_id));
         $this->assertTrue($instance->verify($second_id));
@@ -199,7 +199,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance = WP_Session_Tokens::get_instance($first_user_id = $this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $first_id = $this->session_manager->activeSession()->getId();
+        $first_id = $this->session_manager->activeSession()->id();
         $this->assertTrue($instance->verify($first_id));
         
         $this->refreshSessionManager();
@@ -211,7 +211,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
-        $second_id = $this->session_manager->activeSession()->getId();
+        $second_id = $this->session_manager->activeSession()->id();
         $this->assertTrue($instance->verify($second_id));
         
         WP_Session_Tokens::destroy_all_for_all_users();

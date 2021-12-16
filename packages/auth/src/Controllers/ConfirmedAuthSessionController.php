@@ -9,8 +9,8 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Events\FailedAuthConfirmation;
-use Snicco\Session\Events\SessionWasRegenerated;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\SessionBundle\Events\SessionWasRegenerated;
 
 class ConfirmedAuthSessionController extends Controller
 {
@@ -64,7 +64,7 @@ class ConfirmedAuthSessionController extends Controller
         $session = $request->session();
         $session->forget('auth.confirm');
         $session->confirmAuthUntil($this->duration);
-        $session->regenerate();
+        $session->rotate();
         $this->events->dispatch(new SessionWasRegenerated($session));
     }
     

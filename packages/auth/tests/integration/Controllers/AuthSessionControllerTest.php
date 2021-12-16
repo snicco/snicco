@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use WP_User;
+use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Testing\TestResponse;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Events\UserWasLoggedIn;
 use Tests\Auth\integration\AuthTestCase;
@@ -216,7 +216,7 @@ class AuthSessionControllerTest extends AuthTestCase
         $this->dispatcher->fake(UserWasLoggedIn::class);
         $calvin = $this->createAdmin();
         $this->withDataInSession(['foo' => 'bar']);
-        $session_id_pre_login = $this->session->getId();
+        $session_id_pre_login = $this->session->id();
         
         $response = $this->postToLogin([
             'pwd' => 'password',
@@ -224,7 +224,7 @@ class AuthSessionControllerTest extends AuthTestCase
         ]);
         
         // Session regenerated
-        $this->assertNotSame($session_id_pre_login, $this->session->getId());
+        $this->assertNotSame($session_id_pre_login, $this->session->id());
         $response->assertSessionHas(['foo' => 'bar']);
         
         // Auth confirmation set

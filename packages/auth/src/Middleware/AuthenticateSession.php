@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Session\Session;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Snicco\Auth\AuthSessionManager;
+use Snicco\Core\Contracts\Middleware;
 use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Events\UserWasLoggedOut;
@@ -88,7 +88,7 @@ class AuthenticateSession extends Middleware
             $remember && $this->manager->allowsPersistentLogin()
         );
         $session->confirmAuthUntil($this->manager->confirmationDuration());
-        $session->regenerate();
+        $session->rotate();
         wp_set_auth_cookie($user->ID, $remember, true);
         wp_set_current_user($user->ID);
         $this->events->dispatch(new UserWasLoggedIn($user, $remember));

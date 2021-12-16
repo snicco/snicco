@@ -86,6 +86,10 @@ class Cookie
     {
         $same_site = ucwords($same_site);
         
+        if ($same_site === 'None; Secure') {
+            $same_site = 'None';
+        }
+        
         if ( ! in_array($same_site, ['Lax', 'Strict', 'None'])) {
             throw new LogicException(
                 "The value [$same_site] is not supported for the SameSite cookie."

@@ -81,7 +81,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         }
         
         $middleware->setResponseFactory($this->response_factory);
-        $this->url->setRequestResolver(fn() => $request);
+        $this->url->setRequestResolver(function () use ($request) { return $request; });
         
         /** @var Response $response */
         $response = $middleware->handle($request, $this->getNext());

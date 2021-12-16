@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Slightly modified version of the Illuminate/Config class.
+ * Modified version of the Illuminate/Config class with strict type hinting.
  *
  * License: The MIT License (MIT) https://github.com/illuminate/config/blob/v8.35.1/LICENSE.md
  * Copyright (c) Taylor Otwell
@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace Snicco\Support;
 
 use ArrayAccess;
-use Snicco\Support\Arr;
 
+/**
+ * @todo strict type checks
+ */
 class Repository implements ArrayAccess
 {
     

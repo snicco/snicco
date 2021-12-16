@@ -9,3 +9,6 @@ composer.lock
 /packages/**/codeception.yml
 codeception.ymll
 /.deptrac.cache
+packages/blade/tests/fixtures/cache/*
+/codeception/shared/TestApp/storage/framework/routes/
+/codeception/shared/TestApp/storage/framework/views/

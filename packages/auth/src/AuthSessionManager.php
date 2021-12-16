@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
-use Snicco\Core\Http\Cookie;
 use Snicco\Support\Arr;
 use Snicco\Session\Session;
+use Snicco\Core\Http\Cookie;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\SessionManager;
 use Snicco\Core\Traits\InteractsWithTime;
@@ -43,6 +43,16 @@ class AuthSessionManager implements SessionManagerInterface
         return $this->active_session;
     }
     
+    public function save()
+    {
+        $this->manager->save();
+    }
+    
+    public function toCookie() :Cookie
+    {
+        return $this->manager->toCookie();
+    }
+    
     public function activeSession() :?Session
     {
         if ($this->active_session instanceof Session) {
@@ -55,16 +65,6 @@ class AuthSessionManager implements SessionManagerInterface
     public function setIdleResolver(callable $idle_resolver)
     {
         $this->idle_resolver = $idle_resolver;
-    }
-    
-    public function sessionCookie() :Cookie
-    {
-        return $this->manager->sessionCookie();
-    }
-    
-    public function save()
-    {
-        $this->manager->save();
     }
     
     public function collectGarbage()
