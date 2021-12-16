@@ -8,14 +8,13 @@ use Closure;
 use Throwable;
 use LogicException;
 use Snicco\Support\Arr;
-use Snicco\Core\Http\Delegate;
-use Snicco\Core\Http\Psr7\Request;
 use InvalidArgumentException;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Factories\MiddlewareFactory;
-use Psr\Http\Server\MiddlewareInterface;
 
 class Pipeline
 {

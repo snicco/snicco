@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\SessionBundle\Middleware;
 
 use RuntimeException;
-use Snicco\Core\Http\Delegate;
 use Snicco\SessionBundle\Keys;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\ImmutableSession;
 use Snicco\Core\Contracts\Middleware;

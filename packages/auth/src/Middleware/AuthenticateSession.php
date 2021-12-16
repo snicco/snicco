@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Middleware;
 
 use Snicco\Session\Session;
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Core\Contracts\Middleware;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Middleware;
 
 use Snicco\Session\Session;
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
@@ -31,7 +31,7 @@ class ConfirmAuth extends Middleware
     private function setIntendedUrl(Request $request, Session $session)
     {
         if ($request->isGet() && ! $request->isAjax()) {
-            $session->setIntendedUrl($request->fullPath());
+            $session->setIntendedUrl($request->fullRequestTarget());
             
             return;
         }

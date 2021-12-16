@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware\Core;
 
 use Closure;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Middleware;
-use Snicco\Core\Middleware\MiddlewareStack;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Middleware\MiddlewareStack;
 use Snicco\Core\Factories\RouteActionFactory;
 
 class RouteRunner extends Middleware

@@ -35,7 +35,7 @@ class ResetPasswordController extends Controller
     public function create(Request $request, MethodField $method_field)
     {
         return $this->response_factory->view('framework.auth.reset-password', [
-            'post_to' => $request->fullPath(),
+            'post_to' => $request->fullRequestTarget(),
             'method_field' => $method_field->html('PUT'),
         ])->withHeader('Referrer-Policy', 'strict-origin');
     }

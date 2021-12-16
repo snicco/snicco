@@ -31,7 +31,7 @@ class Authenticate extends Middleware
                 ->withStatus(401);
         }
         
-        $redirect_after_login = $this->url ?? $request->fullPath();
+        $redirect_after_login = $this->url ?? $request->fullRequestTarget();
         
         return $this->response_factory->redirect()->toLogin($redirect_after_login, true);
     }

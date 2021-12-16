@@ -5,7 +5,7 @@ namespace Snicco\Core\Middleware;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
@@ -35,7 +35,7 @@ class Redirect extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $path = $request->fullPath();
+        $path = $request->fullRequestTarget();
         
         if ($redirect = Arr::get($this->redirects, trim($path, '/'))) {
             $location = $this->formatLocation($redirect['to'], $path);
