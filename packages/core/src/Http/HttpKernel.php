@@ -12,14 +12,14 @@ use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Middleware\Core\RouteRunner;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Core\Middleware\Core\AppendSpecialPathSuffix;
 use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
 
 class HttpKernel
 {
@@ -31,7 +31,7 @@ class HttpKernel
         MethodOverride::class,
         EvaluateResponseMiddleware::class,
         ShareCookies::class,
-        AppendSpecialPathSuffix::class,
+        AllowMatchingAdminAndAjaxRoutes::class,
         OutputBufferMiddleware::class,
         RoutingMiddleware::class,
         RouteRunner::class,

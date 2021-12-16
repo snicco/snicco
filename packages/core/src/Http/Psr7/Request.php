@@ -31,22 +31,6 @@ class Request implements ServerRequestInterface
         $this->psr_request = $psr_request;
     }
     
-    /**
-     * @interal
-     * This method stores the URI that is used for matching against the routes
-     * inside the AbstractRouteCollection. This URI is modified inside the CORE Middleware
-     * for wp-admin and admin-ajax routes
-     * to provide a more friendly api for matching these type of routes.
-     * For admin routes the [page] query parameter is appended to the wp-admin url.
-     * For ajax routes the [action] query parameter is appended to the admin-ajax url.
-     * This is stored in an additional attribute to not tamper with the "real" requested URL.
-     * This URI shall not be used anywhere BESIDES FOR MATCHING A ROUTE.
-     */
-    public function withRoutingUri(UriInterface $uri) :Request
-    {
-        return $this->withAttribute('routing.uri', $uri);
-    }
-    
     public function withRoute(Route $route) :Request
     {
         return $this->withAttribute('_route', $route);
@@ -94,7 +78,8 @@ class Request implements ServerRequestInterface
         return substr($this->getHeaderLine('User-Agent'), 0, 500);
     }
     
-    public function fullPath() :string
+    // path + query + fragment
+    public function fullRequestTarget() :string
     {
         $fragment = $this->getUri()->getFragment();
         
@@ -108,6 +93,7 @@ class Request implements ServerRequestInterface
         return preg_replace('/\?.*/', '', $this->getUri());
     }
     
+    // host + path + query + fragment
     public function fullUrl() :string
     {
         return $this->getUri()->__toString();
