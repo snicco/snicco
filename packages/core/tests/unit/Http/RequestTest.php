@@ -62,22 +62,22 @@ class RequestTest extends UnitTest
     public function testGetFullPath()
     {
         $request = TestRequest::from('GET', '/foo/bar');
-        $this->assertSame('/foo/bar', $request->fullPath());
-        
+        $this->assertSame('/foo/bar', $request->fullRequestTarget());
+    
         $request = TestRequest::from('GET', '/foo/bar/');
-        $this->assertSame('/foo/bar/', $request->fullPath());
-        
+        $this->assertSame('/foo/bar/', $request->fullRequestTarget());
+    
         $request = TestRequest::from('GET', '/');
-        $this->assertSame('/', $request->fullPath());
-        
+        $this->assertSame('/', $request->fullRequestTarget());
+    
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
-        $this->assertSame('/foo/bar?baz=biz', $request->fullPath());
-        
+        $this->assertSame('/foo/bar?baz=biz', $request->fullRequestTarget());
+    
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
-        $this->assertSame('/foo/bar/?baz=biz', $request->fullPath());
-        
+        $this->assertSame('/foo/bar/?baz=biz', $request->fullRequestTarget());
+    
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
-        $this->assertSame('/foo/bar?baz=biz#section', $request->fullPath());
+        $this->assertSame('/foo/bar?baz=biz#section', $request->fullRequestTarget());
     }
     
     public function testGetUrl()
