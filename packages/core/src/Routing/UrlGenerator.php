@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Url;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Traits\InteractsWithTime;
@@ -40,6 +40,9 @@ class UrlGenerator
         $this->request_resolver = $request_resolver;
     }
     
+    /**
+     * @todo this will fail if auth package is not used.
+     */
     public function signedLogout(?int $user_id = null, string $redirect_on_logout = '/', int $expiration = 3600, bool $absolute = true) :string
     {
         $args = [

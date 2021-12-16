@@ -7,18 +7,18 @@ namespace Snicco\Testing;
 use Closure;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Snicco\Session\Session;
-use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Support\Url;
 use Snicco\Support\Repository;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Application\Application;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Core\Http\Responses\NullResponse;
+use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\Constraints\SeeInOrder;
-use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 
 class TestResponse
 {
@@ -647,10 +647,10 @@ class TestResponse
             );
         }
         elseif ($value instanceof Closure) {
-            PHPUnit::assertTrue($value($this->session()->getOldInput($key)));
+            PHPUnit::assertTrue($value($this->session()->oldInput($key)));
         }
         else {
-            PHPUnit::assertEquals($value, $this->session()->getOldInput($key));
+            PHPUnit::assertEquals($value, $this->session()->oldInput($key));
         }
         
         return $this;

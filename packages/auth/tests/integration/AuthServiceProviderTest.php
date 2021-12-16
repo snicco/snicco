@@ -10,32 +10,32 @@ use Snicco\Session\SessionManager;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Auth\WpAuthSessionToken;
-use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\Fail2Ban\Syslogger;
-use Snicco\Session\Events\NewLogout;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Responses\PasswordLoginView;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Middleware\AuthenticateSession;
-use Snicco\Core\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Auth\Controllers\ResetPasswordController;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 use Snicco\Auth\Controllers\ForgotPasswordController;
 use Snicco\Session\Contracts\SessionManagerInterface;
-use Snicco\Session\Middleware\StartSessionMiddleware;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
+use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedIn;
+use Snicco\SessionBundle\Middleware\StartSessionMiddleware;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedOut;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class AuthServiceProviderTest extends AuthTestCase
@@ -180,8 +180,8 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $listeners = TestApp::config('events.listeners');
         
-        $login = $listeners[NewLogin::class] ?? [];
-        $logout = $listeners[NewLogout::class] ?? [];
+        $login = $listeners[UserLoggedIn::class] ?? [];
+        $logout = $listeners[UserLoggedOut::class] ?? [];
         
         $this->assertNotContains([SessionManager::class, 'migrateAfterLogin'], $login);
         $this->assertNotContains([SessionManager::class, 'invalidateAfterLogout'], $logout);
@@ -301,7 +301,7 @@ class AuthServiceProviderTest extends AuthTestCase
         $elements = wp_parse_auth_cookie($cookie);
         
         $this->assertNotSame($elements['token'], $token);
-        $this->assertSame($elements['token'], TestApp::session()->getId());
+        $this->assertSame($elements['token'], TestApp::session()->id());
     }
     
     /** @test */

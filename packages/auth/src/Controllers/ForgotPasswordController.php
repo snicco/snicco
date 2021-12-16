@@ -6,14 +6,14 @@ namespace Snicco\Auth\Controllers;
 
 use WP_User;
 use Snicco\Core\Support\WP;
-use Snicco\Core\Http\Controller;
 use Snicco\View\ViewEngine;
+use Snicco\Core\Http\Controller;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 
@@ -60,10 +60,10 @@ class ForgotPasswordController extends Controller
                 new FailedPasswordResetLinkRequest($request, $validated['login'])
             );
         }
-        
+    
         return $this->response_factory->redirect()
                                       ->toRoute('auth.forgot.password')
-                                      ->with('password.reset.processed', true);
+                                      ->withFlashMessages('password.reset.processed', true);
     }
     
     private function generateSignedUrl(WP_User $user) :string

@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Core\Http\Psr7;
 
 use WP_User;
-use RuntimeException;
-use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
+use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
 use Snicco\Core\Routing\Route;
-use Snicco\Session\Session;
 use Snicco\Support\Repository;
-use Snicco\Validation\Validator;
 use Psr\Http\Message\UriInterface;
-use Snicco\Core\Traits\ValidatesWordpressNonces;
 use Psr\Http\Message\ServerRequestInterface;
+use Snicco\Core\Traits\ValidatesWordpressNonces;
 
 class Request implements ServerRequestInterface
 {
@@ -32,6 +29,7 @@ class Request implements ServerRequestInterface
     }
     
     /**
+     * @interal
      * This method stores the URI that is used for matching against the routes
      * inside the AbstractRouteCollection. This URI is modified inside the CORE Middleware
      * for wp-admin and admin-ajax routes
@@ -39,7 +37,7 @@ class Request implements ServerRequestInterface
      * For admin routes the [page] query parameter is appended to the wp-admin url.
      * For ajax routes the [action] query parameter is appended to the admin-ajax url.
      * This is stored in an additional attribute to not tamper with the "real" requested URL.
-     * This URI shall not be used anymore BESIDES FOR MATCHING A ROUTE.
+     * This URI shall not be used anywhere BESIDES FOR MATCHING A ROUTE.
      */
     public function withRoutingUri(UriInterface $uri) :Request
     {
@@ -56,30 +54,9 @@ class Request implements ServerRequestInterface
         return $this->withAttribute('cookies', new Repository($cookies));
     }
     
-    public function withSession(Session $session_store) :Request
-    {
-        return $this->withAttribute('session', $session_store);
-    }
-    
     public function withUserId(int $user_id) :Request
     {
         return $this->withAttribute('_current_user_id', $user_id);
-    }
-    
-    public function withValidator(Validator $v) :Request
-    {
-        return $this->withAttribute('_validator', $v);
-    }
-    
-    public function validator() :Validator
-    {
-        $v = $this->getAttribute('_validator');
-        
-        if ( ! $v instanceof Validator) {
-            throw new RuntimeException('A validator instance has not been set on the request.');
-        }
-        
-        return $v;
     }
     
     /**
@@ -165,25 +142,9 @@ class Request implements ServerRequestInterface
         return $bag;
     }
     
-    public function session() :Session
-    {
-        if ( ! $this->hasSession()) {
-            throw new RuntimeException('A session has not been set on the request.');
-        }
-        
-        return $this->getAttribute('session');
-    }
-    
     public function route() :?Route
     {
         return $this->getAttribute('_route');
-    }
-    
-    public function hasSession() :bool
-    {
-        $session = $this->getAttribute('session');
-        
-        return $session instanceof Session;
     }
     
     public function expires(int $default = 0) :int

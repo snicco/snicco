@@ -4,19 +4,33 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Contracts;
 
-use Snicco\Core\Http\Cookie;
-use Snicco\Session\Session;
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\Session\ValueObjects\CookiePool;
+use Snicco\Session\ValueObjects\SessionCookie;
+use Snicco\Session\Exceptions\CantDestroySession;
+use Snicco\Session\Exceptions\CantReadSessionContent;
+use Snicco\Session\Exceptions\CantWriteSessionContent;
 
+/**
+ * @api
+ */
 interface SessionManagerInterface
 {
     
-    public function start(Request $request, int $user_id) :Session;
+    /**
+     * @throws CantReadSessionContent
+     */
+    public function start(CookiePool $cookie_pool) :SessionInterface;
     
-    public function sessionCookie() :Cookie;
+    /**
+     * @return SessionCookie
+     * A value object that provides valid parameters to use in {@see setcookie()}
+     */
+    public function toCookie(ImmutableSessionInterface $session) :SessionCookie;
     
-    public function save();
-    
-    public function collectGarbage();
+    /**
+     * @throws CantWriteSessionContent If the session can't be saved.
+     * @throws CantDestroySession If garbage collection did not work.
+     */
+    public function save(SessionInterface $session) :void;
     
 }

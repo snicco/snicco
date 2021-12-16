@@ -89,7 +89,7 @@ class AuthSessionManagerTest extends AuthTestCase
         
         $this->assertCount(3, $this->session_manager->getAllForUser());
         
-        $token = $this->hash($this->activeSession()->getId());
+        $token = $this->hash($this->activeSession()->id());
         
         $this->session_manager->destroyOthersForUser($token, $calvin->ID);
         

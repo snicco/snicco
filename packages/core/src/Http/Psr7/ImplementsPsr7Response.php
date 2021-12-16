@@ -10,7 +10,10 @@ use Psr\Http\Message\ResponseInterface;
 trait ImplementsPsr7Response
 {
     
-    protected ResponseInterface $psr7_response;
+    /**
+     * @var ResponseInterface
+     */
+    protected $psr7_response;
     
     public function withProtocolVersion($version)
     {
