@@ -9,6 +9,9 @@ use LogicException;
 use function hash_hmac;
 use function hash_equals;
 
+/**
+ * @todo check if this class is really needed.
+ */
 class MethodField
 {
     

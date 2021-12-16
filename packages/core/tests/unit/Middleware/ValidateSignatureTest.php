@@ -30,8 +30,15 @@ class ValidateSignatureTest extends MiddlewareTestCase
     use CreateDefaultWpApiMocks;
     use CreateContainer;
     
-    private UrlGenerator      $url;
-    private InMemoryMagicLink $magic_link;
+    /**
+     * @var UrlGenerator
+     */
+    private $url;
+    
+    /**
+     * @var InMemoryMagicLink
+     */
+    private $magic_link;
     
     protected function setUp() :void
     {

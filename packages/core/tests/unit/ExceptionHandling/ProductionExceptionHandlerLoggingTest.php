@@ -10,9 +10,9 @@ use Exception;
 use Psr\Log\LogLevel;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Http\BaseResponseFactory;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Contracts\ResponseFactory;
 use Tests\Core\fixtures\TestDoubles\TestLogger;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Tests\Codeception\shared\TestDependencies\Foo;
@@ -237,7 +237,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         $handler = new fixtures\CustomExceptionHandler(
             $this->container,
             $this->test_logger = new TestLogger(),
-            Mockery::mock(BaseResponseFactory::class)
+            Mockery::mock(ResponseFactory::class)
         );
         
         $this->assertEmpty($GLOBALS['test']['log']);
@@ -254,7 +254,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         $handler = new fixtures\CustomExceptionHandler(
             $this->container,
             $this->test_logger = new TestLogger(),
-            Mockery::mock(BaseResponseFactory::class),
+            Mockery::mock(ResponseFactory::class),
         );
         
         $handler->report($e = new Exception('Foobar'), $this->request);
@@ -267,7 +267,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         return new ProductionExceptionHandler(
             $this->container,
             $this->test_logger = new TestLogger(),
-            Mockery::mock(BaseResponseFactory::class),
+            Mockery::mock(ResponseFactory::class),
             null
         );
     }
