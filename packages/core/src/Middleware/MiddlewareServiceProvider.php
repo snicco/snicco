@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Routing\Pipeline;
-use Snicco\Core\Http\MethodField;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Contracts\ServiceProvider;
@@ -199,9 +198,7 @@ class MiddlewareServiceProvider extends ServiceProvider
     private function bindMethodOverride()
     {
         $this->container->singleton(MethodOverride::class, function () {
-            return new MethodOverride(
-                $this->container[MethodField::class]
-            );
+            return new MethodOverride();
         });
     }
     

@@ -6,7 +6,6 @@ namespace Snicco\Core\Application;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Http\MethodField;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
@@ -58,7 +57,6 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->applicationAliases($app);
         $this->responseAliases($app);
         $this->routingAliases($app);
-        $this->viewAliases($app);
         $this->bindRequestAlias($app);
     }
     
@@ -94,11 +92,6 @@ class ApplicationServiceProvider extends ServiceProvider
         $app->alias('options', Router::class, 'options');
         $app->alias('delete', Router::class, 'delete');
         $app->alias('match', Router::class, 'match');
-    }
-    
-    private function viewAliases(Application $app)
-    {
-        $app->alias('methodField', MethodField::class, 'html');
     }
     
     private function bindRequestAlias(Application $app)

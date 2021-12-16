@@ -12,7 +12,6 @@ use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;
-use Snicco\Core\Application\ApplicationTrait;
 
 class BladeServiceProvider extends ServiceProvider
 {
@@ -61,11 +60,11 @@ class BladeServiceProvider extends ServiceProvider
                 );
             });
         }
-        
-        Blade::directive('method', function ($method) {
-            $method = str_replace("'", '', $method);
-            $app = $this->container->get(ApplicationTrait::class);
-            return "<?php echo {$app}::methodField('$method') ?>";
+    
+        Blade::directive('method', function () {
+            throw new LogicException(
+                'The method directive does not work. You should use the $method object that all views have access to.'
+            );
         });
     }
     

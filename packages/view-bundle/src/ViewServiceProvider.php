@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\ViewBundle;
 
 use Snicco\View\ViewEngine;
+use InvalidArgumentException;
 use Snicco\View\GlobalViewContext;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
@@ -16,6 +17,9 @@ use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Contracts\ViewComposerFactory;
 use Snicco\View\Implementations\PHPViewFactory;
 use Snicco\Core\ExceptionHandling\HtmlErrorRender;
+
+use function in_array;
+use function strtoupper;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -46,7 +50,7 @@ class ViewServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        //
+        $this->shareMethodField();
     }
     
     private function bindViewComposerFactory() :void
@@ -135,4 +139,30 @@ class ViewServiceProvider extends ServiceProvider
         });
     }
     
+    private function shareMethodField()
+    {
+        /** @var GlobalViewContext $global_context */
+        $global_context = $this->container[GlobalViewContext::class];
+        
+        $method_field = new class
+        {
+            
+            public function __invoke(string $method) :string
+            {
+                $method = strtoupper($method);
+                
+                if ( ! in_array($method, $arr = ['PATCH', 'PUT', 'DELETE'], true)) {
+                    throw new InvalidArgumentException(
+                        sprintf("$method has to be one of [%s]", implode(',', $arr))
+                    );
+                }
+                return "<input type='hidden' name='_method' value='{$method}'>";
+            }
+            
+        };
+        
+        $global_context->add('method', $method_field);
+    }
+    
 }
+

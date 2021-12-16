@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\View;
 
+use Closure;
 use Snicco\Support\Repository;
 
 /**
@@ -29,7 +30,7 @@ class GlobalViewContext
     public function get() :array
     {
         return array_map(function ($context) {
-            return is_callable($context)
+            return ($context instanceof Closure)
                 ? call_user_func($context)
                 : $context;
         }, $this->context);

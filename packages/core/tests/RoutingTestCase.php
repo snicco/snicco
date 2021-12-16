@@ -12,7 +12,6 @@ use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Routing\Pipeline;
-use Snicco\Core\Http\MethodField;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Http\ResponseEmitter;
@@ -67,8 +66,6 @@ use Tests\Core\fixtures\Conditions\ConditionWithDependency;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
 use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
-
-use const TEST_APP_KEY;
 
 class RoutingTestCase extends UnitTest
 {
@@ -226,7 +223,7 @@ class RoutingTestCase extends UnitTest
         
         $this->container->instance(
             MethodOverride::class,
-            new MethodOverride(new MethodField(TEST_APP_KEY))
+            new MethodOverride()
         );
         
         $this->container->instance(RouteCollectionInterface::class, $this->routes);
