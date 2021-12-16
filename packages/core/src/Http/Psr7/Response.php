@@ -77,7 +77,7 @@ class Response implements ResponseInterface
     public function withoutCookie(string $name, string $path = '/') :self
     {
         $cookie = new Cookie($name, 'deleted');
-        $cookie->expires(1)->path($path);
+        $cookie = $cookie->withExpiryTimestamp(1)->withPath($path);
         
         $response = clone $this;
         $response->cookies->add($cookie);

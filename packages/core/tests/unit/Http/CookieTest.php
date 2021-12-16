@@ -7,12 +7,21 @@ namespace Tests\Core\unit\Http;
 use DateTime;
 use LogicException;
 use Snicco\Core\Http\Cookie;
-use Snicco\Core\Support\Carbon;
 use InvalidArgumentException;
+use Snicco\Core\Support\Carbon;
 use Tests\Codeception\shared\UnitTest;
 
 class CookieTest extends UnitTest
 {
+    
+    /** @test */
+    public function testIsImmutable()
+    {
+        $cookie = new Cookie('foo', 'bar');
+        $cookie2 = $cookie->withPath('/web');
+        
+        $this->assertNotSame($cookie, $cookie2);
+    }
     
     public function testDefault()
     {
@@ -30,32 +39,10 @@ class CookieTest extends UnitTest
         ], $cookie->properties());
     }
     
-    public function testSetProperties()
-    {
-        $cookie = new Cookie('foo', 'bar');
-        
-        $cookie->setProperties([
-            'secure' => false,
-            'httponly' => false,
-            'samesite' => 'Strict',
-        ]);
-        
-        $this->assertSame([
-            'value' => 'bar',
-            'domain' => null,
-            'hostonly' => true,
-            'path' => '/',
-            'expires' => null,
-            'secure' => false,
-            'httponly' => false,
-            'samesite' => 'Strict',
-        ], $cookie->properties());
-    }
-    
     public function testAllowJs()
     {
         $cookie = new Cookie('foo', 'bar');
-        $cookie->allowJs();
+        $cookie = $cookie->withJsAccess();
         
         $this->assertSame([
             'value' => 'bar',
@@ -72,7 +59,7 @@ class CookieTest extends UnitTest
     public function testAllowUnsecure()
     {
         $cookie = new Cookie('foo', 'bar');
-        $cookie->allowUnsecure();
+        $cookie = $cookie->withUnsecureHttp();
         
         $this->assertSame([
             'value' => 'bar',
@@ -89,7 +76,7 @@ class CookieTest extends UnitTest
     public function testSameSite()
     {
         $cookie = new Cookie('foo', 'bar');
-        $cookie->sameSite('strict');
+        $cookie = $cookie->withSameSite('strict');
         $this->assertSame([
             'value' => 'bar',
             'domain' => null,
@@ -100,8 +87,8 @@ class CookieTest extends UnitTest
             'httponly' => true,
             'samesite' => 'Strict',
         ], $cookie->properties());
-        
-        $cookie->sameSite('lax');
+    
+        $cookie = $cookie->withSameSite('lax');
         $this->assertSame([
             'value' => 'bar',
             'domain' => null,
@@ -112,8 +99,8 @@ class CookieTest extends UnitTest
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
-        $cookie->sameSite('none');
+    
+        $cookie = $cookie->withSameSite('none');
         $this->assertSame([
             'value' => 'bar',
             'domain' => null,
@@ -126,14 +113,14 @@ class CookieTest extends UnitTest
         ], $cookie->properties());
         
         $this->expectException(LogicException::class);
-        
-        $cookie->sameSite('bogus');
+    
+        $cookie->withSameSite('bogus');
     }
     
     public function testExpiresInteger()
     {
         $cookie = new Cookie('foo', 'bar');
-        $cookie->expires(1000);
+        $cookie = $cookie->withExpiryTimestamp(1000);
         $this->assertSame([
             'value' => 'bar',
             'domain' => null,
@@ -151,8 +138,8 @@ class CookieTest extends UnitTest
         $cookie = new Cookie('foo', 'bar');
         
         $date = new DateTime('2000-01-01');
-        
-        $cookie->expires($date);
+    
+        $cookie = $cookie->withExpiryTimestamp($date);
         
         $this->assertSame([
             'value' => 'bar',
@@ -171,8 +158,8 @@ class CookieTest extends UnitTest
         $cookie = new Cookie('foo', 'bar');
         
         $date = Carbon::createFromDate('2000', '01', '01');
-        
-        $cookie->expires($date);
+    
+        $cookie = $cookie->withExpiryTimestamp($date);
         
         $this->assertSame([
             'value' => 'bar',
@@ -190,7 +177,7 @@ class CookieTest extends UnitTest
     {
         $this->expectException(InvalidArgumentException::class);
         $cookie = new Cookie('foo', 'bar');
-        $cookie->expires('1000');
+        $cookie->withExpiryTimestamp('1000');
     }
     
     public function testValueIsUrlEncoded()

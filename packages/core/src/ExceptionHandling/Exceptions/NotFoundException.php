@@ -9,7 +9,7 @@ use Throwable;
 class NotFoundException extends HttpException
 {
     
-    protected string $message_for_users = 'We could not find the resource you are looking for.';
+    protected $message_for_users = 'We could not find the resource you are looking for.';
     
     public function __construct($log_message, Throwable $previous = null)
     {

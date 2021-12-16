@@ -10,6 +10,9 @@ use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
+/**
+ * @todo dedicated tests. This class has only implicit tests
+ */
 abstract class Redirector
 {
     

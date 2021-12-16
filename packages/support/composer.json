@@ -16,10 +16,5 @@
     "psr-4": {
       "Snicco\\Support\\": "src"
     }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\Support\\": "tests"
-    }
   }
 }

@@ -6,7 +6,7 @@ namespace Snicco\Core\Http\Responses;
 
 use Snicco\Core\Http\Psr7\Response;
 
-class InvalidResponse extends Response
+final class InvalidResponse extends Response
 {
 
 }

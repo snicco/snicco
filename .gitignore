@@ -12,3 +12,4 @@ codeception.ymll
 packages/blade/tests/fixtures/cache/*
 /codeception/shared/TestApp/storage/framework/routes/
 /codeception/shared/TestApp/storage/framework/views/
+/packages/*/tests/_output/failed

@@ -11,6 +11,9 @@ use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
+/**
+ * @tooo needs to be refactored without sessions.
+ */
 class ValidateSignature extends Middleware
 {
     

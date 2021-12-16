@@ -31,7 +31,7 @@ final class BladeView implements ViewInterface, IlluminateViewContract
             return $this->illuminate_view->render();
         } catch (Throwable $e) {
             throw new ViewRenderingException(
-                "Error rendering view:[{$this->name()}] Caused by: {$e->getMessage()}",
+                "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
                 $e->getCode(),
                 $e,
             );

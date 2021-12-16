@@ -16,9 +16,9 @@ use Snicco\ViewBundle\ViewServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Compilers\BladeCompiler;
 use Snicco\BladeBundle\BladeServiceProvider;
-use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\SessionBundle\SessionServiceProvider;
+use Snicco\View\Exceptions\ViewRenderingException;
 
 class BladeServiceProviderTest extends FrameworkTestCase
 {
@@ -84,16 +84,19 @@ class BladeServiceProviderTest extends FrameworkTestCase
     /**
      * @test
      */
-    public function custom_csrf_directives_work_when_sessions_are_enabled()
+    public function custom_csrf_directives_throw_exceptions()
     {
         $this->withAddedConfig('session.enabled', true)->bootApp();
-        TestApp::session()->start();
-        $view = $this->view('csrf');
-        $content = $view->toString();
         
-        $this->assertStringContainsString('_token', $content);
-        $this->assertStringContainsString(TestApp::session()->csrfToken(), $content);
-        $this->assertStringStartsWith('<input', $content);
+        $view = $this->view('csrf');
+        try {
+            $view->toString();
+        } catch (ViewRenderingException $e) {
+            $this->assertStringContainsString(
+                'The csrf directive does not work.',
+                $e->getMessage()
+            );
+        }
     }
     
     /**

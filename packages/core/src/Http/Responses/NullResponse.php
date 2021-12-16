@@ -12,7 +12,7 @@ use Snicco\Core\Http\Psr7\Response;
  * If you want to delegate only the content rendering to WordPress but send headers generated
  * by middleware etc. you should use the @see DelegatedResponse class.
  */
-class NullResponse extends Response
+final class NullResponse extends Response
 {
 
 }
