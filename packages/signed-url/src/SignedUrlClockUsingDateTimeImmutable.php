@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Session\ValueObjects;
+namespace Snicco\SignedUrl;
 
 use DateTimeImmutable;
-use Snicco\Session\Contracts\SessionClock;
+use Snicco\SignedUrl\Contracts\SignedUrlClock;
 
 /**
- * @api
+ * @interal
  */
-final class ClockUsingDateTimeImmutable implements SessionClock
+final class SignedUrlClockUsingDateTimeImmutable implements SignedUrlClock
 {
     
     public function currentTime() :DateTimeImmutable

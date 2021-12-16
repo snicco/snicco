@@ -26,9 +26,9 @@
   },
   "require-dev": {
     "nyholm/psr7-server": "^1.0-stable",
+    "nyholm/psr7": "^1.0.0",
     "adriansuter/php-autoload-override": "^1.2",
-    "filp/whoops": "^2.2",
-    "sniccowp/pimple-container-bride": "dev-master"
+    "filp/whoops": "^2.2"
   },
   "autoload": {
     "psr-4": {

@@ -9,8 +9,9 @@ use RuntimeException;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Middleware;
 use Snicco\Core\Routing\UrlGenerator;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Http\StatelessRedirector;
 use Psr\Http\Message\UriFactoryInterface;
@@ -74,17 +75,20 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         $this->next_middleware_response = $closure;
     }
     
-    protected function runMiddleware(Middleware $middleware, Request $request) :Assertable\MiddlewareTestResponse
+    protected function runMiddleware(MiddlewareInterface $middleware, Request $request) :Assertable\MiddlewareTestResponse
     {
         if (isset($this->request)) {
             unset($this->request);
         }
         
-        $middleware->setResponseFactory($this->response_factory);
+        if (method_exists($middleware, 'setResponseFactory')) {
+            $middleware->setResponseFactory($this->response_factory);
+        }
+        
         $this->url->setRequestResolver(function () use ($request) { return $request; });
         
         /** @var Response $response */
-        $response = $middleware->handle($request, $this->getNext());
+        $response = $middleware->process($request, $this->getNext());
         
         if (isset($response->received_request)) {
             $this->request = $response->received_request;
@@ -119,7 +123,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         );
     }
     
-    private function transformResponse(Response $response)
+    private function transformResponse(ResponseInterface $response)
     {
         if ( ! $response instanceof MiddlewareTestResponse) {
             $response = new MiddlewareTestResponse(

@@ -15,6 +15,7 @@ return static function (ContainerConfigurator $containerConfigurator) :void {
             'phpunit/phpunit' => '^9.5',
             'mockery/mockery' => '^1.4.2',
             'symplify/monorepo-builder' => '^9.4',
+            "codeception/codeception" => "4.1.24",
         ],
         ComposerJsonSection::AUTOLOAD_DEV => [
             'psr-4' => [
