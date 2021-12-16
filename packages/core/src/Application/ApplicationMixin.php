@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Application;
 
 use Closure;
-use LogicException;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Http\MethodField;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
@@ -259,20 +257,6 @@ final class ApplicationMixin
      * @see Router::delete()
      */
     public static function delete(string $url = '*', $action = null) :Route
-    {
-    }
-    
-    /**
-     * Get the HTML for a hidden method field that can be used in HTML
-     * forms to override the POST method
-     *
-     * @param  string  $method  accepted values are put,patch,delete
-     *
-     * @return string
-     * @throws LogicException
-     * @see MethodField::html()
-     */
-    public static function methodField(string $method) :string
     {
     }
     

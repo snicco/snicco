@@ -11,6 +11,7 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Application\Config;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Application\Application;
+use Snicco\SessionBundle\SessionServiceProvider;
 
 abstract class ServiceProvider
 {
@@ -51,7 +52,7 @@ abstract class ServiceProvider
     /** Only use this function after all providers have been registered. */
     protected function sessionEnabled() :bool
     {
-        return $this->config->get('session.enabled', false);
+        return in_array(SessionServiceProvider::class, $this->config['app.providers']);
     }
     
     protected function validAppKey() :bool

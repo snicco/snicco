@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use RuntimeException;
-use Snicco\Core\Routing\Pipeline;
 use RKA\Middleware\IpAddress;
+use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\ServiceProvider;
@@ -29,7 +29,6 @@ class HttpServiceProvider extends ServiceProvider
         $this->bindRedirector();
         $this->bindResponsePostProcessor();
         $this->bindIpAddressMiddleware();
-        $this->bindMethodField();
         $this->bindResponseFactory();
         $this->bindResponsePreparation();
         $this->bindCoreControllers();
@@ -89,13 +88,6 @@ class HttpServiceProvider extends ServiceProvider
                 $this->app->isRunningUnitTest()
             );
         });
-    }
-    
-    private function bindMethodField()
-    {
-        $this->container->singleton(MethodField::class, fn() => new MethodField(
-            $this->appKey()
-        ));
     }
     
     private function bindKernel()

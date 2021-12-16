@@ -91,6 +91,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
         $view = $this->view('csrf');
         try {
             $view->toString();
+            $this->fail('No exception thrown.');
         } catch (ViewRenderingException $e) {
             $this->assertStringContainsString(
                 'The csrf directive does not work.',
@@ -102,13 +103,20 @@ class BladeServiceProviderTest extends FrameworkTestCase
     /**
      * @test
      */
-    public function method_directive_works()
+    public function method_directive_throws_exceptions()
     {
-        $this->bootApp();
-        $view = $this->view('method');
-        $content = $view->toString();
-        $this->assertStringContainsString("<input type='hidden' name='_method", $content);
-        $this->assertStringContainsString("value='PUT|", $content);
+        $this->withAddedConfig('session.enabled', true)->bootApp();
+        
+        $view = $this->view('method-blade');
+        try {
+            $view->toString();
+            $this->fail('No exception thrown.');
+        } catch (ViewRenderingException $e) {
+            $this->assertStringContainsString(
+                'The method directive does not work.',
+                $e->getMessage()
+            );
+        }
     }
     
     /**

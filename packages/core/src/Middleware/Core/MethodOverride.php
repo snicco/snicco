@@ -5,20 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware\Core;
 
 use Snicco\Core\Routing\Delegate;
-use Snicco\Core\Http\MethodField;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
+use function in_array;
+use function strtoupper;
+
 class MethodOverride extends Middleware
 {
-    
-    private MethodField $method_field;
-    
-    public function __construct(MethodField $method_field)
-    {
-        $this->method_field = $method_field;
-    }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
@@ -26,15 +21,24 @@ class MethodOverride extends Middleware
             return $next($request);
         }
         
-        $signature = $request->post('_method');
+        $method = $request->body('_method');
         
-        if ( ! $method = $this->method_field->validate($signature)) {
+        if ( ! $this->validMethod($method)) {
             return $next($request);
         }
         
         $request = $request->withMethod($method);
         
         return $next($request);
+    }
+    
+    private function validMethod(string $method) :bool
+    {
+        $valid = ['PUT', 'PATCH', 'DELETE'];
+        
+        $method = strtoupper($method);
+        
+        return in_array($method, $valid);
     }
     
 }

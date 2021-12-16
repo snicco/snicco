@@ -12,9 +12,9 @@ use Snicco\Core\Application\Application;
 use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Core\Http\Responses\RedirectResponse;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -185,17 +185,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         
         $this->delete('/alias/match')->assertDelegatedToWordPress();
         $this->post('/alias/match')->assertOk()->assertSee('match');
-    }
-    
-    /** @test */
-    public function a_method_override_field_can_be_outputted()
-    {
-        $this->bootApp();
-        
-        $html = TestApp::methodField('PUT');
-        
-        $this->assertStringStartsWith('<input', $html);
-        $this->assertStringContainsString('PUT', $html);
     }
     
     /** @test */
