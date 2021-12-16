@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Mockery;
-use RuntimeException;
-use Snicco\Core\Support\WP;
-use Snicco\Session\Session;
-use Snicco\Validation\Validator;
 use Snicco\Core\Http\Psr7\Request;
-use Respect\Validation\Validator as v;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Session\Drivers\ArraySessionDriver;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\Validation\Exceptions\ValidationException;
 
 class InteractsWithInputTest extends UnitTest
 {
     
-    private Request $request;
+    /**
+     * @var Request
+     */
+    private $request;
     
     protected function setUp() :void
     {
@@ -273,116 +268,6 @@ class InteractsWithInputTest extends UnitTest
         $this->assertFalse($request->missing('foo.baz'));
         $this->assertTrue($request->missing('foo.bax'));
         $this->assertTrue($request->missing(['foo.bax', 'foo.baz']));
-    }
-    
-    public function testOld()
-    {
-        $session = new Session(new ArraySessionDriver(10));
-        WP::shouldReceive('userId')->andReturn(1)->byDefault();
-        $session->start('a');
-        $session->flashInput(['foo' => 'bar', 'bar' => 'baz']);
-        $session->saveUsing();
-        
-        $request = $this->request->withAttribute('session', $session);
-        $this->assertSame(['foo' => 'bar', 'bar' => 'baz'], $request->old());
-        $this->assertSame('bar', $request->old('foo'));
-        $this->assertSame('default', $request->old('bogus', 'default'));
-        
-        WP::reset();
-        Mockery::close();
-    }
-    
-    public function testOldWithoutSessionSet()
-    {
-        $this->expectException(RuntimeException::class);
-        
-        $this->request->old();
-    }
-    
-    public function testValidate()
-    {
-        $request = $this->request->withQueryParams(
-            [
-                'foo' => 'bar',
-                'baz' => 'biz',
-                'team' => [
-                    'player' => 'calvin',
-                    'coach' => 'marlon',
-                    'ceo' => 'john',
-                ],
-            ]
-        
-        );
-        $request = $request->withValidator(new Validator());
-        
-        $validated = $request->validate([
-            'foo' => v::equals('bar'),
-            'baz' => v::equals('biz'),
-            'team.player' => v::equals('calvin'),
-            'team' => v::contains('marlon'),
-        ]);
-        
-        $expected = [
-            'foo' => 'bar',
-            'baz' => 'biz',
-            'team' => [
-                'player' => 'calvin',
-                'coach' => 'marlon',
-                'ceo' => 'john',
-            ],
-        ];
-        
-        $this->assertSame($expected, $validated);
-        
-        $this->expectException(ValidationException::class);
-        
-        $request->validate([
-            'foo' => v::equals('bar'),
-            'baz' => v::equals('biz'),
-            'team.player' => v::equals('calvin'),
-            'team' => v::contains('jeff'),
-        ]);
-    }
-    
-    public function testValidateWithCustomMessages()
-    {
-        $request = $this->request->withQueryParams(
-            [
-                'team' => [
-                    'player' => 'calvin',
-                    'coach' => 'marlon',
-                    'ceo' => 'john',
-                ],
-            ]
-        
-        );
-        $request = $request->withValidator(new Validator());
-        
-        try {
-            $rules = [
-                'team.player' => [
-                    v::equals('john'),
-                    'This is not valid for [attribute]. Must be equal to john',
-                ],
-            ];
-            
-            $request->validate($rules, [
-                'team.player' => 'The player',
-            ]);
-            
-            $this->fail('Failed validation did not throw exception');
-        } catch (ValidationException $e) {
-            $errors = $e->errorsAsArray()['team']['player'][0];
-            
-            $messages = $e->messages();
-            
-            $this->assertSame(
-                'This is not valid for The player. Must be equal to john.',
-                $messages->first('team.player')
-            );
-            
-            $this->assertSame('This is not valid for The player. Must be equal to john.', $errors);
-        }
     }
     
 }

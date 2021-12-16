@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\BladeBundle;
 
+use LogicException;
 use RuntimeException;
 use Snicco\Blade\BladeStandalone;
 use Illuminate\Support\Facades\Blade;
@@ -55,8 +56,9 @@ class BladeServiceProvider extends ServiceProvider
     {
         if ($this->sessionEnabled()) {
             Blade::directive('csrf', function () {
-                $app = $this->container->get(ApplicationTrait::class);
-                return "<?php echo {$app}::csrfField() ?>";
+                throw new LogicException(
+                    'The csrf directive does not work. You should use the $csrf object that all views have access to if you are using the stateful middleware group.'
+                );
             });
         }
         

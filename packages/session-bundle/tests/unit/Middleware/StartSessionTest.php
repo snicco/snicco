@@ -44,7 +44,7 @@ final class StartSessionTest extends MiddlewareTestCase
     public function an_exception_is_thrown_if_the_request_path_does_not_match_the_cookie_path_in_the_config()
     {
         $mock = m::mock(SessionManagerInterface::class);
-        $mock->shouldReceive('getSessionFromCookie')->andReturn(
+        $mock->shouldReceive('start')->andReturn(
             new Session(SessionId::createFresh(), [], new DateTimeImmutable())
         )->byDefault();
         

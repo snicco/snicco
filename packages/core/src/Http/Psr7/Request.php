@@ -15,6 +15,9 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Core\Traits\ValidatesWordpressNonces;
 
+/**
+ * @todo add ip() method
+ */
 class Request implements ServerRequestInterface
 {
     

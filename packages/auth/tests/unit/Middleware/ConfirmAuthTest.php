@@ -7,12 +7,13 @@ namespace Tests\Auth\unit\Middleware;
 use Mockery;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
-use Snicco\Session\Session;
+use Snicco\SessionBundle\Keys;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Testing\Concerns\TravelsTime;
-use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\Session\Contracts\SessionInterface;
+use Tests\Codeception\shared\helpers\SessionHelpers;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class ConfirmAuthTest extends MiddlewareTestCase
@@ -20,8 +21,17 @@ class ConfirmAuthTest extends MiddlewareTestCase
     
     use CreateDefaultWpApiMocks;
     use TravelsTime;
+    use SessionHelpers;
     
-    private Request $request;
+    /**
+     * @var Request
+     */
+    private $request;
+    
+    /**
+     * @var SessionInterface
+     */
+    private $session;
     
     protected function setUp() :void
     {
@@ -33,6 +43,7 @@ class ConfirmAuthTest extends MiddlewareTestCase
         $this->routes->add($route);
         $this->routes->addToUrlMatcher();
         $this->request = $this->frontendRequest();
+        $this->session = $this->newSession();
     }
     
     protected function tearDown() :void
@@ -46,7 +57,7 @@ class ConfirmAuthTest extends MiddlewareTestCase
     /** @test */
     public function a_missing_auth_confirmed_token_does_not_grant_access_to_a_route()
     {
-        $request = $this->request->withSession($this->newSession());
+        $request = $this->request->withAttribute(Keys::WRITE_SESSION, $this->session);
         
         $response = $this->runMiddleware(new ConfirmAuth(), $request);
         
@@ -112,11 +123,6 @@ class ConfirmAuthTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new ConfirmAuth(), $request->withMethod('POST'));
         
         $this->assertSame('/foo/bar', $session->getIntendedUrl());
-    }
-    
-    private function newSession() :Session
-    {
-        return new Session(new ArraySessionDriver(10));
     }
     
 }
