@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Session\Session;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+
+use function Snicco\SessionBundle\getWriteSession;
 
 class ConfirmAuth extends Middleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $session = $request->session();
+        $session = getWriteSession($request);
         
         if ( ! $session->hasValidAuthConfirmToken()) {
             $this->setIntendedUrl($request, $session);

@@ -11,9 +11,8 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\SessionManager;
 use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Contracts\SessionManagerInterface;
 
-class AuthSessionManager implements SessionManagerInterface
+class AuthSessionManager
 {
     
     use InteractsWithTime;

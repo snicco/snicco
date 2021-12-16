@@ -11,7 +11,7 @@ use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 class ValidationException extends HttpException
 {
     
-    protected string   $message_for_users = 'We could not process your request.';
+    protected          $message_for_users = 'We could not process your request.';
     private MessageBag $messages;
     private array      $errors;
     private string     $message_bag_name;

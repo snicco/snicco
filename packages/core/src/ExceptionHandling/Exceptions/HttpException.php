@@ -10,9 +10,20 @@ use Exception;
 class HttpException extends Exception
 {
     
-    protected int     $status_code;
-    protected string  $message_for_users = 'Something went wrong.';
-    protected ?string $json_message      = null;
+    /**
+     * @var int
+     */
+    protected $status_code;
+    
+    /**
+     * @var string
+     */
+    protected $message_for_users = 'Something went wrong.';
+    
+    /**
+     * @var string|null
+     */
+    protected $json_message = null;
     
     public function __construct(
         int $status_code,
