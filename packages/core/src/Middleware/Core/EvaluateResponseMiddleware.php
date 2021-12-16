@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Core;
 
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
@@ -31,7 +31,9 @@ class EvaluateResponseMiddleware extends Middleware
         
         if ($this->must_match_web_routes && $request->isWpFrontEnd()) {
             if ($response instanceof NullResponse || $response instanceof DelegatedResponse) {
-                throw new NotFoundException("404 for request path [{$request->fullPath()}]");
+                throw new NotFoundException(
+                    "404 for request path [{$request->fullRequestTarget()}]"
+                );
             }
         }
         

@@ -77,14 +77,14 @@ abstract class MagicLink
     public function hasAccessToRoute(Request $request) :bool
     {
         if ($request->hasSession()) {
-            return $request->session()->canAccessRoute($request->fullPath());
+            return $request->session()->canAccessRoute($request->fullRequestTarget());
         }
         
         $cookie = $request->cookies()->get($this->accessCookieName($request), '');
         
         /** @todo remove sessions from here */
         /** @todo hash method seems no longer valid for cookies */
-        return $cookie === $this->hash($request->fullPath(), $request)
+        return $cookie === $this->hash($request->fullRequestTarget(), $request)
                && $request->expires() > $this->currentTime();
     }
     
@@ -92,7 +92,7 @@ abstract class MagicLink
     {
         if ($request->hasSession()) {
             $request->session()
-                    ->allowAccessToRoute($request->fullPath(), $request->query('expires'));
+                    ->allowAccessToRoute($request->fullRequestTarget(), $request->query('expires'));
         }
         else {
             $response = $this->addAccessCookie($response, $request);
@@ -129,7 +129,7 @@ abstract class MagicLink
     private function accessCookieName(Request $request)
     {
         $id = WP::userId();
-        $path = $request->fullPath();
+        $path = $request->fullRequestTarget();
         $agent = $request->userAgent();
         
         return hash_hmac('sha256', $id.$path.$agent, $this->app_key);
@@ -137,7 +137,7 @@ abstract class MagicLink
     
     private function addAccessCookie(Response $response, Request $request) :Response
     {
-        $value = $this->hash($request->fullPath(), $request);
+        $value = $this->hash($request->fullRequestTarget(), $request);
     
         $cookie = new Cookie($this->accessCookieName($request), $value);
         $cookie->withExpiryTimestamp($request->expires())

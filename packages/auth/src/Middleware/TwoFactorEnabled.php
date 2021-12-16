@@ -2,7 +2,7 @@
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Contracts\Middleware;
@@ -45,7 +45,7 @@ class ValidateSignature extends Middleware
         }
         
         throw new InvalidSignatureException(
-            "Failed signature check for path: [{$request->fullPath()}]"
+            "Failed signature check for path: [{$request->fullRequestTarget()}]"
         );
     }
     

@@ -6,7 +6,7 @@ namespace Snicco\Testing;
 
 use Closure;
 use RuntimeException;
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Middleware;

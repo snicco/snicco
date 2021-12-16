@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Middleware;
 use Snicco\Core\Routing\UrlGenerator;

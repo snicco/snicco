@@ -149,7 +149,7 @@ class UrlGenerator
     
     public function current() :string
     {
-        return $this->getRequest()->fullPath();
+        return $this->getRequest()->fullRequestTarget();
     }
     
     public function toLogin(string $redirect_on_login = '', bool $reauth = false) :string

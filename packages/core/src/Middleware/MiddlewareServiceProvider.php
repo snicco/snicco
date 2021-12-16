@@ -11,18 +11,18 @@ use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Factories\MiddlewareFactory;
 use Snicco\Core\Middleware\Core\RouteRunner;
+use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Factories\RouteActionFactory;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Factories\RouteConditionFactory;
-use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\Contracts\RouteCollectionInterface;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
 use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Core\Middleware\Core\AppendSpecialPathSuffix;
 use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
 
 class MiddlewareServiceProvider extends ServiceProvider
 {
@@ -214,8 +214,8 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindRoutingPathSuffixMiddleware()
     {
-        $this->container->singleton(AppendSpecialPathSuffix::class, function () {
-            return new AppendSpecialPathSuffix();
+        $this->container->singleton(AllowMatchingAdminAndAjaxRoutes::class, function () {
+            return new AllowMatchingAdminAndAjaxRoutes();
         });
     }
     

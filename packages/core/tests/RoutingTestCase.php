@@ -8,9 +8,9 @@ use Closure;
 use Mockery;
 use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
+use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\MethodField;
 use Snicco\Core\Http\Psr7\Request;
@@ -59,13 +59,13 @@ use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
 use Tests\Codeception\shared\helpers\AssertViewContent;
 use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
-use Snicco\Core\Middleware\Core\AppendSpecialPathSuffix;
 use Tests\Codeception\shared\helpers\CreateRouteMatcher;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
 use Tests\Codeception\shared\helpers\CreateRouteCollection;
 use Tests\Core\fixtures\Conditions\ConditionWithDependency;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
+use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
 use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
 
 use const TEST_APP_KEY;
@@ -294,7 +294,10 @@ class RoutingTestCase extends UnitTest
             new EvaluateResponseMiddleware()
         );
         $this->container->instance(ShareCookies::class, new ShareCookies());
-        $this->container->instance(AppendSpecialPathSuffix::class, new AppendSpecialPathSuffix());
+        $this->container->instance(
+            AllowMatchingAdminAndAjaxRoutes::class,
+            new AllowMatchingAdminAndAjaxRoutes()
+        );
         $this->container->instance(FallBackController::class, new FallBackController());
         $this->container->instance(
             ViewController::class,
