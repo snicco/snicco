@@ -57,8 +57,7 @@ final class ValidateSignature implements MiddlewareInterface
         LoggerInterface $logger,
         $template_renderer = null,
         $log_levels = [],
-        ?Closure $request_context = null,
-        int $garbage_collection_percentage = 2
+        ?Closure $request_context = null
     ) {
         $this->validator = $validator;
         $this->response_factory = $response_factory;

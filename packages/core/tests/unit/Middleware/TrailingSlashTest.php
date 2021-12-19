@@ -20,7 +20,7 @@ class TrailingSlashTest extends MiddlewareTestCase
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             new StatelessRedirector(
-                $url = new UrlGenerator($this->routeUrlGenerator(), new InMemoryMagicLink(), true),
+                $url = new UrlGenerator($this->routeUrlGenerator(), true),
                 $this->psrResponseFactory()
             )
         );

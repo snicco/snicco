@@ -73,6 +73,7 @@
       "Snicco\\PimpleContainer\\": "packages/pimple-container-bridge/src",
       "Snicco\\SessionBundle\\": "packages/session-bundle/src",
       "Snicco\\Session\\": "packages/session/src",
+      "Snicco\\SignedUrlBundle\\": "packages/signed-url-bundle/src",
       "Snicco\\SignedUrlMiddleware\\": "packages/signed-url-middleware/src",
       "Snicco\\SignedUrlWP\\": [
         "packages/signed-url-wp-bundle/src",
@@ -106,6 +107,7 @@
       "Tests\\PimpleContainer\\": "packages/pimple-container-bridge/tests",
       "Tests\\SessionBundle\\": "packages/session-bundle/tests",
       "Tests\\Session\\": "packages/session/tests",
+      "Tests\\SignedUrlBundle\\": "packages/signed-url-bundle/tests",
       "Tests\\SignedUrlMiddleware\\": "packages/signed-url-middleware/tests",
       "Tests\\SignedUrlWP\\": [
         "packages/signed-url-wp-bundle/tests",
@@ -137,6 +139,7 @@
     "sniccowp/session": "self.version",
     "sniccowp/session-bundle": "self.version",
     "sniccowp/signed-url": "self.version",
+    "sniccowp/signed-url-bundle": "self.version",
     "sniccowp/signed-url-middleware": "self.version",
     "sniccowp/signed-url-wp": "self.version",
     "sniccowp/signed-url-wp-bundle": "self.version",

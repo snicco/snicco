@@ -23,5 +23,8 @@
     "psr-4": {
       "Tests\\SignedUrl\\": "tests"
     }
-  }
+  },
+  "bin": [
+    "bin/generate-secret"
+  ]
 }
