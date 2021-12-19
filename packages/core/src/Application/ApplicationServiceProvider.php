@@ -6,12 +6,11 @@ namespace Snicco\Core\Application;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -57,7 +56,6 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->applicationAliases($app);
         $this->responseAliases($app);
         $this->routingAliases($app);
-        $this->bindRequestAlias($app);
     }
     
     private function applicationAliases(Application $app)
@@ -83,8 +81,8 @@ class ApplicationServiceProvider extends ServiceProvider
     private function routingAliases(Application $app)
     {
         $app->alias('route', Router::class);
-        $app->alias('url', UrlGenerator::class);
-        $app->alias('routeUrl', UrlGenerator::class, 'toRoute');
+        $app->alias('url', UrlGeneratorInterface::class);
+        $app->alias('routeUrl', UrlGeneratorInterface::class, 'toRoute');
         $app->alias('post', Router::class, 'post');
         $app->alias('get', Router::class, 'get');
         $app->alias('patch', Router::class, 'patch');
@@ -92,13 +90,6 @@ class ApplicationServiceProvider extends ServiceProvider
         $app->alias('options', Router::class, 'options');
         $app->alias('delete', Router::class, 'delete');
         $app->alias('match', Router::class, 'match');
-    }
-    
-    private function bindRequestAlias(Application $app)
-    {
-        $app->alias('request', function () use ($app) {
-            return $app->resolve(Request::class);
-        });
     }
     
 }

@@ -144,7 +144,6 @@ class Pipeline
         [$middleware, $arguments_from_route_definition] = array_shift($this->middleware);
         
         if ($middleware instanceof MiddlewareInterface) {
-            $this->giveResponseFactory($middleware);
             return $middleware->process($request, $this->nextMiddleware());
         }
         
@@ -156,8 +155,6 @@ class Pipeline
             $middleware,
             $arguments_from_route_definition
         );
-        
-        $this->giveResponseFactory($middleware_instance);
         
         /** @var Response $response */
         $response = $middleware_instance->process($request, $this->nextMiddleware());
@@ -180,13 +177,6 @@ class Pipeline
             
             return $value;
         }, $constructor_args);
-    }
-    
-    private function giveResponseFactory(MiddlewareInterface $middleware)
-    {
-        if (method_exists($middleware, 'setResponseFactory')) {
-            $middleware->setResponseFactory($this->response_factory);
-        }
     }
     
 }

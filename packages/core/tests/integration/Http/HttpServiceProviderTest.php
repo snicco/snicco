@@ -9,10 +9,9 @@ use RKA\Middleware\IpAddress;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Core\Contracts\Redirector;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Core\Http\BaseResponseFactory;
-use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\ResponsePostProcessor;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 
@@ -31,13 +30,13 @@ class HttpServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         $this->assertInstanceOf(
-            BaseResponseFactory::class,
+            DefaultResponseFactory::class,
             TestApp::resolve(ResponseFactory::class)
         );
         
         $this->assertInstanceOf(
-            BaseResponseFactory::class,
-            TestApp::resolve(BaseResponseFactory::class)
+            DefaultResponseFactory::class,
+            TestApp::resolve(DefaultResponseFactory::class)
         );
     }
     
@@ -45,7 +44,7 @@ class HttpServiceProviderTest extends FrameworkTestCase
     public function the_redirector_can_be_resolved()
     {
         $this->bootApp();
-        $this->assertInstanceOf(StatelessRedirector::class, TestApp::resolve(Redirector::class));
+        $this->assertInstanceOf(Redirector::class, TestApp::resolve(Redirector::class));
     }
     
     /** @test */

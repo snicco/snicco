@@ -14,13 +14,13 @@ use Snicco\Core\Factories\RouteActionFactory;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Factories\RouteConditionFactory;
-use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\Contracts\RouteCollectionInterface;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
-use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
+use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
+use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
 {
@@ -83,12 +83,12 @@ class MiddlewareServiceProvider extends ServiceProvider
             'admin' => [],
             'api' => [],
         ]);
-    
+        
         $this->config->extend(
             'middleware.priority',
             [Secure::class, Www::class, TrailingSlash::class,]
         );
-    
+        
         /** @todo maybe make this configurable per group */
         $this->config->extend('middleware.always_run_core_groups', false);
     }
@@ -118,8 +118,8 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindEvaluateResponseMiddleware()
     {
-        $this->container->singleton(EvaluateResponseMiddleware::class, function () {
-            return new EvaluateResponseMiddleware(
+        $this->container->singleton(EvaluateResponseAbstractMiddleware::class, function () {
+            return new EvaluateResponseAbstractMiddleware(
                 $this->config->get('routing.must_match_web_routes', false)
             );
         });
@@ -158,8 +158,8 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindOutputBufferMiddleware()
     {
-        $this->container->singleton(OutputBufferMiddleware::class, function () {
-            return new OutputBufferMiddleware(
+        $this->container->singleton(OutputBufferAbstractMiddleware::class, function () {
+            return new OutputBufferAbstractMiddleware(
                 $this->container->get(ResponseEmitter::class),
                 $this->container->get(StreamFactoryInterface::class)
             );
@@ -214,8 +214,8 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindRoutingMiddleware()
     {
-        $this->container->singleton(RoutingMiddleware::class, function () {
-            return new RoutingMiddleware(
+        $this->container->singleton(RoutingAbstractMiddleware::class, function () {
+            return new RoutingAbstractMiddleware(
                 $this->container[RouteCollectionInterface::class],
                 $this->container[RouteConditionFactory::class]
             );

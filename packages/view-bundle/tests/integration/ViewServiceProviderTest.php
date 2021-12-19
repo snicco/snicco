@@ -8,14 +8,12 @@ use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
-use Snicco\ViewBundle\ViewResponseFactory;
+use Snicco\Core\Contracts\TemplateRenderer;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Snicco\Core\Contracts\CreatesHtmlResponse;
-use Snicco\ViewBundle\ResponseFactoryWithViews;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Implementations\PHPViewFactory;
+use Snicco\ViewBundle\ViewEngineTemplateRenderer;
 use Snicco\ViewBundle\ViewBasedHtmlErrorRenderer;
 use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\View\fixtures\ViewComposers\FooComposer;
@@ -126,26 +124,14 @@ class ViewServiceProviderTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function the_response_factory_is_replaced()
+    public function the_template_renderer_is_bound()
     {
         $this->bootApp();
-        $this->assertInstanceOf(
-            ResponseFactoryWithViews::class,
-            $f1 = $this->app->resolve(ResponseFactory::class)
-        );
         
         $this->assertInstanceOf(
-            ResponseFactoryWithViews::class,
-            $f2 = $this->app->resolve(ViewResponseFactory::class)
+            ViewEngineTemplateRenderer::class,
+            $f2 = $this->app->resolve(TemplateRenderer::class)
         );
-        
-        $this->assertInstanceOf(
-            ResponseFactoryWithViews::class,
-            $f3 = $this->app->resolve(CreatesHtmlResponse::class)
-        );
-        
-        $this->assertSame($f1, $f2);
-        $this->assertSame($f1, $f3);
     }
     
     /** @test */

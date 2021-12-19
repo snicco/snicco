@@ -7,16 +7,16 @@ namespace Snicco\Core\ExceptionHandling;
 use Closure;
 use Throwable;
 use RuntimeException;
-use Snicco\Core\Support\WP;
 use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
+use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Traits\ReflectsCallable;
+use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
-use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
@@ -166,7 +166,6 @@ class ProductionExceptionHandler implements ExceptionHandler
             
             return array_filter([
                 'user_id' => $auth ? WP::userId() : null,
-                'user_email' => $auth ? WP::currentUser()->user_email : null,
             ]);
         } catch (Throwable $e) {
             // If we have a fatal error WordPress might not be fully booted yet,

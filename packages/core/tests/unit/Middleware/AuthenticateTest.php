@@ -54,14 +54,18 @@ class AuthenticateTest extends MiddlewareTestCase
     {
         WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
         WP::shouldReceive('loginUrl')
-          ->andReturnUsing(fn($redirect_to) => 'https://foo.com/login?redirect_to='.$redirect_to);
+          ->andReturnUsing(function ($redirect_to) {
+              return 'https://foo.com/login?redirect_to='.urlencode($redirect_to);
+          }
+          );
         
-        $enc = urlencode('üäö');
-        $request = $this->frontendRequest('GET', 'https://foo.com/'.$enc.'?param=1');
+        $request = $this->frontendRequest('GET', 'https://foo.com/üäö?param=1');
+        
+        $current = $request->getUri()->__toString();
         
         $response = $this->runMiddleware(new Authenticate(), $request);
         
-        $expected = '/login?redirect_to=/'.$enc.'?param=1';
+        $expected = 'https://foo.com/login?redirect_to='.urlencode($current);
         
         $response->assertLocation($expected);
     }
@@ -78,7 +82,7 @@ class AuthenticateTest extends MiddlewareTestCase
             $this->frontendRequest('GET', '/foo')
         );
         
-        $response->assertLocation('/login?redirect_to=/my-custom-login');
+        $response->assertLocation('https://foo.com/login?redirect_to=/my-custom-login');
     }
     
     /** @test */

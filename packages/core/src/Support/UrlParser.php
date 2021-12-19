@@ -36,13 +36,20 @@ class UrlParser
             
             $url = $before.Str::replaceFirst($column, '', $rest);
         }
-        
+    
         return $url;
     }
     
     public static function requiredSegments(string $url_pattern) :array
     {
         preg_match_all('/[^{]+\w(?=})/', $url_pattern, $matches);
+        
+        return Arr::flattenOnePreserveKeys($matches);
+    }
+    
+    public static function optionalSegments(string $url_pattern) :array
+    {
+        preg_match_all('/[^{]\w+(?=\?})/', $url_pattern, $matches);
         
         return Arr::flattenOnePreserveKeys($matches);
     }

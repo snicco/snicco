@@ -8,12 +8,12 @@ use RuntimeException;
 use Snicco\Support\Str;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
-abstract class Payload extends Middleware
+abstract class Payload extends AbstractMiddleware
 {
     
     protected array $content_types;

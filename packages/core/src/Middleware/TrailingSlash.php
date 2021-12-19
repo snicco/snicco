@@ -8,13 +8,16 @@ use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
-class TrailingSlash extends Middleware
+class TrailingSlash extends AbstractMiddleware
 {
     
-    private bool $trailing_slash;
+    /**
+     * @var bool
+     */
+    private $trailing_slash;
     
     public function __construct(bool $trailing_slash = true)
     {
@@ -41,7 +44,7 @@ class TrailingSlash extends Middleware
             ? Url::addTrailing($path)
             : Url::removeTrailing($path);
         
-        return $this->response_factory->redirect($redirect_to, 301);
+        return $this->redirect()->to($redirect_to, 301);
     }
     
 }

@@ -6,7 +6,7 @@ namespace Snicco\SessionBundle\Middleware;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Session\ValueObjects\CsrfToken;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
@@ -19,7 +19,7 @@ use function Snicco\SessionBundle\getReadSession;
 /**
  * @interal
  */
-final class VerifyCsrfToken extends Middleware
+final class VerifyCsrfToken extends AbstractMiddleware
 {
     
     /**

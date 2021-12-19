@@ -6,10 +6,10 @@ namespace Tests\Core\integration\Routing;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 
@@ -82,15 +82,15 @@ class ApiRoutesTest extends FrameworkTestCase
         $this->withAddedConfig(
             [
                 'middleware.groups' => [
-                    'api' => [TestApiMiddleware::class],
+                    'api' => [TestApiAbstractMiddleware::class],
                 ],
             ]
         );
         $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
         $this->bootApp();
         $this->swap(
-            TestApiMiddleware::class,
-            new TestApiMiddleware($this->app->resolve(ResponseFactory::class))
+            TestApiAbstractMiddleware::class,
+            new TestApiAbstractMiddleware($this->app->resolve(ResponseFactory::class))
         );
         
         do_action('init');
@@ -125,10 +125,10 @@ class ApiRoutesTest extends FrameworkTestCase
     
 }
 
-class TestApiMiddleware extends Middleware
+class TestApiAbstractMiddleware extends AbstractMiddleware
 {
     
-    public function __construct(BaseResponseFactory $factory)
+    public function __construct(DefaultResponseFactory $factory)
     {
         $this->factory = $factory;
     }

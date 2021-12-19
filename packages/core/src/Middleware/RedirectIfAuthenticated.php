@@ -6,34 +6,38 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
-class RedirectIfAuthenticated extends Middleware
+class RedirectIfAuthenticated extends AbstractMiddleware
 {
     
-    private ?string $url;
+    private ?string $path;
     
-    public function __construct(string $url = null)
+    public function __construct(string $path = null)
     {
-        $this->url = $url;
+        $this->path = $path;
     }
     
     public function handle(Request $request, $next) :ResponseInterface
     {
         if (WP::isUserLoggedIn()) {
             if ($request->isExpectingJson()) {
-                return $this->response_factory
-                    ->json(['message' => 'Only guests can access this route.'])
-                    ->withStatus(403);
+                return $this->respond()
+                            ->json(['message' => 'Only guests can access this route.'], 403);
             }
             
-            if ($this->url) {
-                return $this->response_factory->redirect()
-                                              ->to($this->url);
+            if ($this->path) {
+                return $this->redirect()->to($this->path);
             }
-            
-            return $this->response_factory->redirect()->toRoute('dashboard');
+            else {
+                try {
+                    return $this->redirect()->toRoute('dashboard');
+                } catch (RouteNotFound $e) {
+                    return $this->redirect()->home();
+                }
+            }
         }
         
         return $next($request);

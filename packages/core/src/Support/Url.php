@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Support;
 
-use Snicco\Support\Arr;
 use Snicco\Support\Str;
 
 class Url
@@ -36,7 +35,7 @@ class Url
         return '/'.ltrim($url, '/');
     }
     
-    public static function isValidAbsolute($path) :bool
+    public static function isValidAbsolute(string $path) :bool
     {
         if ( ! preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path)) {
             return filter_var($path, FILTER_VALIDATE_URL) !== false;
@@ -48,25 +47,6 @@ class Url
     public static function removeTrailing(string $path) :string
     {
         return rtrim($path, '/');
-    }
-    
-    /**
-     * Rebuilds an url from scratch and fixes encoding mistakes in the query and path.
-     *
-     * @param  string  $url
-     *
-     * @return string
-     */
-    public static function rebuild(string $url) :string
-    {
-        $parts = parse_url($url);
-        
-        if (isset($parts['query'])) {
-            parse_str($parts['query'], $query);
-            $parts['query'] = Arr::query($query);
-        }
-        
-        return self::unParseUrl($parts);
     }
     
     /**

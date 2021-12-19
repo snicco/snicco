@@ -9,7 +9,7 @@ use Snicco\Support\Arr;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Contracts\Condition;
 use Snicco\Core\Routing\ConditionBlueprint;
-use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Controllers\FallBackAbstractController;
 
 trait SetsRouteAttributes
 {
@@ -89,7 +89,7 @@ trait SetsRouteAttributes
     
     public function noAction() :Route
     {
-        $this->handle([FallBackController::class, 'delegate']);
+        $this->handle([FallBackAbstractController::class, 'delegate']);
         return $this;
     }
     
@@ -107,8 +107,10 @@ trait SetsRouteAttributes
     {
         $regex_array = $this->normalizeRegex($regex);
         
-        $this->regex[] = $regex_array;
-        
+        // @todo exception if already exists.
+        foreach ($regex_array as $param_name => $pattern) {
+            $this->regex[$param_name] = $pattern;
+        }
         return $this;
     }
     

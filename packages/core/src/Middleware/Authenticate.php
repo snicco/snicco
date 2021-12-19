@@ -6,17 +6,17 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
-class Authenticate extends Middleware
+class Authenticate extends AbstractMiddleware
 {
     
-    private ?string $url;
+    private ?string $path;
     
-    public function __construct(?string $url = null)
+    public function __construct(?string $path = null)
     {
-        $this->url = $url;
+        $this->path = $path;
     }
     
     public function handle(Request $request, $next) :ResponseInterface
@@ -26,14 +26,15 @@ class Authenticate extends Middleware
         }
         
         if ($request->isExpectingJson()) {
-            return $this->response_factory
-                ->json('Authentication Required')
-                ->withStatus(401);
+            return $this->respond()
+                        ->json('Authentication Required', 401);
         }
         
-        $redirect_after_login = $this->url ?? $request->fullRequestTarget();
+        $redirect_after_login = $this->path ?? $request->getUri()->__toString();
         
-        return $this->response_factory->redirect()->toLogin($redirect_after_login, true);
+        $location = WP::loginUrl($redirect_after_login, true);
+        
+        return $this->respond()->redirect($location);
     }
     
 }

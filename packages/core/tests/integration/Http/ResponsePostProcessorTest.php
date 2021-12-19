@@ -3,8 +3,8 @@
 namespace Tests\Core\integration\Http;
 
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 
 class ResponsePostProcessorTest extends FrameworkTestCase
@@ -20,7 +20,7 @@ class ResponsePostProcessorTest extends FrameworkTestCase
     /** @test */
     public function the_script_is_always_terminated_after_a_redirect_response()
     {
-        $response = $this->responseFactory()->redirect()->to('foo');
+        $response = $this->responseFactory()->redirect('/foo');
         
         $this->dispatcher->dispatch(new ResponseSent($response, $this->request));
         

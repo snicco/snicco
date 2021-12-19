@@ -8,15 +8,15 @@ use Snicco\Session\Session;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\AuthSessionManager;
-use Snicco\Core\Contracts\Middleware;
 use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
-class AuthenticateSession extends Middleware
+class AuthenticateSession extends AbstractMiddleware
 {
     
     private array              $forget_keys_on_idle;

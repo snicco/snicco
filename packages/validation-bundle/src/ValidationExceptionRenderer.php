@@ -7,6 +7,9 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Validation\Exceptions\ValidationException;
 
+/**
+ * @todo refactor
+ */
 class ValidationExceptionRenderer
 {
     
@@ -29,8 +32,8 @@ class ValidationExceptionRenderer
             
             ], $exception->httpStatusCode());
         }
-        
-        $response = $this->response_factory->redirect()->previous();
+    
+        $response = $this->response_factory->redirect()->back();
         
         // It's possible to use the validation extension without the session extension.
         if ( ! $response->hasSession()) {

@@ -6,8 +6,8 @@ use Mockery;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Http\ResponsePreparation;
-use Snicco\Core\EventDispatcher\Events\AdminInit;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Core\EventDispatcher\Events\AdminInit;
 
 class AdminRoutesTest extends FrameworkTestCase
 {

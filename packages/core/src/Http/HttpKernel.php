@@ -14,12 +14,12 @@ use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Http\Responses\DelegatedResponse;
-use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
-use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
+use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
+use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 class HttpKernel
 {
@@ -29,11 +29,11 @@ class HttpKernel
     private array $core_middleware = [
         SetRequestAttributes::class,
         MethodOverride::class,
-        EvaluateResponseMiddleware::class,
+        EvaluateResponseAbstractMiddleware::class,
         ShareCookies::class,
         AllowMatchingAdminAndAjaxRoutes::class,
-        OutputBufferMiddleware::class,
-        RoutingMiddleware::class,
+        OutputBufferAbstractMiddleware::class,
+        RoutingAbstractMiddleware::class,
         RouteRunner::class,
     ];
     
@@ -65,7 +65,7 @@ class HttpKernel
     private function gatherMiddleware(Request $request) :array
     {
         if ( ! $request->isWpAdmin()) {
-            Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
+            Arr::pullByValue(OutputBufferAbstractMiddleware::class, $this->core_middleware);
         }
         
         return $this->core_middleware;
