@@ -6,8 +6,6 @@ namespace Snicco\Core\Routing;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\MagicLink;
-use Snicco\Core\Http\DatabaseMagicLink;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\RouteUrlMatcher;
 use Snicco\Core\Contracts\ServiceProvider;
@@ -33,7 +31,7 @@ class RoutingServiceProvider extends ServiceProvider
     /**
      * @var array<string, string>
      */
-    public const CONDITION_TYPES = [
+    const CONDITION_TYPES = [
         'custom' => CustomCondition::class,
         'negate' => NegateCondition::class,
         'post_id' => PostIdCondition::class,
@@ -57,8 +55,6 @@ class RoutingServiceProvider extends ServiceProvider
         $this->bindRouter();
         
         $this->bindRouteUrlGenerator();
-        
-        $this->bindMagicLink();
         
         $this->bindUrlGenerator();
         
@@ -134,26 +130,11 @@ class RoutingServiceProvider extends ServiceProvider
         });
     }
     
-    private function bindMagicLink()
-    {
-        $this->container->singleton(MagicLink::class, function () {
-            if ($this->app->isRunningUnitTest()) {
-                return new InMemoryMagicLink();
-            }
-            
-            $magic_link = new DatabaseMagicLink('magic_links');
-            $magic_link->setAppKey($this->appKey());
-            
-            return $magic_link;
-        });
-    }
-    
     private function bindUrlGenerator() :void
     {
         $this->container->singleton(UrlGenerator::class, function () {
             $generator = new UrlGenerator(
                 $this->container->get(RouteUrlGenerator::class),
-                $this->container->get(MagicLink::class),
                 $this->withSlashes(),
             );
             

@@ -237,8 +237,6 @@ class RoutingTestCase extends UnitTest
             new FastRouteUrlGenerator($this->routes)
         );
         
-        $this->container->instance(MagicLink::class, $magic_link = new InMemoryMagicLink());
-        
         $this->container->instance(
             ViewEngine::class,
             $this->view_engine = new ViewEngine(new TestViewFactory())
@@ -248,7 +246,6 @@ class RoutingTestCase extends UnitTest
             UrlGenerator::class,
             new UrlGenerator(
                 $this->container[RouteUrlGenerator::class],
-                $magic_link
             )
         );
         
