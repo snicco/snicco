@@ -8,27 +8,27 @@ use Mockery;
 use Exception;
 use Whoops\Run;
 use RuntimeException;
-use Snicco\Core\Support\WP;
 use Psr\Log\NullLogger;
 use Snicco\Support\Arr;
+use Snicco\Core\Support\WP;
+use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Testing\TestResponse;
-use Snicco\Core\Routing\UrlGenerator;
+use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Application\Application;
-use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Contracts\ResponseFactory;
-use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Core\ExceptionHandling\WhoopsHandler;
-use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Codeception\shared\helpers\CreateContainer;
+use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Tests\Codeception\shared\helpers\CreateRouteCollection;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Core\ExceptionHandling\PlainTextHtmlErrorRenderer;
-use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Tests\Codeception\shared\helpers\CreateRouteCollection;
 
 class ProductionExceptionHandlerRenderingTest extends UnitTest
 {
@@ -52,7 +52,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         parent::setUp();
         $this->container = $this->createContainer();
         $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(BaseResponseFactory::class, $this->createResponseFactory());
+        $this->container->instance(DefaultResponseFactory::class, $this->createResponseFactory());
         $this->container->instance(
             HtmlErrorRender::class,
             new PlainTextHtmlErrorRenderer()
@@ -180,7 +180,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = new fixtures\TestExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[BaseResponseFactory::class]
+            $this->container[DefaultResponseFactory::class]
         );
         
         $response = new TestResponse(
@@ -202,7 +202,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = $this->newErrorHandler();
         
         $handler->renderable(
-            function (fixtures\RenderableException $e, Request $request, BaseResponseFactory $response_factory) {
+            function (fixtures\RenderableException $e, Request $request, DefaultResponseFactory $response_factory) {
                 return $response_factory->html('FOO_CUSTOMIZED')->withStatus(403);
             }
         );
@@ -306,14 +306,14 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         return new ProductionExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[BaseResponseFactory::class],
+            $this->container[DefaultResponseFactory::class],
             $debug_mode ? $this->getWhoops() : null
         );
     }
     
     private function newUrlGenerator()
     {
-        return Mockery::mock(UrlGenerator::class);
+        return Mockery::mock(UrlGeneratorInterface::class);
     }
     
     private function getWhoops()

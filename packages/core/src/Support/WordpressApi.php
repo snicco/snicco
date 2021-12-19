@@ -7,6 +7,9 @@ namespace Snicco\Core\Support;
 use WP_User;
 use BadMethodCallException;
 
+use function admin_url;
+use function wp_login_url;
+
 /**
  * @codeCoverageIgnore
  */

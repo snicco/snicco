@@ -254,7 +254,12 @@ class Response implements ResponseInterface
         $this->cookies = clone $this->cookies;
     }
     
-    protected function new(ResponseInterface $new_psr_response) :Response
+    /**
+     * @param  ResponseInterface  $new_psr_response
+     *
+     * @return static
+     */
+    protected function new(ResponseInterface $new_psr_response) :self
     {
         $new = clone $this;
         $new->psr7_response = $new_psr_response;

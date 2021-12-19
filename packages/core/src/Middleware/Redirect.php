@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Arr;
@@ -7,13 +9,16 @@ use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
-class Redirect extends Middleware
+class Redirect extends AbstractMiddleware
 {
     
-    private array $redirects;
+    /**
+     * @var array
+     */
+    private $redirects;
     
     public function __construct(array $redirects = [], string $cache_file = null)
     {
@@ -40,7 +45,7 @@ class Redirect extends Middleware
         if ($redirect = Arr::get($this->redirects, trim($path, '/'))) {
             $location = $this->formatLocation($redirect['to'], $path);
             
-            return $this->response_factory->redirect()->to($location, $redirect['status']);
+            return $this->redirect()->to($location, $redirect['status']);
         }
         
         return $next($request);

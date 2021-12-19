@@ -7,7 +7,7 @@ namespace Snicco\SessionBundle\Middleware;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\View\GlobalViewContext;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
 use function Snicco\SessionBundle\getReadSession;
@@ -15,7 +15,7 @@ use function Snicco\SessionBundle\getReadSession;
 /**
  * @interal
  */
-final class ShareSessionWithViews extends Middleware
+final class ShareSessionWithViews extends AbstractMiddleware
 {
     
     /**

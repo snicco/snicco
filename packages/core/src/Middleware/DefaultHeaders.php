@@ -6,10 +6,10 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
-class DefaultHeaders extends Middleware
+class DefaultHeaders extends AbstractMiddleware
 {
     
     private array $default_headers;

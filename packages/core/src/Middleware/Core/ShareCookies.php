@@ -7,10 +7,10 @@ namespace Snicco\Core\Middleware\Core;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
-class ShareCookies extends Middleware
+class ShareCookies extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

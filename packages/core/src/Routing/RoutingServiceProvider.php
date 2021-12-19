@@ -11,18 +11,18 @@ use Snicco\Core\Contracts\RouteUrlMatcher;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
-use Snicco\Core\Contracts\RouteUrlGenerator;
 use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Snicco\Core\Contracts\RouteCollectionInterface;
 use Snicco\Core\Routing\Conditions\CustomCondition;
 use Snicco\Core\Routing\Conditions\NegateCondition;
 use Snicco\Core\Routing\Conditions\PostIdCondition;
+use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
 use Snicco\Core\Routing\Conditions\PostSlugCondition;
 use Snicco\Core\Routing\Conditions\PostTypeCondition;
 use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
 use Snicco\Core\Routing\Conditions\PostStatusCondition;
 use Snicco\Core\Routing\Conditions\QueryStringCondition;
-use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
 use Snicco\Core\Routing\Conditions\PostTemplateCondition;
 
 class RoutingServiceProvider extends ServiceProvider
@@ -53,8 +53,6 @@ class RoutingServiceProvider extends ServiceProvider
         $this->bindRouteCollection();
         
         $this->bindRouter();
-        
-        $this->bindRouteUrlGenerator();
         
         $this->bindUrlGenerator();
         
@@ -123,24 +121,22 @@ class RoutingServiceProvider extends ServiceProvider
         });
     }
     
-    private function bindRouteUrlGenerator() :void
-    {
-        $this->container->singleton(RouteUrlGenerator::class, function () {
-            return new FastRouteUrlGenerator($this->container[RouteCollectionInterface::class]);
-        });
-    }
-    
     private function bindUrlGenerator() :void
     {
-        $this->container->singleton(UrlGenerator::class, function () {
-            $generator = new UrlGenerator(
-                $this->container->get(RouteUrlGenerator::class),
+        $this->container->singleton(UrlGeneratorInterface::class, function () {
+            /** @var Request $request */
+            $request = $this->container[Request::class];
+            
+            $context = new UrlGenerationContext(
+                $request,
                 $this->withSlashes(),
             );
             
-            $generator->setRequestResolver(fn() => $this->container->get(Request::class));
-            
-            return $generator;
+            return new UrlGenerator(
+                $this->container[RouteCollectionInterface::class],
+                $context,
+                new RFC3986Encoder()
+            );
         });
     }
     

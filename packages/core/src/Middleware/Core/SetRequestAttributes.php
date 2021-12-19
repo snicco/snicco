@@ -7,10 +7,10 @@ namespace Snicco\Core\Middleware\Core;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
-class SetRequestAttributes extends Middleware
+class SetRequestAttributes extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

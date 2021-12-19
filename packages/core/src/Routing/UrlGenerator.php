@@ -5,242 +5,322 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Snicco\Support\Str;
-use Snicco\Support\Arr;
-use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\RouteUrlGenerator;
-use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Core\Support\UrlParser;
+use Snicco\Core\Contracts\UrlEncoder;
+use Snicco\Core\Contracts\HasCustomRoutePath;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Core\ExceptionHandling\Exceptions\BadRouteParameter;
 
-class UrlGenerator
+final class UrlGenerator implements UrlGeneratorInterface
 {
     
-    /**
-     * @var bool
-     */
-    private $trailing_slash;
+    private const FRAGMENT_KEY = '_fragment';
     
     /**
-     * @var RouteUrlGenerator
+     * @var RouteCollectionInterface
      */
-    private $route_url;
+    private $routes;
     
     /**
-     * @var callable
+     * @var UrlGenerationContext
      */
-    private $request_resolver;
-    
-    public function __construct(RouteUrlGenerator $route_url, bool $trailing_slash = false)
-    {
-        $this->route_url = $route_url;
-        $this->trailing_slash = $trailing_slash;
-    }
-    
-    public function setRequestResolver(callable $request_resolver)
-    {
-        $this->request_resolver = $request_resolver;
-    }
+    private $context;
     
     /**
-     * @todo this will fail if auth package is not used.
+     * @var UrlEncoder
      */
-    public function signedLogout(?int $user_id = null, string $redirect_on_logout = '/', int $expiration = 3600, bool $absolute = true) :string
+    private $encoder;
+    
+    public function __construct(RouteCollectionInterface $routes, UrlGenerationContext $request_context, UrlEncoder $encoder)
     {
-        $args = [
-            'user_id' => $user_id ?? WP::userId(),
-            'query' => [
-                'redirect_to' => $redirect_on_logout,
-            ],
-        ];
-        
-        return $this->signedRoute('auth.logout', $args, $expiration, $absolute);
+        $this->routes = $routes;
+        $this->context = $request_context;
+        $this->encoder = $encoder;
     }
     
-    public function signedRoute(string $route, array $arguments = [], $expiration = 300, bool $absolute = false) :string
+    public function toRoute(string $name, array $arguments = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
     {
-        $query = Arr::pull($arguments, 'query', []);
+        $route = $this->routes->findByName($name);
         
-        // signed() needs a path, so don't use absolute urls here.
-        $route_path = $this->toRoute($route, $arguments, true, false);
-        
-        return $this->signed($route_path, $expiration, $absolute, $query);
-    }
-    
-    /**
-     * @throws ConfigurationException
-     */
-    public function toRoute(string $name, array $arguments = [], bool $secure = true, bool $absolute = false) :string
-    {
-        $query = Arr::pull($arguments, 'query', []);
-        
-        $path = $this->route_url->to($name, $arguments);
-        
-        return $this->to($path, $query, $secure, $absolute);
-    }
-    
-    public function to(string $path, array $query = [], $secure = true, bool $absolute = false) :string
-    {
-        if (Url::isValidAbsolute($path)) {
-            return $this->formatAbsolute($this->formatTrailing($path), $absolute);
+        if ( ! $route) {
+            throw RouteNotFound::name($name);
         }
         
-        $root = $this->formatRoot($this->formatScheme($secure));
-        
-        $url = $this->format($root, $path);
-        
-        $fragment = $this->removeFragment($url);
-        
-        $url = $this->formatTrailing($url);
-        $url = $this->addQueryString($url, $query);
-        
-        $url = is_null($fragment) ? $url : $url."#{$fragment}";
-        
-        return $this->formatAbsolute($url, $absolute);
-    }
-    
-    public function getRequest() :Request
-    {
-        return call_user_func($this->request_resolver);
-    }
-    
-    public function signed(string $path, $expiration = 300, $absolute = false, $query = []) :string
-    {
-        if (Url::isValidAbsolute($path)) {
-            throw new ConfigurationException('Signed urls do not work with absolute urls.');
+        if ($route instanceof HasCustomRoutePath) {
+            $route_path = $route->toPath($this->encoder, $arguments);
+        }
+        else {
+            $route_path = $route->getUrl();
         }
         
-        $expires = $this->availableAt($expiration);
+        $required_segments = UrlParser::requiredSegments($route_path);
+        $optional_segments = UrlParser::optionalSegments($route_path);
+        $requirements = $route->getRegex();
         
-        $query = array_merge(['expires' => $expires], $query);
+        // All arguments that are not route segments will be used as query arguments.
+        $extra = array_diff_key($arguments, array_flip(UrlParser::segmentNames($route_path)));
         
-        $url_with_expired_query_string = $this->to($path, $query, true, $absolute);
-        
-        $signature = $this->magic_link->create(
-            $url_with_expired_query_string,
-            $expires,
-            $this->getRequest()
+        $route_path = $this->replaceSegments(
+            $required_segments,
+            $requirements,
+            $arguments,
+            $route_path,
+            $name,
+        );
+        $route_path = $this->replaceSegments(
+            $optional_segments,
+            $requirements,
+            $arguments,
+            $route_path,
+            $name,
+            true
         );
         
-        return $this->to(
-            $path,
-            array_merge($query, [MagicLink::QUERY_STRING_ID => $signature]),
-            true,
-            $absolute
+        return $this->generate($route_path, $extra, $type, $secure);
+    }
+    
+    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
+    {
+        if (Url::isValidAbsolute($path)) {
+            return $path;
+        }
+        
+        return $this->generate($path, $extra, $type, $secure);
+    }
+    
+    public function secure(string $path, array $extra = []) :string
+    {
+        return $this->to($path, $extra, self::ABSOLUTE_URL, true);
+    }
+    
+    public function canonical() :string
+    {
+        return $this->generate(
+            $this->context->path(),
+            [],
+            self::ABSOLUTE_URL,
+            null,
+            false
         );
     }
     
-    public function secure(string $path, array $query = []) :string
+    public function full() :string
     {
-        return $this->to($path, $query, true, true);
+        return $this->context->uriAsString();
     }
     
-    public function back(string $fallback = '') :string
+    public function previous(string $fallback = '/') :string
     {
-        $referrer = $this->getRequest()->getHeaderLine('referer');
+        $referer = $this->context->referer();
         
-        if ($referrer !== '') {
-            return $this->to($referrer, [], true, Url::isValidAbsolute($referrer));
-        }
-        elseif ($fallback !== '') {
-            return $this->to($fallback);
+        if ( ! $referer) {
+            return $this->generate($fallback, [], self::ABSOLUTE_URL);
         }
         
-        return $this->to('/');
+        return $referer;
     }
     
-    public function current() :string
+    private function generate(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null, bool $encode_path = true) :string
     {
-        return $this->getRequest()->fullRequestTarget();
-    }
-    
-    public function toLogin(string $redirect_on_login = '', bool $reauth = false) :string
-    {
-        return $this->to(WP::loginUrl($redirect_on_login, $reauth));
-    }
-    
-    private function formatAbsolute(string $url, $absolute) :string
-    {
-        $host = parse_url($url)['host'];
+        [$path, $existing_query, $existing_fragment] = $this->splitUserPath($path);
         
-        if ( ! $absolute) {
-            return '/'.ltrim(Str::after($url, $host), '/');
+        $path = $encode_path
+            ? $this->encoder->encodePath($path)
+            : $path;
+        
+        $path = $this->formatPath($path);
+        
+        $extra_fragment = '';
+        if (isset($extra[self::FRAGMENT_KEY])) {
+            $extra_fragment = trim($extra[self::FRAGMENT_KEY], '#');
+            unset($extra[self::FRAGMENT_KEY]);
         }
         
-        return $url;
-    }
-    
-    private function formatTrailing(string $path) :string
-    {
-        $parts = parse_url($path);
+        $query_string = $this->buildQueryString($extra, $existing_query);
+        $fragment = $this->buildFragment($existing_fragment, $extra_fragment);
         
-        $parts['path'] =
-            $this->trailing_slash ? rtrim($parts['path'] ?? '/', '/').'/' : $parts['path'] ?? '/';
-        
-        if (strpos($parts['path'], '.php')) {
-            $parts['path'] = rtrim($parts['path'], '/');
+        if ($type != self::ABSOLUTE_URL && $this->needsUpgradeToAbsoluteHttps($secure)) {
+            $type = self::ABSOLUTE_URL;
         }
         
-        return Url::unParseUrl($parts);
+        $target = $path.$query_string.$fragment;
+        
+        if ($type === self::ABSOLUTE_PATH) {
+            return $target;
+        }
+        
+        $scheme = $this->requiredScheme($secure);
+        
+        return $scheme.'://'.$this->formatType($target, $type, $scheme);
     }
     
-    private function formatRoot(string $scheme, string $root = null) :string
+    private function formatType(string $valid_url_or_path, int $type, string $scheme) :string
     {
-        if (is_null($root)) {
-            $request = $this->getRequest();
+        $is_url = Str::startsWith($valid_url_or_path, 'http');
+        
+        if ($is_url) {
+            if ($type === self::ABSOLUTE_URL) {
+                return $valid_url_or_path;
+            }
             
-            $uri = $request->getUri();
-            
-            $root = $uri->getScheme().'://'.$uri->getHost();
+            $path = Str::after($valid_url_or_path, $this->context->getHost());
+            return '/'.ltrim($path, '/');
         }
         
-        $start = Str::startsWith($root, 'http://') ? 'http://' : 'https://';
+        if ($type === self::ABSOLUTE_PATH) {
+            return $valid_url_or_path;
+        }
         
-        return rtrim(preg_replace('~'.$start.'~', $scheme, $root, 1), '/');
+        $port = '';
+        
+        if ($scheme === 'https') {
+            if ($this->context->getHttpsPort() !== 443) {
+                $port = ':'.$this->context->getHttpsPort();
+            }
+        }
+        elseif ($scheme === 'http') {
+            if ($this->context->getHttpPort() !== 80) {
+                $port = ':'.$this->context->getHttpPort();
+            }
+        }
+        
+        return $this->context->getHost().$port.$valid_url_or_path;
     }
     
-    private function formatScheme($secure) :string
+    private function requiredScheme(?bool $secure = null) :string
     {
-        return $secure ? 'https://' : 'http://';
+        if ( ! is_null($secure)) {
+            return $secure ? 'https' : 'http';
+        }
+        
+        if ($this->context->shouldForceHttps()) {
+            return 'https';
+        }
+        
+        return $this->context->getScheme();
     }
     
-    private function format(string $root, string $path) :string
+    private function buildQueryString(array $extra_query_args, string $existing_query_string) :string
     {
-        $parts = explode('#', $path);
+        parse_str($existing_query_string, $existing_query);
         
-        [$path, $fragment] = [$parts[0], isset($parts[1]) ? '#'.$parts[1] : ''];
+        $query = array_merge((array) $existing_query, $extra_query_args);
         
+        if ($query === []) {
+            return '';
+        }
+        
+        return '?'.$this->encoder->encodeQuery($query);
+    }
+    
+    private function formatPath(string $path) :string
+    {
         $path = trim($path, '/');
-        $root = rtrim($root, '/');
         
-        $path = implode('/', array_map('rawurlencode', explode('/', $path)));
+        $path = '/'.$path;
         
-        return $root.'/'.$path.$fragment;
-    }
-    
-    private function removeFragment(string &$uri)
-    {
-        // If the URI has a fragment we will move it to the end of this URI since it will
-        // need to come after any query string that may be added to the URL else it is
-        // not going to be available. We will remove it then append it back on here.
-        if ( ! is_null($fragment = parse_url($uri, PHP_URL_FRAGMENT))) {
-            $uri = preg_replace('/#.*/', '', $uri);
+        if ( ! $this->context->withTrailingSlashes()) {
+            return $path;
         }
         
-        return $fragment;
+        if (Str::endsWith($path, '.php')) {
+            return $path;
+        }
+        return $path.'/';
     }
     
-    private function addQueryString(string $uri, array $query) :string
+    private function splitUserPath(string $path_with_query_and_fragment) :array
     {
-        $query = $this->buildQueryString($query);
+        $query_pos = strpos($path_with_query_and_fragment, '?');
+        $fragment_pos = strpos($path_with_query_and_fragment, '#');
         
-        $uri .= $query === '' ? '' : '?'.$query;
+        $path = $path_with_query_and_fragment;
+        $query_string = '';
+        $fragment = '';
         
-        return $uri;
+        if ($query_pos !== false) {
+            $path = substr($path_with_query_and_fragment, 0, $query_pos);
+            $query_string = substr($path_with_query_and_fragment, $query_pos + 1);
+        }
+        
+        if ($fragment_pos !== false) {
+            $path = substr($path_with_query_and_fragment, 0, $fragment_pos);
+            $fragment = substr($path_with_query_and_fragment, $fragment_pos + 1);
+        }
+        
+        return [
+            $path,
+            $query_string,
+            $fragment,
+        ];
     }
     
-    private function buildQueryString(array $query) :string
+    private function buildFragment(string $existing_fragment, string $extra_fragment) :string
     {
-        return trim(Arr::query($query), '&');
+        if ( ! empty($extra_fragment)) {
+            return '#'.$this->encoder->encodeFragment($extra_fragment);
+        }
+        
+        if ( ! empty($existing_fragment)) {
+            return '#'.$this->encoder->encodeFragment($existing_fragment);
+        }
+        
+        return '';
+    }
+    
+    private function needsUpgradeToAbsoluteHttps(?bool $secure) :bool
+    {
+        if ($secure === false) {
+            return false;
+        }
+        
+        if ($this->context->isSecure()) {
+            return false;
+        }
+        
+        if ($this->context->shouldForceHttps()) {
+            return true;
+        }
+        
+        return (bool) $secure;
+    }
+    
+    private function replaceSegments(array $segments, array $requirements, array $provided_arguments, string $route_path, string $name, bool $optional = false) :string
+    {
+        foreach ($segments as $segment) {
+            $has_value = array_key_exists($segment, $provided_arguments);
+            
+            if ( ! $has_value && ! $optional) {
+                throw BadRouteParameter::becauseRequiredParameterIsMissing(
+                    $segment,
+                    $name
+                );
+            }
+            
+            $replacement = $provided_arguments[$segment] ?? '';
+            
+            if ($has_value && array_key_exists($segment, $requirements)) {
+                $pattern = $requirements[$segment];
+                
+                if ( ! preg_match('/^'.$pattern.'$/', $replacement)) {
+                    throw BadRouteParameter::becauseRegexDoesntMatch(
+                        $replacement,
+                        $segment,
+                        $pattern,
+                        $name
+                    );
+                }
+            }
+            
+            $search = $optional ? '{'.$segment.'?}' : '{'.$segment.'}';
+            
+            $route_path = str_replace($search, $replacement, $route_path);
+        }
+        
+        return $route_path;
     }
     
 }

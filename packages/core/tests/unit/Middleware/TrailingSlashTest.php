@@ -5,31 +5,21 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Tests\Core\MiddlewareTestCase;
-use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Middleware\TrailingSlash;
-use Snicco\Core\Http\StatelessRedirector;
-use Snicco\Core\Routing\InMemoryMagicLink;
+use Snicco\Core\Http\DefaultResponseFactory;
 
 class TrailingSlashTest extends MiddlewareTestCase
 {
     
     public function testRedirectNoSlashToTrailingSlash()
     {
-        $this->response_factory = new BaseResponseFactory(
+        $this->response_factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            new StatelessRedirector(
-                $url = new UrlGenerator($this->routeUrlGenerator(), true),
-                $this->psrResponseFactory()
-            )
+            $this->newUrlGenerator(null, true)
         );
         
         $request = $this->frontendRequest('GET', 'https://foo.com/bar');
-        
-        $url->setRequestResolver(function () use ($request) {
-            return $request;
-        });
         
         $response = $this->runMiddleware(new TrailingSlash(true), $request);
         

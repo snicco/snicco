@@ -6,8 +6,9 @@ namespace Snicco\Core\Factories;
 
 use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Core\Support\ReflectionDependencies;
 use Psr\Container\NotFoundExceptionInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Support\ReflectionDependencies;
 
 class MiddlewareFactory
 {
@@ -29,10 +30,15 @@ class MiddlewareFactory
         }
         
         try {
-            return $this->container->get($middleware_class);
+            $middleware = $this->container->get($middleware_class);
         } catch (NotFoundExceptionInterface $e) {
-            return new $middleware_class;
+            $middleware = new $middleware_class;
         }
+        
+        if ($middleware instanceof AbstractMiddleware) {
+            $middleware->setContainer($this->container);
+        }
+        return $middleware;
     }
     
 }

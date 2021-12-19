@@ -9,10 +9,8 @@ use InvalidArgumentException;
 use Snicco\View\GlobalViewContext;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\CreatesHtmlResponse;
+use Snicco\Core\Contracts\TemplateRenderer;
 use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Contracts\ViewComposerFactory;
 use Snicco\View\Implementations\PHPViewFactory;
@@ -39,9 +37,7 @@ class ViewServiceProvider extends ServiceProvider
         
         $this->bindViewComposerCollection();
         
-        $this->bindResponseFactory();
-        
-        $this->bindCreateHtmlResponse();
+        $this->bindTemplateRenderer();
         
         $this->bindHtmlErrorRenderer();
         
@@ -109,24 +105,10 @@ class ViewServiceProvider extends ServiceProvider
         });
     }
     
-    private function bindResponseFactory()
+    private function bindTemplateRenderer()
     {
-        $this->container->singleton(ViewResponseFactory::class, function () {
-            return new ResponseFactoryWithViews(
-                $this->container[ViewEngine::class],
-                $this->container[BaseResponseFactory::class]
-            );
-        });
-        
-        $this->container->singleton(ResponseFactory::class, function () {
-            return $this->container[ViewResponseFactory::class];
-        });
-    }
-    
-    private function bindCreateHtmlResponse()
-    {
-        $this->container->singleton(CreatesHtmlResponse::class, function () {
-            return $this->container[ViewResponseFactory::class];
+        $this->container->singleton(TemplateRenderer::class, function () {
+            return new ViewEngineTemplateRenderer($this->container[ViewEngine::class]);
         });
     }
     

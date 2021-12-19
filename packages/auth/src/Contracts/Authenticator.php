@@ -7,12 +7,12 @@ namespace Snicco\Auth\Contracts;
 use WP_User;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\Responses\NullResponse;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 
-abstract class Authenticator extends Middleware
+abstract class Authenticator extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

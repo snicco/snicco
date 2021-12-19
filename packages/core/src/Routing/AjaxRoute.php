@@ -4,30 +4,25 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Support\Arr;
-use Snicco\Core\Contracts\ConvertsToUrl;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Contracts\HasCustomRoutePath;
 
-class AjaxRoute extends Route implements ConvertsToUrl
+class AjaxRoute extends Route implements HasCustomRoutePath
 {
     
-    public function toUrl(array $arguments = []) :string
+    public function toPath() :string
     {
         $methods = $this->getMethods();
         
-        $base_url = WP::adminUrl('admin-ajax.php');
+        $base_path = WP::wpAdminFolder().'/admin-ajax.php';
         
         if (in_array('GET', $methods, true)) {
-            $arguments = array_merge(
-                ['action' => Str::afterLast($this->getUrl(), '.php/')],
-                $arguments
-            );
-            
-            return $base_url.'?'.Arr::query($arguments);
+            $action = Str::afterLast($this->getUrl(), '.php/');
+            return $base_path.'?'.'action='.$action;
         }
         
-        return $base_url;
+        return $base_path;
     }
     
 }

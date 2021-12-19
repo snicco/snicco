@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\ViewBundle\integration;
 
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\ViewBundle\ViewResponseFactory;
+use Snicco\ViewBundle\TemplateRenderer;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 
@@ -13,14 +13,14 @@ final class ViewResponseFactoryTest extends FrameworkTestCase
 {
     
     /**
-     * @var ViewResponseFactory
+     * @var TemplateRenderer
      */
     private $factory;
     
     protected function setUp() :void
     {
         $this->afterApplicationBooted(function () {
-            $this->factory = $this->app->resolve(ViewResponseFactory::class);
+            $this->factory = $this->app->resolve(TemplateRenderer::class);
         });
         
         parent::setUp();

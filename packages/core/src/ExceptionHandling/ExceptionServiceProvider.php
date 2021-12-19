@@ -12,10 +12,10 @@ use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Routing\Pipeline;
 use Illuminate\Container\Container;
 use Whoops\Handler\HandlerInterface;
-use Snicco\Core\Contracts\Middleware;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
@@ -42,7 +42,7 @@ class ExceptionServiceProvider extends ServiceProvider
                 Pipeline::class,
                 Container::class,
                 Delegate::class,
-                Middleware::class,
+                AbstractMiddleware::class,
             ]
         );
     }

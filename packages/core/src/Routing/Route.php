@@ -16,6 +16,9 @@ use Snicco\Core\Traits\SetsRouteAttributes;
 use Snicco\Core\Factories\RouteActionFactory;
 use Snicco\Core\Factories\RouteConditionFactory;
 
+/**
+ * @todo refactor the url parsing out of this class
+ */
 class Route
 {
     

@@ -7,10 +7,10 @@ namespace Snicco\Core\Middleware;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
-class NoRobots extends Middleware
+class NoRobots extends AbstractMiddleware
 {
     
     private bool $archive;

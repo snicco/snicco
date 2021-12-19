@@ -36,52 +36,52 @@ use Snicco\Auth\Middleware\TwoFactorDisbaled;
 use Snicco\Auth\Listeners\RefreshAuthCookies;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Events\FailedAuthConfirmation;
-use Snicco\Auth\Controllers\AccountController;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Listeners\GenerateNewAuthCookie;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Responses\TwoFactorChallengeView;
-use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
-use Snicco\Auth\Controllers\RecoveryCodeController;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Responses\EmailAuthConfirmationVIew;
 use Snicco\Auth\Responses\EmailRegistrationViewView;
 use Snicco\Auth\Responses\TwoFactorConfirmationView;
-use Snicco\Auth\Controllers\ResetPasswordController;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 use Snicco\Auth\Responses\Google2FaChallengeResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
-use Snicco\Auth\Controllers\ForgotPasswordController;
-use Snicco\Auth\Controllers\LoginMagicLinkController;
+use Snicco\Auth\Controllers\AccountAbstractController;
 use Snicco\SessionBundle\Events\SessionWasRegenerated;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
-use Snicco\Auth\Controllers\WPLoginRedirectController;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
-use Snicco\Auth\Controllers\RegistrationLinkController;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
-use Snicco\Auth\Controllers\TwoFactorAuthSetupController;
+use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+use Snicco\Auth\Controllers\RecoveryCodeAbstractController;
 use Snicco\SessionBundle\Middleware\StartSessionMiddleware;
-use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
-use Snicco\Auth\Controllers\TwoFactorAuthSessionController;
+use Snicco\Auth\Controllers\ResetPasswordAbstractController;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
-use Snicco\Auth\Controllers\AuthConfirmationEmailController;
+use Snicco\Auth\Controllers\ForgotPasswordAbstractController;
+use Snicco\Auth\Controllers\LoginMagicLinkAbstractController;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
-use Snicco\Auth\Controllers\TwoFactorAuthPreferenceController;
-use Snicco\Auth\Controllers\Compat\PasswordResetEmailController;
+use Snicco\Auth\Controllers\WPLoginRedirectAbstractController;
+use Snicco\Auth\Controllers\RegistrationLinkAbstractController;
+use Snicco\Auth\Controllers\TwoFactorAuthSetupAbstractController;
+use Snicco\Auth\Controllers\ConfirmedAuthSessionAbstractController;
+use Snicco\Auth\Controllers\TwoFactorAuthSessionAbstractController;
+use Snicco\Auth\Controllers\AuthConfirmationEmailAbstractController;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
-use Snicco\Auth\Controllers\Compat\BulkPasswordResetEmailController;
+use Snicco\Auth\Controllers\TwoFactorAuthPreferenceAbstractController;
+use Snicco\Auth\Controllers\Compat\PasswordResetEmailAbstractController;
+use Snicco\Auth\Controllers\Compat\BulkPasswordResetEmailAbstractController;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -264,92 +264,92 @@ class AuthServiceProvider extends ServiceProvider
     
     private function bindControllers()
     {
-        $this->container->singleton(RegistrationLinkController::class, function () {
-            return new RegistrationLinkController();
+        $this->container->singleton(RegistrationLinkAbstractController::class, function () {
+            return new RegistrationLinkAbstractController();
         });
         
-        $this->container->singleton(AccountController::class, function () {
-            return new AccountController($this->container[Dispatcher::class]);
+        $this->container->singleton(AccountAbstractController::class, function () {
+            return new AccountAbstractController($this->container[Dispatcher::class]);
         });
         
-        $this->container->singleton(AuthConfirmationEmailController::class, function () {
-            return new AuthConfirmationEmailController(
+        $this->container->singleton(AuthConfirmationEmailAbstractController::class, function () {
+            return new AuthConfirmationEmailAbstractController(
                 $this->container[MailBuilderInterface::class],
                 $this->container[UrlGenerator::class],
             );
         });
         
-        $this->container->singleton(AuthSessionController::class, function () {
-            return new AuthSessionController(
+        $this->container->singleton(AuthSessionAbstractController::class, function () {
+            return new AuthSessionAbstractController(
                 $this->config->get('auth')
             );
         });
         
-        $this->container->singleton(ConfirmedAuthSessionController::class, function () {
-            return new ConfirmedAuthSessionController(
+        $this->container->singleton(ConfirmedAuthSessionAbstractController::class, function () {
+            return new ConfirmedAuthSessionAbstractController(
                 $this->container->get(AuthConfirmation::class),
                 $this->container->get(Dispatcher::class),
                 $this->config->get('auth.confirmation.duration')
             );
         });
         
-        $this->container->singleton(ForgotPasswordController::class, function () {
-            return new ForgotPasswordController(
+        $this->container->singleton(ForgotPasswordAbstractController::class, function () {
+            return new ForgotPasswordAbstractController(
                 $this->container[MailBuilderInterface::class],
                 $this->container[Dispatcher::class],
                 600
             );
         });
         
-        $this->container->singleton(LoginMagicLinkController::class, function () {
-            return new LoginMagicLinkController(
+        $this->container->singleton(LoginMagicLinkAbstractController::class, function () {
+            return new LoginMagicLinkAbstractController(
                 $this->container[MailBuilderInterface::class],
                 $this->container[Dispatcher::class]
             );
         });
         
-        $this->container->singleton(RecoveryCodeController::class, function () {
-            return new RecoveryCodeController(
+        $this->container->singleton(RecoveryCodeAbstractController::class, function () {
+            return new RecoveryCodeAbstractController(
                 $this->container[Encryptor::class]
             );
         });
         
-        $this->container->singleton(ResetPasswordController::class, function () {
-            return new ResetPasswordController();
+        $this->container->singleton(ResetPasswordAbstractController::class, function () {
+            return new ResetPasswordAbstractController();
         });
         
-        $this->container->singleton(TwoFactorAuthPreferenceController::class, function () {
-            return new TwoFactorAuthPreferenceController(
+        $this->container->singleton(TwoFactorAuthPreferenceAbstractController::class, function () {
+            return new TwoFactorAuthPreferenceAbstractController(
                 $this->container[TwoFactorAuthenticationProvider::class],
                 $this->container[Encryptor::class]
             );
         });
         
-        $this->container->singleton(TwoFactorAuthSessionController::class, function () {
-            return new TwoFactorAuthSessionController(
+        $this->container->singleton(TwoFactorAuthSessionAbstractController::class, function () {
+            return new TwoFactorAuthSessionAbstractController(
                 $this->container[Encryptor::class]
             );
         });
         
-        $this->container->singleton(TwoFactorAuthSetupController::class, function () {
-            return new TwoFactorAuthSetupController(
+        $this->container->singleton(TwoFactorAuthSetupAbstractController::class, function () {
+            return new TwoFactorAuthSetupAbstractController(
                 $this->container[TwoFactorAuthenticationProvider::class],
                 $this->container[Encryptor::class]
             );
         });
         
-        $this->container->singleton(WPLoginRedirectController::class, function () {
-            return new WPLoginRedirectController();
+        $this->container->singleton(WPLoginRedirectAbstractController::class, function () {
+            return new WPLoginRedirectAbstractController();
         });
         
-        $this->container->singleton(BulkPasswordResetEmailController::class, function () {
-            return new BulkPasswordResetEmailController(
+        $this->container->singleton(BulkPasswordResetEmailAbstractController::class, function () {
+            return new BulkPasswordResetEmailAbstractController(
                 $this->container[MailBuilderInterface::class]
             );
         });
         
-        $this->container->singleton(PasswordResetEmailController::class, function () {
-            return new PasswordResetEmailController(
+        $this->container->singleton(PasswordResetEmailAbstractController::class, function () {
+            return new PasswordResetEmailAbstractController(
                 $this->container[MailBuilderInterface::class]
             );
         });

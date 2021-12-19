@@ -7,12 +7,12 @@ namespace Snicco\Auth\Middleware;
 use Snicco\Session\Session;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
 use function Snicco\SessionBundle\getWriteSession;
 
-class ConfirmAuth extends Middleware
+class ConfirmAuth extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

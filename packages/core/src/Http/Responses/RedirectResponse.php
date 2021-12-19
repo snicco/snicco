@@ -17,7 +17,7 @@ final class RedirectResponse extends Response
     /**
      * @api
      */
-    public function to(string $url) :Response
+    public function to(string $url)
     {
         return $this->withHeader('Location', $url);
     }
@@ -25,7 +25,7 @@ final class RedirectResponse extends Response
     /**
      * @interal
      */
-    public function canBypassValidation() :bool
+    public function externalRedirectAllowed() :bool
     {
         return $this->bypass_validation;
     }
@@ -33,10 +33,11 @@ final class RedirectResponse extends Response
     /**
      * @interal
      */
-    public function bypassValidation() :RedirectResponse
+    public function withExternalRedirectAllowed() :RedirectResponse
     {
-        $this->bypass_validation = true;
-        return $this;
+        $res = clone $this;
+        $res->bypass_validation = true;
+        return $res;
     }
     
 }

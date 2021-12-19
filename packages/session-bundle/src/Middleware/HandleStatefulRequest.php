@@ -11,8 +11,8 @@ use Snicco\SessionBundle\Keys;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Session\Contracts\SessionInterface;
 use Snicco\Session\Exceptions\CantDestroySession;
 use Snicco\Session\Contracts\SessionManagerInterface;
@@ -24,7 +24,7 @@ use function Snicco\SessionBundle\sessionCookieToHttpCookie;
 /**
  * @interal
  */
-final class HandleStatefulRequest extends Middleware
+final class HandleStatefulRequest extends AbstractMiddleware
 {
     
     /**

@@ -4,11 +4,11 @@ namespace Snicco\Auth\Middleware;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 
-class TwoFactorDisbaled extends Middleware
+class TwoFactorDisbaled extends AbstractMiddleware
 {
     
     use InteractsWithTwoFactorSecrets;

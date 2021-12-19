@@ -8,13 +8,14 @@ use RuntimeException;
 use RKA\Middleware\IpAddress;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Controllers\ViewController;
-use Snicco\Core\Controllers\RedirectController;
-use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Contracts\TemplateRenderer;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\Controllers\ViewAbstractController;
+use Snicco\Core\Controllers\RedirectAbstractController;
+use Snicco\Core\Controllers\FallBackAbstractController;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
@@ -27,6 +28,7 @@ class HttpServiceProvider extends ServiceProvider
         $this->bindResponseEmitter();
         $this->bindKernel();
         $this->bindRedirector();
+        $this->bindTemplateRenderer();
         $this->bindResponsePostProcessor();
         $this->bindIpAddressMiddleware();
         $this->bindResponseFactory();
@@ -42,10 +44,7 @@ class HttpServiceProvider extends ServiceProvider
     private function bindRedirector()
     {
         $this->container->singleton(Redirector::class, function () {
-            return new StatelessRedirector(
-                $this->container[UrlGenerator::class],
-                $this->container[Psr17ResponseFactory::class]
-            );
+            return $this->container[DefaultResponseFactory::class];
         });
     }
     
@@ -112,15 +111,15 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindResponseFactory()
     {
-        $this->container->singleton(BaseResponseFactory::class, function () {
-            return new BaseResponseFactory(
+        $this->container->singleton(DefaultResponseFactory::class, function () {
+            return new DefaultResponseFactory(
                 $this->container[Psr17ResponseFactory::class],
                 $this->container[Psr17StreamFactory::class],
-                $this->container[Redirector::class]
+                $this->container[UrlGeneratorInterface::class]
             );
         });
         $this->container->singleton(ResponseFactory::class, function () {
-            return $this->container[BaseResponseFactory::class];
+            return $this->container[DefaultResponseFactory::class];
         });
     }
     
@@ -133,14 +132,21 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindCoreControllers()
     {
-        $this->container->singleton(RedirectController::class, function () {
-            return new RedirectController();
+        $this->container->singleton(RedirectAbstractController::class, function () {
+            return new RedirectAbstractController();
         });
-        $this->container->singleton(ViewController::class, function () {
-            return new ViewController();
+        $this->container->singleton(ViewAbstractController::class, function () {
+            return new ViewAbstractController($this->container[TemplateRenderer::class]);
         });
-        $this->container->singleton(FallBackController::class, function () {
-            return new FallBackController();
+        $this->container->singleton(FallBackAbstractController::class, function () {
+            return new FallBackAbstractController();
+        });
+    }
+    
+    private function bindTemplateRenderer()
+    {
+        $this->container->singleton(TemplateRenderer::class, function () {
+            return new FileBasedHtmlResponseFactory();
         });
     }
     
