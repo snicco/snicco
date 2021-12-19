@@ -36,7 +36,6 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
         $this->assertArrayHasKey('json', $aliases);
         $this->assertArrayHasKey('robots', $aliases);
         $this->assertArrayHasKey('secure', $aliases);
-        $this->assertArrayHasKey('signed', $aliases);
         
         // from test config
         $this->assertArrayHasKey('foo', $aliases);

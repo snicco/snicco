@@ -49,7 +49,7 @@ interface ResponseFactory extends Psr17ResponseFactory, Psr17StreamFactory
      * @param  string|null  $path
      * @param  int  $status_code
      *
-     * @return Redirector|RedirectResponse Returns the redirector instance if path is null
+     * @return Redirector|RedirectResponse Returns a redirector instance if path is null
      */
     public function redirect(string $path = null, int $status_code = 302);
     

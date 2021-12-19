@@ -111,7 +111,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         
         $response->assertNextMiddlewareNotCalled()->assertStatus(403);
         
-        $this->assertTrue($logger->hasInfoRecords());
+        $this->assertTrue($logger->hasWarningRecords());
     }
     
     /** @test */
@@ -129,15 +129,15 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled()->assertStatus(200);
-        $this->assertFalse($logger->hasInfoRecords());
+        $this->assertFalse($logger->hasWarningRecords());
         
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled()->assertStatus(200);
-        $this->assertFalse($logger->hasInfoRecords());
+        $this->assertFalse($logger->hasWarningRecords());
         
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareNotCalled()->assertStatus(403);
-        $this->assertTrue($logger->hasInfoRecords());
+        $this->assertTrue($logger->hasWarningRecords());
     }
     
     /** @test */

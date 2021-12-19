@@ -102,7 +102,6 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     {
         return new UrlGenerator(
             $this->routeUrlGenerator(),
-            new InMemoryMagicLink(),
             false
         );
     }

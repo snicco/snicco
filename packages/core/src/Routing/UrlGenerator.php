@@ -9,29 +9,30 @@ use Snicco\Support\Arr;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\MagicLink;
-use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Core\Contracts\RouteUrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class UrlGenerator
 {
     
-    use InteractsWithTime;
+    /**
+     * @var bool
+     */
+    private $trailing_slash;
     
-    private bool              $trailing_slash;
-    private RouteUrlGenerator $route_url;
-    private MagicLink         $magic_link;
+    /**
+     * @var RouteUrlGenerator
+     */
+    private $route_url;
     
     /**
      * @var callable
      */
     private $request_resolver;
     
-    public function __construct(RouteUrlGenerator $route_url, MagicLink $magic_link, bool $trailing_slash = false)
+    public function __construct(RouteUrlGenerator $route_url, bool $trailing_slash = false)
     {
         $this->route_url = $route_url;
-        $this->magic_link = $magic_link;
         $this->trailing_slash = $trailing_slash;
     }
     
@@ -77,7 +78,7 @@ class UrlGenerator
         return $this->to($path, $query, $secure, $absolute);
     }
     
-    public function to($path, array $query = [], $secure = true, bool $absolute = false) :string
+    public function to(string $path, array $query = [], $secure = true, bool $absolute = false) :string
     {
         if (Url::isValidAbsolute($path)) {
             return $this->formatAbsolute($this->formatTrailing($path), $absolute);

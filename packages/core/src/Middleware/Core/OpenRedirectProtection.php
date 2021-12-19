@@ -113,9 +113,9 @@ class OpenRedirectProtection extends Middleware
     private function forbiddenRedirect($location) :RedirectResponse
     {
         return $this->response_factory->redirect()
-                                      ->toTemporarySignedRoute(
+                                      ->toRoute(
                                           $this->route,
-                                          10,
+                                          302,
                                           ['query' => ['intended_redirect' => $location]]
                                       );
     }

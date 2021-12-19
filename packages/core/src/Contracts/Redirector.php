@@ -54,35 +54,6 @@ abstract class Redirector
         );
     }
     
-    public function signed(string $path, int $status = 302, int $expiration = 300, array $query = [], $absolute = false) :RedirectResponse
-    {
-        return $this->createRedirectResponse(
-            $this->generator->signed($path, $expiration, $absolute, $query),
-            $status
-        );
-    }
-    
-    public function signedLogout(int $user_id, string $redirect_on_logout = '/', int $status = 302, int $expiration = 3600) :RedirectResponse
-    {
-        return $this->createRedirectResponse(
-            $this->generator->signedLogout($user_id, $redirect_on_logout, $expiration),
-            $status
-        );
-    }
-    
-    public function toTemporarySignedRoute(string $name, int $expiration = 300, $arguments = [], $status = 302, bool $absolute = false) :RedirectResponse
-    {
-        return $this->toSignedRoute($name, $arguments, $status, $expiration, $absolute);
-    }
-    
-    public function toSignedRoute(string $name, array $arguments = [], int $status = 302, int $expiration = 300, bool $absolute = false) :RedirectResponse
-    {
-        return $this->createRedirectResponse(
-            $this->generator->signedRoute($name, $arguments, $expiration, $absolute),
-            $status
-        );
-    }
-    
     public function secure(string $path, int $status = 302, array $query = []) :RedirectResponse
     {
         return $this->to($path, $status, $query);
