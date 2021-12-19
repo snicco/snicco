@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Routing\Pipeline;
-use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Factories\MiddlewareFactory;
@@ -69,31 +68,28 @@ class MiddlewareServiceProvider extends ServiceProvider
     private function bindConfig()
     {
         $this->config->extend('middleware.aliases', [
-            
             'auth' => Authenticate::class,
             'guest' => RedirectIfAuthenticated::class,
             'can' => Authorize::class,
             'json' => JsonPayload::class,
             'robots' => NoRobots::class,
             'secure' => Secure::class,
-            'signed' => ValidateSignature::class,
-        
         ]);
         
         $this->config->extend('middleware.groups', [
-            
             'global' => [],
             'web' => [],
             'ajax' => [],
             'admin' => [],
             'api' => [],
-        
         ]);
-        
+    
         $this->config->extend(
             'middleware.priority',
             [Secure::class, Www::class, TrailingSlash::class,]
         );
+    
+        /** @todo maybe make this configurable per group */
         $this->config->extend('middleware.always_run_core_groups', false);
     }
     

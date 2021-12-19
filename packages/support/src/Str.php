@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Support;
 
-
-use function \mb_strpos;
-use function \mb_substr;
-use function \mb_strrpos;
-use function \random_bytes;
+use function bin2hex;
+use function mb_strpos;
+use function mb_substr;
+use function mb_strrpos;
+use function random_bytes;
 
 class Str
 {
@@ -182,19 +182,9 @@ class Str
             : [$callback, $default,];
     }
     
-    public static function random(int $length = 16) :string
+    public static function random(int $strength = 16) :string
     {
-        $string = '';
-        
-        while (($len = strlen($string)) < $length) {
-            $size = $length - $len;
-            
-            $bytes = random_bytes($size);
-            
-            $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
-        }
-        
-        return $string;
+        return bin2hex(random_bytes($strength));
     }
     
     public static function replaceFirst(string $search, string $replace, string $subject) :string

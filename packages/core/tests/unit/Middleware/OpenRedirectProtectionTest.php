@@ -7,10 +7,9 @@ namespace Tests\Core\unit\Middleware;
 use Mockery;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\Support\Carbon;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 use Tests\Core\MiddlewareTestCase;
+use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
@@ -263,11 +262,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         
         $this->assertStringStartsWith('/redirect/exit', $response->getHeaderLine('Location'));
         $this->assertStringContainsString(
-            '&intended_redirect='.$intended,
-            $response->getHeaderLine('Location')
-        );
-        $this->assertStringContainsString(
-            '?expires='.Carbon::now()->addSeconds(10)->getTimestamp(),
+            '?intended_redirect='.$intended,
             $response->getHeaderLine('Location')
         );
     }

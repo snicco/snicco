@@ -44,7 +44,7 @@ $router->middleware('guest')->group(function (Router $router) use ($config, $log
     }
 });
 
-// Logout
+// Logout @todo user id param is not needed here.
 $router->get('/logout/{user_id}', [AuthSessionController::class, 'destroy'])
        ->middleware('signed:absolute')
        ->name('logout')

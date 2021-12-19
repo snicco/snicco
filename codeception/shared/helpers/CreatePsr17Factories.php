@@ -66,12 +66,8 @@ trait CreatePsr17Factories
     
     protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
     {
-        $magic_link = new InMemoryMagicLink();
-        
-        $this->magic_link = $magic_link;
-        
         $generator = new UrlGenerator(
-            new FastRouteUrlGenerator($this->routes), $magic_link, $trailing_slash
+            new FastRouteUrlGenerator($this->routes), $trailing_slash
         );
         
         $this->generator = $generator;

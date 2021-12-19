@@ -6,6 +6,9 @@ namespace Snicco\Core\ExceptionHandling\Exceptions;
 
 use Throwable;
 
+/**
+ * @todo limit the scope of this exception
+ */
 class ConfigurationException extends HttpException
 {
     

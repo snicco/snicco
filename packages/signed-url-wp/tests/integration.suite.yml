@@ -1,0 +1,2 @@
+namespace: Tests\SignedUrlWP\integration
+extends: "%CODECEPTION_INTEGRATION_YML%"

@@ -13,24 +13,14 @@ use Snicco\Session\Contracts\SessionClock;
 final class ClockUsingDateTimeImmutable implements SessionClock
 {
     
-    /**
-     * @var DateTimeImmutable
-     */
-    private $time;
-    
-    public function __construct()
-    {
-        $this->time = new DateTimeImmutable('now');
-    }
-    
     public function currentTime() :DateTimeImmutable
     {
-        return $this->time;
+        return new DateTimeImmutable('now');
     }
     
     public function currentTimestamp() :int
     {
-        return $this->time->getTimestamp();
+        return time();
     }
     
 }

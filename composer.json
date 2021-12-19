@@ -25,6 +25,7 @@
     "nesbot/carbon": "^2.31",
     "nikic/fast-route": "1.3.0",
     "opis/closure": "3.6.2",
+    "paragonie/constant_time_encoding": "^2.4",
     "phpunit/phpunit": "^9.5",
     "pimple/pimple": "^3.0.0",
     "pragmarx/google2fa": "8.0.0",
@@ -34,21 +35,22 @@
     "psr/log": "^1.0.0",
     "respect/validation": "^2.0.0",
     "roots/wp-password-bcrypt": "dev-master",
-    "symfony/finder": "^5.0-stable"
+    "symfony/finder": "^5.0-stable",
+    "webmozart/assert": "^1.10"
+  },
+  "require-dev": {
+    "adriansuter/php-autoload-override": "^1.2",
+    "codeception/codeception": "4.1.24",
+    "fakerphp/faker": "^1.0.0-stable",
+    "filp/whoops": "^2.2",
+    "nyholm/psr7": "^1.0.0",
+    "nyholm/psr7-server": "^1.0-stable",
+    "symplify/monorepo-builder": "^9.4"
   },
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true
-  },
-  "require-dev": {
-    "adriansuter/php-autoload-override": "^1.2",
-    "fakerphp/faker": "^1.0.0-stable",
-    "filp/whoops": "^2.2",
-    "nyholm/psr7": "^1.0.0",
-    "nyholm/psr7-server": "^1.0-stable",
-    "sniccowp/pimple-container-bride": "dev-master",
-    "symplify/monorepo-builder": "^9.4"
   },
   "autoload": {
     "files": [
@@ -71,6 +73,16 @@
       "Snicco\\PimpleContainer\\": "packages/pimple-container-bridge/src",
       "Snicco\\SessionBundle\\": "packages/session-bundle/src",
       "Snicco\\Session\\": "packages/session/src",
+      "Snicco\\SignedUrlBundle\\": "packages/signed-url-bundle/src",
+      "Snicco\\SignedUrlMiddleware\\": "packages/signed-url-middleware/src",
+      "Snicco\\SignedUrlWP\\": [
+        "packages/signed-url-wp-bundle/src",
+        "packages/signed-url-wp/src"
+      ],
+      "Snicco\\SignedUrl\\": [
+        "packages/magic-links/src",
+        "packages/signed-url/src"
+      ],
       "Snicco\\Support\\": "packages/support/src",
       "Snicco\\Testing\\": "packages/testing/src",
       "Snicco\\Validation\\": "packages/validation-bundle/src",
@@ -95,7 +107,16 @@
       "Tests\\PimpleContainer\\": "packages/pimple-container-bridge/tests",
       "Tests\\SessionBundle\\": "packages/session-bundle/tests",
       "Tests\\Session\\": "packages/session/tests",
-      "Tests\\Support\\": "packages/support/tests",
+      "Tests\\SignedUrlBundle\\": "packages/signed-url-bundle/tests",
+      "Tests\\SignedUrlMiddleware\\": "packages/signed-url-middleware/tests",
+      "Tests\\SignedUrlWP\\": [
+        "packages/signed-url-wp-bundle/tests",
+        "packages/signed-url-wp/tests"
+      ],
+      "Tests\\SignedUrl\\": [
+        "packages/magic-links/tests",
+        "packages/signed-url/tests"
+      ],
       "Tests\\Testing\\": "packages/testing/tests",
       "Tests\\Validation\\": "packages/validation-bundle/tests",
       "Tests\\ViewBundle\\": "packages/view-bundle/tests",
@@ -117,6 +138,11 @@
     "sniccowp/pimple-container-brige": "self.version",
     "sniccowp/session": "self.version",
     "sniccowp/session-bundle": "self.version",
+    "sniccowp/signed-url": "self.version",
+    "sniccowp/signed-url-bundle": "self.version",
+    "sniccowp/signed-url-middleware": "self.version",
+    "sniccowp/signed-url-wp": "self.version",
+    "sniccowp/signed-url-wp-bundle": "self.version",
     "sniccowp/support": "self.version",
     "sniccowp/testing": "self.version",
     "sniccowp/validation-bundle": "self.version",
