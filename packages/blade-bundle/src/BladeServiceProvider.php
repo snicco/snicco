@@ -53,13 +53,11 @@ class BladeServiceProvider extends ServiceProvider
     
     private function createFrameworkViewDirectives() :void
     {
-        if ($this->sessionEnabled()) {
-            Blade::directive('csrf', function () {
-                throw new LogicException(
-                    'The csrf directive does not work. You should use the $csrf object that all views have access to if you are using the stateful middleware group.'
-                );
-            });
-        }
+        Blade::directive('csrf', function () {
+            throw new LogicException(
+                'The csrf directive does not work. You should use the $csrf object that all views have access to if you are using the stateful middleware group.'
+            );
+        });
     
         Blade::directive('method', function () {
             throw new LogicException(
