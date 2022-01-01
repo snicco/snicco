@@ -8,6 +8,7 @@ use Webmozart\Assert\Assert;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Application\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Shared\ContainerAdapter;
@@ -59,6 +60,19 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     protected function url() :UrlGeneratorInterface
     {
         return $this->container[UrlGeneratorInterface::class];
+    }
+    
+    /**
+     * @param  mixed  $default
+     *
+     * @return mixed
+     */
+    protected function config(string $key, $default = null)
+    {
+        /** @var Config $config */
+        $config = $this->container[ContainerAdapter::class];
+        Assert::isInstanceOf(Config::class, $config);
+        return $config->get($key, $default);
     }
     
     protected function render(string $template_identifier, array $data = []) :Response
