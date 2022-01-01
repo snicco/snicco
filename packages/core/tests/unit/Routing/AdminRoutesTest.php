@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Core\Support\WP;
-use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
+use Snicco\Core\Http\Psr7\Request;
 
 class AdminRoutesTest extends RoutingTestCase
 {
@@ -116,10 +115,6 @@ class AdminRoutesTest extends RoutingTestCase
     /** @test */
     public function reverse_routing_works_with_admin_routes()
     {
-        WP::shouldReceive('pluginPageUrl')->andReturnUsing(function ($page) {
-            return $this->adminUrlTo($page);
-        });
-        
         $this->createRoutes(function () {
             $this->router->prefix('wp-admin')->name('admin')->group(function () {
                 $this->router->name('foo')
@@ -129,8 +124,8 @@ class AdminRoutesTest extends RoutingTestCase
             });
         });
         
-        $url = $this->generator->toRoute('admin.foo');
-        $this->assertSame('/wp-admin/admin.php?page=foo', $url);
+        $url = $this->generator->toRoute('admin.foo', ['bar' => 'baz']);
+        $this->assertSame('/wp-admin/admin.php?page=foo&bar=baz', $url);
     }
     
     /** @test */

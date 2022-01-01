@@ -23,7 +23,10 @@ class ReflectionDependencies
     
     use ReflectsCallable;
     
-    private ContainerAdapter $container;
+    /**
+     * @var ContainerAdapter
+     */
+    private $container;
     
     public function __construct(ContainerAdapter $container)
     {

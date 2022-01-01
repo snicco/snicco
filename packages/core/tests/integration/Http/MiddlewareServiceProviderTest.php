@@ -13,8 +13,8 @@ use Snicco\Core\Middleware\Core\RouteRunner;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
-use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
+use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 class MiddlewareServiceProviderTest extends FrameworkTestCase
 {
@@ -72,8 +72,8 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     public function all_middlewares_are_built_correctly()
     {
         $this->assertInstanceOf(
-            EvaluateResponseMiddleware::class,
-            TestApp::resolve(EvaluateResponseMiddleware::class)
+            EvaluateResponseAbstractMiddleware::class,
+            TestApp::resolve(EvaluateResponseAbstractMiddleware::class)
         );
         $this->assertInstanceOf(RouteRunner::class, TestApp::resolve(RouteRunner::class));
         $this->assertInstanceOf(MiddlewareStack::class, TestApp::resolve(MiddlewareStack::class));
@@ -103,11 +103,11 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function output_buffering_middleware_is_a_singleton()
     {
-        $m1 = $this->app->resolve(OutputBufferMiddleware::class);
-        $m2 = $this->app->resolve(OutputBufferMiddleware::class);
+        $m1 = $this->app->resolve(OutputBufferAbstractMiddleware::class);
+        $m2 = $this->app->resolve(OutputBufferAbstractMiddleware::class);
         
         $this->assertSame($m1, $m2);
-        $this->assertInstanceOf(OutputBufferMiddleware::class, $m1);
+        $this->assertInstanceOf(OutputBufferAbstractMiddleware::class, $m1);
     }
     
 }

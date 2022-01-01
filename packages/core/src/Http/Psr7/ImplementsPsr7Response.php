@@ -15,32 +15,47 @@ trait ImplementsPsr7Response
      */
     protected $psr7_response;
     
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version) :self
     {
         return $this->new($this->psr7_response->withProtocolVersion($version));
     }
     
-    public function withHeader($name, $value)
+    /**
+     * @return static
+     */
+    public function withHeader($name, $value) :self
     {
         return $this->new($this->psr7_response->withHeader($name, $value));
     }
     
-    public function withAddedHeader($name, $value)
+    /**
+     * @return static
+     */
+    public function withAddedHeader($name, $value) :self
     {
         return $this->new($this->psr7_response->withAddedHeader($name, $value));
     }
     
-    public function withoutHeader($name)
+    /**
+     * @return static
+     */
+    public function withoutHeader($name) :self
     {
         return $this->new($this->psr7_response->withoutHeader($name));
     }
     
-    public function withBody(StreamInterface $body)
+    /**
+     * @return static
+     */
+    public function withBody(StreamInterface $body) :self
     {
         return $this->new($this->psr7_response->withBody($body));
     }
     
-    public function withStatus($code, $reasonPhrase = '')
+    /**
+     * @return static
+     */
+    public function withStatus($code, $reasonPhrase = '') :self
     {
         return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
     }

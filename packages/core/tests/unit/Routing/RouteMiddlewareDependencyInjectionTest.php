@@ -8,13 +8,13 @@ use Exception;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\TestDependencies\Baz;
-use Tests\Core\fixtures\Middleware\MiddlewareWithDependencies;
-use Tests\Core\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
+use Tests\Core\fixtures\Middleware\AbstractMiddlewareWithDependencies;
+use Tests\Core\fixtures\Controllers\Admin\AdminAbstractControllerWithMiddleware;
 
 class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
 {
@@ -24,11 +24,11 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
         parent::setUp();
         
         $this->container->instance(
-            MiddlewareWithDependencies::class,
-            new MiddlewareWithDependencies(new Foo(), new Bar())
+            AbstractMiddlewareWithDependencies::class,
+            new AbstractMiddlewareWithDependencies(new Foo(), new Bar())
         );
-        $this->container->singleton(AdminControllerWithMiddleware::class, function () {
-            return new AdminControllerWithMiddleware(new Baz());
+        $this->container->singleton(AdminAbstractControllerWithMiddleware::class, function () {
+            return new AdminAbstractControllerWithMiddleware(new Baz());
         }
         );
     }
@@ -37,8 +37,8 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     public function middleware_is_resolved_from_the_service_container()
     {
         $this->container->instance(
-            MiddlewareWithDependencies::class,
-            new MiddlewareWithDependencies(
+            AbstractMiddlewareWithDependencies::class,
+            new AbstractMiddlewareWithDependencies(
                 new Foo(),
                 new Bar()
             )
@@ -47,7 +47,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
         $this->createRoutes(function () {
             $this->router->get('/foo', function (Request $request) {
                 return $request->body;
-            })->middleware(MiddlewareWithDependencies::class);
+            })->middleware(AbstractMiddlewareWithDependencies::class);
         });
         
         $request = $this->frontendRequest('GET', '/foo');
@@ -58,7 +58,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     public function controller_middleware_is_resolved_from_the_service_container()
     {
         $this->createRoutes(function () {
-            $this->router->get('/foo', AdminControllerWithMiddleware::class.'@handle');
+            $this->router->get('/foo', AdminAbstractControllerWithMiddleware::class.'@handle');
         });
         
         $request = $this->frontendRequest('GET', '/foo');
@@ -68,16 +68,16 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     /** @test */
     public function after_controller_middleware_got_resolved_the_controller_is_not_instantiated_again_when_handling_the_request()
     {
-        $GLOBALS['test'][AdminControllerWithMiddleware::constructed_times] = 0;
+        $GLOBALS['test'][AdminAbstractControllerWithMiddleware::constructed_times] = 0;
         
         $this->createRoutes(function () {
-            $this->router->get('/foo', AdminControllerWithMiddleware::class.'@handle');
+            $this->router->get('/foo', AdminAbstractControllerWithMiddleware::class.'@handle');
         });
         
         $request = $this->frontendRequest('GET', '/foo');
         $this->assertResponse('foobarbaz:controller_with_middleware', $request);
         
-        $this->assertRouteActionConstructedTimes(1, AdminControllerWithMiddleware::class);
+        $this->assertRouteActionConstructedTimes(1, AdminAbstractControllerWithMiddleware::class);
     }
     
     /** @test */
@@ -87,7 +87,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
         $this->container->instance(Bar::class, new Bar());
         
         $this->withMiddlewareAlias([
-            'm' => MiddlewareWithClassAndParamDependencies::class,
+            'm' => AbstractMiddlewareWithClassAndParamDependencies::class,
         ]);
         
         $this->createRoutes(function () {
@@ -104,7 +104,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     public function a_middleware_with_a_typed_default_value_and_no_passed_arguments_works()
     {
         $this->withMiddlewareAlias([
-            'm' => MiddlewareWithTypedDefault::class,
+            'm' => AbstractMiddlewareWithTypedDefault::class,
         ]);
         
         $this->createRoutes(function () {
@@ -135,7 +135,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     
 }
 
-class MiddlewareWithClassAndParamDependencies extends Middleware
+class AbstractMiddlewareWithClassAndParamDependencies extends AbstractMiddleware
 {
     
     private Foo $foo;
@@ -158,7 +158,7 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
     
 }
 
-class MiddlewareWithTypedDefault extends Middleware
+class AbstractMiddlewareWithTypedDefault extends AbstractMiddleware
 {
     
     private ?Foo $foo;

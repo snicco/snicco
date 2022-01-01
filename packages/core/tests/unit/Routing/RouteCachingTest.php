@@ -6,8 +6,8 @@ namespace Tests\Core\unit\Routing;
 
 use WP;
 use Mockery;
-use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
+use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\EventDispatcher\Listeners\FilterWpQuery;
 use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
@@ -15,7 +15,10 @@ use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 class RouteCachingTest extends RoutingTestCase
 {
     
-    private string $route_cache_file;
+    /**
+     * @var string
+     */
+    private $route_cache_file;
     
     protected function setUp() :void
     {
@@ -151,6 +154,9 @@ class RouteCachingTest extends RoutingTestCase
             });
         });
         
+        if ( ! class_exists(WP::class)) {
+            require_once $_SERVER['WP_FOLDER'].'/wp-includes/class-wp.php';
+        }
         $wp = Mockery::mock(WP::class);
         
         // from cache
@@ -175,7 +181,7 @@ class RouteCachingTest extends RoutingTestCase
         
         $url_generator = $this->newUrlGenerator();
         
-        $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
+        $this->assertSame('/foo', $url_generator->toRoute('foo'));
     }
     
     /** @test */
@@ -192,8 +198,8 @@ class RouteCachingTest extends RoutingTestCase
         
         $url_generator = $this->newUrlGenerator();
         
-        $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
-        $this->assertSame('/bar', $url_generator->toRoute('bar', [], false, false));
+        $this->assertSame('/foo', $url_generator->toRoute('foo'));
+        $this->assertSame('/bar', $url_generator->toRoute('bar'));
     }
     
     /** @test */
@@ -211,8 +217,8 @@ class RouteCachingTest extends RoutingTestCase
         
         $url_generator = $this->newUrlGenerator();
         
-        $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
-        $this->assertSame('/bar', $url_generator->toRoute('bar', [], false, false));
+        $this->assertSame('/foo', $url_generator->toRoute('foo', []));
+        $this->assertSame('/bar', $url_generator->toRoute('bar', []));
         
         $this->assertResponse('foo', $this->frontendRequest('GET', 'foo'));
         $this->assertResponse('foo', $this->frontendRequest('GET', 'bar'));

@@ -6,16 +6,15 @@ namespace Tests\Core\integration\Application;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Application\Application;
-use Snicco\Core\Http\BaseResponseFactory;
 use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\Http\Responses\RedirectResponse;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 use const DS;
@@ -126,8 +125,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     public function a_named_route_url_can_be_aliased()
     {
         $this->bootApp();
-        $expected = '/alias/get';
-        $this->assertSame($expected, TestApp::routeUrl('alias.get'));
+        $this->assertSame('/alias/get', TestApp::routeUrl('alias.get'));
     }
     
     /** @test */
@@ -135,7 +133,8 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->post('/alias/post')->assertSee('post');
+        $response = $this->post('/alias/post');
+        $response->assertSee('post');
     }
     
     /** @test */
@@ -201,7 +200,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
-        $this->assertInstanceOf(BaseResponseFactory::class, TestApp::response());
+        $this->assertInstanceOf(DefaultResponseFactory::class, TestApp::response());
     }
     
     /** @test */
@@ -210,7 +209,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
-        $this->assertInstanceOf(StatelessRedirector::class, TestApp::redirect());
+        $this->assertInstanceOf(Redirector::class, TestApp::redirect());
     }
     
     /** @test */
@@ -224,17 +223,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
             "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Core\Application\Application::generateKey()"
         );
         $this->bootApp();
-    }
-    
-    /** @test */
-    public function the_request_can_be_resolved_as_an_alias()
-    {
-        $this->withRequest(TestRequest::from('GET', '/foo'));
-        $this->bootApp();
-        
-        $this->assertInstanceOf(Request::class, $request = TestApp::request());
-        
-        $this->assertSame('/foo', $request->path());
     }
     
 }

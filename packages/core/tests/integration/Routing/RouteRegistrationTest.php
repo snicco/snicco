@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Core\Support\WP;
 use Snicco\Support\Arr;
+use Snicco\Core\Support\WP;
 use Snicco\Core\Contracts\ServiceProvider;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
@@ -126,7 +126,10 @@ class RouteRegistrationTest extends FrameworkTestCase
         $this->withRequest($this->adminRequest('GET', 'foo'));
         $this->bootApp();
         
-        $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
+        $this->assertSame(
+            '/wp-admin/admin.php?page=foo',
+            TestApp::routeUrl('admin.foo')
+        );
     }
     
     /** @test */
@@ -134,7 +137,10 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
+        $this->assertSame(
+            '/wp-admin/admin-ajax.php',
+            TestApp::routeUrl('ajax.foo')
+        );
     }
     
     /** @test */

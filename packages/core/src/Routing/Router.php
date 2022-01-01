@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Closure;
-use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Snicco\Support\Arr;
-use Snicco\Core\Controllers\ViewController;
+use Snicco\Core\Support\WP;
+use Snicco\Core\Support\Url;
 use Snicco\Core\Traits\HoldsRouteBlueprint;
-use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Controllers\ViewAbstractController;
 use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Controllers\RedirectAbstractController;
 
 class Router
 {
@@ -33,7 +33,7 @@ class Router
     
     public function view(string $url, string $view, array $data = [], int $status = 200, array $headers = []) :Route
     {
-        $route = $this->match(['GET', 'HEAD'], $url, ViewController::class.'@handle');
+        $route = $this->match(['GET', 'HEAD'], $url, ViewAbstractController::class.'@handle');
         $route->defaults([
             'view' => $view,
             'data' => $data,
@@ -44,40 +44,39 @@ class Router
         return $route;
     }
     
-    public function permanentRedirect(string $url, string $location, bool $secure = true, bool $absolute = false) :Route
+    public function redirect(string $from_path, string $to_path, int $status = 302, array $query = []) :Route
     {
-        return $this->redirect($url, $location, 301, $secure, $absolute);
-    }
-    
-    public function redirect(string $url, string $location, int $status = 302, bool $secure = true, bool $absolute = false) :Route
-    {
-        return $this->any($url, [RedirectController::class, 'to'])->defaults([
-            'location' => $location,
+        return $this->any($from_path, [RedirectAbstractController::class, 'to'])->defaults([
+            'to' => $to_path,
             'status' => $status,
-            'secure' => $secure,
-            'absolute' => $absolute,
+            'query' => $query,
         ]);
     }
     
-    public function temporaryRedirect(string $url, string $location, bool $secure = true, bool $absolute = false) :Route
+    public function permanentRedirect(string $from_path, string $to_path, array $query = []) :Route
     {
-        return $this->redirect($url, $location, 307, $secure, $absolute);
+        return $this->redirect($from_path, $to_path, 301, $query);
     }
     
-    public function redirectAway(string $url, string $location, int $status = 302) :Route
+    public function temporaryRedirect(string $from_path, string $to_path, array $query = [], int $status = 307) :Route
     {
-        return $this->any($url, [RedirectController::class, 'away'])->defaults([
+        return $this->redirect($from_path, $to_path, $status, $query);
+    }
+    
+    public function redirectAway(string $from_path, string $location, int $status = 302) :Route
+    {
+        return $this->any($from_path, [RedirectAbstractController::class, 'away'])->defaults([
             'location' => $location,
             'status' => $status,
         ]);
     }
     
-    public function redirectToRoute(string $url, string $route, array $params = [], int $status = 302) :Route
+    public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302) :Route
     {
-        return $this->any($url, [RedirectController::class, 'toRoute'])->defaults([
+        return $this->any($from_path, [RedirectAbstractController::class, 'toRoute'])->defaults([
             'route' => $route,
+            'arguments' => $arguments,
             'status' => $status,
-            'params' => $params,
         ]);
     }
     

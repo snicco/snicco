@@ -7,10 +7,7 @@ namespace Snicco\Support;
 use ArrayAccess;
 use InvalidArgumentException;
 
-use function array_filter;
 use function Snicco\Core\Support\Functions\value;
-
-use const ARRAY_FILTER_USE_KEY;
 
 class Arr
 {
@@ -111,13 +108,6 @@ class Arr
         }
         
         return $merged;
-    }
-    
-    public static function query($array) :string
-    {
-        $arr = (array_filter($array, 'is_string', ARRAY_FILTER_USE_KEY));
-        
-        return http_build_query($arr, '', '&', PHP_QUERY_RFC3986);
     }
     
     public static function wrap($value) :array

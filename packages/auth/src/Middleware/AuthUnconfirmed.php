@@ -6,11 +6,11 @@ namespace Snicco\Auth\Middleware;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Snicco\Core\Routing\UrlGenerator;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
-class AuthUnconfirmed extends Middleware
+class AuthUnconfirmed extends AbstractMiddleware
 {
     
     private UrlGenerator $url;

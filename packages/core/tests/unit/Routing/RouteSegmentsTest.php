@@ -13,17 +13,46 @@ class RouteSegmentsTest extends RoutingTestCase
 {
     
     /** @test */
-    public function url_encoded_routes_work()
+    public function url_encoded_routes_can_be_matched_by_their_decoded_path()
     {
         $this->createRoutes(function () {
             $this->router->get('/german-city/{city}', function (Request $request, string $city) {
                 return ucfirst($city);
+            });
+            
+            $this->router->get('düsseldorf', function () {
+                return 'DD';
             });
         });
         
         $path = rawurlencode('münchen');
         $request = TestRequest::fromFullUrl('GET', "https://foobar.com/german-city/$path");
         $this->assertResponse('München', $request);
+        
+        $dd = rawurlencode('düsseldorf');
+        $request = TestRequest::fromFullUrl('GET', "https://foobar.com/$dd");
+        $this->assertResponse('DD', $request);
+    }
+    
+    /** @test */
+    public function non_ascii_routes_can_be_matched()
+    {
+        // новости = russian for news
+        $this->createRoutes(function () {
+            $this->router->get('новости', function () {
+                return 'non-ascii';
+            });
+            
+            $this->router->get('/foo/{bar}', function ($bar) {
+                return $bar;
+            });
+        });
+        
+        $request = $this->frontendRequest('GET', rawurlencode('новости'));
+        $this->assertResponse('non-ascii', $request);
+        
+        $request = $this->frontendRequest('GET', '/foo/'.rawurlencode('новости'));
+        $this->assertResponse('новости', $request);
     }
     
     /** @test */
@@ -68,6 +97,33 @@ class RouteSegmentsTest extends RoutingTestCase
             'List all songs of band [AC/DC]',
             $request
         );
+    }
+    
+    /** @test */
+    public function urldecoded_route_definitions_can_match_url_encoded_paths()
+    {
+        $this->createRoutes(function () {
+            $this->router->get('münchen', function () {
+                return 'm';
+            });
+        });
+        
+        $request = $this->frontendRequest('GET', rawurlencode('münchen'));
+        
+        $this->assertResponse('m', $request);
+    }
+    
+    /** @test */
+    public function routes_can_contain_a_plus_sign()
+    {
+        $this->createRoutes(function () {
+            $this->router->get('foo+bar', function () {
+                return 'FOO+BAR';
+            });
+        });
+        
+        $request = $this->frontendRequest('GET', '/foo+bar');
+        $this->assertResponse('FOO+BAR', $request);
     }
     
     /** @test */
@@ -183,12 +239,13 @@ class RouteSegmentsTest extends RoutingTestCase
     {
         $this->createRoutes(function () {
             // Preceding Group is capturing
-            $this->router->post('/team/{id:\d+}/{name?}/{player?}')
+            $this->router->post('/team/{id}/{name?}/{player?}')
                          ->handle(
                              function (Request $request, $id, $name = 'foo_team', $player = 'foo_player') {
                                  return $name.':'.$id.':'.$player;
                              }
-                         );
+                         )
+                         ->and('id', '\d+');
         });
         
         $response = $this->frontendRequest('post', '/team/1/dortmund/calvin');
@@ -199,6 +256,8 @@ class RouteSegmentsTest extends RoutingTestCase
         
         $response = $this->frontendRequest('post', '/team/12');
         $this->assertResponse('foo_team:12:foo_player', $response);
+        
+        $this->assertEmptyResponse($this->frontendRequest('post', '/team/a/dortmund'));
     }
     
     /** @test */
@@ -273,17 +332,13 @@ class RouteSegmentsTest extends RoutingTestCase
     {
         $this->createRoutes(function () {
             // Preceding group is required but not capturing
-            $this->router->post('/users/{name?}/{gender?}/{age?}')
-                         ->and(
-                             [
-                                 'name' => '[a-z]+\/?',
-                             ]
-                         )
-                         ->handle(
-                             function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
-                                 return $name.':'.$gender.':'.$age;
-                             }
-                         );
+            $this->router->post(
+                '/users/{name?}/{gender?}/{age?}',
+                function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
+                    return $name.':'.$gender.':'.$age;
+                }
+            )
+                         ->and(['name' => '[a-z]+\/?',]);
         }, true);
         
         $request = $this->frontendRequest('post', '/users/');

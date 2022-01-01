@@ -4,26 +4,48 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
+use RuntimeException;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\UrlGenerator;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Snicco\Core\Http\BaseResponseFactory;
-use Snicco\Core\Http\StatelessRedirector;
+use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\RFC3986Encoder;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\InMemoryMagicLink;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Psr\Http\Message\StreamFactoryInterface;
+use Snicco\Core\Routing\UrlGenerationContext;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
-use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\Core\Contracts\RouteCollectionInterface;
 
 /**
  * @internal
  */
 trait CreatePsr17Factories
 {
+    
+    /**
+     * @var UrlGeneratorInterface
+     */
+    protected $generator;
+    
+    /**
+     * @var Redirector
+     */
+    protected $redirector;
+    
+    /**
+     * @var RouteCollectionInterface
+     */
+    protected $routes;
+    
+    /**
+     * @var string
+     */
+    protected $app_domain;
     
     public static function __callStatic($name, $arguments)
     {
@@ -47,10 +69,10 @@ trait CreatePsr17Factories
     
     public function createResponseFactory() :ResponseFactory
     {
-        return new BaseResponseFactory(
-            $f = $this->psrResponseFactory(),
+        return new DefaultResponseFactory(
+            $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            new StatelessRedirector($this->newUrlGenerator(), $f),
+            $this->newUrlGenerator(),
         );
     }
     
@@ -64,17 +86,33 @@ trait CreatePsr17Factories
         return new Psr17Factory();
     }
     
-    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
+    protected function newUrlGenerator(?UrlGenerationContext $context = null, bool $trailing_slash = false) :UrlGenerator
     {
+        if ( ! isset($this->app_domain)) {
+            throw new RuntimeException('You need to initialize $app_domain.');
+        }
+        
+        if ( ! isset($this->routes)) {
+            throw new RuntimeException('You need to initialize $routes.');
+        }
+        
+        $context = $context ?? new UrlGenerationContext(
+                new Request(
+                    $this->psrServerRequestFactory()->createServerRequest(
+                        'GET',
+                        'https://'.$this->app_domain
+                    )
+                ),
+                $trailing_slash
+            );
+        
         $generator = new UrlGenerator(
-            new FastRouteUrlGenerator($this->routes), $trailing_slash
+            $this->routes,
+            $context,
+            new RFC3986Encoder()
         );
         
         $this->generator = $generator;
-        
-        $generator->setRequestResolver(function () use ($request) {
-            return $request ?? TestRequest::fromFullUrl('GET', SITE_URL);
-        });
         
         return $generator;
     }

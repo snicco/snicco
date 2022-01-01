@@ -7,23 +7,37 @@ namespace Snicco\Core\Middleware\Core;
 use Snicco\Support\Str;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Http\Responses\RedirectResponse;
 
-class OpenRedirectProtection extends Middleware
+/**
+ * @todo Its currently possible to redirect to whitelisted domains without any addiotional checks.
+ */
+class OpenRedirectProtection extends AbstractMiddleware
 {
     
-    private string $route;
-    private array  $whitelist;
-    private string $site_url;
+    /**
+     * @var string
+     */
+    private $route;
     
-    public function __construct(string $site_url, $whitelist = [], $route = 'redirect.protection')
+    /**
+     * @var array
+     */
+    private $whitelist;
+    
+    /**
+     * @var string
+     */
+    private $host;
+    
+    public function __construct(string $host, $whitelist = [], $route = 'redirect.protection')
     {
         $this->route = $route;
         $this->whitelist = $this->formatWhiteList($whitelist);
-        $this->site_url = $site_url;
-        $this->whitelist[] = $this->allSubdomainsOfApplicationUrl();
+        $this->host = $host;
+        $this->whitelist[] = $this->allSubdomainsOfApplication();
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
@@ -34,24 +48,18 @@ class OpenRedirectProtection extends Middleware
             return $response;
         }
         
-        if (method_exists($response, 'canBypassValidation') && $response->canBypassValidation()) {
+        if ($response instanceof RedirectResponse && $response->externalRedirectAllowed()) {
             return $response;
         }
         
         $target = $response->getHeaderLine('location');
         
         $target_host = parse_url($target, PHP_URL_HOST);
-        $is_same_ref = $this->isSameSiteReferer($request);
         $is_same_site = $this->isSameSiteRedirect($request, $target);
         
         // Allows allow relative redirects
         if ($is_same_site) {
             return $response;
-        }
-        
-        // Don't allow external domains to redirect to another external domain.
-        if ( ! $is_same_ref) {
-            return $this->forbiddenRedirect($target);
         }
         
         // Only allow redirects away to whitelisted hosts.
@@ -78,24 +86,13 @@ class OpenRedirectProtection extends Middleware
         return '/^(.+\.)?'.preg_quote($host, '/').'$/';
     }
     
-    private function allSubdomainsOfApplicationUrl() :?string
+    private function allSubdomainsOfApplication() :?string
     {
-        if ($host = parse_url($this->site_url, PHP_URL_HOST)) {
+        if ($host = parse_url($this->host, PHP_URL_HOST)) {
             return $this->allSubdomains($host);
         }
         
         return null;
-    }
-    
-    private function isSameSiteReferer(Request $request) :bool
-    {
-        $referer = parse_url($request->getHeaderLine('referer'), PHP_URL_HOST);
-        
-        if ( ! $referer) {
-            return false;
-        }
-        
-        return $referer === $request->getUri()->getHost();
     }
     
     private function isSameSiteRedirect(Request $request, $location) :bool
@@ -112,12 +109,8 @@ class OpenRedirectProtection extends Middleware
     
     private function forbiddenRedirect($location) :RedirectResponse
     {
-        return $this->response_factory->redirect()
-                                      ->toRoute(
-                                          $this->route,
-                                          302,
-                                          ['query' => ['intended_redirect' => $location]]
-                                      );
+        return $this->redirect()
+                    ->toRoute($this->route, ['intended_redirect' => $location]);
     }
     
     private function isWhitelisted($host) :bool

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Http;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Http\Responses\RedirectResponse;
-use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
-use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 class HttpKernelTest extends RoutingTestCase
 {
@@ -80,8 +80,8 @@ class HttpKernelTest extends RoutingTestCase
             $this->router->get('/bar', fn() => 'bar');
         });
         
-        $this->container->singleton(EvaluateResponseMiddleware::class, function () {
-            return new EvaluateResponseMiddleware(true);
+        $this->container->singleton(EvaluateResponseAbstractMiddleware::class, function () {
+            return new EvaluateResponseAbstractMiddleware(true);
         });
         
         $this->expectException(NotFoundException::class);
@@ -93,8 +93,8 @@ class HttpKernelTest extends RoutingTestCase
     public function a_redirect_response_will_shut_down_the_script_by_dispatching_an_event()
     {
         $this->createRoutes(function () {
-            $this->router->get('/foo', function (ResponseFactory $factory) {
-                return $factory->redirect()->to('bar');
+            $this->router->get('/foo', function (Redirector $redirector) {
+                return $redirector->to('bar');
             });
         });
         

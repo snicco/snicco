@@ -13,54 +13,53 @@ use Snicco\Core\Http\HttpKernel;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Http\ResponseEmitter;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\Redirector;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\InMemoryMagicLink;
 use Snicco\Core\Middleware\MiddlewareStack;
 use Snicco\Core\Contracts\ExceptionHandler;
-use Snicco\Core\Controllers\ViewController;
-use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\Controllers\ViewAbstractController;
 use Snicco\Core\Factories\MiddlewareFactory;
 use Snicco\Core\Middleware\Core\RouteRunner;
 use Psr\Http\Message\StreamFactoryInterface;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Core\Factories\RouteActionFactory;
 use Snicco\Core\Middleware\Core\ShareCookies;
-use Snicco\Core\Routing\FileBasedHtmlResponse;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Routing\RoutingServiceProvider;
-use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Controllers\FallBackAbstractController;
 use Snicco\Core\Factories\RouteConditionFactory;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
-use Tests\Core\fixtures\Middleware\FooMiddleware;
-use Tests\Core\fixtures\Middleware\BarMiddleware;
-use Tests\Core\fixtures\Middleware\BazMiddleware;
+use Tests\Core\fixtures\Middleware\FooAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\BarAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\BazAbstractMiddleware;
 use Tests\Core\fixtures\Conditions\TrueCondition;
-use Snicco\Core\Middleware\Core\RoutingMiddleware;
+use Snicco\Core\Http\FileBasedHtmlResponseFactory;
+use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
 use Tests\Core\fixtures\Conditions\FalseCondition;
 use Tests\Core\fixtures\Conditions\MaybeCondition;
 use Snicco\Core\Contracts\RouteCollectionInterface;
 use Tests\Core\fixtures\Conditions\UniqueCondition;
-use Tests\Core\fixtures\Middleware\FooBarMiddleware;
+use Tests\Core\fixtures\Middleware\FooBarAbstractMiddleware;
 use Tests\Core\fixtures\TestDoubles\TestViewFactory;
+use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
-use Snicco\Core\Middleware\Core\OutputBufferMiddleware;
+use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Tests\Codeception\shared\helpers\AssertViewContent;
-use Snicco\Core\Routing\FastRoute\FastRouteUrlGenerator;
 use Tests\Codeception\shared\helpers\CreateRouteMatcher;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\Core\Middleware\Core\EvaluateResponseMiddleware;
+use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 use Tests\Codeception\shared\helpers\CreateRouteCollection;
 use Tests\Core\fixtures\Conditions\ConditionWithDependency;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
@@ -82,21 +81,23 @@ class RoutingTestCase extends UnitTest
     protected ExceptionHandler $error_handler;
     
     /**
-     * @var ResponseFactory
+     * @var DefaultResponseFactory
      */
-    protected ResponseFactory $response_factory;
+    protected $response_factory;
     
-    protected HttpKernel               $kernel;
-    protected Router                   $router;
-    protected ContainerAdapter         $container;
-    protected RouteCollectionInterface $routes;
-    protected FakeDispatcher           $event_dispatcher;
-    protected ViewEngine               $view_engine;
-    private int                        $output_buffer_level;
+    protected HttpKernel       $kernel;
+    protected Router           $router;
+    protected ContainerAdapter $container;
+    protected FakeDispatcher   $event_dispatcher;
+    protected ViewEngine       $view_engine;
+    private int                $output_buffer_level;
     
     protected function setUp() :void
     {
         parent::setUp();
+        if ( ! isset($this->app_domain)) {
+            $this->app_domain = 'foobar.com';
+        }
         $this->resetGlobalState();
         $this->createDefaultWpApiMocks();
         $this->createInstances();
@@ -174,10 +175,10 @@ class RoutingTestCase extends UnitTest
     protected function defaultMiddlewareAliases() :array
     {
         return [
-            'foo' => FooMiddleware::class,
-            'bar' => BarMiddleware::class,
-            'baz' => BazMiddleware::class,
-            'foobar' => FooBarMiddleware::class,
+            'foo' => FooAbstractMiddleware::class,
+            'bar' => BarAbstractMiddleware::class,
+            'baz' => BazAbstractMiddleware::class,
+            'foobar' => FooBarAbstractMiddleware::class,
         ];
     }
     
@@ -218,6 +219,7 @@ class RoutingTestCase extends UnitTest
         $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
         
         $this->container->instance(ResponseFactory::class, $this->response_factory);
+        $this->container->instance(Redirector::class, $this->response_factory);
         
         $this->container->instance(StreamFactoryInterface::class, $this->response_factory);
         
@@ -230,11 +232,9 @@ class RoutingTestCase extends UnitTest
         
         $this->container->instance(ExceptionHandler::class, $this->error_handler);
         
-        $this->container->instance(OutputBufferMiddleware::class, $this->outputBufferMiddleware());
-        
         $this->container->instance(
-            RouteUrlGenerator::class,
-            new FastRouteUrlGenerator($this->routes)
+            OutputBufferAbstractMiddleware::class,
+            $this->outputBufferMiddleware()
         );
         
         $this->container->instance(
@@ -244,9 +244,7 @@ class RoutingTestCase extends UnitTest
         
         $this->container->instance(
             UrlGenerator::class,
-            new UrlGenerator(
-                $this->container[RouteUrlGenerator::class],
-            )
+            $this->generator,
         );
         
         $this->kernel = new HttpKernel(
@@ -263,12 +261,13 @@ class RoutingTestCase extends UnitTest
         );
         
         // Middleware
-        $this->container->singleton(RoutingMiddleware::class, function () use ($condition_factory) {
-            return new RoutingMiddleware(
-                $this->routes,
-                $condition_factory
-            );
-        }
+        $this->container->singleton(RoutingAbstractMiddleware::class,
+            function () use ($condition_factory) {
+                return new RoutingAbstractMiddleware(
+                    $this->routes,
+                    $condition_factory
+                );
+            }
         );
         $this->container->instance(
             RouteRunner::class,
@@ -284,24 +283,27 @@ class RoutingTestCase extends UnitTest
         );
         $this->container->instance(SetRequestAttributes::class, new SetRequestAttributes());
         $this->container->instance(
-            EvaluateResponseMiddleware::class,
-            new EvaluateResponseMiddleware()
+            EvaluateResponseAbstractMiddleware::class,
+            new EvaluateResponseAbstractMiddleware()
         );
         $this->container->instance(ShareCookies::class, new ShareCookies());
         $this->container->instance(
             AllowMatchingAdminAndAjaxRoutes::class,
             new AllowMatchingAdminAndAjaxRoutes()
         );
-        $this->container->instance(FallBackController::class, new FallBackController());
         $this->container->instance(
-            ViewController::class,
-            new ViewController(new FileBasedHtmlResponse())
+            FallBackAbstractController::class,
+            new FallBackAbstractController()
+        );
+        $this->container->instance(
+            ViewAbstractController::class,
+            new ViewAbstractController(new FileBasedHtmlResponseFactory())
         );
     }
     
-    private function outputBufferMiddleware() :Middleware
+    private function outputBufferMiddleware() :AbstractMiddleware
     {
-        return new class extends Middleware
+        return new class extends AbstractMiddleware
         {
             
             public function handle(Request $request, Delegate $next) :ResponseInterface

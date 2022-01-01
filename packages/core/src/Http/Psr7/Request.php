@@ -105,11 +105,23 @@ class Request implements ServerRequestInterface
     public function routingPath() :string
     {
         $uri = $this->getAttribute('routing.uri');
-        
+    
         /** @var UriInterface $uri */
         $uri = $uri ?? $this->getUri();
-        
-        return $uri->getPath();
+    
+        $path = $uri->getPath();
+    
+        $parts = explode('/', $path);
+    
+        $path = implode(
+            '/',
+            array_map(function ($part) {
+                $part = rawurldecode(strtr($part, ['%2f' => '%252f']));
+                return $part;
+            }, $parts)
+        );
+    
+        return $path;
     }
     
     public function loadingScript() :string
@@ -204,6 +216,7 @@ class Request implements ServerRequestInterface
     
     public function pathIs(...$patterns) :bool
     {
+        /** @var @todo Decoded or real path? */
         $path = Url::addLeading($this->decodedPath());
         
         foreach ($patterns as $pattern) {

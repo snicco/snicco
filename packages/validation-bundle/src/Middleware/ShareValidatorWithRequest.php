@@ -7,10 +7,10 @@ namespace Snicco\Validation\Middleware;
 use Snicco\Validation\Validator;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
-class ShareValidatorWithRequest extends Middleware
+class ShareValidatorWithRequest extends AbstractMiddleware
 {
     
     private Validator $validator;

@@ -9,7 +9,7 @@ use Snicco\SessionBundle\Keys;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\ImmutableSession;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
@@ -20,7 +20,7 @@ use function Snicco\SessionBundle\getSessionFromManager;
 /**
  * @interal
  */
-final class StartSession extends Middleware
+final class StartSession extends AbstractMiddleware
 {
     
     /**

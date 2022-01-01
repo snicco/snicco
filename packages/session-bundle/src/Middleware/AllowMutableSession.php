@@ -7,8 +7,8 @@ namespace Snicco\SessionBundle\Middleware;
 use Snicco\SessionBundle\Keys;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Session\Contracts\SessionInterface;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
@@ -17,7 +17,7 @@ use function Snicco\SessionBundle\getSessionFromManager;
 /**
  * @interal
  */
-final class AllowMutableSession extends Middleware
+final class AllowMutableSession extends AbstractMiddleware
 {
     
     /**

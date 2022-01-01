@@ -4,126 +4,67 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Contracts;
 
-use LogicException;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Http\Responses\RedirectResponse;
-use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
+use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
-/**
- * @todo dedicated tests. This class has only implicit tests
- */
-abstract class Redirector
+interface Redirector
 {
     
-    protected UrlGenerator $generator;
-    
-    protected Psr17ResponseFactory $response_factory;
-    
-    public function __construct(UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
-    {
-        $this->generator = $url_generator;
-        $this->response_factory = $response_factory;
-    }
-    
-    public function home($status = 302, bool $secure = true, bool $absolute = false) :RedirectResponse
-    {
-        return $this->to($this->generator->toRoute('home', [], $secure, $absolute), $status);
-    }
-    
-    public function to(string $path, int $status = 302, array $query = [], bool $secure = true, bool $absolute = false) :RedirectResponse
-    {
-        return $this->createRedirectResponse(
-            $this->generator->to($path, $query, $secure, $absolute),
-            $status
-        );
-    }
-    
-    abstract public function createRedirectResponse(string $path, int $status_code = 302) :RedirectResponse;
-    
-    public function absoluteRedirect(string $path, int $status = 302, array $query = [], bool $secure = true) :RedirectResponse
-    {
-        return $this->to($path, $status, $query, $secure, true);
-    }
-    
-    public function toRoute(string $name, int $status = 302, array $arguments = [], bool $secure = true, bool $absolute = false) :RedirectResponse
-    {
-        return $this->createRedirectResponse(
-            $this->generator->toRoute($name, $arguments, $secure, $absolute),
-            $status
-        );
-    }
-    
-    public function secure(string $path, int $status = 302, array $query = []) :RedirectResponse
-    {
-        return $this->to($path, $status, $query);
-    }
-    
-    public function toLogin(string $redirect_on_login = '', bool $reauth = false, int $status_code = 302) :RedirectResponse
-    {
-        return $this->createRedirectResponse(
-            $this->generator->toLogin($redirect_on_login, $reauth),
-            $status_code
-        );
-    }
+    /**
+     * Tries to create a redirect response to a "home" route and falls back to "/" if no home route
+     * exists.
+     */
+    public function home(array $arguments = [], int $status_code = 302) :RedirectResponse;
     
     /**
-     * NOTE: NEVER use this function with user supplied input.
-     * Create a new redirect response to an external URL (no validation).
-     * This will also completely bypass any validation inside the OpenRedirectProtectionMiddleware.
+     * @throws RouteNotFound
+     * @see UrlGeneratorInterface::toRoute()
      */
-    public function away($path, $status = 302) :RedirectResponse
-    {
-        $response = $this->createRedirectResponse($path, $status);
-        return $response->bypassValidation();
-    }
+    public function toRoute(string $name, array $arguments = [], int $status_code = 302) :RedirectResponse;
     
-    public function refresh(int $status = 302) :RedirectResponse
-    {
-        return $this->createRedirectResponse($this->generator->current(), $status);
-    }
+    /**
+     * Redirect to the current path+query with a 302 status code.
+     */
+    public function refresh() :RedirectResponse;
     
-    public function intended(Request $request, string $fallback = '', int $status = 302) :RedirectResponse
-    {
-        $from_query = rawurldecode($request->query('intended', ''));
-        
-        if ($from_query !== '') {
-            return $this->to($from_query, $status);
-        }
-        
-        if ($fallback !== '') {
-            return $this->to($fallback, $status);
-        }
-        
-        return $this->to('/', $status);
-    }
+    /**
+     * Redirects the user the referer header or the fallback path if the header is not present.
+     */
+    public function back(string $fallback = '/', int $status_code = 302) :RedirectResponse;
     
-    public function previous(int $status = 302, string $fallback = '') :RedirectResponse
-    {
-        return $this->back($status, $fallback);
-    }
+    /**
+     * Redirects the user to the provided path and appends an "intended" query param with a value
+     * of the current full url. Meant to be used in combination with
+     * {@see Redirector::intended()}
+     */
+    public function deny(string $path, int $status_code = 302, array $query = []) :RedirectResponse;
     
-    public function back(int $status = 302, string $fallback = '') :RedirectResponse
-    {
-        $previous_url = $this->generator->back($fallback);
-        
-        return $this->createRedirectResponse($previous_url, $status);
-    }
+    /**
+     * Looks for an "intended" query param and redirects the user to it.
+     * Meant to be used in combination with
+     * {@see Redirector::deny()}
+     *
+     * @param  string  $fallback  If the query parameter is not present
+     */
+    public function intended(string $fallback = '/', int $status_code = 302) :RedirectResponse;
     
-    public function guest(string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = false)
-    {
-        throw new LogicException(
-            'The Redirector::guest method can only be used when sessions are enabled in the config'
-        );
-    }
+    /**
+     * Redirects to a path on the same domain.
+     *
+     * @see UrlGeneratorInterface::to()
+     */
+    public function to(string $path, int $status_code = 302, array $query = []) :RedirectResponse;
     
-    protected function validateStatusCode(int $status_code)
-    {
-        $valid = in_array($status_code, [201, 301, 302, 303, 304, 307, 308]);
-        
-        if ( ! $valid) {
-            throw new LogicException("Status code [{$status_code} is not valid for redirects.]");
-        }
-    }
+    /**
+     * Redirects to a path on the same domain. Will force a redirect to https if the current
+     * request scheme is http.
+     */
+    public function secure(string $path, int $status_code = 302, array $query = []) :RedirectResponse;
+    
+    /**
+     * This function SHOULD NEVER be used with user supplied input, or you are exposing yourself to
+     * open-redirect exploits.
+     */
+    public function away(string $absolute_url, int $status_code = 302) :RedirectResponse;
     
 }

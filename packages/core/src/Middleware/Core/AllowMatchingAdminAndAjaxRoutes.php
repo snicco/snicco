@@ -6,8 +6,8 @@ namespace Snicco\Core\Middleware\Core;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
 /**
  * This middleware is needed to allow matching of WordPress admin pages
@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
  * This allows users to create ajax routes like this without needing to use conditions:
  * $router->post('my_action')
  */
-class AllowMatchingAdminAndAjaxRoutes extends Middleware
+class AllowMatchingAdminAndAjaxRoutes extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

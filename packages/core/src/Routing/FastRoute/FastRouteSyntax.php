@@ -20,8 +20,8 @@ class FastRouteSyntax
         
         $url = $this->convertOptionalSegments($route_url);
         
-        foreach ($route->getRegex() as $regex) {
-            $url = $this->addCustomRegexToSegments($regex, $url);
+        foreach ($route->getRegex() as $param_name => $pattern) {
+            $url = $this->addCustomRegexToSegments($param_name, $pattern, $url);
         }
         
         $url = $with_trailing ? Url::addTrailing($url) : $url;
@@ -60,21 +60,15 @@ class FastRouteSyntax
         return $url_pattern;
     }
     
-    private function addCustomRegexToSegments(array $regex, string $url) :string
+    private function addCustomRegexToSegments(string $param_name, string $pattern, string $url) :string
     {
-        $regex = $this->replaceEscapedForwardSlashes($regex);
+        $regex = $this->replaceEscapedForwardSlashes($pattern);
         
-        $segments = UrlParser::segments($url);
+        $pattern = sprintf("/(%s(?=\\}))/", preg_quote($param_name, '/'));
         
-        $segments = $this->segmentsWithCustomRegex($segments, $regex);
-        
-        foreach ($segments as $segment) {
-            $pattern = sprintf("/(%s(?=\\}))/", preg_quote($segment, '/'));
-            
-            $url = preg_replace_callback($pattern, function ($match) use ($regex) {
-                return $match[0].':'.$regex[$match[0]];
-            }, $url, 1);
-        }
+        $url = preg_replace_callback($pattern, function ($match) use ($regex) {
+            return $match[0].':'.$regex;
+        }, $url, 1);
         
         return rtrim($url, '/');
     }
@@ -107,17 +101,13 @@ class FastRouteSyntax
     
     private function ensureRouteOnlyMatchesWithTrailingSlash($url, Route $route) :string
     {
-        foreach ($route->getSegmentNames() as $segment) {
-            $url = $this->addCustomRegexToSegments([$segment => '[^\/]+\/?'], $url);
-        }
-        
         return Str::replaceFirst('[/', '/[', $url);
     }
     
     /**
      * @note Fast Route uses unescaped forward slashes and wraps the entire regex in ~ chars.
      */
-    private function replaceEscapedForwardSlashes(array $regex)
+    private function replaceEscapedForwardSlashes(string $regex)
     {
         return str_replace('\\/', '/', $regex);
     }
