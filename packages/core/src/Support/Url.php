@@ -12,9 +12,12 @@ class Url
     // Trailing slashes are kept if present for the last segment
     public static function combineRelativePath($before, $new) :string
     {
-        $before = ($before === '') ? '/' : '/'.trim($before, '/').'/';
-        
-        return $before.ltrim($new, '/');
+        $before = trim($before, '/');
+        $new = ltrim($new, '/');
+    
+        $before = ($before === '') ? '/' : '/'.$before;
+    
+        return $before.'/'.$new;
     }
     
     public static function combineAbsPath($host, $path) :string

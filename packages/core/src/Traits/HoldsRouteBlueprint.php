@@ -4,64 +4,77 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Traits;
 
+use LogicException;
 use Snicco\Support\Arr;
+use Snicco\Core\Support\Url;
+use Snicco\Core\Support\Path;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\Routing\Router;
-use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Routing\MenuItem;
+use Snicco\Core\Routing\Internal\AdminDashboardRequest;
 
 trait HoldsRouteBlueprint
 {
     
     private array $delegate_attributes = [];
     
-    public function get(string $url = '*', $action = null) :Route
+    public function get(string $name, string $path, $action = null) :Route
     {
-        return $this->addRoute(['GET', 'HEAD'], $url, $action);
+        return $this->registerRoute($name, $path, ['GET', 'HEAD'], $action);
     }
     
-    public function post(string $url = '*', $action = null) :Route
+    public function admin(string $name, string $path, $action = null, MenuItem $menu_item = null) :Route
     {
-        return $this->addRoute(['POST'], $url, $action);
-    }
-    
-    public function put(string $url = '*', $action = null) :Route
-    {
-        return $this->addRoute(['PUT'], $url, $action);
-    }
-    
-    public function patch(string $url = '*', $action = null) :Route
-    {
-        return $this->addRoute(['PATCH'], $url, $action);
-    }
-    
-    public function delete(string $url = '*', $action = null) :Route
-    {
-        return $this->addRoute(['DELETE'], $url, $action);
-    }
-    
-    public function options(string $url = '*', $action = null) :Route
-    {
-        return $this->addRoute(['OPTIONS'], $url, $action);
-    }
-    
-    public function any(string $url = '*', $action = null) :Route
-    {
-        return $this->addRoute(
-            ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-            $url,
-            $action
-        );
-    }
-    
-    public function match($verbs, $url, $action = null) :Route
-    {
-        $verbs = Arr::wrap($verbs);
+        if ($this->hasGroup() && $this->currentGroup()->prefix()->asString() !== '/') {
+            throw new LogicException(
+                "Its not possible to add a prefix to admin route [$name]."
+            );
+        }
         
-        return $this->addRoute(array_map('strtoupper', $verbs), $url, $action);
+        $path = Url::combineRelativePath($this->admin_path->urlPrefix(), $path);
+        $route = $this->get($name, $path, $action);
+        
+        $route->condition(AdminDashboardRequest::class);
+        
+        return $route;
+    }
+    
+    public function post(string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, ['POST'], $action);
+    }
+    
+    public function put(string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, ['PUT'], $action);
+    }
+    
+    public function patch(string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, ['PATCH'], $action);
+    }
+    
+    public function delete(string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, ['DELETE'], $action);
+    }
+    
+    public function options(string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, ['OPTIONS'], $action);
+    }
+    
+    public function any(string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, Route::ALL_METHODS, $action);
+    }
+    
+    public function match(array $verbs, string $name, string $path, $action = null) :Route
+    {
+        return $this->registerRoute($name, $path, array_map('strtoupper', $verbs), $action);
     }
     
     /**
-     * @param  string|array  $middleware
+     * @param  string|array<string>  $middleware
      */
     public function middleware($middleware) :self
     {
@@ -77,48 +90,13 @@ trait HoldsRouteBlueprint
     
     public function prefix(string $prefix) :self
     {
-        $this->delegate_attributes['prefix'] = $prefix;
-        return $this;
-    }
-    
-    /**
-     * @param  string|Condition|Closure|callable  $condition
-     * @param  mixed  $args,...  Arguments that will be passed into the condition (if any).
-     * If the condition equals (string)'negate', the second argument will be used as the Condition.
-     *
-     * @return Router
-     */
-    public function where($condition, ...$args) :self
-    {
-        if ( ! isset($this->delegate_attributes['where'])) {
-            $this->delegate_attributes['where'] = [];
-        }
-        
-        $this->delegate_attributes['where'][] = array_merge([$condition], $args);
-        
-        return $this;
-    }
-    
-    public function noAction() :self
-    {
-        $this->delegate_attributes['noAction'] = true;
+        $this->delegate_attributes['prefix'] = Path::fromString($prefix);
         return $this;
     }
     
     public function namespace(string $namespace) :self
     {
         $this->delegate_attributes['namespace'] = $namespace;
-        return $this;
-    }
-    
-    /**
-     * @param  array|string  $methods
-     *
-     * @return $this
-     */
-    public function methods($methods) :self
-    {
-        $this->delegate_attributes['methods'] = Arr::wrap($methods);
         return $this;
     }
     

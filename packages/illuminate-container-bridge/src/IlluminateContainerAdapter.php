@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Illuminate;
 
 use Closure;
-use Snicco\Core\Shared\ContainerAdapter;
 use Illuminate\Container\Container;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Shared\FrozenServiceException;
 
 final class IlluminateContainerAdapter extends ContainerAdapter
@@ -46,12 +46,12 @@ final class IlluminateContainerAdapter extends ContainerAdapter
     
     public function has(string $id)
     {
-        $this->illuminate_container->has($id);
+        return $this->illuminate_container->has($id);
     }
     
     public function offsetExists($offset)
     {
-        $this->illuminate_container->offsetExists($offset);
+        return $this->illuminate_container->offsetExists($offset);
     }
     
     public function offsetUnset($offset)

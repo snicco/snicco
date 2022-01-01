@@ -54,26 +54,6 @@ trait CreatePsrRequests
         return $request->withQueryParams(['page' => $menu_slug]);
     }
     
-    protected function adminAjaxRequest(string $method, string $action, array $data = []) :Request
-    {
-        $method = strtoupper($method);
-        $uri = $this->createUri($this->ajaxUrl($method === 'GET' ? $action : ''));
-        
-        $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                $method,
-                $uri,
-                ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-            )
-        );
-        
-        if ($request->isGet()) {
-            return $request->withQueryParams(array_merge(['action' => $action], $data));
-        }
-        
-        return $request->withParsedBody(array_merge(['action' => $action], $data));
-    }
-    
     private function createUri($uri) :UriInterface
     {
         if (is_string($uri)) {

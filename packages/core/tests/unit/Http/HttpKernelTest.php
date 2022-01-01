@@ -31,7 +31,7 @@ class HttpKernelTest extends RoutingTestCase
         
         $request = $this->frontendRequest('GET', '/bar');
         
-        $this->assertEmptyResponse($request);
+        $this->assertEmptyBody($request);
         HeaderStack::assertNoStatusCodeSent();
     }
     
@@ -44,7 +44,7 @@ class HttpKernelTest extends RoutingTestCase
         
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody('foo', $request);
         HeaderStack::assertHasStatusCode(200);
     }
     
@@ -57,7 +57,7 @@ class HttpKernelTest extends RoutingTestCase
         
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody('foo', $request);
         $this->event_dispatcher->assertDispatched(ResponseSent::class);
     }
     

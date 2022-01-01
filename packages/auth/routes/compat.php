@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
+use Snicco\Core\Routing\Internal\Router;
 use Snicco\Auth\Controllers\WPLoginRedirectAbstractController;
 use Snicco\Auth\Controllers\Compat\PasswordResetEmailAbstractController;
 use Snicco\Auth\Controllers\Compat\BulkPasswordResetEmailAbstractController;

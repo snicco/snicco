@@ -5,42 +5,26 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Snicco\Core\Support\WP;
+use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\RouteRegistrar;
-use Snicco\Core\Contracts\RouteUrlMatcher;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\Routing\Internal\Generator;
 use Snicco\Core\Factories\MiddlewareFactory;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
-use Snicco\Core\Contracts\RouteCollectionInterface;
-use Snicco\Core\Routing\Conditions\CustomCondition;
-use Snicco\Core\Routing\Conditions\NegateCondition;
-use Snicco\Core\Routing\Conditions\PostIdCondition;
-use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
-use Snicco\Core\Routing\Conditions\PostSlugCondition;
-use Snicco\Core\Routing\Conditions\PostTypeCondition;
-use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
-use Snicco\Core\Routing\Conditions\PostStatusCondition;
-use Snicco\Core\Routing\Conditions\QueryStringCondition;
-use Snicco\Core\Routing\Conditions\PostTemplateCondition;
+use Snicco\Core\Routing\Internal\RequestContext;
+use Snicco\Core\Routing\Internal\RFC3986Encoder;
+use Snicco\Core\Routing\Internal\RouteCollection;
+use Snicco\Core\Routing\Internal\RouteFileRegistrar;
+use Snicco\Core\Routing\Internal\CachedRouteFileRegistrar;
 
-class RoutingServiceProvider extends ServiceProvider
+/**
+ * @api
+ */
+final class RoutingServiceProvider extends ServiceProvider
 {
-    
-    /**
-     * @var array<string, string>
-     */
-    const CONDITION_TYPES = [
-        'custom' => CustomCondition::class,
-        'negate' => NegateCondition::class,
-        'post_id' => PostIdCondition::class,
-        'post_slug' => PostSlugCondition::class,
-        'post_status' => PostStatusCondition::class,
-        'post_template' => PostTemplateCondition::class,
-        'post_type' => PostTypeCondition::class,
-        'query_string' => QueryStringCondition::class,
-    ];
     
     public function register() :void
     {
@@ -92,7 +76,7 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindRouteCollection() :void
     {
-        $this->container->singleton(RouteCollectionInterface::class, function () {
+        $this->container->singleton(Routes::class, function () {
             if ( ! $this->config->get('routing.cache', false)) {
                 return new RouteCollection(
                     $this->container->get(RouteUrlMatcher::class),
@@ -115,7 +99,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(Router::class, function () {
             return new Router(
-                $this->container->get(RouteCollectionInterface::class),
+                $this->container->get(Routes::class),
                 $this->withSlashes()
             );
         });
@@ -123,17 +107,17 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindUrlGenerator() :void
     {
-        $this->container->singleton(UrlGeneratorInterface::class, function () {
+        $this->container->singleton(UrlGenerator::class, function () {
             /** @var Request $request */
             $request = $this->container[Request::class];
             
-            $context = new UrlGenerationContext(
+            $context = new RequestContext(
                 $request,
                 $this->withSlashes(),
             );
             
-            return new UrlGenerator(
-                $this->container[RouteCollectionInterface::class],
+            return new Generator(
+                $this->container[Routes::class],
                 $context,
                 new RFC3986Encoder()
             );

@@ -8,7 +8,7 @@ use Closure;
 use Snicco\Support\Arr;
 use Snicco\Session\Session;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Responsable;

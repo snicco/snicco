@@ -7,7 +7,7 @@ namespace Snicco\Core\Traits;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\Routing\ConditionBlueprint;
+use Snicco\Core\Routing\Internal\ConditionBlueprint;
 
 trait HydratesRoute
 {
@@ -22,9 +22,10 @@ trait HydratesRoute
     public static function hydrate(array $attributes) :Route
     {
         $route = new Route(
-            $attributes['methods'],
             $attributes['url'],
-            $attributes['action']
+            $attributes['controller'],
+            $attributes['name'],
+            $attributes['methods'],
         );
         
         foreach (Arr::except($attributes, ['url', 'methods', 'action']) as $attribute => $value) {
@@ -41,8 +42,8 @@ trait HydratesRoute
     
     private function unserializeAction()
     {
-        if ($this->isSerializedClosure($this->getAction())) {
-            $action = \Opis\Closure\unserialize($this->getAction());
+        if ($this->isSerializedClosure($this->getController())) {
+            $action = \Opis\Closure\unserialize($this->getController());
             
             $this->handle($action);
         }

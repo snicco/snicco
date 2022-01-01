@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Core\Routing\Router;
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Pipeline;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\RouteUrlMatcher;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\Factories\RouteConditionFactory;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
-use Snicco\Core\Routing\CachedRouteFileRegistrar;
-use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
-use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Routing\Internal\CachedRouteFileRegistrar;
+use Snicco\Core\Routing\Internal\FastRoute\RouteUrlGenerator;
+use Snicco\Core\Routing\Internal\FastRoute\FastRouteUrlMatcher;
 
 use const DS;
 
@@ -183,9 +183,9 @@ class RoutingServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $url_g = TestApp::resolve(UrlGeneratorInterface::class);
+        $url_g = TestApp::resolve(UrlGenerator::class);
         
-        $this->assertInstanceOf(UrlGeneratorInterface::class, $url_g);
+        $this->assertInstanceOf(UrlGenerator::class, $url_g);
     }
     
     /** @test */

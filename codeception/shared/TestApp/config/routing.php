@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Tests\Core\fixtures\Conditions\TrueCondition;
+use Tests\Core\fixtures\Conditions\TrueRouteCondition;
 
 return [
     
@@ -17,7 +17,7 @@ return [
     'trailing_slash' => false,
     
     'conditions' => [
-        'true' => TrueCondition::class,
+        'true' => TrueRouteCondition::class,
     ],
 
 ];

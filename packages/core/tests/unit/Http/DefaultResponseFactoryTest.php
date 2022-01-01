@@ -14,10 +14,10 @@ use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Responsable;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Routing\RouteCollection;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\DefaultResponseFactory;
-use Snicco\Core\Routing\UrlGenerationContext;
+use Snicco\Core\Routing\Internal\RequestContext;
+use Snicco\Core\Routing\Internal\RouteCollection;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class DefaultResponseFactoryTest extends UnitTest
@@ -238,8 +238,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
@@ -263,8 +263,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         )->withAddedHeader('referer', '/foo/bar');
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
@@ -288,8 +288,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
@@ -325,8 +325,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
@@ -370,8 +370,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
@@ -398,8 +398,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
@@ -417,8 +417,8 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
+        $context = new RequestContext($request);
+        $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),

@@ -4,133 +4,126 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
-use Tests\Codeception\shared\TestDependencies\Bar;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Application\Config;
 use Tests\Codeception\shared\TestDependencies\Foo;
-use Tests\Core\fixtures\Controllers\Web\TeamsController;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Tests\Core\fixtures\Conditions\RouteConditionWithDependency;
 use Tests\Core\fixtures\Controllers\Web\ControllerWithDependencies;
 
 class RouteActionDependencyInjectionTest extends RoutingTestCase
 {
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->container->instance(TeamsController::class, new TeamsController());
-        $this->container->instance(Foo::class, new Foo());
-        $this->container->instance(Bar::class, new Bar());
-        $this->container->instance(
-            ControllerWithDependencies::class,
-            new ControllerWithDependencies($this->container[Foo::class])
-        );
-    }
     
     /** @test */
     public function the_request_does_not_have_to_be_bound_in_the_container()
     {
         $this->assertFalse($this->container->has(Request::class));
         
-        $this->createRoutes(function () {
-            $this->router->get('foo', function (Request $request) {
-                return $request->path();
-            });
-        });
+        $this->routeConfigurator()->get(
+            'route1',
+            '/foo',
+            [RoutingTestController::class, 'onlyRequest']
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('/foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function its_not_required_to_have_class_dependencies()
     {
-        $this->createRoutes(function () {
-            $this->router->get('teams/{team}/{player}', TeamsController::class.'@withoutClassDeps');
-        });
+        $this->routeConfigurator()->get(
+            'r1',
+            'teams/{team}/{player}',
+            [RoutingTestController::class, 'twoParams']
+        );
         
         $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponse('dortmund:calvin', $request);
+        $this->assertResponseBody('dortmund:calvin', $request);
+    }
+    
+    /** @test */
+    public function the_request_can_be_required_together_with_params()
+    {
+        $this->routeConfigurator()->get(
+            'r1',
+            'teams/{team}/{player}',
+            [RoutingTestController::class, 'twoParamsWithRequest']
+        );
+        
+        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
+        $this->assertResponseBody('dortmund:calvin', $request);
     }
     
     /** @test */
     public function its_possible_to_require_a_class_but_not_the_request()
     {
-        $this->createRoutes(function () {
-            $this->router->get('teams/{team}/{player}', function (Foo $foo, $team, $player) {
-                return $foo->foo.':'.$team.':'.$player;
-            });
-        });
+        $foo = new Foo();
+        $this->container[Foo::class] = $foo;
+        $foo->foo = 'FOO';
+        
+        $this->routeConfigurator()->get(
+            'r1',
+            'teams/{team}/{player}',
+            [RoutingTestController::class, 'twoParamsWithDependency']
+        );
         
         $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponse('foo:dortmund:calvin', $request);
+        $this->assertResponseBody('FOO:dortmund:calvin', $request);
     }
     
     /** @test */
-    public function dependencies_for_controller_actions_are_resolved()
+    public function its_possible_to_require_a_class_and_the_request_plus_params()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', ControllerWithDependencies::class.'@handle');
-        });
+        $foo = new Foo();
+        $this->container[Foo::class] = $foo;
+        $foo->foo = 'FOO';
         
-        $request = $this->frontendRequest('GET', 'foo');
-        $this->assertResponse('foo_controller', $request);
-    }
-    
-    /** @test */
-    public function method_dependencies_for_controller_actions_are_resolved()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', ControllerWithDependencies::class.'@withMethodDependency');
-        });
-        
-        $request = $this->frontendRequest('GET', 'foo');
-        $this->assertResponse('foobar_controller', $request);
-    }
-    
-    /** @test */
-    public function additional_dependencies_are_passed_to_the_controller_method_before_route_segments()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('teams/{team}/{player}', TeamsController::class.'@withDependencies');
-        });
+        $this->routeConfigurator()->get(
+            'r1',
+            'teams/{team}/{player}',
+            [RoutingTestController::class, 'twoParamsWithDependencyAndRequest']
+        );
         
         $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponse('foo:bar:dortmund:calvin', $request);
+        $this->assertResponseBody('FOO:dortmund:calvin', $request);
+    }
+    
+    /** @test */
+    public function controllers_are_resolved_from_the_container()
+    {
+        $foo = new Foo();
+        $this->container[Foo::class] = $foo;
+        $foo->foo = 'FOO';
+        
+        $this->container[ControllerWithDependencies::class] = new ControllerWithDependencies($foo);
+        
+        $this->routeConfigurator()->get('r1', '/foo', ControllerWithDependencies::class);
+        
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertResponseBody('FOO_controller', $request);
     }
     
     /** @test */
     public function arguments_from_conditions_are_passed_after_class_dependencies()
     {
-        $this->createRoutes(function () {
-            $this->router
-                ->get('*', TeamsController::class.'@withConditions')
-                ->where(function ($baz, $biz) {
-                    return $baz === 'baz' && $biz === 'biz';
-                }, 'baz', 'biz');
-        });
+        $foo = new Foo();
+        $this->container[Foo::class] = $foo;
+        $foo->foo = 'FOO';
+        
+        $config = new Config();
+        $this->container[Config::class] = $config;
+        $config->set('foo', 'FOO_CONFIG');
+        
+        $this->routeConfigurator()->get(
+            'r1',
+            'teams/{team}/{player}',
+            [RoutingTestController::class, 'requestDependencyParamsCondition']
+        )->condition(RouteConditionWithDependency::class, true);
         
         $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponse('foo:bar:baz:biz', $request);
-    }
-    
-    /** @test */
-    public function closure_actions_also_get_all_dependencies_injected_in_the_correct_order()
-    {
-        $this->createRoutes(function () {
-            $this->router
-                ->get()
-                ->where(function ($baz, $biz) {
-                    return $baz === 'baz' && $biz === 'biz';
-                }, 'baz', 'biz')
-                ->handle(
-                    function (Request $request, Foo $foo, Bar $bar, $baz, $biz) {
-                        return $foo->foo.':'.$bar->bar.':'.$baz.':'.$biz;
-                    }
-                );
-        });
-        
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponse('foo:bar:baz:biz', $request);
+        $this->assertResponseBody('FOO:dortmund:calvin:FOO_CONFIG', $request);
     }
     
 }

@@ -4,100 +4,44 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Factories;
 
-use Snicco\Core\Contracts\Condition;
+use Webmozart\Assert\Assert;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Routing\ConditionBlueprint;
 use Snicco\Core\Support\ReflectionDependencies;
-use Snicco\Core\Routing\Conditions\NegateCondition;
-use Snicco\Core\Routing\Conditions\CustomCondition;
+use Snicco\Core\Contracts\AbstractRouteCondition;
+use Snicco\Core\Routing\Internal\ConditionBlueprint;
+use Snicco\Core\Routing\Internal\NegateRouteCondition;
 
-class RouteConditionFactory
+/**
+ * @interal
+ */
+final class RouteConditionFactory
 {
     
-    /**
-     * Registered condition types.
-     *
-     * @var array<string, string>
-     */
-    private array            $condition_types;
-    private ContainerAdapter $container;
+    private ContainerAdapter $container_adapter;
     
-    public function __construct(array $condition_types, ContainerAdapter $container)
+    public function __construct(ContainerAdapter $container_adapter)
     {
-        $this->condition_types = $condition_types;
-        $this->container = $container;
+        $this->container_adapter = $container_adapter;
     }
     
-    /**
-     * @param  ConditionBlueprint[]  $condition_blueprints
-     *
-     * @return array
-     */
-    public function buildConditions(array $condition_blueprints) :array
+    public function create(ConditionBlueprint $blueprint) :AbstractRouteCondition
     {
-        $conditions = array_map(function (ConditionBlueprint $condition) {
-            if ($compiled = $this->alreadyCompiled($condition)) {
-                return $compiled;
-            }
-            
-            return $this->new($condition);
-        }, $condition_blueprints);
+        $class = $blueprint->class();
+        $args = $blueprint->passedArgs();
         
-        return array_unique($conditions, SORT_REGULAR);
-    }
-    
-    private function alreadyCompiled(ConditionBlueprint $condition) :?object
-    {
-        if ($condition->type() === ConditionBlueprint::NEGATES_WORD) {
-            return null;
+        $deps = new ReflectionDependencies($this->container_adapter);
+        
+        $deps = $deps->build($class, $args);
+        
+        /** @var AbstractRouteCondition $instance */
+        $instance = new $class(...$deps);
+        Assert::isInstanceOf($instance, AbstractRouteCondition::class);
+        
+        if ($blueprint->isNegated()) {
+            return new NegateRouteCondition($instance);
         }
         
-        return $condition->instance();
-    }
-    
-    private function new(ConditionBlueprint $blueprint)
-    {
-        $type = $this->transformAliasToClassName($blueprint->type());
-        $conditions_arguments = $blueprint->args();
-        
-        if ($type === $this->condition_types[ConditionBlueprint::NEGATES_WORD]) {
-            return $this->newNegated($blueprint, $conditions_arguments);
-        }
-        
-        if ($blueprint->instance()) {
-            return $blueprint->instance();
-        }
-        
-        $deps = (new ReflectionDependencies($this->container))->build($type, $conditions_arguments);
-        
-        return new $type(...$deps);
-    }
-    
-    private function transformAliasToClassName(string $type)
-    {
-        return $this->condition_types[$type] ?? $type;
-    }
-    
-    private function newNegated(ConditionBlueprint $blueprint, array $args) :NegateCondition
-    {
-        $instance = $blueprint->instance();
-        
-        if ($instance instanceof Condition) {
-            return new NegateCondition($instance);
-        }
-        
-        if (is_callable($instance)) {
-            return new NegateCondition(new CustomCondition($instance, $args));
-        }
-        
-        if (is_callable($negates = $blueprint->negates())) {
-            return new NegateCondition(new CustomCondition($negates, $args));
-        }
-        
-        $type = $this->transformAliasToClassName($negates);
-        $deps = (new ReflectionDependencies($this->container))->build($type, $args);
-        
-        return new NegateCondition(new $type(...$deps));
+        return $instance;
     }
     
 }

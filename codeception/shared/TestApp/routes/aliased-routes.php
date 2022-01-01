@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Tests\Codeception\shared\TestApp\TestApp;
 
-TestApp::route()->group(function () {
+TestApp::route()->createInGroup(function () {
     TestApp::get('get', function () {
         return 'get';
     })->name('get');

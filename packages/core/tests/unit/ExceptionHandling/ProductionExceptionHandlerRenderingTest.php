@@ -14,6 +14,7 @@ use Snicco\Core\Support\WP;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\UrlGenerator;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Application\Application;
@@ -21,7 +22,6 @@ use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Core\ExceptionHandling\WhoopsHandler;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
@@ -311,9 +311,9 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         );
     }
     
-    private function newUrlGenerator()
+    private function refreshUrlGenerator()
     {
-        return Mockery::mock(UrlGeneratorInterface::class);
+        return Mockery::mock(UrlGenerator::class);
     }
     
     private function getWhoops()

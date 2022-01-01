@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Core\Application;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Routing\Router;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Support\ReflectionDependencies;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -81,8 +81,8 @@ class ApplicationServiceProvider extends ServiceProvider
     private function routingAliases(Application $app)
     {
         $app->alias('route', Router::class);
-        $app->alias('url', UrlGeneratorInterface::class);
-        $app->alias('routeUrl', UrlGeneratorInterface::class, 'toRoute');
+        $app->alias('url', UrlGenerator::class);
+        $app->alias('routeUrl', UrlGenerator::class, 'toRoute');
         $app->alias('post', Router::class, 'post');
         $app->alias('get', Router::class, 'get');
         $app->alias('patch', Router::class, 'patch');

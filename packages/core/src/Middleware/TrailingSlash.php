@@ -6,10 +6,10 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
 class TrailingSlash extends AbstractMiddleware
 {

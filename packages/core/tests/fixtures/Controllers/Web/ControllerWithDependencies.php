@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Core\fixtures\Controllers\Web;
 
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\TestDependencies\Foo;
 
 class ControllerWithDependencies
@@ -18,14 +17,9 @@ class ControllerWithDependencies
         $this->foo = $foo;
     }
     
-    public function handle(Request $request)
+    public function __invoke(Request $request) :string
     {
         return $this->foo->foo.'_controller';
-    }
-    
-    public function withMethodDependency(Request $request, Bar $bar)
-    {
-        return $this->foo->foo.$bar->bar.'_controller';
     }
     
 }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 use Snicco\Core\Contracts\ResponseFactory;
 use Tests\Core\fixtures\Conditions\IsPost;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Tests\Core\fixtures\Middleware\FooAbstractMiddleware;
 use Tests\Core\fixtures\Middleware\WebMiddleware;
-use Tests\Core\fixtures\Middleware\FooBarAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\FooMiddleware;
+use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 
 $pass_condition = $GLOBALS['test']['pass_fallback_route_condition'] ?? false;
 
@@ -20,7 +20,7 @@ $router->get('foo', function () {
 $router->get('foo_middleware', function () {
     return 'foo';
 })
-       ->middleware([FooAbstractMiddleware::class, FooBarAbstractMiddleware::class]);
+       ->middleware([FooMiddleware::class, FoobarMiddleware::class]);
 
 $router->get()
        ->where(IsPost::class, $pass_condition)

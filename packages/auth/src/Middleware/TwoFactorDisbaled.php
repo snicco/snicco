@@ -2,10 +2,10 @@
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 
 class TwoFactorDisbaled extends AbstractMiddleware

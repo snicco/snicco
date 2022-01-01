@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Routing\RFC3986Encoder;
+use Snicco\Core\Routing\Internal\RFC3986Encoder;
 
 final class RFC3986EncoderTest extends UnitTest
 {

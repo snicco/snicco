@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use Snicco\Support\Arr;
-use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Http\Responses\NullResponse;
@@ -14,14 +13,17 @@ use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
-use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
+use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
-class HttpKernel
+/**
+ * @todo The kernel should not send the response.
+ */
+final class HttpKernel
 {
     
     private Pipeline $pipeline;
@@ -31,9 +33,9 @@ class HttpKernel
         MethodOverride::class,
         EvaluateResponseAbstractMiddleware::class,
         ShareCookies::class,
-        AllowMatchingAdminAndAjaxRoutes::class,
+        AllowMatchingAdminRoutes::class,
         OutputBufferAbstractMiddleware::class,
-        RoutingAbstractMiddleware::class,
+        RoutingMiddleware::class,
         RouteRunner::class,
     ];
     

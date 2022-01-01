@@ -7,7 +7,7 @@ namespace Tests\Core\integration\ExceptionHandling;
 use Whoops\Run;
 use ReflectionClass;
 use Whoops\RunInterface;
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Pipeline;
 use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Snicco\Core\Contracts\ExceptionHandler;

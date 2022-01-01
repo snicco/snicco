@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Factories;
 
 use Snicco\Core\Routing\ClosureAction;
-use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Routing\ControllerAction;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Factories\RouteActionFactory;
+use Snicco\Core\Routing\Internal\ControllerAction;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Core\fixtures\Controllers\Web\WebController;
 

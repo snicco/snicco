@@ -11,7 +11,7 @@ final class RouteNotFound extends InvalidArgumentException
     
     public static function name(string $route_name) :RouteNotFound
     {
-        return new self("There is no named route with the name: '.[$route_name].' registered.");
+        return new self("There is no named route with the name: [$route_name] registered.");
     }
     
 }

@@ -12,13 +12,13 @@ trait ValidatesRoutes
     
     private function validateAttributes(Route $route)
     {
-        if ( ! $route->getAction()) {
+        if ( ! $route->getController()) {
             throw new ConfigurationException('Tried to register a route with no attached action.');
         }
         
         if ($route->routableByUrl() && $route->routableByCondition()) {
             throw new ConfigurationException(
-                "Route that uses the pattern [{$route->getUrl()}] also uses custom conditions."
+                "Route that uses the pattern [{$route->getPattern()}] also uses custom conditions."
             );
         }
         

@@ -33,14 +33,34 @@ namespace Snicco\Core\Support\Functions
         if (is_object($class)) {
             $class = get_class($class);
         }
-        
+    
         $results = [];
-        
+    
         foreach (array_reverse(class_parents($class)) + [$class => $class] as $class) {
             $results += traitUsesRecursive($class);
         }
-        
+    
         return array_unique($results);
+    }
+    
+    /**
+     * @param  string|object  $class_or_object
+     *
+     * @interal
+     */
+    function isInterface($class_or_object, string $interface) :bool
+    {
+        $class = is_object($class_or_object)
+            ? get_class($class_or_object)
+            : $class_or_object;
+        
+        if ( ! class_exists($class)) {
+            return false;
+        }
+        
+        $implements = (array) class_implements($class);
+        
+        return in_array($interface, $implements, true);
     }
     
     /**

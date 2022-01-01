@@ -6,21 +6,24 @@ namespace Snicco\Core\Routing\Conditions;
 
 use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Contracts\AbstractRouteCondition;
 
-class QueryStringCondition implements Condition
+/**
+ * @api
+ */
+class QueryStringCondition extends AbstractRouteCondition
 {
     
-    protected array $query_string_arguments;
+    /**
+     * @var array<string,string>
+     */
+    private array $query_string_arguments;
     
     public function __construct($query_string_arguments)
     {
         $this->query_string_arguments = Arr::wrap($query_string_arguments);
     }
     
-    /**
-     * @return bool|void
-     */
     public function isSatisfied(Request $request) :bool
     {
         $query_args = $request->getQueryParams();
@@ -42,7 +45,8 @@ class QueryStringCondition implements Condition
     
     public function getArguments(Request $request) :array
     {
-        return Arr::only($request->getQueryParams(), array_keys($this->query_string_arguments));
+        $q = Arr::only($request->getQueryParams(), array_keys($this->query_string_arguments));
+        return array_values($q);
     }
     
 }

@@ -6,7 +6,7 @@ namespace Snicco\Core\Traits;
 
 use Closure;
 use Opis\Closure\SerializableClosure;
-use Snicco\Core\Routing\ConditionBlueprint;
+use Snicco\Core\Routing\Internal\ConditionBlueprint;
 
 trait ExportsRoute
 {

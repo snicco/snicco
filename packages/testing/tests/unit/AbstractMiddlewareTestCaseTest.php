@@ -6,17 +6,17 @@ namespace Tests\Testing\unit;
 
 use Mockery;
 use RuntimeException;
+use Snicco\Core\Http\Delegate;
 use Snicco\Testing\TestResponse;
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Testing\MiddlewareTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use PHPUnit\Framework\ExpectationFailedException;
-use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
 use Snicco\Core\Contracts\RouteUrlGeneratorInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
+use Snicco\Core\Routing\Internal\FastRoute\RouteUrlGenerator;
 
 class MiddlewareTestCaseTest extends MiddlewareTestCase
 {

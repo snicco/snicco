@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Mockery;
 use Snicco\Core\Routing\Route;
 use PHPUnit\Framework\TestCase;
 use Snicco\Core\Routing\RoutingResult;
@@ -12,40 +11,42 @@ use Snicco\Core\Routing\RoutingResult;
 class RoutingResultTest extends TestCase
 {
     
-    protected function tearDown() :void
+    /** @test */
+    public function captured_segments_are_returned_as_is()
     {
-        Mockery::close();
-        parent::tearDown();
+        $result = new RoutingResult(
+            $route = $this->route(),
+            $arr = ['foo' => 'foo%20bar', 'bar' => '1']
+        );
+        
+        $this->assertSame($route, $result->route());
+        $this->assertSame($arr, $result->capturedSegments());
     }
     
     /** @test */
-    public function capturedValuesConvertStringNumbersToIntegers()
+    public function decoded_segments_convert_integerish_strings_to_numbers()
     {
-        $routing_result = new RoutingResult($this->route(), ['foo' => '1']);
+        $routing_result = new RoutingResult($this->route(), ['foo' => 'foo%20bar', 'bar' => '1']);
         
-        $this->assertSame(['foo' => 1], $routing_result->capturedUrlSegmentValues());
+        $this->assertSame(['foo' => 'foo bar', 'bar' => 1], $routing_result->decodedSegments());
     }
     
     /** @test */
-    public function capturedValuesAreNotCompiledTwice()
+    public function with_captured_segments_is_immutable()
     {
-        $routing_result = new RoutingResult($this->route(), ['foo' => '1']);
+        $res1 = new RoutingResult($this->route(), ['foo' => 'foo%20bar', 'bar' => '1']);
         
-        $this->assertSame(['foo' => 1], $routing_result->capturedUrlSegmentValues());
-        $this->assertSame(['foo' => 1], $routing_result->capturedUrlSegmentValues());
+        $res2 = $res1->withCapturedSegments($res1->capturedSegments());
+        
+        $this->assertSame(['foo' => 'foo bar', 'bar' => 1], $res2->decodedSegments());
+        $this->assertSame($res1->route(), $res2->route());
+        
+        $this->assertNotSame($res1, $res2);
     }
     
-    /** @test */
-    public function integersCanBeValues()
+    private function route() :Route
     {
-        $routing_result = new RoutingResult($this->route(), ['foo' => 1]);
-        
-        $this->assertSame(['foo' => 1], $routing_result->capturedUrlSegmentValues());
-    }
-    
-    private function route()
-    {
-        return Mockery::mock(Route::class);
+        return Route::create('/foo', Route::DELEGATE, 'foo');
     }
     
 }
