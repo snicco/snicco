@@ -6,11 +6,11 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
-class Authorize extends Middleware
+class Authorize extends AbstractMiddleware
 {
     
     private string  $capability;

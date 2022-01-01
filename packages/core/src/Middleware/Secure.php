@@ -8,13 +8,13 @@ use Snicco\Core\Support\Url;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @todo tests.
  */
-class Secure extends Middleware
+class Secure extends AbstractMiddleware
 {
     
     const HEADER = 'Strict-Transport-Security';
@@ -72,7 +72,9 @@ class Secure extends Middleware
         return $response->withHeader('Location', Url::unParseUrl($location));
     }
     
-    /** @todo Move this to the request class as soon as we have support for trusted proxies. */
+    /**
+     * @todo We need to decide if we imply that reverse proxies are configured correctly or not.
+     */
     private function isSecure(Request $request) :bool
     {
         if (strtolower($request->getUri()->getScheme()) === 'https') {

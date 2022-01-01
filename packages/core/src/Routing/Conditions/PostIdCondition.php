@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Conditions;
 
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\ConvertsToUrl;
 use Snicco\Core\Contracts\Condition;
 
-class PostIdCondition implements Condition, ConvertsToUrl
+class PostIdCondition implements Condition
 {
     
     private int $post_id;
@@ -26,11 +25,6 @@ class PostIdCondition implements Condition, ConvertsToUrl
     public function getArguments(Request $request) :array
     {
         return ['post_id' => $this->post_id];
-    }
-    
-    public function toUrl(array $arguments = []) :string
-    {
-        return get_permalink($this->post_id);
     }
     
 }

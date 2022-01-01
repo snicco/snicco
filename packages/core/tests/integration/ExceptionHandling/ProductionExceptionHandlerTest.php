@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\ExceptionHandling;
 
-use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
+use Psr\Log\Test\TestLogger;
 use Snicco\ViewBundle\ViewServiceProvider;
-use Tests\Core\fixtures\TestDoubles\TestLogger;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 class ProductionExceptionHandlerTest extends FrameworkTestCase
@@ -29,7 +28,7 @@ class ProductionExceptionHandlerTest extends FrameworkTestCase
         $this->instance(LoggerInterface::class, $logger = new TestLogger());
         
         $this->get('/error/500')->assertStatus(500);
-        $logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Secret logging stuff.');
+        $this->assertTrue($logger->hasErrorThatContains('Secret logging stuff.'));
     }
     
     /** @test */

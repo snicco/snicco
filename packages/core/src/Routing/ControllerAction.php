@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing;
 
-use Snicco\Core\Http\Controller;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\RouteAction;
+use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Traits\ReflectsCallable;
-use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Support\ReflectionDependencies;
 
 class ControllerAction implements RouteAction
@@ -34,9 +33,8 @@ class ControllerAction implements RouteAction
         $controller = $this->controller_instance
                       ?? $this->container->get($this->class_callable[0]);
         
-        if ($controller instanceof Controller) {
-            $controller->giveResponseFactory($this->container->get(ResponseFactory::class));
-            $controller->giveUrlGenerator($this->container->get(UrlGenerator::class));
+        if ($controller instanceof AbstractController) {
+            $controller->setContainer($this->container);
         }
         
         if ($this->firstParameterType($this->class_callable) !== Request::class) {

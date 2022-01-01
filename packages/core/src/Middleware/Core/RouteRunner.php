@@ -10,12 +10,12 @@ use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Middleware\MiddlewareStack;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Factories\RouteActionFactory;
 
-class RouteRunner extends Middleware
+class RouteRunner extends AbstractMiddleware
 {
     
     private Pipeline           $pipeline;
@@ -48,7 +48,7 @@ class RouteRunner extends Middleware
     private function runRoute(Route $route) :Closure
     {
         return function (Request $request) use ($route) {
-            return $this->response_factory->toResponse(
+            return $this->respond()->toResponse(
                 $route->run($request)
             );
         };
@@ -59,14 +59,14 @@ class RouteRunner extends Middleware
         $middleware = $this->middleware_stack->createForRequestWithoutRoute($request);
         
         if ( ! count($middleware)) {
-            return $this->response_factory->delegateToWP();
+            return $this->respond()->delegateToWP();
         }
         
         return $this->pipeline
             ->send($request)
             ->through($middleware)
             ->then(function () {
-                return $this->response_factory->delegateToWP();
+                return $this->respond()->delegateToWP();
             });
     }
     

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Core\Http\Controller;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Http\AbstractController;
 
 class ControllerTest extends UnitTest
 {
@@ -13,7 +13,7 @@ class ControllerTest extends UnitTest
     /** @test */
     public function middleware_can_be_added_to_are_controller()
     {
-        $subject = new TestController();
+        $subject = new TestAbstractController();
         
         $this->assertSame(['foo', 'baz'], $subject->getMiddleware());
     }
@@ -21,7 +21,7 @@ class ControllerTest extends UnitTest
     /** @test */
     public function middleware_can_be_added_for_some_methods_only()
     {
-        $subject = new TestController();
+        $subject = new TestAbstractController();
         
         $this->assertSame(['foo', 'bar', 'baz'], $subject->getMiddleware('foo_method'));
     }
@@ -29,7 +29,7 @@ class ControllerTest extends UnitTest
     /** @test */
     public function middleware_can_be_added_for_all_methods_expect_some()
     {
-        $subject = new TestController();
+        $subject = new TestAbstractController();
         
         $this->assertSame(['foo', 'bar', 'baz'], $subject->getMiddleware('foo_method'));
         
@@ -45,12 +45,12 @@ class ControllerTest extends UnitTest
             'The only() method cant be combined with the except() method for one middleware'
         );
         
-        $subject = new InvalidController();
+        $subject = new InvalidAbstractController();
     }
     
 }
 
-class TestController extends Controller
+class TestAbstractController extends AbstractController
 {
     
     public function __construct()
@@ -64,7 +64,7 @@ class TestController extends Controller
     
 }
 
-class InvalidController extends Controller
+class InvalidAbstractController extends AbstractController
 {
     
     public function __construct()

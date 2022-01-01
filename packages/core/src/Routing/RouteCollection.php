@@ -52,6 +52,9 @@ class RouteCollection implements RouteCollectionInterface
     private RouteUrlMatcher $url_matcher;
     private RouteCache      $route_cache;
     
+    /**
+     * @todo this needs to be refactored.
+     */
     public function __construct(?RouteUrlMatcher $url_matcher = null, ?string $cache_file = null)
     {
         $this->url_matcher = $url_matcher ?? new FastRouteUrlMatcher();
@@ -111,6 +114,7 @@ class RouteCollection implements RouteCollectionInterface
             /** @var Route $route */
             foreach ($routes as $route) {
                 if ($this->wasAlreadyAdded($route, $method)) {
+                    // @todo exception here
                     continue;
                 }
                 

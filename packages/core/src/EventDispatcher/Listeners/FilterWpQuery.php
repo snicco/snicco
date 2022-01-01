@@ -12,7 +12,10 @@ use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 class FilterWpQuery
 {
     
-    private RouteCollectionInterface $routes;
+    /**
+     * @var RouteCollectionInterface
+     */
+    private $routes;
     
     public function __construct(RouteCollectionInterface $routes)
     {

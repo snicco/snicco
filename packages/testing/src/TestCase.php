@@ -16,7 +16,7 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Application\Config;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Illuminate\Support\Facades\Facade;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -294,7 +294,7 @@ abstract class TestCase extends WPTestCase
             }
             
             $this->app->container()->singleton($abstract, function () {
-                return new class extends Middleware
+                return new class extends AbstractMiddleware
                 {
                     
                     public function handle(Request $request, Delegate $next) :ResponseInterface
@@ -326,7 +326,7 @@ abstract class TestCase extends WPTestCase
         }
         
         foreach (Arr::wrap($middleware) as $abstract) {
-            if ( ! $abstract instanceof Middleware) {
+            if ( ! $abstract instanceof AbstractMiddleware) {
                 throw new RuntimeException(
                     "You are trying to enable the middleware [$abstract] but it does not implement [Snicco\Contracts\Middleware]."
                 );

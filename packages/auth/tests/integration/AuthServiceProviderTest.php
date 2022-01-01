@@ -21,21 +21,21 @@ use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
-use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
-use Snicco\Auth\Controllers\ResetPasswordController;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
-use Snicco\Auth\Controllers\ForgotPasswordController;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
+use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedIn;
 use Snicco\SessionBundle\Middleware\StartSessionMiddleware;
-use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+use Snicco\Auth\Controllers\ResetPasswordAbstractController;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedOut;
+use Snicco\Auth\Controllers\ForgotPasswordAbstractController;
+use Snicco\Auth\Controllers\ConfirmedAuthSessionAbstractController;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class AuthServiceProviderTest extends AuthTestCase
@@ -156,20 +156,20 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(
-            ForgotPasswordController::class,
-            TestApp::resolve(ForgotPasswordController::class)
+            ForgotPasswordAbstractController::class,
+            TestApp::resolve(ForgotPasswordAbstractController::class)
         );
         $this->assertInstanceOf(
-            ResetPasswordController::class,
-            TestApp::resolve(ResetPasswordController::class)
+            ResetPasswordAbstractController::class,
+            TestApp::resolve(ResetPasswordAbstractController::class)
         );
         $this->assertInstanceOf(
-            AuthSessionController::class,
-            TestApp::resolve(AuthSessionController::class)
+            AuthSessionAbstractController::class,
+            TestApp::resolve(AuthSessionAbstractController::class)
         );
         $this->assertInstanceOf(
-            ConfirmedAuthSessionController::class,
-            TestApp::resolve(ConfirmedAuthSessionController::class)
+            ConfirmedAuthSessionAbstractController::class,
+            TestApp::resolve(ConfirmedAuthSessionAbstractController::class)
         );
     }
     

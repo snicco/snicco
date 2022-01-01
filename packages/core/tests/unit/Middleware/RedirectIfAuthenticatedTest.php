@@ -19,8 +19,6 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        
-        WP::shouldReceive('homeUrl')->andReturn('https://foobar.com')->byDefault();
         $this->createDefaultWpApiMocks();
     }
     
@@ -63,9 +61,6 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
     public function logged_in_users_can_be_redirected_to_custom_urls()
     {
         WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
-        WP::shouldReceive('homeUrl')
-          ->with('', 'https')
-          ->andReturn('https://example.com');
         
         $response = $this->runMiddleware(
             $this->newMiddleware('/custom-home-page'),

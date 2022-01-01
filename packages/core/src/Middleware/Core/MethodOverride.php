@@ -6,13 +6,13 @@ namespace Snicco\Core\Middleware\Core;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
 use function in_array;
 use function strtoupper;
 
-class MethodOverride extends Middleware
+class MethodOverride extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

@@ -4,12 +4,12 @@ namespace Snicco\Auth\Middleware;
 
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
-class TwoFactorEnabled extends Middleware
+class TwoFactorEnabled extends AbstractMiddleware
 {
     
     use InteractsWithTwoFactorSecrets;

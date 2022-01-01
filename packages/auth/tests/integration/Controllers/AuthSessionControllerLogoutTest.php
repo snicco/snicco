@@ -9,10 +9,10 @@ use Snicco\Core\Routing\UrlGenerator;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\Auth\Controllers\AuthSessionController;
+use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
-/** @see AuthSessionController */
+/** @see AuthSessionAbstractController */
 class AuthSessionControllerLogoutTest extends AuthTestCase
 {
     

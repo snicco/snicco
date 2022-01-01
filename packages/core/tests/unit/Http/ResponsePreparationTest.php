@@ -5,11 +5,11 @@ namespace Tests\Core\unit\Http;
 use Mockery;
 use Snicco\Core\Support\Carbon;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Http\BaseResponseFactory;
-use Snicco\Core\Http\ResponsePreparation;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Http\ResponsePreparation;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponsePreparationTest extends UnitTest
@@ -17,9 +17,9 @@ class ResponsePreparationTest extends UnitTest
     
     use CreatePsr17Factories;
     
-    private BaseResponseFactory $factory;
-    private ResponsePreparation $preparation;
-    private Request             $request;
+    private DefaultResponseFactory $factory;
+    private ResponsePreparation    $preparation;
+    private Request                $request;
     
     protected function setUp() :void
     {
@@ -215,9 +215,9 @@ class ResponsePreparationTest extends UnitTest
         $this->assertFalse($prepared->hasHeader('content-length'));
     }
     
-    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
+    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGeneratorInterface
     {
-        return Mockery::mock(UrlGenerator::class);
+        return Mockery::mock(UrlGeneratorInterface::class);
     }
     
 }

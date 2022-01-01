@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Http\StatelessRedirector;
-use Snicco\Core\Controllers\RedirectController;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
+use Snicco\Core\Controllers\RedirectAbstractController;
 
 class RedirectRoutesTest extends RoutingTestCase
 {
@@ -16,63 +14,65 @@ class RedirectRoutesTest extends RoutingTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->bindRedirector();
-        $this->container->instance(RedirectController::class, new RedirectController());
+        $this->container->instance(
+            RedirectAbstractController::class,
+            new RedirectAbstractController()
+        );
     }
     
     /** @test */
     public function a_redirect_route_can_be_created()
     {
         $this->createRoutes(function () {
-            $this->router->redirect('/foo', '/bar');
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('', $request);
-        
-        HeaderStack::assertHasStatusCode(302);
-        HeaderStack::assertContains('Location', '/bar');
-    }
-    
-    /** @test */
-    public function a_permanent_redirect_can_be_created()
-    {
-        $this->createRoutes(function () {
-            $this->router->permanentRedirect('/foo', '/bar');
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('', $request);
-        
-        HeaderStack::assertHasStatusCode(301);
-        HeaderStack::assertContains('Location', '/bar');
-    }
-    
-    /** @test */
-    public function a_temporary_redirect_can_be_created()
-    {
-        $this->createRoutes(function () {
-            $this->router->temporaryRedirect('/foo', '/bar');
+            $this->router->redirect('/foo', '/bar', 307, ['baz' => 'biz']);
         });
         
         $request = $this->frontendRequest('GET', '/foo');
         $this->assertResponse('', $request);
         
         HeaderStack::assertHasStatusCode(307);
-        HeaderStack::assertContains('Location', '/bar');
+        HeaderStack::assertContains('Location', '/bar?baz=biz');
+    }
+    
+    /** @test */
+    public function a_permanent_redirect_can_be_created()
+    {
+        $this->createRoutes(function () {
+            $this->router->permanentRedirect('/foo', '/bar', ['baz' => 'biz']);
+        });
+        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
+        
+        HeaderStack::assertHasStatusCode(301);
+        HeaderStack::assertContains('Location', '/bar?baz=biz');
+    }
+    
+    /** @test */
+    public function a_temporary_redirect_can_be_created()
+    {
+        $this->createRoutes(function () {
+            $this->router->temporaryRedirect('/foo', '/bar', ['baz' => 'biz']);
+        });
+        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
+        
+        HeaderStack::assertHasStatusCode(307);
+        HeaderStack::assertContains('Location', '/bar?baz=biz');
     }
     
     /** @test */
     public function a_redirect_to_an_external_url_can_be_created()
     {
         $this->createRoutes(function () {
-            $this->router->redirectAway('/foo', 'https://foobar.com/', 303);
+            $this->router->redirectAway('/foo', 'https://foobar.com/', 301);
         });
         
         $request = $this->frontendRequest('GET', '/foo');
         $this->assertResponse('', $request);
         
-        HeaderStack::assertHasStatusCode(303);
+        HeaderStack::assertHasStatusCode(301);
         HeaderStack::assertContains('Location', 'https://foobar.com/');
     }
     
@@ -142,14 +142,6 @@ class RedirectRoutesTest extends RoutingTestCase
         $this->assertResponse('bam', $request);
         HeaderStack::assertHasStatusCode(200);
         HeaderStack::reset();
-    }
-    
-    private function bindRedirector()
-    {
-        $this->container->instance(
-            Redirector::class,
-            new StatelessRedirector($this->newUrlGenerator(), $this->psrResponseFactory())
-        );
     }
     
 }

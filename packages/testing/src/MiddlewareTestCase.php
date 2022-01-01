@@ -9,18 +9,20 @@ use RuntimeException;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Contracts\Redirector;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Core\Http\BaseResponseFactory;
-use Snicco\Core\Http\StatelessRedirector;
+use Snicco\Core\Routing\RouteCollection;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\InMemoryMagicLink;
-use Snicco\Core\Contracts\RouteUrlGenerator;
+use Snicco\Core\Http\DefaultResponseFactory;
 use Psr\Http\Message\StreamFactoryInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Testing\Concerns\CreatePsrRequests;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Snicco\Core\Contracts\RouteCollectionInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
@@ -32,27 +34,54 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     use CreatePsrRequests;
     
-    protected ResponseFactory $response_factory;
-    private UrlGenerator      $url;
-    private Request           $request;
-    private Closure           $next_middleware_response;
+    /**
+     * @var ResponseFactory
+     */
+    protected $response_factory;
+    
+    /**
+     * @var RouteCollectionInterface
+     */
+    protected $routes;
+    
+    /**
+     * @var ContainerAdapter
+     */
+    protected $container;
+    
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $url;
+    
+    /**
+     * @var Request
+     */
+    private $request;
+    
+    /**
+     * @var Closure
+     */
+    private $next_middleware_response;
     
     protected function setUp() :void
     {
         parent::setUp();
         
+        $this->app_domain = 'example.com';
+        $this->routes = new RouteCollection();
         $this->response_factory = $this->responseFactory();
-        
-        $this->next_middleware_response = fn(Response $response) => $response;
+        $this->container = $this->createContainer();
+        $this->next_middleware_response = function (Response $response) { return $response; };
         $GLOBALS['test']['_next_middleware_called'] = false;
     }
     
     protected function responseFactory() :ResponseFactory
     {
-        return new BaseResponseFactory(
+        return new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            new StatelessRedirector($this->url = $this->urlGenerator(), $this->psrResponseFactory())
+            $this->url = $this->urlGenerator(),
         );
     }
     
@@ -64,7 +93,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     abstract protected function psrStreamFactory() :StreamFactoryInterface;
     
-    abstract protected function routeUrlGenerator() :RouteUrlGenerator;
+    abstract protected function urlGenerator() :UrlGeneratorInterface;
     
     /**
      * Overwrite this function if you want to specify a custom response that should be returned by
@@ -81,11 +110,18 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
             unset($this->request);
         }
         
-        if (method_exists($middleware, 'setResponseFactory')) {
-            $middleware->setResponseFactory($this->response_factory);
+        if ($middleware instanceof AbstractMiddleware) {
+            if ( ! $this->container->has(ResponseFactory::class)) {
+                $this->container[ResponseFactory::class] = $this->response_factory;
+            }
+            if ( ! $this->container->has(Redirector::class)) {
+                $this->container[Redirector::class] = $this->response_factory;
+            }
+            if ( ! $this->container->has(UrlGeneratorInterface::class)) {
+                $this->container[UrlGeneratorInterface::class] = $this->response_factory;
+            }
+            $middleware->setContainer($this->container);
         }
-        
-        $this->url->setRequestResolver(function () use ($request) { return $request; });
         
         /** @var Response $response */
         $response = $middleware->process($request, $this->getNext());
@@ -98,14 +134,6 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         return $this->transformResponse($response);
     }
     
-    protected function urlGenerator() :UrlGenerator
-    {
-        return new UrlGenerator(
-            $this->routeUrlGenerator(),
-            false
-        );
-    }
-    
     protected function receivedRequest() :Request
     {
         if ( ! isset($this->request)) {
@@ -114,6 +142,15 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         
         return $this->request;
     }
+    
+    protected function redirector() :Redirector
+    {
+        if ($this->response_factory instanceof Redirector) {
+            return $this->response_factory;
+        }
+    }
+    
+    abstract protected function createContainer() :ContainerAdapter;
     
     private function getNext() :Delegate
     {

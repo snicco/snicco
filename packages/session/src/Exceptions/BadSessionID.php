@@ -8,6 +8,7 @@ use InvalidArgumentException;
 
 /**
  * @api
+ * @todo refactor session exceptions
  */
 final class BadSessionID extends InvalidArgumentException
 {

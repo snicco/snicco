@@ -8,10 +8,10 @@ use Mockery;
 use Snicco\Core\Http\Cookie;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Routing\UrlGenerator;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponseTest extends UnitTest
@@ -98,7 +98,7 @@ class ResponseTest extends UnitTest
     {
         $response = $this->response->withNoIndex();
         $this->assertSame('noindex', $response->getHeaderLine('x-robots-tag'));
-    
+        
         $response = $this->response->withNoIndex('googlebot');
         $this->assertSame('googlebot: noindex', $response->getHeaderLine('x-robots-tag'));
     }
@@ -107,7 +107,7 @@ class ResponseTest extends UnitTest
     {
         $response = $this->response->withNoFollow();
         $this->assertSame('nofollow', $response->getHeaderLine('x-robots-tag'));
-    
+        
         $response = $this->response->withNoFollow('googlebot');
         $this->assertSame('googlebot: nofollow', $response->getHeaderLine('x-robots-tag'));
     }
@@ -116,7 +116,7 @@ class ResponseTest extends UnitTest
     {
         $response = $this->response->withNoRobots();
         $this->assertSame('none', $response->getHeaderLine('x-robots-tag'));
-    
+        
         $response = $this->response->withNoRobots('googlebot');
         $this->assertSame('googlebot: none', $response->getHeaderLine('x-robots-tag'));
     }
@@ -125,7 +125,7 @@ class ResponseTest extends UnitTest
     {
         $response = $this->response->withNoArchive();
         $this->assertSame('noarchive', $response->getHeaderLine('x-robots-tag'));
-    
+        
         $response = $this->response->withNoArchive('googlebot');
         $this->assertSame('googlebot: noarchive', $response->getHeaderLine('x-robots-tag'));
     }
@@ -233,12 +233,12 @@ class ResponseTest extends UnitTest
         
         $this->assertSame(['foo' => 'bar'], $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
-    
+        
         $response = $this->response->withFlashMessages($arr = ['foo' => 'bar', 'bar' => 'baz']);
         
         $this->assertSame($arr, $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
-    
+        
         $response_new = $response->withFlashMessages('biz', 'boom');
         
         $this->assertSame(
@@ -255,12 +255,12 @@ class ResponseTest extends UnitTest
         
         $this->assertSame(['foo' => 'bar'], $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
-    
+        
         $response = $this->response->withOldInput($arr = ['foo' => 'bar', 'bar' => 'baz']);
         
         $this->assertSame($arr, $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
-    
+        
         $response_new = $response->withOldInput('biz', 'boom');
         
         $this->assertSame(
@@ -308,9 +308,9 @@ class ResponseTest extends UnitTest
         $response = $this->response->withErrors(['foo', 'bar']);
     }
     
-    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
+    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGeneratorInterface
     {
-        return Mockery::mock(UrlGenerator::class);
+        return Mockery::mock(UrlGeneratorInterface::class);
     }
     
 }

@@ -7,10 +7,13 @@ namespace Snicco\Core\Middleware;
 use Snicco\Support\Str;
 use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Middleware;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
-class Www extends Middleware
+/**
+ * @todo tests.
+ */
+class Www extends AbstractMiddleware
 {
     
     protected $with_www;
@@ -35,14 +38,14 @@ class Www extends Middleware
             $host = Str::after($host, 'www.');
             $uri = $uri->withHost($host);
             
-            return $this->response_factory->permanentRedirectTo((string) $uri);
+            return $this->response_factory->redirect((string) $uri, 301);
         }
         
         if ( ! $contains_www && $this->with_www && $this->wwwCanBeAdded($host)) {
             $host = 'www.'.$host;
             $uri = $uri->withHost($host);
             
-            return $this->response_factory->permanentRedirectTo((string) $uri);
+            return $this->response_factory->redirect((string) $uri, 301);
         }
         
         return $next($request);

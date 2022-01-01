@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\RoutingTestCase;
-use Tests\Core\fixtures\Middleware\BarMiddleware;
-use Tests\Core\fixtures\Middleware\BazMiddleware;
-use Tests\Core\fixtures\Middleware\FooMiddleware;
-use Tests\Core\fixtures\Middleware\FooBarMiddleware;
+use Snicco\Core\Http\Psr7\Request;
+use Tests\Core\fixtures\Middleware\BarAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\BazAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\FooAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\FooBarAbstractMiddleware;
 
 class RouteMiddlewareTest extends RoutingTestCase
 {
@@ -19,8 +19,8 @@ class RouteMiddlewareTest extends RoutingTestCase
     {
         $this->withMiddlewareGroups([
             'foobar' => [
-                FooMiddleware::class,
-                BarMiddleware::class,
+                FooAbstractMiddleware::class,
+                BarAbstractMiddleware::class,
             ],
         ]);
         
@@ -48,8 +48,8 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         $this->withMiddlewareGroups([
             'global' => [
-                FooMiddleware::class,
-                BarMiddleware::class,
+                FooAbstractMiddleware::class,
+                BarAbstractMiddleware::class,
             
             ],
         ]);
@@ -69,12 +69,12 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->withMiddlewareGroups(
             [
                 'global' => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
+                    FooAbstractMiddleware::class,
+                    BarAbstractMiddleware::class,
                 ],
                 'foobar' => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
+                    FooAbstractMiddleware::class,
+                    BarAbstractMiddleware::class,
                 ],
             
             ]
@@ -96,9 +96,9 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         $this->withMiddlewareGroups([
             'all' => [
-                FooMiddleware::class.':FOO',
-                BarMiddleware::class,
-                BazMiddleware::class,
+                FooAbstractMiddleware::class.':FOO',
+                BarAbstractMiddleware::class,
+                BazAbstractMiddleware::class,
             ],
         ]);
         
@@ -118,10 +118,10 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         $this->withMiddlewareGroups([
             'foo' => [
-                FooMiddleware::class,
+                FooAbstractMiddleware::class,
             ],
             'bar' => [
-                BarMiddleware::class,
+                BarAbstractMiddleware::class,
             ],
         ]);
         
@@ -203,8 +203,8 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         $this->withMiddlewareGroups([
             'foobar' => [
-                FooMiddleware::class,
-                BarMiddleware::class,
+                FooAbstractMiddleware::class,
+                BarAbstractMiddleware::class,
             ],
         ]);
         
@@ -224,15 +224,15 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->withMiddlewareGroups([
             
             'baz_group' => [
-                BazMiddleware::class,
+                BazAbstractMiddleware::class,
                 'bar_group',
             ],
             'bar_group' => [
-                BarMiddleware::class,
+                BarAbstractMiddleware::class,
                 'foo_group',
             ],
             'foo_group' => [
-                FooMiddleware::class,
+                FooAbstractMiddleware::class,
             ],
         
         ]);
@@ -247,7 +247,7 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->createRoutes(function () {
             $this->router->get('/foo', function (Request $request) {
                 return $request->body;
-            })->middleware(FooBarMiddleware::class.':FOO,BAR');
+            })->middleware(FooBarAbstractMiddleware::class.':FOO,BAR');
         });
         
         $request = $this->frontendRequest('GET', '/foo');
@@ -262,22 +262,22 @@ class RouteMiddlewareTest extends RoutingTestCase
                          ->group(function () {
                              $this->router->get('/foo', function (Request $request) {
                                  return $request->body;
-                             })->middleware(FooMiddleware::class);
+                             })->middleware(FooAbstractMiddleware::class);
                          });
         });
         
         $this->withMiddlewareGroups([
             'barbaz' => [
-                BazMiddleware::class,
-                BarMiddleware::class,
+                BazAbstractMiddleware::class,
+                BarAbstractMiddleware::class,
             ],
         ]);
         
         $this->withMiddlewarePriority([
             
-            FooMiddleware::class,
-            BarMiddleware::class,
-            BazMiddleware::class,
+            FooAbstractMiddleware::class,
+            BarAbstractMiddleware::class,
+            BazAbstractMiddleware::class,
         
         ]);
         
@@ -296,17 +296,17 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         $this->withMiddlewareGroups([
             'all' => [
-                FooBarMiddleware::class,
-                BarMiddleware::class,
-                BazMiddleware::class,
-                FooMiddleware::class,
+                FooBarAbstractMiddleware::class,
+                BarAbstractMiddleware::class,
+                BazAbstractMiddleware::class,
+                FooAbstractMiddleware::class,
             ],
         ]);
         
         $this->withMiddlewarePriority([
             
-            FooMiddleware::class,
-            BarMiddleware::class,
+            FooAbstractMiddleware::class,
+            BarAbstractMiddleware::class,
         
         ]);
         

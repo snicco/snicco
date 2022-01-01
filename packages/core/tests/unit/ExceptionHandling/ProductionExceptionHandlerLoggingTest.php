@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Tests\Core\unit\ExceptionHandling;
 
 use Mockery;
-use WP_User;
 use Exception;
 use Psr\Log\LogLevel;
 use Snicco\Core\Support\WP;
+use Psr\Log\Test\TestLogger;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
-use Tests\Core\fixtures\TestDoubles\TestLogger;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\helpers\CreateContainer;
@@ -36,15 +35,9 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $this->container = $this->createContainer();
         $this->container->instance(Foo::class, new Foo());
-        
         $this->request = TestRequest::from('GET', 'foo');
-        WP::shouldReceive('userId')->andReturn(10);
+        WP::shouldReceive('userId')->andReturn(10)->byDefault();
         WP::shouldReceive('isUserLoggedIn')->andReturnTrue()->byDefault();
-        WP::shouldReceive('currentUser')->andReturnUsing(function () {
-            $user = Mockery::mock(WP_User::class);
-            $user->user_email = 'c@web.de';
-            return $user;
-        });
         $GLOBALS['test']['log'] = [];
     }
     
@@ -62,7 +55,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report(new Exception('Foobar'), $this->request);
         
-        $this->test_logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Foobar');
+        $this->assertTrue($this->test_logger->hasErrorThatContains('Foobar'));
     }
     
     /** @test */
@@ -72,7 +65,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report(new Exception('Foobar'), $this->request, LogLevel::CRITICAL);
         
-        $this->test_logger->assertHasLogLevelEntry(LogLevel::CRITICAL, 'Foobar');
+        $this->assertTrue($this->test_logger->hasCriticalThatContains('Foobar'));
     }
     
     /** @test */
@@ -82,10 +75,13 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report($e = new Exception('Foobar'), $this->request);
         
-        $this->test_logger->assertHasLogEntry(
-            'Foobar',
-            ['user_id' => 10, 'user_email' => 'c@web.de', 'exception' => $e]
-        );
+        $record = $this->test_logger->recordsByLevel[LogLevel::ERROR][0];
+        
+        $this->assertSame('Foobar', $record['message']);
+        $this->assertSame([
+            'user_id' => 10,
+            'exception' => $e,
+        ], $record['context']);
     }
     
     /** @test */
@@ -97,7 +93,12 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report($e = new Exception('Foobar'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('Foobar', ['exception' => $e]);
+        $record = $this->test_logger->recordsByLevel[LogLevel::ERROR][0];
+        
+        $this->assertSame('Foobar', $record['message']);
+        $this->assertSame([
+            'exception' => $e,
+        ], $record['context']);
     }
     
     /** @test */
@@ -108,22 +109,13 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report($e = new fixtures\ContextException('TestMessage'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('TestMessage', [
+        $record = $this->test_logger->recordsByLevel[LogLevel::ERROR][0];
+        
+        $this->assertSame('TestMessage', $record['message']);
+        $this->assertSame([
             'foo' => 'bar',
             'exception' => $e,
-        ]);
-    }
-    
-    /** @test */
-    public function the_exception_object_is_included_in_the_log_context()
-    {
-        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-        
-        $handler = $this->newErrorHandler();
-        
-        $handler->report($e = new Exception('Foobar'), $this->request);
-        
-        $this->test_logger->assertHasLogEntry('Foobar', ['exception' => $e]);
+        ], $record['context']);
     }
     
     /** @test */
@@ -147,7 +139,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report($e = new fixtures\ReportableException('TestMessage'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('TestMessage', ['exception' => $e]);
+        $this->assertTrue($this->test_logger->hasErrorRecords());
         $this->assertContains('TestMessage', $GLOBALS['test']['log']);
     }
     
@@ -201,8 +193,8 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         );
         
         $this->assertContains('Error Message-REQUEST-foo', $GLOBALS['test']['log']);
-        // This comes from the ReportableException itself
-        $this->assertNotContains('Error Message', $GLOBALS['test']['log']);
+        
+        $this->assertFalse($this->test_logger->hasErrorRecords());
     }
     
     /** @test */
@@ -212,7 +204,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report(new fixtures\StopPropagationException('TestMessage'), $this->request);
         
-        $this->test_logger->assertHasNoLogEntries();
+        $this->assertFalse($this->test_logger->hasErrorRecords());
         $this->assertContains('TestMessage', $GLOBALS['test']['log']);
     }
     
@@ -244,7 +236,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report(new fixtures\ReportableException('foo'), $this->request);
         
-        $this->test_logger->assertHasNoLogEntries();
+        $this->assertFalse($this->test_logger->hasErrorRecords());
         $this->assertEmpty($GLOBALS['test']['log']);
     }
     
@@ -259,7 +251,13 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $handler->report($e = new Exception('Foobar'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('Foobar', ['foo' => 'bar', 'exception' => $e]);
+        $record = $this->test_logger->recordsByLevel[LogLevel::ERROR][0];
+        
+        $this->assertSame('Foobar', $record['message']);
+        $this->assertSame([
+            'foo' => 'bar',
+            'exception' => $e,
+        ], $record['context']);
     }
     
     private function newErrorHandler() :ProductionExceptionHandler
