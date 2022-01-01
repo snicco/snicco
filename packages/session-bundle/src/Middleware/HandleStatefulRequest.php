@@ -8,7 +8,7 @@ use RuntimeException;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;

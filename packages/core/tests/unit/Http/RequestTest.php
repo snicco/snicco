@@ -63,19 +63,19 @@ class RequestTest extends UnitTest
     {
         $request = TestRequest::from('GET', '/foo/bar');
         $this->assertSame('/foo/bar', $request->fullRequestTarget());
-    
+        
         $request = TestRequest::from('GET', '/foo/bar/');
         $this->assertSame('/foo/bar/', $request->fullRequestTarget());
-    
+        
         $request = TestRequest::from('GET', '/');
         $this->assertSame('/', $request->fullRequestTarget());
-    
+        
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
         $this->assertSame('/foo/bar?baz=biz', $request->fullRequestTarget());
-    
+        
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/?baz=biz', $request->fullRequestTarget());
-    
+        
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('/foo/bar?baz=biz#section', $request->fullRequestTarget());
     }
@@ -189,7 +189,7 @@ class RequestTest extends UnitTest
         $route = new Route(['GET'], '/foo', function () { });
         $route->name('foobar');
         
-        $request = $this->request->withRoute($route);
+        $request = $this->request->withRoutingResult($route);
         
         $this->assertFalse($request->routeIs('bar'));
         $this->assertTrue($request->routeIs('foobar'));

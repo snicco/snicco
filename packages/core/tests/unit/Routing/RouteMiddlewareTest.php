@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\fixtures\Middleware\BarAbstractMiddleware;
-use Tests\Core\fixtures\Middleware\BazAbstractMiddleware;
-use Tests\Core\fixtures\Middleware\FooAbstractMiddleware;
-use Tests\Core\fixtures\Middleware\FooBarAbstractMiddleware;
+use Tests\Core\fixtures\Middleware\FooMiddleware;
+use Tests\Core\fixtures\Middleware\BarMiddleware;
+use Tests\Core\fixtures\Middleware\BazMiddleware;
+use Tests\Core\fixtures\Middleware\FoobarMiddleware;
+use Tests\Core\fixtures\Middleware\BooleanMiddleware;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class RouteMiddlewareTest extends RoutingTestCase
 {
@@ -19,127 +20,151 @@ class RouteMiddlewareTest extends RoutingTestCase
     {
         $this->withMiddlewareGroups([
             'foobar' => [
-                FooAbstractMiddleware::class,
-                BarAbstractMiddleware::class,
+                FooMiddleware::class,
+                BarMiddleware::class,
             ],
         ]);
         
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('foobar');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'foobar'
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertResponse('foobar', $request);
+        // Foo middleware is run first, so it appends last to the response body
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:foo_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function middleware_in_the_global_group_is_always_applied()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            });
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('GET', '/foo');
         
         $this->withMiddlewareGroups([
             'global' => [
-                FooAbstractMiddleware::class,
-                BarAbstractMiddleware::class,
+                FooMiddleware::class,
+                BarMiddleware::class,
             
             ],
         ]);
         
-        $this->assertResponse('foobar', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:foo_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function duplicate_middleware_is_filtered_out()
     {
-        $this->createRoutes(function () {
-            $this->router->middleware('foobar')->get('/foo', function (Request $request) {
-                return $request->body;
-            });
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'foobar'
+        );
         
         $this->withMiddlewareGroups(
             [
                 'global' => [
-                    FooAbstractMiddleware::class,
-                    BarAbstractMiddleware::class,
+                    FooMiddleware::class,
+                    BarMiddleware::class,
                 ],
                 'foobar' => [
-                    FooAbstractMiddleware::class,
-                    BarAbstractMiddleware::class,
+                    FooMiddleware::class,
+                    BarMiddleware::class,
                 ],
-            
             ]
         );
         
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertResponse('foobar', $request);
+        // The middleware is not run twice.
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:foo_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware(['all', 'foo:FOO']);
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            ['all', 'foo:FOO']
+        );
         
         $this->withMiddlewareGroups([
             'all' => [
-                FooAbstractMiddleware::class.':FOO',
-                BarAbstractMiddleware::class,
-                BazAbstractMiddleware::class,
+                FooMiddleware::class.':FOO',
+                BarMiddleware::class,
             ],
         ]);
         
         $request = $this->frontendRequest('GET', 'foo');
-        $this->assertResponse('FOObarbaz', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:FOO',
+            $request
+        );
+    }
+    
+    /** @test */
+    public function duplicate_middleware_is_not_filtered_out_when_passing_different_arguments()
+    {
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            ['all', 'foo:FOO1']
+        );
+        
+        $this->withMiddlewareGroups([
+            'all' => [
+                FooMiddleware::class.':FOO2',
+                BarMiddleware::class,
+            ],
+        ]);
+        
+        $request = $this->frontendRequest('GET', 'foo');
+        
+        // The middleware on the route is run last which is why is output is appended first to the response body.
+        $this->assertResponseBody(
+            RoutingTestController::static.':FOO1:bar_middleware:FOO2',
+            $request
+        );
     }
     
     /** @test */
     public function multiple_middleware_groups_can_be_applied()
     {
-        $this->createRoutes(function () {
-            $this->router->middleware(['foo', 'bar'])
-                         ->get('/foo', function (Request $request) {
-                             return $request->body;
-                         });
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
+             ->middleware(['foo', 'bar']);
         
         $this->withMiddlewareGroups([
             'foo' => [
-                FooAbstractMiddleware::class,
+                FooMiddleware::class,
             ],
             'bar' => [
-                BarAbstractMiddleware::class,
+                BarMiddleware::class,
             ],
         ]);
         
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertResponse('foobar', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:foo_middleware',
+            $request
+        );
     }
     
-    /** @test */
+    /**
+     * @test
+     * @todo Bad middleware is currently only detected at runtime when running the route.
+     */
     public function unknown_middleware_throws_an_exception()
     {
         $this->expectExceptionMessage('Unknown middleware [abc]');
         
-        $this->createRoutes(function () {
-            $this->router->middleware('abc')->get('foo', function (Request $request) {
-                return $request->body;
-            });
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
+             ->middleware('abc');
         
         $this->runKernel($this->frontendRequest('GET', 'foo'));
     }
@@ -147,38 +172,47 @@ class RouteMiddlewareTest extends RoutingTestCase
     /** @test */
     public function multiple_middleware_arguments_can_be_passed()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('foobar');
-            
-            $this->router->post('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('foobar:FOO');
-            
-            $this->router->patch('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('foobar:FOO,BAR');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
+             ->middleware('foobar');
+        
+        $this->routeConfigurator()->post('r2', '/foo', RoutingTestController::class)
+             ->middleware('foobar:FOO');
+        
+        $this->routeConfigurator()->patch('r3', '/foo', RoutingTestController::class)
+             ->middleware('foobar:FOO,BAR');
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobar', $request);
+        $this->assertResponseBody(RoutingTestController::static.':foobar_middleware', $request);
         
         $request = $this->frontendRequest('POST', '/foo');
-        $this->assertResponse('FOObar', $request);
+        $this->assertResponseBody(RoutingTestController::static.':FOO_foobar_middleware', $request);
         
         $request = $this->frontendRequest('PATCH', '/foo');
-        $this->assertResponse('FOOBAR', $request);
+        $this->assertResponseBody(RoutingTestController::static.':FOO_BAR', $request);
+    }
+    
+    /** @test */
+    public function boolean_true_false_is_converted()
+    {
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
+             ->middleware(BooleanMiddleware::class.':true');
+        
+        $this->routeConfigurator()->post('r2', '/foo', RoutingTestController::class)
+             ->middleware(BooleanMiddleware::class.':false');
+        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponseBody(RoutingTestController::static.':boolean_true', $request);
+        
+        $request = $this->frontendRequest('POST', '/foo');
+        $this->assertResponseBody(RoutingTestController::static.':boolean_false', $request);
     }
     
     /** @test */
     public function a_middleware_group_can_point_to_a_middleware_alias()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('foogroup');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'foogroup'
+        );
         
         $this->withMiddlewareGroups([
             
@@ -189,129 +223,127 @@ class RouteMiddlewareTest extends RoutingTestCase
         ]);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static.':foo_middleware', $request);
     }
     
     /** @test */
     public function group_and_route_middleware_can_be_combined()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware(['baz', 'foobar']);
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            ['baz', 'foobar']
+        );
         
         $this->withMiddlewareGroups([
             'foobar' => [
-                FooAbstractMiddleware::class,
-                BarAbstractMiddleware::class,
+                FooMiddleware::class,
+                BarMiddleware::class,
             ],
         ]);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('bazfoobar', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:foo_middleware:baz_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function a_middleware_group_can_contain_another_middleware_group()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('baz_group');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'baz_group'
+        );
         
         $this->withMiddlewareGroups([
             
             'baz_group' => [
-                BazAbstractMiddleware::class,
+                BazMiddleware::class,
                 'bar_group',
             ],
             'bar_group' => [
-                BarAbstractMiddleware::class,
+                BarMiddleware::class,
                 'foo_group',
             ],
             'foo_group' => [
-                FooAbstractMiddleware::class,
+                FooMiddleware::class,
             ],
         
         ]);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('bazbarfoo', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':foo_middleware:bar_middleware:baz_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function middleware_can_be_applied_without_an_alias()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware(FooBarAbstractMiddleware::class.':FOO,BAR');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            FooMiddleware::class.':FOO'
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('FOOBAR', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':FOO',
+            $request
+        );
     }
     
     /** @test */
     public function non_global_middleware_can_be_sorted()
     {
-        $this->createRoutes(function () {
-            $this->router->middleware('barbaz')
-                         ->group(function () {
-                             $this->router->get('/foo', function (Request $request) {
-                                 return $request->body;
-                             })->middleware(FooAbstractMiddleware::class);
-                         });
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
+             ->middleware(['barbaz', FooMiddleware::class]);
         
         $this->withMiddlewareGroups([
             'barbaz' => [
-                BazAbstractMiddleware::class,
-                BarAbstractMiddleware::class,
+                BazMiddleware::class,
+                BarMiddleware::class,
             ],
         ]);
         
         $this->withMiddlewarePriority([
-            
-            FooAbstractMiddleware::class,
-            BarAbstractMiddleware::class,
-            BazAbstractMiddleware::class,
-        
+            FooMiddleware::class,
+            BarMiddleware::class,
+            BazMiddleware::class,
         ]);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobarbaz', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':baz_middleware:bar_middleware:foo_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('all');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'all'
+        );
         
         $this->withMiddlewareGroups([
             'all' => [
-                FooBarAbstractMiddleware::class,
-                BarAbstractMiddleware::class,
-                BazAbstractMiddleware::class,
-                FooAbstractMiddleware::class,
+                FoobarMiddleware::class,
+                BarMiddleware::class,
+                BazMiddleware::class,
+                FooMiddleware::class,
             ],
         ]);
         
         $this->withMiddlewarePriority([
-            
-            FooAbstractMiddleware::class,
-            BarAbstractMiddleware::class,
-        
+            FooMiddleware::class,
+            BarMiddleware::class,
         ]);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobarfoobarbaz', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static
+            .':baz_middleware:foobar_middleware:bar_middleware:foo_middleware',
+            $request
+        );
     }
     
 }

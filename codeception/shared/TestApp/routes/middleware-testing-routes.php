@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
+use Snicco\Core\Routing\Internal\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
 
-TestApp::route()->group(function (Router $router) {
+TestApp::route()->createInGroup(function (Router $router) {
     $router->get('foo', function () {
         return 'foo';
     })->middleware('custom_group');

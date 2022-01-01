@@ -9,9 +9,9 @@ use Snicco\Support\Str;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
-use Snicco\Core\Routing\Route;
 use Snicco\Support\Repository;
 use Psr\Http\Message\UriInterface;
+use Snicco\Core\Routing\RoutingResult;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Core\Traits\ValidatesWordpressNonces;
 
@@ -31,9 +31,9 @@ class Request implements ServerRequestInterface
         $this->psr_request = $psr_request;
     }
     
-    public function withRoute(Route $route) :Request
+    public function withRoutingResult(RoutingResult $route) :Request
     {
-        return $this->withAttribute('_route', $route);
+        return $this->withAttribute('_routing_result', $route);
     }
     
     public function withCookies(array $cookies) :Request
@@ -105,14 +105,14 @@ class Request implements ServerRequestInterface
     public function routingPath() :string
     {
         $uri = $this->getAttribute('routing.uri');
-    
+        
         /** @var UriInterface $uri */
         $uri = $uri ?? $this->getUri();
-    
+        
         $path = $uri->getPath();
-    
+        
         $parts = explode('/', $path);
-    
+        
         $path = implode(
             '/',
             array_map(function ($part) {
@@ -120,7 +120,7 @@ class Request implements ServerRequestInterface
                 return $part;
             }, $parts)
         );
-    
+        
         return $path;
     }
     
@@ -141,11 +141,6 @@ class Request implements ServerRequestInterface
         }
         
         return $bag;
-    }
-    
-    public function route() :?Route
-    {
-        return $this->getAttribute('_route');
     }
     
     public function expires(int $default = 0) :int
@@ -182,15 +177,13 @@ class Request implements ServerRequestInterface
     
     public function routeIs(...$patterns) :bool
     {
-        $route = $this->route();
+        $route = $this->routingResult()->route();
         
-        if ( ! $route instanceof Route) {
+        if ( ! $route) {
             return false;
         }
         
-        if (is_null($name = $route->getName())) {
-            return false;
-        }
+        $name = $route->getName();
         
         foreach ($patterns as $pattern) {
             if (Str::is($pattern, $name)) {
@@ -226,6 +219,11 @@ class Request implements ServerRequestInterface
         }
         
         return false;
+    }
+    
+    public function routingResult() :RoutingResult
+    {
+        return $this->getAttribute('_routing_result', new RoutingResult());
     }
     
 }

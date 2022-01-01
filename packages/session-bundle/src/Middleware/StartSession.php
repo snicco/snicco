@@ -6,11 +6,11 @@ namespace Snicco\SessionBundle\Middleware;
 
 use RuntimeException;
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\ImmutableSession;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
 use function rtrim;

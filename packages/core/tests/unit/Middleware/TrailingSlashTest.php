@@ -16,7 +16,7 @@ class TrailingSlashTest extends MiddlewareTestCase
         $this->response_factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $this->newUrlGenerator(null, true)
+            $this->refreshUrlGenerator(null, true)
         );
         
         $request = $this->frontendRequest('GET', 'https://foo.com/bar');

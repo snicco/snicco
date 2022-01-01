@@ -11,11 +11,11 @@ use Snicco\Session\Session;
 use Snicco\Core\Support\Url;
 use Snicco\Support\Repository;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Routing\UrlGenerator;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\Constraints\SeeInOrder;
+use Snicco\Core\Routing\Internal\Generator;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
 use Snicco\Core\Http\Responses\DelegatedResponse;
@@ -260,8 +260,8 @@ class TestResponse
     
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
     {
-        /** @var UrlGenerator $url */
-        $url = $this->app->resolve(UrlGenerator::class);
+        /** @var Generator $url */
+        $url = $this->app->resolve(Generator::class);
         
         $this->assertRedirect();
         

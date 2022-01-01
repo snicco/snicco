@@ -4,54 +4,62 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Core;
 
-use Closure;
-use Snicco\Core\Routing\Route;
-use Snicco\Core\Routing\Delegate;
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Middleware\MiddlewareStack;
 use Snicco\Core\Contracts\AbstractMiddleware;
-use Snicco\Core\Factories\RouteActionFactory;
+use Snicco\Core\Routing\Internal\ControllerAction;
 
 class RouteRunner extends AbstractMiddleware
 {
     
-    private Pipeline           $pipeline;
-    private MiddlewareStack    $middleware_stack;
-    private RouteActionFactory $factory;
+    private Pipeline         $pipeline;
+    private MiddlewareStack  $middleware_stack;
+    private ContainerAdapter $container;
     
-    public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack, RouteActionFactory $factory)
+    public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack, ContainerAdapter $container)
     {
         $this->pipeline = $pipeline;
         $this->middleware_stack = $middleware_stack;
-        $this->factory = $factory;
+        $this->container = $container;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        if ( ! $route = $request->route()) {
+        $result = $request->routingResult();
+        $route = $result->route();
+        
+        if ( ! $route) {
             return $this->delegateToWordPress($request);
         }
         
-        $route->instantiateAction($this->factory);
+        $action = new ControllerAction(
+            $route->getController(),
+            $this->container,
+        );
         
-        $middleware = $this->middleware_stack->createForRoute($route);
+        $route_middleware = array_merge($route->getMiddleware(), $action->getMiddleware());
+        
+        $middleware = $this->middleware_stack->createWithRouteMiddleware($route_middleware);
         
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then($this->runRoute($route));
-    }
-    
-    private function runRoute(Route $route) :Closure
-    {
-        return function (Request $request) use ($route) {
-            return $this->respond()->toResponse(
-                $route->run($request)
-            );
-        };
+            ->then(function (Request $request) use ($result, $action) {
+                $response = $action->execute(
+                    array_merge(
+                        [$request],
+                        $result->decodedSegments(),
+                        $result->route()->getDefaults()
+                    )
+                );
+                
+                return $this->respond()->toResponse($response);
+            });
     }
     
     private function delegateToWordPress(Request $request) :Response

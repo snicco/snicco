@@ -4,335 +4,205 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Core\Http\Psr7\Request;
+use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
-use Tests\Core\fixtures\TestDoubles\HeaderStack;
+use Snicco\Core\Routing\Exceptions\BadRoute;
+use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\Exceptions\MethodNotAllowed;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
-use Tests\Core\fixtures\Controllers\Web\RoutingController;
-use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class RouteAttributesTest extends RoutingTestCase
 {
     
-    const controller_namespace = 'Tests\\Core\\fixtures\\Controllers\\Web';
-    
     /** @test */
     public function basic_get_routing_works()
     {
-        $this->createRoutes(function () use (&$count) {
-            $this->router->get('/foo', function () use (&$count) {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
+    }
+    
+    /** @test */
+    public function non_allowed_methods_are_transformed_to_a_405_response()
+    {
+        $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
+        $this->routeConfigurator()->get('route2', '/foo/{bar}', RoutingTestController::class);
+        
+        $request = $this->frontendRequest('POST', '/foo');
+        try {
+            $this->runKernel($request);
+            $this->fail("Expected exception.");
+        } catch (MethodNotAllowed $e) {
+            $this->assertStringContainsString('/foo', $e->getMessage());
+        }
+        
+        $request = $this->frontendRequest('POST', '/foo/bar');
+        try {
+            $this->runKernel($request);
+            $this->fail("Expected exception.");
+        } catch (MethodNotAllowed $e) {
+            $this->assertStringContainsString('/foo/bar', $e->getMessage());
+        }
     }
     
     /** @test */
     public function get_routes_match_head_requests()
     {
-        $GLOBALS['test']['run_count'] = 0;
-        
-        $this->createRoutes(function () use (&$count) {
-            $this->router->get('/foo', function () use (&$count) {
-                $GLOBALS['test']['run_count'] = 1;
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('HEAD', '/foo');
-        $this->assertResponse('', $request);
-        $this->assertSame(1, $GLOBALS['test']['run_count']);
+        
+        $response = $this->runKernel($request);
+        $response->assertOk()->assertSee('');
     }
     
     /** @test */
     public function basic_post_routing_works()
     {
-        $this->createRoutes(function () {
-            $this->router->post('/foo', function () {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->post('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('POST', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function basic_put_routing_works()
     {
-        $this->createRoutes(function () {
-            $this->router->put('/foo', function () {
-                return 'foo';
-            });
-        });
-        
+        $this->routeConfigurator()->put('foo', '/foo', RoutingTestController::class);
         $request = $this->frontendRequest('PUT', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function basic_patch_routing_works()
     {
-        $this->createRoutes(function () {
-            $this->router->patch('/foo', function () {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->patch('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('PATCH', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function basic_delete_routing_works()
     {
-        $this->createRoutes(function () {
-            $this->router->delete('/foo', function () {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->delete('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('DELETE', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function basic_options_routing_works()
     {
-        $this->createRoutes(function () {
-            $this->router->options('/foo', function () {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->options('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('OPTIONS', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function a_route_can_match_all_methods()
     {
-        $this->createRoutes(function () {
-            $this->router->any('/foo', function () {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->any('foo', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('POST', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('PUT', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('PATCH', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('DELETE', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('OPTIONS', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function a_route_can_match_specific_methods()
     {
-        $this->createRoutes(function () {
-            $this->router->match(['GET', 'POST'], '/foo', function () {
-                return 'foo';
-            });
-        });
+        $this->routeConfigurator()->match(
+            ['GET', 'POST'],
+            'foo',
+            '/foo',
+            RoutingTestController::class
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('POST', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('PUT', '/foo');
-        $this->assertResponse('', $request);
+        $this->expectException(MethodNotAllowed::class);
+        $this->runKernel($request);
     }
     
     /** @test */
-    public function the_route_handler_can_be_defined_with_a_separate_method()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('foo')->handle(function () {
-                return 'foo';
-            });
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /**
-     * @test
-     * Failed conditions on a matching static route by url will lead to no route matching.
-     */
     public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence()
     {
-        $this->createRoutes(function () {
-            $this->router->post('/foo/baz', function () {
-                return 'foo_baz_static';
-            });
-            
-            $this->router->post('/foo/{dynamic}', function () {
-                return 'dynamic_route';
-            });
-        });
+        $this->routeConfigurator()->post(
+            'static',
+            '/foo/baz',
+            [RoutingTestController::class, 'static']
+        );
+        
+        $this->routeConfigurator()->post(
+            'dynamic',
+            '/foo/{dynamic}',
+            [RoutingTestController::class, 'dynamic']
+        );
         
         $request = $this->frontendRequest('POST', '/foo/baz');
-        $this->assertResponse('foo_baz_static', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->frontendRequest('POST', '/foo/biz');
-        $this->assertResponse('dynamic_route', $request);
+        $this->assertResponseBody(RoutingTestController::dynamic.':biz', $request);
     }
     
     /** @test */
-    public function http_verbs_can_be_defined_after_attributes_and_finalize_the_route()
+    public function middleware_can_be_added_after_a_route_is_created()
     {
-        $this->container->singleton(RoutingController::class, function () {
-            return new RoutingController();
-        });
-        
-        $this->createRoutes(function () {
-            $this->router->namespace(self::controller_namespace)
-                         ->get('/foo', 'RoutingController@foo');
-        });
+        $this->routeConfigurator()
+             ->get('foo', '/foo', RoutingTestController::class)
+             ->middleware('foo');
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function middleware_can_be_set()
-    {
-        $this->createRoutes(function () {
-            $this->router
-                ->get('/foo')
-                ->middleware('foo')
-                ->handle(function (Request $request) {
-                    return $request->body;
-                });
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static.':foo_middleware', $request);
     }
     
     /** @test */
     public function a_route_can_have_multiple_middlewares()
     {
-        $this->createRoutes(function () {
-            $this->router
-                ->get('/foo')
-                ->middleware(['foo', 'bar'])
-                ->handle(function (Request $request) {
-                    return $request->body;
-                });
-        });
+        $this->routeConfigurator()
+             ->get('foo', '/foo', RoutingTestController::class)
+             ->middleware(['foo', 'bar']);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobar', $request);
+        $this->assertResponseBody(
+            RoutingTestController::static.':bar_middleware:foo_middleware',
+            $request
+        );
     }
     
     /** @test */
     public function middleware_can_pass_arguments()
     {
-        $this->createRoutes(function () {
-            $this->router
-                ->get('/foo')
-                ->middleware(['foo:FOO', 'bar:BAR'])
-                ->handle(function (Request $request) {
-                    return $request->body;
-                });
-        });
+        $this->routeConfigurator()
+             ->get('foo', '/foo', RoutingTestController::class)
+             ->middleware(['foo:FOO', 'bar:BAR']);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('FOOBAR', $request);
-    }
-    
-    /** @test */
-    public function middleware_can_be_set_before_the_http_verb()
-    {
-        $this->createRoutes(function () {
-            $this->router
-                ->middleware('foo')
-                ->get('/foo')
-                ->handle(function (Request $request) {
-                    return $request->body;
-                });
-            
-            // As array.
-            $this->router
-                ->middleware(['foo', 'bar'])
-                ->post('/bar')
-                ->handle(function (Request $request) {
-                    return $request->body;
-                });
-            
-            // With Args
-            $this->router
-                ->middleware(['foo:FOO', 'bar:BAR'])
-                ->put('/baz')
-                ->handle(function (Request $request) {
-                    return $request->body;
-                });
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
-        
-        $request = $this->frontendRequest('POST', '/bar');
-        $this->assertResponse('foobar', $request);
-        
-        $request = $this->frontendRequest('PUT', '/baz');
-        $this->assertResponse('FOOBAR', $request);
-    }
-    
-    /** @test */
-    public function a_route_without_an_action_will_thrown_an_exception()
-    {
-        $this->expectException(ConfigurationException::class);
-        
-        $this->createRoutes(function () {
-            $this->router->get('foo');
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobar', $request);
-    }
-    
-    /** @test */
-    public function a_route_with_url_and_condition_matching_will_throw_an_exception()
-    {
-        $this->expectException(ConfigurationException::class);
-        
-        $this->createRoutes(function () {
-            $this->router->get('foo')->where(fn() => true)->noAction();
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->runKernel($request);
-    }
-    
-    /** @test */
-    public function a_route_with_custom_conditions_and_wpquery_filter_will_throw_an_exception()
-    {
-        $this->expectException(ConfigurationException::class);
-        
-        $this->createRoutes(function () {
-            $this->router->get()->where(fn() => true)->wpquery(fn() => [])->noAction();
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->runKernel($request);
+        $this->assertResponseBody(RoutingTestController::static.':BAR:FOO', $request);
     }
     
     /** @test */
@@ -340,117 +210,76 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
-        $this->createRoutes(function () {
-            $this->router->get('foo')->noAction()->middleware(GlobalMiddleware::class);
-        });
+        $this->routeConfigurator()->get('foo', '/foo')
+             ->middleware(GlobalMiddleware::class);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('', $request);
+        $this->assertResponseBody('', $request);
         
         $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
     }
     
     /** @test */
-    public function a_no_action_route_can_before_the_http_verb()
+    public function a_route_with_the_same_static_url_cant_be_added_twice()
     {
-        $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+        $this->expectException(BadRoute::class);
         
-        $this->createRoutes(function () {
-            $this->router->noAction()->get('foo')->middleware(GlobalMiddleware::class);
-        });
+        $this->routeConfigurator()->get('route1', '/foo', RoutingTestController::class);
+        $this->routeConfigurator()->get('route2', '/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('', $request);
-        
-        $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
-    }
-    
-    /** @test */
-    public function a_no_action_route_group_can_be_added()
-    {
-        $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
-        
-        $this->createRoutes(function () {
-            $this->router->noAction()->group(function () {
-                $this->router->name('a')->group(function () {
-                    $this->router->get('foo')->middleware(GlobalMiddleware::class);
-                });
-                
-                $this->router->get('bar')->middleware(GlobalMiddleware::class);
-            });
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('', $request);
-        
-        $request = $this->frontendRequest('GET', '/bar');
-        $this->assertResponse('', $request);
-        
-        $this->assertSame(2, $GLOBALS['test'][GlobalMiddleware::run_times]);
-    }
-    
-    /** @test */
-    public function a_no_action_group_can_be_overwritten()
-    {
-        $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
-        
-        $this->createRoutes(function () {
-            $this->router->noAction()->group(function () {
-                $this->router->get('foo', function () {
-                    return 'foo';
-                });
-                
-                $this->router->get('bar')->middleware(GlobalMiddleware::class);
-            });
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
-        HeaderStack::assertHasStatusCode(200);
-        HeaderStack::reset();
-        
-        $request = $this->frontendRequest('GET', '/bar');
-        $this->assertResponse('', $request);
-        $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
-        HeaderStack::assertNoStatusCodeSent();
-        HeaderStack::reset();
-    }
-    
-    /** @test */
-    public function a_route_for_the_same_method_and_url_cant_be_added_twice_and_wont_throw_an_exception()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function () {
-                return 'foo1';
-            });
-            
-            $this->router->get('/foo', function () {
-                return 'foo2';
-            });
-        });
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo1', $request);
+        $this->assertResponseBody('foo1', $request);
     }
     
     /** @test */
     public function a_route_with_the_same_name_cant_be_added_twice_even_if_urls_are_different()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function () {
-                return 'foo';
-            })->name('route1');
+        $this->routeConfigurator()->get('route1', '/foo', RoutingTestController::class);
+        $this->routeConfigurator()->get('route1', '/bar', RoutingTestController::class);
+        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertEmptyBody($request);
+        
+        $request = $this->frontendRequest('GET', '/bar');
+        $this->assertResponseBody(RoutingTestController::static, $request);
+    }
+    
+    /** @test */
+    public function config_values_can_be_accessed()
+    {
+        $config = ['route_path' => '/foo'];
+        
+        $this->refreshRouter(null, $config);
+        
+        $this->routeConfigurator()->group(function (RoutingConfigurator $router) {
+            $path = $router->configValue('route_path');
             
-            $this->router->get('/bar', function () {
-                return 'bar';
-            })->name('route1');
+            $router->get('r1', $path, RoutingTestController::class);
         });
         
-        $url = $this->newUrlGenerator()->toRoute('route1');
+        $this->assertResponseBody(
+            RoutingTestController::static,
+            $this->frontendRequest('GET', '/foo')
+        );
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_when_config_values_dont_exist()
+    {
+        $config = ['route_path' => '/foo'];
         
-        $request = $this->frontendRequest('GET', $url);
-        $this->assertResponse('foo', $request);
+        $this->refreshRouter(null, $config);
+        
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('bogus');
+        
+        $this->routeConfigurator()->group(function (RoutingConfigurator $router) {
+            $path = $router->configValue('bogus');
+            
+            $router->get('r1', $path, RoutingTestController::class);
+        });
     }
     
 }
+
 

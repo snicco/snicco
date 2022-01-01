@@ -8,23 +8,23 @@ use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Application\Config;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
 
+/**
+ * @api
+ */
 abstract class AbstractController
 {
     
     /**
      * @var ControllerMiddleware[]
      */
-    private $middleware = [];
+    private array $middleware = [];
     
-    /**
-     * @var ContainerAdapter
-     */
-    private $container;
+    private ContainerAdapter $container;
     
     /**
      * @interal
@@ -63,9 +63,9 @@ abstract class AbstractController
         return $this->container[Redirector::class];
     }
     
-    protected function url() :UrlGeneratorInterface
+    protected function url() :UrlGenerator
     {
-        return $this->container[UrlGeneratorInterface::class];
+        return $this->container[UrlGenerator::class];
     }
     
     protected function respond() :ResponseFactory

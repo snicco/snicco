@@ -8,10 +8,10 @@ use Mockery;
 use Snicco\Core\Http\Cookie;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\UrlGenerator;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponseTest extends UnitTest
@@ -308,9 +308,9 @@ class ResponseTest extends UnitTest
         $response = $this->response->withErrors(['foo', 'bar']);
     }
     
-    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGeneratorInterface
+    protected function refreshUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
     {
-        return Mockery::mock(UrlGeneratorInterface::class);
+        return Mockery::mock(UrlGenerator::class);
     }
     
 }

@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher;
 
 use Snicco\Support\Arr;
+use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Http\ResponsePostProcessor;
 use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\Core\EventDispatcher\Events\PreWP404;
-use Snicco\Core\EventDispatcher\Events\AdminInit;
-use Snicco\Core\Contracts\RouteCollectionInterface;
-use Snicco\Core\EventDispatcher\Events\ResponseSent;
-use Snicco\Core\EventDispatcher\Listeners\Manage404s;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\EventDispatcher\Events\AdminInit;
 use Snicco\EventDispatcher\Contracts\EventParser;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
-use Snicco\Core\EventDispatcher\Listeners\FilterWpQuery;
-use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
+use Snicco\Core\EventDispatcher\Events\ResponseSent;
+use Snicco\Core\EventDispatcher\Listeners\Manage404s;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Snicco\Core\EventDispatcher\Listeners\FilterWpQuery;
+use Snicco\EventDispatcher\Contracts\MappedEventFactory;
+use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 use Snicco\Core\EventDispatcher\Events\IncomingApiRequest;
 use Snicco\Core\EventDispatcher\Events\IncomingWebRequest;
-use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\EventDispatcher\Events\IncomingAjaxRequest;
 use Snicco\Core\EventDispatcher\Events\IncomingAdminRequest;
 use Snicco\Core\EventDispatcher\Listeners\CreateDynamicHooks;
-use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -202,7 +202,7 @@ class EventServiceProvider extends ServiceProvider
         
         $this->container->singleton(FilterWpQuery::class, function () {
             return new FilterWpQuery(
-                $this->container[RouteCollectionInterface::class]
+                $this->container[Routes::class]
             );
         });
     }

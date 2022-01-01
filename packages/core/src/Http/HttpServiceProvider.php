@@ -6,16 +6,15 @@ namespace Snicco\Core\Http;
 
 use RuntimeException;
 use RKA\Middleware\IpAddress;
-use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
+use Snicco\Core\Controllers\ViewController;
+use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Controllers\RedirectController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
-use Snicco\Core\Controllers\ViewAbstractController;
-use Snicco\Core\Controllers\RedirectAbstractController;
-use Snicco\Core\Controllers\FallBackAbstractController;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
@@ -115,7 +114,7 @@ class HttpServiceProvider extends ServiceProvider
             return new DefaultResponseFactory(
                 $this->container[Psr17ResponseFactory::class],
                 $this->container[Psr17StreamFactory::class],
-                $this->container[UrlGeneratorInterface::class]
+                $this->container[UrlGenerator::class]
             );
         });
         $this->container->singleton(ResponseFactory::class, function () {
@@ -132,21 +131,21 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindCoreControllers()
     {
-        $this->container->singleton(RedirectAbstractController::class, function () {
-            return new RedirectAbstractController();
+        $this->container->singleton(RedirectController::class, function () {
+            return new RedirectController();
         });
-        $this->container->singleton(ViewAbstractController::class, function () {
-            return new ViewAbstractController($this->container[TemplateRenderer::class]);
+        $this->container->singleton(ViewController::class, function () {
+            return new ViewController($this->container[TemplateRenderer::class]);
         });
-        $this->container->singleton(FallBackAbstractController::class, function () {
-            return new FallBackAbstractController();
+        $this->container->singleton(FallBackController::class, function () {
+            return new FallBackController();
         });
     }
     
     private function bindTemplateRenderer()
     {
         $this->container->singleton(TemplateRenderer::class, function () {
-            return new FileBasedHtmlResponseFactory();
+            return new FileTemplateRenderer();
         });
     }
     

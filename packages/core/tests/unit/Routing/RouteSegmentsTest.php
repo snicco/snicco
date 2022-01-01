@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Http\Psr7\Request as Request;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\Routing\Conditions\QueryStringCondition;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class RouteSegmentsTest extends RoutingTestCase
 {
@@ -15,86 +14,73 @@ class RouteSegmentsTest extends RoutingTestCase
     /** @test */
     public function url_encoded_routes_can_be_matched_by_their_decoded_path()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/german-city/{city}', function (Request $request, string $city) {
-                return ucfirst($city);
-            });
-            
-            $this->router->get('düsseldorf', function () {
-                return 'DD';
-            });
-        });
+        $this->routeConfigurator()->get(
+            'city',
+            '/german-city/{city}',
+            [RoutingTestController::class, 'dynamic']
+        );
         
-        $path = rawurlencode('münchen');
-        $request = TestRequest::fromFullUrl('GET', "https://foobar.com/german-city/$path");
-        $this->assertResponse('München', $request);
-        
-        $dd = rawurlencode('düsseldorf');
-        $request = TestRequest::fromFullUrl('GET', "https://foobar.com/$dd");
-        $this->assertResponse('DD', $request);
+        $request = $this->frontendRequest('GET', "/german-city/münchen");
+        $this->assertResponseBody('dynamic:münchen', $request);
     }
     
     /** @test */
     public function non_ascii_routes_can_be_matched()
     {
         // новости = russian for news
-        $this->createRoutes(function () {
-            $this->router->get('новости', function () {
-                return 'non-ascii';
-            });
-            
-            $this->router->get('/foo/{bar}', function ($bar) {
-                return $bar;
-            });
-        });
+        $this->routeConfigurator()->get('r1', 'новости', [RoutingTestController::class, 'static']);
+        
+        $this->routeConfigurator()->get(
+            'r2',
+            '/foo/{bar}',
+            [RoutingTestController::class, 'dynamic']
+        );
         
         $request = $this->frontendRequest('GET', rawurlencode('новости'));
-        $this->assertResponse('non-ascii', $request);
+        $this->assertResponseBody('static', $request);
         
         $request = $this->frontendRequest('GET', '/foo/'.rawurlencode('новости'));
-        $this->assertResponse('новости', $request);
+        $this->assertResponseBody('dynamic:новости', $request);
+    }
+    
+    /** @test */
+    public function routes_are_case_sensitive()
+    {
+        $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
+        
+        $this->assertResponseBody('static', $this->frontendRequest('GET', '/foo'));
+        $this->assertResponseBody('', $this->frontendRequest('GET', '/FOO'));
     }
     
     /** @test */
     public function url_encoded_query_string_conditions_work()
     {
-        $this->createRoutes(function () {
-            $this->router->get('*', function () {
-                return 'FOO';
-            })->where(QueryStringCondition::class, ['page' => 'bayern münchen']);
-        });
+        $this->routeConfigurator()->get('r1', '/foo', [RoutingTestController::class, 'dynamic'])
+             ->condition(QueryStringCondition::class, ['page' => 'bayern münchen']
+             );
         
-        $query = urlencode('bayern münchen');
-        $request = TestRequest::fromFullUrl('GET', "https://foobar.com/foo?page=$query");
-        $request = $request->withQueryParams(['page' => 'bayern münchen']);
-        $this->assertResponse('FOO', $request);
+        $request = $this->frontendRequest('GET', "/foo?page=bayern münchen");
+        $this->assertResponseBody('dynamic:bayern münchen', $request);
     }
     
     /** @test */
     public function route_segments_can_contain_encoded_forward_slashes()
     {
-        $this->createRoutes(function () {
-            $this->router->get(
-                '/bands/{band}/{song?}',
-                function (string $band, string $song = null) {
-                    if ($song) {
-                        return "Show song [$song] of band [$band]";
-                    }
-                    
-                    return "List all songs of band [$band]";
-                }
-            );
-        });
+        $this->routeConfigurator()->get(
+            'bands',
+            '/bands/{band}/{song?}',
+            [RoutingTestController::class, 'bandSong']
+        );
         
-        $request = TestRequest::fromFullUrl('GET', 'https://music.com/bands/AC%2fDC/foo_song');
-        $this->assertResponse(
-            'Show song [foo_song] of band [AC/DC]',
+        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2fDC/foo_song');
+        $this->assertResponseBody(
+            'Show song [foo_song] of band [AC/DC].',
             $request
         );
         
-        $request = TestRequest::fromFullUrl('GET', 'https://music.com/bands/AC%2fDC');
-        $this->assertResponse(
-            'List all songs of band [AC/DC]',
+        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2fDC');
+        $this->assertResponseBody(
+            'Show all songs of band [AC/DC].',
             $request
         );
     }
@@ -102,437 +88,279 @@ class RouteSegmentsTest extends RoutingTestCase
     /** @test */
     public function urldecoded_route_definitions_can_match_url_encoded_paths()
     {
-        $this->createRoutes(function () {
-            $this->router->get('münchen', function () {
-                return 'm';
-            });
-        });
+        $this->routeConfigurator()->get('r1', 'münchen', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', rawurlencode('münchen'));
+        $request = $this->frontendRequest('GET', 'münchen');
         
-        $this->assertResponse('m', $request);
+        $this->assertResponseBody('static', $request);
     }
     
     /** @test */
     public function routes_can_contain_a_plus_sign()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo+bar', function () {
-                return 'FOO+BAR';
-            });
-        });
+        $this->routeConfigurator()->get('r1', 'foo+bar', RoutingTestController::class);
         
         $request = $this->frontendRequest('GET', '/foo+bar');
-        $this->assertResponse('FOO+BAR', $request);
-    }
-    
-    /** @test */
-    public function regex_can_be_added_as_a_condition_without_needing_array_syntax()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('users/{user}', function () {
-                return 'foo';
-            })->and('user', '[0-9]+');
-        });
-        
-        $request = $this->frontendRequest('GET', '/users/1');
-        $this->assertResponse('foo', $request);
-        
-        $request = $this->frontendRequest('GET', '/users/calvin');
-        $this->assertEmptyResponse($request);
+        $this->assertResponseBody('static', $request);
     }
     
     /** @test */
     public function regex_can_be_added_as_a_condition_as_array_syntax()
     {
-        $this->createRoutes(function () {
-            $this->router->get('users/{user}', function () {
-                return 'foo';
-            })->and(['user', '[0-9]+']);
-        });
+        $this->routeConfigurator()->get(
+            'users',
+            'users/{user}',
+            [RoutingTestController::class, 'dynamic']
+        )
+             ->requirements(['user' => '[a]+']);
         
-        $request = $this->frontendRequest('GET', '/users/1');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/users/a');
+        $this->assertResponseBody('dynamic:a', $request);
         
-        $request = $this->frontendRequest('GET', '/users/calvin');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/users/b');
+        $this->assertEmptyBody($request);
     }
     
     /** @test */
-    public function multiple_regex_conditions_can_be_added_to_an_url_condition()
+    public function multiple_regex_conditions_can_be_added()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/user/{id}/{name}', function (Request $request, $id, $name) {
-                return $name.$id;
-            })->and(['id' => '[0-9]+', 'name' => '[a-z]+']);
-        });
+        $this->routeConfigurator()->get(
+            'r1',
+            '/user/{id}/{name}',
+            [RoutingTestController::class, 'twoParams']
+        )->requirements(['id' => '[a]+', 'name' => '[a-z]+']);
         
-        $request = $this->frontendRequest('GET', '/user/1/calvin');
-        $this->assertResponse('calvin1', $request);
+        $request = $this->frontendRequest('GET', '/user/a/calvin');
+        $this->assertResponseBody('a:calvin', $request);
         
-        $request = $this->frontendRequest('GET', '/users/1/1');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/users/b/calvin');
+        $this->assertEmptyBody($request);
         
         $request = $this->frontendRequest('GET', '/users/calvin/calvin');
-        $this->assertEmptyResponse($request);
-    }
-    
-    /** @test */
-    public function required_parameters_dont_match_trailing_slashes_by_default()
-    {
-        $this->createRoutes(function () {
-            $this->router->get(
-                'users/{id}',
-                function (Request $request, $id) {
-                    return (string) $id;
-                }
-            );
-        }, false);
-        
-        $request = $this->frontendRequest('GET', '/users/1');
-        $this->assertResponse('1', $request);
-        
-        $request = $this->frontendRequest('GET', 'users/1/');
-        $this->assertEmptyResponse($request);
-    }
-    
-    /** @test */
-    public function required_parameters_can_match_trailing_slashes_only()
-    {
-        $this->createRoutes(function () {
-            $this->router->get(
-                'users/{id}',
-                function (Request $request, $id) {
-                    return (string) $id;
-                }
-            );
-        }, true);
-        
-        $request = $this->frontendRequest('GET', '/users/1');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('GET', 'users/1/');
-        $this->assertResponse('1', $request);
+        $this->assertEmptyBody($request);
     }
     
     /** @test */
     public function optional_parameters_work_at_the_end_of_the_url()
     {
-        $this->createRoutes(function () {
-            $this->router->get(
-                'users/{id}/{name?}',
-                function (Request $request, $id, $name = 'admin') {
-                    return $name.$id;
-                }
-            );
-        });
+        $this->routeConfigurator()->get('r1',
+            'users/{id}/{name?}',
+            [RoutingTestController::class, 'users']
+        );
         
         $request = $this->frontendRequest('GET', '/users/1/calvin');
-        $this->assertResponse('calvin1', $request);
+        $this->assertResponseBody('dynamic:1:calvin', $request);
         
         $request = $this->frontendRequest('GET', 'users/1');
-        $this->assertResponse('admin1', $request);
+        $this->assertResponseBody('dynamic:1:default_user', $request);
     }
     
     /** @test */
-    public function multiple_parameters_can_be_optional_with_a_preceding_capturing_group()
+    public function multiple_parameters_can_be_optional()
     {
-        $this->createRoutes(function () {
-            // Preceding Group is capturing
-            $this->router->post('/team/{id}/{name?}/{player?}')
-                         ->handle(
-                             function (Request $request, $id, $name = 'foo_team', $player = 'foo_player') {
-                                 return $name.':'.$id.':'.$player;
-                             }
-                         )
-                         ->and('id', '\d+');
-        });
+        $this->routeConfigurator()->post(
+            'r1',
+            '/team/{name?}/{player?}',
+            [RoutingTestController::class, 'twoOptional']
+        );
         
-        $response = $this->frontendRequest('post', '/team/1/dortmund/calvin');
-        $this->assertResponse('dortmund:1:calvin', $response);
+        $response = $this->frontendRequest('post', '/team');
+        $this->assertResponseBody('default1:default2', $response);
         
-        $response = $this->frontendRequest('post', '/team/1/dortmund');
-        $this->assertResponse('dortmund:1:foo_player', $response);
+        $response = $this->frontendRequest('post', '/team/dortmund');
+        $this->assertResponseBody('dortmund:default2', $response);
         
-        $response = $this->frontendRequest('post', '/team/12');
-        $this->assertResponse('foo_team:12:foo_player', $response);
-        
-        $this->assertEmptyResponse($this->frontendRequest('post', '/team/a/dortmund'));
+        $response = $this->frontendRequest('post', '/team/dortmund/calvin');
+        $this->assertResponseBody('dortmund:calvin', $response);
     }
     
     /** @test */
-    public function multiple_params_can_be_optional_with_preceding_non_capturing_group()
+    public function multiple_parameters_can_be_optional_with_a_preceding_required_segment()
     {
-        $this->createRoutes(function () {
-            // Preceding group is required but not capturing
-            $this->router->post('/users/{name?}/{gender?}/{age?}')
-                         ->handle(
-                             function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
-                                 return $name.':'.$gender.':'.$age;
-                             }
-                         );
-        });
+        // Preceding group is required but not capturing
+        $this->routeConfigurator()->post(
+            'r1',
+            '/static/{name}/{gender?}/{age?}',
+            [RoutingTestController::class, 'requiredAndOptional']
+        );
         
-        $response = $this->frontendRequest('post', '/users/calvin/male/23');
-        $this->assertResponse('calvin:male:23', $response);
+        $response = $this->frontendRequest('post', '/static/foo');
+        $this->assertResponseBody('foo:default1:default2', $response);
         
-        $response = $this->frontendRequest('post', '/users/calvin/male');
-        $this->assertResponse('calvin:male:21', $response);
+        $response = $this->frontendRequest('post', '/static/foo/bar');
+        $this->assertResponseBody('foo:bar:default2', $response);
         
-        $response = $this->frontendRequest('post', '/users/calvin');
-        $this->assertResponse('calvin:m:21', $response);
+        $response = $this->frontendRequest('post', '/static/foo/bar/baz');
+        $this->assertResponseBody('foo:bar:baz', $response);
         
-        $response = $this->frontendRequest('post', '/users');
-        $this->assertResponse('john:m:21', $response);
-    }
-    
-    /** @test */
-    public function routes_with_optional_params_will_not_match_routes_with_requests_with_trailing_slashes_by_default()
-    {
-        $this->createRoutes(function () {
-            // Preceding group is required but not capturing
-            $this->router->post('/users/{name?}/{gender?}/{age?}')
-                         ->handle(
-                             function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
-                                 return $name.':'.$gender.':'.$age;
-                             }
-                         );
-        }, false);
-        
-        // None of these should match because we force trailing slashes
-        
-        $request = $this->frontendRequest('post', '/users/');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male/');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male/23/');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin');
-        $this->assertResponse('calvin:m:21', $request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male');
-        $this->assertResponse('calvin:male:21', $request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male/23');
-        $this->assertResponse('calvin:male:23', $request);
-    }
-    
-    /**
-     * @note When optional segments have custom regex AND TRAILING SLASHES ARE USED this suffix has
-     *     to be added "\/?"
-     * @test
-     */
-    public function optional_params_can_match_only_with_trailing_slash_if_desired()
-    {
-        $this->createRoutes(function () {
-            // Preceding group is required but not capturing
-            $this->router->post(
-                '/users/{name?}/{gender?}/{age?}',
-                function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
-                    return $name.':'.$gender.':'.$age;
-                }
-            )
-                         ->and(['name' => '[a-z]+\/?',]);
-        }, true);
-        
-        $request = $this->frontendRequest('post', '/users/');
-        $this->assertResponse('john:m:21', $request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/');
-        $this->assertResponse('calvin:m:21', $request);
-        
-        $request = $this->frontendRequest('post', '/users/1/');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male/');
-        $this->assertResponse('calvin:male:21', $request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male/23/');
-        $this->assertResponse('calvin:male:23', $request);
-        
-        // None of these should match because we force trailing slashes
-        $request = $this->frontendRequest('post', '/users/calvin');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users/calvin/male/23');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('post', '/users');
-        $this->assertEmptyResponse($request);
-    }
-    
-    /** @test */
-    public function optional_parameters_work_with_our_custom_api()
-    {
-        $this->createRoutes(function () {
-            $this->router->get(
-                'users/{id}/{name?}',
-                function (Request $request, $id, $name = 'admin') {
-                    return $name.$id;
-                }
-            )->and('name', '[a-z]+');
-        });
-        
-        $request = $this->frontendRequest('GET', '/users/1/calvin');
-        $this->assertResponse('calvin1', $request);
-        
-        $request = $this->frontendRequest('GET', 'users/1');
-        $this->assertResponse('admin1', $request);
-        
-        $request = $this->frontendRequest('GET', 'users/1/12');
-        $this->assertEmptyResponse($request);
+        $response = $this->frontendRequest('post', '/static');
+        $this->assertResponseBody('', $response);
     }
     
     /** @test */
     public function multiple_parameters_can_be_optional_and_have_custom_regex()
     {
-        $this->createRoutes(function () {
-            // Preceding Group is capturing
-            $this->router->post('/team/{id}/{name?}/{age?}')
-                         ->and(['name' => '[a-z]+', 'age' => '\d+'])
-                         ->handle(function (Request $request, $id, $name = 'foo_team', $age = 21) {
-                             return $name.':'.$id.':'.$age;
-                         });
-        });
+        $this->routeConfigurator()->post(
+            'r1',
+            '/team/{id?}/{name?}',
+            [RoutingTestController::class, 'twoOptional']
+        )->requirements(['name' => '[a-z]+', 'id' => '\d+']);
         
-        $response = $this->frontendRequest('post', '/team/1/dortmund/23');
-        $this->assertResponse('dortmund:1:23', $response);
+        $response = $this->frontendRequest('post', '/team');
+        $this->assertResponseBody('default1:default2', $response);
+        
+        $response = $this->frontendRequest('post', '/team/1');
+        $this->assertResponseBody('1:default2', $response);
         
         $response = $this->frontendRequest('post', '/team/1/dortmund');
-        $this->assertResponse('dortmund:1:21', $response);
+        $this->assertResponseBody('1:dortmund', $response);
         
-        $response = $this->frontendRequest('post', '/team/12');
-        $this->assertResponse('foo_team:12:21', $response);
+        // Needs to be a number
+        $response = $this->frontendRequest('post', '/team/fail');
+        $this->assertEmptyBody($response);
         
-        $response = $this->frontendRequest('post', '/team/1/dortmund/fail');
-        $this->assertEmptyResponse($response);
-        
-        $response = $this->frontendRequest('post', '/team/1/123/123');
-        $this->assertEmptyResponse($response);
+        // seconds param can't be a number
+        $response = $this->frontendRequest('post', '/team/1/12');
+        $this->assertEmptyBody($response);
     }
     
     /** @test */
     public function adding_regex_can_be_done_as_a_fluent_api()
     {
-        $this->createRoutes(function () {
-            $this->router->get('users/{user_id}/{name}', function () {
-                return 'foo';
-            })->and('user_id', '[0-9]+')->and('name', 'calvin');
-        });
+        $this->routeConfigurator()->get(
+            'r1',
+            'users/{user_id}/{name}',
+            [RoutingTestController::class, 'twoParams']
+        )
+             ->requirements(['user_id' => '[a]+'])
+             ->requirements(['name' => 'calvin']);
         
-        $request = $this->frontendRequest('GET', '/users/1/calvin');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/users/a/calvin');
+        $this->assertResponseBody('a:calvin', $request);
         
-        $request = $this->frontendRequest('GET', '/users/1/john');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/users/a/john');
+        $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/users/w/calvin');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/users/b/calvin');
+        $this->assertEmptyBody($request);
     }
     
     /** @test */
     public function only_alpha_can_be_added_to_a_segment_as_a_helper_method()
     {
-        $this->createRoutes(function () {
-            $this->router->get('users/{name}', function () {
-                return 'foo';
-            })->andAlpha('name');
-            
-            $this->router->get('teams/{name}/{player}', function () {
-                return 'foo';
-            })->andAlpha('name', 'player');
-            
-            $this->router->get('countries/{country}/{city}', function () {
-                return 'foo';
-            })->andAlpha(['country', 'city']);
-        });
+        $this->routeConfigurator()->get(
+            'route1',
+            '/route1/{param1}/{param2}',
+            [RoutingTestController::class, 'twoParams']
+        )->requireAlpha('param1');
         
-        $request = $this->frontendRequest('GET', '/users/calvin');
-        $this->assertResponse('foo', $request);
+        $this->routeConfigurator()->get(
+            'route2',
+            'route2/{param1}/{param2}',
+            [RoutingTestController::class, 'twoParams']
+        )->requireAlpha(['param1', 'param2']);
         
-        $request = $this->frontendRequest('GET', '/users/cal1vin');
-        $this->assertEmptyResponse($request);
+        $this->routeConfigurator()->get(
+            'route3',
+            '/route3/{param1}/{param2}',
+            [RoutingTestController::class, 'twoParams']
+        )->requireAlpha('param1', true);
         
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/route1/foo/a');
+        $this->assertResponseBody('foo:a', $request);
         
-        $request = $this->frontendRequest('GET', '/teams/1/calvin');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/route1/foo111');
+        $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/teams/dortmund/1');
-        $this->assertEmptyResponse($request);
+        // uppercase not allowed by default
+        $request = $this->frontendRequest('GET', '/route1/FOO/a');
+        $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/countries/germany/berlin');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/route2/foo/bar');
+        $this->assertResponseBody('foo:bar', $request);
         
-        $request = $this->frontendRequest('GET', '/countries/germany/1');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/route2/foo/+');
+        $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/countries/1/berlin');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/route2/1/foo');
+        $this->assertEmptyBody($request);
+        
+        // uppercase allowed explicitly
+        $request = $this->frontendRequest('GET', '/route3/FOO/a');
+        $this->assertResponseBody('FOO:a', $request);
     }
     
     /** @test */
     public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method()
     {
-        $this->createRoutes(function () {
-            $this->router->get('users/{name}', function () {
-                return 'foo';
-            })->andAlphaNumerical('name');
-        });
+        $this->routeConfigurator()->get(
+            'route1',
+            'route1/{name}',
+            [RoutingTestController::class, 'dynamic']
+        )
+             ->requireAlphaNum('name');
         
-        $request = $this->frontendRequest('GET', '/users/calvin');
-        $this->assertResponse('foo', $request);
+        $this->routeConfigurator()->get(
+            'route2',
+            'route2/{name}',
+            [RoutingTestController::class, 'dynamic']
+        )
+             ->requireAlphaNum('name', true);
         
-        $request = $this->frontendRequest('GET', '/users/calv1in');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/route1/foo');
+        $this->assertResponseBody('dynamic:foo', $request);
+        
+        $request = $this->frontendRequest('GET', '/route1/foo123');
+        $this->assertResponseBody('dynamic:foo123', $request);
+        
+        $request = $this->frontendRequest('GET', '/route1/foo+');
+        $this->assertResponseBody('', $request);
+        
+        $request = $this->frontendRequest('GET', '/route1/FOO');
+        $this->assertResponseBody('', $request);
+        
+        $request = $this->frontendRequest('GET', '/route2/FOO');
+        $this->assertResponseBody('dynamic:FOO', $request);
     }
     
     /** @test */
     public function only_number_can_be_added_to_a_segment_as_a_helper_method()
     {
-        $this->createRoutes(function () {
-            $this->router->get('users/{name}', function () {
-                return 'foo';
-            })->andNumber('name');
-        });
+        $this->routeConfigurator()->get(
+            'route1',
+            'route1/{name}',
+            [RoutingTestController::class, 'dynamicInt']
+        )
+             ->requireNum('name');
         
-        $request = $this->frontendRequest('GET', '/users/1');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/route1/1');
+        $this->assertResponseBody('dynamic:1', $request);
         
-        $request = $this->frontendRequest('GET', '/users/calvin');
-        $this->assertEmptyResponse($request);
-        
-        $request = $this->frontendRequest('GET', '/users/calv1in');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/route1/calvin');
+        $this->assertEmptyBody($request);
     }
     
     /** @test */
     public function only_one_of_can_be_added_to_a_segment_as_a_helper_method()
     {
-        $this->createRoutes(function () {
-            $this->router->get('home/{locale}', function (Request $request, $locale) {
-                return $locale;
-            })->andEither('locale', ['en', 'de']);
-        });
+        $this->routeConfigurator()->get(
+            'route1',
+            'route1/{name}',
+            [RoutingTestController::class, 'dynamicInt']
+        )
+             ->requireOneOf('name', [1, 2, 3]);
         
-        $request = $this->frontendRequest('GET', '/home/en');
-        $this->assertResponse('en', $request);
+        $request = $this->frontendRequest('GET', '/route1/1');
+        $this->assertResponseBody('dynamic:1', $request);
         
-        $request = $this->frontendRequest('GET', '/home/de');
-        $this->assertResponse('de', $request);
+        $request = $this->frontendRequest('GET', '/route1/2');
+        $this->assertResponseBody('dynamic:2', $request);
         
-        $request = $this->frontendRequest('GET', '/home/es');
-        $this->assertEmptyResponse($request);
+        $request = $this->frontendRequest('GET', '/route1/3');
+        $this->assertResponseBody('dynamic:3', $request);
+        
+        $request = $this->frontendRequest('GET', '/route1/4');
+        $this->assertResponseBody('', $request);
     }
     
 }

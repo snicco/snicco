@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
 use Snicco\Core\Application\Config;
+use Snicco\Core\Routing\Internal\Router;
 use Snicco\Auth\Controllers\AccountAbstractController;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Controllers\RecoveryCodeAbstractController;
@@ -26,23 +26,25 @@ $magic_link = $config->get('auth.endpoints.magic-link');
 $confirm = $config->get('auth.endpoints.confirm');
 
 // Login
-$router->middleware('guest')->group(function (Router $router) use ($config, $login, $magic_link) {
-    $router->get("/$login", [AuthSessionAbstractController::class, 'create'])
-           ->name('login');
-    
-    $router->post("/$login", [AuthSessionAbstractController::class, 'store'])
-           ->middleware(['csrf', 'json']);
-    
-    // Magic-link
-    if ($config->get('auth.authenticator') === 'email') {
-        $router->post("$login/$magic_link", [LoginMagicLinkAbstractController::class, 'store'])
-               ->middleware(['csrf', 'json'])
-               ->name('login.create-magic-link');
+$router->middleware('guest')->createInGroup(
+    function (Router $router) use ($config, $login, $magic_link) {
+        $router->get("/$login", [AuthSessionAbstractController::class, 'create'])
+               ->name('login');
         
-        $router->get("$login/$magic_link", [AuthSessionAbstractController::class, 'store'])
-               ->name('login.magic-link');
+        $router->post("/$login", [AuthSessionAbstractController::class, 'store'])
+               ->middleware(['csrf', 'json']);
+        
+        // Magic-link
+        if ($config->get('auth.authenticator') === 'email') {
+            $router->post("$login/$magic_link", [LoginMagicLinkAbstractController::class, 'store'])
+                   ->middleware(['csrf', 'json'])
+                   ->name('login.create-magic-link');
+            
+            $router->get("$login/$magic_link", [AuthSessionAbstractController::class, 'store'])
+                   ->name('login.magic-link');
+        }
     }
-});
+);
 
 // Logout @todo user id param is not needed here.
 $router->get('/logout/{user_id}', [AuthSessionAbstractController::class, 'destroy'])
@@ -51,7 +53,7 @@ $router->get('/logout/{user_id}', [AuthSessionAbstractController::class, 'destro
        ->andNumber('user_id');
 
 // Auth Confirmation
-$router->middleware(['auth', 'auth.unconfirmed'])->group(
+$router->middleware(['auth', 'auth.unconfirmed'])->createInGroup(
     function (Router $router) use ($magic_link, $confirm) {
         $router->get("$confirm", [ConfirmedAuthSessionAbstractController::class, 'create'])->name(
             'confirm'
@@ -105,7 +107,7 @@ if ($config->get('auth.features.2fa')) {
     
     // recovery codes.
     $router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed', '2fa.enabled'])
-           ->group(function (Router $router) {
+           ->createInGroup(function (Router $router) {
                $router->get('two-factor/recovery-codes', [
                    RecoveryCodeAbstractController::class,
                    'index',
@@ -144,7 +146,7 @@ if ($config->get('auth.features.password-resets')) {
 if ($config->get('auth.features.registration')) {
     $register = $config->get('auth.endpoints.register');
     
-    $router->middleware('guest')->group(function ($router) use ($register) {
+    $router->middleware('guest')->createInGroup(function ($router) use ($register) {
         $router->get("/$register", [RegistrationLinkAbstractController::class, 'create'])
                ->name('register');
         
@@ -156,7 +158,7 @@ if ($config->get('auth.features.registration')) {
 }
 
 // accounts
-$router->name('accounts')->group(function (Router $router) use ($config) {
+$router->name('accounts')->createInGroup(function (Router $router) use ($config) {
     $accounts = $config->get('auth.endpoints.accounts');
     $create = $config->get('auth.endpoints.accounts_create');
     

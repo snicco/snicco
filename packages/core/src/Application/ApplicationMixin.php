@@ -6,12 +6,12 @@ namespace Snicco\Core\Application;
 
 use Closure;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Routing\Internal\Generator;
 use Snicco\Core\Http\Responses\RedirectResponse;
 
 /**
@@ -109,9 +109,9 @@ final class ApplicationMixin
     /**
      * Get the applications UrlGenerator instance
      *
-     * @return UrlGenerator
+     * @return Generator
      */
-    public static function url() :UrlGenerator
+    public static function url() :Generator
     {
     }
     
@@ -201,7 +201,7 @@ final class ApplicationMixin
     /**
      * Get the url to a named route
      *
-     * @see UrlGenerator::toRoute()
+     * @see Generator::toRoute()
      */
     public static function routeUrl(string $route, array $arguments = [], bool $secure = true, bool $absolute = true) :string
     {

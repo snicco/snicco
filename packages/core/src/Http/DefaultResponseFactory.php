@@ -10,10 +10,10 @@ use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Responsable;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\Responses\NullResponse;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
@@ -40,11 +40,11 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
     private $psr_stream;
     
     /**
-     * @var UrlGeneratorInterface
+     * @var UrlGenerator
      */
     private $url;
     
-    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGeneratorInterface $url)
+    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGenerator $url)
     {
         $this->psr_response = $response;
         $this->psr_stream = $stream;

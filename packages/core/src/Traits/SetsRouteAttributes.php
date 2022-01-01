@@ -7,16 +7,16 @@ namespace Snicco\Core\Traits;
 use Closure;
 use Snicco\Support\Arr;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\Contracts\Condition;
-use Snicco\Core\Routing\ConditionBlueprint;
-use Snicco\Core\Controllers\FallBackAbstractController;
+use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Contracts\AbstractRouteCondition;
+use Snicco\Core\Routing\Internal\ConditionBlueprint;
 
 trait SetsRouteAttributes
 {
     
     public function handle($action) :Route
     {
-        $this->action = $action;
+        $this->setController($action);
         return $this;
     }
     
@@ -57,7 +57,7 @@ trait SetsRouteAttributes
     }
     
     /**
-     * @param  string|Condition|Closure|callable  $condition
+     * @param  string|AbstractRouteCondition|Closure|callable  $condition
      * @param  mixed  $args,...  Arguments that will be passed into the condition (if any).
      * If the condition equals (string)'negate', the second argument will be used as the Condition.
      *
@@ -89,7 +89,7 @@ trait SetsRouteAttributes
     
     public function noAction() :Route
     {
-        $this->handle([FallBackAbstractController::class, 'delegate']);
+        $this->handle([FallBackController::class, 'delegate']);
         return $this;
     }
     

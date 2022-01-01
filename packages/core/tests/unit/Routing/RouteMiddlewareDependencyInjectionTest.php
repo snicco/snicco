@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Exception;
+use RuntimeException;
+use Snicco\Core\Http\Delegate;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\TestDependencies\Baz;
-use Tests\Core\fixtures\Middleware\AbstractMiddlewareWithDependencies;
-use Tests\Core\fixtures\Controllers\Admin\AdminAbstractControllerWithMiddleware;
+use Tests\Core\fixtures\Middleware\MiddlewareWithDependencies;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Tests\Core\fixtures\Controllers\Admin\ControllerWithMiddleware;
 
 class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
 {
@@ -24,97 +25,102 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
         parent::setUp();
         
         $this->container->instance(
-            AbstractMiddlewareWithDependencies::class,
-            new AbstractMiddlewareWithDependencies(new Foo(), new Bar())
+            MiddlewareWithDependencies::class,
+            new MiddlewareWithDependencies(new Foo(), new Bar())
         );
-        $this->container->singleton(AdminAbstractControllerWithMiddleware::class, function () {
-            return new AdminAbstractControllerWithMiddleware(new Baz());
-        }
-        );
+        
+        $this->container->singleton(ControllerWithMiddleware::class, function () {
+            return new ControllerWithMiddleware(new Baz());
+        });
     }
     
     /** @test */
     public function middleware_is_resolved_from_the_service_container()
     {
+        $foo = new Foo();
+        $foo->foo = 'FOO';
+        
+        $bar = new Bar();
+        $bar->bar = 'BAR';
+        
         $this->container->instance(
-            AbstractMiddlewareWithDependencies::class,
-            new AbstractMiddlewareWithDependencies(
-                new Foo(),
-                new Bar()
-            )
+            MiddlewareWithDependencies::class,
+            new MiddlewareWithDependencies($foo, $bar)
         );
         
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware(AbstractMiddlewareWithDependencies::class);
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            MiddlewareWithDependencies::class
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobar', $request);
+        $this->assertResponseBody(RoutingTestController::static.':FOOBAR', $request);
     }
     
     /** @test */
     public function controller_middleware_is_resolved_from_the_service_container()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', AdminAbstractControllerWithMiddleware::class.'@handle');
+        $this->container->singleton(ControllerWithMiddleware::class, function () {
+            $baz = new Baz();
+            $baz->baz = 'BAZ';
+            return new ControllerWithMiddleware($baz);
         });
         
+        $this->routeConfigurator()->get('r1', '/foo', ControllerWithMiddleware::class.'@handle');
+        
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobarbaz:controller_with_middleware', $request);
+        $this->assertResponseBody('BAZ:controller_with_middleware:foobar', $request);
     }
     
     /** @test */
     public function after_controller_middleware_got_resolved_the_controller_is_not_instantiated_again_when_handling_the_request()
     {
-        $GLOBALS['test'][AdminAbstractControllerWithMiddleware::constructed_times] = 0;
+        $GLOBALS['test'][ControllerWithMiddleware::constructed_times] = 0;
         
-        $this->createRoutes(function () {
-            $this->router->get('/foo', AdminAbstractControllerWithMiddleware::class.'@handle');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', ControllerWithMiddleware::class.'@handle');
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobarbaz:controller_with_middleware', $request);
+        $this->assertResponseBody('baz:controller_with_middleware:foobar', $request);
         
-        $this->assertRouteActionConstructedTimes(1, AdminAbstractControllerWithMiddleware::class);
+        $this->assertRouteActionConstructedTimes(1, ControllerWithMiddleware::class);
     }
     
     /** @test */
     public function middleware_arguments_are_passed_after_any_class_dependencies()
     {
-        $this->container->instance(Foo::class, new Foo());
-        $this->container->instance(Bar::class, new Bar());
+        $foo = new Foo();
+        $foo->foo = 'FOO';
+        
+        $bar = new Bar();
+        $bar->bar = 'BAR';
+        
+        $this->container->instance(Foo::class, $foo);
+        $this->container->instance(Bar::class, $bar);
         
         $this->withMiddlewareAlias([
-            'm' => AbstractMiddlewareWithClassAndParamDependencies::class,
+            'm' => MiddlewareWithClassAndParamDependencies::class,
         ]);
         
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return $request->body;
-            })->middleware('m:BAZ,BIZ');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'm:BAZ,BIZ'
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foobarBAZBIZ', $request);
+        $this->assertResponseBody(RoutingTestController::static.':FOOBARBAZBIZ', $request);
     }
     
     /** @test */
     public function a_middleware_with_a_typed_default_value_and_no_passed_arguments_works()
     {
         $this->withMiddlewareAlias([
-            'm' => AbstractMiddlewareWithTypedDefault::class,
+            'm' => MiddlewareWithTypedDefault::class,
         ]);
         
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Request $request) {
-                return 'foo';
-            })->middleware('m:BAZ,BIZ');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
+            'm'
+        );
         
         $request = $this->frontendRequest('GET', '/foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     private function assertRouteActionConstructedTimes(int $times, $class)
@@ -135,7 +141,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     
 }
 
-class AbstractMiddlewareWithClassAndParamDependencies extends AbstractMiddleware
+class MiddlewareWithClassAndParamDependencies extends AbstractMiddleware
 {
     
     private Foo $foo;
@@ -151,14 +157,15 @@ class AbstractMiddlewareWithClassAndParamDependencies extends AbstractMiddleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $request->body = $this->foo->foo.$this->bar->bar.$this->baz.$this->biz;
+        $response = $next($request);
         
-        return $next($request);
+        $response->getBody()->write(':'.$this->foo->foo.$this->bar->bar.$this->baz.$this->biz);
+        return $response;
     }
     
 }
 
-class AbstractMiddlewareWithTypedDefault extends AbstractMiddleware
+class MiddlewareWithTypedDefault extends AbstractMiddleware
 {
     
     private ?Foo $foo;
@@ -171,7 +178,7 @@ class AbstractMiddlewareWithTypedDefault extends AbstractMiddleware
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
         if ( ! is_null($this->foo)) {
-            throw new Exception('Foo is not null');
+            throw new RuntimeException('Foo is not null');
         }
         
         return $next($request);

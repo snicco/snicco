@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware\Core;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
 class SetRequestAttributes extends AbstractMiddleware
 {

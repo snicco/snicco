@@ -10,7 +10,7 @@ use Snicco\Core\Routing\Route;
 use Snicco\Testing\TestResponse;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Controllers\RedirectAbstractController;
+use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
@@ -194,7 +194,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     
     private function newMiddleware($whitelist = []) :OpenRedirectProtection
     {
-        $route = new Route(['GET'], '/redirect/exit', [RedirectAbstractController::class, 'exit']);
+        $route = new Route(['GET'], '/redirect/exit', [RedirectController::class, 'exit']);
         $route->name('redirect.protection');
         $this->routes->add($route);
         $this->routes->addToUrlMatcher();

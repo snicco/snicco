@@ -6,7 +6,7 @@ namespace Snicco\Core\Middleware;
 
 use RuntimeException;
 use Snicco\Support\Str;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Routing\Internal\Generator;
 use Snicco\SessionBundle\StatefulRedirector;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
+use Snicco\Core\Http\Responses\RedirectResponse;
 
 class LoginRedirect extends AbstractLoginResponse
 {
     
     private StatefulRedirector $redirector;
-    private UrlGenerator       $url;
+    private Generator          $url;
     
-    public function __construct(StatefulRedirector $redirector, UrlGenerator $url)
+    public function __construct(StatefulRedirector $redirector, Generator $url)
     {
         $this->redirector = $redirector;
         $this->url = $url;

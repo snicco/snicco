@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Pipeline;
+use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Factories\MiddlewareFactory;
@@ -14,12 +15,11 @@ use Snicco\Core\Factories\RouteActionFactory;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Factories\RouteConditionFactory;
-use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
-use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
+use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
@@ -40,8 +40,6 @@ class MiddlewareServiceProvider extends ServiceProvider
         $this->bindSecureMiddleware();
         
         $this->bindOpenRedirectProtection();
-        
-        $this->bindValidateSignature();
         
         $this->bindOutputBufferMiddleware();
         
@@ -207,25 +205,18 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindRoutingPathSuffixMiddleware()
     {
-        $this->container->singleton(AllowMatchingAdminAndAjaxRoutes::class, function () {
-            return new AllowMatchingAdminAndAjaxRoutes();
+        $this->container->singleton(AllowMatchingAdminRoutes::class, function () {
+            return new AllowMatchingAdminRoutes();
         });
     }
     
     private function bindRoutingMiddleware()
     {
-        $this->container->singleton(RoutingAbstractMiddleware::class, function () {
-            return new RoutingAbstractMiddleware(
-                $this->container[RouteCollectionInterface::class],
+        $this->container->singleton(RoutingMiddleware::class, function () {
+            return new RoutingMiddleware(
+                $this->container[Routes::class],
                 $this->container[RouteConditionFactory::class]
             );
-        });
-    }
-    
-    private function bindValidateSignature()
-    {
-        $this->container->singleton(ValidateSignature::class, function () {
-            return new ValidateSignature($this->container[MagicLink::class]);
         });
     }
     

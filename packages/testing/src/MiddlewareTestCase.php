@@ -6,23 +6,23 @@ namespace Snicco\Testing;
 
 use Closure;
 use RuntimeException;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Http\Delegate;
+use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Routing\UrlGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Core\Routing\RouteCollection;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\Routing\Internal\RouteCollection;
 use Psr\Http\Message\ServerRequestFactoryInterface;
-use Snicco\Core\Contracts\RouteCollectionInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
@@ -40,7 +40,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     protected $response_factory;
     
     /**
-     * @var RouteCollectionInterface
+     * @var Routes
      */
     protected $routes;
     
@@ -50,7 +50,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     protected $container;
     
     /**
-     * @var UrlGeneratorInterface
+     * @var UrlGenerator
      */
     private $url;
     
@@ -93,7 +93,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     abstract protected function psrStreamFactory() :StreamFactoryInterface;
     
-    abstract protected function urlGenerator() :UrlGeneratorInterface;
+    abstract protected function urlGenerator() :UrlGenerator;
     
     /**
      * Overwrite this function if you want to specify a custom response that should be returned by
@@ -117,8 +117,8 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
             if ( ! $this->container->has(Redirector::class)) {
                 $this->container[Redirector::class] = $this->response_factory;
             }
-            if ( ! $this->container->has(UrlGeneratorInterface::class)) {
-                $this->container[UrlGeneratorInterface::class] = $this->response_factory;
+            if ( ! $this->container->has(UrlGenerator::class)) {
+                $this->container[UrlGenerator::class] = $this->response_factory;
             }
             $middleware->setContainer($this->container);
         }

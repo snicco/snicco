@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Routing\Route;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Traits\GathersMiddleware;
 
@@ -30,19 +29,26 @@ class MiddlewareStack
         $this->always_with_core_middleware = $always_with_core_middleware;
     }
     
-    public function createForRoute(Route $route) :array
+    public function createWithRouteMiddleware(array $route_middleware) :array
     {
         if ($this->middleware_disabled) {
             return [];
         }
         
-        $middleware = $route->getMiddleware();
-        $middleware[] = 'global';
-        $middleware = array_diff($middleware, $this->middleware_groups['global']);
+        $middleware = $this->middleware_groups['global'];
+        
+        foreach ($route_middleware as $name) {
+            if (isset($this->middleware_groups[$name])) {
+                unset($route_middleware[$name]);
+                $middleware = array_merge($middleware, $this->middleware_groups[$name]);
+            }
+            else {
+                $middleware[] = $name;
+            }
+        }
         
         $middleware = $this->expandMiddleware($middleware);
         $middleware = $this->uniqueMiddleware($middleware);
-        
         return $this->sortMiddleware($middleware, $this->middleware_priority);
     }
     

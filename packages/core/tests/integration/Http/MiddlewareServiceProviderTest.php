@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Http;
 
+use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Middleware\Www;
-use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Middleware\Secure;
 use Snicco\Core\Middleware\TrailingSlash;
 use Snicco\Core\Middleware\MiddlewareStack;

@@ -8,7 +8,7 @@ use RuntimeException;
 use DateTimeImmutable;
 use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Core\Http\Pipeline;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
