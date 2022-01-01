@@ -6,13 +6,14 @@ namespace Snicco\Core\Http;
 
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Application\Config;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
 use Snicco\Core\Contracts\UrlGeneratorInterface;
 
-class AbstractController
+abstract class AbstractController
 {
     
     /**
@@ -70,6 +71,19 @@ class AbstractController
     protected function respond() :ResponseFactory
     {
         return $this->container[ResponseFactory::class];
+    }
+    
+    /**
+     * @param  mixed  $default
+     *
+     * @return mixed
+     */
+    protected function config(string $key, $default = null)
+    {
+        /** @var Config $config */
+        $config = $this->container[ContainerAdapter::class];
+        Assert::isInstanceOf(Config::class, $config);
+        return $config->get($key, $default);
     }
     
     protected function render(string $template_identifier, array $data = []) :Response
