@@ -17,7 +17,7 @@ use Snicco\Core\Contracts\AbstractMiddleware;
 class Secure extends AbstractMiddleware
 {
     
-    const HEADER = 'Strict-Transport-Security';
+    private const HEADER = 'Strict-Transport-Security';
     
     protected bool $preload;
     protected int  $max_age;

@@ -44,4 +44,24 @@ class MethodOverrideTest extends MiddlewareTestCase
         $this->assertSame('GET', $this->receivedRequest()->getMethod());
     }
     
+    /** @test */
+    public function the_method_can_be_overwritten_with_the_method_override_header()
+    {
+        $request = $this->frontendRequest('POST', '/foo')
+                        ->withHeader('X-HTTP-Method-Override', 'PUT');
+        
+        $response = $this->runMiddleware($this->middleware, $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('PUT', $this->receivedRequest()->getMethod());
+        
+        $request = $this->frontendRequest('GET', '/foo')
+                        ->withHeader('X-HTTP-Method-Override', 'PUT');
+        
+        $response = $this->runMiddleware($this->middleware, $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('GET', $this->receivedRequest()->getMethod());
+    }
+    
 }

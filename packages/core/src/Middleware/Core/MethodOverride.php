@@ -12,16 +12,21 @@ use Snicco\Core\Contracts\AbstractMiddleware;
 use function in_array;
 use function strtoupper;
 
-class MethodOverride extends AbstractMiddleware
+final class MethodOverride extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        if ($request->getMethod() !== 'POST' || ! $request->filled('_method')) {
+        if ('POST' !== ($method = $request->realMethod())) {
             return $next($request);
         }
         
-        $method = $request->body('_method');
+        if ($request->filled('_method')) {
+            $method = $request->body('_method');
+        }
+        elseif ($request->hasHeader('X-HTTP-Method-Override')) {
+            $method = $request->getHeaderLine('X-HTTP-Method-Override');
+        }
         
         if ( ! $this->validMethod($method)) {
             return $next($request);
@@ -38,7 +43,7 @@ class MethodOverride extends AbstractMiddleware
         
         $method = strtoupper($method);
         
-        return in_array($method, $valid);
+        return in_array($method, $valid, true);
     }
     
 }
