@@ -15,7 +15,6 @@ use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
-use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
@@ -29,7 +28,6 @@ final class HttpKernel
     private Pipeline $pipeline;
     
     private array $core_middleware = [
-        SetRequestAttributes::class,
         MethodOverride::class,
         EvaluateResponseAbstractMiddleware::class,
         ShareCookies::class,
