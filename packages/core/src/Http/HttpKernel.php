@@ -28,13 +28,24 @@ final class HttpKernel
     private Pipeline $pipeline;
     
     private array $core_middleware = [
+        
         MethodOverride::class,
+        
+        // @todo This middleware should be configurable for route types.
         EvaluateResponseAbstractMiddleware::class,
+        
+        // @todo this middleware should be configurable for web/admin routes only.
         ShareCookies::class,
+        
+        // @todo Only for admin routes
         AllowMatchingAdminRoutes::class,
+        
+        // @todo this should not be a middleware at all.
         OutputBufferAbstractMiddleware::class,
+        
         RoutingMiddleware::class,
         RouteRunner::class,
+    
     ];
     
     private ResponseEmitter $emitter;
