@@ -4,32 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Mockery;
-use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Route;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\Authenticate;
 
 class AuthenticateTest extends MiddlewareTestCase
 {
     
-    protected function setUp() :void
-    {
-        parent::setUp();
-        WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        WP::reset();
-        Mockery::close();
-    }
-    
     /** @test */
     public function logged_in_users_can_access_the_route()
     {
-        WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
-        $middleware = new Authenticate();
+        $middleware = new Authenticate(fn() => 1);
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         
@@ -39,65 +24,32 @@ class AuthenticateTest extends MiddlewareTestCase
     /** @test */
     public function logged_out_users_cant_access_the_route()
     {
-        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
+        $route = Route::create('/login', Route::DELEGATE, 'login');
+        $this->routes->add($route);
         
-        $middleware = new Authenticate();
-        
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
-        
-        $response->assertNextMiddlewareNotCalled();
-        $response->assertRedirect();
-    }
-    
-    /** @test */
-    public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args()
-    {
-        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-        WP::shouldReceive('loginUrl')
-          ->andReturnUsing(function ($redirect_to) {
-              return 'https://foo.com/login?redirect_to='.urlencode($redirect_to);
-          }
-          );
-        
-        $request = $this->frontendRequest('GET', 'https://foo.com/üäö?param=1');
-        
-        $current = $request->getUri()->__toString();
-        
-        $response = $this->runMiddleware(new Authenticate(), $request);
-        
-        $expected = 'https://foo.com/login?redirect_to='.urlencode($current);
-        
-        $response->assertLocation($expected);
-    }
-    
-    /** @test */
-    public function users_can_be_redirected_to_a_custom_url()
-    {
-        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-        WP::shouldReceive('loginUrl')
-          ->andReturnUsing(fn($redirect_to) => 'https://foo.com/login?redirect_to='.$redirect_to);
+        $middleware = new Authenticate(fn() => 0);
         
         $response = $this->runMiddleware(
-            new Authenticate('/my-custom-login'),
+            $middleware,
             $this->frontendRequest('GET', '/foo')
         );
         
-        $response->assertLocation('https://foo.com/login?redirect_to=/my-custom-login');
+        $response->assertNextMiddlewareNotCalled();
+        $response->assertRedirect('/login?intended=https://example.com/foo');
     }
     
     /** @test */
     public function json_responses_are_returned_for_ajax_requests()
     {
-        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
         $request = $this->frontendRequest('GET', '/foo')->withAddedHeader(
             'X-Requested-With',
             'XMLHttpRequest'
-        )
-                        ->withAddedHeader('Accept', 'application/json');
+        )->withAddedHeader('Accept', 'application/json');
         
-        $response = $this->runMiddleware(new Authenticate(), $request);
+        $response = $this->runMiddleware(new Authenticate(fn() => 0), $request);
         
         $response->assertStatus(401)->assertIsJson();
+        $response->assertNextMiddlewareNotCalled();
     }
     
 }

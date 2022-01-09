@@ -35,35 +35,17 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     use CreatePsrRequests;
     
-    /**
-     * @var ResponseFactory
-     */
-    protected $response_factory;
+    protected ResponseFactory $response_factory;
     
-    /**
-     * @var Routes
-     */
-    protected $routes;
+    protected Routes $routes;
     
-    /**
-     * @var ContainerAdapter
-     */
-    protected $container;
+    protected ContainerAdapter $container;
     
-    /**
-     * @var UrlGenerator
-     */
-    private $url;
+    private UrlGenerator $url;
     
-    /**
-     * @var Request
-     */
-    private $request;
+    private Request $request;
     
-    /**
-     * @var Closure
-     */
-    private $next_middleware_response;
+    private Closure $next_middleware_response;
     
     protected function setUp() :void
     {
@@ -119,7 +101,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
                 $this->container[Redirector::class] = $this->response_factory;
             }
             if ( ! $this->container->has(UrlGenerator::class)) {
-                $this->container[UrlGenerator::class] = $this->response_factory;
+                $this->container[UrlGenerator::class] = $this->url;
             }
             $middleware->setContainer($this->container);
         }

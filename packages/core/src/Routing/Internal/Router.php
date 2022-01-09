@@ -307,6 +307,11 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         return $this->getRouteConfigurator()->configValue($key);
     }
     
+    public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH) :string
+    {
+        return $this->getGenerator()->toLogin($arguments, $type);
+    }
+    
     private function applyGroupPrefix(Path $path) :Path
     {
         if ( ! $this->hasGroup()) {

@@ -151,7 +151,7 @@ final class Pipeline
             return $middleware->process($request, $this->nextMiddleware());
         }
         
-        $arguments_from_route_definition = $this->stringsToBool(
+        $arguments_from_route_definition = $this->convertStrings(
             $arguments_from_route_definition
         );
         
@@ -170,7 +170,7 @@ final class Pipeline
         return $response;
     }
     
-    private function stringsToBool(array $constructor_args) :array
+    private function convertStrings(array $constructor_args) :array
     {
         return array_map(function ($value) {
             if ( ! is_string($value)) {
@@ -182,6 +182,10 @@ final class Pipeline
             }
             if (strtolower($value) === 'false') {
                 return false;
+            }
+            
+            if (is_numeric($value)) {
+                return intval($value);
             }
             
             return $value;

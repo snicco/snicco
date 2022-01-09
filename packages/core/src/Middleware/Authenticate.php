@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Support\WP;
+use Closure;
+use InvalidArgumentException;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
-class Authenticate extends AbstractMiddleware
+final class Authenticate extends AbstractMiddleware
 {
     
-    private ?string $path;
+    private Closure $current_user_id;
     
-    public function __construct(?string $path = null)
+    public function __construct(Closure $current_user_id)
     {
-        $this->path = $path;
+        $this->current_user_id = $current_user_id;
     }
     
     public function handle(Request $request, $next) :ResponseInterface
     {
-        if (WP::isUserLoggedIn()) {
+        if ($this->getCurrentUserId() > 0) {
             return $next($request);
         }
         
@@ -30,11 +31,17 @@ class Authenticate extends AbstractMiddleware
                         ->json('Authentication Required', 401);
         }
         
-        $redirect_after_login = $this->path ?? $request->getUri()->__toString();
-        
-        $location = WP::loginUrl($redirect_after_login, true);
-        
-        return $this->respond()->redirect($location);
+        $login = $this->url()->toLogin();
+        return $this->redirect()->deny($login);
+    }
+    
+    private function getCurrentUserId() :int
+    {
+        $id = call_user_func($this->current_user_id);
+        if ( ! is_int($id) || 0 > $id) {
+            throw new InvalidArgumentException('The user id closure did not return an integer.');
+        }
+        return $id;
     }
     
 }

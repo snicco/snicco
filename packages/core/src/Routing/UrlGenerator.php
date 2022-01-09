@@ -41,6 +41,16 @@ interface UrlGenerator
     public function toRoute(string $name, array $arguments = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string;
     
     /**
+     * Tries to redirect to the routes in the following order:
+     * 'login'
+     * 'auth.login'
+     * 'framework.auth.login'
+     * If no named route exists the url is generated to a static page that the implementation may
+     * choose.
+     */
+    public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH) :string;
+    
+    /**
      * Generates a secure, absolute URL to the provided path.
      */
     public function secure(string $path, array $extra = []) :string;

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\UserIdProvider;
+use Closure;
+use InvalidArgumentException;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -13,21 +14,23 @@ use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 class RedirectIfAuthenticated extends AbstractMiddleware
 {
     
-    private ?string        $path;
-    private UserIdProvider $id_provider;
+    private ?string $path;
+    private Closure $id_provider;
     
-    public function __construct(UserIdProvider $provider, string $path = null)
+    public function __construct(Closure $id_provider, string $path = null)
     {
-        $this->id_provider = $provider;
+        $this->id_provider = $id_provider;
         $this->path = $path;
     }
     
     public function handle(Request $request, $next) :ResponseInterface
     {
-        if (0 !== $this->id_provider->currentUserID()) {
+        $id = $this->getCurrentUserId();
+        
+        if (0 !== $id) {
             if ($request->isExpectingJson()) {
                 return $this->respond()
-                            ->json(['message' => 'Only guests can access this route.'], 403);
+                            ->json(['message' => 'Only guests can access this path.'], 403);
             }
             
             if ($this->path) {
@@ -43,6 +46,15 @@ class RedirectIfAuthenticated extends AbstractMiddleware
         }
         
         return $next($request);
+    }
+    
+    private function getCurrentUserId() :int
+    {
+        $id = call_user_func($this->id_provider);
+        if ( ! is_int($id) || 0 > $id) {
+            throw new InvalidArgumentException('The user id closure did not return an integer.');
+        }
+        return $id;
     }
     
 }

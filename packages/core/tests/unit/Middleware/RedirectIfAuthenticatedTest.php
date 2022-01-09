@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
+use Closure;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\UserIdProvider;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\RedirectIfAuthenticated;
 
@@ -74,29 +74,14 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
     
-    private function newMiddleware(UserIdProvider $provider, string $redirect_url = null) :RedirectIfAuthenticated
+    private function newMiddleware(Closure $provider, string $redirect_url = null) :RedirectIfAuthenticated
     {
         return new RedirectIfAuthenticated($provider, $redirect_url);
     }
     
-    private function providerThatReturnsId(int $id) :UserIdProvider
+    private function providerThatReturnsId(int $id) :Closure
     {
-        return new class($id) implements UserIdProvider
-        {
-            
-            private int $id;
-            
-            public function __construct(int $id)
-            {
-                $this->id = $id;
-            }
-            
-            public function currentUserID() :int
-            {
-                return $this->id;
-            }
-            
-        };
+        return (fn() => $id);
     }
     
 }
