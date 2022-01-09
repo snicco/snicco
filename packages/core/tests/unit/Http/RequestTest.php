@@ -4,26 +4,29 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
 use Snicco\Support\Repository;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Routing\RoutingResult;
+use Snicco\Core\Routing\AdminDashboard;
+use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
+use Snicco\Core\Routing\Internal\WPAdminDashboard;
+use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class RequestTest extends UnitTest
 {
     
-    /**
-     * @var Request
-     */
-    private $request;
+    private Request $request;
+    use CreatePsrRequests;
+    use CreatePsr17Factories;
     
     protected function setUp() :void
     {
         parent::setUp();
         
-        $this->request = TestRequest::from('GET', 'foo');
+        $this->request = $this->frontendRequest('GET', '/foo');
     }
     
     public function testIsImmutable()
@@ -135,70 +138,75 @@ class RequestTest extends UnitTest
         $this->assertSame('wp-admin/edit.php', $request->loadingScript());
     }
     
-    public function testIsWpAdmin()
+    /** @test */
+    public function test_isToAdminDashboard_throws_exceptions_when_no_admin_dashboard_was_set()
     {
-        $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
-        $this->assertFalse($request->isWpAdmin());
+        $this->expectExceptionMessage("No instance of");
         
-        $request =
-            TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/edit.php']);
-        $this->assertTrue($request->isWpAdmin());
-        
-        $request = TestRequest::withServerParams(
-            $this->request,
-            ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-        );
-        $this->assertFalse($request->isWpAdmin());
+        $this->request->isToAdminDashboard();
     }
     
-    public function testIsWpAjax()
+    public function test_isToAdminDashboard()
     {
-        $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
-        $this->assertFalse($request->isWpAjax());
+        Request::$admin_dashboard = WPAdminDashboard::fromDefaults();
         
-        $request =
-            TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/edit.php']);
-        $this->assertFalse($request->isWpAjax());
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertFalse($request->isToAdminDashboard());
         
-        $request = TestRequest::withServerParams(
-            $this->request,
-            ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
+        $request = $this->adminRequest('GET', 'foo');
+        $this->assertTrue($request->isToAdminDashboard());
+        
+        $request = new Request(
+            $this->psrServerRequestFactory()->createServerRequest(
+                'GET',
+                '/wp-admin/admin-ajax.php',
+                ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
+            )
         );
-        $this->assertTrue($request->isWpAjax());
+        $this->assertFalse($request->isToAdminDashboard());
     }
     
-    public function testisWpFrontEnd()
+    public function test_isFrontend()
     {
-        $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
-        $this->assertTrue($request->isWpFrontend());
+        Request::$admin_dashboard = WPAdminDashboard::fromDefaults();
         
-        $request =
-            TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/edit.php']);
-        $this->assertFalse($request->isWpFrontend());
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertTrue($request->isFrontend());
         
-        $request = TestRequest::withServerParams(
-            $this->request,
-            ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
+        $request = $this->adminRequest('GET', 'foo');
+        $this->assertFalse($request->isFrontend());
+        
+        $request = new Request(
+            $this->psrServerRequestFactory()->createServerRequest(
+                'GET',
+                '/wp-admin/admin-ajax.php',
+                ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
+            )
         );
-        $this->assertFalse($request->isWpFrontend());
+        $this->assertFalse($request->isFrontend());
+        
+        $request = new Request(
+            $this->psrServerRequestFactory()->createServerRequest(
+                'GET',
+                '/wp-login.php',
+                ['SCRIPT_NAME' => 'wp-login.php']
+            )
+        );
+        $this->assertFalse($request->isFrontend());
     }
     
     public function testRouteIs()
     {
-        WP::shouldReceive('wpAdminFolder')->andReturn('wp-admin');
-        $route = new Route(['GET'], '/foo', function () { });
-        $route->name('foobar');
+        $route = Route::create('/foo', Route::DELEGATE, 'foobar', ['GET']);
         
-        $request = $this->request->withRoutingResult($route);
+        $request = $this->request->withRoutingResult(new RoutingResult($route));
         
         $this->assertFalse($request->routeIs('bar'));
         $this->assertTrue($request->routeIs('foobar'));
         $this->assertTrue($request->routeIs('bar', 'foobar'));
-        $this->assertTrue($request->routeIs(['bar', 'foobar']));
+        $this->assertFalse($request->routeIs(['bar', 'baz']));
         
         $this->assertTrue($request->routeIs('foo*'));
-        
-        WP::reset();
     }
     
     public function testFullUrlIs()
@@ -224,6 +232,11 @@ class RequestTest extends UnitTest
         $this->assertFalse($request->pathIs('/foo/bar/'));
         
         $this->assertTrue($request->pathIs('/foo/*'));
+    }
+    
+    protected function adminDashboard() :AdminDashboard
+    {
+        return WPAdminDashboard::fromDefaults();
     }
     
 }

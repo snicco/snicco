@@ -30,7 +30,7 @@ class ApiRoutesTest extends FrameworkTestCase
         
         // This will shut the script down.
         $this->dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->request->isWpFrontEnd();
+            return $event->request->isFrontend();
         });
     }
     

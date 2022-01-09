@@ -11,13 +11,14 @@ use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
-class TrailingSlash extends AbstractMiddleware
+/**
+ * @note Do not use this middleware for any routes that go directly to a file on your file system.
+ * @api
+ */
+final class TrailingSlash extends AbstractMiddleware
 {
     
-    /**
-     * @var bool
-     */
-    private $trailing_slash;
+    private bool $trailing_slash;
     
     public function __construct(bool $trailing_slash = true)
     {
@@ -26,10 +27,6 @@ class TrailingSlash extends AbstractMiddleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        if ($request->isWpAdmin() || $request->isWpAjax()) {
-            return $next($request);
-        }
-        
         $path = $request->path();
         
         $accept_request = $this->trailing_slash

@@ -17,22 +17,13 @@ use Snicco\Core\Http\Responses\RedirectResponse;
 class OpenRedirectProtection extends AbstractMiddleware
 {
     
-    /**
-     * @var string
-     */
-    private $route;
+    private string $route;
     
-    /**
-     * @var array
-     */
-    private $whitelist;
+    private array $whitelist;
     
-    /**
-     * @var string
-     */
-    private $host;
+    private string $host;
     
-    public function __construct(string $host, $whitelist = [], $route = 'redirect.protection')
+    public function __construct(string $host, $whitelist = [], $route = 'framework.redirect.protection')
     {
         $this->route = $route;
         $this->whitelist = $this->formatWhiteList($whitelist);

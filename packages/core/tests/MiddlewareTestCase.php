@@ -8,7 +8,6 @@ use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Routing\Internal\Generator;
 use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\RFC3986Encoder;
-use Snicco\Core\Routing\Internal\RouteCollection;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
@@ -23,7 +22,7 @@ class MiddlewareTestCase extends FrameworkMiddlewareTestCase
     protected function urlGenerator() :UrlGenerator
     {
         return new Generator(
-            new RouteCollection(),
+            $this->routes,
             $this->request_context ?? new RequestContext(
                 $this->frontendRequest('GET', '/foo'),
                 WPAdminDashboard::fromDefaults(),

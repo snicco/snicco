@@ -50,14 +50,14 @@ final class HttpKernel
         $this->event_dispatcher = $event_dispatcher;
     }
     
-    public function run(Request $request) :Response
+    public function handle(Request $request) :Response
     {
-        $response = $this->handle($request);
+        $response = $this->run($request);
         
         return $this->sendResponse($response, $request);
     }
     
-    private function handle(Request $request) :Response
+    private function run(Request $request) :Response
     {
         return $this->pipeline->send($request)
                               ->through($this->gatherMiddleware($request))
@@ -66,7 +66,7 @@ final class HttpKernel
     
     private function gatherMiddleware(Request $request) :array
     {
-        if ( ! $request->isWpAdmin()) {
+        if ( ! $request->isToAdminDashboard()) {
             Arr::pullByValue(OutputBufferAbstractMiddleware::class, $this->core_middleware);
         }
         
