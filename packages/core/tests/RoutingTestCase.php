@@ -137,7 +137,7 @@ class RoutingTestCase extends UnitTest
     {
         $this->withMiddlewareAlias($this->defaultMiddlewareAliases());
         
-        $response = $this->kernel->run($request);
+        $response = $this->kernel->handle($request);
         return new TestResponse($response);
     }
     

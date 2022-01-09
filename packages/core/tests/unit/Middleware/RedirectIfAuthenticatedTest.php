@@ -4,66 +4,69 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Mockery;
-use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
+use Snicco\Core\UserIdProvider;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\RedirectIfAuthenticated;
-use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class RedirectIfAuthenticatedTest extends MiddlewareTestCase
 {
     
-    use CreateDefaultWpApiMocks;
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->createDefaultWpApiMocks();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        WP::reset();
-        Mockery::close();
-    }
-    
     /** @test */
     public function guests_can_access_the_route()
     {
-        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-        
-        $response = $this->runMiddleware($this->newMiddleware(), $this->frontendRequest());
+        $provider = $this->providerThatReturnsId(0);
+        $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
         
         $response->assertNextMiddlewareCalled();
     }
     
     /** @test */
-    public function logged_in_users_are_redirected_to_the_home_url()
+    public function logged_in_users_are_redirected_to_a_dashboard_route_if_it_exists()
     {
-        WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
-        WP::shouldReceive('adminUrl')
-          ->andReturn('/wp-admin');
-        
-        $route = new Route(['GET'], '/dashboard', function () { });
-        $route->name('dashboard');
+        $route = Route::create('/dashboard', Route::DELEGATE, 'dashboard');
         $this->routes->add($route);
-        $this->routes->addToUrlMatcher();
         
-        $response = $this->runMiddleware($this->newMiddleware(), $this->frontendRequest());
+        $provider = $this->providerThatReturnsId(1);
+        
+        $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
         
         $response->assertRedirect('/dashboard');
         $response->assertNextMiddlewareNotCalled();
     }
     
     /** @test */
+    public function logged_in_users_are_redirected_to_a_home_route_if_it_exists_and_no_dashboard_route_exists()
+    {
+        $route = Route::create('/home', Route::DELEGATE, 'home');
+        $this->routes->add($route);
+        
+        $provider = $this->providerThatReturnsId(1);
+        
+        $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
+        
+        $response->assertRedirect('/home');
+        $response->assertNextMiddlewareNotCalled();
+    }
+    
+    /** @test */
+    public function if_no_route_exists_users_are_redirected_to_the_root_domain_path()
+    {
+        $provider = $this->providerThatReturnsId(1);
+        
+        $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
+        
+        $response->assertRedirect('/');
+        $response->assertNextMiddlewareNotCalled();
+    }
+    
+    /** @test */
     public function logged_in_users_can_be_redirected_to_custom_urls()
     {
-        WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
+        $provider = $this->providerThatReturnsId(1);
         
         $response = $this->runMiddleware(
-            $this->newMiddleware('/custom-home-page'),
+            $this->newMiddleware($provider, '/custom-home-page'),
             $this->frontendRequest()
         );
         
@@ -71,9 +74,29 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
     
-    private function newMiddleware(string $redirect_url = null) :RedirectIfAuthenticated
+    private function newMiddleware(UserIdProvider $provider, string $redirect_url = null) :RedirectIfAuthenticated
     {
-        return new RedirectIfAuthenticated($redirect_url);
+        return new RedirectIfAuthenticated($provider, $redirect_url);
+    }
+    
+    private function providerThatReturnsId(int $id) :UserIdProvider
+    {
+        return new class($id) implements UserIdProvider
+        {
+            
+            private int $id;
+            
+            public function __construct(int $id)
+            {
+                $this->id = $id;
+            }
+            
+            public function currentUserID() :int
+            {
+                return $this->id;
+            }
+            
+        };
     }
     
 }
