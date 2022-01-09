@@ -12,8 +12,8 @@ use Snicco\Core\Support\Url;
 use Snicco\Support\Repository;
 use Snicco\Core\Http\Psr7\Response;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Testing\Constraints\SeeInOrder;
 use Snicco\Core\Routing\Internal\Generator;
 use Snicco\Core\Http\Responses\NullResponse;
@@ -23,13 +23,13 @@ use Snicco\Core\Http\Responses\DelegatedResponse;
 class TestResponse
 {
     
-    public Response        $psr_response;
-    protected string       $streamed_content;
-    private Repository     $headers;
-    private int            $status_code;
-    private ?ViewInterface $view    = null;
-    private ?Session       $session = null;
-    private Application    $app;
+    public Response          $psr_response;
+    protected string         $streamed_content;
+    private Repository       $headers;
+    private int              $status_code;
+    private ?ViewInterface   $view    = null;
+    private ?Session         $session = null;
+    private ContainerAdapter $container;
     
     public function __construct(Response $response)
     {
@@ -54,9 +54,9 @@ class TestResponse
         $this->view = $rendered_view;
     }
     
-    public function setApp(Application $app)
+    public function setContainer(ContainerAdapter $container)
     {
-        $this->app = $app;
+        $this->container = $container;
     }
     
     public function body() :string
@@ -261,7 +261,7 @@ class TestResponse
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
     {
         /** @var Generator $url */
-        $url = $this->app->resolve(Generator::class);
+        $url = $this->container[Generator::class];
         
         $this->assertRedirect();
         

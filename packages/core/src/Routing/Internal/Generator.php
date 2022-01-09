@@ -10,6 +10,7 @@ use Snicco\Core\Routing\Routes;
 use Snicco\Core\Routing\UrlEncoder;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Routing\Exceptions\BadRouteParameter;
+use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 use function trim;
 use function ltrim;
@@ -126,6 +127,27 @@ final class Generator implements UrlGenerator
         }
         
         return $referer;
+    }
+    
+    public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH) :string
+    {
+        try {
+            return $this->toRoute('login', $arguments, $type, true);
+        } catch (RouteNotFound $e) {
+            //
+        }
+        try {
+            return $this->toRoute('auth.login', $arguments, $type, true);
+        } catch (RouteNotFound $e) {
+            //
+        }
+        try {
+            return $this->toRoute('framework.auth.login', $arguments, $type, true);
+        } catch (RouteNotFound $e) {
+            //
+        }
+        
+        return $this->to($this->context->adminDashboard()->loginPath(), $arguments, $type, true);
     }
     
     private function generate(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null, bool $encode_path = true) :string

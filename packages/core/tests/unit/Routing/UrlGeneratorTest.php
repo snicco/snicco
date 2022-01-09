@@ -761,4 +761,50 @@ class UrlGeneratorTest extends RoutingTestCase
         $this->assertSame($expected, $url);
     }
     
+    /** @test */
+    public function test_toLogin_with_named_login_route()
+    {
+        $this->routeConfigurator()->get('login', '/login');
+        
+        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/login?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
+    /** @test */
+    public function test_toLogin_with_named_auth_login_route()
+    {
+        $this->routeConfigurator()->get('auth.login', '/login');
+        
+        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/login?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
+    /** @test */
+    public function test_two_login_with_named_framework_auth_login_route()
+    {
+        $this->routeConfigurator()->get('framework.auth.login', '/login');
+        
+        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/login?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
+    /** @test */
+    public function if_no_login_route_matches_the_admin_dashboard_default_is_used()
+    {
+        $this->assertSame('/wp-login.php?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/wp-login.php?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
 }

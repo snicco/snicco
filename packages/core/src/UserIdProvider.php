@@ -8,10 +8,11 @@ interface UserIdProvider
 {
     
     /**
-     * Returns (int) 0 if no user is authenticated.
+     * We don't return an integer because this allows us greater flexibility if we were to use
+     * UUIDs for example.
      *
-     * @return int
+     * @return null|string
      */
-    public function currentUserID() :int;
+    public function currentUserIdentifier() :?string;
     
 }
