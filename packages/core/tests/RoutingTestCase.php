@@ -53,7 +53,6 @@ use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
@@ -69,7 +68,6 @@ class RoutingTestCase extends UnitTest
     
     use CreatePsr17Factories;
     use CreateContainer;
-    use CreateDefaultWpApiMocks;
     use CreatePsrRequests;
     
     protected string           $app_domain = 'foobar.com';
@@ -88,9 +86,7 @@ class RoutingTestCase extends UnitTest
     {
         parent::setUp();
         $this->resetGlobalState();
-        $this->createDefaultWpApiMocks();
         $this->createInstances();
-        $this->createDefaultWpApiMocks();
         $this->container[RoutingTestController::class] = new RoutingTestController();
     }
     
@@ -188,6 +184,11 @@ class RoutingTestCase extends UnitTest
         return $this->generator;
     }
     
+    protected function adminDashboard() :AdminDashboard
+    {
+        return $this->admin_dashboard;
+    }
+    
     private function defaultMiddlewareAliases() :array
     {
         return [
@@ -206,7 +207,7 @@ class RoutingTestCase extends UnitTest
         $this->container = $this->createContainer();
         $this->container->instance(ContainerAdapter::class, $this->container);
         
-        $this->admin_dashboard = new WPAdminDashboard('/wp-admin', 'wp-admin');
+        $this->admin_dashboard = WPAdminDashboard::fromDefaults();
         $this->container[AdminDashboard::class] = $this->admin_dashboard;
         
         $condition_factory = new RouteConditionFactory($this->container);

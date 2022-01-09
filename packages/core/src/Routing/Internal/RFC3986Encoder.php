@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\Internal;
 
-use Snicco\Core\Contracts\UrlEncoder;
+use Snicco\Core\Routing\UrlEncoder;
 
 use function trim;
 use function strtr;

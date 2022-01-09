@@ -7,7 +7,7 @@ namespace Snicco\Core\Routing\Internal;
 use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Routing\Routes;
-use Snicco\Core\Contracts\UrlEncoder;
+use Snicco\Core\Routing\UrlEncoder;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Routing\Exceptions\BadRouteParameter;
 
