@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing\Conditions;
 
 use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\AbstractRouteCondition;
+use Snicco\Core\Routing\AbstractRouteCondition;
 
 /**
  * @api

@@ -9,13 +9,10 @@ use Snicco\Session\Session;
 use Snicco\Core\Http\Cookie;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Session\SessionManager;
-use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
 
 class AuthSessionManager
 {
-    
-    use InteractsWithTime;
     
     private SessionManager $manager;
     private ?Session       $active_session = null;

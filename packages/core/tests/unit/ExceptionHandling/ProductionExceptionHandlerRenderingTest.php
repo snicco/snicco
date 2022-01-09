@@ -26,14 +26,12 @@ use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
-use Tests\Codeception\shared\helpers\CreateRouteCollection;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Core\ExceptionHandling\PlainTextHtmlErrorRenderer;
 
 class ProductionExceptionHandlerRenderingTest extends UnitTest
 {
     
-    use CreateRouteCollection;
     use CreateContainer;
     use CreatePsr17Factories;
     

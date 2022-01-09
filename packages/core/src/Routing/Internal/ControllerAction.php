@@ -7,7 +7,7 @@ namespace Snicco\Core\Routing\Internal;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Traits\ReflectsCallable;
+use Snicco\Core\Support\ReflectsCallable;
 use Snicco\Core\Support\ReflectionDependencies;
 
 use function array_filter;

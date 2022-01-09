@@ -17,6 +17,8 @@ interface AdminDashboard
      */
     public function urlPrefix() :string;
     
+    public function loginPath() :string;
+    
     /**
      * Determine if the current request can be considered to be going to the admin dashboard.
      */

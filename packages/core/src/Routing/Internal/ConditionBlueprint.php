@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing\Internal;
 
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
-use Snicco\Core\Contracts\AbstractRouteCondition;
+use Snicco\Core\Routing\AbstractRouteCondition;
 
 use function array_shift;
 use function is_subclass_of;

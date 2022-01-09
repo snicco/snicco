@@ -6,6 +6,7 @@ namespace Tests\Core\unit\Routing;
 
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
@@ -89,6 +90,11 @@ final class UrlGenerationContextTest extends UnitTest
             WPAdminDashboard::fromDefaults()
         );
         $this->assertSame(4000, $context->getHttpsPort());
+    }
+    
+    protected function adminDashboard() :AdminDashboard
+    {
+        return WPAdminDashboard::fromDefaults();
     }
     
 }

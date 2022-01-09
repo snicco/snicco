@@ -14,7 +14,7 @@ use Mockery\MockInterface;
 class WP
 {
     
-    private static $instance;
+    private static object $instance;
     
     /**
      * Handle dynamic, static calls to the object.
@@ -75,7 +75,7 @@ class WP
         return Mockery::mock(WordpressApi::class);
     }
     
-    private static function getInstance()
+    private static function getInstance() :object
     {
         if ( ! static::$instance) {
             static::$instance = new WordpressApi();

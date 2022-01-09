@@ -6,7 +6,7 @@ namespace Tests\Core\fixtures\Conditions;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Application\Config;
-use Snicco\Core\Contracts\AbstractRouteCondition;
+use Snicco\Core\Routing\AbstractRouteCondition;
 
 class RouteConditionWithDependency extends AbstractRouteCondition
 {

@@ -22,6 +22,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Routing\Internal\RouteCollection;
+use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
@@ -151,6 +152,11 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     }
     
     abstract protected function createContainer() :ContainerAdapter;
+    
+    protected function adminDashboard() :WPAdminDashboard
+    {
+        return WPAdminDashboard::fromDefaults();
+    }
     
     private function getNext() :Delegate
     {

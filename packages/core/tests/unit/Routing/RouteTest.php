@@ -4,39 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Mockery;
 use stdClass;
 use TypeError;
-use Snicco\Core\Support\WP;
 use InvalidArgumentException;
 use Snicco\Core\Routing\Route;
 use Tests\Core\RoutingTestCase;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Routing\AbstractRouteCondition;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
-use Snicco\Core\Contracts\AbstractRouteCondition;
 use Snicco\Core\Routing\Internal\ConditionBlueprint;
 use Tests\Core\fixtures\Conditions\TrueRouteCondition;
 use Tests\Core\fixtures\Conditions\MaybeRouteCondition;
-use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 final class RouteTest extends UnitTest
 {
-    
-    use CreateDefaultWpApiMocks;
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->createDefaultWpApiMocks();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
-        WP::reset();
-    }
     
     /** @test */
     public function test_exception_if_path_does_not_start_with_forward_slash()

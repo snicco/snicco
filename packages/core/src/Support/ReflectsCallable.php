@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Traits;
+namespace Snicco\Core\Support;
 
 use Closure;
 use ReflectionClass;

@@ -21,18 +21,20 @@ final class WPAdminDashboard implements AdminDashboard
     
     private string $prefix;
     private string $loading_script_identifier;
+    private string $login_path;
     
-    public function __construct(string $admin_dashboard_url_prefix, string $loading_script_identifier)
+    public function __construct(string $admin_dashboard_url_prefix, string $loading_script_identifier, string $login_path)
     {
         Assert::stringNotEmpty($admin_dashboard_url_prefix);
         Assert::notStartsWith($loading_script_identifier, '/');
         $this->prefix = '/'.ltrim($admin_dashboard_url_prefix, '/');
         $this->loading_script_identifier = $loading_script_identifier;
+        $this->login_path = $login_path;
     }
     
     public static function fromDefaults() :WPAdminDashboard
     {
-        return new self('/wp-admin', 'wp-admin');
+        return new self('/wp-admin', 'wp-admin', '/wp-login.php');
     }
     
     public function urlPrefix() :string
@@ -76,6 +78,11 @@ final class WPAdminDashboard implements AdminDashboard
         }
         
         return rtrim($path, '/').'/'.$page;
+    }
+    
+    public function loginPath() :string
+    {
+        return $this->login_path;
     }
     
 }

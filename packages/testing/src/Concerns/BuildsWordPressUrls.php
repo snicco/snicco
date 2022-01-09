@@ -2,8 +2,8 @@
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
+use Snicco\Core\Routing\AdminDashboard;
 
 trait BuildsWordPressUrls
 {
@@ -17,8 +17,10 @@ trait BuildsWordPressUrls
     {
         return Url::combineAbsPath(
             $this->baseUrl(),
-            WP::wpAdminFolder().'/'.$parent_page.'?page='.$menu_slug
+            $this->adminDashboard()->urlPrefix().'/'.$parent_page.'?page='.$menu_slug
         );
     }
+    
+    abstract protected function adminDashboard() :AdminDashboard;
     
 }

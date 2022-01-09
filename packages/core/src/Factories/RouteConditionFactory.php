@@ -7,7 +7,7 @@ namespace Snicco\Core\Factories;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Support\ReflectionDependencies;
-use Snicco\Core\Contracts\AbstractRouteCondition;
+use Snicco\Core\Routing\AbstractRouteCondition;
 use Snicco\Core\Routing\Internal\ConditionBlueprint;
 use Snicco\Core\Routing\Internal\NegateRouteCondition;
 

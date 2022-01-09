@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Contracts;
+namespace Snicco\Core\Routing;
 
 interface UrlEncoder
 {

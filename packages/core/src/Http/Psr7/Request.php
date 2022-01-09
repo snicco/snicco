@@ -24,7 +24,6 @@ class Request implements ServerRequestInterface
     use ImplementsPsr7Request;
     use InspectsRequest;
     use InteractsWithInput;
-    use ValidatesWordpressNonces;
     
     public function __construct(ServerRequestInterface $psr_request)
     {
