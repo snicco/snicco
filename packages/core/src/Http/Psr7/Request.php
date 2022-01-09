@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Http\Psr7;
 
 use WP_User;
+use RuntimeException;
 use Snicco\Support\Str;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
@@ -12,8 +13,8 @@ use Snicco\Core\Http\Cookies;
 use Snicco\Support\Repository;
 use Psr\Http\Message\UriInterface;
 use Snicco\Core\Routing\RoutingResult;
+use Snicco\Core\Routing\AdminDashboard;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Core\Traits\ValidatesWordpressNonces;
 
 /**
  * @todo add ip() method
@@ -24,6 +25,8 @@ class Request implements ServerRequestInterface
     use ImplementsPsr7Request;
     use InspectsRequest;
     use InteractsWithInput;
+    
+    public static AdminDashboard $admin_dashboard;
     
     public function __construct(ServerRequestInterface $psr_request)
     {
@@ -147,21 +150,25 @@ class Request implements ServerRequestInterface
         return (int) $this->query('expires', $default);
     }
     
-    public function isWpAdmin() :bool
+    public function isToAdminDashboard() :bool
     {
-        // A request to the admin dashboard. We can catch that within admin_init
-        return Str::contains($this->loadingScript(), 'wp-admin') && ! $this->isWpAjax();
+        if ( ! isset(self::$admin_dashboard)) {
+            throw new RuntimeException(
+                sprintf("No instance of [%s] has been set on the request", AdminDashboard::class)
+            );
+        }
+        
+        return self::$admin_dashboard->goesTo($this);
     }
     
-    public function isWpAjax() :bool
+    public function isFrontend() :bool
     {
-        return Str::contains($this->loadingScript(), 'wp-admin/admin-ajax.php');
-    }
-    
-    public function isWpFrontEnd() :bool
-    {
-        return ! ($this->isWpAjax() || $this->isWpAdmin())
-               && Str::contains($this->loadingScript(), 'index.php');
+        return ! $this->isToAdminDashboard()
+               && ! Str::contains(
+                self::$admin_dashboard->urlPrefix(),
+                $this->path()
+            )
+               && $this->loadingScript() === 'index.php';
     }
     
     public function path() :string

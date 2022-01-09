@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class ResponsePostProcessor
 {
@@ -31,11 +31,13 @@ class ResponsePostProcessor
         
         // API endpoint requests are always loaded through index.php and thus are
         // also frontend requests.
-        if ($request->isWpFrontEnd() || $request->isWpAjax()) {
+        if ($request->isFrontend() || $request->isWpAjax()) {
             $this->exit($response_sent);
         }
         
-        if ($request->isWpAdmin() && ($response->isClientError() || $response->isServerError())) {
+        if ($request->isToAdminDashboard()
+            && ($response->isClientError()
+                || $response->isServerError())) {
             $this->exit($response_sent);
         }
     }

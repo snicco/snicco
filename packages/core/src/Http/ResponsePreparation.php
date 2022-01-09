@@ -126,7 +126,7 @@ class ResponsePreparation
         if ( ! $response->hasHeader('content-length')
              && ! $response->hasEmptyBody()
              && ! ob_get_length()
-             && ! $request->isWpAdmin()
+             && ! $request->isToAdminDashboard()
         ) {
             $size = strval($response->getBody()->getSize());
             $response = $response->withHeader('content-length', $size);

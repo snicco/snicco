@@ -29,20 +29,11 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 final class DefaultResponseFactory implements ResponseFactory, Redirector
 {
     
-    /**
-     * @var Psr17ResponseFactory
-     */
-    private $psr_response;
+    private Psr17ResponseFactory $psr_response;
     
-    /**
-     * @var Psr17StreamFactory
-     */
-    private $psr_stream;
+    private Psr17StreamFactory $psr_stream;
     
-    /**
-     * @var UrlGenerator
-     */
-    private $url;
+    private UrlGenerator $url;
     
     public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGenerator $url)
     {

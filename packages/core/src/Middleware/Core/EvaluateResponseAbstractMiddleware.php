@@ -29,7 +29,7 @@ class EvaluateResponseAbstractMiddleware extends AbstractMiddleware
     {
         $response = $next($request);
         
-        if ($this->must_match_web_routes && $request->isWpFrontEnd()) {
+        if ($this->must_match_web_routes && $request->isFrontend()) {
             if ($response instanceof NullResponse || $response instanceof DelegatedResponse) {
                 throw new NotFoundException(
                     "404 for request path [{$request->fullRequestTarget()}]"

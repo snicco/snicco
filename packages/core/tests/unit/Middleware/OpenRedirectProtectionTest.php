@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Mockery;
-use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Route;
 use Snicco\Testing\TestResponse;
 use Tests\Core\MiddlewareTestCase;
@@ -22,15 +20,14 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->createDefaultWpApiMocks();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
         
-        WP::reset();
-        Mockery::close();
+        $route = Route::create(
+            '/redirect/exit',
+            [RedirectController::class, 'exit'],
+            'framework.redirect.protection',
+            ['GET']
+        );
+        $this->routes->add($route);
     }
     
     /** @test */
@@ -194,11 +191,6 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     
     private function newMiddleware($whitelist = []) :OpenRedirectProtection
     {
-        $route = new Route(['GET'], '/redirect/exit', [RedirectController::class, 'exit']);
-        $route->name('redirect.protection');
-        $this->routes->add($route);
-        $this->routes->addToUrlMatcher();
-        
         return new OpenRedirectProtection('https://foo.com', $whitelist);
     }
     

@@ -25,7 +25,7 @@ class Www extends AbstractMiddleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        if ( ! $request->isWpFrontEnd()) {
+        if ( ! $request->isFrontend()) {
             return $next($request);
         }
         

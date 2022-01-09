@@ -50,7 +50,7 @@ class ViewBasedHtmlErrorRenderer implements HtmlErrorRender
     {
         $views = ['framework.errors.'.$e->httpStatusCode(), 'framework.errors.500'];
         
-        if ( ! $request->isWpAdmin()) {
+        if ( ! $request->isToAdminDashboard()) {
             return $views;
         }
         

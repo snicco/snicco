@@ -92,10 +92,10 @@ class MiddlewareStack
         
         $middleware = ['global'];
         
-        if ($request->isWpFrontEnd()) {
+        if ($request->isFrontend()) {
             $middleware[] = 'web';
         }
-        elseif ($request->isWpAdmin()) {
+        elseif ($request->isToAdminDashboard()) {
             $middleware[] = 'admin';
         }
         elseif ($request->isWpAjax()) {

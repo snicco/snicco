@@ -28,7 +28,7 @@ class AdminInit extends CoreEvent implements MappedAction
     
     public function shouldDispatch() :bool
     {
-        return $this->request->isWpAdmin();
+        return $this->request->isToAdminDashboard();
     }
     
 }

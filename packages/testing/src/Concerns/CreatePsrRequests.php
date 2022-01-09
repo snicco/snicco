@@ -20,7 +20,7 @@ trait CreatePsrRequests
     
     abstract protected function psrUriFactory() :UriFactoryInterface;
     
-    protected function frontendRequest(string $method = 'GET', $uri = '/') :Request
+    protected function frontendRequest(string $method = 'GET', $uri = '/', array $server = []) :Request
     {
         $method = strtoupper($method);
         $uri = $this->createUri($uri);
@@ -29,7 +29,7 @@ trait CreatePsrRequests
             $this->psrServerRequestFactory()->createServerRequest(
                 $method,
                 $uri,
-                ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'index.php']
+                array_merge(['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'index.php'], $server),
             )
         );
         

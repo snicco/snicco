@@ -28,7 +28,7 @@ final class RoutingMiddleware extends AbstractMiddleware
     {
         $result = $this->url_matcher->dispatch($request);
         
-        if ( ! ($route = $result->route())) {
+        if ( ! $result->isMatch()) {
             return $next($request);
         }
         
