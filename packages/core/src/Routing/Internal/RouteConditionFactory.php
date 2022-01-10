@@ -36,7 +36,7 @@ final class RouteConditionFactory
         Assert::isInstanceOf($instance, AbstractRouteCondition::class);
         
         if ($blueprint->isNegated()) {
-            return new NegateRouteCondition($instance);
+            return new NegatedRouteCondition($instance);
         }
         
         return $instance;
