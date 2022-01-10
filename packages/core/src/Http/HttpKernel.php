@@ -29,6 +29,8 @@ final class HttpKernel
     
     private array $core_middleware = [
         
+        // @todo
+        
         MethodOverride::class,
         
         // @todo This middleware should be configurable for route types.
@@ -44,6 +46,7 @@ final class HttpKernel
         OutputBufferAbstractMiddleware::class,
         
         RoutingMiddleware::class,
+        
         RouteRunner::class,
     
     ];

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Mockery;
 use stdClass;
-use Snicco\Core\Support\WP;
 use InvalidArgumentException;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Http\Psr7\Request;
@@ -18,6 +16,7 @@ use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\RouteCollection;
+use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class DefaultResponseFactoryTest extends UnitTest
@@ -191,41 +190,25 @@ class DefaultResponseFactoryTest extends UnitTest
     /** @test */
     public function test_home_goes_to_the_home_route_if_it_exists()
     {
-        WP::shouldReceive('adminUrl')->andReturn('');
-        WP::shouldReceive('wpAdminFolder')->andReturn('');
-        
-        $home_route = new Route(['GET'], '/home/{user_id}');
-        $home_route->noAction()->name('home');
+        $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
         $this->routes->add($home_route);
-        $this->routes->addToUrlMatcher();
         
         $response = $this->factory->home(['user_id' => 1, 'foo' => 'bar'], 307);
         
         $this->assertSame('/home/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
-        
-        WP::reset();
-        Mockery::close();
     }
     
     /** @test */
     public function test_toRoute()
     {
-        WP::shouldReceive('adminUrl')->andReturn('');
-        WP::shouldReceive('wpAdminFolder')->andReturn('');
+        $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
+        $this->routes->add($route);
         
-        $home_route = new Route(['GET'], '/home/{user_id}');
-        $home_route->noAction()->name('home');
-        $this->routes->add($home_route);
-        $this->routes->addToUrlMatcher();
+        $response = $this->factory->toRoute('r1', ['param' => 1, 'foo' => 'bar'], 307);
         
-        $response = $this->factory->toRoute('home', ['user_id' => 1, 'foo' => 'bar'], 307);
-        
-        $this->assertSame('/home/1?foo=bar', $response->getHeaderLine('location'));
+        $this->assertSame('/foo/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
-        
-        WP::reset();
-        Mockery::close();
     }
     
     /** @test */
@@ -238,7 +221,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -259,11 +242,11 @@ class DefaultResponseFactoryTest extends UnitTest
         $request = $this->psrServerRequestFactory()
                         ->createServerRequest(
                             'GET',
-                            $url = 'https://foobar.com/foo?bar=baz#section1'
+                            'https://foobar.com/foo?bar=baz#section1'
                         )->withAddedHeader('referer', '/foo/bar');
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -288,7 +271,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -325,7 +308,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -370,7 +353,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -398,7 +381,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -413,11 +396,11 @@ class DefaultResponseFactoryTest extends UnitTest
         $request = $this->psrServerRequestFactory()
                         ->createServerRequest(
                             'GET',
-                            $redirected_to
+                            'https://foobar.com'.$redirected_to
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request);
+        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(

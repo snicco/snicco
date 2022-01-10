@@ -12,7 +12,7 @@ use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
-final class UrlGenerationContextTest extends UnitTest
+final class RequestContextTest extends UnitTest
 {
     
     use CreatePsr17Factories;
@@ -90,6 +90,28 @@ final class UrlGenerationContextTest extends UnitTest
             WPAdminDashboard::fromDefaults()
         );
         $this->assertSame(4000, $context->getHttpsPort());
+    }
+    
+    /** @test */
+    public function test_exception_for_non_empty_host()
+    {
+        $this->expectExceptionMessage("Request URI has no host");
+        $context = new RequestContext(
+            new Request($this->psrServerRequestFactory()->createServerRequest('GET', '/foo')),
+            WPAdminDashboard::fromDefaults(),
+        );
+    }
+    
+    /** @test */
+    public function test_exception_for_empty_scheme()
+    {
+        $this->expectExceptionMessage('Request URI has no scheme');
+        $context = new RequestContext(
+            new Request(
+                $this->psrServerRequestFactory()->createServerRequest('GET', '//example.com/foo')
+            ),
+            WPAdminDashboard::fromDefaults(),
+        );
     }
     
     protected function adminDashboard() :AdminDashboard

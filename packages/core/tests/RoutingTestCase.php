@@ -46,7 +46,6 @@ use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Tests\Core\fixtures\Middleware\FoobarMiddleware;
-use Snicco\Core\Middleware\Core\SetRequestAttributes;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
@@ -232,7 +231,6 @@ class RoutingTestCase extends UnitTest
             new Pipeline(
                 $middleware_factory = new MiddlewareFactory($this->container),
                 $error_handler,
-                $this->response_factory,
             ),
             new TestResponseEmitter(new ResponsePreparation($this->psrStreamFactory())),
             $this->event_dispatcher =
@@ -267,7 +265,6 @@ class RoutingTestCase extends UnitTest
                 $this->container,
             )
         );
-        $this->container->instance(SetRequestAttributes::class, new SetRequestAttributes());
         $this->container->instance(
             EvaluateResponseAbstractMiddleware::class,
             new EvaluateResponseAbstractMiddleware()
