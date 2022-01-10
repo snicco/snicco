@@ -8,7 +8,6 @@ use Closure;
 use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Support\Url;
 use FastRoute\RouteCollector;
 use Snicco\Core\Support\Path;
 use Snicco\Core\Routing\Route;
@@ -20,10 +19,10 @@ use Snicco\Core\Support\CacheFile;
 use Snicco\Core\Routing\UrlMatcher;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Routing\RoutingResult;
-use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Core\Routing\Exceptions\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\AdminDashboardPrefix;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteSyntax;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteDispatcher;
@@ -37,47 +36,46 @@ use function array_reverse;
 use function file_put_contents;
 
 /**
- * @interal The Router implements and delegates all core parts of the Routing system.
+ * @interal
+ * The Router implements and partially delegates all core parts of the Routing system.
+ * This is preferred over passing around one (global) instance of {@see Routes} between different
+ * objects in the service container.
  */
 final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
 {
     
     private Routes $routes;
     
-    private array $config;
-    
     private RouteConditionFactory $condition_factory;
     
-    private AdminDashboard $admin_dashboard;
+    private RoutingConfiguratorFactory $configurator_factory;
     
-    private UrlGenerationContext $context;
+    private UrlGeneratorFactory $generator_factory;
     
     private ?CacheFile $cache_file;
-    
-    private Generator $generator;
-    
-    private RoutingConfiguratorUsingRouter $route_configurator;
-    
-    private array $fast_route_cache = [];
     
     /**
      * @var array<RouteGroup>
      */
     private array $group_stack = [];
     
+    private array $fast_route_cache = [];
+    
+    private AdminDashboardPrefix $admin_dashboard_prefix;
+    
+    // Since the router glues several pieces of the routing system together we use
+    // simple factories to signalize which objects are direct dependencies of the router.
     public function __construct(
         RouteConditionFactory $condition_factory,
-        UrlGenerationContext $context,
-        AdminDashboard $admin_dashboard,
-        array $config,
+        RoutingConfiguratorFactory $configurator_factory,
+        UrlGeneratorFactory $generator_factory,
+        AdminDashboardPrefix $admin_dashboard_prefix,
         CacheFile $cache_file = null
     ) {
-        $this->routes = new RouteCollection();
-        $this->context = $context;
-        $this->config = $config;
-        $this->condition_factory = $condition_factory;
-        $this->admin_dashboard = $admin_dashboard;
         $this->cache_file = $cache_file;
+        
+        $this->condition_factory = $condition_factory;
+        $this->admin_dashboard_prefix = $admin_dashboard_prefix;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
             $cache = require($this->cache_file->asString());
@@ -86,6 +84,11 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
             $this->fast_route_cache = $cache['fast_route'];
             $this->routes = new CachedRouteCollection($cache['route_collection']);
         }
+        else {
+            $this->routes = new RouteCollection();
+        }
+        $this->configurator_factory = $configurator_factory;
+        $this->generator_factory = $generator_factory;
     }
     
     public function createInGroup(Closure $create_routes, array $attributes) :void
@@ -105,7 +108,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
             );
         }
         
-        $path = Url::combineRelativePath($this->admin_dashboard->urlPrefix(), $path);
+        $path = $this->admin_dashboard_prefix->appendPath($path);
         $route = $this->registerRoute($name, $path, ['GET'], $action);
         
         $route->condition(IsAdminDashboardRequest::class);
@@ -426,12 +429,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
     private function getGenerator() :Generator
     {
         if ( ! isset($this->generator)) {
-            $this->generator = new Generator(
-                $this->routes,
-                $this->context,
-                $this->admin_dashboard,
-                new RFC3986Encoder()
-            );
+            $this->generator = $this->generator_factory->create($this->routes);
         }
         
         return $this->generator;
@@ -440,7 +438,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
     private function getRouteConfigurator() :RoutingConfiguratorUsingRouter
     {
         if ( ! isset($this->route_configurator)) {
-            $this->route_configurator = new RoutingConfiguratorUsingRouter($this, $this->config);
+            $this->route_configurator = $this->configurator_factory->create($this);
         }
         
         return $this->route_configurator;

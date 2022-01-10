@@ -96,7 +96,7 @@ class AdminRoutesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->admin('r1', '/admin.php/foo', RoutingTestController::class);
         
-        $request = $this->adminRequest('GET', 'foo', 'admin.php');
+        $request = $this->adminRequest('GET', 'foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->adminRequest('GET', 'foo', 'tools.php');

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Core;
 
-use Mockery;
-use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Pipeline;
@@ -37,6 +35,7 @@ use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Routing\Internal\RFC3986Encoder;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
@@ -46,12 +45,14 @@ use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\Core\Routing\Internal\UrlGeneratorFactory;
 use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\Routing\Internal\RouteConditionFactory;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
+use Snicco\Core\Routing\Internal\RoutingConfiguratorFactory;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
@@ -84,15 +85,8 @@ class RoutingTestCase extends UnitTest
     protected function setUp() :void
     {
         parent::setUp();
-        $this->createInstances();
+        $this->createNeededCollaborators();
         $this->container[RoutingTestController::class] = new RoutingTestController();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
-        WP::reset();
     }
     
     final protected function assertEmptyBody(Request $request)
@@ -152,10 +146,14 @@ class RoutingTestCase extends UnitTest
         
         $this->router = new Router(
             $this->container[RouteConditionFactory::class],
-            $context,
-            $this->admin_dashboard ??= WPAdminDashboard::fromDefaults(),
-            $config,
-            $cache_file,
+            new RoutingConfiguratorFactory($config),
+            new UrlGeneratorFactory(
+                $context,
+                $this->admin_dashboard ??= WPAdminDashboard::fromDefaults(),
+                new RFC3986Encoder(),
+            ),
+            $this->admin_dashboard->urlPrefix(),
+            $cache_file
         );
         $this->container->instance(UrlGenerator::class, $this->router);
         $this->container->instance(RoutingMiddleware::class, new RoutingMiddleware($this->router));
@@ -187,7 +185,7 @@ class RoutingTestCase extends UnitTest
     /**
      * Create instances that are necessary for running routes.
      */
-    final private function createInstances()
+    final private function createNeededCollaborators()
     {
         $this->container = $this->createContainer();
         $this->container->instance(ContainerAdapter::class, $this->container);
