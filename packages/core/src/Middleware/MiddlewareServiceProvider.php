@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\ResponseEmitter;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Middleware\Core\RouteRunner;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -174,7 +174,7 @@ class MiddlewareServiceProvider extends ServiceProvider
     {
         $this->container->singleton(RouteRunner::class, function () {
             return new RouteRunner(
-                $this->container[Pipeline::class],
+                $this->container[MiddlewarePipeline::class],
                 $this->container[MiddlewareStack::class],
                 $this->container[RouteActionFactory::class]
             );

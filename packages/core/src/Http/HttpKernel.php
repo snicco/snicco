@@ -23,7 +23,7 @@ use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 final class HttpKernel
 {
     
-    private Pipeline $pipeline;
+    private MiddlewarePipeline $pipeline;
     
     private array $core_middleware = [
         
@@ -53,7 +53,7 @@ final class HttpKernel
     
     private Dispatcher $event_dispatcher;
     
-    public function __construct(Pipeline $pipeline, ResponseEmitter $emitter, Dispatcher $event_dispatcher)
+    public function __construct(MiddlewarePipeline $pipeline, ResponseEmitter $emitter, Dispatcher $event_dispatcher)
     {
         $this->pipeline = $pipeline;
         $this->emitter = $emitter;

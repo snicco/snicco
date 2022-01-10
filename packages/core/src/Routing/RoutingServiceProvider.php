@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\ServiceProvider;
@@ -184,8 +184,8 @@ final class RoutingServiceProvider extends ServiceProvider
     
     private function bindRoutingPipeline()
     {
-        $this->container->factory(Pipeline::class, function () {
-            return new Pipeline(
+        $this->container->factory(MiddlewarePipeline::class, function () {
+            return new MiddlewarePipeline(
                 $this->container[MiddlewareFactory::class],
                 $this->container[ExceptionHandler::class],
                 $this->container[ResponseFactory::class]

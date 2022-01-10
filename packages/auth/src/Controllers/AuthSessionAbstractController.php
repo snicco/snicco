@@ -8,10 +8,10 @@ use Closure;
 use Snicco\Support\Arr;
 use Snicco\Session\Session;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Responsable;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
@@ -44,7 +44,7 @@ class AuthSessionAbstractController extends AbstractController
         return $view_response->forRequest($request);
     }
     
-    public function store(Request $request, Pipeline $auth_pipeline, AbstractLoginResponse $responsable)
+    public function store(Request $request, MiddlewarePipeline $auth_pipeline, AbstractLoginResponse $responsable)
     {
         /**
          * @todo replace with generic pipeline instead of middleware.

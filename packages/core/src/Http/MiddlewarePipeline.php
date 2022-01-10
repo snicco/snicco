@@ -18,11 +18,12 @@ use Snicco\Core\Middleware\MiddlewareFactory;
 use function is_string;
 use function array_map;
 use function strtolower;
+use function Snicco\Core\Support\Functions\isInterface;
 
 /**
  * @interal
  */
-final class Pipeline
+final class MiddlewarePipeline
 {
     
     private ExceptionHandler  $error_handler;
@@ -36,7 +37,7 @@ final class Pipeline
         $this->error_handler = $error_handler;
     }
     
-    public function send(Request $request) :Pipeline
+    public function send(Request $request) :MiddlewarePipeline
     {
         $this->request = $request;
         return $this;
@@ -48,7 +49,7 @@ final class Pipeline
      * 'config_value'
      * Middleware classes must implement Psr\Http\Server\MiddlewareInterface
      */
-    public function through(array $middleware) :Pipeline
+    public function through(array $middleware) :MiddlewarePipeline
     {
         $this->middleware = $this->normalizeMiddleware($middleware);
         return $this;
@@ -65,7 +66,7 @@ final class Pipeline
     {
         $stack = $stack ?? $this->buildMiddlewareStack();
         
-        return $stack->handle($this->request);
+        return $stack($this->request);
     }
     
     private function normalizeMiddleware(array $middleware) :array
@@ -81,7 +82,7 @@ final class Pipeline
         $middleware = array_map(function ($middleware) {
             $middleware = Arr::wrap($middleware);
             
-            if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
+            if ( ! isInterface($middleware[0], MiddlewareInterface::class)) {
                 throw new InvalidArgumentException(
                     "Unsupported middleware type: {$middleware[0]})"
                 );
