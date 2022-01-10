@@ -13,7 +13,7 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Contracts\ExceptionHandler;
-use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Middleware\MiddlewareFactory;
 
 use function is_string;
 use function array_map;

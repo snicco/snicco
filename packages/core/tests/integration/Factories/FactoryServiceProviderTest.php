@@ -7,8 +7,8 @@ namespace Tests\Core\integration\Factories;
 use Snicco\Core\Factories\RouteActionFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Factories\RouteConditionFactory;
 use Snicco\Core\Routing\Internal\ControllerAction;
+use Snicco\Core\Routing\Internal\RouteConditionFactory;
 
 class FactoryServiceProviderTest extends FrameworkTestCase
 {

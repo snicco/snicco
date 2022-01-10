@@ -22,7 +22,6 @@ class LoadServiceProviders implements Bootstrapper
         ApplicationServiceProvider::class,
         ExceptionServiceProvider::class,
         EventServiceProvider::class,
-        FactoryServiceProvider::class,
         RoutingServiceProvider::class,
         HttpServiceProvider::class,
         MiddlewareServiceProvider::class,
