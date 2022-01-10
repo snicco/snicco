@@ -9,8 +9,8 @@ use RuntimeException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Support\Path;
 use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\UrlPath;
 use Snicco\Core\Routing\MenuItem;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Routing\RoutingConfigurator;
@@ -94,7 +94,7 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
     
     public function prefix(string $prefix) :self
     {
-        $this->delegate_attributes['prefix'] = Path::fromString($prefix);
+        $this->delegate_attributes['prefix'] = UrlPath::fromString($prefix);
         return $this;
     }
     

@@ -9,9 +9,9 @@ use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
 use FastRoute\RouteCollector;
-use Snicco\Core\Support\Path;
 use Snicco\Core\Routing\Route;
 use Snicco\Core\Routing\Routes;
+use Snicco\Core\Routing\UrlPath;
 use FastRoute\BadRouteException;
 use Snicco\Core\Routing\MenuItem;
 use Snicco\Core\Http\Psr7\Request;
@@ -124,7 +124,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         // Quick check to see if the developer swapped the arguments by accident.
         Assert::notStartsWith($name, '/');
         
-        $path = $this->applyGroupPrefix(Path::fromString($path));
+        $path = $this->applyGroupPrefix(UrlPath::fromString($path));
         $name = $this->applyGroupName($name);
         $namespace = $this->applyGroupNamespace();
         
@@ -315,7 +315,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         return $this->getGenerator()->toLogin($arguments, $type);
     }
     
-    private function applyGroupPrefix(Path $path) :Path
+    private function applyGroupPrefix(UrlPath $path) :UrlPath
     {
         if ( ! $this->hasGroup()) {
             return $path;

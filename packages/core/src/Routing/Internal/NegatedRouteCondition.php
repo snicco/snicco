@@ -10,7 +10,7 @@ use Snicco\Core\Routing\AbstractRouteCondition;
 /**
  * @interal
  */
-final class NegateRouteCondition extends AbstractRouteCondition
+final class NegatedRouteCondition extends AbstractRouteCondition
 {
     
     private AbstractRouteCondition $condition;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Internal;
 
 use Snicco\Support\Arr;
-use Snicco\Core\Support\Path;
+use Snicco\Core\Routing\UrlPath;
 
 use function trim;
 use function array_merge;
@@ -14,15 +14,15 @@ use function preg_replace;
 final class RouteGroup
 {
     
-    private string $namespace;
-    private Path   $path_prefix;
-    private string $name;
-    private array  $middleware;
+    private string  $namespace;
+    private UrlPath $path_prefix;
+    private string  $name;
+    private array   $middleware;
     
     public function __construct(array $attributes = [])
     {
         $this->namespace = Arr::get($attributes, 'namespace', '');
-        $this->path_prefix = Arr::get($attributes, 'prefix', Path::fromString('/'));
+        $this->path_prefix = Arr::get($attributes, 'prefix', UrlPath::fromString('/'));
         $this->name = Arr::get($attributes, 'name', '');
         $this->middleware = Arr::get($attributes, 'middleware', []);
     }
@@ -38,7 +38,7 @@ final class RouteGroup
         return $this;
     }
     
-    public function prefix() :Path
+    public function prefix() :UrlPath
     {
         return $this->path_prefix;
     }
@@ -72,7 +72,7 @@ final class RouteGroup
         return trim($old.'.'.$new, '.');
     }
     
-    private function mergePrefix(RouteGroup $old_group) :Path
+    private function mergePrefix(RouteGroup $old_group) :UrlPath
     {
         return $old_group->path_prefix->append($this->path_prefix);
     }

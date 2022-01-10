@@ -30,8 +30,7 @@ final class AdminDashboardPrefix
     
     public function appendPath(string $path) :string
     {
-        Assert::stringNotEmpty($path);
-        return $this->prefix.'/'.ltrim($path, '/');
+        return (string) UrlPath::fromString($this->prefix)->append($path);
     }
     
 }
