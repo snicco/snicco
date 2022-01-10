@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Middleware\Www;
 use Snicco\Core\Middleware\Secure;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Middleware\TrailingSlash;
 use Snicco\Core\Middleware\MiddlewareStack;
 use Snicco\Core\Middleware\Core\RouteRunner;
@@ -82,11 +82,11 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_middleware_pipeline_is_not_a_singleton()
     {
-        $pipeline1 = TestApp::resolve(Pipeline::class);
-        $pipeline2 = TestApp::resolve(Pipeline::class);
+        $pipeline1 = TestApp::resolve(MiddlewarePipeline::class);
+        $pipeline2 = TestApp::resolve(MiddlewarePipeline::class);
         
-        $this->assertInstanceOf(Pipeline::class, $pipeline1);
-        $this->assertInstanceOf(Pipeline::class, $pipeline2);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline1);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline2);
         
         $this->assertNotSame($pipeline1, $pipeline2);
     }

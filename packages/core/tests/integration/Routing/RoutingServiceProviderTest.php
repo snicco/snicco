@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\RouteUrlMatcher;
@@ -203,11 +203,11 @@ class RoutingServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $pipeline1 = $this->app->resolve(Pipeline::class);
-        $pipeline2 = $this->app->resolve(Pipeline::class);
+        $pipeline1 = $this->app->resolve(MiddlewarePipeline::class);
+        $pipeline2 = $this->app->resolve(MiddlewarePipeline::class);
         
-        $this->assertInstanceOf(Pipeline::class, $pipeline1);
-        $this->assertInstanceOf(Pipeline::class, $pipeline2);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline1);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline2);
         
         $this->assertNotSame($pipeline1, $pipeline2);
     }

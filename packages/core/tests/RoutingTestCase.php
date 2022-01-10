@@ -6,7 +6,6 @@ namespace Tests\Core;
 
 use Snicco\View\ViewEngine;
 use Snicco\Core\Http\Delegate;
-use Snicco\Core\Http\Pipeline;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
@@ -18,6 +17,7 @@ use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\TestResponseEmitter;
 use Snicco\Core\Routing\AdminDashboard;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Http\ResponsePreparation;
@@ -212,7 +212,7 @@ class RoutingTestCase extends UnitTest
         );
         
         $this->kernel = new HttpKernel(
-            new Pipeline(
+            new MiddlewarePipeline(
                 $middleware_factory = new MiddlewareFactory($this->container),
                 $error_handler,
             ),
@@ -241,7 +241,7 @@ class RoutingTestCase extends UnitTest
         $this->container->instance(
             RouteRunner::class,
             new RouteRunner(
-                new Pipeline(
+                new MiddlewarePipeline(
                     $middleware_factory,
                     $error_handler,
                 ),

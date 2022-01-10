@@ -8,10 +8,10 @@ use Throwable;
 use Psr\Log\LogLevel;
 use Nyholm\Psr7\Stream;
 use Nyholm\Psr7\Response;
-use Snicco\Core\Http\Pipeline;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,14 +24,14 @@ use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 class PipelineTest extends RoutingTestCase
 {
     
-    private Pipeline $pipeline;
-    private Request  $request;
+    private MiddlewarePipeline $pipeline;
+    private Request            $request;
     
     protected function setUp() :void
     {
         parent::setUp();
         
-        $this->pipeline = new Pipeline(
+        $this->pipeline = new MiddlewarePipeline(
             new MiddlewareFactory($this->container),
             new PipelineTestExceptionHandler(),
             $this->response_factory

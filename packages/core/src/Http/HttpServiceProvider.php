@@ -92,7 +92,7 @@ class HttpServiceProvider extends ServiceProvider
     {
         $this->container->singleton(HttpKernel::class, function () {
             return new HttpKernel(
-                $this->container[Pipeline::class],
+                $this->container[MiddlewarePipeline::class],
                 $this->container[ResponseEmitter::class],
                 $this->container[Dispatcher::class],
             );

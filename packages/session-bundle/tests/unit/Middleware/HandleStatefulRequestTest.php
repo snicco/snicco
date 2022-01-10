@@ -8,11 +8,11 @@ use RuntimeException;
 use DateTimeImmutable;
 use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Http\Pipeline;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Session\ImmutableSession;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Core\Middleware\MiddlewareFactory;
 use Snicco\Core\Middleware\Core\ShareCookies;
@@ -89,7 +89,7 @@ final class HandleStatefulRequestTest extends MiddlewareTestCase
         $request = $this->frontendRequest()
                         ->withAttribute(Keys::READ_SESSION, $session);
         
-        $pipeline = new Pipeline(
+        $pipeline = new MiddlewarePipeline(
             new MiddlewareFactory($c),
             new NullExceptionHandler(),
             $f = $this->createResponseFactory(),
