@@ -8,6 +8,7 @@ use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\AdminDashboard;
+use Snicco\Core\Routing\AdminDashboardPrefix;
 
 use function rtrim;
 use function ltrim;
@@ -37,9 +38,9 @@ final class WPAdminDashboard implements AdminDashboard
         return new self('/wp-admin', 'wp-admin', '/wp-login.php');
     }
     
-    public function urlPrefix() :string
+    public function urlPrefix() :AdminDashboardPrefix
     {
-        return $this->prefix;
+        return AdminDashboardPrefix::fromString($this->prefix);
     }
     
     public function goesTo(Request $request) :bool

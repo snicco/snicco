@@ -18,7 +18,7 @@ interface AdminDashboard
     /**
      * Returns the url prefix that all admin routes share.
      */
-    public function urlPrefix() :string;
+    public function urlPrefix() :AdminDashboardPrefix;
     
     /**
      * The path relative to the root domain where users can login into the admin dashboard.
