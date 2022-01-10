@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Core;
 
+use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Psr\Http\Message\UriInterface;
 use Snicco\Core\Routing\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -26,13 +28,23 @@ final class RoutingMiddleware extends AbstractMiddleware
      */
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $result = $this->url_matcher->dispatch($request);
+        $real_request = $request;
+        $routing_request = $request;
         
-        if ( ! $result->isMatch()) {
-            return $next($request);
+        $routing_uri = $request->getAttribute(AllowMatchingAdminRoutes::REWRITTEN_URI);
+        
+        if ( ! is_null($routing_uri)) {
+            Assert::isInstanceOf($routing_uri, UriInterface::class);
+            $routing_request = $real_request->withUri($routing_uri);
         }
         
-        return $next($request->withRoutingResult($result));
+        $result = $this->url_matcher->dispatch($routing_request);
+        
+        if ( ! $result->isMatch()) {
+            return $next($real_request);
+        }
+        
+        return $next($real_request->withRoutingResult($result));
     }
     
 }

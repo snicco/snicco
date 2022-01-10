@@ -14,9 +14,9 @@ use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\DefaultResponseFactory;
-use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\RouteCollection;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class DefaultResponseFactoryTest extends UnitTest
@@ -221,7 +221,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -246,7 +246,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         )->withAddedHeader('referer', '/foo/bar');
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -271,7 +271,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -308,7 +308,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -353,7 +353,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -381,7 +381,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
@@ -400,7 +400,7 @@ class DefaultResponseFactoryTest extends UnitTest
                         );
         
         $request = new Request($request);
-        $context = new RequestContext($request, WPAdminDashboard::fromDefaults());
+        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
         $g = $this->refreshUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(

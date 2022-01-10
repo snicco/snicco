@@ -108,7 +108,7 @@ final class FastRouteDispatcher
      */
     public function dispatch(Request $request) :RoutingResult
     {
-        $path = $request->routingPath();
+        $path = $request->decodedPath();
         $request_method = $request->getMethod();
         
         if (isset($this->static_route_map[$request_method][$path])) {
@@ -186,7 +186,7 @@ final class FastRouteDispatcher
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
         
-        return new RoutingResult();
+        return RoutingResult::noMatch();
     }
     
     /**
@@ -241,11 +241,11 @@ final class FastRouteDispatcher
             $res = $this->checkRouteConditions($route, $request);
             
             if (is_array($res)) {
-                return new RoutingResult($route, array_merge($vars, $res));
+                return RoutingResult::match($route, array_merge($vars, $res));
             }
         }
         
-        return new RoutingResult();
+        return RoutingResult::noMatch();
     }
     
     private function dispatchStaticRoute(string $method, string $path, Request $request) :RoutingResult
@@ -255,13 +255,10 @@ final class FastRouteDispatcher
         $res = $this->checkRouteConditions($route, $request);
         
         if (is_array($res)) {
-            return new RoutingResult(
-                $this->routes->getByName($route_name),
-                $res
-            );
+            return RoutingResult::match($this->routes->getByName($route_name), $res);
         }
         
-        return new RoutingResult();
+        return RoutingResult::noMatch();
     }
     
 }

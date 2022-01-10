@@ -50,7 +50,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
     
     private AdminDashboard $admin_dashboard;
     
-    private RequestContext $context;
+    private UrlGenerationContext $context;
     
     private ?CacheFile $cache_file;
     
@@ -67,7 +67,8 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
     
     public function __construct(
         RouteConditionFactory $condition_factory,
-        RequestContext $context,
+        UrlGenerationContext $context,
+        AdminDashboard $admin_dashboard,
         array $config,
         CacheFile $cache_file = null
     ) {
@@ -75,7 +76,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         $this->context = $context;
         $this->config = $config;
         $this->condition_factory = $condition_factory;
-        $this->admin_dashboard = $context->adminDashboard();
+        $this->admin_dashboard = $admin_dashboard;
         $this->cache_file = $cache_file;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
@@ -107,7 +108,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         $path = Url::combineRelativePath($this->admin_dashboard->urlPrefix(), $path);
         $route = $this->registerRoute($name, $path, ['GET'], $action);
         
-        $route->condition(AdminDashboardRequest::class);
+        $route->condition(IsAdminDashboardRequest::class);
         
         return $route;
     }
@@ -428,6 +429,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
             $this->generator = new Generator(
                 $this->routes,
                 $this->context,
+                $this->admin_dashboard,
                 new RFC3986Encoder()
             );
         }

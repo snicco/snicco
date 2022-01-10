@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
-use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Http\Responses\NullResponse;
@@ -16,7 +15,6 @@ use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 /**
@@ -43,7 +41,7 @@ final class HttpKernel
         AllowMatchingAdminRoutes::class,
         
         // @todo this should not be a middleware at all.
-        OutputBufferAbstractMiddleware::class,
+        //OutputBufferAbstractMiddleware::class,
         
         RoutingMiddleware::class,
         
@@ -78,9 +76,9 @@ final class HttpKernel
     
     private function gatherMiddleware(Request $request) :array
     {
-        if ( ! $request->isToAdminDashboard()) {
-            Arr::pullByValue(OutputBufferAbstractMiddleware::class, $this->core_middleware);
-        }
+        //if ( ! $request->isToAdminDashboard()) {
+        //    Arr::pullByValue(OutputBufferAbstractMiddleware::class, $this->core_middleware);
+        //}
         
         return $this->core_middleware;
     }

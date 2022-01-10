@@ -32,6 +32,30 @@ class AdminRoutesTest extends RoutingTestCase
     }
     
     /** @test */
+    public function non_get_requests_do_not_match()
+    {
+        $router = $this->routeConfigurator();
+        $router->admin('r1', 'admin.php/foo', RoutingTestController::class);
+        
+        $request = $this->adminRequest('POST', 'foo');
+        
+        $response = $this->runKernel($request);
+        $response->assertDelegatedToWordPress();
+    }
+    
+    /** @test */
+    public function non_get_request_are_not_rewritten()
+    {
+        $this->routeConfigurator()->post(
+            'r2',
+            '/wp-admin/admin.php/foo',
+            RoutingTestController::class
+        );
+        $request = $this->adminRequest('POST', 'foo');
+        $this->assertResponseBody('', $request);
+    }
+    
+    /** @test */
     public function no_prefixes_can_be_used_with_admin_routes()
     {
         $this->expectException(LogicException::class);
@@ -109,6 +133,21 @@ class AdminRoutesTest extends RoutingTestCase
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
         $this->runKernel(new Request($request))->assertDelegatedToWordPress();
+    }
+    
+    /** @test */
+    public function the_real_request_path_is_available_in_the_controller_not_the_rewritten_one()
+    {
+        $this->routeConfigurator()->admin(
+            'r1',
+            'admin.php/foo',
+            [RoutingTestController::class, 'returnFullRequest']
+        );
+        
+        $request = $this->adminRequest('GET', 'foo');
+        $as_string = (string) $request->getUri();
+        $this->assertStringContainsString('page=foo', $as_string);
+        $this->assertResponseBody($as_string, $request);
     }
     
 }

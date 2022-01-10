@@ -6,10 +6,10 @@ namespace Tests\Core;
 
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Routing\Internal\Generator;
-use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\RFC3986Encoder;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreateContainer;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Testing\MiddlewareTestCase as FrameworkMiddlewareTestCase;
 
@@ -23,7 +23,7 @@ class MiddlewareTestCase extends FrameworkMiddlewareTestCase
     {
         return new Generator(
             $this->routes,
-            $this->request_context ?? new RequestContext(
+            $this->request_context ?? new UrlGenerationContext(
                 $this->frontendRequest('GET', '/foo'),
                 WPAdminDashboard::fromDefaults(),
             ),

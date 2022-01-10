@@ -37,7 +37,6 @@ use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Controllers\FallBackController;
-use Snicco\Core\Routing\Internal\RequestContext;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
@@ -47,6 +46,7 @@ use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\Routing\Internal\RouteConditionFactory;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
@@ -75,64 +75,55 @@ class RoutingTestCase extends UnitTest
     protected FakeDispatcher   $event_dispatcher;
     protected UrlGenerator     $generator;
     
-    private Router          $router;
-    private HttpKernel      $kernel;
-    private AdminDashboard  $admin_dashboard;
-    private RequestContext  $request_context;
-    private MiddlewareStack $middleware_stack;
+    private Router               $router;
+    private HttpKernel           $kernel;
+    private AdminDashboard       $admin_dashboard;
+    private UrlGenerationContext $request_context;
+    private MiddlewareStack      $middleware_stack;
     
     protected function setUp() :void
     {
         parent::setUp();
-        $this->resetGlobalState();
         $this->createInstances();
         $this->container[RoutingTestController::class] = new RoutingTestController();
     }
     
     protected function tearDown() :void
     {
-        $this->resetGlobalState();
         parent::tearDown();
         Mockery::close();
         WP::reset();
     }
     
-    protected function assertEmptyBody(Request $request)
+    final protected function assertEmptyBody(Request $request)
     {
         $this->assertResponseBody('', $request);
     }
     
-    protected function assertResponseBody($expected, Request $request)
+    final protected function assertResponseBody($expected, Request $request)
     {
-        $this->runKernel($request)->assertSee($expected);
+        $response = $this->runKernel($request);
+        $this->assertSame($expected, $response->body());
     }
     
-    protected function withMiddlewareGroups(array $middlewares)
+    final protected function withMiddlewareGroups(array $middlewares)
     {
         foreach ($middlewares as $name => $middleware) {
             $this->middleware_stack->withMiddlewareGroup($name, $middleware);
         }
     }
     
-    protected function withMiddlewareAlias(array $aliases)
+    final protected function withMiddlewareAlias(array $aliases)
     {
         $this->middleware_stack->middlewareAliases($aliases);
     }
     
-    protected function withMiddlewarePriority(array $array)
+    final protected function withMiddlewarePriority(array $array)
     {
         $this->middleware_stack->middlewarePriority($array);
     }
     
-    protected function resetGlobalState()
-    {
-        $GLOBALS['test'] = [];
-        $GLOBALS['wp_filter'] = [];
-        $GLOBALS['wp_actions'] = [];
-        $GLOBALS['wp_current_filter'] = [];
-    }
-    
-    protected function runKernel(Request $request) :TestResponse
+    final protected function runKernel(Request $request) :TestResponse
     {
         $this->withMiddlewareAlias($this->defaultMiddlewareAliases());
         
@@ -140,55 +131,50 @@ class RoutingTestCase extends UnitTest
         return new TestResponse($response);
     }
     
-    protected function routeConfigurator() :RoutingConfigurator
+    final protected function routeConfigurator() :RoutingConfigurator
     {
         return $this->router;
     }
     
-    protected function refreshRouter(CacheFile $cache_file = null, array $config = [])
+    final protected function refreshRouter(CacheFile $cache_file = null, UrlGenerationContext $context = null, array $config = [])
     {
         unset($this->container[RoutingMiddleware::class]);
         unset($this->container[UrlGenerator::class]);
         unset($this->container[UrlMatcher::class]);
-        unset($this->container[RoutingMiddleware::class]);
         
-        $this->request_context ??= new RequestContext(
-            new Request(
-                $this->psrServerRequestFactory()->createServerRequest(
-                    'GET',
-                    'https://'.$this->app_domain
-                )
-            ),
-            $this->admin_dashboard ??= WPAdminDashboard::fromDefaults()
-        );
+        if (is_null($context)) {
+            $context = $this->request_context ?? UrlGenerationContext::forConsole(
+                    $this->app_domain,
+                );
+        }
+        
+        $this->request_context = $context;
         
         $this->router = new Router(
             $this->container[RouteConditionFactory::class],
-            $this->request_context,
+            $context,
+            $this->admin_dashboard ??= WPAdminDashboard::fromDefaults(),
             $config,
             $cache_file,
         );
         $this->container->instance(UrlGenerator::class, $this->router);
         $this->container->instance(RoutingMiddleware::class, new RoutingMiddleware($this->router));
+        $this->container->instance(UrlMatcher::class, $this->router);
         $this->generator = $this->router;
     }
     
-    protected function refreshUrlGenerator(RequestContext $context = null) :UrlGenerator
+    final protected function refreshUrlGenerator(UrlGenerationContext $context = null) :UrlGenerator
     {
-        if ($context) {
-            $this->request_context = $context;
-        }
-        $this->refreshRouter();
-        $this->generator = $this->router;
+        $this->refreshRouter(null, $context);
         return $this->generator;
     }
     
-    protected function adminDashboard() :AdminDashboard
+    final protected function adminDashboard() :AdminDashboard
     {
         return $this->admin_dashboard;
     }
     
-    private function defaultMiddlewareAliases() :array
+    final private function defaultMiddlewareAliases() :array
     {
         return [
             'foo' => FooMiddleware::class,
@@ -201,7 +187,7 @@ class RoutingTestCase extends UnitTest
     /**
      * Create instances that are necessary for running routes.
      */
-    private function createInstances()
+    final private function createInstances()
     {
         $this->container = $this->createContainer();
         $this->container->instance(ContainerAdapter::class, $this->container);
@@ -214,7 +200,7 @@ class RoutingTestCase extends UnitTest
         
         $this->refreshRouter();
         
-        $this->response_factory = $this->createResponseFactory();
+        $this->response_factory = $this->createResponseFactory($this->generator);
         $this->container->instance(ResponseFactory::class, $this->response_factory);
         $this->container->instance(Redirector::class, $this->response_factory);
         $this->container->instance(StreamFactoryInterface::class, $this->response_factory);
@@ -284,7 +270,7 @@ class RoutingTestCase extends UnitTest
         );
     }
     
-    private function outputBufferMiddleware() :AbstractMiddleware
+    final private function outputBufferMiddleware() :AbstractMiddleware
     {
         return new class extends AbstractMiddleware
         {

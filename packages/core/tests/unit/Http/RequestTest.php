@@ -138,63 +138,6 @@ class RequestTest extends UnitTest
         $this->assertSame('wp-admin/edit.php', $request->loadingScript());
     }
     
-    /** @test */
-    public function test_isToAdminDashboard_throws_exceptions_when_no_admin_dashboard_was_set()
-    {
-        $this->expectExceptionMessage("No instance of");
-        
-        $this->request->isToAdminDashboard();
-    }
-    
-    public function test_isToAdminDashboard()
-    {
-        Request::$admin_dashboard = WPAdminDashboard::fromDefaults();
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertFalse($request->isToAdminDashboard());
-        
-        $request = $this->adminRequest('GET', 'foo');
-        $this->assertTrue($request->isToAdminDashboard());
-        
-        $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                'GET',
-                '/wp-admin/admin-ajax.php',
-                ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-            )
-        );
-        $this->assertFalse($request->isToAdminDashboard());
-    }
-    
-    public function test_isFrontend()
-    {
-        Request::$admin_dashboard = WPAdminDashboard::fromDefaults();
-        
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->assertTrue($request->isFrontend());
-        
-        $request = $this->adminRequest('GET', 'foo');
-        $this->assertFalse($request->isFrontend());
-        
-        $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                'GET',
-                '/wp-admin/admin-ajax.php',
-                ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-            )
-        );
-        $this->assertFalse($request->isFrontend());
-        
-        $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                'GET',
-                '/wp-login.php',
-                ['SCRIPT_NAME' => 'wp-login.php']
-            )
-        );
-        $this->assertFalse($request->isFrontend());
-    }
-    
     public function testRouteIs()
     {
         $route = Route::create('/foo', Route::DELEGATE, 'foobar', ['GET']);
@@ -232,6 +175,18 @@ class RequestTest extends UnitTest
         $this->assertFalse($request->pathIs('/foo/bar/'));
         
         $this->assertTrue($request->pathIs('/foo/*'));
+    }
+    
+    /** @test */
+    public function testDecodedPath()
+    {
+        $request = $this->frontendRequest('GET', '/münchen/düsseldorf');
+        
+        $this->assertSame('/münchen/düsseldorf', $request->decodedPath());
+        
+        $request = $this->frontendRequest('GET', '/AC%2FDC');
+        
+        $this->assertSame('/AC%2FDC', $request->decodedPath());
     }
     
     protected function adminDashboard() :AdminDashboard

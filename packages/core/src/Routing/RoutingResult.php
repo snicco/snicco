@@ -20,10 +20,20 @@ final class RoutingResult
     private array  $captured_segments;
     private array  $decoded_segments;
     
-    public function __construct(?Route $route = null, array $captured_segments = [])
+    private function __construct(?Route $route = null, array $captured_segments = [])
     {
         $this->route = $route;
         $this->captured_segments = $captured_segments;
+    }
+    
+    public static function noMatch() :RoutingResult
+    {
+        return new self();
+    }
+    
+    public static function match(Route $route, array $captured_segments = []) :RoutingResult
+    {
+        return new self($route, $captured_segments);
     }
     
     public function route() :?Route
@@ -67,7 +77,7 @@ final class RoutingResult
      */
     public function withCapturedSegments(array $segments) :self
     {
-        return new RoutingResult($this->route(), $segments);
+        return RoutingResult::match($this->route, $segments);
     }
     
 }

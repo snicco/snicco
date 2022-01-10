@@ -7,9 +7,8 @@ namespace Tests\Core\unit\Routing;
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Routing\Internal\RequestContext;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Snicco\Core\Routing\Exceptions\BadRouteParameter;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 class UrlGeneratorTest extends RoutingTestCase
@@ -131,18 +130,16 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function the_current_scheme_is_used_if_no_explicit_scheme_is_provided()
     {
-        $context = new RequestContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'https://foo.com'),
-            WPAdminDashboard::fromDefaults()
         );
         $generator = $this->refreshUrlGenerator($context);
         
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foo.com/foo', $url);
         
-        $context = new RequestContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults()
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -153,18 +150,16 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function the_current_scheme_can_be_overwritten()
     {
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'https://foo.com'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
         $this->assertSame('http://foo.com/foo', $url);
         
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -175,9 +170,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function a_scheme_can_be_forced_for_all_generated_urls()
     {
-        $context = new RequestContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults(),
             true
         );
         
@@ -190,9 +184,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function a_forced_scheme_can_be_explicitly_overwritten()
     {
-        $context = new RequestContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults(),
             true
         );
         
@@ -205,18 +198,16 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function a_relative_link_with_a_forced_secure_schema_will_be_absolute_if_the_current_scheme_is_not_secure()
     {
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH, true);
         $this->assertSame('https://foo.com/foo', $url);
         
-        $context = new RequestContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults(),
             true
         );
         
@@ -228,9 +219,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function a_relative_link_will_not_be_upgraded_to_a_full_url_if_the_request_is_secure()
     {
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'https://foo.com'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -242,9 +232,8 @@ class UrlGeneratorTest extends RoutingTestCase
     public function if_trailing_slashes_are_used_generated_urls_end_with_a_trailing_trash()
     {
         $generator = $this->refreshUrlGenerator(
-            new RequestContext(
-                $this->frontendRequest('GET', 'https://foo.com'),
-                WPAdminDashboard::fromDefaults()
+            UrlGenerationContext::fromRequest(
+                $this->frontendRequest('GET', 'https://foo.com')
             ),
         );
         
@@ -296,17 +285,15 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_secure()
     {
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'https://foo.com'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
         $this->assertSame('https://foo.com/foo', $generator->secure('foo'));
         
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'http://foo.com'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -319,9 +306,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_absolute_url_with_non_standard_https_port()
     {
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'https://foo.com:4000'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com:4000')
         );
         $g = $this->refreshUrlGenerator($context);
         
@@ -335,9 +321,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_absolute_url_with_non_standard_http_port()
     {
-        $context = new RequestContext(
-            $this->frontendRequest('GET', 'http://foo.com:8080'),
-            WPAdminDashboard::fromDefaults()
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com:8080')
         );
         $g = $this->refreshUrlGenerator($context);
         
@@ -355,12 +340,12 @@ class UrlGeneratorTest extends RoutingTestCase
         $r1 = $request->withAddedHeader('referer', 'https://other-site.com');
         $r2 = $request->withAddedHeader('referer', '/foo');
         
-        $context = new RequestContext($r1, WPAdminDashboard::fromDefaults());
+        $context = UrlGenerationContext::fromRequest($r1);
         $g = $this->refreshUrlGenerator($context);
         
         $this->assertSame('https://other-site.com', $g->previous());
         
-        $context = new RequestContext($r2, WPAdminDashboard::fromDefaults());
+        $context = UrlGenerationContext::fromRequest($r2);
         $g = $this->refreshUrlGenerator($context);
         
         $this->assertSame('/foo', $g->previous());
@@ -378,7 +363,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $r = $this->frontendRequest('GET', 'https://foobar.com/foo/bar');
         
         $g = $this->refreshUrlGenerator(
-            new RequestContext($r, WPAdminDashboard::fromDefaults())
+            UrlGenerationContext::fromRequest($r)
         );
         
         $this->assertSame('https://foobar.com/foo/bar', $g->canonical());
@@ -389,7 +374,7 @@ class UrlGeneratorTest extends RoutingTestCase
     {
         $r = $this->frontendRequest('GET', 'https://foobar.com/münchen');
         $g = $this->refreshUrlGenerator(
-            new RequestContext($r, WPAdminDashboard::fromDefaults())
+            UrlGenerationContext::fromRequest($r)
         );
         $this->assertSame('https://foobar.com/'.rawurlencode('münchen'), $g->canonical());
     }
@@ -400,7 +385,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $r = $this->frontendRequest('GET', 'http://foobar.com:8080/foo/bar?city=münchen#section1');
         
         $g = $this->refreshUrlGenerator(
-            new RequestContext($r, WPAdminDashboard::fromDefaults())
+            UrlGenerationContext::fromRequest($r)
         );
         
         $this->assertSame(

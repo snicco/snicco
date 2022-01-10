@@ -92,4 +92,9 @@ class RoutingTestController
         return 'fallback:'.$path;
     }
     
+    public function returnFullRequest(Request $request) :string
+    {
+        return (string) $request->getUri();
+    }
+    
 }

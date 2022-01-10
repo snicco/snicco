@@ -13,6 +13,7 @@ use Snicco\Core\Contracts\AbstractMiddleware;
 final class AllowMatchingAdminRoutes extends AbstractMiddleware
 {
     
+    const REWRITTEN_URI = 'routing_admin_uri_rewritten';
     private AdminDashboard $admin_dashboard;
     
     public function __construct(AdminDashboard $admin_dashboard)
@@ -28,12 +29,16 @@ final class AllowMatchingAdminRoutes extends AbstractMiddleware
         
         $new_uri = $uri->withPath($new_path);
         
-        return $next($request->withAttribute('routing.uri', $new_uri));
+        return $next($request->withAttribute(self::REWRITTEN_URI, $new_uri));
     }
     
     private function appendToPath(Request $request) :string
     {
         $path = $request->path();
+        
+        if ( ! $request->isGet()) {
+            return $path;
+        }
         
         if ($this->admin_dashboard->goesTo($request)) {
             $path = $this->admin_dashboard->rewriteForRouting($request);

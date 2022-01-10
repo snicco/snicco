@@ -72,13 +72,13 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'bandSong']
         );
         
-        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2fDC/foo_song');
+        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2FDC/foo_song');
         $this->assertResponseBody(
             'Show song [foo_song] of band [AC/DC].',
             $request
         );
         
-        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2fDC');
+        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2FDC');
         $this->assertResponseBody(
             'Show all songs of band [AC/DC].',
             $request

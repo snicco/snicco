@@ -24,7 +24,7 @@ use function headers_list;
  * @license https://github.com/symfony/http-foundation/blob/5.3/LICENSE
  */
 
-class ResponsePreparation
+final class ResponsePreparation
 {
     
     private string $charset = 'UTF-8';
@@ -126,7 +126,6 @@ class ResponsePreparation
         if ( ! $response->hasHeader('content-length')
              && ! $response->hasEmptyBody()
              && ! ob_get_length()
-             && ! $request->isToAdminDashboard()
         ) {
             $size = strval($response->getBody()->getSize());
             $response = $response->withHeader('content-length', $size);

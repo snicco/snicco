@@ -10,6 +10,7 @@ use Webmozart\Assert\Assert;
 use Snicco\Core\Routing\Routes;
 use Snicco\Core\Routing\UrlEncoder;
 use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Core\Routing\Exceptions\BadRouteParameter;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
@@ -30,17 +31,17 @@ final class Generator implements UrlGenerator
     
     const FRAGMENT_KEY = '_fragment';
     
-    private Routes $routes;
+    private Routes               $routes;
+    private UrlGenerationContext $context;
+    private AdminDashboard       $admin_dashboard;
+    private UrlEncoder           $encoder;
     
-    private RequestContext $context;
-    
-    private UrlEncoder $encoder;
-    
-    public function __construct(Routes $routes, RequestContext $request_context, UrlEncoder $encoder)
+    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminDashboard $admin_dashboard, UrlEncoder $encoder)
     {
         $this->routes = $routes;
         $this->context = $request_context;
         $this->encoder = $encoder;
+        $this->admin_dashboard = $admin_dashboard;
     }
     
     public function toRoute(string $name, array $arguments = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
@@ -50,10 +51,8 @@ final class Generator implements UrlGenerator
         
         $route_path = $route->getPattern();
         
-        $admin_dashboard = $this->context->adminDashboard();
-        
-        if (Str::startsWith($route_path, $admin_dashboard->urlPrefix())) {
-            [$route_path, $q] = $admin_dashboard->rewriteForUrlGeneration($route_path);
+        if (Str::startsWith($route_path, $this->admin_dashboard->urlPrefix())) {
+            [$route_path, $q] = $this->admin_dashboard->rewriteForUrlGeneration($route_path);
             $arguments = array_merge($arguments, $q);
         }
         
@@ -106,7 +105,7 @@ final class Generator implements UrlGenerator
     public function canonical() :string
     {
         return $this->generate(
-            $this->context->path(),
+            $this->context->currentPathUrlEncoded(),
             [],
             self::ABSOLUTE_URL,
             null,
@@ -116,7 +115,7 @@ final class Generator implements UrlGenerator
     
     public function full() :string
     {
-        return $this->context->uriAsString();
+        return $this->context->currentUriAsString();
     }
     
     public function previous(string $fallback = '/') :string
@@ -148,7 +147,7 @@ final class Generator implements UrlGenerator
             //
         }
         
-        return $this->to($this->context->adminDashboard()->loginPath(), $arguments, $type, true);
+        return $this->to($this->admin_dashboard->loginPath(), $arguments, $type, true);
     }
     
     private function generate(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null, bool $encode_path = true) :string
@@ -207,17 +206,17 @@ final class Generator implements UrlGenerator
         $port = '';
         
         if ($scheme === 'https') {
-            if ($this->context->getHttpsPort() !== 443) {
-                $port = ':'.$this->context->getHttpsPort();
+            if ($this->context->httpsPort() !== 443) {
+                $port = ':'.$this->context->httpsPort();
             }
         }
         elseif ($scheme === 'http') {
-            if ($this->context->getHttpPort() !== 80) {
-                $port = ':'.$this->context->getHttpPort();
+            if ($this->context->httpPort() !== 80) {
+                $port = ':'.$this->context->httpPort();
             }
         }
         
-        return $this->context->getHost().$port.$valid_url_or_path;
+        return $this->context->host().$port.$valid_url_or_path;
     }
     
     private function requiredScheme(?bool $secure = null) :string
@@ -230,7 +229,7 @@ final class Generator implements UrlGenerator
             return 'https';
         }
         
-        $scheme = $this->context->getScheme();
+        $scheme = $this->context->currentScheme();
         
         if (false === strpos($scheme, 'http')) {
             return 'https';
