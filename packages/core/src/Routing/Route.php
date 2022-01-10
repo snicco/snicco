@@ -112,68 +112,68 @@ final class Route implements Serializable
         return $route;
     }
     
-    final public function getMethods() :array
+    public function getMethods() :array
     {
         return $this->methods;
     }
     
-    final public function getRequirements() :array
+    public function getRequirements() :array
     {
         return $this->requirements;
     }
     
-    final public function getRequiredSegmentNames() :array
+    public function getRequiredSegmentNames() :array
     {
         return $this->required_segments_names;
     }
     
-    final public function getOptionalSegmentNames() :array
+    public function getOptionalSegmentNames() :array
     {
         return $this->optional_segment_names;
     }
     
-    final public function getSegmentNames() :array
+    public function getSegmentNames() :array
     {
         return $this->segment_names;
     }
     
-    final public function getName() :string
+    public function getName() :string
     {
         return $this->name;
     }
     
-    final public function getPattern() :string
+    public function getPattern() :string
     {
         return $this->pattern;
     }
     
-    final public function getController() :array
+    public function getController() :array
     {
         return $this->controller;
     }
     
-    final public function getMiddleware() :array
+    public function getMiddleware() :array
     {
         return $this->middleware;
     }
     
-    final public function getConditions() :array
+    public function getConditions() :array
     {
         return $this->conditions;
     }
     
-    final public function getDefaults() :array
+    public function getDefaults() :array
     {
         return $this->defaults;
     }
     
-    final public function requirements(array $requirements) :Route
+    public function requirements(array $requirements) :Route
     {
         $this->addRequirements($requirements);
         return $this;
     }
     
-    final public function defaults(array $defaults) :Route
+    public function defaults(array $defaults) :Route
     {
         foreach ($defaults as $key => $value) {
             $this->addDefaultValue($key, $value);
@@ -181,7 +181,7 @@ final class Route implements Serializable
         return $this;
     }
     
-    final public function condition(string $condition, ...$args) :Route
+    public function condition(string $condition, ...$args) :Route
     {
         $b = new ConditionBlueprint($condition, $args);
         
@@ -202,7 +202,7 @@ final class Route implements Serializable
     /**
      * @param  string|array<string>  $middleware
      */
-    final public function middleware($middleware) :Route
+    public function middleware($middleware) :Route
     {
         foreach ((array) $middleware as $m) {
             $this->addMiddleware($m);
@@ -211,12 +211,12 @@ final class Route implements Serializable
         return $this;
     }
     
-    final public function serialize() :string
+    public function serialize() :string
     {
         return serialize(get_object_vars($this));
     }
     
-    final public function unserialize($data) :void
+    public function unserialize($data) :void
     {
         $data = unserialize($data);
         
