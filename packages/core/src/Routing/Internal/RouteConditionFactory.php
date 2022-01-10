@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Factories;
+namespace Snicco\Core\Routing\Internal;
 
 use Webmozart\Assert\Assert;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\Core\Routing\AbstractRouteCondition;
-use Snicco\Core\Routing\Internal\ConditionBlueprint;
-use Snicco\Core\Routing\Internal\NegateRouteCondition;
 
 /**
  * @interal

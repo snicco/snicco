@@ -10,8 +10,8 @@ use Snicco\Core\Routing\Route;
 use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\RoutingResult;
-use Snicco\Core\Factories\RouteConditionFactory;
 use Snicco\Core\Routing\Exceptions\MethodNotAllowed;
+use Snicco\Core\Routing\Internal\RouteConditionFactory;
 
 use function count;
 use function is_array;

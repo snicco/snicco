@@ -24,7 +24,6 @@ use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Core\Routing\Exceptions\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\RoutingConfigurator;
-use Snicco\Core\Factories\RouteConditionFactory;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteSyntax;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteDispatcher;

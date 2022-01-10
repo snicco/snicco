@@ -11,7 +11,7 @@ use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\RouteUrlMatcher;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Factories\RouteConditionFactory;
+use Snicco\Core\Routing\Internal\RouteConditionFactory;
 use Snicco\Core\Routing\Internal\CachedRouteFileRegistrar;
 use Snicco\Core\Routing\Internal\FastRoute\RouteUrlGenerator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteUrlMatcher;

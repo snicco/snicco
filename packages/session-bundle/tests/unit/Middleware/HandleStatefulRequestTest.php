@@ -14,7 +14,7 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Session\ImmutableSession;
 use Snicco\Session\ValueObjects\SessionId;
-use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Middleware\MiddlewareFactory;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\ValueObjects\SessionConfig;

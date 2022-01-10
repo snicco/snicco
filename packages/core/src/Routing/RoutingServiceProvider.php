@@ -13,7 +13,7 @@ use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Routing\Internal\Generator;
-use Snicco\Core\Factories\MiddlewareFactory;
+use Snicco\Core\Middleware\MiddlewareFactory;
 use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\RFC3986Encoder;
 use Snicco\Core\Routing\Internal\RouteCollection;
