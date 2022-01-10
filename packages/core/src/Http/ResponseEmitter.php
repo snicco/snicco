@@ -21,10 +21,7 @@ class ResponseEmitter
     
     protected ResponsePreparation $preparation;
     
-    /**
-     * @var int
-     */
-    private $response_chunk_size;
+    private int $response_chunk_size;
     
     public function __construct(ResponsePreparation $preparation, int $response_chunk_size = 4096)
     {

@@ -6,6 +6,7 @@ namespace Snicco\Core\Routing\Internal;
 
 use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
+use Webmozart\Assert\Assert;
 use Snicco\Core\Routing\Routes;
 use Snicco\Core\Routing\UrlEncoder;
 use Snicco\Core\Routing\UrlGenerator;
@@ -181,6 +182,8 @@ final class Generator implements UrlGenerator
         
         $scheme = $this->requiredScheme($secure);
         
+        Assert::notContains($scheme, '://');
+        
         return $scheme.'://'.$this->formatType($target, $type, $scheme);
     }
     
@@ -227,7 +230,12 @@ final class Generator implements UrlGenerator
             return 'https';
         }
         
-        return $this->context->getScheme();
+        $scheme = $this->context->getScheme();
+        
+        if (false === strpos($scheme, 'http')) {
+            return 'https';
+        }
+        return $scheme;
     }
     
     private function buildQueryString(array $extra_query_args, string $existing_query_string) :string

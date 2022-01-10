@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\Internal;
 
+use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\AdminDashboard;
 
@@ -14,24 +15,32 @@ final class RequestContext
 {
     
     private Request        $request;
-    private AdminDashboard $admin_path;
+    private AdminDashboard $admin_dashboard;
     private bool           $force_https;
+    private string         $host;
+    private string         $scheme;
     
-    public function __construct(Request $request, AdminDashboard $admin_path, bool $force_https = false)
+    public function __construct(Request $request, AdminDashboard $admin_dashboard, bool $force_https = false)
     {
         $this->request = $request;
         $this->force_https = $force_https;
-        $this->admin_path = $admin_path;
+        $this->admin_dashboard = $admin_dashboard;
+        $host = $request->getUri()->getHost();
+        Assert::stringNotEmpty($host, 'Request URI has no host.');
+        $this->host = $host;
+        $scheme = $request->getUri()->getScheme();
+        Assert::stringNotEmpty($scheme, 'Request URI has no scheme.');
+        $this->scheme = $scheme;
     }
     
     public function getHost() :string
     {
-        return $this->request->getUri()->getHost();
+        return $this->host;
     }
     
     public function getScheme() :string
     {
-        return $this->request->getUri()->getScheme();
+        return $this->scheme;
     }
     
     public function getHttpPort() :int
@@ -67,7 +76,7 @@ final class RequestContext
     
     public function adminDashboard() :AdminDashboard
     {
-        return $this->admin_path;
+        return $this->admin_dashboard;
     }
     
     public function uriAsString() :string

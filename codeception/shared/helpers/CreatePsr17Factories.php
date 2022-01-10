@@ -67,13 +67,20 @@ trait CreatePsr17Factories
     
     protected function refreshUrlGenerator(RequestContext $context = null) :UrlGenerator
     {
-        $context = $this->request_context ?? new RequestContext(
-                new Request($this->psrServerRequestFactory()->createServerRequest('GET', '/')),
-                WPAdminDashboard::fromDefaults(),
-            );
+        if (null === $context) {
+            $context = $this->request_context ?? new RequestContext(
+                    new Request(
+                        $this->psrServerRequestFactory()->createServerRequest(
+                            'GET',
+                            'https://example.com'
+                        )
+                    ),
+                    WPAdminDashboard::fromDefaults(),
+                );
+        }
         
         return new Generator(
-            new RouteCollection(),
+            $this->routes ?? new RouteCollection(),
             $context,
             new RFC3986Encoder()
         );
