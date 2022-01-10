@@ -11,7 +11,7 @@ use Snicco\Core\Routing\AbstractRouteCondition;
 /**
  * @interal
  */
-final class AdminDashboardRequest extends AbstractRouteCondition
+final class IsAdminDashboardRequest extends AbstractRouteCondition
 {
     
     private AdminDashboard $admin_dashboard;

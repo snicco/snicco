@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Core\Http\Psr7;
 
 use WP_User;
-use RuntimeException;
 use Snicco\Support\Str;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
 use Snicco\Support\Repository;
-use Psr\Http\Message\UriInterface;
 use Snicco\Core\Routing\RoutingResult;
-use Snicco\Core\Routing\AdminDashboard;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -25,8 +22,6 @@ class Request implements ServerRequestInterface
     use ImplementsPsr7Request;
     use InspectsRequest;
     use InteractsWithInput;
-    
-    public static AdminDashboard $admin_dashboard;
     
     public function __construct(ServerRequestInterface $psr_request)
     {
@@ -101,31 +96,6 @@ class Request implements ServerRequestInterface
         return $this->getUri()->__toString();
     }
     
-    /**
-     * @internal
-     */
-    public function routingPath() :string
-    {
-        $uri = $this->getAttribute('routing.uri');
-        
-        /** @var UriInterface $uri */
-        $uri = $uri ?? $this->getUri();
-        
-        $path = $uri->getPath();
-        
-        $parts = explode('/', $path);
-        
-        $path = implode(
-            '/',
-            array_map(function ($part) {
-                $part = rawurldecode(strtr($part, ['%2f' => '%252f']));
-                return $part;
-            }, $parts)
-        );
-        
-        return $path;
-    }
-    
     public function loadingScript() :string
     {
         return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
@@ -150,27 +120,6 @@ class Request implements ServerRequestInterface
         return (int) $this->query('expires', $default);
     }
     
-    public function isToAdminDashboard() :bool
-    {
-        if ( ! isset(self::$admin_dashboard)) {
-            throw new RuntimeException(
-                sprintf("No instance of [%s] has been set on the request", AdminDashboard::class)
-            );
-        }
-        
-        return self::$admin_dashboard->goesTo($this);
-    }
-    
-    public function isFrontend() :bool
-    {
-        return ! $this->isToAdminDashboard()
-               && ! Str::contains(
-                self::$admin_dashboard->urlPrefix(),
-                $this->path()
-            )
-               && $this->loadingScript() === 'index.php';
-    }
-    
     public function path() :string
     {
         return $this->getUri()->getPath();
@@ -178,7 +127,13 @@ class Request implements ServerRequestInterface
     
     public function decodedPath() :string
     {
-        return rawurldecode($this->path());
+        $path = $this->path();
+        return implode(
+            '/',
+            array_map(function ($part) {
+                return rawurldecode(strtr($part, ['%2F' => '%252F']));
+            }, explode('/', $path))
+        );
     }
     
     public function routeIs(...$patterns) :bool
@@ -229,7 +184,7 @@ class Request implements ServerRequestInterface
     
     public function routingResult() :RoutingResult
     {
-        return $this->getAttribute('_routing_result', new RoutingResult());
+        return $this->getAttribute('_routing_result', RoutingResult::noMatch());
     }
     
 }

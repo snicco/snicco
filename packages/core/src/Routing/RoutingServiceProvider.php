@@ -14,10 +14,10 @@ use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Routing\Internal\Generator;
 use Snicco\Core\Middleware\MiddlewareFactory;
-use Snicco\Core\Routing\Internal\RequestContext;
 use Snicco\Core\Routing\Internal\RFC3986Encoder;
 use Snicco\Core\Routing\Internal\RouteCollection;
 use Snicco\Core\Routing\Internal\RouteFileRegistrar;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Snicco\Core\Routing\Internal\CachedRouteFileRegistrar;
 
 /**
@@ -111,7 +111,7 @@ final class RoutingServiceProvider extends ServiceProvider
             /** @var Request $request */
             $request = $this->container[Request::class];
             
-            $context = new RequestContext(
+            $context = new UrlGenerationContext(
                 $request,
                 $this->withSlashes(),
             );

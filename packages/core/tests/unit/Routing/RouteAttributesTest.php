@@ -249,7 +249,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $config = ['route_path' => '/foo'];
         
-        $this->refreshRouter(null, $config);
+        $this->refreshRouter(null, null, $config);
         
         $this->routeConfigurator()->group(function (RoutingConfigurator $router) {
             $path = $router->configValue('route_path');
@@ -268,7 +268,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $config = ['route_path' => '/foo'];
         
-        $this->refreshRouter(null, $config);
+        $this->refreshRouter(null, null, $config);
         
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('bogus');
