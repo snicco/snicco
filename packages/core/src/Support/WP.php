@@ -14,7 +14,7 @@ use Mockery\MockInterface;
 class WP
 {
     
-    private static object $instance;
+    private static $instance;
     
     /**
      * Handle dynamic, static calls to the object.
