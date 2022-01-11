@@ -35,22 +35,21 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     use CreateContainer;
     use CreatePsr17Factories;
     
-    /**
-     * @var ContainerAdapter
-     */
-    private $container;
+    private ContainerAdapter $container;
     
-    /**
-     * @var Request|TestRequest
-     */
-    private $request;
+    private Request $request;
     
     protected function setUp() :void
     {
         parent::setUp();
         $this->container = $this->createContainer();
         $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(DefaultResponseFactory::class, $this->createResponseFactory());
+        $this->container->instance(
+            ResponseFactory::class,
+            $this->createResponseFactory(
+                Mockery::mock(UrlGenerator::class)
+            )
+        );
         $this->container->instance(
             HtmlErrorRender::class,
             new PlainTextHtmlErrorRenderer()
@@ -119,7 +118,6 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     public function an_exception_can_have_custom_rendering_logic()
     {
         $handler = $this->newErrorHandler();
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         
         $response = new TestResponse(
             $handler->toHttpResponse(
@@ -178,7 +176,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = new fixtures\TestExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[DefaultResponseFactory::class]
+            $this->container[ResponseFactory::class]
         );
         
         $response = new TestResponse(
@@ -304,14 +302,9 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         return new ProductionExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[DefaultResponseFactory::class],
+            $this->container[ResponseFactory::class],
             $debug_mode ? $this->getWhoops() : null
         );
-    }
-    
-    private function refreshUrlGenerator()
-    {
-        return Mockery::mock(UrlGenerator::class);
     }
     
     private function getWhoops()
