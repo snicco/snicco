@@ -132,10 +132,46 @@ final class UrlGenerationContextTest extends UnitTest
         $this->assertSame(8080, $context->httpPort());
         $this->assertSame(443, $context->httpsPort());
         $this->assertSame(null, $context->referer());
-        $this->assertEquals('http://localhost.com/', $context->currentUriAsString());
+        $this->assertEquals('https://foobar.com/', $context->currentUriAsString());
         $this->assertSame('/', $context->currentPathUrlEncoded());
         $this->assertTrue($context->shouldForceHttps());
         $this->assertTrue($context->isSecure());
+        
+        $context = UrlGenerationContext::forConsole(
+            'foobar.com',
+            false,
+        );
+        
+        $this->assertEquals('http://foobar.com/', $context->currentUriAsString());
+        
+        $context = UrlGenerationContext::forConsole(
+            'foobar.com',
+            true,
+            443,
+            80,
+            'https://foobar.com/foo?bar=baz#section1'
+        );
+        
+        $this->assertEquals(
+            'https://foobar.com/foo?bar=baz#section1',
+            $context->currentUriAsString()
+        );
+    }
+    
+    /** @test */
+    public function test_forConsoleThrowsExceptionOnHostMismatch()
+    {
+        $this->expectExceptionMessage(
+            '$host and $current_uri_as_string are not compatible because the http host is different.'
+        );
+        
+        $context = UrlGenerationContext::forConsole(
+            'foobar.com',
+            true,
+            443,
+            8080,
+            'https://localhost.com/'
+        );
     }
     
     /** @test */

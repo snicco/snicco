@@ -7,6 +7,7 @@ namespace Tests\Core\unit\Middleware;
 use Snicco\Core\Routing\Route;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\Authenticate;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 
 class AuthenticateTest extends MiddlewareTestCase
 {
@@ -24,18 +25,21 @@ class AuthenticateTest extends MiddlewareTestCase
     /** @test */
     public function logged_out_users_cant_access_the_route()
     {
+        $request = $this->frontendRequest('GET', 'https://mysite.com/foo');
+        $this->setUrlGenerationContext(UrlGenerationContext::fromRequest($request));
+        
         $route = Route::create('/login', Route::DELEGATE, 'login');
-        $this->routes->add($route);
+        $this->routes()->add($route);
         
         $middleware = new Authenticate(fn() => 0);
         
         $response = $this->runMiddleware(
             $middleware,
-            $this->frontendRequest('GET', '/foo')
+            $request
         );
         
         $response->assertNextMiddlewareNotCalled();
-        $response->assertRedirect('/login?intended=https://example.com/foo');
+        $response->assertRedirect('/login?intended=https://mysite.com/foo');
     }
     
     /** @test */

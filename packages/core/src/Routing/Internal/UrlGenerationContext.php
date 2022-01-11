@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Internal;
 
 use Webmozart\Assert\Assert;
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,6 +37,11 @@ final class UrlGenerationContext
     ) {
         Assert::stringNotEmpty($host, '$host cant be empty.');
         Assert::contains($host, '.', 'Expected host to contain a [.].');
+        if (parse_url($current_uri_as_string, PHP_URL_HOST) !== $host) {
+            throw new InvalidArgumentException(
+                '$host and $current_uri_as_string are not compatible because the http host is different.'
+            );
+        }
         $this->host = $host;
         
         Assert::oneOf(
@@ -76,11 +82,15 @@ final class UrlGenerationContext
     ) :UrlGenerationContext {
         $scheme = $force_https ? 'https' : 'http';
         
+        if (null === $current_uri) {
+            $current_uri = $scheme.'://'.trim($host, '/').'/';
+        }
+        
         return new self(
             $host,
             $scheme,
             '/',
-            $current_uri ?? 'http://localhost.com/',
+            $current_uri,
             $https_port,
             $http_port,
             $force_https,

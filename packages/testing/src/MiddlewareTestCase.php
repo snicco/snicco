@@ -22,30 +22,28 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Routing\Internal\RouteCollection;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
+use Snicco\Core\Routing\Internal\UrlGenerationContext;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 /**
- * Use this test to unit test your middlewares
+ * This class can be used to unit test custom middleware
+ *
+ * @api
  */
 abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
 {
     
     use CreatePsrRequests;
     
-    protected ResponseFactory $response_factory;
-    
-    protected Routes $routes;
-    
-    protected ContainerAdapter $container;
-    
-    private UrlGenerator $url;
-    
-    private Request $request;
-    
-    private Closure $next_middleware_response;
+    protected ContainerAdapter   $container;
+    private ResponseFactory      $response_factory;
+    private Routes               $routes;
+    private UrlGenerator         $url;
+    private Request              $request;
+    private Closure              $next_middleware_response;
+    private UrlGenerationContext $context;
     
     protected function setUp() :void
     {
@@ -53,18 +51,26 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         
         $this->app_domain = 'example.com';
         $this->routes = new RouteCollection();
-        $this->response_factory = $this->responseFactory();
+        $this->url = $this->urlGenerator();
+        $this->response_factory = $this->newResponseFactory($this->url);
         $this->container = $this->createContainer();
         $this->next_middleware_response = function (Response $response) { return $response; };
         $GLOBALS['test']['_next_middleware_called'] = false;
     }
     
-    protected function responseFactory() :ResponseFactory
+    protected function routes() :Routes
     {
+        return $this->routes;
+    }
+    
+    protected function newResponseFactory(UrlGenerator $url_generator = null) :ResponseFactory
+    {
+        $url_generator = $url_generator ?? $this->url;
+        
         return new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $this->url = $this->urlGenerator(),
+            $url_generator,
         );
     }
     
@@ -76,7 +82,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     abstract protected function psrStreamFactory() :StreamFactoryInterface;
     
-    abstract protected function urlGenerator() :UrlGenerator;
+    abstract protected function urlGenerator(UrlGenerationContext $context = null) :UrlGenerator;
     
     /**
      * Overwrite this function if you want to specify a custom response that should be returned by
@@ -128,16 +134,21 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     protected function redirector() :Redirector
     {
-        if ($this->response_factory instanceof Redirector) {
-            return $this->response_factory;
-        }
+        return $this->response_factory;
     }
     
     abstract protected function createContainer() :ContainerAdapter;
     
-    protected function adminDashboard() :WPAdminDashboard
+    protected function setUrlGenerationContext(UrlGenerationContext $context)
     {
-        return WPAdminDashboard::fromDefaults();
+        $this->context = $context;
+        $this->url = $this->urlGenerator($context);
+        $this->response_factory = $this->newResponseFactory();
+    }
+    
+    protected function urlGenerationContext() :UrlGenerationContext
+    {
+        return $this->context ??= UrlGenerationContext::forConsole('localhost.com');
     }
     
     private function getNext() :Delegate
