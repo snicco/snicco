@@ -25,6 +25,11 @@ final class AdminDashboardPrefix
     
     public function __toString()
     {
+        return $this->asString();
+    }
+    
+    public function asString() :string
+    {
         return $this->prefix;
     }
     

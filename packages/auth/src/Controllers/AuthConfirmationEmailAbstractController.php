@@ -10,7 +10,7 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Mail\ConfirmAuthMail;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Traits\InteractsWithTime;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 
 class AuthConfirmationEmailAbstractController extends AbstractController
@@ -24,7 +24,7 @@ class AuthConfirmationEmailAbstractController extends AbstractController
     
     public function __construct(
         MailBuilderInterface $mail_builder,
-        Generator $url,
+        InternalUrlGenerator $url,
         int $cool_of_period = 15,
         $link_lifetime_in_seconds = 300
     ) {

@@ -6,7 +6,7 @@ namespace Tests\Auth\integration\Controllers;
 
 use Snicco\Core\Shared\Encryptor;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 
 class RecoveryCodeControllerTest extends AuthTestCase
 {
@@ -161,7 +161,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     
     private function routePath()
     {
-        return $this->app->resolve(Generator::class)->toRoute('auth.2fa.recovery-codes');
+        return $this->app->resolve(InternalUrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
     }
     
 }

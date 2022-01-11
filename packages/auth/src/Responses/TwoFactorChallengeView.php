@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use Snicco\View\ViewEngine;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 
 class TwoFactorChallengeView extends Abstract2FaChallengeView
 {
     
-    private ViewEngine $view_engine;
-    private Generator  $url;
+    private ViewEngine           $view_engine;
+    private InternalUrlGenerator $url;
     
-    public function __construct(ViewEngine $view_engine, Generator $url)
+    public function __construct(ViewEngine $view_engine, InternalUrlGenerator $url)
     {
         $this->view_engine = $view_engine;
         $this->url = $url;

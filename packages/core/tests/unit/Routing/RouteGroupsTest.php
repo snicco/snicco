@@ -7,7 +7,7 @@ namespace Tests\Core\unit\Routing;
 use LogicException;
 use LogicExceptions;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
@@ -28,7 +28,7 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->middleware('foo:FOO')
-             ->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
                  $router
                      ->get('r1', '/foo', RoutingTestController::class)
                      ->middleware('bar:BAR');
@@ -49,7 +49,7 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->namespace(self::CONTROLLER_NAMESPACE)
-             ->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
                  $router->get('r1', '/foo', 'RoutingTestController');
              });
         
@@ -62,7 +62,7 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->prefix('foo')
-             ->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
                  $router->get('r1', '/bar', RoutingTestController::class);
                  $router->get('r2', '/baz', RoutingTestController::class);
              });
@@ -85,7 +85,7 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->name('users')
-             ->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
                  $router->get('route1', '/bar', RoutingTestController::class);
                  $router->get('route2', '/baz', RoutingTestController::class);
              });
@@ -102,10 +102,10 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->namespace('Tests\FalseNamespace')
-             ->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
                  $router
                      ->namespace(self::CONTROLLER_NAMESPACE)->group(
-                         function (RoutingConfigurator $router) {
+                         function (WebRoutingConfigurator $router) {
                              $router->get('r1', '/foo', 'RoutingTestController');
                          }
                      );
@@ -118,10 +118,10 @@ class RouteGroupsTest extends RoutingTestCase
     /** @test */
     public function group_prefixes_are_merged_on_multiple_levels()
     {
-        $this->routeConfigurator()->prefix('foo')->group(function (RoutingConfigurator $router) {
+        $this->routeConfigurator()->prefix('foo')->group(function (WebRoutingConfigurator $router) {
             $router
                 ->prefix('bar')
-                ->group(function (RoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router) {
                     $router->get('r1', '/baz', RoutingTestController::class);
                     $router->get('r2', '/biz', RoutingTestController::class);
                 });
@@ -148,8 +148,8 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->name('users')
-             ->group(function (RoutingConfigurator $router) {
-                 $router->name('admins')->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
+                 $router->name('admins')->group(function (WebRoutingConfigurator $router) {
                      $router->get('calvin', '/bar', RoutingTestController::class);
                      $router->get('marlon', '/baz', RoutingTestController::class);
                  });
@@ -170,8 +170,8 @@ class RouteGroupsTest extends RoutingTestCase
     {
         $this->routeConfigurator()
              ->middleware('foo:FOO')
-             ->group(function (RoutingConfigurator $router) {
-                 $router->middleware('bar:BAR')->group(function (RoutingConfigurator $router) {
+             ->group(function (WebRoutingConfigurator $router) {
+                 $router->middleware('bar:BAR')->group(function (WebRoutingConfigurator $router) {
                      $router
                          ->get('r1', '/foo', RoutingTestController::class)
                          ->middleware('baz');

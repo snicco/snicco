@@ -14,24 +14,29 @@ use Snicco\Core\Routing\UrlPath;
 use Snicco\Core\Routing\MenuItem;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\AdminDashboardPrefix;
+use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Routing\AbstractRouteCondition;
+use Snicco\Core\Routing\AdminRoutingConfigurator;
 
 use function array_map;
 
 /**
  * @interal
  */
-final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
+final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, AdminRoutingConfigurator
 {
     
     private Router $router;
-    private array  $delegate_attributes = [];
-    private array  $config;
-    private bool   $locked              = false;
+    private AdminDashboardPrefix $admin_dashboard_prefix;
+    private array $delegate_attributes = [];
+    private array $config;
+    private bool $locked               = false;
     
-    public function __construct(Router $router, array $config)
+    public function __construct(Router $router, AdminDashboardPrefix $admin_dashboard_prefix, array $config)
     {
+        $this->admin_dashboard_prefix = $admin_dashboard_prefix;
         $this->router = $router;
         $this->config = $config;
     }
@@ -44,7 +49,18 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
     public function admin(string $name, string $path, $action = Route::DELEGATE, MenuItem $menu_item = null) :Route
     {
         $this->check($name);
-        return $this->router->registerAdminRoute($name, $path, $action, $menu_item);
+        
+        if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
+            throw new LogicException(
+                sprintf(
+                    'You should not add the prefix [%s] to admin routes. This is handled at the framework level.',
+                    $this->admin_dashboard_prefix->asString()
+                )
+            );
+        }
+        
+        $path = $this->admin_dashboard_prefix->appendPath($path);
+        return $this->router->registerAdminRoute($name, $path, $action);
     }
     
     public function post(string $name, string $path, $action = Route::DELEGATE) :Route
@@ -87,25 +103,25 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
      */
     public function middleware($middleware) :self
     {
-        $this->delegate_attributes['middleware'] = Arr::wrap($middleware);
+        $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::wrap($middleware);
         return $this;
     }
     
     public function name(string $name) :self
     {
-        $this->delegate_attributes['name'] = $name;
+        $this->delegate_attributes[RoutingConfigurator::NAME_KEY] = $name;
         return $this;
     }
     
     public function prefix(string $prefix) :self
     {
-        $this->delegate_attributes['prefix'] = UrlPath::fromString($prefix);
+        $this->delegate_attributes[RoutingConfigurator::PREFIX_KEY] = UrlPath::fromString($prefix);
         return $this;
     }
     
     public function namespace(string $namespace) :self
     {
-        $this->delegate_attributes['namespace'] = $namespace;
+        $this->delegate_attributes[RoutingConfigurator::NAMESPACE_KEY] = $namespace;
         return $this;
     }
     
@@ -208,6 +224,27 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
         return $this->config[$key];
     }
     
+    public function include($file_or_closure) :void
+    {
+        $routes = $file_or_closure;
+        if ( ! $routes instanceof Closure) {
+            Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
+            Assert::readable($file_or_closure, "The file $file_or_closure is not readable.");
+            
+            Assert::isInstanceOf(
+                $routes = require $file_or_closure,
+                Closure::class,
+                sprintf(
+                    "Requiring the file [%s] has to return a closure.\nGot: [%s]",
+                    $file_or_closure,
+                    gettype($file_or_closure)
+                )
+            );
+        }
+        
+        $this->group($routes);
+    }
+    
     private function redirectRouteName(string $from, string $to) :string
     {
         return "redirect_route:$from:$to";
@@ -223,7 +260,7 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
             );
         }
         
-        return $this->router->registerRoute($name, $path, $methods, $action);
+        return $this->router->registerWebRoute($name, $path, $methods, $action);
     }
     
     private function check(string $route_name) :void

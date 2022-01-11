@@ -87,6 +87,22 @@ class UrlPathTest extends UnitTest
         $this->assertSame('/foo/'.$expected, $path->append($append_path)->asString());
     }
     
+    /** @test */
+    public function test_startsWith()
+    {
+        $path = UrlPath::fromString('/wp-admin/foo/bar');
+        
+        $this->assertTrue($path->startsWith('/wp-admin'));
+        $this->assertTrue($path->startsWith('wp-admin'));
+        $this->assertTrue($path->startsWith('/wp-admin/'));
+        $this->assertTrue($path->startsWith('wp-admin/'));
+        $this->assertTrue($path->startsWith('/wp-admin/foo'));
+        $this->assertTrue($path->startsWith('/wp-admin/foo/'));
+        $this->assertTrue($path->startsWith('/wp-admin/foo/bar'));
+        $this->assertFalse($path->startsWith('/wp-admin/foo/bar/'));
+        $this->assertFalse($path->startsWith('/wp-admin/foo/baz'));
+    }
+    
     public function providePath() :array
     {
         return [

@@ -6,7 +6,7 @@ namespace Tests\Auth\integration\Confirmation;
 
 use Snicco\Core\Shared\Encryptor;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Tests\Auth\integration\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
@@ -194,8 +194,8 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
     
     private function validEmailConfirmMagicLink() :string
     {
-        /** @var Generator $url */
-        $url = $this->app->resolve(Generator::class);
+        /** @var InternalUrlGenerator $url */
+        $url = $this->app->resolve(InternalUrlGenerator::class);
         
         return $url->signedRoute('auth.confirm.magic-link', [], true, true);
     }

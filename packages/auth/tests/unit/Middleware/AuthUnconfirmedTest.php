@@ -11,7 +11,7 @@ use Snicco\Core\Routing\Route;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
@@ -82,7 +82,7 @@ class AuthUnconfirmedTest extends MiddlewareTestCase
         $response->assertRedirect('/dashboard', 302);
     }
     
-    protected function urlGenerator() :Generator
+    protected function urlGenerator() :InternalUrlGenerator
     {
         $url = parent::urlGenerator();
         $this->url = $url;

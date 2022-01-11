@@ -7,7 +7,7 @@ namespace Tests\Auth\integration\Authenticators;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 
@@ -24,7 +24,7 @@ class PasswordAuthenticatorTest extends AuthTestCase
         });
         
         $this->afterApplicationBooted(function () {
-            $this->url = $this->app->resolve(Generator::class);
+            $this->url = $this->app->resolve(InternalUrlGenerator::class);
         });
         
         parent::setUp();

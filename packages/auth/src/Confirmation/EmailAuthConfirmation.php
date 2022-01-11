@@ -7,7 +7,7 @@ namespace Snicco\Auth\Confirmation;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 
 class EmailAuthConfirmation implements AuthConfirmation
@@ -15,9 +15,9 @@ class EmailAuthConfirmation implements AuthConfirmation
     
     private MagicLink                         $magic_link;
     private AbstractEmailAuthConfirmationView $response;
-    private Generator                         $url;
+    private InternalUrlGenerator              $url;
     
-    public function __construct(MagicLink $magic_link, AbstractEmailAuthConfirmationView $response, Generator $url)
+    public function __construct(MagicLink $magic_link, AbstractEmailAuthConfirmationView $response, InternalUrlGenerator $url)
     {
         $this->magic_link = $magic_link;
         $this->response = $response;

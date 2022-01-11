@@ -11,7 +11,7 @@ use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Http\Responses\RedirectResponse;
 
 /**
@@ -109,9 +109,9 @@ final class ApplicationMixin
     /**
      * Get the applications UrlGenerator instance
      *
-     * @return Generator
+     * @return InternalUrlGenerator
      */
-    public static function url() :Generator
+    public static function url() :InternalUrlGenerator
     {
     }
     
@@ -201,7 +201,7 @@ final class ApplicationMixin
     /**
      * Get the url to a named route
      *
-     * @see Generator::toRoute()
+     * @see InternalUrlGenerator::toRoute()
      */
     public static function routeUrl(string $route, array $arguments = [], bool $secure = true, bool $absolute = true) :string
     {

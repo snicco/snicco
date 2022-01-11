@@ -27,11 +27,11 @@ use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Middleware\Core\RouteRunner;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\Middleware\MiddlewareFactory;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Testing\Concerns\CreatePsrRequests;
+use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Controllers\FallBackController;
 use Snicco\Core\Controllers\RedirectController;
@@ -72,6 +72,7 @@ class RoutingTestCase extends UnitTest
     use CreatePsrRequests;
     
     protected string           $app_domain = 'foobar.com';
+    protected string           $routes_dir;
     protected ResponseFactory  $response_factory;
     protected ContainerAdapter $container;
     protected FakeDispatcher   $event_dispatcher;
@@ -88,6 +89,7 @@ class RoutingTestCase extends UnitTest
         parent::setUp();
         $this->createNeededCollaborators();
         $this->container[RoutingTestController::class] = new RoutingTestController();
+        $this->routes_dir = __DIR__.'/fixtures/routes';
     }
     
     final protected function assertEmptyBody(Request $request)
@@ -101,11 +103,14 @@ class RoutingTestCase extends UnitTest
         $this->assertSame(
             $expected,
             $b = $response->body(),
-            "Expected response body [$expected].\nGot [$b]."
+            "Expected response body [$expected] for path [{$request->path()}].\nGot [$b]."
         );
     }
     
-    final protected function withMiddlewareGroups(array $middlewares)
+    /**
+     * @param  array<string,array<string>>  $middlewares
+     */
+    final protected function withMiddlewareGroups(array $middlewares) :void
     {
         foreach ($middlewares as $name => $middleware) {
             $this->middleware_stack->withMiddlewareGroup($name, $middleware);
@@ -130,7 +135,7 @@ class RoutingTestCase extends UnitTest
         return new TestResponse($response);
     }
     
-    final protected function routeConfigurator() :RoutingConfigurator
+    final protected function routeConfigurator() :WebRoutingConfigurator
     {
         return $this->router;
     }
@@ -149,12 +154,14 @@ class RoutingTestCase extends UnitTest
         
         $this->request_context = $context;
         
+        $this->admin_dashboard ??= WPAdminDashboard::fromDefaults();
+        
         $this->router = new Router(
             $this->container[RouteConditionFactory::class],
-            new RoutingConfiguratorFactory($config),
+            new RoutingConfiguratorFactory($this->admin_dashboard->urlPrefix(), $config),
             new UrlGeneratorFactory(
                 $context,
-                $this->admin_dashboard ??= WPAdminDashboard::fromDefaults(),
+                $this->admin_dashboard,
                 new RFC3986Encoder(),
             ),
             $this->admin_dashboard->urlPrefix(),

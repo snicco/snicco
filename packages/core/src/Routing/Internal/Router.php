@@ -23,6 +23,8 @@ use Snicco\Core\Routing\Exceptions\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\Routing\AdminDashboardPrefix;
+use Snicco\Core\Routing\WebRoutingConfigurator;
+use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteSyntax;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteDispatcher;
@@ -41,7 +43,7 @@ use function file_put_contents;
  * This is preferred over passing around one (global) instance of {@see Routes} between different
  * objects in the service container.
  */
-final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
+final class Router implements UrlMatcher, UrlGenerator, WebRoutingConfigurator, AdminRoutingConfigurator
 {
     
     private Routes $routes;
@@ -100,7 +102,10 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         $this->deleteCurrentGroup();
     }
     
-    public function registerAdminRoute(string $name, string $path, $action = Route::DELEGATE, MenuItem $menu_item = null) :Route
+    /**
+     * @param  array<string,string>|string  $controller
+     */
+    public function registerAdminRoute(string $name, string $path, $controller = Route::DELEGATE) :Route
     {
         if ($this->hasGroup() && $this->currentGroup()->prefix()->asString() !== '/') {
             throw new LogicException(
@@ -108,9 +113,10 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
             );
         }
         
-        $path = $this->admin_dashboard_prefix->appendPath($path);
-        $route = $this->registerRoute($name, $path, ['GET'], $action);
+        $route = $this->createRoute($name, $path, ['GET'], $controller);
         $route->condition(IsAdminDashboardRequest::class);
+        
+        $this->routes->add($route);
         
         return $route;
     }
@@ -118,24 +124,19 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
     /**
      * @param  array<string,string>|string  $controller
      */
-    public function registerRoute(string $name, string $path, array $methods, $controller) :Route
+    public function registerWebRoute(string $name, string $path, array $methods, $controller) :Route
     {
-        // Quick check to see if the developer swapped the arguments by accident.
-        Assert::notStartsWith($name, '/');
+        if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
+            throw new LogicException(
+                sprintf(
+                    'You tried to register the route [%s] that goes to the admin dashboard without using the dedicated admin() method on an instance of [%s]',
+                    $name,
+                    AdminRoutingConfigurator::class
+                )
+            );
+        }
         
-        $path = $this->applyGroupPrefix(UrlPath::fromString($path));
-        $name = $this->applyGroupName($name);
-        $namespace = $this->applyGroupNamespace();
-        
-        $route = Route::create(
-            $path->asString(),
-            $controller,
-            $name,
-            $methods,
-            $namespace
-        );
-        
-        $this->addGroupAttributes($route);
+        $route = $this->createRoute($name, $path, $methods, $controller);
         
         $this->routes->add($route);
         
@@ -302,7 +303,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         return $this->getRouteConfigurator()->name($name);
     }
     
-    public function prefix(string $prefix) :RoutingConfigurator
+    public function prefix(string $prefix) :WebRoutingConfigurator
     {
         return $this->getRouteConfigurator()->prefix($prefix);
     }
@@ -320,6 +321,33 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH) :string
     {
         return $this->getGenerator()->toLogin($arguments, $type);
+    }
+    
+    public function include($file_or_closure) :void
+    {
+        $this->getRouteConfigurator()->include($file_or_closure);
+    }
+    
+    private function createRoute(string $name, string $path, array $methods, $controller) :Route
+    {
+        // Quick check to see if the developer swapped the arguments by accident.
+        Assert::notStartsWith($name, '/');
+        
+        $path = $this->applyGroupPrefix(UrlPath::fromString($path));
+        $name = $this->applyGroupName($name);
+        $namespace = $this->applyGroupNamespace();
+        
+        $route = Route::create(
+            $path->asString(),
+            $controller,
+            $name,
+            $methods,
+            $namespace
+        );
+        
+        $this->addGroupAttributes($route);
+        
+        return $route;
     }
     
     private function applyGroupPrefix(UrlPath $path) :UrlPath
@@ -433,7 +461,7 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         }
     }
     
-    private function getGenerator() :Generator
+    private function getGenerator() :InternalUrlGenerator
     {
         if ( ! isset($this->generator)) {
             $this->generator = $this->generator_factory->create($this->routes);

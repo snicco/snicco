@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core;
 
 use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Routing\Internal\RFC3986Encoder;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreateContainer;
@@ -25,7 +25,7 @@ class MiddlewareTestCase extends FrameworkMiddlewareTestCase
             $context = $this->urlGenerationContext();
         }
         
-        return new Generator(
+        return new InternalUrlGenerator(
             $this->routes(),
             $context,
             WPAdminDashboard::fromDefaults(),

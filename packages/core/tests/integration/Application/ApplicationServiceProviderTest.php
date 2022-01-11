@@ -10,7 +10,7 @@ use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Application\Application;
 use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
@@ -191,7 +191,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->assertInstanceOf(Generator::class, TestApp::url());
+        $this->assertInstanceOf(InternalUrlGenerator::class, TestApp::url());
     }
     
     /** @test */

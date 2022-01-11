@@ -15,7 +15,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Testing\Constraints\SeeInOrder;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
 use Snicco\Core\Http\Responses\DelegatedResponse;
@@ -244,8 +244,8 @@ class TestResponse
     
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
     {
-        /** @var Generator $url */
-        $url = $this->container[Generator::class];
+        /** @var InternalUrlGenerator $url */
+        $url = $this->container[InternalUrlGenerator::class];
         
         $this->assertRedirect();
         
