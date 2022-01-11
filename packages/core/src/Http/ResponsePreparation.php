@@ -6,13 +6,19 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 
+use function strval;
+use function ini_set;
+use function strtolower;
+use function str_replace;
 use function headers_list;
+use function ob_get_length;
 
 /*
  *
- * MODIFIED VERSION OF THE Symfony HTTP Foundation Response Classes
+ * This class represents Symfonys Response::prepare() method ported to psr7.
  *
  * @link https://github.com/symfony/http-foundation/blob/5.3/ResponseHeaderBag.php
  * @link https://github.com/symfony/http-foundation/blob/5.3/Response.php
@@ -27,17 +33,12 @@ use function headers_list;
 final class ResponsePreparation
 {
     
-    private string $charset = 'UTF-8';
-    
     private StreamFactoryInterface $stream_factory;
+    private string                 $charset;
     
-    public function __construct(StreamFactoryInterface $stream_factory)
+    public function __construct(StreamFactoryInterface $stream_factory, string $charset = 'UTF-8')
     {
         $this->stream_factory = $stream_factory;
-    }
-    
-    public function setCharset(string $charset)
-    {
         $this->charset = $charset;
     }
     
@@ -49,7 +50,7 @@ final class ResponsePreparation
         return $this->fixProtocol($response, $request);
     }
     
-    private function fixDate($response)
+    private function fixDate(Response $response)
     {
         if ( ! $response->hasHeader('date')) {
             $response = $response->withHeader('date', gmdate('D, d M Y H:i:s').' GMT');
@@ -105,7 +106,7 @@ final class ResponsePreparation
             // prevent PHP from sending the Content-Type header based on default_mimetype
             ini_set('default_mimetype', '');
             
-            return $response->withBody($this->stream_factory->createStream(''))
+            return $response->withBody($this->getEmptyStream())
                             ->withoutHeader('content-type')
                             ->withoutHeader('content-length');
         }
@@ -138,7 +139,7 @@ final class ResponsePreparation
         
         // Fix HEAD method if body: RFC2616 14.13
         if ($request->isHead()) {
-            $response = $response->withBody($this->stream_factory->createStream());
+            $response = $response->withBody($this->getEmptyStream());
         }
         
         return $response;
@@ -151,6 +152,11 @@ final class ResponsePreparation
         }
         
         return $response;
+    }
+    
+    private function getEmptyStream() :StreamInterface
+    {
+        return $this->stream_factory->createStream('');
     }
     
 }

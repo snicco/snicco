@@ -15,7 +15,6 @@ use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Routing\UrlGenerator;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Testing\TestResponseEmitter;
 use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Routing\Internal\Router;
@@ -35,7 +34,9 @@ use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Routing\Internal\RFC3986Encoder;
+use Snicco\Core\Middleware\Core\PrepareResponse;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
@@ -216,7 +217,6 @@ class RoutingTestCase extends UnitTest
                 $middleware_factory = new MiddlewareFactory($this->container),
                 $error_handler,
             ),
-            new TestResponseEmitter(new ResponsePreparation($this->psrStreamFactory())),
             $this->event_dispatcher =
                 new FakeDispatcher(
                     new EventDispatcher(new DependencyInversionListenerFactory($this->container))
@@ -227,7 +227,13 @@ class RoutingTestCase extends UnitTest
         $this->middleware_stack = new MiddlewareStack();
         $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
         
+        $this->container->instance(
+            PrepareResponse::class,
+            new PrepareResponse(new ResponsePreparation($this->psrStreamFactory()))
+        );
+        
         $this->container->instance(MethodOverride::class, new MethodOverride());
+        
         $this->container->instance(
             OutputBufferAbstractMiddleware::class,
             $this->outputBufferMiddleware()
@@ -238,6 +244,7 @@ class RoutingTestCase extends UnitTest
                 $this->router,
             );
         });
+        
         $this->container->instance(
             RouteRunner::class,
             new RouteRunner(
@@ -249,23 +256,27 @@ class RoutingTestCase extends UnitTest
                 $this->container,
             )
         );
+        
         $this->container->instance(
             EvaluateResponseAbstractMiddleware::class,
             new EvaluateResponseAbstractMiddleware()
         );
         $this->container->instance(ShareCookies::class, new ShareCookies());
+        
         $this->container->instance(
             AllowMatchingAdminRoutes::class,
             new AllowMatchingAdminRoutes($this->admin_dashboard)
         );
-        $this->container->instance(
-            FallBackController::class,
-            new FallBackController()
-        );
+        
+        // internal controllers
+        $this->container->instance(FallBackController::class, new FallBackController());
+        
         $this->container->instance(
             ViewController::class,
             new ViewController(new FileTemplateRenderer())
         );
+        
+        $this->container->instance(RedirectController::class, new RedirectController());
     }
     
     final private function outputBufferMiddleware() :AbstractMiddleware

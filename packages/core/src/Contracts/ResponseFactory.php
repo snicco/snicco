@@ -7,7 +7,6 @@ namespace Snicco\Core\Contracts;
 use stdClass;
 use JsonSerializable;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
@@ -33,10 +32,8 @@ interface ResponseFactory extends Psr17ResponseFactory, Psr17StreamFactory
     
     public function redirect(string $location, int $status_code = 302) :RedirectResponse;
     
-    public function null() :NullResponse;
-    
     public function noContent() :Response;
     
-    public function delegateToWP() :DelegatedResponse;
+    public function delegate(bool $should_headers_be_sent = true) :DelegatedResponse;
     
 }

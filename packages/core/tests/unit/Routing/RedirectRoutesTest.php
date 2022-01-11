@@ -86,7 +86,6 @@ class RedirectRoutesTest extends RoutingTestCase
     
     /** @test */
     public function regex_based_redirects_works()
-    
     {
         $this->routeConfigurator()->redirect('base/{slug}', 'base/new')
              ->requireOneOf('slug', ['foo', 'bar']);

@@ -22,7 +22,7 @@ final class DontMatchAdminDashboardRequests extends AbstractMiddleware
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
         if ($request->pathIs("/$this->admin_dashboard_prefix*")) {
-            return $this->respond()->delegateToWP();
+            return $this->respond()->delegate(true);
         }
         
         return $next($request);

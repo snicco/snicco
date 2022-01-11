@@ -5,17 +5,18 @@ namespace Tests\Core\unit\Http;
 use Mockery;
 use Snicco\Core\Support\Carbon;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Core\fixtures\TestDoubles\HeaderStack;
+use Tests\Codeception\shared\helpers\CreateUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponsePreparationTest extends UnitTest
 {
     
     use CreatePsr17Factories;
+    use CreateUrlGenerator;
     
     private DefaultResponseFactory $factory;
     private ResponsePreparation    $preparation;
@@ -24,7 +25,7 @@ class ResponsePreparationTest extends UnitTest
     protected function setUp() :void
     {
         parent::setUp();
-        $this->factory = $this->createResponseFactory();
+        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
         $this->preparation = new ResponsePreparation($this->psrStreamFactory());
         $this->request =
             new Request($this->psrServerRequestFactory()->createServerRequest('GET', ' /foo'));
@@ -195,29 +196,6 @@ class ResponsePreparationTest extends UnitTest
         $prepared = $this->preparation->prepare($response, $this->request);
         
         $this->assertFalse($prepared->hasHeader('content-length'));
-    }
-    
-    /** @test */
-    public function no_content_length_for_wp_admin_page_requests()
-    {
-        $response = $this->factory->html('foobar');
-        
-        $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                'GET',
-                ' /wp-admin/admin.php?page=test',
-                ['SCRIPT_NAME' => 'wp-admin/admin.php']
-            )
-        );
-        
-        $prepared = $this->preparation->prepare($response, $request);
-        
-        $this->assertFalse($prepared->hasHeader('content-length'));
-    }
-    
-    protected function refreshUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
-    {
-        return Mockery::mock(UrlGenerator::class);
     }
     
 }

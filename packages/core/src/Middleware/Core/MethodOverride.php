@@ -15,6 +15,8 @@ use function strtoupper;
 final class MethodOverride extends AbstractMiddleware
 {
     
+    const HEADER = 'X-HTTP-Method-Override';
+    
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
         if ('POST' !== ($method = $request->realMethod())) {
@@ -24,8 +26,8 @@ final class MethodOverride extends AbstractMiddleware
         if ($request->filled('_method')) {
             $method = $request->body('_method');
         }
-        elseif ($request->hasHeader('X-HTTP-Method-Override')) {
-            $method = $request->getHeaderLine('X-HTTP-Method-Override');
+        elseif ($request->hasHeader(self::HEADER)) {
+            $method = $request->getHeaderLine(self::HEADER);
         }
         
         if ( ! $this->validMethod($method)) {

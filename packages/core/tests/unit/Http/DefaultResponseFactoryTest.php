@@ -7,34 +7,35 @@ namespace Tests\Core\unit\Http;
 use stdClass;
 use InvalidArgumentException;
 use Snicco\Core\Routing\Route;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Responsable;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Core\Routing\Internal\RouteCollection;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Tests\Codeception\shared\helpers\CreateUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class DefaultResponseFactoryTest extends UnitTest
 {
     
     use CreatePsr17Factories;
+    use CreateUrlGenerator;
     
-    /**
-     * @var DefaultResponseFactory
-     */
-    private $factory;
+    private DefaultResponseFactory $factory;
     
     protected function setUp() :void
     {
         parent::setUp();
         $this->app_domain = 'foo.com';
         $this->routes = new RouteCollection();
-        $this->factory = $this->createResponseFactory();
+        $this->factory = $this->createResponseFactory(
+            $this->createUrlGenerator(
+                UrlGenerationContext::forConsole($this->app_domain),
+                $this->routes
+            ),
+        );
     }
     
     public function test_make()
@@ -55,14 +56,6 @@ class DefaultResponseFactoryTest extends UnitTest
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode(['foo' => 'bar']), (string) $response->getBody());
-    }
-    
-    /** @test */
-    public function test_null()
-    {
-        $response = $this->factory->null();
-        
-        $this->assertInstanceOf(NullResponse::class, $response);
     }
     
     /** @test */
@@ -220,14 +213,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $url = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->refresh();
@@ -245,14 +234,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             'https://foobar.com/foo?bar=baz#section1'
                         )->withAddedHeader('referer', '/foo/bar');
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->back('/', 307);
@@ -270,14 +255,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $url = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->back('/foobar_fallback', 307);
@@ -307,14 +288,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $url = 'http://foobar.com/'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->secure('/foo', 307);
@@ -352,14 +329,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $current = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->deny('login', 307, ['foo' => 'bar']);
@@ -380,14 +353,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $original = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->deny('login', 307, ['foo' => 'bar']);
@@ -399,14 +368,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             'https://foobar.com'.$redirected_to
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request, WPAdminDashboard::fromDefaults());
-        $g = $this->refreshUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->intended('/home', 307);
@@ -421,6 +386,13 @@ class DefaultResponseFactoryTest extends UnitTest
         $response = $this->factory->intended('/home', 307);
         $this->assertSame(307, $response->getStatusCode());
         $this->assertSame('/home', $response->getHeaderLine('location'));
+    }
+    
+    /** @test */
+    public function test_delegate()
+    {
+        $this->assertTrue($this->factory->delegate()->shouldHeadersBeSent());
+        $this->assertFalse($this->factory->delegate(false)->shouldHeadersBeSent());
     }
     
 }

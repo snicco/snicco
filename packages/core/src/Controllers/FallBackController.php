@@ -15,7 +15,7 @@ final class FallBackController extends AbstractController
     
     public function delegate() :DelegatedResponse
     {
-        return $this->respond()->delegateToWP();
+        return $this->respond()->delegate(true);
     }
     
 }

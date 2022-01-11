@@ -8,12 +8,15 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Contracts\Bootstrapper;
 use Snicco\Core\Application\Application;
+use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\ExceptionHandling\FatalError;
 use Snicco\Core\ExceptionHandling\PHPErrorLevel;
-use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\ExceptionHandling\NativeErrorLogger;
 
-class HandlesExceptions implements Bootstrapper
+/**
+ * @todo This class needs to be refactored together with the exception handler
+ */
+final class HandlesExceptions implements Bootstrapper
 {
     
     /**
@@ -62,6 +65,8 @@ class HandlesExceptions implements Bootstrapper
     
     /**
      * Convert PHP errors to ErrorException instances.
+     *
+     * @throws ErrorException
      */
     public function handleError($level, $message, $file = '', $line = 0, $context = [])
     {
@@ -128,7 +133,6 @@ class HandlesExceptions implements Bootstrapper
             $request = $this->getRequest();
             
             $response = $this->getExceptionHandler()->toHttpResponse($e, $request);
-            $response = $emitter->prepare($response, $request);
             $emitter->emit($response);
         } catch (Throwable $fatal) {
             // Nothing we can do. Remain silent.
@@ -156,7 +160,6 @@ class HandlesExceptions implements Bootstrapper
         if ($app->isRunningUnitTest() || $app->isLocal()) {
             ini_set('display_errors', 'On');
         }
-        
         else {
             ini_set('display_errors', 'Off');
         }
