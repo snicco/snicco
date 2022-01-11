@@ -20,7 +20,6 @@ use Snicco\Core\Routing\RoutingResult;
 use Snicco\Core\Routing\Exceptions\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\RoutingConfigurator;
-use Snicco\Core\Routing\AdminDashboardPrefix;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteSyntax;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteDispatcher;
@@ -57,20 +56,16 @@ final class Router implements UrlMatcher, UrlGenerator
     
     private array $fast_route_cache = [];
     
-    private AdminDashboardPrefix $admin_dashboard_prefix;
-    
     // Since the router glues several pieces of the routing system together we use
     // simple factories to signalize which objects are direct dependencies of the router.
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
-        AdminDashboardPrefix $admin_dashboard_prefix,
         CacheFile $cache_file = null
     ) {
         $this->cache_file = $cache_file;
         
         $this->condition_factory = $condition_factory;
-        $this->admin_dashboard_prefix = $admin_dashboard_prefix;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
             $cache = require($this->cache_file->asString());
@@ -99,12 +94,6 @@ final class Router implements UrlMatcher, UrlGenerator
      */
     public function registerAdminRoute(string $name, string $path, $controller = Route::DELEGATE) :Route
     {
-        //if ($this->hasGroup() && $this->currentGroup()->prefix()->asString() !== '/') {
-        //    throw new LogicException(
-        //        "Its not possible to add a prefix to admin route [$name]."
-        //    );
-        //}
-        
         $route = $this->createRoute($name, $path, ['GET'], $controller);
         $route->condition(IsAdminDashboardRequest::class);
         

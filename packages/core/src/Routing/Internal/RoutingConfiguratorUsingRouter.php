@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Internal;
 
 use Closure;
-use LogicException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
@@ -14,6 +13,7 @@ use Snicco\Core\Routing\UrlPath;
 use Snicco\Core\Routing\MenuItem;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\Exceptions\BadRoute;
 use Snicco\Core\Routing\AdminDashboardPrefix;
 use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\Controllers\RedirectController;
@@ -50,13 +50,9 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     {
         $this->checkDelegatedAttributesAreEmpty($name);
         
-        if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
-            throw new LogicException(
-                sprintf(
-                    'You should not add the prefix [%s] to admin routes. This is handled at the framework level.',
-                    $this->admin_dashboard_prefix->asString()
-                )
-            );
+        $prefix = $this->admin_dashboard_prefix->asString();
+        if (UrlPath::fromString($path)->startsWith($prefix)) {
+            throw BadRoute::becauseAdminRouteWasAddedWithHardcodedPrefix($name, $prefix);
         }
         
         $path = $this->admin_dashboard_prefix->appendPath($path);
@@ -256,19 +252,11 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $this->checkDelegatedAttributesAreEmpty($name);
         
         if ($this->locked) {
-            throw new LogicException(
-                "Route [route1] was registered after a fallback route was defined."
-            );
+            throw BadRoute::becauseFallbackRouteIsAlreadyRegistered($name);
         }
         
         if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
-            throw new LogicException(
-                sprintf(
-                    'You tried to register the route [%s] that goes to the admin dashboard without using the dedicated admin() method on an instance of [%s]',
-                    $name,
-                    AdminRoutingConfigurator::class
-                )
-            );
+            throw BadRoute::becauseWebRouteHasAdminPrefix($name);
         }
         
         return $this->router->registerWebRoute($name, $path, $methods, $action);
@@ -277,11 +265,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     private function checkDelegatedAttributesAreEmpty(string $route_name) :void
     {
         if ( ! empty($this->delegate_attributes)) {
-            throw new LogicException(
-                'Cant register route ['
-                .$route_name
-                .'] because delegated attributes have not been merged into a route group. Did you forget to call group() ?'
-            );
+            throw BadRoute::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
         }
     }
     

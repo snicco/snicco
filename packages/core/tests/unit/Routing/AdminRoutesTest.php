@@ -33,7 +33,7 @@ class AdminRoutesTest extends RoutingTestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            "You should not add the prefix [/wp-admin] to admin routes. This is handled at the framework level."
+            "You should not add the prefix [/wp-admin] to the admin route [admin.1]"
         );
         
         $this->admin_configurator->admin('admin.1', '/wp-admin/admin.php/foo');

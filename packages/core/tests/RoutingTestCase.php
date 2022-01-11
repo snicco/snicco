@@ -170,7 +170,6 @@ class RoutingTestCase extends UnitTest
                 $this->admin_dashboard,
                 new RFC3986Encoder(),
             ),
-            $this->admin_dashboard->urlPrefix(),
             $cache_file
         );
         
