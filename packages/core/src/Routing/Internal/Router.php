@@ -13,7 +13,6 @@ use Snicco\Core\Routing\Route;
 use Snicco\Core\Routing\Routes;
 use Snicco\Core\Routing\UrlPath;
 use FastRoute\BadRouteException;
-use Snicco\Core\Routing\MenuItem;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Support\CacheFile;
 use Snicco\Core\Routing\UrlMatcher;
@@ -23,7 +22,6 @@ use Snicco\Core\Routing\Exceptions\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\Routing\AdminDashboardPrefix;
-use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteSyntax;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
@@ -43,14 +41,12 @@ use function file_put_contents;
  * This is preferred over passing around one (global) instance of {@see Routes} between different
  * objects in the service container.
  */
-final class Router implements UrlMatcher, UrlGenerator, WebRoutingConfigurator, AdminRoutingConfigurator
+final class Router implements UrlMatcher, UrlGenerator
 {
     
     private Routes $routes;
     
     private RouteConditionFactory $condition_factory;
-    
-    private RoutingConfiguratorFactory $configurator_factory;
     
     private UrlGeneratorFactory $generator_factory;
     
@@ -69,7 +65,6 @@ final class Router implements UrlMatcher, UrlGenerator, WebRoutingConfigurator, 
     // simple factories to signalize which objects are direct dependencies of the router.
     public function __construct(
         RouteConditionFactory $condition_factory,
-        RoutingConfiguratorFactory $configurator_factory,
         UrlGeneratorFactory $generator_factory,
         AdminDashboardPrefix $admin_dashboard_prefix,
         CacheFile $cache_file = null
@@ -89,15 +84,14 @@ final class Router implements UrlMatcher, UrlGenerator, WebRoutingConfigurator, 
         else {
             $this->routes = new RouteCollection();
         }
-        $this->configurator_factory = $configurator_factory;
         $this->generator_factory = $generator_factory;
     }
     
-    public function createInGroup(Closure $create_routes, array $attributes) :void
+    public function createInGroup(RoutingConfigurator $routing_configurator, Closure $create_routes, array $attributes) :void
     {
         $this->updateGroupStack(new RouteGroup($attributes));
         
-        $create_routes($this->getRouteConfigurator());
+        $create_routes($routing_configurator);
         
         $this->deleteCurrentGroup();
     }
@@ -186,146 +180,9 @@ final class Router implements UrlMatcher, UrlGenerator, WebRoutingConfigurator, 
         return $this->getGenerator()->previous($fallback);
     }
     
-    public function fallback(
-        $fallback_action, array $dont_match_request_including = [
-        'favicon',
-        'robots',
-        'sitemap',
-    ]
-    ) :Route {
-        return $this->getRouteConfigurator()->fallback(
-            $fallback_action,
-            $dont_match_request_including
-        );
-    }
-    
-    public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []) :Route
-    {
-        return $this->getRouteConfigurator()->view($path, $view, $data, $status, $headers);
-    }
-    
-    public function redirect(string $from_path, string $to_path, int $status = 302, array $query = []) :Route
-    {
-        return $this->getRouteConfigurator()->redirect($from_path, $to_path, $status, $query);
-    }
-    
-    public function permanentRedirect(string $from_path, string $to_path, array $query = []) :Route
-    {
-        return $this->getRouteConfigurator()->permanentRedirect($from_path, $to_path, $query);
-    }
-    
-    public function temporaryRedirect(string $from_path, string $to_path, array $query = [], int $status = 307) :Route
-    {
-        return $this->getRouteConfigurator()->temporaryRedirect(
-            $from_path,
-            $to_path,
-            $query,
-            $status
-        );
-    }
-    
-    public function redirectAway(string $from_path, string $location, int $status = 302) :Route
-    {
-        return $this->getRouteConfigurator()->redirectAway(
-            $from_path,
-            $location,
-            $status,
-        );
-    }
-    
-    public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302) :Route
-    {
-        return $this->getRouteConfigurator()->redirectToRoute(
-            $from_path,
-            $route,
-            $arguments,
-            $status
-        );
-    }
-    
-    public function group(Closure $create_routes, array $extra_attributes = []) :void
-    {
-        $this->getRouteConfigurator()->group($create_routes, $extra_attributes);
-    }
-    
-    public function get(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->get($name, $path, $action);
-    }
-    
-    public function post(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->post($name, $path, $action);
-    }
-    
-    public function put(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->put($name, $path, $action);
-    }
-    
-    public function patch(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->patch($name, $path, $action);
-    }
-    
-    public function delete(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->delete($name, $path, $action);
-    }
-    
-    public function options(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->options($name, $path, $action);
-    }
-    
-    public function any(string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->any($name, $path, $action);
-    }
-    
-    public function match(array $verbs, string $name, string $path, $action = Route::DELEGATE) :Route
-    {
-        return $this->getRouteConfigurator()->match($verbs, $name, $path, $action);
-    }
-    
-    public function admin(string $name, string $path, $action = Route::DELEGATE, MenuItem $menu_item = null) :Route
-    {
-        return $this->getRouteConfigurator()->admin($name, $path, $action, $menu_item);
-    }
-    
-    public function middleware($middleware) :RoutingConfigurator
-    {
-        return $this->getRouteConfigurator()->middleware($middleware);
-    }
-    
-    public function name(string $name) :RoutingConfigurator
-    {
-        return $this->getRouteConfigurator()->name($name);
-    }
-    
-    public function prefix(string $prefix) :WebRoutingConfigurator
-    {
-        return $this->getRouteConfigurator()->prefix($prefix);
-    }
-    
-    public function namespace(string $namespace) :RoutingConfigurator
-    {
-        return $this->getRouteConfigurator()->namespace($namespace);
-    }
-    
-    public function configValue(string $key)
-    {
-        return $this->getRouteConfigurator()->configValue($key);
-    }
-    
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH) :string
     {
         return $this->getGenerator()->toLogin($arguments, $type);
-    }
-    
-    public function include($file_or_closure) :void
-    {
-        $this->getRouteConfigurator()->include($file_or_closure);
     }
     
     private function createRoute(string $name, string $path, array $methods, $controller) :Route
@@ -468,15 +325,6 @@ final class Router implements UrlMatcher, UrlGenerator, WebRoutingConfigurator, 
         }
         
         return $this->generator;
-    }
-    
-    private function getRouteConfigurator() :RoutingConfiguratorUsingRouter
-    {
-        if ( ! isset($this->route_configurator)) {
-            $this->route_configurator = $this->configurator_factory->create($this);
-        }
-        
-        return $this->route_configurator;
     }
     
 }
