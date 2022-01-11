@@ -54,7 +54,13 @@ namespace Snicco\Core\Support\Functions
             ? get_class($class_or_object)
             : $class_or_object;
         
-        if ( ! class_exists($class) && ! interface_exists($class_or_object)) {
+        $interface_exists = interface_exists($class);
+        
+        if ($interface_exists && $interface === $class) {
+            return true;
+        }
+        
+        if ( ! class_exists($class) && ! $interface_exists) {
             return false;
         }
         
