@@ -48,12 +48,24 @@ final class PHPFileRouteLoader
      */
     public function loadRoutesIn(array $route_directories) :void
     {
-        foreach ($this->getFiles($route_directories) as $file) {
+        $web_file = null;
+        $finder = $this->getFiles($route_directories);
+        foreach ($finder as $file) {
             $name = $file->getFilenameWithoutExtension();
+            
+            if (self::WEB_ROUTES_NAME === $name) {
+                $web_file = $file;
+                continue;
+            }
             
             $attributes = $this->options->getRouteAttributes($name);
             
             $this->requireFile($file, $attributes, self::ADMIN_ROUTES_NAME === $name);
+        }
+        
+        if ($web_file) {
+            $attributes = $this->options->getRouteAttributes(self::WEB_ROUTES_NAME);
+            $this->requireFile($web_file, $attributes);
         }
     }
     
@@ -64,6 +76,15 @@ final class PHPFileRouteLoader
     {
         foreach ($this->getFiles($api_directories) as $file) {
             $name = $file->getFilenameWithoutExtension();
+            
+            Assert::notSame(
+                $name,
+                self::WEB_ROUTES_NAME,
+                sprintf(
+                    "[%s] is a reserved filename and can not be loaded as an API file.",
+                    self::WEB_ROUTES_NAME.'.php'
+                )
+            );
             
             [$name, $version] = $this->parseNameAndVersion($name);
             

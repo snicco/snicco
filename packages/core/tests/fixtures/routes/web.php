@@ -16,4 +16,6 @@ return function (WebRoutingConfigurator $router) {
     if (true === PHPFileRouteLoaderTest::$web_include_partial) {
         $router->include(__DIR__.'/_partial.php');
     }
+    
+    $router->fallback([RoutingTestController::class, 'fallback']);
 };
