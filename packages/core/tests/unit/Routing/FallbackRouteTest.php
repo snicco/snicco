@@ -117,4 +117,12 @@ class FallbackRouteTest extends RoutingTestCase
         $this->assertResponseBody('fallback:biz', $this->frontendRequest('GET', '/biz'));
     }
     
+    /** @test */
+    public function fallback_routes_dont_match_requests_starting_with_wp_admin()
+    {
+        $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
+        
+        $this->runKernel($this->frontendRequest('GET', '/wp-admin/foo'))->assertDelegated();
+    }
+    
 }

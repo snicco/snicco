@@ -133,6 +133,8 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
             'All fallback excludes have to be strings.'
         );
         
+        $dont_match_request_including[] = trim($this->admin_dashboard_prefix->asString(), '/');
+        
         $regex = sprintf('(?!%s).+', implode('|', $dont_match_request_including));
         
         $route = $this->any(Route::FALLBACK_NAME, '/{path}', $fallback_action)

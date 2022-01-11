@@ -95,7 +95,9 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
         
         $response = $this->runKernel($this->frontendRequest('GET', self::PARTIAL_PATH));
-        $response->assertDelegated();
+        
+        // Not the partial route but the fallback route in web.php
+        $this->assertSame('fallback:partial:foo_middleware', $response->body());
     }
     
     /** @test */
@@ -414,6 +416,24 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
         $this->expectException(LogicException::class);
         
         $this->file_loader->loadRoutesIn([$this->bad_routes.'/web-route-uses-admin']);
+    }
+    
+    /** @test */
+    public function the_web_route_file_is_always_loaded_last()
+    {
+        $this->file_loader->loadRoutesIn([$this->routes_dir]);
+        
+        $this->runKernel($this->frontendRequest('GET', '/first'))->assertOk();
+    }
+    
+    /** @test */
+    public function test_exception_if_web_file_in_api_route_dir()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "[web.php] is a reserved filename and can not be loaded as an API file."
+        );
+        $this->file_loader->loadApiRoutesIn([$this->bad_routes.'/web-in-api-dir']);
     }
     
 }
