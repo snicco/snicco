@@ -10,7 +10,7 @@ use Snicco\Core\Contracts\MagicLink;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
@@ -18,7 +18,7 @@ use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 class MagicLinkAuthenticatorTest extends AuthTestCase
 {
     
-    private Generator $url;
+    private InternalUrlGenerator $url;
     
     protected function setUp() :void
     {
@@ -32,7 +32,7 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         });
         
         $this->afterApplicationBooted(function () {
-            $this->url = $this->app->resolve(Generator::class);
+            $this->url = $this->app->resolve(InternalUrlGenerator::class);
         });
         parent::setUp();
         $this->bootApp();

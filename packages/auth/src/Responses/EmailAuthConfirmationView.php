@@ -7,16 +7,16 @@ namespace Snicco\Auth\Responses;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\Core\Routing\Internal\Generator;
+use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 
 class EmailAuthConfirmationView extends AbstractEmailAuthConfirmationView
 {
     
-    private ViewEngine $view_engine;
-    private Generator  $url;
+    private ViewEngine           $view_engine;
+    private InternalUrlGenerator $url;
     
-    public function __construct(ViewEngine $view_engine, Generator $url)
+    public function __construct(ViewEngine $view_engine, InternalUrlGenerator $url)
     {
         $this->view_engine = $view_engine;
         $this->url = $url;

@@ -27,6 +27,10 @@ final class UrlPath
     
     private static function sanitize(string $path) :string
     {
+        if ('' === $path) {
+            $path = '/';
+        }
+        
         if (Str::endsWith($path, '//')) {
             $path = rtrim($path, '/').'/';
         }
@@ -82,6 +86,12 @@ final class UrlPath
     {
         $path = trim($path, '/');
         return Str::contains($this->asString(), $path);
+    }
+    
+    public function startsWith(string $path) :bool
+    {
+        $path = UrlPath::fromString($path);
+        return Str::startsWith($this->asString(), $path->asString());
     }
     
     public function __toString() :string

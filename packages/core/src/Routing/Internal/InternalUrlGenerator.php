@@ -26,7 +26,7 @@ use function array_merge;
 use function array_diff_key;
 use function array_key_exists;
 
-final class Generator implements UrlGenerator
+final class InternalUrlGenerator implements UrlGenerator
 {
     
     const FRAGMENT_KEY = '_fragment';

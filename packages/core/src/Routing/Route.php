@@ -34,10 +34,17 @@ use function get_object_vars;
 final class Route implements Serializable
 {
     
-    const DELEGATE = [FallBackController::class, 'delegate'];
-    const FALLBACK_NAME = 'sniccowp_fallback_route';
-    const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
+    /** @api */
     const MIDDLEWARE_DELIMITER = ':';
+    
+    /** @interal */
+    const DELEGATE = [FallBackController::class, 'delegate'];
+    
+    /** @interal */
+    const FALLBACK_NAME = 'sniccowp_fallback_route';
+    
+    /** @interal */
+    const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
     
     /**
      * @var array<string>

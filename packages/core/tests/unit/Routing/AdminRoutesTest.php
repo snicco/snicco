@@ -7,7 +7,7 @@ namespace Tests\Core\unit\Routing;
 use LogicException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class AdminRoutesTest extends RoutingTestCase
@@ -18,6 +18,35 @@ class AdminRoutesTest extends RoutingTestCase
     {
         $this->expectException(LogicException::class);
         $this->routeConfigurator()->middleware('foo')->admin('admin.1', 'admin.php/foo');
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_admin_routes_are_registered_with_the_prefix_declared_explicitly()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            "You should not add the prefix [/wp-admin] to admin routes. This is handled at the framework level."
+        );
+        
+        $this->routeConfigurator()->admin('admin.1', '/wp-admin/admin.php/foo');
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_an_admin_route_is_registered_without_using_the_admin_method()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                "You tried to register the route [r1] that goes to the admin dashboard without using the dedicated admin() method on an instance of [%s]",
+                AdminRoutingConfigurator::class
+            )
+        );
+        
+        $this->routeConfigurator()->get(
+            'r1',
+            '/wp-admin/admin.php/foo',
+            RoutingTestController::class
+        );
     }
     
     /** @test */
@@ -51,26 +80,16 @@ class AdminRoutesTest extends RoutingTestCase
     }
     
     /** @test */
-    public function non_get_request_are_not_rewritten()
-    {
-        $this->routeConfigurator()->post(
-            'r2',
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class
-        );
-        $request = $this->adminRequest('POST', 'foo');
-        $this->assertResponseBody('', $request);
-    }
-    
-    /** @test */
     public function no_prefixes_can_be_used_with_admin_routes()
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Its not possible to add a prefix to admin route [r1].");
         
-        $this->routeConfigurator()->prefix('foo')->group(function (RoutingConfigurator $router) {
-            $router->admin('r1', 'admin/foo', RoutingTestController::class);
-        });
+        $this->routeConfigurator()->prefix('foo')->group(
+            function (AdminRoutingConfigurator $router) {
+                $router->admin('r1', 'admin/foo', RoutingTestController::class);
+            }
+        );
     }
     
     /** @test */

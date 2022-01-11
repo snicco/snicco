@@ -7,7 +7,7 @@ namespace Tests\Core\unit\Routing;
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\Exceptions\BadRoute;
-use Snicco\Core\Routing\RoutingConfigurator;
+use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\Routing\Exceptions\MethodNotAllowed;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
@@ -251,7 +251,7 @@ class RouteAttributesTest extends RoutingTestCase
         
         $this->refreshRouter(null, null, $config);
         
-        $this->routeConfigurator()->group(function (RoutingConfigurator $router) {
+        $this->routeConfigurator()->group(function (WebRoutingConfigurator $router) {
             $path = $router->configValue('route_path');
             
             $router->get('r1', $path, RoutingTestController::class);
@@ -273,7 +273,7 @@ class RouteAttributesTest extends RoutingTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('bogus');
         
-        $this->routeConfigurator()->group(function (RoutingConfigurator $router) {
+        $this->routeConfigurator()->group(function (WebRoutingConfigurator $router) {
             $path = $router->configValue('bogus');
             
             $router->get('r1', $path, RoutingTestController::class);

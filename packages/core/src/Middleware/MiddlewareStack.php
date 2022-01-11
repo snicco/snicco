@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
+use LogicException;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -13,7 +14,6 @@ class MiddlewareStack
     private array $middleware_groups = [
         'web' => [],
         'admin' => [],
-        'ajax' => [],
         'global' => [],
     ];
     
@@ -239,7 +239,6 @@ class MiddlewareStack
      * @param  string  $middleware
      *
      * @return string
-     * @throws ConfigurationException
      */
     private function expandMiddlewareAtom(string $middleware) :string
     {
@@ -251,7 +250,7 @@ class MiddlewareStack
             return $middleware;
         }
         
-        throw new ConfigurationException('Unknown middleware ['.$middleware.'] used.');
+        throw new LogicException('Unknown middleware ['.$middleware.'] used.');
     }
     
 }

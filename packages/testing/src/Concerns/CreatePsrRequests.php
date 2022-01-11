@@ -39,6 +39,7 @@ trait CreatePsrRequests
     
     final protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
     {
+        $menu_slug = trim($menu_slug, '/');
         $method = strtoupper($method);
         $url = $this->adminUrlTo($menu_slug, $parent);
         $uri = $this->createUri($url);

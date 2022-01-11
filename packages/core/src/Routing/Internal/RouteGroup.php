@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Internal;
 
 use Snicco\Support\Arr;
+use Webmozart\Assert\Assert;
 use Snicco\Core\Routing\UrlPath;
+use Snicco\Core\Routing\RoutingConfigurator;
 
 use function trim;
 use function array_merge;
@@ -21,10 +23,16 @@ final class RouteGroup
     
     public function __construct(array $attributes = [])
     {
-        $this->namespace = Arr::get($attributes, 'namespace', '');
-        $this->path_prefix = Arr::get($attributes, 'prefix', UrlPath::fromString('/'));
-        $this->name = Arr::get($attributes, 'name', '');
-        $this->middleware = Arr::get($attributes, 'middleware', []);
+        $this->namespace = Arr::get($attributes, RoutingConfigurator::NAMESPACE_KEY, '');
+        
+        $prefix = Arr::get($attributes, RoutingConfigurator::PREFIX_KEY, '/');
+        $this->path_prefix = $prefix instanceof UrlPath ? $prefix : UrlPath::fromString($prefix);
+        
+        $this->name = Arr::get($attributes, RoutingConfigurator::NAME_KEY, '');
+        
+        $middleware = Arr::wrap(Arr::get($attributes, RoutingConfigurator::MIDDLEWARE_KEY, []));
+        Assert::allString($middleware);
+        $this->middleware = $middleware;
     }
     
     public function mergeWith(RouteGroup $old_group) :RouteGroup
