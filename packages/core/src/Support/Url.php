@@ -6,6 +6,9 @@ namespace Snicco\Core\Support;
 
 use Snicco\Support\Str;
 
+/**
+ * @todo remove this class.
+ */
 class Url
 {
     
@@ -14,9 +17,9 @@ class Url
     {
         $before = trim($before, '/');
         $new = ltrim($new, '/');
-    
+        
         $before = ($before === '') ? '/' : '/'.$before;
-    
+        
         return $before.'/'.$new;
     }
     

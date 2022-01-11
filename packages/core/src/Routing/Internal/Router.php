@@ -110,7 +110,6 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         
         $path = $this->admin_dashboard_prefix->appendPath($path);
         $route = $this->registerRoute($name, $path, ['GET'], $action);
-        
         $route->condition(IsAdminDashboardRequest::class);
         
         return $route;
@@ -186,9 +185,17 @@ final class Router implements UrlMatcher, UrlGenerator, RoutingConfigurator
         return $this->getGenerator()->previous($fallback);
     }
     
-    public function fallback($fallback_action) :Route
-    {
-        return $this->getRouteConfigurator()->fallback($fallback_action);
+    public function fallback(
+        $fallback_action, array $dont_match_request_including = [
+        'favicon',
+        'robots',
+        'sitemap',
+    ]
+    ) :Route {
+        return $this->getRouteConfigurator()->fallback(
+            $fallback_action,
+            $dont_match_request_including
+        );
     }
     
     public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []) :Route

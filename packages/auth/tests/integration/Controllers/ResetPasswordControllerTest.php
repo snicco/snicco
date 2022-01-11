@@ -29,7 +29,7 @@ class ResetPasswordControllerTest extends AuthTestCase
         
         $url = '/auth/reset-password';
         
-        $this->get($url)->assertDelegatedToWordPress();
+        $this->get($url)->assertDelegated();
     }
     
     /** @test */

@@ -14,6 +14,13 @@ class AdminRoutesTest extends RoutingTestCase
 {
     
     /** @test */
+    public function an_exception_is_thrown_if_admin_routes_are_registered_with_pending_attributes_without_a_call_to_group()
+    {
+        $this->expectException(LogicException::class);
+        $this->routeConfigurator()->middleware('foo')->admin('admin.1', 'admin.php/foo');
+    }
+    
+    /** @test */
     public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path()
     {
         $this->routeConfigurator()->admin('r1', 'admin.php/foo', RoutingTestController::class);
@@ -40,7 +47,7 @@ class AdminRoutesTest extends RoutingTestCase
         $request = $this->adminRequest('POST', 'foo');
         
         $response = $this->runKernel($request);
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -109,7 +116,7 @@ class AdminRoutesTest extends RoutingTestCase
         $this->routeConfigurator()->admin('r1', 'options.php/foo', RoutingTestController::class);
         
         $request = $this->frontendRequest('GET', '/wp-admin/admin.php/foo');
-        $this->runKernel($request)->assertDelegatedToWordPress();
+        $this->runKernel($request)->assertDelegated();
         
         $request = $this->adminRequest('GET', 'foo', 'options.php');
         $this->assertResponseBody(RoutingTestController::static, $request);
@@ -125,14 +132,14 @@ class AdminRoutesTest extends RoutingTestCase
             '/wp-admin/admin-ajax.php/foo',
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
-        $this->runKernel(new Request($request))->assertDelegatedToWordPress();
+        $this->runKernel(new Request($request))->assertDelegated();
         
         $request = $this->psrServerRequestFactory()->createServerRequest(
             'GET',
             '/wp-admin/admin-ajax.php?page=foo',
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
-        $this->runKernel(new Request($request))->assertDelegatedToWordPress();
+        $this->runKernel(new Request($request))->assertDelegated();
     }
     
     /** @test */

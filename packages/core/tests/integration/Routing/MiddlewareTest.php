@@ -46,7 +46,7 @@ class MiddlewareTest extends FrameworkTestCase
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class);
         
-        $this->get('middleware/bogus')->assertDelegatedToWordPress();
+        $this->get('middleware/bogus')->assertDelegated();
         
         $this->assertSame(
             0,
@@ -63,7 +63,7 @@ class MiddlewareTest extends FrameworkTestCase
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
              ->withAddedConfig(['middleware.always_run_core_groups' => true]);
         
-        $this->get('middleware/bogus')->assertDelegatedToWordPress();
+        $this->get('middleware/bogus')->assertDelegated();
         
         $this->assertSame(
             1,
@@ -117,7 +117,7 @@ class MiddlewareTest extends FrameworkTestCase
             'middleware.always_run_core_groups' => false,
         ])->bootApp();
         
-        $this->get('/bogus')->assertDelegatedToWordPress();
+        $this->get('/bogus')->assertDelegated();
         
         $this->assertSame(
             0,
@@ -136,7 +136,7 @@ class MiddlewareTest extends FrameworkTestCase
             'middleware.always_run_core_groups' => true,
         ]);
         
-        $this->get('/bogus')->assertDelegatedToWordPress();
+        $this->get('/bogus')->assertDelegated();
         
         $this->assertSame(
             1,
@@ -155,7 +155,7 @@ class MiddlewareTest extends FrameworkTestCase
             'middleware.always_run_core_groups' => false,
         ])->bootApp();
         
-        $this->getAdminPage('/bogus')->assertDelegatedToWordPress();
+        $this->getAdminPage('/bogus')->assertDelegated();
         
         $this->assertSame(
             0,
@@ -174,7 +174,7 @@ class MiddlewareTest extends FrameworkTestCase
             'middleware.always_run_core_groups' => true,
         ]);
         
-        $this->getAdminPage('bogus')->assertDelegatedToWordPress();
+        $this->getAdminPage('bogus')->assertDelegated();
         
         $this->assertSame(
             1,
@@ -193,7 +193,7 @@ class MiddlewareTest extends FrameworkTestCase
             'middleware.always_run_core_groups' => false,
         ])->bootApp();
         
-        $this->getAdminAjax(['action' => 'bogus'], [])->assertDelegatedToWordPress();
+        $this->getAdminAjax(['action' => 'bogus'], [])->assertDelegated();
         
         $this->assertSame(
             0,
@@ -212,7 +212,7 @@ class MiddlewareTest extends FrameworkTestCase
             'middleware.always_run_core_groups' => true,
         ]);
         
-        $this->getAdminAjax(['action' => 'bogus'])->assertDelegatedToWordPress();
+        $this->getAdminAjax(['action' => 'bogus'])->assertDelegated();
         
         $this->assertSame(
             1,

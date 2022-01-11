@@ -28,7 +28,7 @@ class FallBackRouteTest extends FrameworkTestCase
         $this->bootApp();
         
         $response = $this->get('/bogus/');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -39,7 +39,7 @@ class FallBackRouteTest extends FrameworkTestCase
         $this->bootApp();
         
         $response = $this->get('/bogus');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -58,7 +58,7 @@ class FallBackRouteTest extends FrameworkTestCase
         $GLOBALS['test']['include_fallback_route'] = true;
         $this->bootApp();
         $response = $this->get('robots.txt');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -67,7 +67,7 @@ class FallBackRouteTest extends FrameworkTestCase
         $GLOBALS['test']['include_fallback_route'] = true;
         $this->bootApp();
         $response = $this->get('sitemap.xml');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -76,7 +76,7 @@ class FallBackRouteTest extends FrameworkTestCase
         $GLOBALS['test']['include_fallback_route'] = true;
         $this->bootApp();
         $response = $this->get('favicon.ico');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -85,7 +85,7 @@ class FallBackRouteTest extends FrameworkTestCase
         $GLOBALS['test']['include_fallback_route'] = true;
         
         $response = $this->getAdminPage('bogus');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
 }

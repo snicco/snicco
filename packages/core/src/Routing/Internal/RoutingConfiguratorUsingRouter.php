@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Internal;
 
 use Closure;
-use RuntimeException;
+use LogicException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
@@ -15,6 +15,9 @@ use Snicco\Core\Routing\MenuItem;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Routing\AbstractRouteCondition;
+
+use function array_map;
 
 /**
  * @interal
@@ -25,6 +28,7 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
     private Router $router;
     private array  $delegate_attributes = [];
     private array  $config;
+    private bool   $locked              = false;
     
     public function __construct(Router $router, array $config)
     {
@@ -39,6 +43,7 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
     
     public function admin(string $name, string $path, $action = Route::DELEGATE, MenuItem $menu_item = null) :Route
     {
+        $this->check($name);
         return $this->router->registerAdminRoute($name, $path, $action, $menu_item);
     }
     
@@ -104,10 +109,27 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
         return $this;
     }
     
-    public function fallback($fallback_action) :Route
-    {
-        return $this->any(Route::FALLBACK_NAME, '/{path}', $fallback_action)
-                    ->middleware('web')->requirements(['path' => '.+']);
+    public function fallback(
+        $fallback_action, array $dont_match_request_including = [
+        'favicon',
+        'robots',
+        'sitemap',
+    ]
+    ) :Route {
+        Assert::allString(
+            $dont_match_request_including,
+            'All fallback excludes have to be strings.'
+        );
+        
+        $regex = sprintf('(?!%s).+', implode('|', $dont_match_request_including));
+        
+        $route = $this->any(Route::FALLBACK_NAME, '/{path}', $fallback_action)
+                      ->requirements(['path' => $regex])
+                      ->condition(AbstractRouteCondition::NEGATE, IsAdminDashboardRequest::class);
+        
+        $this->locked = true;
+        
+        return $route;
     }
     
     public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []) :Route
@@ -193,13 +215,26 @@ final class RoutingConfiguratorUsingRouter implements RoutingConfigurator
     
     private function addRoute(string $name, string $path, array $methods, $action) :Route
     {
-        if ( ! empty($this->delegate_attributes)) {
-            throw new RuntimeException(
-                'Delegated attributes have not been merged into a route group. Did you forget to call [group]?'
+        $this->check($name);
+        
+        if ($this->locked) {
+            throw new LogicException(
+                "Route [route1] was registered after a fallback route was defined."
             );
         }
         
         return $this->router->registerRoute($name, $path, $methods, $action);
+    }
+    
+    private function check(string $route_name) :void
+    {
+        if ( ! empty($this->delegate_attributes)) {
+            throw new LogicException(
+                'Cant register route ['
+                .$route_name
+                .'] because delegated attributes have not been merged into a route group. Did you forget to call group() ?'
+            );
+        }
     }
     
 }

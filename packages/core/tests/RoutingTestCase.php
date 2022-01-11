@@ -98,7 +98,11 @@ class RoutingTestCase extends UnitTest
     final protected function assertResponseBody($expected, Request $request)
     {
         $response = $this->runKernel($request);
-        $this->assertSame($expected, $response->body());
+        $this->assertSame(
+            $expected,
+            $b = $response->body(),
+            "Expected response body [$expected].\nGot [$b]."
+        );
     }
     
     final protected function withMiddlewareGroups(array $middlewares)
