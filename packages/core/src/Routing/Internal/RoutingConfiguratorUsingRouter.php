@@ -213,6 +213,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $attributes = Arr::mergeRecursive($this->delegate_attributes, $extra_attributes);
         $this->delegate_attributes = [];
         $this->router->createInGroup(
+            $this,
             $create_routes,
             $attributes
         );

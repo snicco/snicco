@@ -53,9 +53,9 @@ use Snicco\Core\Routing\Internal\RouteConditionFactory;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\Core\Routing\Internal\RoutingConfiguratorFactory;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
+use Snicco\Core\Routing\Internal\RoutingConfiguratorUsingRouter;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
 
@@ -78,11 +78,12 @@ class RoutingTestCase extends UnitTest
     protected FakeDispatcher   $event_dispatcher;
     protected UrlGenerator     $generator;
     
-    private Router               $router;
-    private HttpKernel           $kernel;
-    private AdminDashboard       $admin_dashboard;
-    private UrlGenerationContext $request_context;
-    private MiddlewareStack      $middleware_stack;
+    private Router                 $router;
+    private HttpKernel             $kernel;
+    private AdminDashboard         $admin_dashboard;
+    private UrlGenerationContext   $request_context;
+    private MiddlewareStack        $middleware_stack;
+    private WebRoutingConfigurator $routing_configurator;
     
     protected function setUp() :void
     {
@@ -137,7 +138,7 @@ class RoutingTestCase extends UnitTest
     
     final protected function routeConfigurator() :WebRoutingConfigurator
     {
-        return $this->router;
+        return $this->routing_configurator;
     }
     
     final protected function refreshRouter(CacheFile $cache_file = null, UrlGenerationContext $context = null, array $config = [])
@@ -158,7 +159,6 @@ class RoutingTestCase extends UnitTest
         
         $this->router = new Router(
             $this->container[RouteConditionFactory::class],
-            new RoutingConfiguratorFactory($this->admin_dashboard->urlPrefix(), $config),
             new UrlGeneratorFactory(
                 $context,
                 $this->admin_dashboard,
@@ -167,6 +167,13 @@ class RoutingTestCase extends UnitTest
             $this->admin_dashboard->urlPrefix(),
             $cache_file
         );
+        
+        $this->routing_configurator = new RoutingConfiguratorUsingRouter(
+            $this->router,
+            $this->admin_dashboard->urlPrefix(),
+            $config
+        );
+        
         $this->container->instance(UrlGenerator::class, $this->router);
         $this->container->instance(RoutingMiddleware::class, new RoutingMiddleware($this->router));
         $this->container->instance(UrlMatcher::class, $this->router);
