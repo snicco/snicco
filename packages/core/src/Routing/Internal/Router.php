@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Internal;
 
 use Closure;
-use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
 use FastRoute\RouteCollector;
@@ -22,7 +21,6 @@ use Snicco\Core\Routing\Exceptions\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\Routing\AdminDashboardPrefix;
-use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteSyntax;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use Snicco\Core\Routing\Internal\FastRoute\FastRouteDispatcher;
@@ -101,11 +99,11 @@ final class Router implements UrlMatcher, UrlGenerator
      */
     public function registerAdminRoute(string $name, string $path, $controller = Route::DELEGATE) :Route
     {
-        if ($this->hasGroup() && $this->currentGroup()->prefix()->asString() !== '/') {
-            throw new LogicException(
-                "Its not possible to add a prefix to admin route [$name]."
-            );
-        }
+        //if ($this->hasGroup() && $this->currentGroup()->prefix()->asString() !== '/') {
+        //    throw new LogicException(
+        //        "Its not possible to add a prefix to admin route [$name]."
+        //    );
+        //}
         
         $route = $this->createRoute($name, $path, ['GET'], $controller);
         $route->condition(IsAdminDashboardRequest::class);
@@ -120,16 +118,6 @@ final class Router implements UrlMatcher, UrlGenerator
      */
     public function registerWebRoute(string $name, string $path, array $methods, $controller) :Route
     {
-        if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
-            throw new LogicException(
-                sprintf(
-                    'You tried to register the route [%s] that goes to the admin dashboard without using the dedicated admin() method on an instance of [%s]',
-                    $name,
-                    AdminRoutingConfigurator::class
-                )
-            );
-        }
-        
         $route = $this->createRoute($name, $path, $methods, $controller);
         
         $this->routes->add($route);

@@ -40,6 +40,7 @@ use Snicco\Core\Middleware\Core\PrepareResponse;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
+use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Snicco\Core\Routing\Internal\WPAdminDashboard;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Tests\Core\fixtures\TestDoubles\TestViewFactory;
@@ -137,6 +138,11 @@ class RoutingTestCase extends UnitTest
     }
     
     final protected function routeConfigurator() :WebRoutingConfigurator
+    {
+        return $this->routing_configurator;
+    }
+    
+    final protected function adminRouteConfigurator() :AdminRoutingConfigurator
     {
         return $this->routing_configurator;
     }

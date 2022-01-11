@@ -43,12 +43,12 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     
     public function get(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, ['GET', 'HEAD'], $action);
+        return $this->addWebRoute($name, $path, ['GET', 'HEAD'], $action);
     }
     
     public function admin(string $name, string $path, $action = Route::DELEGATE, MenuItem $menu_item = null) :Route
     {
-        $this->check($name);
+        $this->checkDelegatedAttributesAreEmpty($name);
         
         if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
             throw new LogicException(
@@ -65,37 +65,37 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     
     public function post(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, ['POST'], $action);
+        return $this->addWebRoute($name, $path, ['POST'], $action);
     }
     
     public function put(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, ['PUT'], $action);
+        return $this->addWebRoute($name, $path, ['PUT'], $action);
     }
     
     public function patch(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, ['PATCH'], $action);
+        return $this->addWebRoute($name, $path, ['PATCH'], $action);
     }
     
     public function delete(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, ['DELETE'], $action);
+        return $this->addWebRoute($name, $path, ['DELETE'], $action);
     }
     
     public function options(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, ['OPTIONS'], $action);
+        return $this->addWebRoute($name, $path, ['OPTIONS'], $action);
     }
     
     public function any(string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, Route::ALL_METHODS, $action);
+        return $this->addWebRoute($name, $path, Route::ALL_METHODS, $action);
     }
     
     public function match(array $verbs, string $name, string $path, $action = Route::DELEGATE) :Route
     {
-        return $this->addRoute($name, $path, array_map('strtoupper', $verbs), $action);
+        return $this->addWebRoute($name, $path, array_map('strtoupper', $verbs), $action);
     }
     
     /**
@@ -251,9 +251,9 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         return "redirect_route:$from:$to";
     }
     
-    private function addRoute(string $name, string $path, array $methods, $action) :Route
+    private function addWebRoute(string $name, string $path, array $methods, $action) :Route
     {
-        $this->check($name);
+        $this->checkDelegatedAttributesAreEmpty($name);
         
         if ($this->locked) {
             throw new LogicException(
@@ -261,10 +261,20 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
             );
         }
         
+        if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
+            throw new LogicException(
+                sprintf(
+                    'You tried to register the route [%s] that goes to the admin dashboard without using the dedicated admin() method on an instance of [%s]',
+                    $name,
+                    AdminRoutingConfigurator::class
+                )
+            );
+        }
+        
         return $this->router->registerWebRoute($name, $path, $methods, $action);
     }
     
-    private function check(string $route_name) :void
+    private function checkDelegatedAttributesAreEmpty(string $route_name) :void
     {
         if ( ! empty($this->delegate_attributes)) {
             throw new LogicException(
