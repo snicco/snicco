@@ -104,7 +104,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $this->dispatcher->dispatch(new IncomingAdminRequest($request));
         
-        $this->sentResponse()->assertDelegatedToWordPress();
+        $this->sentResponse()->assertDelegated();
     }
     
     /** @test */
@@ -116,7 +116,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $this->dispatcher->dispatch(new IncomingAjaxRequest($request));
         
-        $this->sentResponse()->assertDelegatedToWordPress();
+        $this->sentResponse()->assertDelegated();
     }
     
     /** @test */
@@ -170,7 +170,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         $wp->main();
         
         // without the filtering of file names the route in /OtherRoutes/web.php would match
-        $this->sentResponse()->assertDelegatedToWordPress();
+        $this->sentResponse()->assertDelegated();
     }
     
     /** @test */
@@ -182,7 +182,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         global $wp;
         $wp->main();
         
-        $this->sentResponse()->assertDelegatedToWordPress();
+        $this->sentResponse()->assertDelegated();
     }
     
     protected function makeFallbackConditionPass()

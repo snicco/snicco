@@ -52,7 +52,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
         
         $url = '/auth/forgot-password';
         
-        $this->get($url)->assertDelegatedToWordPress();
+        $this->get($url)->assertDelegated();
     }
     
     /** @test */

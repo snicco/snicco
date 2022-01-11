@@ -64,20 +64,12 @@ class TestResponse
         return $this->streamed_content;
     }
     
-    public function assertNullResponse() :TestResponse
+    public function assertDelegated() :TestResponse
     {
-        PHPUnit::assertInstanceOf(
-            NullResponse::class,
-            $this->psr_response,
-            "A response was returned unexpectedly."
+        return $this->assertInstance(
+            DelegatedResponse::class,
+            "The response is a complete response and not a delegated response."
         );
-        
-        return $this;
-    }
-    
-    public function assertDelegatedToWordPress() :TestResponse
-    {
-        return $this->assertInstance(DelegatedResponse::class);
     }
     
     public function assertNotDelegated() :TestResponse
@@ -85,9 +77,9 @@ class TestResponse
         return $this->assertNotInstance(DelegatedResponse::class);
     }
     
-    public function assertInstance(string $class) :TestResponse
+    public function assertInstance(string $class, string $message = '') :TestResponse
     {
-        PHPUnit::assertInstanceOf($class, $this->psr_response);
+        PHPUnit::assertInstanceOf($class, $this->psr_response, $message);
         
         return $this;
     }

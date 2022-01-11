@@ -182,7 +182,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->delete('/alias/match')->assertDelegatedToWordPress();
+        $this->delete('/alias/match')->assertDelegated();
         $this->post('/alias/match')->assertOk()->assertSee('match');
     }
     

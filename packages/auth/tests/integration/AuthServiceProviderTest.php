@@ -259,7 +259,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $response = $this->sentResponse();
         
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
         
         $this->dispatcher->assertNotDispatched(ResponseSent::class);
     }

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use RuntimeException;
+use LogicException;
+use LogicExceptions;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
@@ -16,8 +17,8 @@ class RouteGroupsTest extends RoutingTestCase
     /** @test */
     public function an_exception_is_thrown_if_a_route_is_added_and_delegated_attributes_have_not_been_applied()
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Delegated attributes have not');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Cant register route [r1] because delegated');
         
         $this->routeConfigurator()->prefix('foo')->get('r1', '/bar', RoutingTestController::class);
     }

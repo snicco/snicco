@@ -8,6 +8,10 @@ use Closure;
 use ArrayAccess;
 use Psr\Container\ContainerInterface;
 
+/**
+ * @todo classes outside the bootstrap process should depend on the psr3 interface not the full
+ *     adapter.
+ */
 abstract class ContainerAdapter implements ArrayAccess, ContainerInterface
 {
     

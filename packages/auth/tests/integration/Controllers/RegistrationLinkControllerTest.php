@@ -33,7 +33,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
         
         $response = $this->get('/auth/register');
         
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */

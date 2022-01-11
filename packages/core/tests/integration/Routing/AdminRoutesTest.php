@@ -97,7 +97,7 @@ class AdminRoutesTest extends FrameworkTestCase
         do_action('all_admin_notices');
         
         $this->sentResponse()
-             ->assertDelegatedToWordPress()
+             ->assertDelegated()
              ->assertHeaderMissing('content-length');
     }
     

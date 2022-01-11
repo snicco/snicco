@@ -36,7 +36,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     public function the_endpoint_is_not_accessible_with_2fa_disabled()
     {
         $this->without2Fa()->bootApp();
-        $this->post($this->endpoint)->assertDelegatedToWordPress();
+        $this->post($this->endpoint)->assertDelegated();
     }
     
     /** @test */

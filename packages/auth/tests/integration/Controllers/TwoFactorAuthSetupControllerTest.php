@@ -37,7 +37,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     {
         $this->without2Fa()->bootApp();
         
-        $this->post($this->endpoint)->assertDelegatedToWordPress();
+        $this->post($this->endpoint)->assertDelegated();
     }
     
     /** @test */

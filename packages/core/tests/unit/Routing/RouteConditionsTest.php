@@ -30,7 +30,7 @@ class RouteConditionsTest extends RoutingTestCase
         $this->runKernel($request)->assertOk()->assertSee(RoutingTestController::static);
         
         $request = $this->frontendRequest('GET', '/bar');
-        $this->runKernel($request)->assertDelegatedToWordPress();
+        $this->runKernel($request)->assertDelegated();
     }
     
     /** @test */
@@ -66,7 +66,7 @@ class RouteConditionsTest extends RoutingTestCase
              ->condition(TrueRouteCondition::class);
         
         $request = $this->frontendRequest('POST', '/foo');
-        $this->runKernel($request)->assertDelegatedToWordPress();
+        $this->runKernel($request)->assertDelegated();
         
         $this->assertSame(1, $GLOBALS['test']['maybe_condition_run']);
         
@@ -125,7 +125,7 @@ class RouteConditionsTest extends RoutingTestCase
              );
         
         $response = $this->runKernel($this->frontendRequest('GET', '/foo/bar'));
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
         
         $response = $this->runKernel($this->frontendRequest('GET', '/bar/baz'));
         $response->assertOk()->assertSee('baz:FOO_CONFIG');
