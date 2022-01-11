@@ -7,10 +7,14 @@ namespace Snicco\Core\Routing;
 use Closure;
 use LogicException;
 use Snicco\Support\Str;
+use ReflectionFunction;
+use ReflectionException;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+
+use function Snicco\Core\Support\Functions\isInterface;
 
 final class PHPFileRouteLoader
 {
@@ -37,6 +41,9 @@ final class PHPFileRouteLoader
         $this->options = $options;
     }
     
+    /**
+     * @throws ReflectionException
+     */
     public function loadRoutesIn(array $route_directories) :void
     {
         foreach ($this->getFiles($route_directories) as $file) {
@@ -44,10 +51,13 @@ final class PHPFileRouteLoader
             
             $attributes = $this->options->getRouteAttributes($name);
             
-            $this->requireFile($file, $attributes);
+            $this->requireFile($file, $attributes, self::ADMIN_ROUTES_NAME === $name);
         }
     }
     
+    /**
+     * @throws ReflectionException
+     */
     public function loadApiRoutesIn(array $api_directories) :void
     {
         foreach ($this->getFiles($api_directories) as $file) {
@@ -61,7 +71,10 @@ final class PHPFileRouteLoader
         }
     }
     
-    private function requireFile(SplFileInfo $file, array $attributes = []) :void
+    /**
+     * @throws ReflectionException
+     */
+    private function requireFile(SplFileInfo $file, array $attributes = [], bool $is_admin_file = false) :void
     {
         $this->validateAttributes($attributes);
         
@@ -77,6 +90,12 @@ final class PHPFileRouteLoader
             $closure,
             Closure::class,
             "Route file [{$file->getRealPath()}] did not return a closure."
+        );
+        
+        $this->validateClosureTypeHint(
+            $closure,
+            $file->getRealPath(),
+            $is_admin_file
         );
         
         $this->routing_configurator->group(
@@ -161,6 +180,89 @@ final class PHPFileRouteLoader
                 default;
                     throw new InvalidArgumentException("The option [$key] is not supported.");
             }
+        }
+    }
+    
+    /**
+     * @throws ReflectionException
+     */
+    private function validateClosureTypeHint(Closure $closure, string $filepath, bool $is_admin_file = false) :void
+    {
+        $parameters = (new ReflectionFunction($closure))->getParameters();
+        
+        if ( ! count($parameters)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The closure that was returned from the route file [%s] needs to have an instance of [%s] type-hinted as its first parameter',
+                    $filepath,
+                    RoutingConfigurator::class
+                )
+            );
+        }
+        
+        if (count($parameters) > 1) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "The returned closure from the route file\n[%s]\nwill only receive an instance of [%s] but required [%s] parameters.",
+                    $filepath,
+                    RoutingConfigurator::class,
+                    count($parameters)
+                )
+            );
+        }
+        
+        $param = $parameters[0];
+        $type = $param->getType();
+        
+        if (null === $type) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The closure that was returned from the route file [%s] needs to have an instance of [%s] type-hinted as its first parameter',
+                    $filepath,
+                    RoutingConfigurator::class
+                )
+            );
+        }
+        
+        $name = $type->getName();
+        
+        if ( ! isInterface($name, RoutingConfigurator::class)
+             && RoutingConfigurator::class !== $name) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The closure that was returned from the route file [%s] has to have an instance of [%s] type-hinted as its first parameter',
+                    $filepath,
+                    RoutingConfigurator::class
+                )
+            );
+        }
+        
+        if ($is_admin_file) {
+            if (isInterface($name, WebRoutingConfigurator::class)
+                || WebRoutingConfigurator::class === $name) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        "The returned closure from the route file\n[%s]\nwill receive an instance of [%s] but required [%s].",
+                        $filepath,
+                        AdminRoutingConfigurator::class,
+                        $name
+                    )
+                );
+            }
+            
+            return;
+        }
+        
+        if (isInterface($name, AdminRoutingConfigurator::class)
+            || AdminRoutingConfigurator::class === $name) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "The returned closure from the route file\n[%s]\nwill receive an instance of [%s] but required [%s].",
+                    $filepath,
+                    WebRoutingConfigurator::class,
+                    $name
+                )
+            );
         }
     }
     

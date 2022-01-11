@@ -33,13 +33,13 @@ namespace Snicco\Core\Support\Functions
         if (is_object($class)) {
             $class = get_class($class);
         }
-    
+        
         $results = [];
-    
+        
         foreach (array_reverse(class_parents($class)) + [$class => $class] as $class) {
             $results += traitUsesRecursive($class);
         }
-    
+        
         return array_unique($results);
     }
     
@@ -54,7 +54,7 @@ namespace Snicco\Core\Support\Functions
             ? get_class($class_or_object)
             : $class_or_object;
         
-        if ( ! class_exists($class)) {
+        if ( ! class_exists($class) && ! interface_exists($class_or_object)) {
             return false;
         }
         

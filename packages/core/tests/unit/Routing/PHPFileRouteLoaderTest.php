@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
+use LogicException;
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\PHPFileRouteLoader;
 use Snicco\Core\Routing\RouteLoadingOptions;
 use Snicco\Core\Routing\RoutingConfigurator;
 use Snicco\Core\Routing\AdminDashboardPrefix;
+use Snicco\Core\Routing\WebRoutingConfigurator;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
+use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Snicco\Core\Routing\DefaultRouteLoadingOptions;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
@@ -27,6 +30,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     private PHPFileRouteLoader $file_loader;
     
     private string $base_prefix = '/sniccowp';
+    private string $bad_routes;
     
     protected function setUp() :void
     {
@@ -38,6 +42,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
         $this->withMiddlewareGroups(['web' => [FooMiddleware::class]]);
         $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
         self::$web_include_partial = false;
+        $this->bad_routes = dirname(__DIR__, 2).'/fixtures/bad-routes';
     }
     
     protected function tearDown() :void
@@ -354,6 +359,61 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
             '/wp-admin/admin.php?page=foo',
             $this->generator->toRoute('admin.admin_route_1')
         );
+    }
+    
+    /** @test */
+    public function a_returned_closure_without_a_typehint_will_thrown_an_exception()
+    {
+        $this->expectExceptionMessage('needs to have an instance of');
+        $this->expectException(InvalidArgumentException::class);
+        
+        $this->file_loader->loadRoutesIn([$this->bad_routes.'/no-typehint']);
+    }
+    
+    /** @test */
+    public function a_returned_closure_without_parameters_will_throw_an_exception()
+    {
+        $this->expectExceptionMessage('needs to have an instance of');
+        $this->expectException(InvalidArgumentException::class);
+        
+        $this->file_loader->loadRoutesIn([$this->bad_routes.'/no-param']);
+    }
+    
+    /** @test */
+    public function a_returned_closure_with_two_params_will_throw_an_exception()
+    {
+        $this->expectExceptionMessage('will only receive');
+        $this->expectException(InvalidArgumentException::class);
+        
+        $this->file_loader->loadRoutesIn([$this->bad_routes.'/two-params']);
+    }
+    
+    /** @test */
+    public function the_first_argument_of_the_returned_closure_is_enforced_to_be_an_admin_configurator_for_the_admin_routes()
+    {
+        $this->expectExceptionMessage(
+            sprintf(
+                "but required [%s]",
+                WebRoutingConfigurator::class
+            )
+        );
+        $this->expectException(LogicException::class);
+        
+        $this->file_loader->loadRoutesIn([$this->bad_routes.'/admin']);
+    }
+    
+    /** @test */
+    public function the_first_argument_for_non_admin_routes_can_not_be_an_admin_configurator()
+    {
+        $this->expectExceptionMessage(
+            sprintf(
+                'but required [%s]',
+                AdminRoutingConfigurator::class
+            )
+        );
+        $this->expectException(LogicException::class);
+        
+        $this->file_loader->loadRoutesIn([$this->bad_routes.'/web-route-uses-admin']);
     }
     
 }

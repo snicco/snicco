@@ -69,21 +69,29 @@ trait ReflectsCallable
         return class_exists($class_name_or_object);
     }
     
+    /**
+     * @throws ReflectionException
+     */
     private function firstClosureParameterType(Closure $closure) :string
     {
         $reflection = new ReflectionFunction($closure);
         
-        $parameters = (array) $reflection->getParameters();
+        $parameters = $reflection->getParameters();
         
         if ( ! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
             throw new InvalidArgumentException(
-                "Closure does not have first parameter typehinted."
+                'Closure does not have first parameter typehinted.'
             );
         }
         
         $param = $parameters[0];
-        
         $type = $param->getType();
+        
+        if (null === $type) {
+            throw new InvalidArgumentException(
+                'Closure does not have first parameter typehinted.'
+            );
+        }
         
         return $type->getName();
     }
