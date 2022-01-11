@@ -36,11 +36,11 @@ final class Generator implements UrlGenerator
     private AdminDashboard       $admin_dashboard;
     private UrlEncoder           $encoder;
     
-    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminDashboard $admin_dashboard, UrlEncoder $encoder)
+    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminDashboard $admin_dashboard, UrlEncoder $encoder = null)
     {
         $this->routes = $routes;
         $this->context = $request_context;
-        $this->encoder = $encoder;
+        $this->encoder = $encoder ?? new RFC3986Encoder();
         $this->admin_dashboard = $admin_dashboard;
     }
     

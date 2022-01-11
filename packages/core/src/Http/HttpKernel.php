@@ -11,9 +11,8 @@ use Snicco\Core\Middleware\Core\RouteRunner;
 use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Middleware\Core\PrepareResponse;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
-use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
@@ -27,7 +26,8 @@ final class HttpKernel
     
     private array $core_middleware = [
         
-        // @todo
+        // @todo Prepare the response here.
+        PrepareResponse::class,
         
         MethodOverride::class,
         
@@ -37,7 +37,6 @@ final class HttpKernel
         // @todo this middleware should be configurable for web/admin routes only.
         ShareCookies::class,
         
-        // @todo Only for admin routes
         AllowMatchingAdminRoutes::class,
         
         // @todo this should not be a middleware at all.
@@ -49,58 +48,20 @@ final class HttpKernel
     
     ];
     
-    private ResponseEmitter $emitter;
-    
     private Dispatcher $event_dispatcher;
     
-    public function __construct(MiddlewarePipeline $pipeline, ResponseEmitter $emitter, Dispatcher $event_dispatcher)
+    // @todo Use the dispatcher to send some events related to handling the request.
+    public function __construct(MiddlewarePipeline $pipeline, Dispatcher $event_dispatcher)
     {
         $this->pipeline = $pipeline;
-        $this->emitter = $emitter;
         $this->event_dispatcher = $event_dispatcher;
     }
     
     public function handle(Request $request) :Response
     {
-        $response = $this->run($request);
-        
-        return $this->sendResponse($response, $request);
-    }
-    
-    private function run(Request $request) :Response
-    {
         return $this->pipeline->send($request)
-                              ->through($this->gatherMiddleware($request))
+                              ->through($this->core_middleware)
                               ->run();
-    }
-    
-    private function gatherMiddleware(Request $request) :array
-    {
-        //if ( ! $request->isToAdminDashboard()) {
-        //    Arr::pullByValue(OutputBufferAbstractMiddleware::class, $this->core_middleware);
-        //}
-        
-        return $this->core_middleware;
-    }
-    
-    private function sendResponse(Response $response, Request $request) :Response
-    {
-        if ($response instanceof NullResponse) {
-            return $response;
-        }
-        
-        $response = $this->emitter->prepare($response, $request);
-        
-        if ($response instanceof DelegatedResponse) {
-            $this->emitter->emitHeaders($response,);
-            return $response;
-        }
-        
-        $this->emitter->emit($response);
-        
-        $this->event_dispatcher->dispatch(new ResponseSent($response, $request));
-        
-        return $response;
     }
     
 }

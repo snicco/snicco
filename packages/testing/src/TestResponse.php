@@ -80,7 +80,7 @@ class TestResponse
         return $this->assertInstance(DelegatedResponse::class);
     }
     
-    public function assertNotDelegatedToWordPress() :TestResponse
+    public function assertNotDelegated() :TestResponse
     {
         return $this->assertNotInstance(DelegatedResponse::class);
     }
@@ -99,7 +99,7 @@ class TestResponse
      */
     public function assertSuccessful() :TestResponse
     {
-        $this->assertNotDelegatedToWordPress();
+        $this->assertNotDelegated();
         
         PHPUnit::assertTrue(
             $this->isSuccessful(),
@@ -116,7 +116,7 @@ class TestResponse
      */
     public function assertOk() :TestResponse
     {
-        $this->assertNotDelegatedToWordPress();
+        $this->assertNotDelegated();
         
         PHPUnit::assertTrue(
             $this->isOk(),
@@ -171,8 +171,7 @@ class TestResponse
      */
     public function assertStatus($status) :TestResponse
     {
-        $this->assertNotNullResponse();
-        $this->assertNotDelegatedToWordPress();
+        $this->assertNotDelegated();
         
         $actual = $this->getStatusCode();
         
@@ -181,13 +180,6 @@ class TestResponse
             $status,
             "Expected status code {$status} but received {$actual}."
         );
-        
-        return $this;
-    }
-    
-    public function assertNotNullResponse()
-    {
-        PHPUnit::assertNotInstanceOf(NullResponse::class, $this->psr_response);
         
         return $this;
     }

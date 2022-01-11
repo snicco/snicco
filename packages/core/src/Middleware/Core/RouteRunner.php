@@ -67,14 +67,14 @@ class RouteRunner extends AbstractMiddleware
         $middleware = $this->middleware_stack->createForRequestWithoutRoute($request);
         
         if ( ! count($middleware)) {
-            return $this->respond()->delegateToWP();
+            return $this->respond()->delegate(true);
         }
         
         return $this->pipeline
             ->send($request)
             ->through($middleware)
             ->then(function () {
-                return $this->respond()->delegateToWP();
+                return $this->respond()->delegate(true);
             });
     }
     

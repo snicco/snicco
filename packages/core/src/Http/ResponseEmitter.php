@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 
 use function header;
@@ -16,17 +15,14 @@ use function connection_status;
  *
  * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
  */
-class ResponseEmitter
+final class ResponseEmitter
 {
-    
-    protected ResponsePreparation $preparation;
     
     private int $response_chunk_size;
     
-    public function __construct(ResponsePreparation $preparation, int $response_chunk_size = 4096)
+    public function __construct(int $response_chunk_size = 4096)
     {
         $this->response_chunk_size = $response_chunk_size;
-        $this->preparation = $preparation;
     }
     
     public function emit(Response $response) :void
@@ -57,11 +53,6 @@ class ResponseEmitter
                 $replace = false;
             }
         }
-    }
-    
-    public function prepare(Response $response, Request $request) :Response
-    {
-        return $this->preparation->prepare($response, $request);
     }
     
     public function emitCookies(Cookies $cookies) :void

@@ -46,7 +46,7 @@ $router->get('/null', function (ResponseFactory $response_factory) {
 });
 
 $router->get('/delegate', function (ResponseFactory $response_factory) {
-    return $response_factory->delegateToWP()->withHeader('foo', 'bar')
+    return $response_factory->delegate(true)->withHeader('foo', 'bar')
                             ->withBody($response_factory->createStream('foo'));
 });
 

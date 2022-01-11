@@ -142,7 +142,7 @@ class RequestTest extends UnitTest
     {
         $route = Route::create('/foo', Route::DELEGATE, 'foobar', ['GET']);
         
-        $request = $this->request->withRoutingResult(new RoutingResult($route));
+        $request = $this->request->withRoutingResult(RoutingResult::match($route));
         
         $this->assertFalse($request->routeIs('bar'));
         $this->assertTrue($request->routeIs('foobar'));

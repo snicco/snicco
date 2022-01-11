@@ -13,7 +13,6 @@ use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Responsable;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
@@ -67,14 +66,9 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         return $this->psr_stream->createStream($content);
     }
     
-    public function null() :NullResponse
+    public function delegate(bool $should_headers_be_sent = true) :DelegatedResponse
     {
-        return new NullResponse($this->psr_response->createResponse());
-    }
-    
-    public function delegateToWP() :DelegatedResponse
-    {
-        return new DelegatedResponse($this->createResponse());
+        return new DelegatedResponse($should_headers_be_sent, $this->createResponse());
     }
     
     public function redirect(string $location, int $status_code = 302) :RedirectResponse
