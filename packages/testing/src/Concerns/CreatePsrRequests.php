@@ -20,7 +20,7 @@ trait CreatePsrRequests
     
     abstract protected function psrUriFactory() :UriFactoryInterface;
     
-    protected function frontendRequest(string $method = 'GET', $uri = '/', array $server = []) :Request
+    final protected function frontendRequest(string $method = 'GET', $uri = '/', array $server = []) :Request
     {
         $method = strtoupper($method);
         $uri = $this->createUri($uri);
@@ -37,7 +37,7 @@ trait CreatePsrRequests
         return $request->withQueryParams($query);
     }
     
-    protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
+    final protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
     {
         $method = strtoupper($method);
         $url = $this->adminUrlTo($menu_slug, $parent);

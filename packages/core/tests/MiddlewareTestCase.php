@@ -19,14 +19,16 @@ class MiddlewareTestCase extends FrameworkMiddlewareTestCase
     use CreatePsr17Factories;
     use CreateContainer;
     
-    protected function urlGenerator() :UrlGenerator
+    protected function urlGenerator(UrlGenerationContext $context = null) :UrlGenerator
     {
+        if (null === $context) {
+            $context = $this->urlGenerationContext();
+        }
+        
         return new Generator(
-            $this->routes,
-            $this->request_context ?? new UrlGenerationContext(
-                $this->frontendRequest('GET', '/foo'),
-                WPAdminDashboard::fromDefaults(),
-            ),
+            $this->routes(),
+            $context,
+            WPAdminDashboard::fromDefaults(),
             new RFC3986Encoder()
         );
     }
