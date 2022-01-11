@@ -21,7 +21,7 @@ use Snicco\Core\Http\Psr7\Response as AppResponse;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
-class PipelineTest extends RoutingTestCase
+class MiddlewarePipelineTest extends RoutingTestCase
 {
     
     private MiddlewarePipeline $pipeline;
@@ -34,7 +34,6 @@ class PipelineTest extends RoutingTestCase
         $this->pipeline = new MiddlewarePipeline(
             new MiddlewareFactory($this->container),
             new PipelineTestExceptionHandler(),
-            $this->response_factory
         );
         $this->request = new Request(
             $this->psrServerRequestFactory()->createServerRequest('GET', 'https://foobar.com')
@@ -205,6 +204,62 @@ class PipelineTest extends RoutingTestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('CHANGED-Error Message', (string) $response->getBody());
+    }
+    
+    /** @test */
+    public function the_same_pipeline_cant_be_run_twice_without_providing_a_new_request()
+    {
+        $response = $this->pipeline->send($this->request)
+                                   ->through([])
+                                   ->then(function (Request $request) {
+                                       return $this->response_factory->html('foo');
+                                   });
+        
+        $this->assertSame('foo', $response->getBody()->__toString());
+        
+        $this->expectExceptionMessage(
+            'You cant run the middleware pipeline twice without providing a new request.'
+        );
+        
+        $this->pipeline->run();
+    }
+    
+    /** @test */
+    public function test_exception_when_the_pipeline_is_run_without_sending_a_request()
+    {
+        $this->expectExceptionMessage(
+            'You cant run a middleware pipeline without calling send() first.'
+        );
+        
+        $this->pipeline->run();
+    }
+    
+    /** @test */
+    public function middleware_is_replaced_when_using_the_same_pipeline_twice()
+    {
+        $response = $this->pipeline
+            ->send($this->request)
+            ->through([Foo::class])
+            ->then(function (ServerRequestInterface $request) {
+                $foo = $request->getAttribute('test');
+                $foo .= 'biz';
+                
+                return $this->response_factory->html($foo);
+            });
+        
+        $this->assertSame('foobiz', $response->getBody()->__toString());
+        
+        $response = $this->pipeline
+            ->send($this->request->withHeader('X-Test', 'foo'))
+            ->through([Bar::class])
+            ->then(function (ServerRequestInterface $request) {
+                $foo = $request->getAttribute('test');
+                $foo .= 'biz';
+                
+                return $this->response_factory->html($foo);
+            });
+        
+        $this->assertSame('barbiz', $response->getBody()->__toString());
     }
     
 }

@@ -27,9 +27,14 @@ final class MiddlewarePipeline
 {
     
     private ExceptionHandler  $error_handler;
-    private Request           $request;
     private MiddlewareFactory $middleware_factory;
-    private array             $middleware = [];
+    
+    /**
+     * @var array<array>
+     */
+    private array   $middleware        = [];
+    private bool    $needs_new_request = false;
+    private Request $current_request;
     
     public function __construct(MiddlewareFactory $middleware_factory, ExceptionHandler $error_handler)
     {
@@ -39,7 +44,8 @@ final class MiddlewarePipeline
     
     public function send(Request $request) :MiddlewarePipeline
     {
-        $this->request = $request;
+        $this->current_request = $request;
+        $this->needs_new_request = false;
         return $this;
     }
     
@@ -64,9 +70,24 @@ final class MiddlewarePipeline
     
     public function run($stack = null) :Response
     {
+        if (true === $this->needs_new_request) {
+            throw new LogicException(
+                'You cant run the middleware pipeline twice without providing a new request.'
+            );
+        }
+        
+        if ( ! isset($this->current_request)) {
+            throw new LogicException(
+                "You cant run a middleware pipeline without calling send() first."
+            );
+        }
+        
         $stack = $stack ?? $this->buildMiddlewareStack();
         
-        return $stack($this->request);
+        $response = $stack($this->current_request);
+        unset($this->current_request);
+        $this->needs_new_request = true;
+        return $response;
     }
     
     private function normalizeMiddleware(array $middleware) :array
@@ -84,7 +105,7 @@ final class MiddlewarePipeline
             
             if ( ! isInterface($middleware[0], MiddlewareInterface::class)) {
                 throw new InvalidArgumentException(
-                    "Unsupported middleware type: {$middleware[0]})"
+                    "Unsupported middleware type: $middleware[0])"
                 );
             }
             
