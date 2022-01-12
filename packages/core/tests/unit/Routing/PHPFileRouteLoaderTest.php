@@ -7,16 +7,15 @@ namespace Tests\Core\unit\Routing;
 use LogicException;
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\PHPFileRouteLoader;
-use Snicco\Core\Routing\RouteLoadingOptions;
-use Snicco\Core\Routing\RoutingConfigurator;
-use Snicco\Core\Routing\AdminDashboardPrefix;
-use Snicco\Core\Routing\WebRoutingConfigurator;
+use Snicco\Core\Routing\RouteLoader;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
-use Snicco\Core\Routing\AdminRoutingConfigurator;
-use Snicco\Core\Routing\DefaultRouteLoadingOptions;
+use Snicco\Core\Routing\RouteLoading\RouteLoadingOptions;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RouteLoading\DefaultRouteLoadingOptions;
+use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
+use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
+use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
 final class PHPFileRouteLoaderTest extends RoutingTestCase
 {
@@ -27,7 +26,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     
     public static bool $web_include_partial = false;
     
-    private PHPFileRouteLoader $file_loader;
+    private RouteLoader $file_loader;
     
     private string $base_prefix = '/sniccowp';
     private string $bad_routes;
@@ -35,9 +34,9 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->file_loader = new PHPFileRouteLoader(
+        $this->file_loader = new RouteLoader(
             $this->routeConfigurator(),
-            new DefaultRouteLoadingOptions('', AdminDashboardPrefix::fromString('/wp-admin'))
+            new DefaultRouteLoadingOptions('')
         );
         $this->withMiddlewareGroups(['web' => [FooMiddleware::class]]);
         $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
@@ -139,11 +138,10 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     {
         $this->withMiddlewareGroups(['partials' => []]);
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
-                AdminDashboardPrefix::fromString('/wp-admin')
             )
         );
         
@@ -161,11 +159,10 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     {
         $this->withMiddlewareGroups(['partials' => [], 'rest.v1' => []]);
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
-                AdminDashboardPrefix::fromString('/wp-admin')
             )
         );
         
@@ -182,11 +179,10 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     {
         $this->withMiddlewareGroups(['partials' => [], 'rest.v1' => []]);
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
-                AdminDashboardPrefix::fromString('/wp-admin')
             )
         );
         
@@ -209,7 +205,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
     {
         // We did not add middleware
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new TestLoadingOptions()
         );
@@ -243,7 +239,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Middleware for api options");
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new TestLoadingOptions(true)
         
@@ -258,7 +254,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Middleware for api options has to be an array of strings.');
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new TestLoadingOptions(false, true)
         );
@@ -277,7 +273,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
             )
         );
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 RoutingConfigurator::PREFIX_KEY => 1,
@@ -298,7 +294,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
             )
         );
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 RoutingConfigurator::NAMESPACE_KEY => 1,
@@ -319,7 +315,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
             )
         );
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 RoutingConfigurator::NAME_KEY => 1,
@@ -337,7 +333,7 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
             'The option [bogus] is not supported.',
         );
         
-        $loader = new PHPFileRouteLoader(
+        $loader = new RouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 'bogus' => 'foo',

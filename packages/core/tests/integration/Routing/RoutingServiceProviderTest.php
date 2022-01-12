@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\MiddlewarePipeline;
-use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\RouteUrlMatcher;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Routing\Internal\RouteConditionFactory;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\UrlMatcher\RouteUrlGenerator;
+use Snicco\Core\Routing\UrlMatcher\FastRouteUrlMatcher;
+use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\Internal\CachedRouteFileRegistrar;
-use Snicco\Core\Routing\Internal\FastRoute\RouteUrlGenerator;
-use Snicco\Core\Routing\Internal\FastRoute\FastRouteUrlMatcher;
 
 use const DS;
 

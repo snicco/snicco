@@ -7,9 +7,9 @@ namespace Tests\Core\unit\Routing;
 use LogicException;
 use LogicExceptions;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\WebRoutingConfigurator;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
 class RouteGroupsTest extends RoutingTestCase
 {

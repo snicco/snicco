@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Core\Routing\Route;
 use Tests\Core\MiddlewareTestCase;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Middleware\Authenticate;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 
 class AuthenticateTest extends MiddlewareTestCase
 {

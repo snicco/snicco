@@ -10,10 +10,10 @@ use Snicco\Core\Contracts\MagicLink;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class MagicLinkAuthenticatorTest extends AuthTestCase
 {

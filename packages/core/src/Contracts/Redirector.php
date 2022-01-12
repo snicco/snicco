@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Contracts;
 
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 interface Redirector

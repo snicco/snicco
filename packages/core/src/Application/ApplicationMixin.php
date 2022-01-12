@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Core\Application;
 
 use Closure;
-use Snicco\Core\Routing\Route;
+use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 /**
  * Can be applied to your App class via a "@mixin" annotation for better IDE support.

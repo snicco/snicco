@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use Snicco\Core\Routing\Route;
 use PHPUnit\Framework\TestCase;
-use Snicco\Core\Routing\RoutingResult;
+use Snicco\Core\Routing\Route\Route;
+use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 
 class RoutingResultTest extends TestCase
 {

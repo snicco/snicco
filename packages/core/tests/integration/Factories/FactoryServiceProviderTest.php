@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Factories;
 
-use Snicco\Core\Factories\RouteActionFactory;
+use Snicco\Core\Http\ControllerAction;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\Core\Factories\RouteActionFactory;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Routing\Internal\ControllerAction;
-use Snicco\Core\Routing\Internal\RouteConditionFactory;
+use Snicco\Core\Routing\Condition\RouteConditionFactory;
 
 class FactoryServiceProviderTest extends FrameworkTestCase
 {

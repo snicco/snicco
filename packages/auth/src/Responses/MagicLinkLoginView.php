@@ -7,8 +7,8 @@ namespace Snicco\Auth\Responses;
 use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Application\Config;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Contracts\AbstractLoginView;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class MagicLinkLoginView extends AbstractLoginView
 {

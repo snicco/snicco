@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Internal\Router;
+use Snicco\Core\Routing\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
 
 $router = TestApp::resolve(Router::class);

@@ -8,10 +8,10 @@ use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\UriInterface;
-use Snicco\Core\Routing\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
-use Snicco\Core\Routing\Exceptions\MethodNotAllowed;
+use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
+use Snicco\Core\Routing\Exception\MethodNotAllowed;
 
 final class RoutingMiddleware extends AbstractMiddleware
 {

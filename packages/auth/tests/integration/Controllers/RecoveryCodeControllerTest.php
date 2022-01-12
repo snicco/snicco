@@ -6,7 +6,7 @@ namespace Tests\Auth\integration\Controllers;
 
 use Snicco\Core\Shared\Encryptor;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class RecoveryCodeControllerTest extends AuthTestCase
 {

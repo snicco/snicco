@@ -6,10 +6,10 @@ namespace Tests\Auth\unit\Middleware;
 
 use Mockery;
 use Snicco\Core\Support\WP;
-use Snicco\Core\Routing\Route;
 use Snicco\SessionBundle\Keys;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\MiddlewareTestCase;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\Contracts\SessionInterface;

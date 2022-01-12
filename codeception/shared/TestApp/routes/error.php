@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-/** @var \Snicco\Core\Routing\Internal\Router $router */
+/** @var \Snicco\Core\Routing\Router $router */
 
-use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
 

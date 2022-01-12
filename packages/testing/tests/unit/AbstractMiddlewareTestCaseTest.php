@@ -15,8 +15,8 @@ use Snicco\Core\Contracts\AbstractMiddleware;
 use PHPUnit\Framework\ExpectationFailedException;
 use Snicco\Core\Contracts\RouteUrlGeneratorInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
+use Snicco\Core\Routing\UrlMatcher\RouteUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\Core\Routing\Internal\FastRoute\RouteUrlGenerator;
 
 class MiddlewareTestCaseTest extends MiddlewareTestCase
 {

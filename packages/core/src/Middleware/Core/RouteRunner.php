@@ -7,12 +7,12 @@ namespace Snicco\Core\Middleware\Core;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Http\ControllerAction;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Middleware\MiddlewareStack;
 use Snicco\Core\Contracts\AbstractMiddleware;
-use Snicco\Core\Routing\Internal\ControllerAction;
 
 class RouteRunner extends AbstractMiddleware
 {

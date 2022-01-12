@@ -10,8 +10,8 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Mail\ConfirmAuthMail;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Traits\InteractsWithTime;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class AuthConfirmationEmailAbstractController extends AbstractController
 {

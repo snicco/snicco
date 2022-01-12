@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Tests\Core\unit\Routing\PHPFileRouteLoaderTest;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
 return function (AdminRoutingConfigurator $router) {
     $router->admin(

@@ -6,11 +6,11 @@ namespace Tests\Core\unit\Routing;
 
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\Exceptions\BadRoute;
-use Snicco\Core\Routing\WebRoutingConfigurator;
-use Snicco\Core\Routing\Exceptions\MethodNotAllowed;
+use Snicco\Core\Routing\Exception\BadRoute;
+use Snicco\Core\Routing\Exception\MethodNotAllowed;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
 class RouteAttributesTest extends RoutingTestCase
 {

@@ -10,8 +10,8 @@ use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
 use Snicco\Support\Repository;
-use Snicco\Core\Routing\RoutingResult;
 use Psr\Http\Message\ServerRequestInterface;
+use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 
 /**
  * @todo add ip() method

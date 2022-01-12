@@ -7,8 +7,8 @@ namespace Tests\Core\unit\Routing;
 use LogicException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\AdminRoutingConfigurator;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
 class AdminRoutesTest extends RoutingTestCase
 {
@@ -185,6 +185,11 @@ class AdminRoutesTest extends RoutingTestCase
         $as_string = (string) $request->getUri();
         $this->assertStringContainsString('page=foo', $as_string);
         $this->assertResponseBody($as_string, $request);
+    }
+    
+    /** @test */
+    public function menu_items_can_be_added()
+    {
     }
     
 }

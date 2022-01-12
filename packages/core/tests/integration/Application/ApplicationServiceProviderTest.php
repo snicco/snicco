@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Tests\Core\integration\Application;
 
 use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Router;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Application\Application;
 use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 use const DS;

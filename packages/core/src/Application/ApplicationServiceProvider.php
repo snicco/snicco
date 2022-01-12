@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Core\Application;
 
 use Snicco\Core\Support\WP;
+use Snicco\Core\Routing\Router;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Routing\Internal\Router;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider

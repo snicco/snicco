@@ -7,11 +7,10 @@ namespace Snicco\Testing;
 use Closure;
 use RuntimeException;
 use Snicco\Core\Http\Delegate;
-use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\UrlGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
@@ -21,10 +20,11 @@ use Snicco\Core\Http\DefaultResponseFactory;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Routing\Internal\RouteCollection;
+use Snicco\Core\Routing\Route\RouteCollection;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 /**

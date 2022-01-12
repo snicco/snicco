@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\Conditions\QueryStringCondition;
+use Snicco\Core\Routing\Condition\QueryStringCondition;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class RouteSegmentsTest extends RoutingTestCase

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
-use Snicco\Core\Routing\Conditions\QueryStringCondition;
+use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
+use Snicco\Core\Routing\Condition\QueryStringCondition;
+use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 final class QueryStringConditionTest extends UnitTest

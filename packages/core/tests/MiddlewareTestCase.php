@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Core;
 
-use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
-use Snicco\Core\Routing\Internal\RFC3986Encoder;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\UrlGenerator\RFC3986Encoder;
 use Tests\Codeception\shared\helpers\CreateContainer;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Testing\MiddlewareTestCase as FrameworkMiddlewareTestCase;
 

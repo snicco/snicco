@@ -7,7 +7,6 @@ namespace Snicco\Core\Http;
 use RuntimeException;
 use RKA\Middleware\IpAddress;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
@@ -15,6 +14,7 @@ use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Controllers\FallBackController;
 use Snicco\Core\Controllers\RedirectController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
