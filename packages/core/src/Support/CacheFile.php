@@ -15,14 +15,14 @@ final class CacheFile
     
     private string $file;
     
-    public function __construct(string $dir, string $file_name)
+    public function __construct(string $dir, string $filename_with_extension)
     {
         Assert::readable($dir);
-        Assert::stringNotEmpty($file_name, "The cache file name can not be empty.");
-        $this->file = rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$file_name;
+        Assert::stringNotEmpty($filename_with_extension, "The cache file name can not be empty.");
+        $this->file = rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$filename_with_extension;
     }
     
-    public function asString() :string
+    public function realpath() :string
     {
         return $this->file;
     }
