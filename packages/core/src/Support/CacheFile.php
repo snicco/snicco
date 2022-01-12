@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Support;
 
+use RuntimeException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -29,6 +30,19 @@ final class CacheFile
     public function isCreated() :bool
     {
         return is_file($this->file);
+    }
+    
+    /**
+     * @throws RuntimeException
+     */
+    public function getContents() :string
+    {
+        $val = file_get_contents($this->file);
+        
+        if (false === $val) {
+            throw new RuntimeException("Cant read cache contents of file [$this->file]");
+        }
+        return $val;
     }
     
 }
