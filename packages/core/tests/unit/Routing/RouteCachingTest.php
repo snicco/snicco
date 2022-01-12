@@ -142,7 +142,9 @@ class RouteCachingTest extends RoutingTestCase
         
         $this->refreshRouter($this->route_cache_file);
         
-        $this->expectExceptionMessage("Route [route1] cant be added");
+        $this->expectExceptionMessage(
+            "The route [route1] cant be added because the Router is already cached."
+        );
         $this->routeConfigurator()->get('route1', '/foo');
     }
     

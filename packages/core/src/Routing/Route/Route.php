@@ -46,6 +46,8 @@ final class Route implements Serializable
     /** @interal */
     const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
     
+    const SERIALIZED_KEY = 'serialized_route';
+    
     /**
      * @var array<string>
      */
