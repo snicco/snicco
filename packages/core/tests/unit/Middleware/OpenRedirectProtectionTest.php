@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Snicco\Testing\TestResponse;
-use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Routing\Route\Route;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Controllers\RedirectController;
-use Snicco\Core\Middleware\Core\OpenRedirectProtection;
-use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
+use Snicco\Core\Middleware\OpenRedirectProtection;
 
-class OpenRedirectProtectionTest extends MiddlewareTestCase
+class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
 {
-    
-    use CreateDefaultWpApiMocks;
     
     protected function setUp() :void
     {
@@ -27,7 +24,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
             'framework.redirect.protection',
             ['GET']
         );
-        $this->routes()->add($route);
+        $this->withRoutes([$route]);
     }
     
     /** @test */
@@ -44,8 +41,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function a_redirect_response_is_allowed_if_its_relative()
     {
-        $this->setNextMiddlewareResponse(function (Response $response) {
-            return $this->redirector()->to('foo');
+        $this->withNextMiddlewareResponse(function (Response $response) {
+            return $this->getRedirector()->to('foo');
         });
         
         $request = $this->frontendRequest('GET', '/foo');
@@ -59,8 +56,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function a_redirect_response_is_allowed_if_its_absolute_and_to_the_same_host()
     {
-        $this->setNextMiddlewareResponse(function (Response $response) {
-            return $this->newResponseFactory()->redirect('https://foo.com/bar');
+        $this->withNextMiddlewareResponse(function (Response $response) {
+            return $this->getResponseFactory()->redirect('https://foo.com/bar');
         });
         
         $request = $this->frontendRequest('GET', 'https://foo.com/foo');
@@ -74,8 +71,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function absolute_redirects_to_other_hosts_are_not_allowed()
     {
-        $this->setNextMiddlewareResponse(function () {
-            return $this->newResponseFactory()->redirect('https://bar.com/foo');
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect('https://bar.com/foo');
         });
         
         $request = $this->frontendRequest('GET', 'https://foo.com/foo');
@@ -88,8 +85,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function a_network_path_url_is_not_allowed()
     {
-        $this->setNextMiddlewareResponse(function () {
-            return $this->newResponseFactory()->redirect('//bar.com:80/path/info');
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect('//bar.com:80/path/info');
         });
         
         $request = $this->frontendRequest('GET', 'https://foo.com/foo');
@@ -102,8 +99,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function hosts_can_be_whitelisted_if_the_referer_is_the_same_site()
     {
-        $this->setNextMiddlewareResponse(function () {
-            return $this->newResponseFactory()->redirect('https://stripe.com/foo');
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect('https://stripe.com/foo');
         });
         
         $request = $this->frontendRequest('GET', 'https://foo.com/foo');
@@ -116,8 +113,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function a_redirect_response_is_forbidden_if_its_to_a_non_white_listed_host()
     {
-        $this->setNextMiddlewareResponse(function () {
-            return $this->newResponseFactory()->redirect('https://paypal.com/pay');
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect('https://paypal.com/pay');
         });
         
         $request = $this->frontendRequest('GET', 'https://foo.com/foo');
@@ -131,8 +128,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function subdomains_can_be_whitelisted_with_regex()
     {
-        $this->setNextMiddlewareResponse(function () {
-            return $this->newResponseFactory()->redirect(
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect(
                 'https://payments.stripe.com/foo'
             );
         });
@@ -143,8 +140,8 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->assertRedirect('https://payments.stripe.com/foo');
         
-        $this->setNextMiddlewareResponse(function () {
-            return $this->newResponseFactory()->redirect(
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect(
                 'https://accounts.stripe.com/foo'
             );
         });
@@ -159,10 +156,10 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function redirects_to_same_site_subdomains_are_allowed()
     {
-        $this->setNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function () {
             $target = 'https://accounts.foo.com/foo';
             
-            return $this->newResponseFactory()->redirect($target);
+            return $this->getResponseFactory()->redirect($target);
         });
         
         $request = $this->frontendRequest('GET', 'https://foo.com/foo');
@@ -176,10 +173,10 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /** @test */
     public function all_protection_can_be_bypassed_if_using_the_away_method()
     {
-        $this->setNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function () {
             $target = 'https://external-site.com';
             
-            return $this->redirector()->away($target);
+            return $this->getRedirector()->away($target);
         });
         
         $request = $this->frontendRequest('GET', '/foo');

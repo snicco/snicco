@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware\Core;
+namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Str;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -14,7 +13,7 @@ use Snicco\Core\Http\Responses\RedirectResponse;
 /**
  * @todo Its currently possible to redirect to whitelisted domains without any addiotional checks.
  */
-class OpenRedirectProtection extends AbstractMiddleware
+final class OpenRedirectProtection extends AbstractMiddleware
 {
     
     private string $route;

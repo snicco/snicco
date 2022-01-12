@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware\Core;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Http\ResponseEmitter;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Http\Responses\NullResponse;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Http\Responses\DelegatedResponse;

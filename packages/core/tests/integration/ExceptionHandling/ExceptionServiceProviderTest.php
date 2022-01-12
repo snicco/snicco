@@ -9,10 +9,10 @@ use ReflectionClass;
 use Whoops\RunInterface;
 use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 

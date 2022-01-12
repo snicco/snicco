@@ -7,7 +7,7 @@ namespace Tests\Auth\unit\Middleware;
 use Mockery as m;
 use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\Drivers\ArraySessionDriver;
@@ -15,7 +15,7 @@ use Snicco\Auth\Middleware\AuthenticateSession;
 use Tests\Codeception\shared\helpers\HashesSessionIds;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 
-class AuthenticateSessionTest extends MiddlewareTestCase
+class AuthenticateSessionTestInternal extends InternalMiddlewareTestCase
 {
     
     use TravelsTime;

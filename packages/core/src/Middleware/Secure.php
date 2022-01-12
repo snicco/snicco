@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Support\Url;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;

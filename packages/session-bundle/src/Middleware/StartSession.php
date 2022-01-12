@@ -6,8 +6,8 @@ namespace Snicco\SessionBundle\Middleware;
 
 use RuntimeException;
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Snicco\Session\ImmutableSession;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;

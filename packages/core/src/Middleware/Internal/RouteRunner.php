@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware\Core;
+namespace Snicco\Core\Middleware\Internal;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\ControllerAction;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Http\MiddlewarePipeline;
-use Snicco\Core\Middleware\MiddlewareStack;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
-class RouteRunner extends AbstractMiddleware
+/**
+ * @internal
+ */
+final class RouteRunner extends AbstractMiddleware
 {
     
     private MiddlewarePipeline $pipeline;
@@ -34,7 +34,7 @@ class RouteRunner extends AbstractMiddleware
         $route = $result->route();
         
         if ( ! $route) {
-            return $this->delegateToWordPress($request);
+            return $this->delegate($request);
         }
         
         $action = new ControllerAction(
@@ -62,7 +62,7 @@ class RouteRunner extends AbstractMiddleware
             });
     }
     
-    private function delegateToWordPress(Request $request) :Response
+    private function delegate(Request $request) :Response
     {
         $middleware = $this->middleware_stack->createForRequestWithoutRoute($request);
         
@@ -74,7 +74,7 @@ class RouteRunner extends AbstractMiddleware
             ->send($request)
             ->through($middleware)
             ->then(function () {
-                return $this->respond()->delegate(true);
+                return $this->respond()->delegate();
             });
     }
     

@@ -81,7 +81,7 @@ abstract class AbstractController
     protected function config(string $key, $default = null)
     {
         /** @var Config $config */
-        $config = $this->container[ContainerAdapter::class];
+        $config = $this->container[Config::class];
         Assert::isInstanceOf(Config::class, $config);
         return $config->get($key, $default);
     }

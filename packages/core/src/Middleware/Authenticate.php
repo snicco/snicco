@@ -10,6 +10,9 @@ use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
+/**
+ * @api
+ */
 final class Authenticate extends AbstractMiddleware
 {
     

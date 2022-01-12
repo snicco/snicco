@@ -8,14 +8,14 @@ use Psr\Log\NullLogger;
 use Whoops\Run as Whoops;
 use Whoops\RunInterface;
 use Psr\Log\LoggerInterface;
-use Snicco\Core\Http\Delegate;
 use Illuminate\Container\Container;
+use Snicco\Core\Middleware\Delegate;
 use Whoops\Handler\HandlerInterface;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 
 class ExceptionServiceProvider extends ServiceProvider
 {

@@ -6,14 +6,14 @@ namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
 use Snicco\Session\MessageBag;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Session\Contracts\SessionInterface;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\AddResponseAttributesToSession;
 
-final class AddResponseAttributesToSessionTest extends MiddlewareTestCase
+final class AddResponseAttributesToSessionTestInternal extends InternalMiddlewareTestCase
 {
     
     use SessionHelpers;
@@ -41,7 +41,7 @@ final class AddResponseAttributesToSessionTest extends MiddlewareTestCase
     {
         $middleware = new AddResponseAttributesToSession();
         
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withErrors([
                 'foo' => [
                     'bar',
@@ -65,7 +65,7 @@ final class AddResponseAttributesToSessionTest extends MiddlewareTestCase
     {
         $middleware = new AddResponseAttributesToSession();
         
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withFlashMessages('foo', 'bar');
         });
         
@@ -81,7 +81,7 @@ final class AddResponseAttributesToSessionTest extends MiddlewareTestCase
     {
         $middleware = new AddResponseAttributesToSession();
         
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withOldInput('foo', 'bar');
         });
         

@@ -8,14 +8,14 @@ use Mockery;
 use Snicco\Core\Support\WP;
 use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Routing\Route\Route;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
-class AuthUnconfirmedTest extends MiddlewareTestCase
+class AuthUnconfirmedTestInternal extends InternalMiddlewareTestCase
 {
     
     use CreateDefaultWpApiMocks;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use RuntimeException;
-use Snicco\Core\Http\Delegate;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Tests\Codeception\shared\TestDependencies\Foo;

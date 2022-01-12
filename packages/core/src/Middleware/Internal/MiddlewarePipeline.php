@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Http;
+namespace Snicco\Core\Middleware\Internal;
 
 use Closure;
 use Throwable;
@@ -11,9 +11,9 @@ use Snicco\Support\Arr;
 use InvalidArgumentException;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Contracts\ExceptionHandler;
-use Snicco\Core\Middleware\MiddlewareFactory;
 
 use function is_string;
 use function array_map;
@@ -105,7 +105,7 @@ final class MiddlewarePipeline
             
             if ( ! isInterface($middleware[0], MiddlewareInterface::class)) {
                 throw new InvalidArgumentException(
-                    "Unsupported middleware type: $middleware[0])"
+                    "Unsupported middleware type: $middleware[0]"
                 );
             }
             

@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Http;
+namespace Snicco\Core\Middleware\Internal;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Support\ReflectsCallable;
 use Snicco\Core\Support\ReflectionDependencies;
 

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\SessionBundle\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Session\Contracts\SessionInterface;

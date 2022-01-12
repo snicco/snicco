@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Snicco\Core\Middleware\NoRobots;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 
-class NoRobotsTest extends MiddlewareTestCase
+class NoRobotsTest extends InternalMiddlewareTestCase
 {
     
     /** @test */

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Auth\Middleware;
 
 use Snicco\Session\Session;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\AuthSessionManager;
+use Snicco\Core\Middleware\Delegate;
 use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Events\UserWasLoggedOut;

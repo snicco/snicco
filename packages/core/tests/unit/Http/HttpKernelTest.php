@@ -6,7 +6,7 @@ namespace Tests\Core\unit\Http;
 
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Middleware\Core\MethodOverride;
+use Snicco\Core\Middleware\MethodOverride;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;

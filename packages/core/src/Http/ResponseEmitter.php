@@ -6,7 +6,11 @@ namespace Snicco\Core\Http;
 
 use Snicco\Core\Http\Psr7\Response;
 
+use function min;
 use function header;
+use function strlen;
+use function sprintf;
+use function strtolower;
 use function headers_sent;
 use function connection_status;
 
@@ -69,7 +73,7 @@ final class ResponseEmitter
         }
     }
     
-    protected function isResponseEmpty(Response $response) :bool
+    private function isResponseEmpty(Response $response) :bool
     {
         if ($response->isEmpty()) {
             return true;
@@ -83,7 +87,7 @@ final class ResponseEmitter
         return $seekable ? $stream->read(1) === '' : $stream->eof();
     }
     
-    protected function emitStatusLine(Response $response) :void
+    private function emitStatusLine(Response $response) :void
     {
         $statusLine = sprintf(
             'HTTP/%s %s %s',
@@ -94,7 +98,7 @@ final class ResponseEmitter
         header($statusLine, true, $response->getStatusCode());
     }
     
-    protected function emitBody(Response $response) :void
+    private function emitBody(Response $response) :void
     {
         $body = $response->getBody();
         

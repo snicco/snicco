@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\Middleware;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Tests\Codeception\shared\TestDependencies\Bar;

@@ -7,14 +7,14 @@ namespace Tests\SessionBundle\unit\Middleware;
 use Snicco\SessionBundle\Keys;
 use Snicco\Session\SessionErrors;
 use Snicco\View\GlobalViewContext;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Session\ImmutableSession;
 use Snicco\Session\ValueObjects\CsrfToken;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\ShareSessionWithViews;
 
-final class ShareSessionWithViewsTest extends MiddlewareTestCase
+final class ShareSessionWithViewsTestInternal extends InternalMiddlewareTestCase
 {
     
     use SessionHelpers;
