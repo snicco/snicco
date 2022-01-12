@@ -22,6 +22,9 @@ use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
 use function Snicco\Core\Support\Functions\isInterface;
 
+/**
+ * @interal
+ */
 final class RouteLoader
 {
     

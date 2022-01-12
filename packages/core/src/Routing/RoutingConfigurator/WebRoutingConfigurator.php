@@ -10,9 +10,9 @@ use Snicco\Core\Routing\Exception\BadRoute;
 /**
  * The RoutingConfigurator can be used to fluently register Routes with the routing component.
  *
+ * @api
  * @note If any combination of the methods ['prefix', 'middleware', 'name', 'namespace'] is used
  *       without a successive call to ['group'] a BadRoute will be thrown.
- * @api
  */
 interface WebRoutingConfigurator extends RoutingConfigurator
 {

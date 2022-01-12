@@ -9,6 +9,9 @@ use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Routing\RouteLoader;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
+/**
+ * @api
+ */
 final class DefaultRouteLoadingOptions implements RouteLoadingOptions
 {
     

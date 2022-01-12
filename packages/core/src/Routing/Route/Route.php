@@ -46,8 +46,6 @@ final class Route implements Serializable
     /** @interal */
     const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
     
-    const SERIALIZED_KEY = 'serialized_route';
-    
     /**
      * @var array<string>
      */
@@ -103,6 +101,7 @@ final class Route implements Serializable
     {
     }
     
+    /** @interal */
     public static function create(
         string $pattern,
         $controller,
@@ -220,11 +219,13 @@ final class Route implements Serializable
         return $this;
     }
     
+    /** @interal */
     public function serialize() :string
     {
         return serialize(get_object_vars($this));
     }
     
+    /** @interal */
     public function unserialize($data) :void
     {
         $data = unserialize($data);
