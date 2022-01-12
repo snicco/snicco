@@ -13,12 +13,33 @@ use Snicco\Support\Repository;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
+use Snicco\Core\Http\Exceptions\RequestHasNoType;
 
 /**
  * @todo add ip() method
  */
 class Request implements ServerRequestInterface
 {
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_ATTRIBUTE = '_request_type';
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_FRONTEND = 1;
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_ADMIN_AREA = 2;
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_API = 3;
     
     use ImplementsPsr7Request;
     use InspectsRequest;
@@ -190,16 +211,58 @@ class Request implements ServerRequestInterface
     
     /**
      * A request is considered secure when the scheme is set to "https".
-     * If your site runs behind a reverse proxy you have to make sure that your reverse proxy is configured correctly for setting the
-     * HTTP_X_FORWARDED_PROTO header.
-     * It's purposely not possible to configure trusted proxies because if this is
-     * not done configured at the server level the entire WP application will misbehave anyway.
+     * If your site runs behind a reverse proxy you have to make sure that your reverse proxy is
+     * configured correctly for setting the HTTP_X_FORWARDED_PROTO header. It's purposely not
+     * possible to configure trusted proxies because if this is not done configured at the server
+     * level the entire WP application will misbehave anyway.
      *
      * @see ServerRequestCreator::createUriFromArray()
      */
     public function isSecure() :bool
     {
         return 'https' === $this->getUri()->getScheme();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    public function isFrontend() :bool
+    {
+        return self::TYPE_FRONTEND === $this->getType();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    public function isAdminArea() :bool
+    {
+        return self::TYPE_ADMIN_AREA === $this->getType();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    public function isApiEndpoint() :bool
+    {
+        return self::TYPE_API === $this->getType();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    private function getType() :int
+    {
+        $type = $this->getAttribute(self::TYPE_ATTRIBUTE, false);
+        
+        if ( ! is_int($type)) {
+            throw RequestHasNoType::becauseTheTypeIsNotAnInteger($type);
+        }
+        
+        if ($type < 1 || $type > 3) {
+            throw RequestHasNoType::becauseTheRangeIsNotCorrect($type);
+        }
+        
+        return $type;
     }
     
 }
