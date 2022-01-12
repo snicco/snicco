@@ -15,6 +15,9 @@ use Snicco\Core\Middleware\Internal\MiddlewareFactory;
 use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 
+/**
+ * @internal
+ */
 class MiddlewareServiceProvider extends ServiceProvider
 {
     
@@ -77,7 +80,7 @@ class MiddlewareServiceProvider extends ServiceProvider
         
         $this->config->extend(
             'middleware.priority',
-            [Secure::class, Www::class, TrailingSlash::class,]
+            [Secure::class, WwwRedirect::class, TrailingSlash::class,]
         );
         
         /** @todo maybe make this configurable per group */
@@ -125,7 +128,7 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindWww()
     {
-        $this->container->singleton(Www::class, fn() => new Www(
+        $this->container->singleton(WwwRedirect::class, fn() => new WwwRedirect(
             $this->siteUrl()
         ));
     }

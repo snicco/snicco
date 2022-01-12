@@ -5,38 +5,39 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
-class NoRobots extends AbstractMiddleware
+/**
+ * @api
+ */
+final class NoRobots extends AbstractMiddleware
 {
     
-    private bool $archive;
-    private bool $follow;
-    private bool $index;
+    private bool $noarchive;
+    private bool $nofollow;
+    private bool $noindex;
     
-    public function __construct($noindex = 'noindex', $nofollow = 'nofollow', $noarchive = 'noarchive')
+    public function __construct(bool $noindex = true, bool $nofollow = true, bool $noarchive = true)
     {
-        $this->index = strtolower($noindex) !== 'noindex';
-        $this->follow = strtolower($nofollow) !== 'nofollow';
-        $this->archive = strtolower($noarchive) !== 'noarchive';
+        $this->noindex = $noindex;
+        $this->nofollow = $nofollow;
+        $this->noarchive = $noarchive;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        /** @var Response $response */
         $response = $next($request);
         
-        if ( ! $this->archive) {
+        if ($this->noarchive) {
             $response = $response->withNoArchive();
         }
         
-        if ( ! $this->index) {
+        if ($this->noindex) {
             $response = $response->withNoIndex();
         }
         
-        if ( ! $this->follow) {
+        if ($this->nofollow) {
             $response = $response->withNoFollow();
         }
         

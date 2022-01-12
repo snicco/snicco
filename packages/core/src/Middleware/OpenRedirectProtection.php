@@ -9,9 +9,11 @@ use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 /**
- * @todo Its currently possible to redirect to whitelisted domains without any addiotional checks.
+ * @todo Its currently possible to redirect to a whitelisted host from an external referer.
+ * @todo It this a problem tho? The only way we could prevent this is to sign all outgoing urls.
  */
 final class OpenRedirectProtection extends AbstractMiddleware
 {
@@ -99,8 +101,12 @@ final class OpenRedirectProtection extends AbstractMiddleware
     
     private function forbiddenRedirect($location) :RedirectResponse
     {
-        return $this->redirect()
-                    ->toRoute($this->route, ['intended_redirect' => $location]);
+        try {
+            return $this->redirect()
+                        ->toRoute($this->route, ['intended_redirect' => $location]);
+        } catch (RouteNotFound $e) {
+            return $this->redirect()->home(['intended_redirect' => $location]);
+        }
     }
     
     private function isWhitelisted($host) :bool

@@ -29,7 +29,7 @@ class DefaultResponseFactoryTest extends UnitTest
     {
         parent::setUp();
         $this->app_domain = 'foo.com';
-        $this->routes = new RouteCollection();
+        $this->routes = new RouteCollection([]);
         $this->factory = $this->createResponseFactory(
             $this->createUrlGenerator(
                 UrlGenerationContext::forConsole($this->app_domain),
@@ -184,9 +184,12 @@ class DefaultResponseFactoryTest extends UnitTest
     public function test_home_goes_to_the_home_route_if_it_exists()
     {
         $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
-        $this->routes->add($home_route);
         
-        $response = $this->factory->home(['user_id' => 1, 'foo' => 'bar'], 307);
+        $factory = $this->createResponseFactory(
+            $this->createUrlGenerator(null, new RouteCollection([$home_route]))
+        );
+        
+        $response = $factory->home(['user_id' => 1, 'foo' => 'bar'], 307);
         
         $this->assertSame('/home/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
@@ -196,9 +199,12 @@ class DefaultResponseFactoryTest extends UnitTest
     public function test_toRoute()
     {
         $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
-        $this->routes->add($route);
         
-        $response = $this->factory->toRoute('r1', ['param' => 1, 'foo' => 'bar'], 307);
+        $factory = $this->createResponseFactory(
+            $this->createUrlGenerator(null, new RouteCollection([$route]))
+        );
+        
+        $response = $factory->toRoute('r1', ['param' => 1, 'foo' => 'bar'], 307);
         
         $this->assertSame('/foo/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());

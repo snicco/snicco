@@ -6,9 +6,7 @@ namespace Snicco\Core\Http;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Middleware\ShareCookies;
 use Snicco\Core\Middleware\MethodOverride;
-use Snicco\Core\Middleware\MustMatchRoute;
 use Snicco\Core\Middleware\Internal\RouteRunner;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Middleware\Internal\PrepareResponse;
@@ -24,24 +22,12 @@ final class HttpKernel
     private MiddlewarePipeline $pipeline;
     
     private array $core_middleware = [
-        
         PrepareResponse::class,
-        
+        // MethodOverride needs to be in the kernel. It can be used as a route middleware.
+        // As the route would never match to retrieve the middleware in the first place.
         MethodOverride::class,
-        
-        // @todo This middleware should be configurable for route types.
-        MustMatchRoute::class,
-        
-        // @todo this middleware should be configurable for web/admin routes only.
-        ShareCookies::class,
-        
-        // @todo this should not be a middleware at all.
-        //OutputBufferAbstractMiddleware::class,
-        
         RoutingMiddleware::class,
-        
         RouteRunner::class,
-    
     ];
     
     private Dispatcher $event_dispatcher;

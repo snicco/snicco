@@ -186,6 +186,23 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response->assertRedirect('https://external-site.com');
     }
     
+    /** @test */
+    public function if_the_route_does_not_exist_the_user_is_redirect_to_the_homepage()
+    {
+        $this->withRoutes([]);
+        
+        $this->withNextMiddlewareResponse(function () {
+            return $this->getResponseFactory()->redirect('https://paypal.com/pay');
+        });
+        
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        
+        $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $response->assertRedirect('/?intended_redirect=https://paypal.com/pay');
+    }
+    
     private function newMiddleware($whitelist = []) :OpenRedirectProtection
     {
         return new OpenRedirectProtection('https://foo.com', $whitelist);

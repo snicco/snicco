@@ -17,7 +17,7 @@ trait CreateUrlGenerator
     final protected function createUrlGenerator(UrlGenerationContext $context = null, Routes $routes = null) :UrlGenerator
     {
         return new InternalUrlGenerator(
-            $routes ?? new RouteCollection(),
+            $routes ?? new RouteCollection([]),
             $context ?? UrlGenerationContext::forConsole('localhost.com'),
             WPAdminDashboard::fromDefaults(),
         );

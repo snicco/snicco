@@ -7,12 +7,15 @@ namespace Snicco\Core\Middleware;
 use RuntimeException;
 use Psr\Http\Message\StreamInterface;
 
-class JsonPayload extends Payload
+/**
+ * @api
+ */
+final class JsonPayload extends Payload
 {
     
     public function __construct($content_types = ['application/json'])
     {
-        $this->content_types = $content_types;
+        parent::__construct($content_types);
     }
     
     protected function parse(StreamInterface $stream) :array

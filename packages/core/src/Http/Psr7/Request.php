@@ -10,6 +10,7 @@ use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
 use Snicco\Support\Repository;
+use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 
@@ -185,6 +186,20 @@ class Request implements ServerRequestInterface
     public function routingResult() :RoutingResult
     {
         return $this->getAttribute('_routing_result', RoutingResult::noMatch());
+    }
+    
+    /**
+     * A request is considered secure when the scheme is set to "https".
+     * If your site runs behind a reverse proxy you have to make sure that your reverse proxy is configured correctly for setting the
+     * HTTP_X_FORWARDED_PROTO header.
+     * It's purposely not possible to configure trusted proxies because if this is
+     * not done configured at the server level the entire WP application will misbehave anyway.
+     *
+     * @see ServerRequestCreator::createUriFromArray()
+     */
+    public function isSecure() :bool
+    {
+        return 'https' === $this->getUri()->getScheme();
     }
     
 }
