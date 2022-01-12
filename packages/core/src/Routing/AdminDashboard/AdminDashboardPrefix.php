@@ -7,6 +7,9 @@ namespace Snicco\Core\Routing\AdminDashboard;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Support\UrlPath;
 
+/**
+ * @api
+ */
 final class AdminDashboardPrefix
 {
     

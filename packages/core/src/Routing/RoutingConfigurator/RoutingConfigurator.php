@@ -8,6 +8,9 @@ use Closure;
 use InvalidArgumentException;
 use Snicco\Core\Routing\Route\Route;
 
+/**
+ * @api
+ */
 interface RoutingConfigurator
 {
     

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\RouteLoading;
 
+/**
+ * @api
+ */
 interface RouteLoadingOptions
 {
     

@@ -13,7 +13,7 @@ use function is_numeric;
 use function rawurldecode;
 
 /**
- * @api
+ * @api This class can be used to change the route parameters and perform some transformations.
  */
 final class RoutingResult
 {

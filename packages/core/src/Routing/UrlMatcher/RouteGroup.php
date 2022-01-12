@@ -13,6 +13,9 @@ use function trim;
 use function array_merge;
 use function preg_replace;
 
+/**
+ * @interal
+ */
 final class RouteGroup
 {
     

@@ -15,7 +15,10 @@ use function array_diff;
 use function rawurlencode;
 use function http_build_query;
 
-// https://datatracker.ietf.org/doc/html/rfc3986
+/**
+ * https://datatracker.ietf.org/doc/html/rfc3986
+ * @interal
+ */
 final class RFC3986Encoder implements UrlEncoder
 {
     
