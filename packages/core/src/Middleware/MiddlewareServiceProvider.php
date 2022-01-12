@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Routing\Routes;
+use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Contracts\ServiceProvider;
@@ -15,8 +15,8 @@ use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Middleware\Core\RoutingMiddleware;
 use Snicco\Core\Middleware\Core\SetRequestAttributes;
-use Snicco\Core\Routing\Internal\RouteConditionFactory;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
+use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;

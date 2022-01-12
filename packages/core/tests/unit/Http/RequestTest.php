@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Core\Routing\Route;
 use Snicco\Support\Repository;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\Route\Route;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Routing\RoutingResult;
-use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
+use Snicco\Core\Routing\UrlMatcher\RoutingResult;
+use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
+use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class RequestTest extends UnitTest

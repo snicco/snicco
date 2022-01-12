@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Snicco\Core\Routing\Route;
 use Snicco\Testing\TestResponse;
 use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Middleware\Core\OpenRedirectProtection;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;

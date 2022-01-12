@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher;
 
 use Snicco\Support\Arr;
-use Snicco\Core\Routing\Routes;
 use Snicco\Core\Http\HttpKernel;
+use Snicco\Core\Routing\Route\Routes;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Http\ResponsePostProcessor;

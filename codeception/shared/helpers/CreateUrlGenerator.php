@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Core\Routing\Routes;
-use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
-use Snicco\Core\Routing\Internal\RouteCollection;
-use Snicco\Core\Routing\Internal\WPAdminDashboard;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\Route\Routes;
+use Snicco\Core\Routing\Route\RouteCollection;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 trait CreateUrlGenerator
 {

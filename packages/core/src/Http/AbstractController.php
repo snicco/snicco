@@ -8,10 +8,10 @@ use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Application\Config;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
 /**
  * @api

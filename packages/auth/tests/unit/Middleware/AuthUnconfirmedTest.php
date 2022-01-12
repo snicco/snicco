@@ -7,12 +7,12 @@ namespace Tests\Auth\unit\Middleware;
 use Mockery;
 use Snicco\Core\Support\WP;
 use Snicco\Session\Session;
-use Snicco\Core\Routing\Route;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\MiddlewareTestCase;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class AuthUnconfirmedTest extends MiddlewareTestCase

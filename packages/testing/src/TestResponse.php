@@ -15,10 +15,10 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Testing\Constraints\SeeInOrder;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
 use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class TestResponse
 {

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Snicco\Core\Routing\Router;
 use Snicco\Core\Application\Config;
-use Snicco\Core\Routing\Internal\Router;
 use Snicco\Auth\Controllers\AccountAbstractController;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Controllers\RecoveryCodeAbstractController;

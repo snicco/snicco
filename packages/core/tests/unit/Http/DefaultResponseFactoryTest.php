@@ -6,15 +6,15 @@ namespace Tests\Core\unit\Http;
 
 use stdClass;
 use InvalidArgumentException;
-use Snicco\Core\Routing\Route;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Contracts\Responsable;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\DefaultResponseFactory;
-use Snicco\Core\Routing\Internal\RouteCollection;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\Route\RouteCollection;
 use Tests\Codeception\shared\helpers\CreateUrlGenerator;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class DefaultResponseFactoryTest extends UnitTest

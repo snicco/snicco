@@ -7,7 +7,7 @@ namespace Snicco\Auth\Confirmation;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 
 class EmailAuthConfirmation implements AuthConfirmation

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Closure;
-use Snicco\Core\Routing\Route;
 use Tests\Core\MiddlewareTestCase;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Middleware\RedirectIfAuthenticated;
 
 class RedirectIfAuthenticatedTest extends MiddlewareTestCase

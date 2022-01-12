@@ -7,9 +7,9 @@ namespace Tests\Auth\integration\Authenticators;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class PasswordAuthenticatorTest extends AuthTestCase
 {

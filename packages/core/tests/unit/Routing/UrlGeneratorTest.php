@@ -6,9 +6,9 @@ namespace Tests\Core\unit\Routing;
 
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\UrlGenerator;
-use Snicco\Core\Routing\Exceptions\BadRouteParameter;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\Exception\BadRouteParameter;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 class UrlGeneratorTest extends RoutingTestCase

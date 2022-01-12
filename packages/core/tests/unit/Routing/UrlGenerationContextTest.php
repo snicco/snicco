@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Routing\Internal\UrlGenerationContext;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 final class UrlGenerationContextTest extends UnitTest

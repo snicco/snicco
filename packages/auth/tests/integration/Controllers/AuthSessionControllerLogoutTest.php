@@ -8,7 +8,7 @@ use WP_User;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 

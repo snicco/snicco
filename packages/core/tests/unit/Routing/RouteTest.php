@@ -7,14 +7,14 @@ namespace Tests\Core\unit\Routing;
 use stdClass;
 use TypeError;
 use InvalidArgumentException;
-use Snicco\Core\Routing\Route;
 use Tests\Core\RoutingTestCase;
+use Snicco\Core\Routing\Route\Route;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Routing\AbstractRouteCondition;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
-use Snicco\Core\Routing\Internal\ConditionBlueprint;
+use Snicco\Core\Routing\Condition\ConditionBlueprint;
 use Tests\Core\fixtures\Conditions\TrueRouteCondition;
 use Tests\Core\fixtures\Conditions\MaybeRouteCondition;
+use Snicco\Core\Routing\Condition\AbstractRouteCondition;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 final class RouteTest extends UnitTest

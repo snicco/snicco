@@ -7,8 +7,8 @@ namespace Snicco\Auth\Middleware;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Routing\Internal\InternalUrlGenerator;
 use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class AuthUnconfirmed extends AbstractMiddleware
 {

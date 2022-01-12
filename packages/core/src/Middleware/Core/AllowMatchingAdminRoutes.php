@@ -7,8 +7,8 @@ namespace Snicco\Core\Middleware\Core;
 use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Routing\AdminDashboard;
 use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 
 final class AllowMatchingAdminRoutes extends AbstractMiddleware
 {

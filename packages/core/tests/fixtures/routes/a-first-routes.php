@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\WebRoutingConfigurator;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
 return function (WebRoutingConfigurator $router) {
     $router->get(
