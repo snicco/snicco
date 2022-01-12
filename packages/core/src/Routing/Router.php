@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Closure;
+use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
 use FastRoute\RouteCollector;
@@ -45,16 +46,16 @@ use function file_put_contents;
  * This is preferred over passing around one (global) instance of {@see Routes} between different
  * objects in the service container.
  */
-final class Router implements UrlMatcher, UrlGenerator
+final class Router implements UrlMatcher, UrlGenerator, Routes
 {
-    
-    private Routes $routes;
     
     private RouteConditionFactory $condition_factory;
     
     private UrlGeneratorFactory $generator_factory;
     
     private ?PHPCacheFile $cache_file;
+    
+    private CachedRouteCollection $cached_routes;
     
     /**
      * @var array<RouteGroup>
@@ -63,15 +64,17 @@ final class Router implements UrlMatcher, UrlGenerator
     
     private array $fast_route_cache = [];
     
-    // Since the router glues several pieces of the routing system together we use
-    // simple factories to signalize which objects are direct dependencies of the router.
+    /**
+     * @var array<string,Route>
+     */
+    private array $_routes = [];
+    
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
         PHPCacheFile $cache_file = null
     ) {
         $this->cache_file = $cache_file;
-        
         $this->condition_factory = $condition_factory;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
@@ -79,14 +82,15 @@ final class Router implements UrlMatcher, UrlGenerator
             Assert::keyExists($cache, 'route_collection');
             Assert::keyExists($cache, 'fast_route');
             $this->fast_route_cache = $cache['fast_route'];
-            $this->routes = new CachedRouteCollection($cache['route_collection']);
+            $this->cached_routes = new CachedRouteCollection($cache['route_collection']);
         }
-        else {
-            $this->routes = new RouteCollection();
-        }
+        
         $this->generator_factory = $generator_factory;
     }
     
+    /**
+     * @interal
+     */
     public function createInGroup(RoutingConfigurator $routing_configurator, Closure $create_routes, array $attributes) :void
     {
         $this->updateGroupStack(new RouteGroup($attributes));
@@ -97,28 +101,25 @@ final class Router implements UrlMatcher, UrlGenerator
     }
     
     /**
+     * @interal
+     *
      * @param  array<string,string>|string  $controller
      */
     public function registerAdminRoute(string $name, string $path, $controller = Route::DELEGATE) :Route
     {
         $route = $this->createRoute($name, $path, ['GET'], $controller);
         $route->condition(IsAdminDashboardRequest::class);
-        
-        $this->routes->add($route);
-        
         return $route;
     }
     
     /**
+     * @interal
+     *
      * @param  array<string,string>|string  $controller
      */
     public function registerWebRoute(string $name, string $path, array $methods, $controller) :Route
     {
-        $route = $this->createRoute($name, $path, $methods, $controller);
-        
-        $this->routes->add($route);
-        
-        return $route;
+        return $this->createRoute($name, $path, $methods, $controller);
     }
     
     public function dispatch(Request $request) :RoutingResult
@@ -130,7 +131,7 @@ final class Router implements UrlMatcher, UrlGenerator
         }
         
         return (new FastRouteDispatcher(
-            $this->routes, $data, $this->condition_factory
+            $this->getRoutes(), $data, $this->condition_factory
         ))->dispatch($request);
     }
     
@@ -169,8 +170,34 @@ final class Router implements UrlMatcher, UrlGenerator
         return $this->getGenerator()->toLogin($arguments, $type);
     }
     
+    public function getIterator()
+    {
+        return $this->getRoutes()->getIterator();
+    }
+    
+    public function count() :int
+    {
+        return count($this->getRoutes());
+    }
+    
+    public function getByName(string $name) :Route
+    {
+        return $this->getRoutes()->getByName($name);
+    }
+    
+    public function toArray() :array
+    {
+        return $this->getRoutes()->toArray();
+    }
+    
     private function createRoute(string $name, string $path, array $methods, $controller) :Route
     {
+        if ($this->cache_file && $this->cache_file->isCreated()) {
+            throw new LogicException(
+                "The route [$name] cant be added because the Router is already cached."
+            );
+        }
+        
         // Quick check to see if the developer swapped the arguments by accident.
         Assert::notStartsWith($name, '/');
         
@@ -187,6 +214,8 @@ final class Router implements UrlMatcher, UrlGenerator
         );
         
         $this->addGroupAttributes($route);
+        
+        $this->_routes[$route->getName()] = $route;
         
         return $route;
     }
@@ -268,7 +297,8 @@ final class Router implements UrlMatcher, UrlGenerator
         $collector = new RouteCollector(new RouteParser(), new DataGenerator());
         $syntax = new FastRouteSyntax();
         
-        foreach ($this->routes as $route) {
+        $routes = $this->getRoutes();
+        foreach ($routes as $route) {
             $path = $syntax->convert($route);
             try {
                 $collector->addRoute($route->getMethods(), $path, $route->getName());
@@ -284,7 +314,7 @@ final class Router implements UrlMatcher, UrlGenerator
     {
         $_r = [];
         
-        foreach ($this->routes as $name => $route) {
+        foreach ($this->getRoutes() as $name => $route) {
             $_r[$name] = serialize($route);
         }
         
@@ -305,10 +335,15 @@ final class Router implements UrlMatcher, UrlGenerator
     private function getGenerator() :InternalUrlGenerator
     {
         if ( ! isset($this->generator)) {
-            $this->generator = $this->generator_factory->create($this->routes);
+            $this->generator = $this->generator_factory->create($this->getRoutes());
         }
         
         return $this->generator;
+    }
+    
+    private function getRoutes() :Routes
+    {
+        return $this->cached_routes ?? new RouteCollection($this->_routes);
     }
     
 }
