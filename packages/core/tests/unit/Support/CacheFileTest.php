@@ -61,4 +61,15 @@ final class CacheFileTest extends UnitTest
         $this->assertSame($this->file, $cache_file->asString());
     }
     
+    /** @test */
+    public function test_get_contents()
+    {
+        file_put_contents($this->file, '<?php return "foo";');
+        
+        $cache = new CacheFile(__DIR__, 'foo.php');
+        
+        $content = $cache->getContents();
+        $this->assertSame('<?php return "foo";', $content);
+    }
+    
 }
