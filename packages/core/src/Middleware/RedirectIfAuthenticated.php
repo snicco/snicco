@@ -11,7 +11,10 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
-class RedirectIfAuthenticated extends AbstractMiddleware
+/**
+ * @api
+ */
+final class RedirectIfAuthenticated extends AbstractMiddleware
 {
     
     private ?string $path;

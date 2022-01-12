@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Core\Middleware\Www;
 use Snicco\Core\Middleware\Secure;
+use Snicco\Core\Middleware\WwwRedirect;
 use Snicco\Core\Middleware\TrailingSlash;
 use Snicco\Core\Middleware\MustMatchRoute;
 use Tests\Codeception\shared\TestApp\TestApp;
@@ -57,7 +57,7 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     {
         $priority = TestApp::config('middleware.priority');
         
-        $this->assertSame([Secure::class, Www::class, TrailingSlash::class], $priority);
+        $this->assertSame([Secure::class, WwwRedirect::class, TrailingSlash::class], $priority);
     }
     
     /** @test */

@@ -11,8 +11,6 @@ use Tests\Codeception\shared\UnitTest;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
-use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class RequestTest extends UnitTest
@@ -177,7 +175,6 @@ class RequestTest extends UnitTest
         $this->assertTrue($request->pathIs('/foo/*'));
     }
     
-    /** @test */
     public function testDecodedPath()
     {
         $request = $this->frontendRequest('GET', '/münchen/düsseldorf');
@@ -189,9 +186,14 @@ class RequestTest extends UnitTest
         $this->assertSame('/AC%2FDC', $request->decodedPath());
     }
     
-    protected function adminDashboard() :AdminDashboard
+    /** @test */
+    public function test_IsSecure()
     {
-        return WPAdminDashboard::fromDefaults();
+        $request = $this->frontendRequest('GET', 'http://foobar.com');
+        $this->assertFalse($request->isSecure());
+        
+        $request = $this->frontendRequest('GET', 'https://foobar.com');
+        $this->assertTrue($request->isSecure());
     }
     
 }

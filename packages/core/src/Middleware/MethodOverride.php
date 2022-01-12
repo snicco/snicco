@@ -18,9 +18,19 @@ final class MethodOverride extends AbstractMiddleware
 {
     
     const HEADER = 'X-HTTP-Method-Override';
+    private bool $enabled;
+    
+    public function __construct(bool $enabled = true)
+    {
+        $this->enabled = $enabled;
+    }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
+        if (false === $this->enabled) {
+            return $next($request);
+        }
+        
         if ('POST' !== ($method = $request->realMethod())) {
             return $next($request);
         }

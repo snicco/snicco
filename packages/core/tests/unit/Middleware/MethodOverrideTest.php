@@ -64,4 +64,19 @@ class MethodOverrideTest extends InternalMiddlewareTestCase
         $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
     }
     
+    /** @test */
+    public function the_middleware_behaviour_can_be_disabled()
+    {
+        $request = $this->frontendRequest('POST')->withParsedBody([
+            '_method' => 'PUT',
+        ]);
+        
+        $m = new MethodOverride(false);
+        
+        $response = $this->runMiddleware($m, $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('POST', $this->getReceivedRequest()->getMethod());
+    }
+    
 }
