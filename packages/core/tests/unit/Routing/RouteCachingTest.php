@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Support\CacheFile;
+use Snicco\Core\Support\PHPCacheFile;
 use Tests\Core\fixtures\Conditions\MaybeRouteCondition;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class RouteCachingTest extends RoutingTestCase
 {
     
-    private CacheFile $route_cache_file;
+    private PHPCacheFile $route_cache_file;
     
     protected function setUp() :void
     {
         parent::setUp();
         
-        $this->route_cache_file = new CacheFile(__DIR__, '__generated_snicco_wp_routes.php');
+        $this->route_cache_file = new PHPCacheFile(__DIR__, '__generated_snicco_wp_routes.php');
         
         $this->assertFalse($this->route_cache_file->isCreated());
         
@@ -29,8 +29,8 @@ class RouteCachingTest extends RoutingTestCase
     {
         parent::tearDown();
         
-        if (is_file($this->route_cache_file->asString())) {
-            unlink($this->route_cache_file->asString());
+        if (is_file($this->route_cache_file->realpath())) {
+            unlink($this->route_cache_file->realpath());
         }
     }
     

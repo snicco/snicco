@@ -58,7 +58,7 @@ final class CacheFileTest extends UnitTest
     public function test_as_string()
     {
         $cache_file = new CacheFile(__DIR__, 'foo.php');
-        $this->assertSame($this->file, $cache_file->asString());
+        $this->assertSame($this->file, $cache_file->realpath());
     }
     
     /** @test */

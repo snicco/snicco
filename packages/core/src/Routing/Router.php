@@ -11,9 +11,9 @@ use FastRoute\RouteCollector;
 use FastRoute\BadRouteException;
 use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Support\CacheFile;
 use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Routing\Route\Routes;
+use Snicco\Core\Support\PHPCacheFile;
 use Snicco\Core\Routing\Exception\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\UrlMatcher\RouteGroup;
@@ -54,7 +54,7 @@ final class Router implements UrlMatcher, UrlGenerator
     
     private UrlGeneratorFactory $generator_factory;
     
-    private ?CacheFile $cache_file;
+    private ?PHPCacheFile $cache_file;
     
     /**
      * @var array<RouteGroup>
@@ -68,14 +68,14 @@ final class Router implements UrlMatcher, UrlGenerator
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
-        CacheFile $cache_file = null
+        PHPCacheFile $cache_file = null
     ) {
         $this->cache_file = $cache_file;
         
         $this->condition_factory = $condition_factory;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
-            $cache = require($this->cache_file->asString());
+            $cache = $this->cache_file->require();
             Assert::keyExists($cache, 'route_collection');
             Assert::keyExists($cache, 'fast_route');
             $this->fast_route_cache = $cache['fast_route'];
@@ -293,7 +293,7 @@ final class Router implements UrlMatcher, UrlGenerator
             'fast_route' => $fast_route_data,
         ];
         $res = file_put_contents(
-            $this->cache_file->asString(),
+            $this->cache_file->realpath(),
             '<?php return '.var_export($arr, true).';'
         );
         

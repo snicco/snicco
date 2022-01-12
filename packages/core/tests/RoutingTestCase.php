@@ -10,8 +10,8 @@ use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Support\CacheFile;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Support\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\MiddlewarePipeline;
@@ -147,7 +147,7 @@ class RoutingTestCase extends UnitTest
         return $this->routing_configurator;
     }
     
-    final protected function refreshRouter(CacheFile $cache_file = null, UrlGenerationContext $context = null, array $config = [])
+    final protected function refreshRouter(PHPCacheFile $cache_file = null, UrlGenerationContext $context = null, array $config = [])
     {
         unset($this->container[RoutingMiddleware::class]);
         unset($this->container[UrlGenerator::class]);
