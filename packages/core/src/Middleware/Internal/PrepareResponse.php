@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware\Core;
+namespace Snicco\Core\Middleware\Internal;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
+/**
+ * @internal
+ */
 final class PrepareResponse extends AbstractMiddleware
 {
     

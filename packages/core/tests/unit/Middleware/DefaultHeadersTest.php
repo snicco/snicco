@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Response;
-use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\DefaultHeaders;
 
-class DefaultHeadersTest extends MiddlewareTestCase
+class DefaultHeadersTest extends InternalMiddlewareTestCase
 {
     
     /** @test */
@@ -40,7 +40,7 @@ class DefaultHeadersTest extends MiddlewareTestCase
     /** @test */
     public function header_values_are_not_overwritten()
     {
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withHeader('foo', 'bar');
         });
         

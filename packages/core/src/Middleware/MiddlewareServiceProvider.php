@@ -6,20 +6,14 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Http\ResponseEmitter;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Middleware\Core\RouteRunner;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Core\Factories\RouteActionFactory;
-use Snicco\Core\Middleware\Core\ShareCookies;
-use Snicco\Core\Middleware\Core\MethodOverride;
-use Snicco\Core\Middleware\Core\RoutingMiddleware;
-use Snicco\Core\Middleware\Core\SetRequestAttributes;
-use Snicco\Core\Middleware\Core\OpenRedirectProtection;
+use Snicco\Core\Middleware\Internal\RouteRunner;
+use Snicco\Core\Middleware\Internal\MiddlewareStack;
+use Snicco\Core\Middleware\Internal\RoutingMiddleware;
+use Snicco\Core\Middleware\Internal\MiddlewareFactory;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
-use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
 {
@@ -115,8 +109,8 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindEvaluateResponseMiddleware()
     {
-        $this->container->singleton(EvaluateResponseAbstractMiddleware::class, function () {
-            return new EvaluateResponseAbstractMiddleware(
+        $this->container->singleton(MustMatchRoute::class, function () {
+            return new MustMatchRoute(
                 $this->config->get('routing.must_match_web_routes', false)
             );
         });

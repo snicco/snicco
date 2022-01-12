@@ -6,11 +6,11 @@ namespace Tests\Core\unit\Middleware;
 
 use Closure;
 use Webmozart\Assert\Assert;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Middleware\Authorize;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
-class AuthorizeTest extends MiddlewareTestCase
+class AuthorizeTest extends InternalMiddlewareTestCase
 {
     
     protected function setUp() :void

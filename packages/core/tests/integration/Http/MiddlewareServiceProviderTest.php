@@ -6,15 +6,15 @@ namespace Tests\Core\integration\Http;
 
 use Snicco\Core\Middleware\Www;
 use Snicco\Core\Middleware\Secure;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Middleware\TrailingSlash;
-use Snicco\Core\Middleware\MiddlewareStack;
-use Snicco\Core\Middleware\Core\RouteRunner;
+use Snicco\Core\Middleware\MustMatchRoute;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Middleware\Core\OpenRedirectProtection;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
+use Snicco\Core\Middleware\Internal\RouteRunner;
+use Snicco\Core\Middleware\OpenRedirectProtection;
+use Snicco\Core\Middleware\Internal\MiddlewareStack;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
+use Snicco\Core\Middleware\OutputBufferAbstractMiddleware;
 
 class MiddlewareServiceProviderTest extends FrameworkTestCase
 {
@@ -72,8 +72,8 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     public function all_middlewares_are_built_correctly()
     {
         $this->assertInstanceOf(
-            EvaluateResponseAbstractMiddleware::class,
-            TestApp::resolve(EvaluateResponseAbstractMiddleware::class)
+            MustMatchRoute::class,
+            TestApp::resolve(MustMatchRoute::class)
         );
         $this->assertInstanceOf(RouteRunner::class, TestApp::resolve(RouteRunner::class));
         $this->assertInstanceOf(MiddlewareStack::class, TestApp::resolve(MiddlewareStack::class));

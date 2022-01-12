@@ -7,13 +7,13 @@ namespace Tests\SignedUrlMiddleware\unit;
 use Snicco\SignedUrl\Secret;
 use Psr\Log\Test\TestLogger;
 use Snicco\SignedUrl\UrlSigner;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\SignedUrl\Sha256Hasher;
 use Tests\Codeception\shared\TestClock;
 use Snicco\SignedUrl\Storage\InMemoryStorage;
 use Snicco\SignedUrlMiddleware\CollectGarbage;
 
-final class CollectGarbageTest extends MiddlewareTestCase
+final class CollectGarbageTestInternal extends InternalMiddlewareTestCase
 {
     
     /** @test */

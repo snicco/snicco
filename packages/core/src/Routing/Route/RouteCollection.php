@@ -11,7 +11,7 @@ use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use function count;
 
 /**
- * @interal
+ * @internal
  */
 final class RouteCollection implements Routes
 {

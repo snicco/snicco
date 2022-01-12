@@ -10,6 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
+/**
+ * @api
+ */
 final class Authorize extends AbstractMiddleware
 {
     

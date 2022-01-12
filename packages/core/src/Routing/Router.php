@@ -23,6 +23,7 @@ use Snicco\Core\Routing\Route\RouteCollection;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\Routing\Route\CachedRouteCollection;
+use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 use Snicco\Core\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
@@ -67,15 +68,18 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
     /**
      * @var array<string,Route>
      */
-    private array $_routes = [];
+    private array          $_routes = [];
+    private AdminDashboard $admin_dashboard;
     
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
+        AdminDashboard $admin_dashboard,
         PHPCacheFile $cache_file = null
     ) {
         $this->cache_file = $cache_file;
         $this->condition_factory = $condition_factory;
+        $this->admin_dashboard = $admin_dashboard;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
             $cache = $this->cache_file->require();
@@ -129,6 +133,8 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         if ($this->cache_file && ! $this->cache_file->isCreated()) {
             $this->createCache($data);
         }
+        
+        $request = $this->allowMatchingAdminDashboardRequests($request);
         
         return (new FastRouteDispatcher(
             $this->getRoutes(), $data, $this->condition_factory
@@ -344,6 +350,22 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
     private function getRoutes() :Routes
     {
         return $this->cached_routes ?? new RouteCollection($this->_routes);
+    }
+    
+    private function allowMatchingAdminDashboardRequests(Request $request) :Request
+    {
+        if ( ! $request->isGet()) {
+            return $request;
+        }
+        
+        if ( ! $this->admin_dashboard->goesTo($request)) {
+            return $request;
+        }
+        
+        $uri = $request->getUri();
+        $new_uri = $uri->withPath($this->admin_dashboard->rewriteForRouting($request));
+        
+        return $request->withUri($new_uri);
     }
     
 }

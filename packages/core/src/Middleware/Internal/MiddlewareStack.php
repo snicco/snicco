@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware;
+namespace Snicco\Core\Middleware\Internal;
 
 use LogicException;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
-class MiddlewareStack
+/**
+ * @internal
+ */
+final class MiddlewareStack
 {
     
     private array $middleware_groups = [
@@ -52,8 +55,9 @@ class MiddlewareStack
     
     public function createForRequestWithoutRoute(Request $request, bool $force_include_global = false) :array
     {
-        $middleware =
-            $this->expandMiddleware($this->coreMiddleware($request, $force_include_global));
+        $middleware = $this->expandMiddleware(
+            $this->coreMiddleware($request, $force_include_global)
+        );
         $middleware = $this->uniqueMiddleware($middleware);
         
         return $this->sortMiddleware($middleware, $this->middleware_priority);

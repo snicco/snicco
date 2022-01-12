@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware\Core;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -12,6 +11,9 @@ use Snicco\Core\Contracts\AbstractMiddleware;
 use function in_array;
 use function strtoupper;
 
+/**
+ * @api
+ */
 final class MethodOverride extends AbstractMiddleware
 {
     

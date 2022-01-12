@@ -11,7 +11,6 @@ use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Responsable;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
@@ -19,6 +18,7 @@ use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionAbstractController extends AbstractController

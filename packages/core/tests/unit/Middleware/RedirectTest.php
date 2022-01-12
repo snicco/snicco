@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Snicco\Core\Middleware\Redirect;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 
-class RedirectTest extends MiddlewareTestCase
+class RedirectTest extends InternalMiddlewareTestCase
 {
     
     protected function tearDown() :void

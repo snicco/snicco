@@ -5,57 +5,57 @@ declare(strict_types=1);
 namespace Tests\Core;
 
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Support\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Http\MiddlewarePipeline;
 use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Middleware\ShareCookies;
 use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\FileTemplateRenderer;
-use Snicco\Core\Middleware\MiddlewareStack;
+use Snicco\Core\Middleware\MethodOverride;
+use Snicco\Core\Middleware\MustMatchRoute;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Controllers\ViewController;
-use Snicco\Core\Middleware\Core\RouteRunner;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Core\Middleware\MiddlewareFactory;
 use Snicco\Core\Contracts\AbstractMiddleware;
-use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Middleware\Core\MethodOverride;
 use Snicco\Core\Controllers\FallBackController;
 use Snicco\Core\Controllers\RedirectController;
-use Snicco\Core\Middleware\Core\PrepareResponse;
+use Snicco\Core\Middleware\Internal\RouteRunner;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Core\Middleware\Core\RoutingMiddleware;
+use Snicco\Core\Middleware\Internal\MiddlewareStack;
+use Snicco\Core\Middleware\Internal\PrepareResponse;
 use Snicco\Core\Routing\UrlGenerator\RFC3986Encoder;
 use Tests\Core\fixtures\TestDoubles\TestViewFactory;
 use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\Core\Middleware\Internal\MiddlewareFactory;
+use Snicco\Core\Middleware\Internal\RoutingMiddleware;
 use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
-use Snicco\Core\Middleware\Core\AllowMatchingAdminRoutes;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
+use Snicco\Core\Middleware\OutputBufferAbstractMiddleware;
+use Snicco\Core\Middleware\Internal\AllowMatchingAdminRoutes;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
 use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
 use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfiguratorUsingRouter;
@@ -170,6 +170,7 @@ class RoutingTestCase extends UnitTest
                 $this->admin_dashboard,
                 new RFC3986Encoder(),
             ),
+            $this->admin_dashboard,
             $cache_file
         );
         
@@ -281,15 +282,10 @@ class RoutingTestCase extends UnitTest
         );
         
         $this->container->instance(
-            EvaluateResponseAbstractMiddleware::class,
-            new EvaluateResponseAbstractMiddleware()
+            MustMatchRoute::class,
+            new MustMatchRoute()
         );
         $this->container->instance(ShareCookies::class, new ShareCookies());
-        
-        $this->container->instance(
-            AllowMatchingAdminRoutes::class,
-            new AllowMatchingAdminRoutes($this->admin_dashboard)
-        );
         
         // internal controllers
         $this->container->instance(FallBackController::class, new FallBackController());

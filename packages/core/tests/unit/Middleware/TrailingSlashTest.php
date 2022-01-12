@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Middleware\TrailingSlash;
+use Tests\Core\InternalMiddlewareTestCase;
 
-class TrailingSlashTest extends MiddlewareTestCase
+class TrailingSlashTest extends InternalMiddlewareTestCase
 {
     
     public function testRedirectNoSlashToTrailingSlash()

@@ -8,13 +8,20 @@ use LogicException;
 use DateTimeInterface;
 use InvalidArgumentException;
 
+use function is_int;
+use function ucwords;
+use function in_array;
+use function urlencode;
+use function array_merge;
+
+/**
+ * @api This class represent a cookie that is meant to be sent to the client. Not an incoming
+ *     request cookie.
+ */
 final class Cookie
 {
     
-    /**
-     * @var array
-     */
-    private $defaults = [
+    private array $defaults = [
         'value' => '',
         'domain' => null,
         'hostonly' => true,
@@ -25,15 +32,9 @@ final class Cookie
         'samesite' => 'Lax',
     ];
     
-    /**
-     * @var array
-     */
-    private $properties;
+    private array $properties;
     
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
     
     public function __construct(string $name, string $value, bool $url_encode = true)
     {

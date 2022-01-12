@@ -9,7 +9,7 @@ use RuntimeException;
 use DateTimeImmutable;
 use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Session\ValueObjects\SessionId;
@@ -23,7 +23,7 @@ use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\ValueObjects\SerializedSessionData;
 use Snicco\Session\Contracts\ImmutableSessionInterface;
 
-final class StartSessionTest extends MiddlewareTestCase
+final class StartSessionTestInternal extends InternalMiddlewareTestCase
 {
     
     use SessionHelpers;
@@ -119,7 +119,7 @@ final class StartSessionTest extends MiddlewareTestCase
         $middleware = $this->newMiddleware();
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->setNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $session = $request->getAttribute(Keys::READ_SESSION);
             $this->assertInstanceOf(ImmutableSessionInterface::class, $session);
             return $response->withAddedHeader('X-Called', '1');
@@ -142,13 +142,15 @@ final class StartSessionTest extends MiddlewareTestCase
         
         $middleware = $this->newMiddleware('/foo', 'my_cookie', $driver);
         
-        $this->setNextMiddlewareResponse(function (Response $response, Request $request) use ($id) {
-            $session = $request->getAttribute(Keys::READ_SESSION);
-            $this->assertInstanceOf(ImmutableSessionInterface::class, $session);
-            $this->assertNotInstanceOf(Session::class, $session);
-            $this->assertTrue($id->sameAs($session->id()));
-            return $response->withAddedHeader('X-Called', '1');
-        });
+        $this->withNextMiddlewareResponse(
+            function (Response $response, Request $request) use ($id) {
+                $session = $request->getAttribute(Keys::READ_SESSION);
+                $this->assertInstanceOf(ImmutableSessionInterface::class, $session);
+                $this->assertNotInstanceOf(Session::class, $session);
+                $this->assertTrue($id->sameAs($session->id()));
+                return $response->withAddedHeader('X-Called', '1');
+            }
+        );
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
         $response->assertHeader('X-Called', '1');
@@ -160,7 +162,7 @@ final class StartSessionTest extends MiddlewareTestCase
         $middleware = $this->newMiddleware();
         $request = $this->frontendRequest('GET', '/foo');
         
-        $this->setNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $write_session = $request->getAttribute(Keys::WRITE_SESSION);
             $this->assertNull($write_session);
             
@@ -181,7 +183,7 @@ final class StartSessionTest extends MiddlewareTestCase
         $middleware = $this->newMiddleware();
         $request = $this->frontendRequest('POST', '/foo');
         
-        $this->setNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $write_session = $request->getAttribute(Keys::WRITE_SESSION);
             $this->assertInstanceOf(MutableSessionInterface::class, $write_session);
             $this->assertInstanceOf(SessionInterface::class, $write_session);

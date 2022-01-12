@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware\Core;
+namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Http\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
-class ShareCookies extends AbstractMiddleware
+/**
+ * @api
+ */
+final class ShareCookies extends AbstractMiddleware
 {
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

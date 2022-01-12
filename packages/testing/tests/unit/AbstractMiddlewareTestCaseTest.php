@@ -6,9 +6,9 @@ namespace Tests\Testing\unit;
 
 use Mockery;
 use RuntimeException;
-use Snicco\Core\Http\Delegate;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Snicco\Testing\MiddlewareTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -148,7 +148,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         
         $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         
-        $this->assertSame('bar', $this->receivedRequest()->getAttribute('foo'));
+        $this->assertSame('bar', $this->getReceivedRequest()->getAttribute('foo'));
     }
     
     /** @test */
@@ -167,7 +167,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         
         try {
-            $this->assertSame('bar', $this->receivedRequest()->getAttribute('foo'));
+            $this->assertSame('bar', $this->getReceivedRequest()->getAttribute('foo'));
             $this->fail('Test assertions gave false result.');
         } catch (RuntimeException $e) {
             $this->assertStringStartsWith('The next middleware was not called.', $e->getMessage());
@@ -199,7 +199,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /** @test */
     public function testCustomResponseForNextMiddleware()
     {
-        $this->setNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function () {
             return $this->response_factory->html('foo');
         });
         
@@ -221,7 +221,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /** @test */
     public function testNextMiddlewareCalledIsStillTrueWithCustomResponse()
     {
-        $this->setNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function () {
             return $this->response_factory->html('foo');
         });
         

@@ -8,25 +8,25 @@ use RuntimeException;
 use DateTimeImmutable;
 use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Session\ImmutableSession;
-use Snicco\Core\Http\MiddlewarePipeline;
+use Snicco\Core\Middleware\ShareCookies;
 use Snicco\Session\ValueObjects\SessionId;
-use Snicco\Core\Middleware\MiddlewareFactory;
-use Snicco\Core\Middleware\Core\ShareCookies;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\ValueObjects\SessionConfig;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
 use Snicco\PimpleContainer\PimpleContainerAdapter;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\Session\Contracts\MutableSessionInterface;
+use Snicco\Core\Middleware\Internal\MiddlewareFactory;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
-final class HandleStatefulRequestTest extends MiddlewareTestCase
+final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
 {
     
     use CreatePsr17Factories;
@@ -42,7 +42,7 @@ final class HandleStatefulRequestTest extends MiddlewareTestCase
         
         $middleware = new HandleStatefulRequest($manager);
         
-        $this->setNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             /** @var MutableSessionInterface $session */
             $session = $request->getAttribute(Keys::WRITE_SESSION);
             $session->put('foo', 'baz');

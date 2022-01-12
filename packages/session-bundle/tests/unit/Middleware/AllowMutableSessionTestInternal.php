@@ -6,13 +6,13 @@ namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Session\Contracts\SessionInterface;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\AllowMutableSession;
 
-final class AllowMutableSessionTest extends MiddlewareTestCase
+final class AllowMutableSessionTestInternal extends InternalMiddlewareTestCase
 {
     
     use SessionHelpers;
@@ -24,7 +24,7 @@ final class AllowMutableSessionTest extends MiddlewareTestCase
         
         $request = $this->frontendRequest();
         
-        $this->setNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $this->assertInstanceOf(
                 SessionInterface::class,
                 $request->getAttribute(Keys::WRITE_SESSION)

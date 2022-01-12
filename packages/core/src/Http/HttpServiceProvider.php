@@ -15,6 +15,7 @@ use Snicco\Core\Controllers\FallBackController;
 use Snicco\Core\Controllers\RedirectController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 

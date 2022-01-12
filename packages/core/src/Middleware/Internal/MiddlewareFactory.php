@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Middleware;
+namespace Snicco\Core\Middleware\Internal;
 
 use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
@@ -10,6 +10,9 @@ use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Support\ReflectionDependencies;
 
+/**
+ * @internal
+ */
 final class MiddlewareFactory
 {
     

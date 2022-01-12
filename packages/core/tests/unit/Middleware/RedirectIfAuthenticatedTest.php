@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Closure;
-use Tests\Core\MiddlewareTestCase;
 use Snicco\Core\Routing\Route\Route;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Middleware\RedirectIfAuthenticated;
 
-class RedirectIfAuthenticatedTest extends MiddlewareTestCase
+class RedirectIfAuthenticatedTest extends InternalMiddlewareTestCase
 {
     
     /** @test */
@@ -25,7 +25,7 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
     public function logged_in_users_are_redirected_to_a_dashboard_route_if_it_exists()
     {
         $route = Route::create('/dashboard', Route::DELEGATE, 'dashboard');
-        $this->routes()->add($route);
+        $this->withRoutes([$route]);
         
         $provider = $this->providerThatReturnsId(1);
         
@@ -39,7 +39,7 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
     public function logged_in_users_are_redirected_to_a_home_route_if_it_exists_and_no_dashboard_route_exists()
     {
         $route = Route::create('/home', Route::DELEGATE, 'home');
-        $this->routes()->add($route);
+        $this->withRoutes([$route]);
         
         $provider = $this->providerThatReturnsId(1);
         

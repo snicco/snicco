@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Snicco\Core\Http\Cookie;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Http\Psr7\Response;
-use Tests\Core\MiddlewareTestCase;
-use Snicco\Core\Middleware\Core\ShareCookies;
+use Snicco\Core\Middleware\ShareCookies;
 
-class ShareCookiesTest extends MiddlewareTestCase
+class ShareCookiesTest extends InternalMiddlewareTestCase
 {
     
     /** @test */
@@ -21,13 +21,13 @@ class ShareCookiesTest extends MiddlewareTestCase
         );
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('bar', $this->receivedRequest()->cookies()->get('foo'));
+        $this->assertSame('bar', $this->getReceivedRequest()->cookies()->get('foo'));
     }
     
     /** @test */
     public function response_cookies_can_be_added()
     {
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withCookie(new Cookie('foo', 'bar'));
         });
         
@@ -46,7 +46,7 @@ class ShareCookiesTest extends MiddlewareTestCase
     /** @test */
     public function multiple_cookies_can_be_added()
     {
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             $cookie1 = new Cookie('foo', 'bar');
             $cookie2 = new Cookie('baz', 'biz');
             
@@ -74,7 +74,7 @@ class ShareCookiesTest extends MiddlewareTestCase
     /** @test */
     public function a_cookie_can_be_deleted()
     {
-        $this->setNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withoutCookie('foo');
         });
         
