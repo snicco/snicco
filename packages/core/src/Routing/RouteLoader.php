@@ -60,6 +60,8 @@ final class RouteLoader
         foreach ($finder as $file) {
             $name = $file->getFilenameWithoutExtension();
             
+            // Make sure that web.php file is always loaded last
+            // because users are expected to register the fallback route there.
             if (self::WEB_ROUTES_NAME === $name) {
                 $web_file = $file;
                 continue;
