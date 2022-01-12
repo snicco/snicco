@@ -19,6 +19,7 @@ interface RoutingConfigurator
     const NAMESPACE_KEY = 'namespace';
     const NAME_KEY = 'name';
     const WEB_MIDDLEWARE = 'web';
+    const API_MIDDLEWARE = 'api';
     const ADMIN_MIDDLEWARE = 'admin';
     const GLOBAL_MIDDLEWARE = 'global';
     

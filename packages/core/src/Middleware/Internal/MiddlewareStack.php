@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware\Internal;
 
 use LogicException;
+use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 /**
@@ -14,20 +16,32 @@ use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 final class MiddlewareStack
 {
     
-    private array $middleware_groups = [
-        'web' => [],
-        'admin' => [],
-        'global' => [],
+    private array $core_groups = [
+        RoutingConfigurator::WEB_MIDDLEWARE => [],
+        RoutingConfigurator::ADMIN_MIDDLEWARE => [],
+        RoutingConfigurator::API_MIDDLEWARE => [],
+        RoutingConfigurator::GLOBAL_MIDDLEWARE => [],
     ];
     
     private array $route_middleware_aliases = [];
-    private array $middleware_priority      = [];
-    private bool  $middleware_disabled      = false;
-    private bool  $always_with_core_middleware;
     
-    public function __construct(bool $always_with_core_middleware = false)
+    private array $middleware_priority = [];
+    
+    private bool $middleware_disabled = false;
+    
+    private array $run_always_on_mismatch = [];
+    
+    public function __construct(array $middleware_to_always_run_on_non_route_match = [])
     {
-        $this->always_with_core_middleware = $always_with_core_middleware;
+        Assert::allString($middleware_to_always_run_on_non_route_match);
+        foreach ($middleware_to_always_run_on_non_route_match as $middleware) {
+            Assert::keyExists(
+                $this->core_groups,
+                $middleware,
+                '[%s] can not be used as middleware that is always run for non matching routes.'
+            );
+            $this->run_always_on_mismatch[$middleware] = $middleware;
+        }
     }
     
     public function createWithRouteMiddleware(array $route_middleware) :array
@@ -36,12 +50,12 @@ final class MiddlewareStack
             return [];
         }
         
-        $middleware = $this->middleware_groups['global'];
+        $middleware = $this->core_groups['global'];
         
         foreach ($route_middleware as $name) {
-            if (isset($this->middleware_groups[$name])) {
+            if (isset($this->core_groups[$name])) {
                 unset($route_middleware[$name]);
-                $middleware = array_merge($middleware, $this->middleware_groups[$name]);
+                $middleware = array_merge($middleware, $this->core_groups[$name]);
             }
             else {
                 $middleware[] = $name;
@@ -53,10 +67,10 @@ final class MiddlewareStack
         return $this->sortMiddleware($middleware, $this->middleware_priority);
     }
     
-    public function createForRequestWithoutRoute(Request $request, bool $force_include_global = false) :array
+    public function createForRequestWithoutRoute(Request $request) :array
     {
         $middleware = $this->expandMiddleware(
-            $this->coreMiddleware($request, $force_include_global)
+            $this->middlewareForNonMatchingRequest($request)
         );
         $middleware = $this->uniqueMiddleware($middleware);
         
@@ -65,7 +79,7 @@ final class MiddlewareStack
     
     public function withMiddlewareGroup(string $group, array $middlewares)
     {
-        $this->middleware_groups[$group] = $middlewares;
+        $this->core_groups[$group] = $middlewares;
     }
     
     public function middlewarePriority(array $middleware_priority)
@@ -84,26 +98,52 @@ final class MiddlewareStack
         $this->middleware_disabled = true;
     }
     
-    private function coreMiddleware(Request $request, bool $force_include_global = false) :array
+    private function middlewareForNonMatchingRequest(Request $request) :array
     {
         if ($this->middleware_disabled) {
             return [];
         }
         
-        if ( ! $this->always_with_core_middleware) {
-            return $force_include_global ? ['global'] : [];
+        $middleware = [];
+        
+        if (in_array(RoutingConfigurator::GLOBAL_MIDDLEWARE, $this->run_always_on_mismatch, true)) {
+            $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
         }
         
-        $middleware = ['global'];
+        if ($request->isApiEndpoint()) {
+            if (in_array(
+                RoutingConfigurator::API_MIDDLEWARE,
+                $this->run_always_on_mismatch,
+                true
+            )) {
+                return $middleware + [RoutingConfigurator::API_MIDDLEWARE];
+            }
+            
+            return $middleware;
+        }
         
         if ($request->isFrontend()) {
-            $middleware[] = 'web';
+            if (in_array(
+                RoutingConfigurator::WEB_MIDDLEWARE,
+                $this->run_always_on_mismatch,
+                true
+            )) {
+                return $middleware + [RoutingConfigurator::WEB_MIDDLEWARE];
+            }
+            
+            return $middleware;
         }
-        elseif ($request->isToAdminDashboard()) {
-            $middleware[] = 'admin';
-        }
-        elseif ($request->isWpAjax()) {
-            $middleware[] = 'ajax';
+        
+        if ($request->isAdminArea()) {
+            if (in_array(
+                RoutingConfigurator::ADMIN_MIDDLEWARE,
+                $this->run_always_on_mismatch,
+                true
+            )) {
+                return $middleware + [RoutingConfigurator::ADMIN_MIDDLEWARE];
+            }
+            
+            return $middleware;
         }
         
         return $middleware;
@@ -181,7 +221,7 @@ final class MiddlewareStack
      */
     private function expandMiddlewareGroup(string $group) :array
     {
-        $middleware_in_group = $this->middleware_groups[$group];
+        $middleware_in_group = $this->core_groups[$group];
         
         return $this->expandMiddleware($middleware_in_group);
     }
@@ -230,7 +270,7 @@ final class MiddlewareStack
             ];
         }
         
-        if (isset($this->middleware_groups[$middleware])) {
+        if (isset($this->core_groups[$middleware])) {
             return $this->expandMiddlewareGroup($middleware);
         }
         

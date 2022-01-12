@@ -9,11 +9,9 @@ use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Middleware\Delegate;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Support\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
-use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Middleware\ShareCookies;
 use Snicco\Core\Http\ResponsePreparation;
@@ -24,11 +22,11 @@ use Snicco\Core\Middleware\MustMatchRoute;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Controllers\ViewController;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Controllers\FallBackController;
 use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Middleware\Internal\TagRequest;
 use Snicco\Core\Middleware\Internal\RouteRunner;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
@@ -52,9 +50,8 @@ use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\Core\Middleware\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Internal\AllowMatchingAdminRoutes;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
@@ -85,6 +82,7 @@ class RoutingTestCase extends UnitTest
     private UrlGenerationContext   $request_context;
     private MiddlewareStack        $middleware_stack;
     private WebRoutingConfigurator $routing_configurator;
+    private MiddlewarePipeline     $pipeline;
     
     protected function setUp() :void
     {
@@ -117,6 +115,22 @@ class RoutingTestCase extends UnitTest
         foreach ($middlewares as $name => $middleware) {
             $this->middleware_stack->withMiddlewareGroup($name, $middleware);
         }
+    }
+    
+    final protected function withGlobalMiddleware(array $middleware)
+    {
+        $this->withMiddlewareGroups([RoutingConfigurator::GLOBAL_MIDDLEWARE => $middleware]);
+    }
+    
+    final protected function withNewMiddlewareStack(MiddlewareStack $middleware_stack)
+    {
+        $this->middleware_stack = $middleware_stack;
+        $this->container[MiddlewareStack::class] = $middleware_stack;
+        $this->container[RouteRunner::class] = new RouteRunner(
+            $this->pipeline,
+            $middleware_stack,
+            $this->container
+        );
     }
     
     final protected function withMiddlewareAlias(array $aliases)
@@ -237,7 +251,7 @@ class RoutingTestCase extends UnitTest
         );
         
         $this->kernel = new HttpKernel(
-            new MiddlewarePipeline(
+            $this->pipeline = new MiddlewarePipeline(
                 $middleware_factory = new MiddlewareFactory($this->container),
                 $error_handler,
             ),
@@ -251,17 +265,14 @@ class RoutingTestCase extends UnitTest
         $this->middleware_stack = new MiddlewareStack();
         $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
         
+        $this->container[TagRequest::class] = new TagRequest($this->admin_dashboard);
+        
         $this->container->instance(
             PrepareResponse::class,
             new PrepareResponse(new ResponsePreparation($this->psrStreamFactory()))
         );
         
         $this->container->instance(MethodOverride::class, new MethodOverride());
-        
-        $this->container->instance(
-            OutputBufferAbstractMiddleware::class,
-            $this->outputBufferMiddleware()
-        );
         
         $this->container->singleton(RoutingMiddleware::class, function () {
             return new RoutingMiddleware(
@@ -296,19 +307,6 @@ class RoutingTestCase extends UnitTest
         );
         
         $this->container->instance(RedirectController::class, new RedirectController());
-    }
-    
-    final private function outputBufferMiddleware() :AbstractMiddleware
-    {
-        return new class extends AbstractMiddleware
-        {
-            
-            public function handle(Request $request, Delegate $next) :ResponseInterface
-            {
-                return $next($request);
-            }
-            
-        };
     }
     
 }

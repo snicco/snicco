@@ -125,4 +125,16 @@ class FallbackRouteTest extends RoutingTestCase
         $this->runKernel($this->frontendRequest('GET', '/wp-admin/foo'))->assertDelegated();
     }
     
+    /** @test */
+    public function the_fallback_route_will_match_trailing_slashes()
+    {
+        $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
+        
+        $request = $this->frontendRequest('GET', '/bar/');
+        $this->assertResponseBody('fallback:bar/', $request);
+        
+        $request = $this->frontendRequest('GET', '/bar/baz/');
+        $this->assertResponseBody('fallback:bar/baz/', $request);
+    }
+    
 }
