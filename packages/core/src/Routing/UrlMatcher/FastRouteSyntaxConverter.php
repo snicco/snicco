@@ -26,7 +26,7 @@ use function preg_replace_callback;
  *
  * @interal
  */
-final class FastRouteSyntax
+final class FastRouteSyntaxConverter
 {
     
     public function convert(Route $route) :string

@@ -22,13 +22,13 @@ use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Core\Routing\Route\RouteCollection;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Core\Routing\UrlMatcher\FastRouteSyntax;
 use Snicco\Core\Routing\Route\CachedRouteCollection;
 use Snicco\Core\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
 use Snicco\Core\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Core\Routing\UrlMatcher\FastRouteSyntaxConverter;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
@@ -295,7 +295,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         }
         
         $collector = new RouteCollector(new RouteParser(), new DataGenerator());
-        $syntax = new FastRouteSyntax();
+        $syntax = new FastRouteSyntaxConverter();
         
         $routes = $this->getRoutes();
         foreach ($routes as $route) {
