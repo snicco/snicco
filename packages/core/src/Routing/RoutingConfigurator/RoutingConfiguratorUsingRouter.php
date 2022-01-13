@@ -290,10 +290,10 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     
     public function getIterator() :ArrayIterator
     {
-        return new ArrayIterator($this->all());
+        return new ArrayIterator($this->items());
     }
     
-    public function all() :array
+    public function items() :array
     {
         return array_values($this->menu_items);
     }

@@ -6,12 +6,12 @@ namespace Snicco\Core\Routing\RoutingConfigurator;
 
 use Closure;
 use Snicco\Core\Routing\Route\Route;
-use Snicco\Core\Routing\AdminDashboard\AdminMenuItems;
+use Snicco\Core\Routing\AdminDashboard\AdminMenu;
 
 /**
  * @api
  */
-interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenuItems
+interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
 {
     
     /**

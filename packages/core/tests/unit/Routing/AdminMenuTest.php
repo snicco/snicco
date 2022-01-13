@@ -32,7 +32,7 @@ final class AdminMenuTest extends RoutingTestCase
         $this->configurator->page('admin1', '/foo', Route::DELEGATE, [], null);
         $this->configurator->page(
             'admin2',
-            '/foo',
+            '/bar',
             Route::DELEGATE,
             [
                 AdminMenuItem::MENU_TITLE => 'My explicit menu title',
@@ -40,7 +40,7 @@ final class AdminMenuTest extends RoutingTestCase
             null
         );
         
-        $items = $this->configurator->all();
+        $items = $this->configurator->items();
         
         $this->assertCount(0, $items);
     }
@@ -63,7 +63,7 @@ final class AdminMenuTest extends RoutingTestCase
             null
         );
         
-        $items = $this->configurator->all();
+        $items = $this->configurator->items();
         
         $this->assertCount(2, $items);
         
@@ -99,7 +99,7 @@ final class AdminMenuTest extends RoutingTestCase
             null
         );
         
-        $item = $this->configurator->all();
+        $item = $this->configurator->items();
         
         $first = $item[0];
         $this->assertSame('My explicit menu title', $first->menuTitle());
@@ -121,7 +121,7 @@ final class AdminMenuTest extends RoutingTestCase
             null
         );
         
-        $item = $this->configurator->all();
+        $item = $this->configurator->items();
         
         $this->assertCount(0, $item);
     }
@@ -138,7 +138,7 @@ final class AdminMenuTest extends RoutingTestCase
         
         $this->configurator->page(
             'admin_sub',
-            '/admin.php/parent',
+            '/admin.php/sub',
             RoutingTestController::class,
             [
                 AdminMenuItem::MENU_TITLE => 'My explicit menu title',
@@ -146,7 +146,7 @@ final class AdminMenuTest extends RoutingTestCase
             $r1,
         );
         
-        $items = $this->configurator->all();
+        $items = $this->configurator->items();
         
         $this->assertCount(2, $items);
         
@@ -169,7 +169,7 @@ final class AdminMenuTest extends RoutingTestCase
             $router->page('admin_sub_2', '/admin.php/sub2', RoutingTestController::class);
         });
         
-        $items = $this->configurator->all();
+        $items = $this->configurator->items();
         
         $this->assertCount(3, $items);
         
@@ -293,7 +293,7 @@ final class AdminMenuTest extends RoutingTestCase
             'options.php'
         );
         
-        $items = $this->configurator->all();
+        $items = $this->configurator->items();
         
         $this->assertCount(1, $items);
         
@@ -428,6 +428,21 @@ final class AdminMenuTest extends RoutingTestCase
             [],
             1
         );
+    }
+    
+    /** @test */
+    public function test_is_iterator()
+    {
+        $this->configurator->page('page1', 'admin.php/foo', RoutingTestController::class);
+        $this->configurator->page('page2', 'admin.php/bar', RoutingTestController::class);
+        $this->configurator->page('page3', 'admin.php/baz', RoutingTestController::class);
+        
+        $count = 0;
+        foreach ($this->configurator as $key => $item) {
+            $this->assertIsInt($key);
+            $this->assertInstanceOf(AdminMenuItem::class, $item);
+            $count++;
+        }
     }
     
 }

@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\AdminDashboard;
 
+use IteratorAggregate;
+
 /**
- * @interal
+ * @api
  */
-interface AdminMenu
+interface AdminMenu extends IteratorAggregate
 {
     
-    public function add(AdminMenuItem $menu_item) :void;
+    /**
+     * @return AdminMenuItem[]
+     */
+    public function items() :array;
     
 }
