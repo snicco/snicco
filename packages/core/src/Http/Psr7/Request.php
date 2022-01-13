@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http\Psr7;
 
-use WP_User;
 use Snicco\Support\Str;
-use Snicco\Core\Support\WP;
 use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
 use Snicco\Support\Repository;
@@ -15,11 +13,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 use Snicco\Core\Http\Exceptions\RequestHasNoType;
 
-/**
- * @todo add ip() method
- */
-class Request implements ServerRequestInterface
+final class Request implements ServerRequestInterface
 {
+    
+    use ImplementsPsr7Request;
+    use InspectsRequest;
+    use InteractsWithInput;
     
     /**
      * @var @internal
@@ -41,64 +40,33 @@ class Request implements ServerRequestInterface
      */
     const TYPE_API = 3;
     
-    use ImplementsPsr7Request;
-    use InspectsRequest;
-    use InteractsWithInput;
-    
     public function __construct(ServerRequestInterface $psr_request)
     {
         $this->psr_request = $psr_request;
     }
     
-    public function withRoutingResult(RoutingResult $route) :Request
+    public static function fromPsr(ServerRequestInterface $psr_request) :Request
+    {
+        return new self($psr_request);
+    }
+    
+    final public function withRoutingResult(RoutingResult $route) :Request
     {
         return $this->withAttribute('_routing_result', $route);
     }
     
-    public function withCookies(array $cookies) :Request
+    final public function withCookies(array $cookies) :Request
     {
         return $this->withAttribute('cookies', new Repository($cookies));
     }
     
-    public function withUserId(int $user_id) :Request
-    {
-        return $this->withAttribute('_current_user_id', $user_id);
-    }
-    
-    /**
-     * @todo Figure out how psr7 immutability will affect this.
-     */
-    public function user() :WP_User
-    {
-        $user = $this->getAttribute('_current_user');
-        
-        if ( ! $user instanceof WP_User) {
-            $this->psr_request =
-                $this->psr_request->withAttribute('_current_user', $user = WP::currentUser());
-            
-            return $user;
-        }
-        
-        return $user;
-    }
-    
-    public function userId() :int
-    {
-        return $this->getAttribute('_current_user_id', 0);
-    }
-    
-    public function authenticated() :bool
-    {
-        return WP::isUserLoggedIn();
-    }
-    
-    public function userAgent()
+    final public function userAgent()
     {
         return substr($this->getHeaderLine('User-Agent'), 0, 500);
     }
     
     // path + query + fragment
-    public function fullRequestTarget() :string
+    final public function fullRequestTarget() :string
     {
         $fragment = $this->getUri()->getFragment();
         
@@ -107,23 +75,19 @@ class Request implements ServerRequestInterface
             : $this->getRequestTarget();
     }
     
-    public function url() :string
+    // scheme + host + path
+    final public function url() :string
     {
         return preg_replace('/\?.*/', '', $this->getUri());
     }
     
-    // host + path + query + fragment
-    public function fullUrl() :string
+    // scheme + host + path + query + fragment
+    final public function fullUrl() :string
     {
         return $this->getUri()->__toString();
     }
     
-    public function loadingScript() :string
-    {
-        return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
-    }
-    
-    public function cookies() :Repository
+    final public function cookies() :Repository
     {
         /** @var Repository $bag */
         $bag = $this->getAttribute('cookies', new Repository());
@@ -137,17 +101,12 @@ class Request implements ServerRequestInterface
         return $bag;
     }
     
-    public function expires(int $default = 0) :int
-    {
-        return (int) $this->query('expires', $default);
-    }
-    
-    public function path() :string
+    final function path() :string
     {
         return $this->getUri()->getPath();
     }
     
-    public function decodedPath() :string
+    final function decodedPath() :string
     {
         $path = $this->path();
         return implode(
@@ -158,7 +117,7 @@ class Request implements ServerRequestInterface
         );
     }
     
-    public function routeIs(...$patterns) :bool
+    final function routeIs(...$patterns) :bool
     {
         $route = $this->routingResult()->route();
         
@@ -177,7 +136,7 @@ class Request implements ServerRequestInterface
         return false;
     }
     
-    public function fullUrlIs(...$patterns) :bool
+    final function fullUrlIs(...$patterns) :bool
     {
         $url = $this->fullUrl();
         
@@ -190,7 +149,7 @@ class Request implements ServerRequestInterface
         return false;
     }
     
-    public function pathIs(...$patterns) :bool
+    final function pathIs(...$patterns) :bool
     {
         /** @var @todo Decoded or real path? */
         $path = Url::addLeading($this->decodedPath());
@@ -204,7 +163,7 @@ class Request implements ServerRequestInterface
         return false;
     }
     
-    public function routingResult() :RoutingResult
+    final function routingResult() :RoutingResult
     {
         return $this->getAttribute('_routing_result', RoutingResult::noMatch());
     }
@@ -218,7 +177,7 @@ class Request implements ServerRequestInterface
      *
      * @see ServerRequestCreator::createUriFromArray()
      */
-    public function isSecure() :bool
+    final public function isSecure() :bool
     {
         return 'https' === $this->getUri()->getScheme();
     }
@@ -226,7 +185,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws RequestHasNoType
      */
-    public function isToFrontend() :bool
+    final public function isToFrontend() :bool
     {
         return self::TYPE_FRONTEND === $this->getType();
     }
@@ -234,7 +193,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws RequestHasNoType
      */
-    public function isToAdminArea() :bool
+    final public function isToAdminArea() :bool
     {
         return self::TYPE_ADMIN_AREA === $this->getType();
     }
@@ -242,9 +201,14 @@ class Request implements ServerRequestInterface
     /**
      * @throws RequestHasNoType
      */
-    public function isToApiEndpoint() :bool
+    final public function isToApiEndpoint() :bool
     {
         return self::TYPE_API === $this->getType();
+    }
+    
+    final public function ip() :?string
+    {
+        return $this->server('REMOTE_ADDR');
     }
     
     /**

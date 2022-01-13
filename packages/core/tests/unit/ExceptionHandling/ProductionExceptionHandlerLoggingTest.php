@@ -13,9 +13,10 @@ use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
+use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\helpers\CreateContainer;
+use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
@@ -24,6 +25,8 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
     
     use CreateDefaultWpApiMocks;
     use CreateContainer;
+    use CreatePsrRequests;
+    use CreatePsr17Factories;
     
     private ContainerAdapter $container;
     private Request          $request;
@@ -35,7 +38,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         
         $this->container = $this->createContainer();
         $this->container->instance(Foo::class, new Foo());
-        $this->request = TestRequest::from('GET', 'foo');
+        $this->request = $this->frontendRequest('GET', '/foo');
         WP::shouldReceive('userId')->andReturn(10)->byDefault();
         WP::shouldReceive('isUserLoggedIn')->andReturnTrue()->byDefault();
         $GLOBALS['test']['log'] = [];

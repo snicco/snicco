@@ -13,17 +13,17 @@ use function Snicco\Core\Support\Functions\dataGet;
 trait InteractsWithInput
 {
     
-    public function all() :array
+    final public function all() :array
     {
         return $this->inputSource();
     }
     
-    public function server(string $key, $default = null)
+    final public function server(string $key, $default = null)
     {
         return Arr::get($this->getServerParams(), $key, $default);
     }
     
-    public function query(string $key = null, $default = null)
+    final public function query(string $key = null, $default = null)
     {
         $query = $this->getQueryParams();
         
@@ -34,7 +34,7 @@ trait InteractsWithInput
         return Arr::get($query, $key, $default);
     }
     
-    public function queryString() :string
+    final public function queryString() :string
     {
         $qs = $this->getUri()->getQuery();
         
@@ -45,12 +45,12 @@ trait InteractsWithInput
         return $qs;
     }
     
-    public function body(string $name = null, $default = null)
+    final public function body(string $name = null, $default = null)
     {
         return $this->post($name, $default);
     }
     
-    public function post(string $name = null, $default = null)
+    final public function post(string $name = null, $default = null)
     {
         if ( ! $name) {
             return $this->getParsedBody() ?? [];
@@ -59,12 +59,12 @@ trait InteractsWithInput
         return Arr::get($this->getParsedBody(), $name, $default);
     }
     
-    public function boolean($key = null, $default = false)
+    final public function boolean($key = null, $default = false)
     {
         return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
     
-    public function input($key = null, $default = null)
+    final public function input($key = null, $default = null)
     {
         return dataGet($this->all(), $key, $default);
     }
@@ -72,7 +72,7 @@ trait InteractsWithInput
     /**
      * This method does not support * WILDCARDS
      */
-    public function only($keys) :array
+    final public function only($keys) :array
     {
         $results = [];
         
@@ -82,12 +82,12 @@ trait InteractsWithInput
         
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             $value = dataGet($input, $key, $placeholder);
-    
+            
             if ($value !== $placeholder) {
                 Arr::set($results, $key, $value);
             }
         }
-    
+        
         return $results;
     }
     
@@ -96,7 +96,7 @@ trait InteractsWithInput
      *
      * @param  string|string[]  $keys
      */
-    public function filled($keys) :bool
+    final public function filled($keys) :bool
     {
         $keys = is_array($keys) ? $keys : [$keys];
         
@@ -112,7 +112,7 @@ trait InteractsWithInput
     /**
      * This method does not support * WILDCARDS
      */
-    public function except($keys) :array
+    final public function except($keys) :array
     {
         $keys = is_array($keys) ? $keys : func_get_args();
         
@@ -123,7 +123,7 @@ trait InteractsWithInput
         return $results;
     }
     
-    public function hasAny($keys) :bool
+    final public function hasAny($keys) :bool
     {
         $keys = is_array($keys) ? $keys : func_get_args();
         
@@ -135,14 +135,14 @@ trait InteractsWithInput
     /**
      * Will return falls if any of the provided keys is missing.
      */
-    public function missing($key) :bool
+    final public function missing($key) :bool
     {
         $keys = is_array($key) ? $key : func_get_args();
         
         return ! $this->has($keys);
     }
     
-    public function has($key) :bool
+    final public function has($key) :bool
     {
         $keys = is_array($key) ? $key : func_get_args();
         
