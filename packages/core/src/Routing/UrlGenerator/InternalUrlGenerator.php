@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\UrlGenerator;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Routing\AdminDashboard\AdminArea;
@@ -91,7 +90,7 @@ final class InternalUrlGenerator implements UrlGenerator
     
     public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
     {
-        if (Url::isValidAbsolute($path)) {
+        if ($this->isValidUrl($path)) {
             return $path;
         }
         
@@ -347,6 +346,16 @@ final class InternalUrlGenerator implements UrlGenerator
         }
         
         return $route_path;
+    }
+    
+    private function isValidUrl(string $path) :bool
+    {
+        if (preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path)) {
+            if (false !== filter_var($path, FILTER_VALIDATE_URL)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

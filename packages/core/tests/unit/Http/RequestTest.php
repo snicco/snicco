@@ -166,6 +166,13 @@ class RequestTest extends UnitTest
         $this->assertFalse($request->pathIs('/foo/bar/'));
         
         $this->assertTrue($request->pathIs('/foo/*'));
+        
+        $this->assertFalse($request->pathIs('/foo/baz', '/foo/biz'));
+        $this->assertTrue($request->pathIs('/foo/baz', '/foo/biz', '/foo/bar'));
+        
+        $request = $this->frontendRequest('GET', '/münchen/foo');
+        
+        $this->assertTrue($request->pathIs('/münchen/*'));
     }
     
     public function testDecodedPath()

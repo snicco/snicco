@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -65,7 +64,7 @@ trait CreatePsrRequests
     {
         if (is_string($uri)) {
             if ( ! Str::contains($uri, 'http')) {
-                $uri = Url::addLeading($uri);
+                $uri = '/'.ltrim($uri, '/');
             }
         }
         

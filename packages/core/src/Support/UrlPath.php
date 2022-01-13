@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Support;
 
 use Snicco\Support\Str;
+use Webmozart\Assert\Assert;
 
 use function ltrim;
 use function rtrim;
@@ -82,6 +83,7 @@ final class UrlPath
     
     public function equals(string $path) :bool
     {
+        Assert::stringNotEmpty($path);
         return $this->asString() === '/'.ltrim($path, '/');
     }
     

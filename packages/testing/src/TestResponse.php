@@ -8,8 +8,8 @@ use Closure;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Session\Session;
-use Snicco\Core\Support\Url;
 use Snicco\Support\Repository;
+use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;
@@ -236,8 +236,8 @@ class TestResponse
         }
         
         $location = $this->psr_response->getHeaderLine('location');
-        $path = Url::addLeading($path);
-        PHPUnit::assertSame($path, parse_url($location, PHP_URL_PATH));
+        $path = UrlPath::fromString($path);
+        PHPUnit::assertSame($path->asString(), parse_url($location, PHP_URL_PATH));
         
         return $this;
     }
