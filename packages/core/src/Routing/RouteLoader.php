@@ -30,9 +30,9 @@ final class RouteLoader
     
     public const VERSION_FLAG = '-v';
     
-    public const WEB_ROUTES_NAME = 'web';
+    public const FRONTEND_ROUTE_FILENAME = 'frontend';
     
-    public const ADMIN_ROUTES_NAME = 'admin';
+    public const ADMIN_ROUTE_FILENAME = 'admin';
     
     // Match all files that end with ".php" and don't start with an underscore.
     // https://regexr.com/691di
@@ -55,26 +55,26 @@ final class RouteLoader
      */
     public function loadRoutesIn(array $route_directories) :void
     {
-        $web_file = null;
+        $frontend_routes = null;
         $finder = $this->getFiles($route_directories);
         foreach ($finder as $file) {
             $name = $file->getFilenameWithoutExtension();
             
-            // Make sure that web.php file is always loaded last
+            // Make sure that the frontend.php file is always loaded last
             // because users are expected to register the fallback route there.
-            if (self::WEB_ROUTES_NAME === $name) {
-                $web_file = $file;
+            if (self::FRONTEND_ROUTE_FILENAME === $name) {
+                $frontend_routes = $file;
                 continue;
             }
             
             $attributes = $this->options->getRouteAttributes($name);
             
-            $this->requireFile($file, $attributes, self::ADMIN_ROUTES_NAME === $name);
+            $this->requireFile($file, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
         }
         
-        if ($web_file) {
-            $attributes = $this->options->getRouteAttributes(self::WEB_ROUTES_NAME);
-            $this->requireFile($web_file, $attributes);
+        if ($frontend_routes) {
+            $attributes = $this->options->getRouteAttributes(self::FRONTEND_ROUTE_FILENAME);
+            $this->requireFile($frontend_routes, $attributes);
         }
     }
     
@@ -88,10 +88,10 @@ final class RouteLoader
             
             Assert::notSame(
                 $name,
-                self::WEB_ROUTES_NAME,
+                self::FRONTEND_ROUTE_FILENAME,
                 sprintf(
                     "[%s] is a reserved filename and can not be loaded as an API file.",
-                    self::WEB_ROUTES_NAME.'.php'
+                    self::FRONTEND_ROUTE_FILENAME.'.php'
                 )
             );
             

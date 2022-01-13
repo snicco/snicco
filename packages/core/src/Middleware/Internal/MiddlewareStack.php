@@ -36,7 +36,7 @@ final class MiddlewareStack
      * @var array<string,string[]>
      */
     private const CORE_GROUPS = [
-        RoutingConfigurator::WEB_MIDDLEWARE => [],
+        RoutingConfigurator::FRONTEND_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
         RoutingConfigurator::GLOBAL_MIDDLEWARE => [],
@@ -183,11 +183,11 @@ final class MiddlewareStack
         
         if ($request->isToFrontend()) {
             if (in_array(
-                RoutingConfigurator::WEB_MIDDLEWARE,
+                RoutingConfigurator::FRONTEND_MIDDLEWARE,
                 $this->run_always_on_mismatch,
                 true
             )) {
-                return array_merge($middleware, [RoutingConfigurator::WEB_MIDDLEWARE]);
+                return array_merge($middleware, [RoutingConfigurator::FRONTEND_MIDDLEWARE]);
             }
             
             return $middleware;

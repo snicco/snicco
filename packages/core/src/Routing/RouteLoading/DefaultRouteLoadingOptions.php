@@ -55,13 +55,13 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
     {
         $att = [];
         
-        if (RouteLoader::ADMIN_ROUTES_NAME === $file_name_without_extension) {
+        if (RouteLoader::ADMIN_ROUTE_FILENAME === $file_name_without_extension) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::ADMIN_MIDDLEWARE];
             $att[RoutingConfigurator::NAME_KEY] = 'admin';
         }
         
-        if (RouteLoader::WEB_ROUTES_NAME === $file_name_without_extension) {
-            $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::WEB_MIDDLEWARE];
+        if (RouteLoader::FRONTEND_ROUTE_FILENAME === $file_name_without_extension) {
+            $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::FRONTEND_MIDDLEWARE];
             $att[RoutingConfigurator::NAME_KEY] = 'web';
         }
         
