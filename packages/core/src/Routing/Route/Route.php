@@ -9,9 +9,9 @@ use RuntimeException;
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
-use Snicco\Core\Controllers\FallBackController;
 use Snicco\Core\Middleware\Internal\MiddlewareStack;
 use Snicco\Core\Routing\Condition\ConditionBlueprint;
+use Snicco\Core\Routing\Controller\FallBackController;
 
 use function rtrim;
 use function is_int;

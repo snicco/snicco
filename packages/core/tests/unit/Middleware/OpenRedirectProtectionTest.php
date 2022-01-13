@@ -8,8 +8,8 @@ use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Routing\Route\Route;
 use Tests\Core\InternalMiddlewareTestCase;
-use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Middleware\OpenRedirectProtection;
+use Snicco\Core\Routing\Controller\RedirectController;
 
 class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
 {

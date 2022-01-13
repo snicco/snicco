@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Routing\Controller\RedirectController;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class RedirectRoutesTest extends RoutingTestCase
