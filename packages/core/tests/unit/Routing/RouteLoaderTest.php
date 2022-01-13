@@ -17,7 +17,7 @@ use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
-final class PHPFileRouteLoaderTest extends RoutingTestCase
+final class RouteLoaderTest extends RoutingTestCase
 {
     
     const WEB_PATH = '/web';
@@ -172,6 +172,30 @@ final class PHPFileRouteLoaderTest extends RoutingTestCase
             '/sniccowp/partials/cart',
             $this->generator->toRoute('api.partials.cart')
         );
+    }
+    
+    /** @test
+     */
+    public function all_api_routes_have_an_api_middleware_appended_by_default()
+    {
+        $this->withMiddlewareGroups(
+            [RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class], 'partials' => []]
+        );
+        
+        $loader = new RouteLoader(
+            $this->routeConfigurator(),
+            new DefaultRouteLoadingOptions(
+                $this->base_prefix,
+            )
+        );
+        
+        $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
+        
+        $response = $this->runKernel(
+            $this->frontendRequest('GET', $this->base_prefix.'/partials/cart')
+        );
+        
+        $response->assertOk()->assertBodyExact(RoutingTestController::static.':foo_middleware');
     }
     
     /** @test */

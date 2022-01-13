@@ -34,15 +34,15 @@ final class InternalUrlGenerator implements UrlGenerator
     
     private Routes               $routes;
     private UrlGenerationContext $context;
-    private AdminArea            $admin_dashboard;
+    private AdminArea            $admin_area;
     private UrlEncoder           $encoder;
     
-    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminArea $admin_dashboard, UrlEncoder $encoder = null)
+    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminArea $admin_area, UrlEncoder $encoder = null)
     {
         $this->routes = $routes;
         $this->context = $request_context;
         $this->encoder = $encoder ?? new RFC3986Encoder();
-        $this->admin_dashboard = $admin_dashboard;
+        $this->admin_area = $admin_area;
     }
     
     public function toRoute(string $name, array $arguments = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
@@ -52,8 +52,8 @@ final class InternalUrlGenerator implements UrlGenerator
         
         $route_path = $route->getPattern();
         
-        if (Str::startsWith($route_path, $this->admin_dashboard->urlPrefix())) {
-            [$route_path, $q] = $this->admin_dashboard->rewriteForUrlGeneration($route_path);
+        if (Str::startsWith($route_path, $this->admin_area->urlPrefix())) {
+            [$route_path, $q] = $this->admin_area->rewriteForUrlGeneration($route_path);
             $arguments = array_merge($arguments, $q);
         }
         
@@ -148,7 +148,7 @@ final class InternalUrlGenerator implements UrlGenerator
             //
         }
         
-        return $this->to($this->admin_dashboard->loginPath(), $arguments, $type, true);
+        return $this->to($this->admin_area->loginPath(), $arguments, $type, true);
     }
     
     private function generate(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null, bool $encode_path = true) :string

@@ -47,7 +47,7 @@ final class IncludingRoutesTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static.':foo_middleware',
-            $this->frontendRequest('GET', PHPFileRouteLoaderTest::PARTIAL_PATH)
+            $this->frontendRequest('GET', RouteLoaderTest::PARTIAL_PATH)
         );
     }
     
@@ -62,7 +62,7 @@ final class IncludingRoutesTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static.':foo_middleware',
-            $this->frontendRequest('GET', PHPFileRouteLoaderTest::PARTIAL_PATH)
+            $this->frontendRequest('GET', RouteLoaderTest::PARTIAL_PATH)
         );
     }
     
