@@ -226,7 +226,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws RequestHasNoType
      */
-    public function isFrontend() :bool
+    public function isToFrontend() :bool
     {
         return self::TYPE_FRONTEND === $this->getType();
     }
@@ -234,7 +234,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws RequestHasNoType
      */
-    public function isAdminArea() :bool
+    public function isToAdminArea() :bool
     {
         return self::TYPE_ADMIN_AREA === $this->getType();
     }
@@ -242,7 +242,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws RequestHasNoType
      */
-    public function isApiEndpoint() :bool
+    public function isToApiEndpoint() :bool
     {
         return self::TYPE_API === $this->getType();
     }

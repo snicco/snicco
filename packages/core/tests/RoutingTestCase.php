@@ -265,8 +265,6 @@ class RoutingTestCase extends UnitTest
         $this->middleware_stack = new MiddlewareStack();
         $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
         
-        $this->container[TagRequest::class] = new TagRequest($this->admin_dashboard);
-        
         $this->container->instance(
             PrepareResponse::class,
             new PrepareResponse(new ResponsePreparation($this->psrStreamFactory()))

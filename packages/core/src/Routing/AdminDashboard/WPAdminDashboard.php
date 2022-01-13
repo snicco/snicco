@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\AdminDashboard;
 
-use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 
@@ -19,35 +18,23 @@ final class WPAdminDashboard implements AdminDashboard
 {
     
     private string $prefix;
-    private string $loading_script_identifier;
     private string $login_path;
     
-    public function __construct(string $admin_dashboard_url_prefix, string $loading_script_identifier, string $login_path)
+    public function __construct(string $admin_dashboard_url_prefix, string $login_path)
     {
         Assert::stringNotEmpty($admin_dashboard_url_prefix);
-        Assert::notStartsWith($loading_script_identifier, '/');
         $this->prefix = '/'.ltrim($admin_dashboard_url_prefix, '/');
-        $this->loading_script_identifier = $loading_script_identifier;
         $this->login_path = $login_path;
     }
     
     public static function fromDefaults() :WPAdminDashboard
     {
-        return new self('/wp-admin', 'wp-admin', '/wp-login.php');
+        return new self('/wp-admin', '/wp-login.php');
     }
     
     public function urlPrefix() :AdminDashboardPrefix
     {
         return AdminDashboardPrefix::fromString($this->prefix);
-    }
-    
-    public function goesTo(Request $request) :bool
-    {
-        if (Str::contains($request->loadingScript(), 'admin-ajax.php')) {
-            return false;
-        }
-        
-        return Str::startsWith($request->loadingScript(), $this->loading_script_identifier);
     }
     
     public function rewriteForUrlGeneration(string $route_pattern) :array

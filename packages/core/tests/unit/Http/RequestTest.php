@@ -8,6 +8,7 @@ use Snicco\Support\Repository;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\Route\Route;
 use Tests\Codeception\shared\UnitTest;
+use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
@@ -18,6 +19,7 @@ class RequestTest extends UnitTest
 {
     
     private Request $request;
+    private ServerRequestInterface $psr_request;
     use CreatePsrRequests;
     use CreatePsr17Factories;
     
@@ -26,6 +28,7 @@ class RequestTest extends UnitTest
         parent::setUp();
         
         $this->request = $this->frontendRequest('GET', '/foo');
+        $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
     }
     
     public function testIsImmutable()
@@ -200,19 +203,19 @@ class RequestTest extends UnitTest
     /** @test */
     public function test_isFrontend_throws_exception_if_no_type_is_set()
     {
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = new Request($this->psr_request);
         $this->expectExceptionMessage("The request's type attribute");
-        $request->isFrontend();
+        $request->isToFrontend();
     }
     
     /** @test */
     public function test_isFrontend_throws_exception_if_type_is_invalid()
     {
-        $request = $this->frontendRequest('GET', '/foo')
-                        ->withAttribute(Request::TYPE_ATTRIBUTE, 'foobar');
+        $request = (new Request($this->psr_request))
+            ->withAttribute(Request::TYPE_ATTRIBUTE, 'foobar');
         
         try {
-            $request->isFrontend();
+            $request->isToFrontend();
             $this->fail('Excepted expected for call to $request->isFrontend()');
         } catch (RequestHasNoType $e) {
             $this->assertSame(
@@ -225,11 +228,13 @@ class RequestTest extends UnitTest
     /** @test */
     public function test_isFrontend_throws_if_type_is_invalid_integer_range()
     {
-        $request = $this->frontendRequest('GET', '/foo')
-                        ->withAttribute(Request::TYPE_ATTRIBUTE, 4);
+        $request = new Request(
+            $this->psr_request
+                ->withAttribute(Request::TYPE_ATTRIBUTE, 4)
+        );
         
         try {
-            $request->isFrontend();
+            $request->isToFrontend();
             $this->fail('Excepted expected for call to $request->isFrontend()');
         } catch (RequestHasNoType $e) {
             $this->assertSame(
@@ -242,62 +247,74 @@ class RequestTest extends UnitTest
     /** @test */
     public function test_isFrontend()
     {
-        $request = $this->request
-            ->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_ADMIN_AREA);
+        $request = new Request(
+            $this->psr_request
+                ->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_ADMIN_AREA)
+        );
         
-        $this->assertFalse($request->isFrontend());
-        $this->assertTrue($request->isAdminArea());
-        $this->assertFalse($request->isApiEndpoint());
+        $this->assertFalse($request->isToFrontend());
+        $this->assertTrue($request->isToAdminArea());
+        $this->assertFalse($request->isToApiEndpoint());
         
         $request = $this->request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND);
         
-        $this->assertTrue($request->isFrontend());
+        $this->assertTrue($request->isToFrontend());
     }
     
     /** @test */
     public function test_isAdminArea()
     {
         try {
-            $this->request->isAdminArea();
+            $request = new Request($this->psr_request);
+            $request->isToAdminArea();
             $this->fail("Expected exception for isAdminArea().");
         } catch (RequestHasNoType $e) {
             $this->assertStringContainsString('type attribute', $e->getMessage());
         }
         
-        $request = $this->request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND);
+        $request = new Request(
+            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND)
+        );
         
-        $this->assertTrue($request->isFrontend());
-        $this->assertFalse($request->isApiEndpoint());
-        $this->assertFalse($request->isAdminArea());
+        $this->assertTrue($request->isToFrontend());
+        $this->assertFalse($request->isToApiEndpoint());
+        $this->assertFalse($request->isToAdminArea());
         
-        $request = $this->request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_ADMIN_AREA);
+        $request = new Request(
+            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_ADMIN_AREA)
+        );
         
-        $this->assertFalse($request->isFrontend());
-        $this->assertFalse($request->isApiEndpoint());
-        $this->assertTrue($request->isAdminArea());
+        $this->assertFalse($request->isToFrontend());
+        $this->assertFalse($request->isToApiEndpoint());
+        $this->assertTrue($request->isToAdminArea());
     }
     
     /** @test */
     public function test_isApiEndpoint()
     {
         try {
-            $this->request->isApiEndpoint();
+            $request = new Request($this->psr_request);
+            $request->isToApiEndpoint();
             $this->fail('Expected exception for isApiEndpoint().');
         } catch (RequestHasNoType $e) {
             $this->assertStringContainsString('type attribute', $e->getMessage());
         }
         
-        $request = $this->request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND);
+        $request = new Request(
+            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND)
+        );
         
-        $this->assertTrue($request->isFrontend());
-        $this->assertFalse($request->isApiEndpoint());
-        $this->assertFalse($request->isAdminArea());
+        $this->assertTrue($request->isToFrontend());
+        $this->assertFalse($request->isToApiEndpoint());
+        $this->assertFalse($request->isToAdminArea());
         
-        $request = $this->request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_API);
+        $request = new Request(
+            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_API)
+        );
         
-        $this->assertFalse($request->isFrontend());
-        $this->assertFalse($request->isAdminArea());
-        $this->assertTrue($request->isApiEndpoint());
+        $this->assertFalse($request->isToFrontend());
+        $this->assertFalse($request->isToAdminArea());
+        $this->assertTrue($request->isToApiEndpoint());
     }
     
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
+use LogicException;
 use Tests\Core\RoutingTestCase;
+use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Middleware\MethodOverride;
 use Snicco\Core\Http\Responses\DelegatedResponse;
@@ -19,6 +21,20 @@ class HttpKernelTest extends RoutingTestCase
         parent::setUp();
         $this->event_dispatcher->reset();
         $this->event_dispatcher->fake(ResponseSent::class);
+    }
+    
+    /** @test */
+    public function the_kernel_throws_an_exception_if_a_request_has_no_type_specified()
+    {
+        $psr = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
+        $request = new Request($psr);
+        
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            "The HttpKernel tried to handle a request without a declared type. This is not allowed."
+        );
+        
+        $this->runKernel($request);
     }
     
     /** @test */

@@ -68,8 +68,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
     /**
      * @var array<string,Route>
      */
-    private array          $_routes = [];
-    private AdminDashboard $admin_dashboard;
+    private array $_routes = [];
     
     public function __construct(
         RouteConditionFactory $condition_factory,
@@ -358,7 +357,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
             return $request;
         }
         
-        if ( ! $this->admin_dashboard->goesTo($request)) {
+        if ( ! $request->isToAdminArea()) {
             return $request;
         }
         

@@ -34,7 +34,10 @@ trait CreatePsrRequests
         );
         
         parse_str($request->getUri()->getQuery(), $query);
-        return $request->withQueryParams($query);
+        return $request->withQueryParams($query)->withAttribute(
+            Request::TYPE_ATTRIBUTE,
+            Request::TYPE_FRONTEND
+        );
     }
     
     final protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
@@ -52,7 +55,10 @@ trait CreatePsrRequests
             )
         );
         
-        return $request->withQueryParams(['page' => $menu_slug]);
+        return $request->withQueryParams(['page' => $menu_slug])->withAttribute(
+            Request::TYPE_ATTRIBUTE,
+            Request::TYPE_ADMIN_AREA
+        );
     }
     
     private function createUri($uri) :UriInterface

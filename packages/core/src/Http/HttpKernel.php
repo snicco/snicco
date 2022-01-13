@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use Closure;
+use LogicException;
 use RuntimeException;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Middleware\MethodOverride;
-use Snicco\Core\Middleware\Internal\TagRequest;
 use Snicco\Core\Middleware\Internal\RouteRunner;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\Http\Exceptions\RequestHasNoType;
 use Snicco\Core\Middleware\Internal\PrepareResponse;
 use Snicco\Core\Middleware\Internal\RoutingMiddleware;
 use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
@@ -24,7 +25,6 @@ final class HttpKernel
 {
     
     private const CORE_MIDDLEWARE = [
-        TagRequest::class,
         PrepareResponse::class,
         // MethodOverride needs to be in the kernel. It can be used as a route middleware.
         // As the route would never match to retrieve the middleware in the first place.
@@ -46,6 +46,8 @@ final class HttpKernel
     
     public function handle(Request $request) :Response
     {
+        $this->validateRequest($request);
+        
         $middleware = array_map(
             fn($middleware) => new MiddlewareBlueprint($middleware),
             self::CORE_MIDDLEWARE
@@ -67,6 +69,18 @@ final class HttpKernel
                 )
             );
         };
+    }
+    
+    private function validateRequest(Request $request)
+    {
+        try {
+            // This will throw an exception if no type is set.
+            $request->isToFrontend();
+        } catch (RequestHasNoType $e) {
+            throw new LogicException(
+                'The HttpKernel tried to handle a request without a declared type. This is not allowed.'
+            );
+        }
     }
     
 }
