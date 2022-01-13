@@ -15,7 +15,6 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Support\PHPCacheFile;
-use Snicco\Core\Routing\Exception\BadRoute;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Core\Routing\UrlMatcher\RouteGroup;
 use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
@@ -25,6 +24,7 @@ use Snicco\Core\Routing\AdminDashboard\AdminArea;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\Routing\Route\CachedRouteCollection;
 use Snicco\Core\Routing\UrlMatcher\FastRouteDispatcher;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
 use Snicco\Core\Routing\Condition\IsAdminDashboardRequest;
@@ -308,7 +308,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
             try {
                 $collector->addRoute($route->getMethods(), $path, $route->getName());
             } catch (BadRouteException $e) {
-                throw BadRoute::fromPrevious($e);
+                throw BadRouteConfiguration::fromPrevious($e);
             }
         }
         
