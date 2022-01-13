@@ -13,7 +13,7 @@ use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
  *
  * @api
  */
-interface AdminDashboard
+interface AdminArea
 {
     
     /**

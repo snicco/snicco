@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\UrlGenerator;
 
 use Snicco\Core\Routing\Route\Routes;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
 
 /**
  * @interal
@@ -14,10 +14,10 @@ final class UrlGeneratorFactory
 {
     
     private UrlGenerationContext $context;
-    private AdminDashboard       $admin_dashboard;
+    private AdminArea            $admin_dashboard;
     private UrlEncoder           $encoder;
     
-    public function __construct(UrlGenerationContext $context, AdminDashboard $admin_dashboard, UrlEncoder $encoder)
+    public function __construct(UrlGenerationContext $context, AdminArea $admin_dashboard, UrlEncoder $encoder)
     {
         $this->context = $context;
         $this->admin_dashboard = $admin_dashboard;

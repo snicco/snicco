@@ -31,7 +31,9 @@ use Snicco\Core\Middleware\Internal\RouteRunner;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Tests\Core\fixtures\Middleware\BazMiddleware;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\AdminDashboard\WPAdminArea;
 use Snicco\Core\Middleware\Internal\MiddlewareStack;
 use Snicco\Core\Middleware\Internal\PrepareResponse;
 use Snicco\Core\Routing\UrlGenerator\RFC3986Encoder;
@@ -41,11 +43,9 @@ use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\Core\Middleware\Internal\MiddlewareFactory;
 use Snicco\Core\Middleware\Internal\RoutingMiddleware;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
-use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
@@ -78,7 +78,7 @@ class RoutingTestCase extends UnitTest
     
     private Router                 $router;
     private HttpKernel             $kernel;
-    private AdminDashboard         $admin_dashboard;
+    private AdminArea              $admin_dashboard;
     private UrlGenerationContext   $request_context;
     private MiddlewareStack        $middleware_stack;
     private WebRoutingConfigurator $routing_configurator;
@@ -175,7 +175,7 @@ class RoutingTestCase extends UnitTest
         
         $this->request_context = $context;
         
-        $this->admin_dashboard ??= WPAdminDashboard::fromDefaults();
+        $this->admin_dashboard ??= WPAdminArea::fromDefaults();
         
         $this->router = new Router(
             $this->container[RouteConditionFactory::class],
@@ -206,7 +206,7 @@ class RoutingTestCase extends UnitTest
         return $this->generator;
     }
     
-    final protected function adminDashboard() :AdminDashboard
+    final protected function adminDashboard() :AdminArea
     {
         return $this->admin_dashboard;
     }
@@ -229,8 +229,8 @@ class RoutingTestCase extends UnitTest
         $this->container = $this->createContainer();
         $this->container->instance(ContainerAdapter::class, $this->container);
         
-        $this->admin_dashboard = WPAdminDashboard::fromDefaults();
-        $this->container[AdminDashboard::class] = $this->admin_dashboard;
+        $this->admin_dashboard = WPAdminArea::fromDefaults();
+        $this->container[AdminArea::class] = $this->admin_dashboard;
         
         $condition_factory = new RouteConditionFactory($this->container);
         $this->container[RouteConditionFactory::class] = $condition_factory;

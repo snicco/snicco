@@ -91,9 +91,9 @@ final class UrlPath
         return Str::contains($this->asString(), $path);
     }
     
-    public function startsWith(string $path) :bool
+    public function startsWith($path) :bool
     {
-        $path = UrlPath::fromString($path);
+        $path = $path instanceof UrlPath ? $path : UrlPath::fromString($path);
         return Str::startsWith($this->asString(), $path->asString());
     }
     

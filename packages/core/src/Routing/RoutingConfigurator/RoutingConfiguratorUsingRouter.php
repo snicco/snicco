@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\RoutingConfigurator;
 
 use Closure;
+use ArrayIterator;
+use LogicException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
+use InvalidArgumentException;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Routing\Exception\BadRoute;
 use Snicco\Core\Controllers\RedirectController;
-use Snicco\Core\Routing\AdminDashboard\AdminMenu;
 use Snicco\Core\Routing\AdminDashboard\AdminMenuItem;
 use Snicco\Core\Routing\Condition\AbstractRouteCondition;
 use Snicco\Core\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Core\Routing\AdminDashboard\AdminDashboardPrefix;
-
-use function array_map;
 
 /**
  * @interal
@@ -29,15 +29,21 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 {
     
     private Router $router;
+    
     private AdminDashboardPrefix $admin_dashboard_prefix;
+    
     private array $delegate_attributes = [];
+    
     private array $config;
-    private bool $locked               = false;
+    
+    private bool $locked = false;
     
     /**
      * @var AdminMenuItem[]
      */
-    private array $admin_menu_items = [];
+    private array $menu_items = [];
+    
+    private Route $current_parent_route;
     
     public function __construct(Router $router, AdminDashboardPrefix $admin_dashboard_prefix, array $config)
     {
@@ -46,32 +52,56 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $this->config = $config;
     }
     
+    public function page(string $name, string $path, $action = Route::DELEGATE, ?array $menu_attributes = [], $parent = null) :Route
+    {
+        $this->validateThatDelegatedAttributesAreEmpty($name);
+        
+        $this->validateThatNoAdminPrefixesAreSet($path, $name);
+        
+        $route = $this->router->registerAdminRoute(
+            $name,
+            $this->admin_dashboard_prefix->appendPath($path),
+            $action
+        );
+        
+        $this->validateThatAdminRouteHasNoSegments($route);
+        
+        // Route handling is delegated, we don't need a menu item.
+        if (Route::DELEGATE === $action) {
+            return $route;
+        }
+        // A menu item should explicitly not be added
+        if (null === $menu_attributes) {
+            return $route;
+        }
+        
+        $this->addMenuItem($route, $menu_attributes, $parent);
+        
+        return $route;
+    }
+    
+    public function subPages(Route $parent_route, Closure $routes) :void
+    {
+        if (isset($this->current_parent_route)) {
+            throw new LogicException(
+                sprintf(
+                    "Nested calls to [%s] are not possible.",
+                    implode('::', [AdminRoutingConfigurator::class, 'subPages'])
+                )
+            );
+        }
+        
+        $this->current_parent_route = $parent_route;
+        
+        $this->middleware($parent_route->getMiddleware())
+             ->group($routes);
+        
+        unset($this->current_parent_route);
+    }
+    
     public function get(string $name, string $path, $action = Route::DELEGATE) :Route
     {
         return $this->addWebRoute($name, $path, ['GET', 'HEAD'], $action);
-    }
-    
-    public function admin(string $name, string $path, $action = Route::DELEGATE, AdminMenuItem $menu_item = null) :Route
-    {
-        $this->checkDelegatedAttributesAreEmpty($name);
-        
-        $prefix = $this->admin_dashboard_prefix->asString();
-        if (UrlPath::fromString($path)->startsWith($prefix)) {
-            throw BadRoute::becauseAdminRouteWasAddedWithHardcodedPrefix($name, $prefix);
-        }
-        
-        $path = $this->admin_dashboard_prefix->appendPath($path);
-        $route = $this->router->registerAdminRoute($name, $path, $action);
-        
-        if (count($route->getSegmentNames())) {
-            throw BadRoute::becauseAdminRouteHasSegments($route->getName());
-        }
-        
-        if (Route::DELEGATE !== $action) {
-            $this->addMenuItem($route, $menu_item);
-        }
-        
-        return $route;
     }
     
     public function post(string $name, string $path, $action = Route::DELEGATE) :Route
@@ -244,7 +274,6 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         if ( ! $routes instanceof Closure) {
             Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
             Assert::readable($file_or_closure, "The file $file_or_closure is not readable.");
-            
             Assert::isInstanceOf(
                 $routes = require $file_or_closure,
                 Closure::class,
@@ -259,11 +288,14 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $this->group($routes);
     }
     
-    public function configureAdminMenu(AdminMenu $menu) :void
+    public function getIterator() :ArrayIterator
     {
-        foreach ($this->admin_menu_items as $admin_menu_item) {
-            $menu->add($admin_menu_item);
-        }
+        return new ArrayIterator($this->all());
+    }
+    
+    public function all() :array
+    {
+        return array_values($this->menu_items);
     }
     
     private function redirectRouteName(string $from, string $to) :string
@@ -273,7 +305,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     
     private function addWebRoute(string $name, string $path, array $methods, $action) :Route
     {
-        $this->checkDelegatedAttributesAreEmpty($name);
+        $this->validateThatDelegatedAttributesAreEmpty($name);
         
         if ($this->locked) {
             throw BadRoute::becauseFallbackRouteIsAlreadyRegistered($name);
@@ -286,20 +318,142 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         return $this->router->registerWebRoute($name, $path, $methods, $action);
     }
     
-    private function checkDelegatedAttributesAreEmpty(string $route_name) :void
+    private function validateThatDelegatedAttributesAreEmpty(string $route_name) :void
     {
         if ( ! empty($this->delegate_attributes)) {
             throw BadRoute::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
         }
     }
     
-    private function addMenuItem(Route $route, ?AdminMenuItem $menu_item = null)
+    /**
+     * @param  Route|string|null  $parent_route
+     */
+    private function addMenuItem(Route $route, array $attributes, $parent_route) :void
     {
-        if ($menu_item) {
-            $this->admin_menu_items[] = $menu_item;
+        $this->validateParentPageType($parent_route);
+        
+        $parent_item = null;
+        
+        $parent_route = $parent_route ?? $this->current_parent_route ?? null;
+        
+        if (is_string($parent_route)) {
+            $this->validateThatParentHasNoAdminPrefixSet($parent_route, $route->getName());
+            $parent_route = $this->admin_dashboard_prefix->appendPath($parent_route);
+            $parent_item = $parent_route;
         }
         
-        $this->admin_menu_items[] = AdminMenuItem::fromRoute($route);
+        if ($parent_route instanceof Route) {
+            $parent_name = $parent_route->getName();
+            
+            if ( ! isset($this->menu_items[$parent_name])) {
+                throw new LogicException(
+                    "Can not use route [$parent_name] as a parent for [{$route->getName()}] because it has no menu item."
+                );
+            }
+            
+            $parent_item = $this->menu_items[$parent_name];
+        }
+        
+        if ($parent_item instanceof AdminMenuItem) {
+            if (null !== $parent_item->parentSlug()) {
+                $parent_name = $parent_route->getName();
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Cannot use route [%s] as a parent for route [%s] because [%s] is already a child route with parent slug [%s].',
+                        $parent_name,
+                        $route->getName(),
+                        $parent_name,
+                        $this->menu_items[$parent_name]->parentSlug()->asString()
+                    )
+                );
+            }
+        }
+        
+        if ($parent_item) {
+            $this->validateSlugCompatibility($parent_item, $route);
+        }
+        
+        if ($parent_item instanceof AdminMenuItem) {
+            $parent_item = $parent_item->slug()->asString();
+        }
+        
+        $menu_item = AdminMenuItem::fromRoute($route, $attributes, $parent_item);
+        $this->menu_items[$route->getName()] = $menu_item;
+    }
+    
+    /**
+     * @param  AdminMenuItem|string  $parent_item
+     *
+     * @throws LogicException
+     */
+    private function validateSlugCompatibility($parent_item, Route $child_route) :void
+    {
+        if ($parent_item instanceof AdminMenuItem) {
+            $parent_slug = $parent_item->slug()->asString();
+            $compare_against = Str::beforeLast($parent_slug, '/');
+        }
+        else {
+            $parent_slug = $parent_item;
+            $compare_against = $parent_item;
+        }
+        
+        $route_pattern = $child_route->getPattern();
+        
+        if ( ! UrlPath::fromString($route_pattern)->startsWith($compare_against)) {
+            throw new LogicException(
+                "Route pattern [$route_pattern] is incompatible with parent slug [$parent_slug].\nAffected route [{$child_route->getName()}]."
+            );
+        }
+    }
+    
+    /**
+     * @param  string|Route|null  $parent
+     */
+    private function validateParentPageType($parent) :void
+    {
+        if (null === $parent) {
+            return;
+        }
+        
+        if ( ! is_string($parent) && ! $parent instanceof Route) {
+            throw new InvalidArgumentException(
+                '$parent has to be a string or an instance of Route.'
+            );
+        }
+        
+        if (isset($this->current_parent_route)) {
+            throw new LogicException(
+                sprintf(
+                    'You can not pass route/parent_slug [%s] as the last argument during a call to subPages().',
+                    ($parent instanceof Route ? $parent->getName() : $parent)
+                )
+            );
+        }
+    }
+    
+    private function validateThatNoAdminPrefixesAreSet(string $path, string $name)
+    {
+        $prefix = $this->admin_dashboard_prefix->asString();
+        if (UrlPath::fromString($path)->startsWith($prefix)) {
+            throw BadRoute::becauseAdminRouteWasAddedWithHardcodedPrefix($name, $prefix);
+        }
+    }
+    
+    private function validateThatParentHasNoAdminPrefixSet(string $parent, string $name)
+    {
+        $prefix = $this->admin_dashboard_prefix->asString();
+        if (UrlPath::fromString($parent)->startsWith($prefix)) {
+            throw new LogicException(
+                "You should not add the prefix [$prefix] to the parent slug of pages.\nAffected route [$name]."
+            );
+        }
+    }
+    
+    private function validateThatAdminRouteHasNoSegments(Route $route)
+    {
+        if (count($route->getSegmentNames())) {
+            throw BadRoute::becauseAdminRouteHasSegments($route->getName());
+        }
     }
     
 }

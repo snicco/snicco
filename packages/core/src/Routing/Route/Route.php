@@ -61,7 +61,7 @@ final class Route implements Serializable
     private array $controller;
     
     /**
-     * @var array<string>
+     * @var array<string,string>
      */
     private array $middleware = [];
     
@@ -158,9 +158,12 @@ final class Route implements Serializable
         return $this->controller;
     }
     
+    /**
+     * @return string[]
+     */
     public function getMiddleware() :array
     {
-        return $this->middleware;
+        return array_values($this->middleware);
     }
     
     public function getConditions() :array
@@ -355,6 +358,11 @@ final class Route implements Serializable
         if ( ! empty($name)) {
             Assert::stringNotEmpty($name);
             Assert::notStartsWith($name, '.');
+            Assert::notContains(
+                $name,
+                ' ',
+                "Route name for route [$name] should not contain whitespaces."
+            );
         }
         else {
             $name = $this->pattern.':'.implode('@', $this->controller);

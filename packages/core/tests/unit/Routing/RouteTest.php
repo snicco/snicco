@@ -29,6 +29,16 @@ final class RouteTest extends UnitTest
     }
     
     /** @test */
+    public function test_exception_if_name_contains_whitespace()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Route name for route [my route] should not contain whitespaces.'
+        );
+        Route::create('/foobar', RoutingTestController::class, 'my route');
+    }
+    
+    /** @test */
     public function test_exception_for_bad_methods()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -305,6 +315,20 @@ final class RouteTest extends UnitTest
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Middleware [foo] added twice to route [foo_route].');
         $route->middleware('foo:arg2');
+    }
+    
+    /** @test */
+    public function test_middleware_returns_array_of_string()
+    {
+        $route = Route::create('/foo', Route::DELEGATE, 'foo_route');
+        
+        $route->middleware('foo:arg1');
+        $route->middleware('bar');
+        
+        $this->assertSame([
+            'foo:arg1',
+            'bar',
+        ], $route->getMiddleware());
     }
     
     /** @test */
