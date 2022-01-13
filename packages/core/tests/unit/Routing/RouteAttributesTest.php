@@ -6,14 +6,30 @@ namespace Tests\Core\unit\Routing;
 
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\Exception\BadRoute;
 use Snicco\Core\Routing\Exception\MethodNotAllowed;
 use Tests\Core\fixtures\Middleware\GlobalMiddleware;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
 class RouteAttributesTest extends RoutingTestCase
 {
+    
+    /**
+     * @test
+     * @todo bad routes are only found when dispatching. We might need a validate method on the
+     *     UrlMatcher interface.
+     */
+    public function exceptions_are_thrown_for_static_routes_that_shadow_each_other()
+    {
+        $this->expectException(BadRouteConfiguration::class);
+        $this->expectExceptionMessage('two routes');
+        
+        $this->routeConfigurator()->get('r1', '/foo');
+        $this->routeConfigurator()->get('r2', '/foo');
+        
+        $this->runKernel($this->frontendRequest('GET', '/bogus'));
+    }
     
     /** @test */
     public function basic_get_routing_works()
@@ -222,7 +238,7 @@ class RouteAttributesTest extends RoutingTestCase
     /** @test */
     public function a_route_with_the_same_static_url_cant_be_added_twice()
     {
-        $this->expectException(BadRoute::class);
+        $this->expectException(BadRouteConfiguration::class);
         
         $this->routeConfigurator()->get('route1', '/foo', RoutingTestController::class);
         $this->routeConfigurator()->get('route2', '/foo', RoutingTestController::class);

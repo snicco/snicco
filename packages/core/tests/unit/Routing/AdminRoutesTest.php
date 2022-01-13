@@ -7,7 +7,7 @@ namespace Tests\Core\unit\Routing;
 use LogicException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\Route\Route;
-use Snicco\Core\Routing\Exception\BadRoute;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
@@ -25,7 +25,7 @@ class AdminRoutesTest extends RoutingTestCase
     /** @test */
     public function an_exception_is_thrown_for_admin_routes_that_declare_patterns()
     {
-        $this->expectException(BadRoute::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             "Admin routes can not define route parameters.\nViolating route [admin1]."
         );

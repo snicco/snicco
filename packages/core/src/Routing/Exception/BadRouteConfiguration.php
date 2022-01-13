@@ -11,15 +11,15 @@ use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 /**
  * @api
  */
-final class BadRoute extends LogicException
+final class BadRouteConfiguration extends LogicException
 {
     
-    public static function fromPrevious(Throwable $previous) :BadRoute
+    public static function fromPrevious(Throwable $previous) :BadRouteConfiguration
     {
         return new self($previous->getMessage(), $previous->getCode(), $previous);
     }
     
-    public static function becauseAdminRouteWasAddedWithHardcodedPrefix(string $name, $admin_prefix) :BadRoute
+    public static function becauseAdminRouteWasAddedWithHardcodedPrefix(string $name, $admin_prefix) :BadRouteConfiguration
     {
         return new self(
             sprintf(
@@ -30,19 +30,19 @@ final class BadRoute extends LogicException
         );
     }
     
-    public static function becauseDelegatedAttributesHaveNotBeenGrouped(string $route_name) :BadRoute
+    public static function becauseDelegatedAttributesHaveNotBeenGrouped(string $route_name) :BadRouteConfiguration
     {
         return new self(
             "Cant register route [$route_name] because delegated attributes have not been merged into a route group.\nDid you forget to call group() ?"
         );
     }
     
-    public static function becauseFallbackRouteIsAlreadyRegistered(string $name) :BadRoute
+    public static function becauseFallbackRouteIsAlreadyRegistered(string $name) :BadRouteConfiguration
     {
         return new self("Route [$name] was registered after a fallback route was defined.");
     }
     
-    public static function becauseWebRouteHasAdminPrefix(string $name) :BadRoute
+    public static function becauseWebRouteHasAdminPrefix(string $name) :BadRouteConfiguration
     {
         return new self(
             sprintf(
@@ -53,7 +53,7 @@ final class BadRoute extends LogicException
         );
     }
     
-    public static function becauseAdminRouteHasSegments(string $name) :BadRoute
+    public static function becauseAdminRouteHasSegments(string $name) :BadRouteConfiguration
     {
         return new self(
             "Admin routes can not define route parameters.\nViolating route [$name]."

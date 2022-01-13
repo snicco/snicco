@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\RoutingConfigurator;
 
 use Snicco\Core\Routing\Route\Route;
-use Snicco\Core\Routing\Exception\BadRoute;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
 
 /**
  * The RoutingConfigurator can be used to fluently register Routes with the routing component.
@@ -40,7 +40,7 @@ interface WebRoutingConfigurator extends RoutingConfigurator
      * are never matched.
      * The fallback route has to be the last route that is registered in the
      * application. Attempting to register another route after the fallback route will throw a
-     * {@see BadRoute}
+     * {@see BadRouteConfiguration}
      *
      * @param  array<string,string>|string  $fallback_action  The fallback controller
      * @param  array<string >  $dont_match_request_including  An array of REGEX strings that will

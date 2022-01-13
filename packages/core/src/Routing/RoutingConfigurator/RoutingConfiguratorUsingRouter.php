@@ -10,14 +10,13 @@ use LogicException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
-use InvalidArgumentException;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Controllers\ViewController;
-use Snicco\Core\Routing\Exception\BadRoute;
 use Snicco\Core\Controllers\RedirectController;
 use Snicco\Core\Routing\AdminDashboard\AdminMenuItem;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
 use Snicco\Core\Routing\Condition\AbstractRouteCondition;
 use Snicco\Core\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Core\Routing\AdminDashboard\AdminDashboardPrefix;
@@ -83,7 +82,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     public function subPages(Route $parent_route, Closure $routes) :void
     {
         if (isset($this->current_parent_route)) {
-            throw new LogicException(
+            throw new BadRouteConfiguration(
                 sprintf(
                     "Nested calls to [%s] are not possible.",
                     implode('::', [AdminRoutingConfigurator::class, 'subPages'])
@@ -308,11 +307,11 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $this->validateThatDelegatedAttributesAreEmpty($name);
         
         if ($this->locked) {
-            throw BadRoute::becauseFallbackRouteIsAlreadyRegistered($name);
+            throw BadRouteConfiguration::becauseFallbackRouteIsAlreadyRegistered($name);
         }
         
         if (UrlPath::fromString($path)->startsWith($this->admin_dashboard_prefix->asString())) {
-            throw BadRoute::becauseWebRouteHasAdminPrefix($name);
+            throw BadRouteConfiguration::becauseWebRouteHasAdminPrefix($name);
         }
         
         return $this->router->registerWebRoute($name, $path, $methods, $action);
@@ -321,7 +320,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     private function validateThatDelegatedAttributesAreEmpty(string $route_name) :void
     {
         if ( ! empty($this->delegate_attributes)) {
-            throw BadRoute::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
+            throw BadRouteConfiguration::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
         }
     }
     
@@ -346,7 +345,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
             $parent_name = $parent_route->getName();
             
             if ( ! isset($this->menu_items[$parent_name])) {
-                throw new LogicException(
+                throw new BadRouteConfiguration(
                     "Can not use route [$parent_name] as a parent for [{$route->getName()}] because it has no menu item."
                 );
             }
@@ -357,7 +356,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         if ($parent_item instanceof AdminMenuItem) {
             if (null !== $parent_item->parentSlug()) {
                 $parent_name = $parent_route->getName();
-                throw new InvalidArgumentException(
+                throw new BadRouteConfiguration(
                     sprintf(
                         'Cannot use route [%s] as a parent for route [%s] because [%s] is already a child route with parent slug [%s].',
                         $parent_name,
@@ -400,7 +399,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $route_pattern = $child_route->getPattern();
         
         if ( ! UrlPath::fromString($route_pattern)->startsWith($compare_against)) {
-            throw new LogicException(
+            throw new BadRouteConfiguration(
                 "Route pattern [$route_pattern] is incompatible with parent slug [$parent_slug].\nAffected route [{$child_route->getName()}]."
             );
         }
@@ -416,13 +415,13 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         }
         
         if ( ! is_string($parent) && ! $parent instanceof Route) {
-            throw new InvalidArgumentException(
+            throw new BadRouteConfiguration(
                 '$parent has to be a string or an instance of Route.'
             );
         }
         
         if (isset($this->current_parent_route)) {
-            throw new LogicException(
+            throw new BadRouteConfiguration(
                 sprintf(
                     'You can not pass route/parent_slug [%s] as the last argument during a call to subPages().',
                     ($parent instanceof Route ? $parent->getName() : $parent)
@@ -435,7 +434,10 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     {
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($path)->startsWith($prefix)) {
-            throw BadRoute::becauseAdminRouteWasAddedWithHardcodedPrefix($name, $prefix);
+            throw BadRouteConfiguration::becauseAdminRouteWasAddedWithHardcodedPrefix(
+                $name,
+                $prefix
+            );
         }
     }
     
@@ -443,7 +445,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     {
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($parent)->startsWith($prefix)) {
-            throw new LogicException(
+            throw new BadRouteConfiguration(
                 "You should not add the prefix [$prefix] to the parent slug of pages.\nAffected route [$name]."
             );
         }
@@ -452,7 +454,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     private function validateThatAdminRouteHasNoSegments(Route $route)
     {
         if (count($route->getSegmentNames())) {
-            throw BadRoute::becauseAdminRouteHasSegments($route->getName());
+            throw BadRouteConfiguration::becauseAdminRouteHasSegments($route->getName());
         }
     }
     

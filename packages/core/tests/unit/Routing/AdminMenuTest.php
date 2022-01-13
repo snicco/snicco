@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
-use LogicException;
-use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Routing\Route\Route;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Snicco\Core\Routing\AdminDashboard\AdminMenuItem;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
@@ -188,7 +187,7 @@ final class AdminMenuTest extends RoutingTestCase
             [],
         );
         
-        $this->expectException(LogicException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('Nested calls');
         
         $this->configurator->subPages($r1, function (AdminRoutingConfigurator $router) {
@@ -208,7 +207,7 @@ final class AdminMenuTest extends RoutingTestCase
             [],
         );
         
-        $this->expectException(LogicException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             'You can not pass route/parent_slug [admin_sub_1] as the last argument during a call to subPages().'
         );
@@ -308,7 +307,7 @@ final class AdminMenuTest extends RoutingTestCase
     /** @test */
     public function test_exception_if_parent_pages_with_slug_only_are_prefix_with_the_admin_area_prefix()
     {
-        $this->expectException(LogicException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             "You should not add the prefix [/wp-admin] to the parent slug of pages.\nAffected route [options.sub]"
         );
@@ -333,7 +332,7 @@ final class AdminMenuTest extends RoutingTestCase
             '/options.php',
         );
         
-        $this->expectException(LogicException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             "Can not use route [options.redirect] as a parent for [options.sub] because it has no menu item."
         );
@@ -350,7 +349,7 @@ final class AdminMenuTest extends RoutingTestCase
     /** @test */
     public function test_exception_for_parents_by_slug_if_path_is_incompatible()
     {
-        $this->expectException(LogicException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             'Route pattern [/wp-admin/admin.php/sub] is incompatible with parent slug [/wp-admin/options.php].'
         );
@@ -401,7 +400,7 @@ final class AdminMenuTest extends RoutingTestCase
             $r1
         );
         
-        $this->expectException(LogicException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             'Cannot use route [admin.sub1] as a parent for route [admin.sub2] because [admin.sub1] is already a child route with parent slug [/wp-admin/admin.php/parent].'
         );
@@ -418,7 +417,7 @@ final class AdminMenuTest extends RoutingTestCase
     /** @test */
     public function test_exception_if_parent_page_is_not_string_or_route()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('$parent has to be a string or an instance of Route.');
         
         $r2 = $this->configurator->page(
