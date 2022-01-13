@@ -14,6 +14,7 @@ use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Controllers\ViewController;
 use Snicco\Core\Routing\Exception\BadRoute;
 use Snicco\Core\Controllers\RedirectController;
+use Snicco\Core\Routing\AdminDashboard\AdminMenu;
 use Snicco\Core\Routing\AdminDashboard\AdminMenuItem;
 use Snicco\Core\Routing\Condition\AbstractRouteCondition;
 use Snicco\Core\Routing\Condition\IsAdminDashboardRequest;
@@ -32,6 +33,11 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     private array $delegate_attributes = [];
     private array $config;
     private bool $locked               = false;
+    
+    /**
+     * @var AdminMenuItem[]
+     */
+    private array $admin_menu_items = [];
     
     public function __construct(Router $router, AdminDashboardPrefix $admin_dashboard_prefix, array $config)
     {
@@ -55,7 +61,17 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         }
         
         $path = $this->admin_dashboard_prefix->appendPath($path);
-        return $this->router->registerAdminRoute($name, $path, $action);
+        $route = $this->router->registerAdminRoute($name, $path, $action);
+        
+        if (count($route->getSegmentNames())) {
+            throw BadRoute::becauseAdminRouteHasSegments($route->getName());
+        }
+        
+        if (Route::DELEGATE !== $action) {
+            $this->addMenuItem($route, $menu_item);
+        }
+        
+        return $route;
     }
     
     public function post(string $name, string $path, $action = Route::DELEGATE) :Route
@@ -243,6 +259,13 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         $this->group($routes);
     }
     
+    public function configureAdminMenu(AdminMenu $menu) :void
+    {
+        foreach ($this->admin_menu_items as $admin_menu_item) {
+            $menu->add($admin_menu_item);
+        }
+    }
+    
     private function redirectRouteName(string $from, string $to) :string
     {
         return "redirect_route:$from:$to";
@@ -268,6 +291,15 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         if ( ! empty($this->delegate_attributes)) {
             throw BadRoute::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
         }
+    }
+    
+    private function addMenuItem(Route $route, ?AdminMenuItem $menu_item = null)
+    {
+        if ($menu_item) {
+            $this->admin_menu_items[] = $menu_item;
+        }
+        
+        $this->admin_menu_items[] = AdminMenuItem::fromRoute($route);
     }
     
 }
