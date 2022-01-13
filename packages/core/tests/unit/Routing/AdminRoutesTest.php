@@ -218,4 +218,19 @@ class AdminRoutesTest extends RoutingTestCase
         $this->assertResponseBody($as_string, $request);
     }
     
+    /** @test */
+    public function admin_routes_work_with_redirects()
+    {
+        $this->routeConfigurator()->prefix('/wp-admin')
+             ->group(function (AdminRoutingConfigurator $router) {
+                 $router->redirect('options.php/foo', '/foobar');
+             });
+        
+        $request = $this->adminRequest('GET', 'foo', 'options.php');
+        
+        $response = $this->runKernel($request);
+        
+        $response->assertNotDelegated()->assertRedirect('/foobar', 302);
+    }
+    
 }
