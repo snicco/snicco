@@ -169,7 +169,7 @@ final class MiddlewareStack
             $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
         }
         
-        if ($request->isApiEndpoint()) {
+        if ($request->isToApiEndpoint()) {
             if (in_array(
                 RoutingConfigurator::API_MIDDLEWARE,
                 $this->run_always_on_mismatch,
@@ -181,7 +181,7 @@ final class MiddlewareStack
             return $middleware;
         }
         
-        if ($request->isFrontend()) {
+        if ($request->isToFrontend()) {
             if (in_array(
                 RoutingConfigurator::WEB_MIDDLEWARE,
                 $this->run_always_on_mismatch,
@@ -193,7 +193,7 @@ final class MiddlewareStack
             return $middleware;
         }
         
-        if ($request->isAdminArea()) {
+        if ($request->isToAdminArea()) {
             if (in_array(
                 RoutingConfigurator::ADMIN_MIDDLEWARE,
                 $this->run_always_on_mismatch,

@@ -29,11 +29,6 @@ interface AdminDashboard
     public function loginPath() :string;
     
     /**
-     * Determine if the current request can be considered to be going to the admin dashboard.
-     */
-    public function goesTo(Request $request) :bool;
-    
-    /**
      * Has to return an array where the first key is the new url path and the second
      * key is an array of key value pairs where the key is a query argument name
      * and the value is the query argument value (not urlencoded).

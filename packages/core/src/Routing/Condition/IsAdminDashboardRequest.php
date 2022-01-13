@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Condition;
 
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 
 /**
  * @interal
@@ -13,16 +12,9 @@ use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 final class IsAdminDashboardRequest extends AbstractRouteCondition
 {
     
-    private AdminDashboard $admin_dashboard;
-    
-    public function __construct(AdminDashboard $admin_path)
-    {
-        $this->admin_dashboard = $admin_path;
-    }
-    
     public function isSatisfied(Request $request) :bool
     {
-        return $this->admin_dashboard->goesTo($request);
+        return $request->isToAdminArea();
     }
     
 }

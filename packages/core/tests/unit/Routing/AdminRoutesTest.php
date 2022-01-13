@@ -6,7 +6,6 @@ namespace Tests\Core\unit\Routing;
 
 use LogicException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Http\Psr7\Request;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
@@ -146,30 +145,6 @@ class AdminRoutesTest extends RoutingTestCase
         
         $request = $this->adminRequest('GET', 'foo', 'options.php');
         $this->assertResponseBody(RoutingTestController::static, $request);
-    }
-    
-    /** @test */
-    public function its_not_possible_to_match_admin_ajax_requests()
-    {
-        $this->admin_configurator->admin(
-            'r1',
-            'admin-ajax.php/foo',
-            RoutingTestController::class
-        );
-        
-        $request = $this->psrServerRequestFactory()->createServerRequest(
-            'GET',
-            '/wp-admin/admin-ajax.php/foo',
-            ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-        );
-        $this->runKernel(new Request($request))->assertDelegated();
-        
-        $request = $this->psrServerRequestFactory()->createServerRequest(
-            'GET',
-            '/wp-admin/admin-ajax.php?page=foo',
-            ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-        );
-        $this->runKernel(new Request($request))->assertDelegated();
     }
     
     /** @test */
