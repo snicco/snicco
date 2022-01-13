@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Controllers;
+namespace Snicco\Core\Routing\Controller;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\AbstractController;
