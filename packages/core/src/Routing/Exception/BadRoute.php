@@ -53,4 +53,11 @@ final class BadRoute extends LogicException
         );
     }
     
+    public static function becauseAdminRouteHasSegments(string $name) :BadRoute
+    {
+        return new self(
+            "Admin routes can not define route parameters.\nViolating route [$name]."
+        );
+    }
+    
 }

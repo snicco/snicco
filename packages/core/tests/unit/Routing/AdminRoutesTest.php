@@ -6,6 +6,7 @@ namespace Tests\Core\unit\Routing;
 
 use LogicException;
 use Tests\Core\RoutingTestCase;
+use Snicco\Core\Routing\Exception\BadRoute;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
@@ -18,6 +19,16 @@ class AdminRoutesTest extends RoutingTestCase
     {
         parent::setUp();
         $this->admin_configurator = $this->adminRouteConfigurator();
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_for_admin_routes_that_declare_patterns()
+    {
+        $this->expectException(BadRoute::class);
+        $this->expectExceptionMessage(
+            "Admin routes can not define route parameters.\nViolating route [admin1]."
+        );
+        $this->admin_configurator->admin('admin1', 'admin.php/foo/{bar}');
     }
     
     /** @test */
@@ -160,11 +171,6 @@ class AdminRoutesTest extends RoutingTestCase
         $as_string = (string) $request->getUri();
         $this->assertStringContainsString('page=foo', $as_string);
         $this->assertResponseBody($as_string, $request);
-    }
-    
-    /** @test */
-    public function menu_items_can_be_added()
-    {
     }
     
 }
