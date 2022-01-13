@@ -2,17 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit\Http;
+namespace Tests\Core\unit\Middleware;
 
 use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
+use Tests\Core\fixtures\Middleware\BazMiddleware;
 use Snicco\Core\Middleware\Internal\MiddlewareStack;
+use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
-final class MiddlewareTest extends RoutingTestCase
+final class MiddlewareStackTest extends RoutingTestCase
 {
     
     /** @test */
@@ -176,6 +178,53 @@ final class MiddlewareTest extends RoutingTestCase
         $m = new MiddlewareStack([
             FooMiddleware::class,
         ]);
+    }
+    
+    /** @test */
+    public function no_middleware_is_run_if_middleware_is_disabled()
+    {
+        $m = new MiddlewareStack([
+            RoutingConfigurator::WEB_MIDDLEWARE,
+            RoutingConfigurator::GLOBAL_MIDDLEWARE,
+            RoutingConfigurator::ADMIN_MIDDLEWARE,
+        ]);
+        
+        $m->withMiddlewareGroup(RoutingConfigurator::WEB_MIDDLEWARE, [FooMiddleware::class]);
+        $m->withMiddlewareGroup(RoutingConfigurator::ADMIN_MIDDLEWARE, [BarMiddleware::class]);
+        $m->withMiddlewareGroup(RoutingConfigurator::GLOBAL_MIDDLEWARE, [BazMiddleware::class]);
+        
+        $this->withNewMiddlewareStack($m);
+        
+        $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class)->middleware(
+            FoobarMiddleware::class
+        );
+        $this->routeConfigurator()->get('bar', '/bar', RoutingTestController::class);
+        
+        // matching request, Foobar and Baz(global) is run. Web is not run because we are not using the route loader.
+        $response = $this->runKernel($this->frontendRequest('GET', '/foo'));
+        $this->assertSame(
+            RoutingTestController::static.':foobar_middleware:baz_middleware',
+            $response->body()
+        );
+        
+        // non-matching request: Foo(web) and Baz(global) are run
+        $response = $this->runKernel($this->frontendRequest('GET', '/bogus'));
+        $this->assertSame(
+            ':foo_middleware:baz_middleware',
+            $response->body()
+        );
+        
+        // Now we disable middleware
+        $m->disableAllMiddleware();
+        
+        // only controller run for matching route.
+        $this->assertResponseBody(
+            RoutingTestController::static,
+            $this->frontendRequest('GET', '/foo')
+        );
+        
+        // nothing run for non-matching route.
+        $this->assertResponseBody('', $this->frontendRequest('GET', '/bogus'));
     }
     
 }

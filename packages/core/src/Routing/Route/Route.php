@@ -10,6 +10,7 @@ use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Snicco\Core\Controllers\FallBackController;
+use Snicco\Core\Middleware\Internal\MiddlewareStack;
 use Snicco\Core\Routing\Condition\ConditionBlueprint;
 
 use function rtrim;
@@ -33,9 +34,6 @@ use function get_object_vars;
  */
 final class Route implements Serializable
 {
-    
-    /** @api */
-    const MIDDLEWARE_DELIMITER = ':';
     
     /** @interal */
     const DELEGATE = [FallBackController::class, 'delegate'];
@@ -421,7 +419,7 @@ final class Route implements Serializable
     
     private function addMiddleware(string $m) :void
     {
-        $middleware_id = Str::before($m, self::MIDDLEWARE_DELIMITER);
+        $middleware_id = Str::before($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
         Assert::keyNotExists(
             $this->middleware,
             $middleware_id,

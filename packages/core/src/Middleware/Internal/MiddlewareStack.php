@@ -4,39 +4,72 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Internal;
 
-use LogicException;
+use RuntimeException;
+use Snicco\Support\Arr;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
+use Psr\Http\Server\MiddlewareInterface;
+use Snicco\Core\Middleware\Exceptions\FoundInvalidMiddleware;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
-use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
+
+use function Snicco\Core\Support\Functions\isInterface;
 
 /**
+ * The middleware stack is responsible for parsing and normalized all middleware for a request.
+ *
  * @internal
  */
 final class MiddlewareStack
 {
     
-    private array $core_groups = [
+    /**
+     * @api
+     */
+    const MIDDLEWARE_DELIMITER = ':';
+    
+    /**
+     * @api
+     */
+    const ARGUMENT_SEPARATOR = ',';
+    
+    /**
+     * @var array<string,string[]>
+     */
+    private const CORE_GROUPS = [
         RoutingConfigurator::WEB_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
         RoutingConfigurator::GLOBAL_MIDDLEWARE => [],
     ];
     
+    /**
+     * @var array<string,string[]>
+     */
+    private array $user_provided_groups = [];
+    
+    /**
+     * @var array<string,string>
+     */
     private array $route_middleware_aliases = [];
     
-    private array $middleware_priority = [];
+    /**
+     * @var string[]
+     */
+    private array $middleware_by_increasing_priority = [];
+    
+    /**
+     * @var string[]
+     */
+    private array $run_always_on_mismatch = [];
     
     private bool $middleware_disabled = false;
-    
-    private array $run_always_on_mismatch = [];
     
     public function __construct(array $middleware_to_always_run_on_non_route_match = [])
     {
         Assert::allString($middleware_to_always_run_on_non_route_match);
         foreach ($middleware_to_always_run_on_non_route_match as $middleware) {
             Assert::keyExists(
-                $this->core_groups,
+                self::CORE_GROUPS,
                 $middleware,
                 '[%s] can not be used as middleware that is always run for non matching routes.'
             );
@@ -50,52 +83,78 @@ final class MiddlewareStack
             return [];
         }
         
-        $middleware = $this->core_groups['global'];
+        $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
         
         foreach ($route_middleware as $name) {
-            if (isset($this->core_groups[$name])) {
+            if ($this->isMiddlewareGroup($name)) {
                 unset($route_middleware[$name]);
-                $middleware = array_merge($middleware, $this->core_groups[$name]);
+                $middleware = array_merge($middleware, $this->middlewareGroups()[$name]);
             }
             else {
                 $middleware[] = $name;
             }
         }
         
-        $middleware = $this->expandMiddleware($middleware);
-        $middleware = $this->uniqueMiddleware($middleware);
-        return $this->sortMiddleware($middleware, $this->middleware_priority);
+        return $this->create($middleware);
     }
     
     public function createForRequestWithoutRoute(Request $request) :array
     {
-        $middleware = $this->expandMiddleware(
-            $this->middlewareForNonMatchingRequest($request)
-        );
-        $middleware = $this->uniqueMiddleware($middleware);
-        
-        return $this->sortMiddleware($middleware, $this->middleware_priority);
+        return $this->create($this->middlewareForNonMatchingRequest($request));
     }
     
     public function withMiddlewareGroup(string $group, array $middlewares)
     {
-        $this->core_groups[$group] = $middlewares;
+        Assert::allString($middlewares);
+        $this->user_provided_groups = Arr::mergeRecursive(
+            $this->user_provided_groups,
+            [$group => $middlewares]
+        );
     }
     
     public function middlewarePriority(array $middleware_priority)
     {
-        $this->middleware_priority = $middleware_priority;
+        $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
     }
     
     public function middlewareAliases(array $route_middleware_aliases)
     {
-        $this->route_middleware_aliases =
-            array_merge($this->route_middleware_aliases, $route_middleware_aliases);
+        $this->route_middleware_aliases = array_merge(
+            $this->route_middleware_aliases,
+            $route_middleware_aliases
+        );
     }
     
     public function disableAllMiddleware()
     {
         $this->middleware_disabled = true;
+    }
+    
+    /**
+     * @param  array  $middleware
+     *
+     * @return MiddlewareBlueprint[]
+     */
+    private function create(array $middleware = []) :array
+    {
+        // Split out the global middleware since global middleware should always run first
+        // independently of priority
+        $prepend = [];
+        if (false !== ($key = array_search(RoutingConfigurator::GLOBAL_MIDDLEWARE, $middleware))) {
+            unset($middleware[$key]);
+            $prepend = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
+        }
+        
+        $middleware = $this->sort(
+            $this->parseAliasesAndArguments($middleware)
+        );
+        
+        $middleware = array_merge(
+            $this->parseAliasesAndArguments($prepend),
+            $middleware
+        );
+        
+        return $this->unique($middleware);
     }
     
     private function middlewareForNonMatchingRequest(Request $request) :array
@@ -116,7 +175,7 @@ final class MiddlewareStack
                 $this->run_always_on_mismatch,
                 true
             )) {
-                return $middleware + [RoutingConfigurator::API_MIDDLEWARE];
+                return array_merge($middleware, [RoutingConfigurator::API_MIDDLEWARE]);
             }
             
             return $middleware;
@@ -128,7 +187,7 @@ final class MiddlewareStack
                 $this->run_always_on_mismatch,
                 true
             )) {
-                return $middleware + [RoutingConfigurator::WEB_MIDDLEWARE];
+                return array_merge($middleware, [RoutingConfigurator::WEB_MIDDLEWARE]);
             }
             
             return $middleware;
@@ -140,7 +199,7 @@ final class MiddlewareStack
                 $this->run_always_on_mismatch,
                 true
             )) {
-                return $middleware + [RoutingConfigurator::ADMIN_MIDDLEWARE];
+                return array_merge($middleware, [RoutingConfigurator::ADMIN_MIDDLEWARE]);
             }
             
             return $middleware;
@@ -150,151 +209,119 @@ final class MiddlewareStack
     }
     
     /**
-     * Sort array of fully qualified middleware class names by priority in ascending order.
-     *
      * @param  string[]  $middleware
-     * @param  array  $priority_map
      *
-     * @return array
+     * @return MiddlewareBlueprint[]
+     * @throws FoundInvalidMiddleware
      */
-    private function sortMiddleware(array $middleware, array $priority_map) :array
+    private function parseAliasesAndArguments(array $middleware) :array
+    {
+        $blueprints = [];
+        
+        foreach ($middleware as $middleware_string) {
+            $pieces = explode(self::MIDDLEWARE_DELIMITER, $middleware_string, 2);
+            
+            if (count($pieces) > 1) {
+                $blueprints[] = new MiddlewareBlueprint(
+                    $this->replaceMiddlewareAlias($pieces[0]),
+                    explode(self::ARGUMENT_SEPARATOR, $pieces[1])
+                );
+                
+                continue;
+            }
+            
+            if ($this->isMiddlewareGroup($pieces[0])) {
+                $blueprints = array_merge(
+                    $blueprints,
+                    $this->parseAliasesAndArguments($this->middlewareGroups()[$pieces[0]])
+                );
+                continue;
+            }
+            
+            $blueprints[] = new MiddlewareBlueprint(
+                $this->replaceMiddlewareAlias($pieces[0])
+            );
+        }
+        
+        return $blueprints;
+    }
+    
+    /**
+     * @note Middleware with the highest priority comes first in the array
+     *
+     * @param  MiddlewareBlueprint[]  $middleware
+     *
+     * @return MiddlewareBlueprint[]
+     */
+    private function sort(array $middleware) :array
     {
         $sorted = $middleware;
         
-        usort($sorted, function ($a, $b) use ($middleware, $priority_map) {
-            $a_priority = $this->getMiddlewarePriorityForMiddleware($a, $priority_map);
-            $b_priority = $this->getMiddlewarePriorityForMiddleware($b, $priority_map);
-            $priority = $b_priority - $a_priority;
+        $success = usort($sorted, function ($a, $b) use ($middleware) {
+            $a_priority = $this->priorityForMiddleware($a);
+            $b_priority = $this->priorityForMiddleware($b);
+            $diff = $b_priority - $a_priority;
             
-            if ($priority !== 0) {
-                return $priority;
+            if ($diff !== 0) {
+                return $diff;
             }
             
             // Keep relative order from original array.
             return array_search($a, $middleware) - array_search($b, $middleware);
         });
         
-        return array_values($sorted);
-    }
-    
-    /**
-     * Get priority for a specific middleware.
-     * This is in reverse compared to definition order.
-     * Middleware with unspecified priority will yield -1.
-     *
-     * @param  string|array  $middleware
-     * @param $middleware_priority
-     *
-     * @return integer
-     */
-    private function getMiddlewarePriorityForMiddleware($middleware, $middleware_priority) :int
-    {
-        if (is_array($middleware)) {
-            $middleware = $middleware[0];
+        if ( ! $success) {
+            throw new RuntimeException("middleware could not be sorted");
         }
         
-        $increasing_priority = array_reverse($middleware_priority);
-        $priority = array_search($middleware, $increasing_priority);
+        return $sorted;
+    }
+    
+    private function priorityForMiddleware(MiddlewareBlueprint $blueprint) :int
+    {
+        $priority = array_search($blueprint->class(), $this->middleware_by_increasing_priority);
         
         return $priority !== false ? (int) $priority : -1;
     }
     
     /**
-     * Filter array of middleware into a unique set.
+     * @param  MiddlewareBlueprint[]  $middleware
      *
-     * @param  array[]  $middleware
-     *
-     * @return string[]
+     * @return MiddlewareBlueprint[]
      */
-    private function uniqueMiddleware(array $middleware) :array
+    private function unique(array $middleware) :array
     {
         return array_values(array_unique($middleware, SORT_REGULAR));
     }
     
-    /**
-     * Expand a middleware group into an array of fully qualified class names.
-     *
-     * @param  string  $group
-     *
-     * @return array[]
-     * @throws ConfigurationException
-     */
-    private function expandMiddlewareGroup(string $group) :array
+    private function replaceMiddlewareAlias(string $middleware) :string
     {
-        $middleware_in_group = $this->core_groups[$group];
-        
-        return $this->expandMiddleware($middleware_in_group);
-    }
-    
-    /**
-     * Expand array of middleware into an array of fully qualified class names.
-     *
-     * @param  string[]  $middleware
-     *
-     * @return array[]
-     * @throws ConfigurationException
-     */
-    private function expandMiddleware(array $middleware) :array
-    {
-        $classes = [];
-        
-        foreach ($middleware as $item) {
-            $classes = array_merge(
-                $classes,
-                $this->expandMiddlewareMolecule($item)
-            );
-        }
-        
-        return $classes;
-    }
-    
-    /**
-     * Expand middleware into an array of fully qualified class names and any companion
-     * arguments.
-     *
-     * @param  string  $middleware
-     *
-     * @return array[]
-     * @throws ConfigurationException
-     */
-    private function expandMiddlewareMolecule(string $middleware) :array
-    {
-        $pieces = explode(':', $middleware, 2);
-        
-        if (count($pieces) > 1) {
-            return [
-                array_merge(
-                    [$this->expandMiddlewareAtom($pieces[0])],
-                    explode(',', $pieces[1])
-                ),
-            ];
-        }
-        
-        if (isset($this->core_groups[$middleware])) {
-            return $this->expandMiddlewareGroup($middleware);
-        }
-        
-        return [[$this->expandMiddlewareAtom($middleware)]];
-    }
-    
-    /**
-     * Expand a single middleware a fully qualified class name.
-     *
-     * @param  string  $middleware
-     *
-     * @return string
-     */
-    private function expandMiddlewareAtom(string $middleware) :string
-    {
-        if (isset($this->route_middleware_aliases[$middleware])) {
-            return $this->route_middleware_aliases[$middleware];
-        }
-        
-        if (class_exists($middleware)) {
+        if (isInterface($middleware, MiddlewareInterface::class)) {
             return $middleware;
         }
         
-        throw new LogicException('Unknown middleware ['.$middleware.'] used.');
+        if (isset($this->route_middleware_aliases[$middleware])) {
+            $middleware = $this->route_middleware_aliases[$middleware];
+            if (isInterface($middleware, MiddlewareInterface::class)) {
+                return $middleware;
+            }
+            throw FoundInvalidMiddleware::incorrectInterface($middleware);
+        }
+        
+        throw FoundInvalidMiddleware::becauseTheAliasDoesNotExist($middleware);
+    }
+    
+    private function isMiddlewareGroup(string $alias_or_class) :bool
+    {
+        return isset($this->middlewareGroups()[$alias_or_class]);
+    }
+    
+    /**
+     * @return array<string,array>
+     */
+    private function middlewareGroups() :array
+    {
+        return array_merge(self::CORE_GROUPS, $this->user_provided_groups);
     }
     
 }

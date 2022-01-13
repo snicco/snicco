@@ -161,7 +161,7 @@ class RouteMiddlewareTest extends RoutingTestCase
      */
     public function unknown_middleware_throws_an_exception()
     {
-        $this->expectExceptionMessage('Unknown middleware [abc]');
+        $this->expectExceptionMessage('The middleware alias [abc] does not exist.');
         
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
              ->middleware('abc');
@@ -292,10 +292,13 @@ class RouteMiddlewareTest extends RoutingTestCase
     }
     
     /** @test */
-    public function non_global_middleware_can_be_sorted()
+    public function middleware_can_be_sorted()
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
              ->middleware(['barbaz', FooMiddleware::class]);
+        
+        // The global middleware will be run last even tho it has no priority.
+        $this->withGlobalMiddleware([FoobarMiddleware::class]);
         
         $this->withMiddlewareGroups([
             'barbaz' => [
@@ -312,7 +315,8 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         $request = $this->frontendRequest('GET', '/foo');
         $this->assertResponseBody(
-            RoutingTestController::static.':baz_middleware:bar_middleware:foo_middleware',
+            RoutingTestController::static
+            .':baz_middleware:bar_middleware:foo_middleware:foobar_middleware',
             $request
         );
     }
