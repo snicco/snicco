@@ -8,8 +8,8 @@ use Snicco\Support\Str;
 use Snicco\Core\Support\Url;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Routing\Route\Routes;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
 use Snicco\Core\Routing\Exception\BadRouteParameter;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 use function trim;
@@ -34,10 +34,10 @@ final class InternalUrlGenerator implements UrlGenerator
     
     private Routes               $routes;
     private UrlGenerationContext $context;
-    private AdminDashboard       $admin_dashboard;
+    private AdminArea            $admin_dashboard;
     private UrlEncoder           $encoder;
     
-    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminDashboard $admin_dashboard, UrlEncoder $encoder = null)
+    public function __construct(Routes $routes, UrlGenerationContext $request_context, AdminArea $admin_dashboard, UrlEncoder $encoder = null)
     {
         $this->routes = $routes;
         $this->context = $request_context;

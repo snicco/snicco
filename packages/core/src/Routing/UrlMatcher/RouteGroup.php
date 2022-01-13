@@ -10,7 +10,6 @@ use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
 use function trim;
-use function array_merge;
 use function preg_replace;
 
 /**
@@ -71,7 +70,9 @@ final class RouteGroup
     
     private function mergeMiddleware(array $old_middleware) :array
     {
-        return array_merge($old_middleware, $this->middleware);
+        // It's important to filter for uniqueness here. Otherwise, we might add the same
+        // middleware twice to a route in nested groups which will throw an exception.
+        return array_unique(array_merge($old_middleware, $this->middleware));
     }
     
     private function mergeName(string $old) :string

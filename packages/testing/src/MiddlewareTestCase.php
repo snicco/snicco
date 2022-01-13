@@ -23,9 +23,9 @@ use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\Routing\Route\RouteCollection;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Snicco\Core\Routing\AdminDashboard\WPAdminArea;
 use Snicco\Core\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
-use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
@@ -165,7 +165,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         return new InternalUrlGenerator(
             $routes,
             $context,
-            WPAdminDashboard::fromDefaults(),
+            WPAdminArea::fromDefaults(),
             new RFC3986Encoder()
         );
     }

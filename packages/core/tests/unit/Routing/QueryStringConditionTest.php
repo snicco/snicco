@@ -6,9 +6,9 @@ namespace Tests\Core\unit\Routing;
 
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
+use Snicco\Core\Routing\AdminDashboard\WPAdminArea;
 use Snicco\Core\Routing\Condition\QueryStringCondition;
-use Snicco\Core\Routing\AdminDashboard\WPAdminDashboard;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 final class QueryStringConditionTest extends UnitTest
@@ -51,9 +51,9 @@ final class QueryStringConditionTest extends UnitTest
         ], $condition->getArguments($request));
     }
     
-    protected function adminDashboard() :AdminDashboard
+    protected function adminDashboard() :AdminArea
     {
-        return WPAdminDashboard::fromDefaults();
+        return WPAdminArea::fromDefaults();
     }
     
 }

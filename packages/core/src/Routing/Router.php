@@ -21,9 +21,9 @@ use Snicco\Core\Routing\UrlMatcher\RouteGroup;
 use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Core\Routing\Route\RouteCollection;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\Routing\Route\CachedRouteCollection;
-use Snicco\Core\Routing\AdminDashboard\AdminDashboard;
 use Snicco\Core\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Core\Routing\Condition\RouteConditionFactory;
 use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
@@ -73,7 +73,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
-        AdminDashboard $admin_dashboard,
+        AdminArea $admin_dashboard,
         PHPCacheFile $cache_file = null
     ) {
         $this->cache_file = $cache_file;

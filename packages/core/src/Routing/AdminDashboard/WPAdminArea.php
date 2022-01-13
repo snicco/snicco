@@ -14,7 +14,7 @@ use function explode;
 /**
  * @interal
  */
-final class WPAdminDashboard implements AdminDashboard
+final class WPAdminArea implements AdminArea
 {
     
     private string $prefix;
@@ -27,7 +27,7 @@ final class WPAdminDashboard implements AdminDashboard
         $this->login_path = $login_path;
     }
     
-    public static function fromDefaults() :WPAdminDashboard
+    public static function fromDefaults() :WPAdminArea
     {
         return new self('/wp-admin', '/wp-login.php');
     }

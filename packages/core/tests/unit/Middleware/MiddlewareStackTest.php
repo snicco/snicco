@@ -102,10 +102,12 @@ final class MiddlewareStackTest extends RoutingTestCase
             [RoutingConfigurator::WEB_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
         );
         
-        $this->adminRouteConfigurator()->admin(
+        $this->adminRouteConfigurator()->page(
             'admin1',
             'admin.php/foo',
-            RoutingTestController::class
+            RoutingTestController::class,
+            [],
+            null
         );
         
         $response = $this->runKernel($this->adminRequest('GET', '/foo'));
@@ -127,7 +129,13 @@ final class MiddlewareStackTest extends RoutingTestCase
             [RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
         );
         
-        $this->adminRouteConfigurator()->admin('r1', 'admin.php/foo', RoutingTestController::class);
+        $this->adminRouteConfigurator()->page(
+            'r1',
+            'admin.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
         $response = $this->runKernel($this->adminRequest('GET', '/bar'));
         

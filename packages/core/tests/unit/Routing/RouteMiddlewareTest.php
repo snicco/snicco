@@ -11,6 +11,7 @@ use Tests\Core\fixtures\Middleware\BazMiddleware;
 use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 use Tests\Core\fixtures\Middleware\BooleanMiddleware;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
 class RouteMiddlewareTest extends RoutingTestCase
 {
@@ -85,6 +86,29 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->assertResponseBody(
             RoutingTestController::static.':bar_middleware:foo_middleware',
             $request
+        );
+    }
+    
+    /** @test */
+    public function duplicate_middleware_does_not_throw_an_exception()
+    {
+        $this->routeConfigurator()->middleware(FooMiddleware::class)->group(
+            function (WebRoutingConfigurator $router) {
+                $router->middleware([FooMiddleware::class, BarMiddleware::class])->group(
+                    function (WebRoutingConfigurator $router) {
+                        $router->get('r1', '/foo', RoutingTestController::class)->middleware(
+                            BazMiddleware::class
+                        );
+                    }
+                );
+            }
+        );
+        
+        $request = $this->frontendRequest('GET', '/foo');
+        
+        $response = $this->runKernel($request);
+        $response->assertOk()->assertBodyExact(
+            RoutingTestController::static.':baz_middleware:bar_middleware:foo_middleware'
         );
     }
     

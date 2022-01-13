@@ -407,6 +407,15 @@ class TestResponse
         return $this;
     }
     
+    public function assertBodyExact(string $expected)
+    {
+        PHPUnit::assertSame(
+            $expected,
+            $this->streamed_content,
+            "Response is different than expected."
+        );
+    }
+    
     /**
      * Assert that the given strings are contained in order within the response.
      *
