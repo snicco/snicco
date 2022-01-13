@@ -38,7 +38,7 @@ final class RouteLoaderTest extends RoutingTestCase
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions('')
         );
-        $this->withMiddlewareGroups(['web' => [FooMiddleware::class]]);
+        $this->withMiddlewareGroups(['frontend' => [FooMiddleware::class]]);
         $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
         self::$web_include_partial = false;
         $this->bad_routes = dirname(__DIR__, 2).'/fixtures/bad-routes';
@@ -482,7 +482,7 @@ final class RouteLoaderTest extends RoutingTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            "[web.php] is a reserved filename and can not be loaded as an API file."
+            "[frontend.php] is a reserved filename and can not be loaded as an API file."
         );
         $this->file_loader->loadApiRoutesIn([$this->bad_routes.'/web-in-api-dir']);
     }

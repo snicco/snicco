@@ -73,11 +73,16 @@ final class MiddlewareStackTest extends RoutingTestCase
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
-                RoutingConfigurator::WEB_MIDDLEWARE,
+                RoutingConfigurator::FRONTEND_MIDDLEWARE,
             ])
         );
         $this->withMiddlewareGroups(
-            [RoutingConfigurator::WEB_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
+            [
+                RoutingConfigurator::FRONTEND_MIDDLEWARE => [
+                    FooMiddleware::class,
+                    BarMiddleware::class,
+                ],
+            ]
         );
         
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
@@ -95,11 +100,16 @@ final class MiddlewareStackTest extends RoutingTestCase
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
-                RoutingConfigurator::WEB_MIDDLEWARE,
+                RoutingConfigurator::FRONTEND_MIDDLEWARE,
             ])
         );
         $this->withMiddlewareGroups(
-            [RoutingConfigurator::WEB_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
+            [
+                RoutingConfigurator::FRONTEND_MIDDLEWARE => [
+                    FooMiddleware::class,
+                    BarMiddleware::class,
+                ],
+            ]
         );
         
         $this->adminRouteConfigurator()->page(
@@ -192,12 +202,12 @@ final class MiddlewareStackTest extends RoutingTestCase
     public function no_middleware_is_run_if_middleware_is_disabled()
     {
         $m = new MiddlewareStack([
-            RoutingConfigurator::WEB_MIDDLEWARE,
+            RoutingConfigurator::FRONTEND_MIDDLEWARE,
             RoutingConfigurator::GLOBAL_MIDDLEWARE,
             RoutingConfigurator::ADMIN_MIDDLEWARE,
         ]);
         
-        $m->withMiddlewareGroup(RoutingConfigurator::WEB_MIDDLEWARE, [FooMiddleware::class]);
+        $m->withMiddlewareGroup(RoutingConfigurator::FRONTEND_MIDDLEWARE, [FooMiddleware::class]);
         $m->withMiddlewareGroup(RoutingConfigurator::ADMIN_MIDDLEWARE, [BarMiddleware::class]);
         $m->withMiddlewareGroup(RoutingConfigurator::GLOBAL_MIDDLEWARE, [BazMiddleware::class]);
         
