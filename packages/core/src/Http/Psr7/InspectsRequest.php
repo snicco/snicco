@@ -10,96 +10,96 @@ use Snicco\Support\Str;
 trait InspectsRequest
 {
     
-    public function realMethod()
+    final public function realMethod()
     {
         return Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
     }
     
-    public function isGet() :bool
+    final public function isGet() :bool
     {
         return $this->isMethod('GET');
     }
     
-    public function isHead() :bool
+    final public function isHead() :bool
     {
         return $this->isMethod('HEAD');
     }
     
-    public function isPost() :bool
+    final public function isPost() :bool
     {
         return $this->isMethod('POST');
     }
     
-    public function isPut() :bool
+    final public function isPut() :bool
     {
         return $this->isMethod('PUT');
     }
     
-    public function isPatch() :bool
+    final public function isPatch() :bool
     {
         return $this->isMethod('PATCH');
     }
     
-    public function isDelete() :bool
+    final public function isDelete() :bool
     {
         return $this->isMethod('DELETE');
     }
     
-    public function isOptions() :bool
+    final public function isOptions() :bool
     {
         return $this->isMethod('OPTIONS');
     }
     
-    public function isReadVerb() :bool
+    final public function isReadVerb() :bool
     {
         return $this->isMethodSafe();
     }
     
-    public function isMethodSafe() :bool
+    final public function isMethodSafe() :bool
     {
         return in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
     }
     
-    public function isAjax() :bool
+    final public function isAjax() :bool
     {
         return $this->isXmlHttpRequest();
     }
     
-    public function isXmlHttpRequest() :bool
+    final public function isXmlHttpRequest() :bool
     {
         return 'XMLHttpRequest' == $this->getHeaderLine('X-Requested-With');
     }
     
-    public function isSendingJson() :bool
+    final public function isSendingJson() :bool
     {
         return Str::contains($this->getHeaderLine('Content-Type'), ['/json', '+json']);
     }
     
-    public function isExpectingJson() :bool
+    final public function isExpectingJson() :bool
     {
         $accepts = $this->acceptableContentTypes(false);
         
         return Str::contains($accepts, ['/json', '+json']);
     }
     
-    public function acceptableContentTypes(bool $as_array = true)
+    final public function acceptableContentTypes(bool $as_array = true)
     {
         return $as_array ? $this->getHeader('Accept') : $this->getHeaderLine('Accept');
     }
     
-    public function acceptsHtml() :bool
+    final public function acceptsHtml() :bool
     {
         return $this->accepts('text/html');
     }
     
-    public function accepts(string $content_type) :bool
+    final public function accepts(string $content_type) :bool
     {
         $accepts = $this->acceptableContentTypes();
         
         return $this->matchesType($content_type, $accepts);
     }
     
-    public function acceptsOneOf(array $content_types) :bool
+    final public function acceptsOneOf(array $content_types) :bool
     {
         $accepts = $this->acceptableContentTypes();
         

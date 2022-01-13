@@ -19,8 +19,8 @@ use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Application\Application;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\ExceptionHandling\WhoopsHandler;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Codeception\shared\helpers\CreateContainer;
@@ -34,6 +34,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     
     use CreateContainer;
     use CreatePsr17Factories;
+    use CreatePsrRequests;
     
     private ContainerAdapter $container;
     
@@ -43,7 +44,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     {
         parent::setUp();
         $this->container = $this->createContainer();
-        $this->request = TestRequest::from('GET', 'foo');
+        $this->request = $this->frontendRequest('GET', '/foo');
         $this->container->instance(
             ResponseFactory::class,
             $this->createResponseFactory(

@@ -10,7 +10,6 @@ use Snicco\Core\Routing\Route\Route;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;
 use Snicco\Core\Http\Exceptions\RequestHasNoType;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
@@ -18,7 +17,7 @@ use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 class RequestTest extends UnitTest
 {
     
-    private Request $request;
+    private Request                $request;
     private ServerRequestInterface $psr_request;
     use CreatePsrRequests;
     use CreatePsr17Factories;
@@ -33,7 +32,7 @@ class RequestTest extends UnitTest
     
     public function testIsImmutable()
     {
-        $request = TestRequest::from('GET', 'foo');
+        $request = $this->frontendRequest('GET', 'foo');
         
         $next = $request->withMethod('POST');
         
@@ -48,73 +47,73 @@ class RequestTest extends UnitTest
     
     public function testGetPath()
     {
-        $request = TestRequest::from('GET', '/foo/bar');
+        $request = $this->frontendRequest('GET', '/foo/bar');
         $this->assertSame('/foo/bar', $request->path());
         
-        $request = TestRequest::from('GET', '/foo/bar/');
+        $request = $this->frontendRequest('GET', '/foo/bar/');
         $this->assertSame('/foo/bar/', $request->path());
         
-        $request = TestRequest::from('GET', '/');
+        $request = $this->frontendRequest('GET', '/');
         $this->assertSame('/', $request->path());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
         $this->assertSame('/foo/bar', $request->path());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/', $request->path());
     }
     
     public function testGetFullPath()
     {
-        $request = TestRequest::from('GET', '/foo/bar');
+        $request = $this->frontendRequest('GET', '/foo/bar');
         $this->assertSame('/foo/bar', $request->fullRequestTarget());
         
-        $request = TestRequest::from('GET', '/foo/bar/');
+        $request = $this->frontendRequest('GET', '/foo/bar/');
         $this->assertSame('/foo/bar/', $request->fullRequestTarget());
         
-        $request = TestRequest::from('GET', '/');
+        $request = $this->frontendRequest('GET', '/');
         $this->assertSame('/', $request->fullRequestTarget());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
         $this->assertSame('/foo/bar?baz=biz', $request->fullRequestTarget());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/?baz=biz', $request->fullRequestTarget());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('/foo/bar?baz=biz#section', $request->fullRequestTarget());
     }
     
     public function testGetUrl()
     {
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/');
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
     }
     
     public function testGetFullUrl()
     {
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/');
         $this->assertSame('https://foo.com/foo/bar/', $request->fullUrl());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
         $this->assertSame('https://foo.com/foo/bar?baz=biz', $request->fullUrl());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('https://foo.com/foo/bar/?baz=biz', $request->fullUrl());
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
+        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
     }
     
@@ -128,16 +127,6 @@ class RequestTest extends UnitTest
         $cookies = $request->cookies();
         $this->assertInstanceOf(Repository::class, $cookies);
         $this->assertSame(['foo' => 'bar'], $cookies->all());
-    }
-    
-    public function testGetLoadingScript()
-    {
-        $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
-        $this->assertSame('index.php', $request->loadingScript());
-        
-        $request =
-            TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/edit.php']);
-        $this->assertSame('wp-admin/edit.php', $request->loadingScript());
     }
     
     public function testRouteIs()
@@ -156,7 +145,7 @@ class RequestTest extends UnitTest
     
     public function testFullUrlIs()
     {
-        $request = TestRequest::fromFullUrl('GET', 'https://example.com/foo/bar');
+        $request = $this->frontendRequest('GET', 'https://example.com/foo/bar');
         
         $this->assertFalse($request->fullUrlIs('https://example.com/foo/'));
         $this->assertFalse($request->fullUrlIs('https://example.com/foo/bar/'));
@@ -166,7 +155,7 @@ class RequestTest extends UnitTest
     
     public function testPathIs()
     {
-        $request = TestRequest::fromFullUrl('GET', 'https://example.com/foo/bar');
+        $request = $this->frontendRequest('GET', 'https://example.com/foo/bar');
         
         $this->assertFalse($request->pathIs('/foo'));
         $this->assertFalse($request->pathIs('foo'));
@@ -315,6 +304,30 @@ class RequestTest extends UnitTest
         $this->assertFalse($request->isToFrontend());
         $this->assertFalse($request->isToAdminArea());
         $this->assertTrue($request->isToApiEndpoint());
+    }
+    
+    /** @test */
+    public function test_ip()
+    {
+        $request = new Request(
+            $this->psrServerRequestFactory()
+                 ->createServerRequest('GET', '/foo', ['REMOTE_ADDR' => '12345567'])
+        );
+        
+        $this->assertSame('12345567', $request->ip());
+        
+        $this->assertSame(null, $this->frontendRequest('GET', '/foo')->ip());
+    }
+    
+    /** @test */
+    public function test_from_psr()
+    {
+        $request = Request::fromPsr(
+            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo')
+        );
+        
+        $this->assertSame('/foo', $request->path());
+        $this->assertSame('GET', $request->getMethod());
     }
     
 }
