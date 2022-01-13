@@ -16,10 +16,12 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
 {
     
     private UrlPath $api_base_prefix;
+    private bool    $add_middleware_for_api_files;
     
-    public function __construct(string $base_api_prefix)
+    public function __construct(string $base_api_prefix, bool $add_middleware_for_each_api_file = false)
     {
         $this->api_base_prefix = UrlPath::fromString($base_api_prefix);
+        $this->add_middleware_for_api_files = $add_middleware_for_each_api_file;
     }
     
     public function getApiRouteAttributes(string $file_name_without_extension_and_version, ?string $parsed_version) :array
@@ -37,12 +39,14 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
                                             ->asString();
         }
         
+        $api_middleware = ['api'];
+        if ($this->add_middleware_for_api_files) {
+            $api_middleware[] = $file_name_without_extension_and_version;
+        }
+        
         return [
             RoutingConfigurator::PREFIX_KEY => $prefix,
-            RoutingConfigurator::MIDDLEWARE_KEY => [
-                'api',
-                $file_name_without_extension_and_version,
-            ],
+            RoutingConfigurator::MIDDLEWARE_KEY => $api_middleware,
             RoutingConfigurator::NAME_KEY => 'api.'.$file_name_without_extension_and_version,
         ];
     }
