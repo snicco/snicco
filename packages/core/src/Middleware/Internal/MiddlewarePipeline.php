@@ -8,17 +8,16 @@ use Closure;
 use Throwable;
 use LogicException;
 use Snicco\Support\Arr;
-use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Middleware\Delegate;
-use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\ExceptionHandler;
 
 use function is_string;
 use function array_map;
 use function strtolower;
-use function Snicco\Core\Support\Functions\isInterface;
 
 /**
  * @interal
@@ -30,11 +29,12 @@ final class MiddlewarePipeline
     private MiddlewareFactory $middleware_factory;
     
     /**
-     * @var array<array>
+     * @var MiddlewareBlueprint[]
      */
-    private array   $middleware        = [];
-    private bool    $needs_new_request = false;
+    private array   $middleware = [];
     private Request $current_request;
+    private Closure $request_handler;
+    private bool    $exhausted  = false;
     
     public function __construct(MiddlewareFactory $middleware_factory, ExceptionHandler $error_handler)
     {
@@ -44,99 +44,43 @@ final class MiddlewarePipeline
     
     public function send(Request $request) :MiddlewarePipeline
     {
-        $this->current_request = $request;
-        $this->needs_new_request = false;
-        return $this;
+        $new = clone $this;
+        $new->current_request = $request;
+        return $new;
     }
     
     /**
-     * Set the array of middleware.
-     * Accepted: function ($request, Closure $next), Middleware::class , [Middleware ,
-     * 'config_value'
-     * Middleware classes must implement Psr\Http\Server\MiddlewareInterface
+     * @param  MiddlewareBlueprint|MiddlewareBlueprint[]  $middleware
      */
-    public function through(array $middleware) :MiddlewarePipeline
+    public function through($middleware) :MiddlewarePipeline
     {
-        $this->middleware = $this->normalizeMiddleware($middleware);
-        return $this;
+        $new = clone $this;
+        $middleware = Arr::wrap($middleware);
+        Assert::allIsInstanceOf($middleware, MiddlewareBlueprint::class);
+        $new->middleware = $middleware;
+        return $new;
     }
     
     public function then(Closure $request_handler) :Response
     {
-        $this->middleware[] = [new Delegate($request_handler), []];
+        $this->request_handler = $request_handler;
         
-        return $this->run($this->buildMiddlewareStack());
+        return $this->run();
     }
     
-    public function run($stack = null) :Response
+    private function run() :Response
     {
-        if (true === $this->needs_new_request) {
-            throw new LogicException(
-                'You cant run the middleware pipeline twice without providing a new request.'
-            );
-        }
-        
         if ( ! isset($this->current_request)) {
             throw new LogicException(
-                "You cant run a middleware pipeline without calling send() first."
+                "You cant run a middleware pipeline twice without calling send() first."
             );
         }
         
-        $stack = $stack ?? $this->buildMiddlewareStack();
+        $stack = $this->buildMiddlewareStack();
         
         $response = $stack($this->current_request);
         unset($this->current_request);
-        $this->needs_new_request = true;
         return $response;
-    }
-    
-    private function normalizeMiddleware(array $middleware) :array
-    {
-        $middleware = array_map(function ($middleware) {
-            if ($middleware instanceof Closure) {
-                return new Delegate($middleware);
-            }
-            
-            return $middleware;
-        }, $middleware);
-        
-        $middleware = array_map(function ($middleware) {
-            $middleware = Arr::wrap($middleware);
-            
-            if ( ! isInterface($middleware[0], MiddlewareInterface::class)) {
-                throw new InvalidArgumentException(
-                    "Unsupported middleware type: $middleware[0]"
-                );
-            }
-            
-            return $middleware;
-        }, $middleware);
-        
-        return array_map(function ($middleware) {
-            return $this->getMiddlewareAndParams($middleware);
-        }, $middleware);
-    }
-    
-    /**
-     * @param  array|string|object  $middleware_blueprint
-     *
-     * @return array<string|object,array>
-     */
-    private function getMiddlewareAndParams($middleware_blueprint) :array
-    {
-        if (is_object($middleware_blueprint)) {
-            return [$middleware_blueprint, []];
-        }
-        
-        if (is_string($middleware_blueprint)) {
-            return [$middleware_blueprint, []];
-        }
-        
-        $middleware_class = array_shift($middleware_blueprint);
-        
-        $constructor_args = $middleware_blueprint;
-        
-        return [$middleware_class, $constructor_args];
     }
     
     private function buildMiddlewareStack() :Delegate
@@ -146,11 +90,19 @@ final class MiddlewarePipeline
     
     private function nextMiddleware() :Delegate
     {
+        if ($this->exhausted) {
+            throw new LogicException("The middleware pipeline is exhausted.");
+        }
+        
         if ($this->middleware === []) {
-            return new Delegate(function () {
-                throw new LogicException(
-                    "Middleware stack exhausted with no result."
-                );
+            $this->exhausted = true;
+            
+            return new Delegate(function (Request $request) {
+                try {
+                    return call_user_func($this->request_handler, $request);
+                } catch (Throwable $e) {
+                    return $this->exceptionToHttpResponse($e, $request);
+                }
             });
         }
         
@@ -158,38 +110,22 @@ final class MiddlewarePipeline
             try {
                 return $this->runNextMiddleware($request);
             } catch (Throwable $e) {
-                $this->error_handler->report($e, $request);
-                
-                return $this->error_handler->toHttpResponse($e, $request);
+                return $this->exceptionToHttpResponse($e, $request);
             }
         });
     }
     
-    private function runNextMiddleware(Request $request) :Response
+    private function runNextMiddleware(Request $request) :ResponseInterface
     {
-        [$middleware, $arguments_from_route_definition] = array_shift($this->middleware);
-        
-        if ($middleware instanceof MiddlewareInterface) {
-            return $middleware->process($request, $this->nextMiddleware());
-        }
-        
-        $arguments_from_route_definition = $this->convertStrings(
-            $arguments_from_route_definition
-        );
+        /** @var MiddlewareBlueprint $middleware_blueprint */
+        $middleware_blueprint = array_shift($this->middleware);
         
         $middleware_instance = $this->middleware_factory->create(
-            $middleware,
-            $arguments_from_route_definition
+            $middleware_blueprint->class(),
+            $this->convertStrings($middleware_blueprint->arguments())
         );
         
-        /** @var Response $response */
-        $response = $middleware_instance->process($request, $this->nextMiddleware());
-        
-        if ( ! $response instanceof Response) {
-            $response = new Response($response);
-        }
-        
-        return $response;
+        return $middleware_instance->process($request, $this->nextMiddleware());
     }
     
     private function convertStrings(array $constructor_args) :array
@@ -212,6 +148,13 @@ final class MiddlewarePipeline
             
             return $value;
         }, $constructor_args);
+    }
+    
+    private function exceptionToHttpResponse(Throwable $e, Request $request) :Response
+    {
+        $this->error_handler->report($e, $request);
+        
+        return $this->error_handler->toHttpResponse($e, $request);
     }
     
 }
