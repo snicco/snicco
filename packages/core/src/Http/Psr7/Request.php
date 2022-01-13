@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Core\Http\Psr7;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
 use Snicco\Support\Repository;
 use Nyholm\Psr7Server\ServerRequestCreator;
@@ -136,6 +135,9 @@ final class Request implements ServerRequestInterface
         return false;
     }
     
+    /**
+     * @note The path is not urldecoded here.
+     */
     final function fullUrlIs(...$patterns) :bool
     {
         $url = $this->fullUrl();
@@ -151,11 +153,10 @@ final class Request implements ServerRequestInterface
     
     final function pathIs(...$patterns) :bool
     {
-        /** @var @todo Decoded or real path? */
-        $path = Url::addLeading($this->decodedPath());
+        $path = $this->decodedPath();
         
         foreach ($patterns as $pattern) {
-            if (Str::is(Url::addLeading($pattern), $path)) {
+            if (Str::is('/'.ltrim($pattern, '/'), $path)) {
                 return true;
             }
         }

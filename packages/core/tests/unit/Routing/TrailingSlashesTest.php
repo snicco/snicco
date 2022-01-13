@@ -7,7 +7,7 @@ namespace Tests\Core\unit\Routing;
 use Tests\Core\RoutingTestCase;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
-class TrailingSlashTest extends RoutingTestCase
+class TrailingSlashesTest extends RoutingTestCase
 {
     
     /** @test */

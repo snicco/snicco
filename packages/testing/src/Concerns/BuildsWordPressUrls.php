@@ -2,8 +2,6 @@
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Core\Support\Url;
-
 trait BuildsWordPressUrls
 {
     
@@ -20,10 +18,9 @@ trait BuildsWordPressUrls
     final protected function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php') :string
     {
         $menu_slug = trim($menu_slug, '/');
-        return Url::combineAbsPath(
-            $this->baseUrl(),
-            rtrim($this->adminDashboardPrefix(), '/').'/'.$parent_page.'?page='.$menu_slug
-        );
+        
+        return rtrim($this->baseUrl(), '/').
+               rtrim($this->adminDashboardPrefix(), '/').'/'.$parent_page.'?page='.$menu_slug;
     }
     
 }

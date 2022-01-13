@@ -6,7 +6,7 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
+use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -72,13 +72,13 @@ final class Redirect extends AbstractMiddleware
     private function formatLocation(string $location, string $request_path) :string
     {
         $with_trailing = Str::endsWith($request_path, '/');
-        $location = Url::addLeading($location);
+        $location = UrlPath::fromString($location);
         
         if ($with_trailing) {
-            $location = Url::addTrailing($location);
+            $location = $location->withTrailingSlash();
         }
         
-        return $location;
+        return $location->asString();
     }
     
 }

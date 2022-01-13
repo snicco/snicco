@@ -6,6 +6,7 @@ namespace Tests\Core\unit\Support;
 
 use Generator;
 use Snicco\Support\Str;
+use InvalidArgumentException;
 use Snicco\Core\Support\UrlPath;
 use Tests\Codeception\shared\UnitTest;
 
@@ -101,6 +102,15 @@ class UrlPathTest extends UnitTest
         $this->assertTrue($path->startsWith('/wp-admin/foo/bar'));
         $this->assertFalse($path->startsWith('/wp-admin/foo/bar/'));
         $this->assertFalse($path->startsWith('/wp-admin/foo/baz'));
+    }
+    
+    /** @test */
+    public function test_equals_with_slash_only()
+    {
+        $path = UrlPath::fromString('/');
+        $this->assertTrue($path->equals('/'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->assertTrue($path->equals(''));
     }
     
     public function providePath() :array

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
+use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -26,21 +26,21 @@ final class TrailingSlash extends AbstractMiddleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $path = $request->path();
+        $path = UrlPath::fromString($request->path());
         
         $accept_request = $this->trailing_slash
-            ? Str::endsWith($path, '/')
-            : Str::doesNotEndWith($path, '/');
+            ? Str::endsWith($path->asString(), '/')
+            : Str::doesNotEndWith($path->asString(), '/');
         
-        if ($accept_request || $path === '/') {
+        if ($accept_request || $path->equals('/')) {
             return $next($request);
         }
         
         $redirect_to = $this->trailing_slash
-            ? Url::addTrailing($path)
-            : Url::removeTrailing($path);
+            ? $path->withTrailingSlash()
+            : $path->withoutTrailingSlash();
         
-        return $this->redirect()->to($redirect_to, 301);
+        return $this->redirect()->to($redirect_to->asString(), 301);
     }
     
 }
