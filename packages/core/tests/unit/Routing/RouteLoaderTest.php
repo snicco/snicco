@@ -136,8 +136,6 @@ final class RouteLoaderTest extends RoutingTestCase
     /** @test */
     public function all_files_in_the_api_dir_will_be_included_and_prefixed_with_the_base_prefix()
     {
-        $this->withMiddlewareGroups(['partials' => []]);
-        
         $loader = new RouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
@@ -157,8 +155,6 @@ final class RouteLoaderTest extends RoutingTestCase
     /** @test */
     public function all_files_in_the_api_dir_have_the_file_name_as_a_route_name_prefix()
     {
-        $this->withMiddlewareGroups(['partials' => [], 'rest.v1' => []]);
-        
         $loader = new RouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
@@ -174,12 +170,16 @@ final class RouteLoaderTest extends RoutingTestCase
         );
     }
     
-    /** @test
+    /**
+     * @test
      */
     public function all_api_routes_have_an_api_middleware_appended_by_default()
     {
         $this->withMiddlewareGroups(
-            [RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class], 'partials' => []]
+            [
+                RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class],
+                'partials' => [BarMiddleware::class],
+            ]
         );
         
         $loader = new RouteLoader(
@@ -195,7 +195,38 @@ final class RouteLoaderTest extends RoutingTestCase
             $this->frontendRequest('GET', $this->base_prefix.'/partials/cart')
         );
         
+        // Bar middleware is not included by default
         $response->assertOk()->assertBodyExact(RoutingTestController::static.':foo_middleware');
+    }
+    
+    /** @test */
+    public function the_filename_can_be_added_as_a_middleware_for_api_routes()
+    {
+        $this->withMiddlewareGroups(
+            [
+                RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class],
+                'partials' => [BarMiddleware::class],
+            ]
+        );
+        
+        $loader = new RouteLoader(
+            $this->routeConfigurator(),
+            new DefaultRouteLoadingOptions(
+                $this->base_prefix,
+                true
+            )
+        );
+        
+        $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
+        
+        $response = $this->runKernel(
+            $this->frontendRequest('GET', $this->base_prefix.'/partials/cart')
+        );
+        
+        // Bar middleware is not included by default
+        $response->assertOk()->assertBodyExact(
+            RoutingTestController::static.':bar_middleware:foo_middleware'
+        );
     }
     
     /** @test */
