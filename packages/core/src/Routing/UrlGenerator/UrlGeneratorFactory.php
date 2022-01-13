@@ -8,7 +8,7 @@ use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Routing\AdminDashboard\AdminArea;
 
 /**
- * @interal
+ * @api
  */
 final class UrlGeneratorFactory
 {

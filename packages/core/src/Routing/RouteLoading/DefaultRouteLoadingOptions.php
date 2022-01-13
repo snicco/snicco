@@ -39,7 +39,10 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
         
         return [
             RoutingConfigurator::PREFIX_KEY => $prefix,
-            RoutingConfigurator::MIDDLEWARE_KEY => [$file_name_without_extension_and_version],
+            RoutingConfigurator::MIDDLEWARE_KEY => [
+                'api',
+                $file_name_without_extension_and_version,
+            ],
             RoutingConfigurator::NAME_KEY => 'api.'.$file_name_without_extension_and_version,
         ];
     }

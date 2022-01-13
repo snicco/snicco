@@ -52,6 +52,8 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
     
     private RouteConditionFactory $condition_factory;
     
+    private AdminArea $admin_area;
+    
     private UrlGeneratorFactory $generator_factory;
     
     private ?PHPCacheFile $cache_file;
@@ -73,12 +75,12 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
-        AdminArea $admin_dashboard,
+        AdminArea $admin_area,
         PHPCacheFile $cache_file = null
     ) {
         $this->cache_file = $cache_file;
         $this->condition_factory = $condition_factory;
-        $this->admin_dashboard = $admin_dashboard;
+        $this->admin_area = $admin_area;
         
         if ($this->cache_file && $this->cache_file->isCreated()) {
             $cache = $this->cache_file->require();
@@ -362,7 +364,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         }
         
         $uri = $request->getUri();
-        $new_uri = $uri->withPath($this->admin_dashboard->rewriteForRouting($request));
+        $new_uri = $uri->withPath($this->admin_area->rewriteForRouting($request));
         
         return $request->withUri($new_uri);
     }
