@@ -62,7 +62,6 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
         
         if (RouteLoader::FRONTEND_ROUTE_FILENAME === $file_name_without_extension) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::FRONTEND_MIDDLEWARE];
-            $att[RoutingConfigurator::NAME_KEY] = 'web';
         }
         
         return $att;

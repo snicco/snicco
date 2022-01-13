@@ -11,6 +11,7 @@ use Snicco\Core\Routing\RouteLoader;
 use Tests\Core\fixtures\Middleware\FooMiddleware;
 use Tests\Core\fixtures\Middleware\BarMiddleware;
 use Snicco\Core\Routing\RouteLoading\RouteLoadingOptions;
+use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Snicco\Core\Routing\RouteLoading\DefaultRouteLoadingOptions;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -86,6 +87,17 @@ final class RouteLoaderTest extends RoutingTestCase
             RoutingTestController::static.':foo_middleware',
             $this->frontendRequest('GET', self::WEB_PATH)
         );
+    }
+    
+    /** @test */
+    public function no_name_prefix_is_added_to_frontend_routes()
+    {
+        $this->file_loader->loadRoutesIn([$this->routes_dir]);
+        
+        $this->assertSame(self::WEB_PATH, $this->generator->toRoute('web1'));
+        
+        $this->expectException(RouteNotFound::class);
+        $this->generator->toRoute('frontend.web1');
     }
     
     /** @test */
