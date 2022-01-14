@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 
-class DefaultHeaders extends AbstractMiddleware
+/**
+ * @api
+ */
+final class DefaultHeaders extends AbstractMiddleware
 {
     
     private array $default_headers;

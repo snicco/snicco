@@ -6,24 +6,25 @@ namespace Snicco\Core\Http;
 
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Application\Config;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
-class AbstractController
+/**
+ * @api
+ */
+abstract class AbstractController
 {
     
     /**
      * @var ControllerMiddleware[]
      */
-    private $middleware = [];
+    private array $middleware = [];
     
-    /**
-     * @var ContainerAdapter
-     */
-    private $container;
+    private ContainerAdapter $container;
     
     /**
      * @interal
@@ -62,14 +63,27 @@ class AbstractController
         return $this->container[Redirector::class];
     }
     
-    protected function url() :UrlGeneratorInterface
+    protected function url() :UrlGenerator
     {
-        return $this->container[UrlGeneratorInterface::class];
+        return $this->container[UrlGenerator::class];
     }
     
     protected function respond() :ResponseFactory
     {
         return $this->container[ResponseFactory::class];
+    }
+    
+    /**
+     * @param  mixed  $default
+     *
+     * @return mixed
+     */
+    protected function config(string $key, $default = null)
+    {
+        /** @var Config $config */
+        $config = $this->container[Config::class];
+        Assert::isInstanceOf(Config::class, $config);
+        return $config->get($key, $default);
     }
     
     protected function render(string $template_identifier, array $data = []) :Response

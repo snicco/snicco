@@ -19,40 +19,38 @@ use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Application\Application;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\ExceptionHandling\WhoopsHandler;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
-use Tests\Codeception\shared\helpers\CreateRouteCollection;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Core\ExceptionHandling\PlainTextHtmlErrorRenderer;
 
 class ProductionExceptionHandlerRenderingTest extends UnitTest
 {
     
-    use CreateRouteCollection;
     use CreateContainer;
     use CreatePsr17Factories;
+    use CreatePsrRequests;
     
-    /**
-     * @var ContainerAdapter
-     */
-    private $container;
+    private ContainerAdapter $container;
     
-    /**
-     * @var Request|TestRequest
-     */
-    private $request;
+    private Request $request;
     
     protected function setUp() :void
     {
         parent::setUp();
         $this->container = $this->createContainer();
-        $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(DefaultResponseFactory::class, $this->createResponseFactory());
+        $this->request = $this->frontendRequest('GET', '/foo');
+        $this->container->instance(
+            ResponseFactory::class,
+            $this->createResponseFactory(
+                Mockery::mock(UrlGenerator::class)
+            )
+        );
         $this->container->instance(
             HtmlErrorRender::class,
             new PlainTextHtmlErrorRenderer()
@@ -121,7 +119,6 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     public function an_exception_can_have_custom_rendering_logic()
     {
         $handler = $this->newErrorHandler();
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         
         $response = new TestResponse(
             $handler->toHttpResponse(
@@ -180,7 +177,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = new fixtures\TestExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[DefaultResponseFactory::class]
+            $this->container[ResponseFactory::class]
         );
         
         $response = new TestResponse(
@@ -306,14 +303,9 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         return new ProductionExceptionHandler(
             $this->container,
             new NullLogger(),
-            $this->container[DefaultResponseFactory::class],
+            $this->container[ResponseFactory::class],
             $debug_mode ? $this->getWhoops() : null
         );
-    }
-    
-    private function newUrlGenerator()
-    {
-        return Mockery::mock(UrlGeneratorInterface::class);
     }
     
     private function getWhoops()

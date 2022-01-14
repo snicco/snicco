@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Middleware\JsonPayload;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
-class JsonPayloadTest extends MiddlewareTestCase
+class JsonPayloadTest extends InternalMiddlewareTestCase
 {
     
     /** @test */
@@ -21,7 +21,7 @@ class JsonPayloadTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonPayload(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(null, $this->receivedRequest()->getParsedBody());
+        $this->assertSame(null, $this->getReceivedRequest()->getParsedBody());
         
         $request = $this->jsonRequest('POST');
         $request->getBody()->write('{"bar":"foo"}');
@@ -29,7 +29,7 @@ class JsonPayloadTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonPayload(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(['bar' => 'foo'], $this->receivedRequest()->getParsedBody());
+        $this->assertSame(['bar' => 'foo'], $this->getReceivedRequest()->getParsedBody());
     }
     
     /** @test */
@@ -42,7 +42,7 @@ class JsonPayloadTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonPayload(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(null, $this->receivedRequest()->getParsedBody());
+        $this->assertSame(null, $this->getReceivedRequest()->getParsedBody());
     }
     
     /** @test */
@@ -54,7 +54,7 @@ class JsonPayloadTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonPayload(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame([], $this->receivedRequest()->getParsedBody());
+        $this->assertSame([], $this->getReceivedRequest()->getParsedBody());
     }
     
     /** @test */

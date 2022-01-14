@@ -4,256 +4,256 @@ declare(strict_types=1);
 
 namespace Tests\Core;
 
-use Closure;
-use Mockery;
-use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
-use Snicco\Core\Routing\Delegate;
-use Snicco\Core\Routing\Pipeline;
+use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\ResponseEmitter;
-use Snicco\Core\Contracts\AbstractMiddleware;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
+use Snicco\Core\Support\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
-use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\Middleware\ShareCookies;
 use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Middleware\MiddlewareStack;
+use Snicco\Core\Http\FileTemplateRenderer;
+use Snicco\Core\Middleware\MethodOverride;
+use Snicco\Core\Middleware\MustMatchRoute;
 use Snicco\Core\Contracts\ExceptionHandler;
-use Snicco\Core\Controllers\ViewAbstractController;
-use Snicco\Core\Factories\MiddlewareFactory;
-use Snicco\Core\Middleware\Core\RouteRunner;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Core\Http\DefaultResponseFactory;
-use Snicco\Core\Factories\RouteActionFactory;
-use Snicco\Core\Middleware\Core\ShareCookies;
+use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Core\Middleware\Core\MethodOverride;
-use Snicco\Core\Routing\RoutingServiceProvider;
-use Snicco\Core\Controllers\FallBackAbstractController;
-use Snicco\Core\Factories\RouteConditionFactory;
-use Tests\Core\fixtures\TestDoubles\HeaderStack;
-use Tests\Core\fixtures\Middleware\FooAbstractMiddleware;
-use Tests\Core\fixtures\Middleware\BarAbstractMiddleware;
-use Tests\Core\fixtures\Middleware\BazAbstractMiddleware;
-use Tests\Core\fixtures\Conditions\TrueCondition;
-use Snicco\Core\Http\FileBasedHtmlResponseFactory;
-use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
-use Tests\Core\fixtures\Conditions\FalseCondition;
-use Tests\Core\fixtures\Conditions\MaybeCondition;
-use Snicco\Core\Contracts\RouteCollectionInterface;
-use Tests\Core\fixtures\Conditions\UniqueCondition;
-use Tests\Core\fixtures\Middleware\FooBarAbstractMiddleware;
+use Snicco\Core\Middleware\Internal\RouteRunner;
+use Tests\Core\fixtures\Middleware\FooMiddleware;
+use Tests\Core\fixtures\Middleware\BarMiddleware;
+use Tests\Core\fixtures\Middleware\BazMiddleware;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
+use Snicco\Core\Routing\Controller\ViewController;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\AdminDashboard\WPAdminArea;
+use Snicco\Core\Middleware\Internal\MiddlewareStack;
+use Snicco\Core\Middleware\Internal\PrepareResponse;
+use Snicco\Core\Routing\UrlGenerator\RFC3986Encoder;
 use Tests\Core\fixtures\TestDoubles\TestViewFactory;
-use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
-use Snicco\Core\Middleware\Core\SetRequestAttributes;
+use Tests\Core\fixtures\Middleware\FoobarMiddleware;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\Core\Routing\Controller\FallBackController;
+use Snicco\Core\Routing\Controller\RedirectController;
+use Snicco\Core\Middleware\Internal\MiddlewareFactory;
+use Snicco\Core\Middleware\Internal\RoutingMiddleware;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Tests\Codeception\shared\helpers\AssertViewContent;
-use Tests\Codeception\shared\helpers\CreateRouteMatcher;
+use Snicco\Core\Routing\Condition\RouteConditionFactory;
+use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
-use Tests\Codeception\shared\helpers\CreateRouteCollection;
-use Tests\Core\fixtures\Conditions\ConditionWithDependency;
-use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
-use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
+use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Core\EventDispatcher\DependencyInversionListenerFactory;
+use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
+use Snicco\Core\Routing\RoutingConfigurator\RoutingConfiguratorUsingRouter;
 
+/**
+ * @interal
+ */
 class RoutingTestCase extends UnitTest
 {
     
-    use AssertViewContent;
+    const CONTROLLER_NAMESPACE = 'Tests\\Core\\fixtures\\Controllers\\Web';
+    
     use CreatePsr17Factories;
     use CreateContainer;
-    use CreateRouteMatcher;
-    use CreateRouteCollection;
-    use CreateDefaultWpApiMocks;
     use CreatePsrRequests;
     
-    protected MiddlewareStack  $middleware_stack;
-    protected ExceptionHandler $error_handler;
-    
-    /**
-     * @var DefaultResponseFactory
-     */
-    protected $response_factory;
-    
-    protected HttpKernel       $kernel;
-    protected Router           $router;
+    protected string           $app_domain = 'foobar.com';
+    protected string           $routes_dir;
+    protected ResponseFactory  $response_factory;
     protected ContainerAdapter $container;
     protected FakeDispatcher   $event_dispatcher;
-    protected ViewEngine       $view_engine;
-    private int                $output_buffer_level;
+    protected UrlGenerator     $generator;
+    
+    private Router                 $router;
+    private HttpKernel             $kernel;
+    private AdminArea              $admin_dashboard;
+    private UrlGenerationContext   $request_context;
+    private MiddlewareStack        $middleware_stack;
+    private WebRoutingConfigurator $routing_configurator;
+    private MiddlewarePipeline     $pipeline;
     
     protected function setUp() :void
     {
         parent::setUp();
-        if ( ! isset($this->app_domain)) {
-            $this->app_domain = 'foobar.com';
-        }
-        $this->resetGlobalState();
-        $this->createDefaultWpApiMocks();
-        $this->createInstances();
-        $this->createDefaultWpApiMocks();
-        $this->output_buffer_level = ob_get_level();
-        HeaderStack::reset();
+        $this->createNeededCollaborators();
+        $this->container[RoutingTestController::class] = new RoutingTestController();
+        $this->routes_dir = __DIR__.'/fixtures/routes';
     }
     
-    protected function tearDown() :void
+    final protected function assertEmptyBody(Request $request)
     {
-        $this->resetGlobalState();
-        parent::tearDown();
-        Mockery::close();
-        WP::reset();
-        while (ob_get_level() > $this->output_buffer_level) {
-            ob_end_clean();
-        }
+        $this->assertResponseBody('', $request);
     }
     
-    protected function createRoutes(Closure $routes, bool $force_trailing = false)
+    final protected function assertResponseBody($expected, Request $request)
     {
-        $this->router = new Router($this->routes, $force_trailing);
-        $routes();
-        $this->router->loadRoutes();
+        $response = $this->runKernel($request);
+        $this->assertSame(
+            $expected,
+            $b = $response->body(),
+            "Expected response body [$expected] for path [{$request->path()}].\nGot [$b]."
+        );
     }
     
-    protected function assertEmptyResponse(Request $request)
-    {
-        $this->assertResponse('', $request);
-    }
-    
-    protected function assertResponse($expected, Request $request)
-    {
-        $this->assertViewContent($expected, $this->runKernel($request));
-    }
-    
-    protected function withMiddlewareGroups(array $middlewares)
+    /**
+     * @param  array<string,array<string>>  $middlewares
+     */
+    final protected function withMiddlewareGroups(array $middlewares) :void
     {
         foreach ($middlewares as $name => $middleware) {
             $this->middleware_stack->withMiddlewareGroup($name, $middleware);
         }
     }
     
-    protected function withMiddlewareAlias(array $aliases)
+    final protected function withGlobalMiddleware(array $middleware)
+    {
+        $this->withMiddlewareGroups([RoutingConfigurator::GLOBAL_MIDDLEWARE => $middleware]);
+    }
+    
+    final protected function withNewMiddlewareStack(MiddlewareStack $middleware_stack)
+    {
+        $this->middleware_stack = $middleware_stack;
+        $this->container[MiddlewareStack::class] = $middleware_stack;
+        $this->container[RouteRunner::class] = new RouteRunner(
+            $this->pipeline,
+            $middleware_stack,
+            $this->container
+        );
+    }
+    
+    final protected function withMiddlewareAlias(array $aliases)
     {
         $this->middleware_stack->middlewareAliases($aliases);
     }
     
-    protected function withMiddlewarePriority(array $array)
+    final protected function withMiddlewarePriority(array $array)
     {
         $this->middleware_stack->middlewarePriority($array);
     }
     
-    protected function resetGlobalState()
-    {
-        $GLOBALS['test'] = [];
-        $GLOBALS['wp_filter'] = [];
-        $GLOBALS['wp_actions'] = [];
-        $GLOBALS['wp_current_filter'] = [];
-    }
-    
-    protected function defaultConditions() :array
-    {
-        return array_merge(RoutingServiceProvider::CONDITION_TYPES, [
-            
-            'true' => TrueCondition::class,
-            'false' => FalseCondition::class,
-            'maybe' => MaybeCondition::class,
-            'unique' => UniqueCondition::class,
-            'dependency_condition' => ConditionWithDependency::class,
-        
-        ]);
-    }
-    
-    protected function defaultMiddlewareAliases() :array
-    {
-        return [
-            'foo' => FooAbstractMiddleware::class,
-            'bar' => BarAbstractMiddleware::class,
-            'baz' => BazAbstractMiddleware::class,
-            'foobar' => FooBarAbstractMiddleware::class,
-        ];
-    }
-    
-    protected function runKernel(Request $request)
+    final protected function runKernel(Request $request) :TestResponse
     {
         $this->withMiddlewareAlias($this->defaultMiddlewareAliases());
         
-        $this->output_buffer_level = ob_get_level();
-        ob_start();
-        $this->kernel->run($request);
-        return ob_get_clean();
+        $response = $this->kernel->handle($request);
+        return new TestResponse($response);
+    }
+    
+    final protected function routeConfigurator() :WebRoutingConfigurator
+    {
+        return $this->routing_configurator;
+    }
+    
+    final protected function adminRouteConfigurator() :AdminRoutingConfigurator
+    {
+        return $this->routing_configurator;
+    }
+    
+    final protected function refreshRouter(PHPCacheFile $cache_file = null, UrlGenerationContext $context = null, array $config = [])
+    {
+        unset($this->container[RoutingMiddleware::class]);
+        unset($this->container[UrlGenerator::class]);
+        unset($this->container[UrlMatcher::class]);
+        
+        if (is_null($context)) {
+            $context = $this->request_context ?? UrlGenerationContext::forConsole(
+                    $this->app_domain,
+                );
+        }
+        
+        $this->request_context = $context;
+        
+        $this->admin_dashboard ??= WPAdminArea::fromDefaults();
+        
+        $this->router = new Router(
+            $this->container[RouteConditionFactory::class],
+            new UrlGeneratorFactory(
+                $context,
+                $this->admin_dashboard,
+                new RFC3986Encoder(),
+            ),
+            $this->admin_dashboard,
+            $cache_file
+        );
+        
+        $this->routing_configurator = new RoutingConfiguratorUsingRouter(
+            $this->router,
+            $this->admin_dashboard->urlPrefix(),
+            $config
+        );
+        
+        $this->container->instance(UrlGenerator::class, $this->router);
+        $this->container->instance(RoutingMiddleware::class, new RoutingMiddleware($this->router));
+        $this->container->instance(UrlMatcher::class, $this->router);
+        $this->generator = $this->router;
+    }
+    
+    final protected function refreshUrlGenerator(UrlGenerationContext $context = null) :UrlGenerator
+    {
+        $this->refreshRouter(null, $context);
+        return $this->generator;
+    }
+    
+    final protected function adminDashboard() :AdminArea
+    {
+        return $this->admin_dashboard;
+    }
+    
+    final private function defaultMiddlewareAliases() :array
+    {
+        return [
+            'foo' => FooMiddleware::class,
+            'bar' => BarMiddleware::class,
+            'baz' => BazMiddleware::class,
+            'foobar' => FoobarMiddleware::class,
+        ];
     }
     
     /**
      * Create instances that are necessary for running routes.
      */
-    private function createInstances()
+    final private function createNeededCollaborators()
     {
         $this->container = $this->createContainer();
         $this->container->instance(ContainerAdapter::class, $this->container);
-        $this->routes = $this->createRouteCollection();
-        $this->error_handler = new NullExceptionHandler();
-        $this->response_factory = $this->createResponseFactory();
         
-        $this->middleware_stack = new MiddlewareStack();
+        $this->admin_dashboard = WPAdminArea::fromDefaults();
+        $this->container[AdminArea::class] = $this->admin_dashboard;
         
-        $condition_factory = new RouteConditionFactory(
-            $this->defaultConditions(),
-            $this->container
-        );
+        $condition_factory = new RouteConditionFactory($this->container);
+        $this->container[RouteConditionFactory::class] = $condition_factory;
         
-        $handler_factory = new RouteActionFactory([], $this->container);
+        $this->refreshRouter();
         
-        $this->container->instance(RouteConditionFactory::class, $condition_factory);
-        
-        $this->container->instance(RouteActionFactory::class, $handler_factory);
-        
-        $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
-        
+        $this->response_factory = $this->createResponseFactory($this->generator);
         $this->container->instance(ResponseFactory::class, $this->response_factory);
         $this->container->instance(Redirector::class, $this->response_factory);
-        
         $this->container->instance(StreamFactoryInterface::class, $this->response_factory);
         
-        $this->container->instance(
-            MethodOverride::class,
-            new MethodOverride()
-        );
-        
-        $this->container->instance(RouteCollectionInterface::class, $this->routes);
-        
-        $this->container->instance(ExceptionHandler::class, $this->error_handler);
-        
-        $this->container->instance(
-            OutputBufferAbstractMiddleware::class,
-            $this->outputBufferMiddleware()
-        );
+        $error_handler = new NullExceptionHandler();
+        $this->container->instance(ExceptionHandler::class, $error_handler);
         
         $this->container->instance(
             ViewEngine::class,
-            $this->view_engine = new ViewEngine(new TestViewFactory())
-        );
-        
-        $this->container->instance(
-            UrlGenerator::class,
-            $this->generator,
+            new ViewEngine(new TestViewFactory())
         );
         
         $this->kernel = new HttpKernel(
-            new Pipeline(
+            $this->pipeline = new MiddlewarePipeline(
                 $middleware_factory = new MiddlewareFactory($this->container),
-                $this->error_handler,
-                $this->response_factory,
+                $error_handler,
             ),
-            new ResponseEmitter(new ResponsePreparation($this->psrStreamFactory())),
             $this->event_dispatcher =
                 new FakeDispatcher(
                     new EventDispatcher(new DependencyInversionListenerFactory($this->container))
@@ -261,57 +261,49 @@ class RoutingTestCase extends UnitTest
         );
         
         // Middleware
-        $this->container->singleton(RoutingAbstractMiddleware::class,
-            function () use ($condition_factory) {
-                return new RoutingAbstractMiddleware(
-                    $this->routes,
-                    $condition_factory
-                );
-            }
+        $this->middleware_stack = new MiddlewareStack();
+        $this->container->instance(MiddlewareStack::class, $this->middleware_stack);
+        
+        $this->container->instance(
+            PrepareResponse::class,
+            new PrepareResponse(new ResponsePreparation($this->psrStreamFactory()))
         );
+        
+        $this->container->instance(MethodOverride::class, new MethodOverride());
+        
+        $this->container->singleton(RoutingMiddleware::class, function () {
+            return new RoutingMiddleware(
+                $this->router,
+            );
+        });
+        
         $this->container->instance(
             RouteRunner::class,
             new RouteRunner(
-                new Pipeline(
+                new MiddlewarePipeline(
                     $middleware_factory,
-                    $this->error_handler,
-                    $this->response_factory,
+                    $error_handler,
                 ),
                 $this->middleware_stack,
-                $handler_factory
+                $this->container,
             )
         );
-        $this->container->instance(SetRequestAttributes::class, new SetRequestAttributes());
+        
         $this->container->instance(
-            EvaluateResponseAbstractMiddleware::class,
-            new EvaluateResponseAbstractMiddleware()
+            MustMatchRoute::class,
+            new MustMatchRoute()
         );
         $this->container->instance(ShareCookies::class, new ShareCookies());
+        
+        // internal controllers
+        $this->container->instance(FallBackController::class, new FallBackController());
+        
         $this->container->instance(
-            AllowMatchingAdminAndAjaxRoutes::class,
-            new AllowMatchingAdminAndAjaxRoutes()
+            ViewController::class,
+            new ViewController(new FileTemplateRenderer())
         );
-        $this->container->instance(
-            FallBackAbstractController::class,
-            new FallBackAbstractController()
-        );
-        $this->container->instance(
-            ViewAbstractController::class,
-            new ViewAbstractController(new FileBasedHtmlResponseFactory())
-        );
-    }
-    
-    private function outputBufferMiddleware() :AbstractMiddleware
-    {
-        return new class extends AbstractMiddleware
-        {
-            
-            public function handle(Request $request, Delegate $next) :ResponseInterface
-            {
-                return $next($request);
-            }
-            
-        };
+        
+        $this->container->instance(RedirectController::class, new RedirectController());
     }
     
 }

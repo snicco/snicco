@@ -7,9 +7,8 @@ namespace Snicco\Testing;
 use Snicco\Core\Http\Cookies;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\ResponseEmitter;
 
-class TestResponseEmitter extends ResponseEmitter
+class TestResponseEmitter
 {
     
     public ?TestResponse $response = null;

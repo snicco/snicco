@@ -15,7 +15,6 @@ use Snicco\Session\SessionManager;
 use Snicco\Core\Application\Config;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Core\Contracts\MagicLink;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Middleware\ConfirmAuth;
@@ -62,6 +61,7 @@ use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -247,7 +247,7 @@ class AuthServiceProvider extends ServiceProvider
         
         $this->container->singleton(WPLoginLinks::class, function () {
             return new WPLoginLinks(
-                $this->container[UrlGenerator::class]
+                $this->container[InternalUrlGenerator::class]
             );
         });
         
@@ -275,7 +275,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(AuthConfirmationEmailAbstractController::class, function () {
             return new AuthConfirmationEmailAbstractController(
                 $this->container[MailBuilderInterface::class],
-                $this->container[UrlGenerator::class],
+                $this->container[InternalUrlGenerator::class],
             );
         });
         
@@ -361,7 +361,7 @@ class AuthServiceProvider extends ServiceProvider
             $email_confirmation = new EmailAuthConfirmation(
                 $this->container[MagicLink::class],
                 $this->container[AbstractEmailAuthConfirmationView::class],
-                $this->container[UrlGenerator::class]
+                $this->container[InternalUrlGenerator::class]
             );
             
             if ($this->config->get('auth.features.2fa')) {
@@ -413,14 +413,14 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(PasswordLoginView::class, function () {
             return new PasswordLoginView(
                 $this->container[ViewEngine::class],
-                $this->container[UrlGenerator::class],
+                $this->container[InternalUrlGenerator::class],
                 $this->container[Config::class]
             );
         });
         $this->container->singleton(MagicLinkLoginView::class, function () {
             return new MagicLinkLoginView(
                 $this->container[ViewEngine::class],
-                $this->container[UrlGenerator::class],
+                $this->container[InternalUrlGenerator::class],
                 $this->container[Config::class]
             );
         });
@@ -443,7 +443,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(AbstractLoginResponse::class, function () {
             return new LoginRedirect(
                 $this->container[Redirector::class],
-                $this->container[UrlGenerator::class],
+                $this->container[InternalUrlGenerator::class],
             );
         });
     }
@@ -531,7 +531,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(Abstract2FaChallengeView::class, function () {
             return new TwoFactorChallengeView(
                 $this->container[ViewEngine::class],
-                $this->container[UrlGenerator::class],
+                $this->container[InternalUrlGenerator::class],
             );
         });
     }
@@ -545,7 +545,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(AbstractEmailAuthConfirmationView::class, function () {
             return new EmailAuthConfirmationView(
                 $this->container[ViewEngine::class],
-                $this->container[UrlGenerator::class]
+                $this->container[InternalUrlGenerator::class]
             );
         });
     }
@@ -592,7 +592,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->container->singleton(AuthUnconfirmed::class, function () {
             return new AuthUnconfirmed(
-                $this->container[UrlGenerator::class]
+                $this->container[InternalUrlGenerator::class]
             );
         });
     }

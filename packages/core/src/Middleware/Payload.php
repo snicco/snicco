@@ -6,32 +6,31 @@ namespace Snicco\Core\Middleware;
 
 use RuntimeException;
 use Snicco\Support\Str;
-use Snicco\Core\Routing\Delegate;
+use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
+/**
+ * @api
+ */
 abstract class Payload extends AbstractMiddleware
 {
     
-    protected array $content_types;
+    private array $content_types;
+    /**
+     * @var array<string>
+     */
+    private $methods;
     
-    protected array $methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
-    
-    public function contentType(array $contentType) :self
+    public function __construct(array $content_types, $methods = ['POST', 'PUT', 'PATCH', 'DELETE'])
     {
-        $this->content_types = $contentType;
-        
-        return $this;
-    }
-    
-    public function methods(array $methods) :self
-    {
+        Assert::allString($content_types);
+        Assert::allString($methods);
+        $this->content_types = $content_types;
         $this->methods = $methods;
-        
-        return $this;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface

@@ -48,7 +48,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
         $this->bootApp();
         Event::fake([ResponseSent::class]);
         
-        $this->post('/post1')->assertDelegatedToWordPress();
+        $this->post('/post1')->assertDelegated();
         
         Event::assertNotDispatched(ResponseSent::class);
     }
@@ -60,7 +60,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
         $this->bootApp();
         Event::fake([ResponseSent::class]);
         
-        $this->delete('/post1')->assertDelegatedToWordPress();
+        $this->delete('/post1')->assertDelegated();
         
         Event::assertNotDispatched(ResponseSent::class);
     }

@@ -8,14 +8,14 @@ use Psr\Log\NullLogger;
 use Whoops\Run as Whoops;
 use Whoops\RunInterface;
 use Psr\Log\LoggerInterface;
-use Snicco\Core\Routing\Delegate;
-use Snicco\Core\Routing\Pipeline;
 use Illuminate\Container\Container;
+use Snicco\Core\Middleware\Delegate;
 use Whoops\Handler\HandlerInterface;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
@@ -39,7 +39,7 @@ class ExceptionServiceProvider extends ServiceProvider
         $this->config->extendIfEmpty(
             'app.hide_debug_traces',
             fn() => [
-                Pipeline::class,
+                MiddlewarePipeline::class,
                 Container::class,
                 Delegate::class,
                 AbstractMiddleware::class,

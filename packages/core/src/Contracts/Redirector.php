@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Contracts;
 
 use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 interface Redirector
@@ -18,7 +19,7 @@ interface Redirector
     
     /**
      * @throws RouteNotFound
-     * @see UrlGeneratorInterface::toRoute()
+     * @see UrlGenerator::toRoute()
      */
     public function toRoute(string $name, array $arguments = [], int $status_code = 302) :RedirectResponse;
     
@@ -51,7 +52,7 @@ interface Redirector
     /**
      * Redirects to a path on the same domain.
      *
-     * @see UrlGeneratorInterface::to()
+     * @see UrlGenerator::to()
      */
     public function to(string $path, int $status_code = 302, array $query = []) :RedirectResponse;
     

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
 use PHPUnit\Framework\Assert;
+use Snicco\Core\Routing\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
 
-TestApp::route()->prefix('wpquery')->group(function (Router $router) {
+TestApp::route()->prefix('wpquery')->createInGroup(function (Router $router) {
     $router->get('foo', function () {
         return 'FOO_QUERY';
     })

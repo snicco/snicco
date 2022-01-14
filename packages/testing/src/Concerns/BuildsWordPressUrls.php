@@ -2,9 +2,6 @@
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Url;
-
 trait BuildsWordPressUrls
 {
     
@@ -13,26 +10,17 @@ trait BuildsWordPressUrls
         return 'https://example.com';
     }
     
-    protected function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php') :string
+    protected function adminDashboardPrefix() :string
     {
-        return Url::combineAbsPath(
-            $this->baseUrl(),
-            WP::wpAdminFolder().'/'.$parent_page.'?page='.$menu_slug
-        );
+        return '/wp-admin';
     }
     
-    protected function ajaxUrl(string $action = '') :string
+    final protected function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php') :string
     {
-        $base = trim($this->baseUrl(), '/')
-                .'/'
-                .WP::wpAdminFolder()
-                .'/admin-ajax.php';
+        $menu_slug = trim($menu_slug, '/');
         
-        if ( ! empty($action)) {
-            $base = "$base?=$action";
-        }
-        
-        return $base;
+        return rtrim($this->baseUrl(), '/').
+               rtrim($this->adminDashboardPrefix(), '/').'/'.$parent_page.'?page='.$menu_slug;
     }
     
 }

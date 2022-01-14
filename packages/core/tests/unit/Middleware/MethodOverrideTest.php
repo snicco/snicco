@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Middleware;
 
-use Tests\Core\MiddlewareTestCase;
-use Snicco\Core\Middleware\Core\MethodOverride;
+use Tests\Core\InternalMiddlewareTestCase;
+use Snicco\Core\Middleware\MethodOverride;
 
-class MethodOverrideTest extends MiddlewareTestCase
+class MethodOverrideTest extends InternalMiddlewareTestCase
 {
     
     private MethodOverride $middleware;
@@ -28,7 +28,7 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->middleware, $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('PUT', $this->receivedRequest()->getMethod());
+        $this->assertSame('PUT', $this->getReceivedRequest()->getMethod());
     }
     
     /** @test */
@@ -41,7 +41,42 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->middleware, $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('GET', $this->receivedRequest()->getMethod());
+        $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
+    }
+    
+    /** @test */
+    public function the_method_can_be_overwritten_with_the_method_override_header()
+    {
+        $request = $this->frontendRequest('POST', '/foo')
+                        ->withHeader('X-HTTP-Method-Override', 'PUT');
+        
+        $response = $this->runMiddleware($this->middleware, $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('PUT', $this->getReceivedRequest()->getMethod());
+        
+        $request = $this->frontendRequest('GET', '/foo')
+                        ->withHeader('X-HTTP-Method-Override', 'PUT');
+        
+        $response = $this->runMiddleware($this->middleware, $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
+    }
+    
+    /** @test */
+    public function the_middleware_behaviour_can_be_disabled()
+    {
+        $request = $this->frontendRequest('POST')->withParsedBody([
+            '_method' => 'PUT',
+        ]);
+        
+        $m = new MethodOverride(false);
+        
+        $response = $this->runMiddleware($m, $request);
+        
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('POST', $this->getReceivedRequest()->getMethod());
     }
     
 }

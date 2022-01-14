@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Core\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Snicco\Support\Arr;
-use Snicco\Core\Http\HttpKernel;
+use Snicco\Core\Support\WP;
 use Snicco\Session\Session;
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Psr7\Request;
 use InvalidArgumentException;
+use Snicco\Core\Http\HttpKernel;
+use Snicco\Testing\TestResponse;
+use Snicco\Core\Http\Psr7\Request;
+use Psr\Http\Message\UriInterface;
 use Snicco\Core\Application\Config;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Testing\TestResponse;
-use Psr\Http\Message\UriInterface;
 use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -408,15 +407,15 @@ trait MakesHttpRequests
     {
         if (is_string($uri)) {
             if ( ! Str::contains($uri, 'http')) {
-                $uri = Url::addLeading($uri);
+                $uri = '/'.ltrim($uri, '/');
             }
             
             if ($this->with_trailing_slash && ! Str::contains($uri, ['.php', '?'])) {
-                $uri = Url::addTrailing($uri);
+                $uri = rtrim($uri, '/').'/';
             }
             
             if ($this->without_trailing_slash) {
-                $uri = Url::removeTrailing($uri);
+                $uri = rtrim($uri, '/');
             }
         }
         

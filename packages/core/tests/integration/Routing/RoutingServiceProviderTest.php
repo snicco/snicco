@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Tests\Core\integration\Routing;
 
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Contracts\RouteRegistrar;
 use Snicco\Core\Contracts\RouteUrlMatcher;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Factories\RouteConditionFactory;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
-use Snicco\Core\Routing\CachedRouteFileRegistrar;
-use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
-use Snicco\Core\Routing\FastRoute\FastRouteUrlMatcher;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\UrlMatcher\RouteUrlGenerator;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
+use Snicco\Core\Routing\UrlMatcher\FastRouteUrlMatcher;
+use Snicco\Core\Routing\Condition\RouteConditionFactory;
+use Snicco\Core\Routing\Internal\CachedRouteFileRegistrar;
 
 use const DS;
 
@@ -183,9 +183,9 @@ class RoutingServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $url_g = TestApp::resolve(UrlGeneratorInterface::class);
+        $url_g = TestApp::resolve(UrlGenerator::class);
         
-        $this->assertInstanceOf(UrlGeneratorInterface::class, $url_g);
+        $this->assertInstanceOf(UrlGenerator::class, $url_g);
     }
     
     /** @test */
@@ -203,11 +203,11 @@ class RoutingServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $pipeline1 = $this->app->resolve(Pipeline::class);
-        $pipeline2 = $this->app->resolve(Pipeline::class);
+        $pipeline1 = $this->app->resolve(MiddlewarePipeline::class);
+        $pipeline2 = $this->app->resolve(MiddlewarePipeline::class);
         
-        $this->assertInstanceOf(Pipeline::class, $pipeline1);
-        $this->assertInstanceOf(Pipeline::class, $pipeline2);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline1);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline2);
         
         $this->assertNotSame($pipeline1, $pipeline2);
     }

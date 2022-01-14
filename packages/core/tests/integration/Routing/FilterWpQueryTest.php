@@ -81,7 +81,7 @@ class FilterWpQueryTest extends FrameworkTestCase
         
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
         
-        $this->sentResponse()->assertDelegatedToWordPress();
+        $this->sentResponse()->assertDelegated();
     }
     
     /** @test */

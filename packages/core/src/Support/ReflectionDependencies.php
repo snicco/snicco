@@ -9,7 +9,6 @@ use Snicco\Support\Arr;
 use ReflectionException;
 use ReflectionParameter;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Traits\ReflectsCallable;
 
 /**
  * This class is used to build the dependencies for route actions, middleware, conditions and view

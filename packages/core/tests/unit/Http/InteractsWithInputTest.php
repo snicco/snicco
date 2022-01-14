@@ -6,26 +6,27 @@ namespace Tests\Core\unit\Http;
 
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
-use Tests\Core\fixtures\TestDoubles\TestRequest;
+use Snicco\Testing\Concerns\CreatePsrRequests;
+use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class InteractsWithInputTest extends UnitTest
 {
     
-    /**
-     * @var Request
-     */
-    private $request;
+    use CreatePsr17Factories;
+    use CreatePsrRequests;
+    
+    private Request $request;
     
     protected function setUp() :void
     {
         parent::setUp();
         
-        $this->request = TestRequest::from('GET', 'foo');
+        $this->request = $this->frontendRequest('GET', '/foo');
     }
     
     public function testGetFromServer()
     {
-        $request = TestRequest::withServerParams($this->request, ['foo' => 'bar']);
+        $request = $this->frontendRequest('GET', '/foo', ['foo' => 'bar']);
         
         $this->assertSame('bar', $request->server('foo'));
         
@@ -37,7 +38,7 @@ class InteractsWithInputTest extends UnitTest
         $request = $this->request->withQueryParams(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
         
-        $request = TestRequest::from('POST', '/foo')->withParsedBody(['foo' => 'bar']);
+        $request = $this->frontendRequest('POST', '/foo')->withParsedBody(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
     }
     
@@ -109,13 +110,13 @@ class InteractsWithInputTest extends UnitTest
         $this->assertSame('bar', $request->query('foo'));
         $this->assertSame('default', $request->query('bogus', 'default'));
         
-        $request = TestRequest::from('POST', '/foo')->withParsedBody(['foo' => 'bar']);
+        $request = $this->frontendRequest('POST', '/foo')->withParsedBody(['foo' => 'bar']);
         $this->assertSame(null, $request->query('foo'));
     }
     
     public function testQueryString()
     {
-        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com?foo=bar&baz=biz&=');
+        $request = $this->frontendRequest('GET', 'https://foobar.com?foo=bar&baz=biz&=');
         
         $this->assertSame('foo=bar&baz=biz', $request->queryString());
     }

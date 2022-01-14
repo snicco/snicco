@@ -5,249 +5,368 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing;
 
 use Closure;
-use Snicco\Support\Str;
-use Snicco\Support\Arr;
-use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Url;
-use Snicco\Core\Traits\HoldsRouteBlueprint;
-use Snicco\Core\Controllers\ViewAbstractController;
-use Snicco\Core\Contracts\RouteCollectionInterface;
-use Snicco\Core\Controllers\RedirectAbstractController;
+use LogicException;
+use RuntimeException;
+use Webmozart\Assert\Assert;
+use FastRoute\RouteCollector;
+use FastRoute\BadRouteException;
+use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\Route\Route;
+use Snicco\Core\Routing\Route\Routes;
+use Snicco\Core\Support\PHPCacheFile;
+use FastRoute\RouteParser\Std as RouteParser;
+use Snicco\Core\Routing\UrlMatcher\RouteGroup;
+use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
+use Snicco\Core\Routing\Route\RouteCollection;
+use Snicco\Core\Routing\UrlMatcher\RoutingResult;
+use Snicco\Core\Routing\AdminDashboard\AdminArea;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\Route\CachedRouteCollection;
+use Snicco\Core\Routing\UrlMatcher\FastRouteDispatcher;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
+use Snicco\Core\Routing\Condition\RouteConditionFactory;
+use Snicco\Core\Routing\UrlGenerator\UrlGeneratorFactory;
+use Snicco\Core\Routing\Condition\IsAdminDashboardRequest;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Core\Routing\UrlMatcher\FastRouteSyntaxConverter;
+use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
+use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
-class Router
+use function trim;
+use function count;
+use function serialize;
+use function array_pop;
+use function var_export;
+use function array_reverse;
+use function file_put_contents;
+
+/**
+ * @interal
+ * The Router implements and partially delegates all core parts of the Routing system.
+ * This is preferred over passing around one (global) instance of {@see Routes} between different
+ * objects in the service container.
+ */
+final class Router implements UrlMatcher, UrlGenerator, Routes
 {
     
-    use HoldsRouteBlueprint;
+    private RouteConditionFactory $condition_factory;
     
-    /** @var RouteGroup[] */
+    private AdminArea $admin_area;
+    
+    private UrlGeneratorFactory $generator_factory;
+    
+    private ?PHPCacheFile $cache_file;
+    
+    private CachedRouteCollection $cached_routes;
+    
+    /**
+     * @var array<RouteGroup>
+     */
     private array $group_stack = [];
     
-    private RouteCollectionInterface $routes;
-    private bool                     $force_trailing;
+    private array $fast_route_cache = [];
     
-    public function __construct(RouteCollectionInterface $routes, bool $force_trailing = false)
-    {
-        $this->routes = $routes;
-        $this->force_trailing = $force_trailing;
+    /**
+     * @var array<string,Route>
+     */
+    private array $_routes = [];
+    
+    public function __construct(
+        RouteConditionFactory $condition_factory,
+        UrlGeneratorFactory $generator_factory,
+        AdminArea $admin_area,
+        PHPCacheFile $cache_file = null
+    ) {
+        $this->cache_file = $cache_file;
+        $this->condition_factory = $condition_factory;
+        $this->admin_area = $admin_area;
+        
+        if ($this->cache_file && $this->cache_file->isCreated()) {
+            $cache = $this->cache_file->require();
+            Assert::keyExists($cache, 'route_collection');
+            Assert::keyExists($cache, 'fast_route');
+            $this->fast_route_cache = $cache['fast_route'];
+            $this->cached_routes = new CachedRouteCollection($cache['route_collection']);
+        }
+        
+        $this->generator_factory = $generator_factory;
     }
     
-    public function view(string $url, string $view, array $data = [], int $status = 200, array $headers = []) :Route
+    /**
+     * @interal
+     */
+    public function createInGroup(RoutingConfigurator $routing_configurator, Closure $create_routes, array $attributes) :void
     {
-        $route = $this->match(['GET', 'HEAD'], $url, ViewAbstractController::class.'@handle');
-        $route->defaults([
-            'view' => $view,
-            'data' => $data,
-            'status' => $status,
-            'headers' => $headers,
-        ]);
+        $this->updateGroupStack(new RouteGroup($attributes));
+        
+        $create_routes($routing_configurator);
+        
+        $this->deleteCurrentGroup();
+    }
+    
+    /**
+     * @interal
+     *
+     * @param  array<string,string>|string  $controller
+     */
+    public function registerAdminRoute(string $name, string $path, $controller = Route::DELEGATE) :Route
+    {
+        $route = $this->createRoute($name, $path, ['GET'], $controller);
+        $route->condition(IsAdminDashboardRequest::class);
+        return $route;
+    }
+    
+    /**
+     * @interal
+     *
+     * @param  array<string,string>|string  $controller
+     */
+    public function registerWebRoute(string $name, string $path, array $methods, $controller) :Route
+    {
+        return $this->createRoute($name, $path, $methods, $controller);
+    }
+    
+    public function dispatch(Request $request) :RoutingResult
+    {
+        $data = $this->getFastRouteData();
+        
+        if ($this->cache_file && ! $this->cache_file->isCreated()) {
+            $this->createCache($data);
+        }
+        
+        $request = $this->allowMatchingAdminDashboardRequests($request);
+        
+        return (new FastRouteDispatcher(
+            $this->getRoutes(), $data, $this->condition_factory
+        ))->dispatch($request);
+    }
+    
+    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
+    {
+        return $this->getGenerator()->to($path, $extra, $type, $secure);
+    }
+    
+    public function toRoute(string $name, array $arguments = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null) :string
+    {
+        return $this->getGenerator()->toRoute($name, $arguments, $type, $secure);
+    }
+    
+    public function secure(string $path, array $extra = []) :string
+    {
+        return $this->getGenerator()->secure($path, $extra);
+    }
+    
+    public function canonical() :string
+    {
+        return $this->getGenerator()->canonical();
+    }
+    
+    public function full() :string
+    {
+        return $this->getGenerator()->full();
+    }
+    
+    public function previous(string $fallback = '/') :string
+    {
+        return $this->getGenerator()->previous($fallback);
+    }
+    
+    public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH) :string
+    {
+        return $this->getGenerator()->toLogin($arguments, $type);
+    }
+    
+    public function getIterator()
+    {
+        return $this->getRoutes()->getIterator();
+    }
+    
+    public function count() :int
+    {
+        return count($this->getRoutes());
+    }
+    
+    public function getByName(string $name) :Route
+    {
+        return $this->getRoutes()->getByName($name);
+    }
+    
+    public function toArray() :array
+    {
+        return $this->getRoutes()->toArray();
+    }
+    
+    private function createRoute(string $name, string $path, array $methods, $controller) :Route
+    {
+        if ($this->cache_file && $this->cache_file->isCreated()) {
+            throw new LogicException(
+                "The route [$name] cant be added because the Router is already cached."
+            );
+        }
+        
+        // Quick check to see if the developer swapped the arguments by accident.
+        Assert::notStartsWith($name, '/');
+        
+        $path = $this->applyGroupPrefix(UrlPath::fromString($path));
+        $name = $this->applyGroupName($name);
+        $namespace = $this->applyGroupNamespace();
+        
+        $route = Route::create(
+            $path->asString(),
+            $controller,
+            $name,
+            $methods,
+            $namespace
+        );
+        
+        $this->addGroupAttributes($route);
+        
+        $this->_routes[$route->getName()] = $route;
         
         return $route;
     }
     
-    public function redirect(string $from_path, string $to_path, int $status = 302, array $query = []) :Route
+    private function applyGroupPrefix(UrlPath $path) :UrlPath
     {
-        return $this->any($from_path, [RedirectAbstractController::class, 'to'])->defaults([
-            'to' => $to_path,
-            'status' => $status,
-            'query' => $query,
-        ]);
-    }
-    
-    public function permanentRedirect(string $from_path, string $to_path, array $query = []) :Route
-    {
-        return $this->redirect($from_path, $to_path, 301, $query);
-    }
-    
-    public function temporaryRedirect(string $from_path, string $to_path, array $query = [], int $status = 307) :Route
-    {
-        return $this->redirect($from_path, $to_path, $status, $query);
-    }
-    
-    public function redirectAway(string $from_path, string $location, int $status = 302) :Route
-    {
-        return $this->any($from_path, [RedirectAbstractController::class, 'away'])->defaults([
-            'location' => $location,
-            'status' => $status,
-        ]);
-    }
-    
-    public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302) :Route
-    {
-        return $this->any($from_path, [RedirectAbstractController::class, 'toRoute'])->defaults([
-            'route' => $route,
-            'arguments' => $arguments,
-            'status' => $status,
-        ]);
-    }
-    
-    public function addRoute(array $methods, string $path, $action = null) :Route
-    {
-        $url = $this->applyPrefix($path);
-        
-        $url = $this->formatTrailing($url);
-        
-        $route = $this->newRoute($url, $methods, $action);
-        
-        if ($this->force_trailing && ! Url::isFileURL($route->getUrl())) {
-            $route->andOnlyTrailing();
+        if ( ! $this->hasGroup()) {
+            return $path;
         }
         
-        if ($this->hasGroupStack()) {
-            $this->mergeGroupIntoRoute($route);
+        return $path->prepend($this->currentGroup()->prefix());
+    }
+    
+    private function applyGroupName(string $route_name) :string
+    {
+        if ( ! $this->hasGroup()) {
+            return $route_name;
         }
         
-        if ( ! empty($this->delegate_attributes)) {
-            $this->populateInitialAttributes($route, $this->delegate_attributes);
+        $g = trim($this->currentGroup()->name(), '.');
+        
+        if ($g === '') {
+            return $route_name;
         }
         
-        return $this->routes->add($route);
+        return "$g.$route_name";
     }
     
-    public function group(Closure $routes, array $attributes = [])
+    private function applyGroupNamespace() :string
     {
-        $attributes = Arr::mergeRecursive($this->delegate_attributes, $attributes);
-        $this->delegate_attributes = [];
-        
-        $this->updateGroupStack(new RouteGroup($attributes));
-        
-        $this->registerRoutes($routes);
-        
-        $this->deleteLastRouteGroup();
-    }
-    
-    /**
-     * @internal
-     */
-    public function loadRoutes()
-    {
-        $this->routes->addToUrlMatcher();
-    }
-    
-    public function fallback($fallback_action) :Route
-    {
-        $pattern = $this->force_trailing
-            ? '(?!\/'.WP::wpAdminFolder().')[^.\s]+?\/'
-            : '(?!\/'.WP::wpAdminFolder().')[^.\s]+?[^\/]';
-        
-        return $this->any('/{'.Route::ROUTE_FALLBACK_NAME.'}', $fallback_action)
-                    ->middleware('web')
-                    ->and(Route::ROUTE_FALLBACK_NAME, $pattern)->fallback();
-    }
-    
-    private function applyPrefix(string $url) :string
-    {
-        if ( ! $this->hasGroupStack()) {
-            return $url;
-        }
-        
-        $url = $this->maybeStripTrailing($url);
-        
-        return Url::combineRelativePath($this->lastGroupPrefix(), $url);
-    }
-    
-    private function hasGroupStack() :bool
-    {
-        return ! empty($this->group_stack);
-    }
-    
-    private function maybeStripTrailing(string $url) :string
-    {
-        if (trim($this->lastGroupPrefix(), '/') === WP::wpAdminFolder()) {
-            return rtrim($url, '/');
-        }
-        
-        if (trim($this->lastGroupPrefix(), '/') === WP::ajaxUrl()) {
-            return rtrim($url, '/');
-        }
-        
-        return $url;
-    }
-    
-    private function lastGroupPrefix() :string
-    {
-        if ( ! $this->hasGroupStack()) {
+        if ( ! $this->hasGroup()) {
             return '';
         }
         
-        return $this->lastGroup()->prefix();
+        return $this->currentGroup()->namespace();
     }
     
-    private function lastGroup()
+    private function hasGroup() :bool
     {
-        return end($this->group_stack);
+        return count($this->group_stack) > 0;
     }
     
-    private function formatTrailing(string $url) :string
+    private function currentGroup() :RouteGroup
     {
-        $admin_dir = WP::wpAdminFolder();
-        
-        // always ensure exact trailing slash for /wp-admin/ as WordPress will always redirect
-        // /wp-admin => /wp-admin/
-        if (trim($url, '/') === $admin_dir) {
-            return '/'.Url::addTrailing($url);
+        return array_reverse($this->group_stack)[0];
+    }
+    
+    private function addGroupAttributes(Route $route) :void
+    {
+        if ( ! $this->hasGroup()) {
+            return;
         }
         
-        if ( ! $this->force_trailing) {
-            return Url::removeTrailing($url);
+        foreach ($this->currentGroup()->middleware() as $middleware) {
+            $route->middleware($middleware);
         }
-        
-        // Never add a trailing slash the fallback route nor any route that
-        // goes to a file on the filesystem. (mostly wp-admin/*)
-        if (Str::contains($url, Route::ROUTE_FALLBACK_NAME)
-            || Str::contains($url, '.php')
-            || Str::contains($url, $admin_dir)) {
-            return Url::removeTrailing($url);
-        }
-        
-        return Url::addTrailing($url);
     }
     
-    private function mergeGroupIntoRoute(Route $route)
+    private function updateGroupStack(RouteGroup $group) :void
     {
-        $this->lastGroup()->mergeIntoRoute($route);
-    }
-    
-    private function populateInitialAttributes(Route $route, array $attributes)
-    {
-        (new RouteGroup($attributes))->mergeIntoRoute($route);
-        $this->delegate_attributes = [];
-    }
-    
-    private function updateGroupStack(RouteGroup $group)
-    {
-        if ($this->hasGroupStack()) {
-            $group = $this->mergeWithLastGroup($group);
+        if ($this->hasGroup()) {
+            $group = $group->mergeWith($this->currentGroup());
         }
         
         $this->group_stack[] = $group;
     }
     
-    private function mergeWithLastGroup(RouteGroup $new_group) :RouteGroup
-    {
-        return $new_group->mergeWith($this->lastGroup());
-    }
-    
-    private function registerRoutes(Closure $routes)
-    {
-        $routes($this);
-    }
-    
-    private function deleteLastRouteGroup()
+    private function deleteCurrentGroup() :void
     {
         array_pop($this->group_stack);
     }
     
-    private function newRoute(string $url, array $methods, $action) :Route
+    private function getFastRouteData() :array
     {
-        if (preg_match('/\/?'.WP::wpAdminFolder().'\/admin-ajax\.php\/.+/', $url)) {
-            return new AjaxRoute($methods, $url, $action);
+        if (count($this->fast_route_cache)) {
+            return $this->fast_route_cache;
         }
         
-        if (preg_match('/\/?'.WP::wpAdminFolder().'\/.+\.php\/.+/', $url)) {
-            return new AdminRoute($methods, $url, $action);
+        $collector = new RouteCollector(new RouteParser(), new DataGenerator());
+        $syntax = new FastRouteSyntaxConverter();
+        
+        $routes = $this->getRoutes();
+        foreach ($routes as $route) {
+            $path = $syntax->convert($route);
+            try {
+                $collector->addRoute($route->getMethods(), $path, $route->getName());
+            } catch (BadRouteException $e) {
+                throw BadRouteConfiguration::fromPrevious($e);
+            }
         }
         
-        return new Route($methods, $url, $action);
+        return $collector->getData();
+    }
+    
+    private function createCache(array $fast_route_data) :void
+    {
+        $_r = [];
+        
+        foreach ($this->getRoutes() as $name => $route) {
+            $_r[$name] = serialize($route);
+        }
+        
+        $arr = [
+            'route_collection' => $_r,
+            'fast_route' => $fast_route_data,
+        ];
+        $res = file_put_contents(
+            $this->cache_file->realpath(),
+            '<?php return '.var_export($arr, true).';'
+        );
+        
+        if ($res === false) {
+            throw new RuntimeException("Could not write route cache file.");
+        }
+    }
+    
+    private function getGenerator() :InternalUrlGenerator
+    {
+        if ( ! isset($this->generator)) {
+            $this->generator = $this->generator_factory->create($this->getRoutes());
+        }
+        
+        return $this->generator;
+    }
+    
+    private function getRoutes() :Routes
+    {
+        return $this->cached_routes ?? new RouteCollection($this->_routes);
+    }
+    
+    private function allowMatchingAdminDashboardRequests(Request $request) :Request
+    {
+        if ( ! $request->isGet()) {
+            return $request;
+        }
+        
+        if ( ! $request->isToAdminArea()) {
+            return $request;
+        }
+        
+        $uri = $request->getUri();
+        $new_uri = $uri->withPath($this->admin_area->rewriteForRouting($request));
+        
+        return $request->withUri($new_uri);
     }
     
 }

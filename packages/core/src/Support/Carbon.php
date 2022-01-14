@@ -11,8 +11,6 @@ use Carbon\CarbonImmutable as BaseCarbonImmutable;
 class Carbon extends BaseCarbon
 {
     
-    use InteractsWithTime;
-    
     /**
      * Get a GMT datetime string for usage in HTTP headers
      *

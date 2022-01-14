@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Http;
 
-use Snicco\Core\Middleware\Www;
-use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Middleware\Secure;
+use Snicco\Core\Middleware\WwwRedirect;
 use Snicco\Core\Middleware\TrailingSlash;
-use Snicco\Core\Middleware\MiddlewareStack;
-use Snicco\Core\Middleware\Core\RouteRunner;
+use Snicco\Core\Middleware\MustMatchRoute;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Middleware\Core\OpenRedirectProtection;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
+use Snicco\Core\Middleware\Internal\RouteRunner;
+use Snicco\Core\Middleware\OpenRedirectProtection;
+use Snicco\Core\Middleware\Internal\MiddlewareStack;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
+use Snicco\Core\Middleware\OutputBufferAbstractMiddleware;
 
 class MiddlewareServiceProviderTest extends FrameworkTestCase
 {
@@ -57,7 +57,7 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     {
         $priority = TestApp::config('middleware.priority');
         
-        $this->assertSame([Secure::class, Www::class, TrailingSlash::class], $priority);
+        $this->assertSame([Secure::class, WwwRedirect::class, TrailingSlash::class], $priority);
     }
     
     /** @test */
@@ -72,8 +72,8 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     public function all_middlewares_are_built_correctly()
     {
         $this->assertInstanceOf(
-            EvaluateResponseAbstractMiddleware::class,
-            TestApp::resolve(EvaluateResponseAbstractMiddleware::class)
+            MustMatchRoute::class,
+            TestApp::resolve(MustMatchRoute::class)
         );
         $this->assertInstanceOf(RouteRunner::class, TestApp::resolve(RouteRunner::class));
         $this->assertInstanceOf(MiddlewareStack::class, TestApp::resolve(MiddlewareStack::class));
@@ -82,11 +82,11 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_middleware_pipeline_is_not_a_singleton()
     {
-        $pipeline1 = TestApp::resolve(Pipeline::class);
-        $pipeline2 = TestApp::resolve(Pipeline::class);
+        $pipeline1 = TestApp::resolve(MiddlewarePipeline::class);
+        $pipeline2 = TestApp::resolve(MiddlewarePipeline::class);
         
-        $this->assertInstanceOf(Pipeline::class, $pipeline1);
-        $this->assertInstanceOf(Pipeline::class, $pipeline2);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline1);
+        $this->assertInstanceOf(MiddlewarePipeline::class, $pipeline2);
         
         $this->assertNotSame($pipeline1, $pipeline2);
     }

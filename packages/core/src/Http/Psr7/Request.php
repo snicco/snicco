@@ -4,82 +4,68 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http\Psr7;
 
-use WP_User;
 use Snicco\Support\Str;
-use Snicco\Core\Support\WP;
-use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Cookies;
-use Snicco\Core\Routing\Route;
 use Snicco\Support\Repository;
-use Psr\Http\Message\UriInterface;
+use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Core\Traits\ValidatesWordpressNonces;
+use Snicco\Core\Routing\UrlMatcher\RoutingResult;
+use Snicco\Core\Http\Exceptions\RequestHasNoType;
 
-/**
- * @todo add ip() method
- */
-class Request implements ServerRequestInterface
+final class Request implements ServerRequestInterface
 {
     
     use ImplementsPsr7Request;
     use InspectsRequest;
     use InteractsWithInput;
-    use ValidatesWordpressNonces;
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_ATTRIBUTE = '_request_type';
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_FRONTEND = 1;
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_ADMIN_AREA = 2;
+    
+    /**
+     * @var @internal
+     */
+    const TYPE_API = 3;
     
     public function __construct(ServerRequestInterface $psr_request)
     {
         $this->psr_request = $psr_request;
     }
     
-    public function withRoute(Route $route) :Request
+    public static function fromPsr(ServerRequestInterface $psr_request) :Request
     {
-        return $this->withAttribute('_route', $route);
+        return new self($psr_request);
     }
     
-    public function withCookies(array $cookies) :Request
+    final public function withRoutingResult(RoutingResult $route) :Request
+    {
+        return $this->withAttribute('_routing_result', $route);
+    }
+    
+    final public function withCookies(array $cookies) :Request
     {
         return $this->withAttribute('cookies', new Repository($cookies));
     }
     
-    public function withUserId(int $user_id) :Request
-    {
-        return $this->withAttribute('_current_user_id', $user_id);
-    }
-    
-    /**
-     * @todo Figure out how psr7 immutability will affect this.
-     */
-    public function user() :WP_User
-    {
-        $user = $this->getAttribute('_current_user');
-        
-        if ( ! $user instanceof WP_User) {
-            $this->psr_request =
-                $this->psr_request->withAttribute('_current_user', $user = WP::currentUser());
-            
-            return $user;
-        }
-        
-        return $user;
-    }
-    
-    public function userId() :int
-    {
-        return $this->getAttribute('_current_user_id', 0);
-    }
-    
-    public function authenticated() :bool
-    {
-        return WP::isUserLoggedIn();
-    }
-    
-    public function userAgent()
+    final public function userAgent()
     {
         return substr($this->getHeaderLine('User-Agent'), 0, 500);
     }
     
     // path + query + fragment
-    public function fullRequestTarget() :string
+    final public function fullRequestTarget() :string
     {
         $fragment = $this->getUri()->getFragment();
         
@@ -88,48 +74,19 @@ class Request implements ServerRequestInterface
             : $this->getRequestTarget();
     }
     
-    public function url() :string
+    // scheme + host + path
+    final public function url() :string
     {
         return preg_replace('/\?.*/', '', $this->getUri());
     }
     
-    // host + path + query + fragment
-    public function fullUrl() :string
+    // scheme + host + path + query + fragment
+    final public function fullUrl() :string
     {
         return $this->getUri()->__toString();
     }
     
-    /**
-     * @internal
-     */
-    public function routingPath() :string
-    {
-        $uri = $this->getAttribute('routing.uri');
-    
-        /** @var UriInterface $uri */
-        $uri = $uri ?? $this->getUri();
-    
-        $path = $uri->getPath();
-    
-        $parts = explode('/', $path);
-    
-        $path = implode(
-            '/',
-            array_map(function ($part) {
-                $part = rawurldecode(strtr($part, ['%2f' => '%252f']));
-                return $part;
-            }, $parts)
-        );
-    
-        return $path;
-    }
-    
-    public function loadingScript() :string
-    {
-        return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
-    }
-    
-    public function cookies() :Repository
+    final public function cookies() :Repository
     {
         /** @var Repository $bag */
         $bag = $this->getAttribute('cookies', new Repository());
@@ -143,54 +100,31 @@ class Request implements ServerRequestInterface
         return $bag;
     }
     
-    public function route() :?Route
-    {
-        return $this->getAttribute('_route');
-    }
-    
-    public function expires(int $default = 0) :int
-    {
-        return (int) $this->query('expires', $default);
-    }
-    
-    public function isWpAdmin() :bool
-    {
-        // A request to the admin dashboard. We can catch that within admin_init
-        return Str::contains($this->loadingScript(), 'wp-admin') && ! $this->isWpAjax();
-    }
-    
-    public function isWpAjax() :bool
-    {
-        return Str::contains($this->loadingScript(), 'wp-admin/admin-ajax.php');
-    }
-    
-    public function isWpFrontEnd() :bool
-    {
-        return ! ($this->isWpAjax() || $this->isWpAdmin())
-               && Str::contains($this->loadingScript(), 'index.php');
-    }
-    
-    public function path() :string
+    final function path() :string
     {
         return $this->getUri()->getPath();
     }
     
-    public function decodedPath() :string
+    final function decodedPath() :string
     {
-        return rawurldecode($this->path());
+        $path = $this->path();
+        return implode(
+            '/',
+            array_map(function ($part) {
+                return rawurldecode(strtr($part, ['%2F' => '%252F']));
+            }, explode('/', $path))
+        );
     }
     
-    public function routeIs(...$patterns) :bool
+    final function routeIs(...$patterns) :bool
     {
-        $route = $this->route();
+        $route = $this->routingResult()->route();
         
-        if ( ! $route instanceof Route) {
+        if ( ! $route) {
             return false;
         }
         
-        if (is_null($name = $route->getName())) {
-            return false;
-        }
+        $name = $route->getName();
         
         foreach ($patterns as $pattern) {
             if (Str::is($pattern, $name)) {
@@ -201,7 +135,10 @@ class Request implements ServerRequestInterface
         return false;
     }
     
-    public function fullUrlIs(...$patterns) :bool
+    /**
+     * @note The path is not urldecoded here.
+     */
+    final function fullUrlIs(...$patterns) :bool
     {
         $url = $this->fullUrl();
         
@@ -214,18 +151,83 @@ class Request implements ServerRequestInterface
         return false;
     }
     
-    public function pathIs(...$patterns) :bool
+    final function pathIs(...$patterns) :bool
     {
-        /** @var @todo Decoded or real path? */
-        $path = Url::addLeading($this->decodedPath());
+        $path = $this->decodedPath();
         
         foreach ($patterns as $pattern) {
-            if (Str::is(Url::addLeading($pattern), $path)) {
+            if (Str::is('/'.ltrim($pattern, '/'), $path)) {
                 return true;
             }
         }
         
         return false;
+    }
+    
+    final function routingResult() :RoutingResult
+    {
+        return $this->getAttribute('_routing_result', RoutingResult::noMatch());
+    }
+    
+    /**
+     * A request is considered secure when the scheme is set to "https".
+     * If your site runs behind a reverse proxy you have to make sure that your reverse proxy is
+     * configured correctly for setting the HTTP_X_FORWARDED_PROTO header. It's purposely not
+     * possible to configure trusted proxies because if this is not done configured at the server
+     * level the entire WP application will misbehave anyway.
+     *
+     * @see ServerRequestCreator::createUriFromArray()
+     */
+    final public function isSecure() :bool
+    {
+        return 'https' === $this->getUri()->getScheme();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    final public function isToFrontend() :bool
+    {
+        return self::TYPE_FRONTEND === $this->getType();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    final public function isToAdminArea() :bool
+    {
+        return self::TYPE_ADMIN_AREA === $this->getType();
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    final public function isToApiEndpoint() :bool
+    {
+        return self::TYPE_API === $this->getType();
+    }
+    
+    final public function ip() :?string
+    {
+        return $this->server('REMOTE_ADDR');
+    }
+    
+    /**
+     * @throws RequestHasNoType
+     */
+    private function getType() :int
+    {
+        $type = $this->getAttribute(self::TYPE_ATTRIBUTE, false);
+        
+        if ( ! is_int($type)) {
+            throw RequestHasNoType::becauseTheTypeIsNotAnInteger($type);
+        }
+        
+        if ($type < 1 || $type > 3) {
+            throw RequestHasNoType::becauseTheRangeIsNotCorrect($type);
+        }
+        
+        return $type;
     }
     
 }

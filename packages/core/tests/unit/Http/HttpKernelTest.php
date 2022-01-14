@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
+use LogicException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Http\Responses\RedirectResponse;
-use Tests\Core\fixtures\TestDoubles\HeaderStack;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Middleware\MethodOverride;
+use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
-use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 
 class HttpKernelTest extends RoutingTestCase
 {
@@ -23,86 +24,61 @@ class HttpKernelTest extends RoutingTestCase
     }
     
     /** @test */
-    public function no_response_gets_send_when_no_route_matched()
+    public function the_kernel_throws_an_exception_if_a_request_has_no_type_specified()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo')->handle(fn() => 'foo');
-        });
+        $psr = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
+        $request = new Request($psr);
         
-        $request = $this->frontendRequest('GET', '/bar');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            "The HttpKernel tried to handle a request without a declared type. This is not allowed."
+        );
         
-        $this->assertEmptyResponse($request);
-        HeaderStack::assertNoStatusCodeSent();
+        $this->runKernel($request);
     }
     
     /** @test */
-    public function for_matching_request_headers_and_body_get_send()
+    public function a_delegate_response_is_returned_by_default_if_no_route_matches()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', fn() => 'foo');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+        $test_response = $this->runKernel($this->frontendRequest('GET', '/bar'));
         
-        $request = $this->frontendRequest('GET', '/foo');
-        
-        $this->assertResponse('foo', $request);
-        HeaderStack::assertHasStatusCode(200);
+        $this->assertInstanceOf(DelegatedResponse::class, $test_response->psr_response);
     }
     
     /** @test */
-    public function an_event_gets_dispatched_when_a_response_got_send()
+    public function a_normal_response_will_be_returned_for_matching_routes()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', fn() => 'foo');
-        });
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $test_response = $this->runKernel($this->frontendRequest('GET', '/foo'));
         
-        $this->assertResponse('foo', $request);
-        $this->event_dispatcher->assertDispatched(ResponseSent::class);
+        $this->assertNotInstanceOf(DelegatedResponse::class, $test_response->psr_response);
+        $this->assertInstanceOf(Response::class, $test_response->psr_response);
+        
+        $this->assertSame(RoutingTestController::static, $test_response->body());
     }
     
     /** @test */
-    public function an_invalid_response_returned_from_the_handler_will_lead_to_an_exception()
+    public function methods_can_be_overwritten()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', fn() => 1);
-        });
+        $this->routeConfigurator()->put('r1', '/foo', RoutingTestController::class);
         
-        $this->expectExceptionMessage('Invalid response returned by a route.');
+        $test_response = $this->runKernel(
+            $this->frontendRequest('POST', '/foo')->withHeader(MethodOverride::HEADER, 'PUT')
+        );
         
-        $this->runKernel($this->frontendRequest('GET', '/foo'));
+        $this->assertSame(RoutingTestController::static, $test_response->body());
     }
     
     /** @test */
-    public function an_exception_is_thrown_when_the_kernel_must_match_web_routes_and_no_route_matched()
+    public function the_response_is_prepared_and_fixed_for_common_mistakes()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/bar', fn() => 'bar');
-        });
+        // We only verify that the corresponding middleware gets called
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+        $test_response = $this->runKernel($this->frontendRequest('GET', '/foo'));
         
-        $this->container->singleton(EvaluateResponseAbstractMiddleware::class, function () {
-            return new EvaluateResponseAbstractMiddleware(true);
-        });
-        
-        $this->expectException(NotFoundException::class);
-        
-        $this->runKernel($this->frontendRequest('GET', '/foo'));
-    }
-    
-    /** @test */
-    public function a_redirect_response_will_shut_down_the_script_by_dispatching_an_event()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('/foo', function (Redirector $redirector) {
-                return $redirector->to('bar');
-            });
-        });
-        
-        $this->runKernel($this->frontendRequest('GET', '/foo'));
-        
-        $this->event_dispatcher->assertDispatched(ResponseSent::class, function ($event) {
-            return $event->response instanceof RedirectResponse;
-        });
+        $test_response->assertHeader('content-length', strlen(RoutingTestController::static));
     }
     
 }
