@@ -7,15 +7,15 @@ namespace Snicco\MailBundle;
 use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Mail\MailBuilder;
-use Snicco\Core\Application\Config;
 use Snicco\Mail\Contracts\Mailer;
 use Snicco\Mail\Testing\FakeMailer;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Contracts\MailRenderer;
+use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Mail\ValueObjects\MailDefaults;
 use Snicco\Mail\Renderer\AggregateRenderer;
 use Snicco\Mail\Renderer\FilesystemRenderer;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Mail\Contracts\MailEventDispatcher;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
@@ -57,7 +57,7 @@ class MailServiceProvider extends ServiceProvider
             'mail.from',
             fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
         );
-        $this->config->extend('mail.reply_to', fn(Config $config) => $config['mail.from']);
+        $this->config->extend('mail.reply_to', fn(WritableConfig $config) => $config['mail.from']);
     }
     
     private function bindMailBuilder()

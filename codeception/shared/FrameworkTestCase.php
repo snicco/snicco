@@ -8,7 +8,7 @@ use Snicco\Support\Arr;
 use PHPUnit\Framework\Assert;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\ResponseEmitter;
-use Snicco\Core\Application\Application;
+use Snicco\Core\Application\Application_OLD;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
@@ -43,7 +43,7 @@ class FrameworkTestCase extends BaseTestCase
         parent::tearDown();
     }
     
-    protected function createApplication() :Application
+    protected function createApplication() :Application_OLD
     {
         $app = TestApp::make(__DIR__.'/TestApp', $this->createContainer());
         $f = new Psr17Factory();

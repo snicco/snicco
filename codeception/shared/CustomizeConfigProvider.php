@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared;
 
-use Snicco\Core\Application\Config;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Core\Configuration\WritableConfig;
 
 final class CustomizeConfigProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ final class CustomizeConfigProvider extends ServiceProvider
     private array  $replace = [];
     private string $config_namespace;
     
-    public function __construct(ContainerAdapter $container_adapter, Config $config, string $config_namespace = '')
+    public function __construct(ContainerAdapter $container_adapter, WritableConfig $config, string $config_namespace = '')
     {
         parent::__construct(
             $container_adapter,

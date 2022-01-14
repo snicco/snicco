@@ -121,12 +121,12 @@ class RequestTest extends UnitTest
     {
         $cookies = $this->request->cookies();
         $this->assertInstanceOf(Repository::class, $cookies);
-        $this->assertSame([], $cookies->all());
+        $this->assertSame([], $cookies->toArray());
         
         $request = $this->request->withCookies(['foo' => 'bar']);
         $cookies = $request->cookies();
         $this->assertInstanceOf(Repository::class, $cookies);
-        $this->assertSame(['foo' => 'bar'], $cookies->all());
+        $this->assertSame(['foo' => 'bar'], $cookies->toArray());
     }
     
     public function testRouteIs()

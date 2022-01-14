@@ -6,11 +6,11 @@ namespace Snicco\Core\Http;
 
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Application\Config;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
 /**
@@ -80,9 +80,9 @@ abstract class AbstractController
      */
     protected function config(string $key, $default = null)
     {
-        /** @var Config $config */
-        $config = $this->container[Config::class];
-        Assert::isInstanceOf(Config::class, $config);
+        /** @var WritableConfig $config */
+        $config = $this->container[WritableConfig::class];
+        Assert::isInstanceOf(WritableConfig::class, $config);
         return $config->get($key, $default);
     }
     

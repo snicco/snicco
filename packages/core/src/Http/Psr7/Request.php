@@ -91,7 +91,7 @@ final class Request implements ServerRequestInterface
         /** @var Repository $bag */
         $bag = $this->getAttribute('cookies', new Repository());
         
-        if ($bag->all() === []) {
+        if ($bag->toArray() === []) {
             $cookies = Cookies::parseHeader($this->getHeader('Cookie'));
             
             $bag->add($cookies);

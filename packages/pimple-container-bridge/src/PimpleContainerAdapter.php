@@ -12,10 +12,7 @@ use Pimple\Exception\FrozenServiceException;
 final class PimpleContainerAdapter extends ContainerAdapter
 {
     
-    /**
-     * @var Container
-     */
-    private $pimple;
+    private Container $pimple;
     
     public function __construct(Container $container = null)
     {

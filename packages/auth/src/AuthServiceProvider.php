@@ -12,7 +12,6 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Secure;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Session\SessionManager;
-use Snicco\Core\Application\Config;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Core\Contracts\MagicLink;
 use Snicco\Core\Contracts\Redirector;
@@ -31,6 +30,7 @@ use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Auth\Middleware\TwoFactorEnabled;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Responses\PasswordLoginView;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Auth\Middleware\TwoFactorDisbaled;
 use Snicco\Auth\Listeners\RefreshAuthCookies;
 use Snicco\Auth\Responses\MagicLinkLoginView;
@@ -414,14 +414,14 @@ class AuthServiceProvider extends ServiceProvider
             return new PasswordLoginView(
                 $this->container[ViewEngine::class],
                 $this->container[InternalUrlGenerator::class],
-                $this->container[Config::class]
+                $this->container[WritableConfig::class]
             );
         });
         $this->container->singleton(MagicLinkLoginView::class, function () {
             return new MagicLinkLoginView(
                 $this->container[ViewEngine::class],
                 $this->container[InternalUrlGenerator::class],
-                $this->container[Config::class]
+                $this->container[WritableConfig::class]
             );
         });
         

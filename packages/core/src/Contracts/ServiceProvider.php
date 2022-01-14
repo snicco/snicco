@@ -8,28 +8,28 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Application\Config;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Application\Application;
+use Snicco\Core\Application\Application_OLD;
+use Snicco\Core\Configuration\WritableConfig;
 
 abstract class ServiceProvider
 {
     
     protected ContainerAdapter $container;
     
-    protected Config $config;
+    protected WritableConfig $config;
     
-    protected Application $app;
+    protected Application_OLD $app;
     
     protected ?Request $current_request = null;
     
-    public function __construct(ContainerAdapter $container_adapter, Config $config)
+    public function __construct(ContainerAdapter $container_adapter, WritableConfig $config)
     {
         $this->container = $container_adapter;
         $this->config = $config;
     }
     
-    public function setApp(Application $app)
+    public function setApp(Application_OLD $app)
     {
         $this->app = $app;
     }

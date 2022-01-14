@@ -4,399 +4,225 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Application;
 
-use Closure;
-use Throwable;
-use Mockery as m;
-use RuntimeException;
-use Snicco\Core\Support\WP;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Application\Config;
-use Snicco\Core\Application\Application;
-use Snicco\Core\Shared\ContainerAdapter;
+use LogicException;
+use Snicco\Core\Plugin;
+use Snicco\Core\Application;
+use Snicco\Core\Directories;
+use Snicco\Core\Environment;
+use Psr\Container\ContainerInterface;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Illuminate\IlluminateContainerAdapter;
+use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Core\Configuration\ReadOnlyConfig;
 use Tests\Codeception\shared\helpers\CreateContainer;
-use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
-use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
-class ApplicationTest extends UnitTest
+final class ApplicationTest extends UnitTest
 {
     
-    use CreateDefaultWpApiMocks;
     use CreateContainer;
-    use CreatePsr17Factories;
     
-    private ContainerAdapter $container;
-    private string           $base_path;
-    
-    protected function setUp() :void
+    /** @test */
+    public function test_construct()
     {
-        parent::setUp();
-        
-        $this->container = $this->createContainer();
-        $this->base_path = __DIR__;
-        $this->createDefaultWpApiMocks();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        WP::reset();
-        m::close();
+        $app = new Application(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
+        $this->assertInstanceOf(Application::class, $app);
     }
     
     /** @test */
-    public function the_static_constructor_returns_an_application_instance()
+    public function test_array_access_proxies_to_set_container()
     {
-        $base_container = $this->createContainer();
+        $container = $this->createContainer();
+        $container['foo'] = 'bar';
         
-        $application = Application::create($this->base_path, $base_container);
+        $app = new Application(
+            $container,
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
         
-        $this->assertInstanceOf(Application::class, $application);
+        $this->assertTrue(isset($app['foo']));
+        $this->assertTrue(isset($container['foo']));
+        $this->assertFalse(isset($app['baz']));
+        $this->assertFalse(isset($container['baz']));
         
-        $this->assertSame($base_container, $application->container());
-    }
-    
-    /** @test
-     * @noinspection PhpParamsInspection
-     */
-    public function an_app_can_not_be_instantiated_without_the_static_constructor()
-    {
-        $this->expectError();
-        $app = new Application(new IlluminateContainerAdapter());
-    }
-    
-    /** @test */
-    public function booting_the_app_created_initial_important_classes_in_the_container()
-    {
-        $app = $this->newApplication();
+        $this->assertSame('bar', $app['foo']);
+        $this->assertSame('bar', $container['foo']);
         
-        $this->assertSame($app, $app->container()[Application::class]);
-        $this->assertSame($app->container(), $app->container()[ContainerAdapter::class]);
-        $this->assertSame($app->config(), $app->container()[Config::class]);
-        $this->assertInstanceOf(Config::class, $app->config());
-    }
-    
-    /** @test */
-    public function a_valid_app_key_can_be_created()
-    {
-        $app = $this->newApplication();
-        try {
-            $app->config()->set('app.key', 'foobar');
-            $app->boot();
-            $this->fail('booted with invalid key');
-        } catch (ConfigurationException $exception) {
-            $this->assertStringStartsWith('Your app.key config value is', $exception->getMessage());
-        }
-        // set this to disable undefined constant WP_CONTENT_DIR;
+        unset($app['foo']);
+        $this->assertFalse(isset($app['foo']));
+        $this->assertFalse(isset($container['foo']));
         
-        $this->container = $this->createContainer();
-        $app = $this->newApplication();
+        $app['baz'] = 'biz';
         
-        $app->config()->set('app.exception_handling', false);
-        $app->config()->set('app.key', $key = Application::generateKey());
-        $app->boot();
-        
-        $this->assertStringStartsWith('base64:', $key);
+        $this->assertTrue(isset($app['baz']));
+        $this->assertTrue(isset($container['baz']));
     }
     
     /** @test */
-    public function testHasBeenBootstrapped()
+    public function test_env_returns_environment()
     {
-        $app = $this->newApplication();
-        $this->assertFalse($app->hasBeenBootstrapped());
-        $app->boot();
-        $this->assertTrue($app->hasBeenBootstrapped());
+        $app = new Application(
+            $this->createContainer(),
+            $env = Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
+        
+        $this->assertEquals($env, $app->env());
+    }
+    
+    /** @test */
+    public function the_environment_is_not_saved_in_the_container_so_that_it_cannot_be_overwritten()
+    {
+        $app = new Application(
+            $container = $this->createContainer(),
+            $env = Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
+        
+        $this->assertFalse($container->has(Environment::class));
+    }
+    
+    /** @test */
+    public function the_container_is_accessible()
+    {
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
+        $this->assertSame($container, $app->di());
+    }
+    
+    /** @test */
+    public function the_app_dirs_are_accessible()
+    {
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            $dirs = Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
+        $this->assertSame($container, $app->di());
+        
+        $this->assertEquals($dirs, $app->directories());
+    }
+    
+    /** @test */
+    public function the_container_is_bound_as_the_psr_container_interface()
+    {
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
+        
+        $this->assertSame($container, $app[ContainerInterface::class]);
     }
     
     /** @test */
     public function the_application_cant_be_bootstrapped_twice()
     {
-        $app = $this->newApplication();
-        
-        $app->boot();
-        
-        try {
-            $app->boot();
-            
-            $this->fail('Application was bootstrapped two times.');
-        } catch (ConfigurationException $e) {
-            $this->assertStringContainsString('already bootstrapped', $e->getMessage());
-        }
-    }
-    
-    /** @test */
-    public function user_provided_config_gets_bound_into_the_di_container()
-    {
-        $app = $this->newApplication();
-        
-        $app->boot();
-        
-        $this->assertEquals('bar', $app->config('app.foo'));
-    }
-    
-    /** @test */
-    public function users_can_register_service_providers()
-    {
-        $app = $this->newApplication();
-        
-        $app->boot();
-        
-        $this->assertEquals('bar', $app->container()['foo']);
-        $this->assertEquals('bar_bootstrapped', $app->container()['foo_bootstrapped']);
-    }
-    
-    /** @test */
-    public function custom_container_adapters_can_be_used()
-    {
-        $container = new TestContainer();
-        
-        $app = Application::create(__DIR__, $container);
-        
-        $this->assertSame($container, $app->container());
-        $this->assertInstanceOf(TestContainer::class, $app->container());
-    }
-    
-    /** @test */
-    public function config_values_can_be_retrieved()
-    {
-        $app = $this->newApplication();
-        
-        $app->boot();
-        
-        $this->assertInstanceOf(
-            Config::class,
-            $config = $app->resolve(Config::class)
-        );
-        $this->assertSame('bar', $app->config('app.foo'));
-        $this->assertSame('boo', $app->config('app.bar.baz'));
-        $this->assertSame('bogus_default', $app->config('app.bogus', 'bogus_default'));
-        $this->assertSame($config, $app->config());
-    }
-    
-    /** @test */
-    public function the_request_is_captured()
-    {
-        $app = $this->newApplication();
-        
-        $app->boot();
-        
-        $this->assertInstanceOf(Request::class, $app->resolve(Request::class));
-    }
-    
-    /** @test */
-    public function testConfigPath()
-    {
-        $app = $this->newApplication();
-        $path = $app->configPath();
-        
-        $this->assertSame($this->base_path.DS.'config', $path);
-        
-        $path = $app->configPath('auth');
-        
-        $this->assertSame($this->base_path.DS.'config'.DS.'auth', $path);
-    }
-    
-    /** @test */
-    public function testStoragePath()
-    {
-        $app = $this->newApplication();
-        $app->boot();
-        
-        $path = $app->storagePath();
-        
-        $this->assertSame($this->base_path.DS.'storage', $path);
-        
-        $path = $app->storagePath('framework');
-        
-        $this->assertSame($this->base_path.DS.'storage'.DS.'framework', $path);
-    }
-    
-    /** @test */
-    public function testConfigCachePath()
-    {
-        $app = $this->newApplication();
-        
-        $app->boot();
-        
-        $path = $app->configCachePath();
-        
-        $this->assertSame(
-            $this->base_path.DS.'bootstrap'.DS.'cache'.DS.'__generated::config.json',
-            $path
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
         );
         
-        $this->assertFalse($app->isConfigurationCached());
-        
-        file_put_contents($path, 'foo');
-        
-        $this->assertTrue($app->isConfigurationCached());
-        
-        unlink($path);
-        
-        $this->assertFalse($app->isConfigurationCached());
-    }
-    
-    /** @test */
-    public function testDistPath()
-    {
-        $app = $this->newApplication();
         $app->boot();
         
-        $path = $app->distPath();
-        $this->assertSame($this->base_path.DS.'dist', $path);
-        $path = $app->distPath('js');
-        $this->assertSame($this->base_path.DS.'dist'.DS.'js', $path);
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The application cant be booted twice.");
         
-        $app->config()->set('app.dist', 'custom-dist');
-        $this->assertSame($this->base_path.DS.'custom-dist', $app->distPath());
+        $app->boot();
     }
     
     /** @test */
-    public function testBasePath()
+    public function booting_the_application_runs_all_bootstrappers_and_plugins()
     {
-        $app = $this->newApplication();
+        $plugin = new DummyPlugin();
+        
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs'),
+            [$plugin]
+        );
+        
+        $this->assertFalse($plugin->booted);
+        $this->assertFalse($plugin->configured);
+        $this->assertFalse($plugin->registered);
+        
         $app->boot();
         
-        $this->assertSame($this->base_path, $app->basePath());
-        $this->assertSame($this->base_path.DIRECTORY_SEPARATOR.'foo', $app->basePath('foo'));
+        $this->assertTrue($plugin->booted);
+        $this->assertTrue($plugin->configured);
+        $this->assertTrue($plugin->registered);
+        
+        $received_config = $plugin->config;
+        $this->assertSame('bar', $received_config['app.foo']);
     }
     
     /** @test */
-    public function generateKey()
+    public function test_config_on_the_app_returns_are_read_only_config()
     {
-        $key = Application::generateKey();
-        
-        $this->assertStringStartsWith('base64:', $key);
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__.'/test-dirs')
+        );
         
         try {
-            $this->assertTrue(true);
-        } catch (Throwable $e) {
-            $this->fail('Generated app key is not compatible.'.PHP_EOL.$e->getMessage());
+            $config = $app->config();
+        } catch (LogicException $e) {
+            $this->assertStringContainsString(
+                'only be accessed after bootstrapping.',
+                $e->getMessage()
+            );
         }
-    }
-    
-    /** @test */
-    public function testEnvironment()
-    {
-        $app = $this->newApplication();
-        $app['env'] = 'testing';
         
-        $this->assertSame('testing', $app->environment());
-    }
-    
-    /** @test */
-    public function testIsLocal()
-    {
-        $app = $this->newApplication();
-        $app['env'] = 'local';
-        
-        $this->assertTrue($app->isLocal());
-        
-        $app['env'] = 'production';
-        $this->assertFalse($app->isLocal());
-    }
-    
-    /** @test */
-    public function testIsProduction()
-    {
-        $app = $this->newApplication();
-        $app['env'] = 'production';
-        
-        $this->assertTrue($app->isProduction());
-        
-        $app['env'] = 'local';
-        $this->assertFalse($app->isProduction());
-    }
-    
-    /** @test */
-    public function testIsRunningUnitTests()
-    {
-        $app = $this->newApplication();
-        $app['env'] = 'production';
-        
-        $this->assertFalse($app->isRunningUnitTest());
-        
-        $app['env'] = 'testing';
-        $this->assertTrue($app->isRunningUnitTest());
-    }
-    
-    /** @test */
-    public function testIsRunningInConsole()
-    {
-        $app = $this->newApplication();
-        
-        $this->assertTrue($app->isRunningInConsole());
-    }
-    
-    /** @test */
-    public function test_exception_for_missing_env_value()
-    {
-        $app = $this->newApplication();
-        $this->expectException(RuntimeException::class);
         $app->boot();
         
-        $app['env'] = 'foo';
-        
-        $app->environment();
-    }
-    
-    private function newApplication() :Application
-    {
-        $app = Application::create($this->base_path, $this->container);
-        $app->setResponseFactory($this->psrResponseFactory());
-        $app->setUriFactory($this->psrUriFactory());
-        $app->setStreamFactory($this->psrStreamFactory());
-        $app->setUploadedFileFactory($this->psrUploadedFileFactory());
-        $app->setServerRequestFactory($this->psrServerRequestFactory());
-        
-        return $app;
+        $config = $app->config();
+        $this->assertInstanceOf(ReadOnlyConfig::class, $config);
+        $this->assertSame('bar', $config->get('app.foo'));
     }
     
 }
 
-class TestContainer extends ContainerAdapter
+class DummyPlugin extends Plugin
 {
     
-    /**
-     * @var array
-     */
-    private $store;
+    public WritableConfig $config;
+    public bool           $configured = false;
+    public bool           $registered = false;
+    public bool           $booted     = false;
     
-    public function factory(string $id, Closure $service) :void
+    public function configure(WritableConfig $config, Application $app) :void
     {
-        $this->store[$id] = $service;
+        $this->config = $config;
+        $this->configured = true;
     }
     
-    public function singleton(string $id, Closure $service) :void
+    public function register(Application $app) :void
     {
-        $this->store[$id] = $service;
+        $this->registered = true;
     }
     
-    public function get(string $abstract)
+    public function bootstrap(Application $app) :void
     {
-        return $this->store[$abstract];
+        $this->booted = true;
     }
     
-    public function primitive(string $id, $value) :void
+    public function alias() :string
     {
-        $this->store[$id] = $value;
+        return 'dummy_plugin';
     }
     
-    public function offsetExists($offset)
+    public function runsInEnvironments(Environment $env) :bool
     {
-        return isset($this->store[$offset]);
-    }
-    
-    public function offsetUnset($offset)
-    {
-        unset($this->store[$offset]);
-    }
-    
-    public function has(string $id)
-    {
-        return isset($this->store[$id]);
+        return true;
     }
     
 }

@@ -6,7 +6,7 @@ namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Application\Config;
+use Snicco\Core\Configuration\WritableConfig;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 use Tests\Core\fixtures\Conditions\RouteConditionWithDependency;
@@ -112,8 +112,8 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
         $this->container[Foo::class] = $foo;
         $foo->foo = 'FOO';
         
-        $config = new Config();
-        $this->container[Config::class] = $config;
+        $config = new WritableConfig();
+        $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
         
         $this->routeConfigurator()->get(
