@@ -1,4 +1,4 @@
-/vendor/
+/vendor/*
 /.env.testing
 /.phpunit.cache/
 /.phpunit.result.cache
@@ -14,3 +14,4 @@ packages/blade/tests/fixtures/cache/*
 /codeception/shared/TestApp/storage/framework/views/
 /packages/*/tests/_output/failed
 /codeception/.env.testing
+/vendor/composer/
