@@ -32,7 +32,7 @@ class ValidationExceptionRenderer
             
             ], $exception->httpStatusCode());
         }
-    
+        
         $response = $this->response_factory->redirect()->back();
         
         // It's possible to use the validation extension without the session extension.
