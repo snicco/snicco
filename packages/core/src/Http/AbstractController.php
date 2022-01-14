@@ -7,9 +7,6 @@ namespace Snicco\Core\Http;
 use Webmozart\Assert\Assert;
 use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\TemplateRenderer;
 use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 

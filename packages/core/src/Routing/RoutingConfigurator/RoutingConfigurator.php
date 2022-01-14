@@ -7,6 +7,7 @@ namespace Snicco\Core\Routing\RoutingConfigurator;
 use Closure;
 use InvalidArgumentException;
 use Snicco\Core\Routing\Route\Route;
+use Snicco\Core\Http\TemplateRenderer;
 
 /**
  * @api

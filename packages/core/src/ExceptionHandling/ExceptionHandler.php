@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Contracts;
+namespace Snicco\Core\ExceptionHandling;
 
 use Throwable;
 use Psr\Log\LogLevel;

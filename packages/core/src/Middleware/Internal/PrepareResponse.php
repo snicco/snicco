@@ -7,8 +7,8 @@ namespace Snicco\Core\Middleware\Internal;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Http\ResponsePreparation;
-use Snicco\Core\Contracts\AbstractMiddleware;
 
 /**
  * @internal

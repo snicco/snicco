@@ -6,7 +6,7 @@ namespace Tests\Core\fixtures\Middleware;
 
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Http\AbstractMiddleware;
 
 class FooMiddleware extends AbstractMiddleware
 {

@@ -13,10 +13,9 @@ use Snicco\Core\Support\WP;
 use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Http\ResponseFactory;
 use Snicco\Core\Support\ReflectsCallable;
 use Psr\Log\LoggerInterface as Psr3Logger;
-use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\ExceptionHandler;
 use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 

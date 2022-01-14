@@ -6,10 +6,7 @@ namespace Snicco\Core\Http;
 
 use RuntimeException;
 use RKA\Middleware\IpAddress;
-use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\TemplateRenderer;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\Routing\Controller\ViewController;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;

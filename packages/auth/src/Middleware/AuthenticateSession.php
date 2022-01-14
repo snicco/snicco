@@ -12,8 +12,8 @@ use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LoginResponse;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class AuthenticateSession extends AbstractMiddleware

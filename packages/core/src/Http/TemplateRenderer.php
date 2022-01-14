@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Contracts;
+namespace Snicco\Core\Http;
 
 interface TemplateRenderer
 {

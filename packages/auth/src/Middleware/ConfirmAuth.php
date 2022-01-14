@@ -8,7 +8,7 @@ use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Http\AbstractMiddleware;
 
 use function Snicco\SessionBundle\getWriteSession;
 

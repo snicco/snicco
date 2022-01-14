@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
-use Snicco\Core\Contracts\TemplateRenderer;
-
 final class FileTemplateRenderer implements TemplateRenderer
 {
     
