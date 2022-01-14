@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Internal;
 
+use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Support\ReflectsCallable;
 use Snicco\Core\Support\ReflectionDependencies;
@@ -22,11 +22,11 @@ final class ControllerAction
     
     use ReflectsCallable;
     
-    private array            $class_callable;
-    private ContainerAdapter $container;
-    private object           $controller_instance;
+    private array       $class_callable;
+    private DIContainer $container;
+    private object      $controller_instance;
     
-    public function __construct(array $class_callable, ContainerAdapter $container)
+    public function __construct(array $class_callable, DIContainer $container)
     {
         $this->class_callable = $class_callable;
         $this->container = $container;

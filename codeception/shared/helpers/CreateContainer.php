@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\PimpleContainer\PimpleContainerAdapter;
+use Snicco\Core\DIContainer;
+use Snicco\PimpleContainer\PimpleDIContainer;
 
 /**
  * @internal
@@ -13,9 +13,9 @@ use Snicco\PimpleContainer\PimpleContainerAdapter;
 trait CreateContainer
 {
     
-    public function createContainer() :ContainerAdapter
+    public function createContainer() :DIContainer
     {
-        return new PimpleContainerAdapter();
+        return new PimpleDIContainer();
     }
     
 }

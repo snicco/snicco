@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\Condition;
 
 use Webmozart\Assert\Assert;
-use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Support\ReflectionDependencies;
 
 /**
@@ -14,9 +14,9 @@ use Snicco\Core\Support\ReflectionDependencies;
 final class RouteConditionFactory
 {
     
-    private ContainerAdapter $container_adapter;
+    private DIContainer $container_adapter;
     
-    public function __construct(ContainerAdapter $container_adapter)
+    public function __construct(DIContainer $container_adapter)
     {
         $this->container_adapter = $container_adapter;
     }

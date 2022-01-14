@@ -6,8 +6,8 @@ namespace Snicco\Core\EventDispatcher;
 
 use Closure;
 use Throwable;
+use Snicco\Core\DIContainer;
 use Snicco\EventDispatcher\Listener;
-use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Container\NotFoundExceptionInterface;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
@@ -15,9 +15,9 @@ use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 final class DependencyInversionListenerFactory implements ListenerFactory
 {
     
-    private ContainerAdapter $container_adapter;
+    private DIContainer $container_adapter;
     
-    public function __construct(ContainerAdapter $container_adapter)
+    public function __construct(DIContainer $container_adapter)
     {
         $this->container_adapter = $container_adapter;
     }

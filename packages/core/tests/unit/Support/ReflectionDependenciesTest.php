@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
-use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\DIContainer;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Support\ReflectionDependencies;
 use Tests\Codeception\shared\TestDependencies\Foo;
@@ -16,7 +16,7 @@ class ReflectionDependenciesTest extends UnitTest
     
     use CreateContainer;
     
-    private ContainerAdapter $container;
+    private DIContainer $container;
     private ReflectionDependencies $route_action_dependencies;
     
     protected function setUp() :void

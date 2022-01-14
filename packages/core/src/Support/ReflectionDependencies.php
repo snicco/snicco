@@ -8,7 +8,7 @@ use Closure;
 use Snicco\Support\Arr;
 use ReflectionException;
 use ReflectionParameter;
-use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\DIContainer;
 
 /**
  * This class is used to build the dependencies for route actions, middleware, conditions and view
@@ -23,11 +23,11 @@ class ReflectionDependencies
     use ReflectsCallable;
     
     /**
-     * @var ContainerAdapter
+     * @var DIContainer
      */
     private $container;
     
-    public function __construct(ContainerAdapter $container)
+    public function __construct(DIContainer $container)
     {
         $this->container = $container;
     }

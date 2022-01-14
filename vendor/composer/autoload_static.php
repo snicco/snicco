@@ -10795,18 +10795,18 @@ class ComposerStaticInit6c09195b7a2b965c1ee088f8db354792
         'Snicco\\Core\\Routing\\UrlMatcher\\UrlMatcher' => __DIR__
                                                            .'/../..'
                                                            .'/packages/core/src/Routing/UrlMatcher/UrlMatcher.php',
-        'Snicco\\Core\\Shared\\ContainerAdapter' => __DIR__
-                                                    .'/../..'
-                                                    .'/packages/core/src/Shared/ContainerAdapter.php',
+        'Snicco\\Core\\DIContainer' => __DIR__
+                                       .'/../..'
+                                       .'/packages/core/src/Shared/ContainerAdapter.php',
         'Snicco\\Core\\Shared\\Encryptor' => __DIR__
                                              .'/../..'
                                              .'/packages/core/src/Shared/Encryptor.php',
         'Snicco\\Core\\Shared\\Exceptions\\EncryptException' => __DIR__
                                                                 .'/../..'
                                                                 .'/packages/core/src/Shared/Exceptions/EncryptException.php',
-        'Snicco\\Core\\Shared\\FrozenServiceException' => __DIR__
-                                                          .'/../..'
-                                                          .'/packages/core/src/Shared/FrozenServiceException.php',
+        'Snicco\\Core\\Exception\\FrozenServiceException' => __DIR__
+                                                             .'/../..'
+                                                             .'/packages/core/src/Shared/FrozenServiceException.php',
         'Snicco\\Core\\Support\\CacheFile' => __DIR__
                                               .'/../..'
                                               .'/packages/core/src/Support/CacheFile.php',
@@ -10972,9 +10972,9 @@ class ComposerStaticInit6c09195b7a2b965c1ee088f8db354792
         'Snicco\\EventDispatcher\\Listener' => __DIR__
                                                .'/../..'
                                                .'/packages/better-wp-hooks/src/Listener.php',
-        'Snicco\\Illuminate\\IlluminateContainerAdapter' => __DIR__
-                                                            .'/../..'
-                                                            .'/packages/illuminate-container-bridge/src/IlluminateContainerAdapter.php',
+        'Snicco\\Illuminate\\IlluminateDIContainer' => __DIR__
+                                                       .'/../..'
+                                                       .'/packages/illuminate-container-bridge/src/IlluminateContainerAdapter.php',
         'Snicco\\MailBundle\\FrameworkMailEventDispatcher' => __DIR__
                                                               .'/../..'
                                                               .'/packages/better-wp-mail-bundle/src/FrameworkMailEventDispatcher.php',
@@ -11060,9 +11060,9 @@ class ComposerStaticInit6c09195b7a2b965c1ee088f8db354792
         'Snicco\\Mail\\ValueObjects\\MailDefaults' => __DIR__
                                                       .'/../..'
                                                       .'/packages/better-wp-mail/src/ValueObjects/MailDefaults.php',
-        'Snicco\\PimpleContainer\\PimpleContainerAdapter' => __DIR__
-                                                             .'/../..'
-                                                             .'/packages/pimple-container-bridge/src/PimpleContainerAdapter.php',
+        'Snicco\\PimpleContainer\\PimpleDIContainer' => __DIR__
+                                                        .'/../..'
+                                                        .'/packages/pimple-container-bridge/src/PimpleContainerAdapter.php',
         'Snicco\\SessionBundle\\BetterWPHooks\\Events\\UserLoggedIn' => __DIR__
                                                                         .'/../..'
                                                                         .'/packages/session-bundle/src/BetterWPHooks/Events/UserLoggedIn.php',

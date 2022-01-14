@@ -6,8 +6,8 @@ namespace Tests\PimpleContainer\unit;
 
 use Pimple\Container;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Shared\FrozenServiceException;
-use Snicco\PimpleContainer\PimpleContainerAdapter;
+use Snicco\PimpleContainer\PimpleDIContainer;
+use Snicco\Core\Exception\FrozenServiceException;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
 
@@ -15,14 +15,14 @@ final class PimpleContainerAdapterTest extends UnitTest
 {
     
     /**
-     * @var PimpleContainerAdapter
+     * @var PimpleDIContainer
      */
     private $pimple_adapter;
     
     protected function setUp() :void
     {
         parent::setUp();
-        $this->pimple_adapter = new PimpleContainerAdapter(new Container());
+        $this->pimple_adapter = new PimpleDIContainer(new Container());
     }
     
     /** @test */

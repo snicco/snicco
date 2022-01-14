@@ -2,17 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Shared;
+namespace Snicco\Core;
 
 use Closure;
 use ArrayAccess;
-use Psr\Container\ContainerInterface;
+use Snicco\Core\Exception\FrozenServiceException;
+use Psr\Container\ContainerInterface as PsrContainer;
 
 /**
- * @todo classes outside the bootstrap process should depend on the psr3 interface not the full
- *     adapter.
+ * The DependencyInjection(DI) container takes care of lazily constructing and loading services
+ * for your application.
+ * The framework itself DOES NOT require your implementation to be capable of auto-wiring.
+ * However, you are free to use a container that supports auto-wiring in your application code.
+ *
+ * @api
  */
-abstract class ContainerAdapter implements ArrayAccess, ContainerInterface
+abstract class DIContainer implements ArrayAccess, PsrContainer
 {
     
     /**
@@ -28,7 +33,7 @@ abstract class ContainerAdapter implements ArrayAccess, ContainerInterface
     
     /**
      * Register a shared binding in the container.
-     * This object will be a singleton always
+     * Once resolved the same instance will be returned.
      *
      * @param  string  $id
      * @param  Closure  $service  When trying to overwrite an already resolved singleton.
@@ -38,6 +43,8 @@ abstract class ContainerAdapter implements ArrayAccess, ContainerInterface
     abstract public function singleton(string $id, Closure $service) :void;
     
     /**
+     * Stores a primitive value in the container.
+     *
      * @param  string  $id
      * @param  array|string|int|float|bool  $value
      */
@@ -63,7 +70,7 @@ abstract class ContainerAdapter implements ArrayAccess, ContainerInterface
         return $this->get($offset);
     }
     
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) :void
     {
         if ($value instanceof Closure) {
             $this->singleton($offset, $value);

@@ -6,7 +6,7 @@ namespace Snicco\ViewBundle;
 
 use Closure;
 use RuntimeException;
-use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\DIContainer;
 use Snicco\View\ClosureViewComposer;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewComposerFactory;
@@ -22,11 +22,11 @@ class DependencyInjectionViewComposerFactory implements ViewComposerFactory
     private $namespaces;
     
     /**
-     * @var ContainerAdapter
+     * @var DIContainer
      */
     private $container;
     
-    public function __construct(ContainerAdapter $container, array $namespaces = [])
+    public function __construct(DIContainer $container, array $namespaces = [])
     {
         $this->namespaces = $namespaces;
         $this->container = $container;

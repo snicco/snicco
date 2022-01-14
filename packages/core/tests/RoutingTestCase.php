@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core;
 
 use Snicco\View\ViewEngine;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
@@ -12,7 +13,6 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Support\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Middleware\ShareCookies;
 use Snicco\Core\Http\ResponsePreparation;
 use Snicco\Core\Contracts\ResponseFactory;
@@ -68,12 +68,12 @@ class RoutingTestCase extends UnitTest
     use CreateContainer;
     use CreatePsrRequests;
     
-    protected string           $app_domain = 'foobar.com';
-    protected string           $routes_dir;
-    protected ResponseFactory  $response_factory;
-    protected ContainerAdapter $container;
-    protected FakeDispatcher   $event_dispatcher;
-    protected UrlGenerator     $generator;
+    protected string          $app_domain = 'foobar.com';
+    protected string          $routes_dir;
+    protected ResponseFactory $response_factory;
+    protected DIContainer     $container;
+    protected FakeDispatcher  $event_dispatcher;
+    protected UrlGenerator    $generator;
     
     private Router                 $router;
     private HttpKernel             $kernel;
@@ -226,7 +226,7 @@ class RoutingTestCase extends UnitTest
     final private function createNeededCollaborators()
     {
         $this->container = $this->createContainer();
-        $this->container->instance(ContainerAdapter::class, $this->container);
+        $this->container->instance(DIContainer::class, $this->container);
         
         $this->admin_dashboard = WPAdminArea::fromDefaults();
         $this->container[AdminArea::class] = $this->admin_dashboard;

@@ -11,13 +11,13 @@ use RuntimeException;
 use Psr\Log\NullLogger;
 use Snicco\Support\Arr;
 use Snicco\Core\Support\WP;
+use Snicco\Core\DIContainer;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Application\Application_OLD;
 use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Application\Application_OLD;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Core\ExceptionHandling\WhoopsHandler;
@@ -36,7 +36,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     use CreatePsr17Factories;
     use CreatePsrRequests;
     
-    private ContainerAdapter $container;
+    private DIContainer $container;
     
     private Request $request;
     

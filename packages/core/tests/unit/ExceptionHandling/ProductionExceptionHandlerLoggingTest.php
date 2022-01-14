@@ -9,9 +9,9 @@ use Exception;
 use Psr\Log\LogLevel;
 use Snicco\Core\Support\WP;
 use Psr\Log\Test\TestLogger;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Testing\Concerns\CreatePsrRequests;
 use Tests\Codeception\shared\TestDependencies\Foo;
@@ -28,9 +28,9 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
     use CreatePsrRequests;
     use CreatePsr17Factories;
     
-    private ContainerAdapter $container;
-    private Request          $request;
-    private TestLogger       $test_logger;
+    private DIContainer $container;
+    private Request     $request;
+    private TestLogger  $test_logger;
     
     protected function setUp() :void
     {
