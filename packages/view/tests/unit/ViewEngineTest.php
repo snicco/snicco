@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\View\integration;
+namespace Tests\View\unit;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\GlobalViewContext;
-use Codeception\TestCase\WPTestCase;
+use Tests\Codeception\shared\UnitTest;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\View\Implementations\PHPView;
@@ -18,28 +18,19 @@ use Snicco\View\Exceptions\ViewNotFoundException;
 use Snicco\View\Exceptions\ViewRenderingException;
 use Snicco\View\Implementations\NewableInstanceViewComposerFactory;
 
-class ViewEngineTest extends WPTestCase
+use const DS;
+use const SHARED_FIXTURES_DIR;
+
+class ViewEngineTest extends UnitTest
 {
     
-    /**
-     * @var ViewEngine
-     */
-    private $view_engine;
+    private ViewEngine $view_engine;
     
-    /**
-     * @var GlobalViewContext
-     */
-    private $global_view_context;
+    private GlobalViewContext $global_view_context;
     
-    /**
-     * @var ViewComposerCollection
-     */
-    private $composers;
+    private ViewComposerCollection $composers;
     
-    /**
-     * @var string
-     */
-    private $view_dir;
+    private string $view_dir;
     
     protected function setUp() :void
     {

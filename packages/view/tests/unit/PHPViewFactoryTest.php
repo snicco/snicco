@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\View\integration;
+namespace Tests\View\unit;
 
-use Codeception\TestCase\WPTestCase;
+use Tests\Codeception\shared\UnitTest;
 use Snicco\View\ViewComposerCollection;
 use Snicco\View\Implementations\PHPView;
 use Snicco\View\Implementations\PHPViewFinder;
@@ -13,13 +13,10 @@ use Snicco\View\Implementations\PHPViewFactory;
 use const DS;
 use const SHARED_FIXTURES_DIR;
 
-final class PHPViewFactoryTest extends WPTestCase
+final class PHPViewFactoryTest extends UnitTest
 {
     
-    /**
-     * @var string
-     */
-    private $view_dir;
+    private string $view_dir;
     
     protected function setUp() :void
     {

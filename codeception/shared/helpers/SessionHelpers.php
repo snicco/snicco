@@ -37,18 +37,17 @@ trait SessionHelpers
             $config ?? SessionConfig::fromDefaults('sniccowp_test_cookie'),
             $driver ?? new ArraySessionDriver(),
             new ClockUsingDateTimeImmutable(),
-            $dispatcher ?? new NullSessionEventDispatcher(),
+            $dispatcher ?? new class implements SessionEventDispatcher
+            {
+                
+                public function dispatchAll(array $events) :void
+                {
+                    //
+                }
+                
+            },
         );
     }
     
 }
 
-class NullSessionEventDispatcher implements SessionEventDispatcher
-{
-    
-    public function dispatchAll(array $events) :void
-    {
-        //
-    }
-    
-}
