@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Support\PHPCacheFile;
+use Snicco\Core\Utils\PHPCacheFile;
 use Tests\Core\fixtures\Conditions\MaybeRouteCondition;
 use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
 

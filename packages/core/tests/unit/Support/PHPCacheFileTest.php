@@ -6,7 +6,7 @@ namespace Tests\Core\unit\Support;
 
 use stdClass;
 use InvalidArgumentException;
-use Snicco\Core\Support\PHPCacheFile;
+use Snicco\Core\Utils\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
 
 final class PHPCacheFileTest extends UnitTest

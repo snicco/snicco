@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Support;
 
 use InvalidArgumentException;
-use Snicco\Core\Support\CacheFile;
+use Snicco\Core\Utils\CacheFile;
 use Tests\Codeception\shared\UnitTest;
 
 final class CacheFileTest extends UnitTest

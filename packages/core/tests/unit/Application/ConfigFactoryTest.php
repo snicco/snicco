@@ -8,7 +8,7 @@ use RuntimeException;
 use Snicco\Core\Application;
 use Snicco\Core\Directories;
 use Snicco\Core\Environment;
-use Snicco\Core\Support\CacheFile;
+use Snicco\Core\Utils\CacheFile;
 use Symfony\Component\Finder\Finder;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Configuration\ConfigFactory;

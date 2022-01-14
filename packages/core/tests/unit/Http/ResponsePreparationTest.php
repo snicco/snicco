@@ -3,7 +3,7 @@
 namespace Tests\Core\unit\Http;
 
 use Mockery;
-use Snicco\Core\Support\Carbon;
+use Snicco\Core\Utils\Carbon;
 use Snicco\Core\Http\Psr7\Request;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Http\ResponsePreparation;
@@ -51,13 +51,13 @@ class ResponsePreparationTest extends UnitTest
     /** @test */
     public function testDateIsNotModifiedIfAlreadySet()
     {
-        $date = Carbon::now()->subHour()->getTimestamp();
+        $date = gmdate('D, d M Y H:i:s T', time() + 10);
         $response = $this->factory->make()
-                                  ->withHeader('date', gmdate('D, d M Y H:i:s', $date).' GMT');
+                                  ->withHeader('date', $date);
         
         $response = $this->preparation->prepare($response, $this->request);
         
-        $this->assertSame(gmdate('D, d M Y H:i:s', $date).' GMT', $response->getHeaderLine('date'));
+        $this->assertSame($date, $response->getHeaderLine('date'));
     }
     
     /** @test */
@@ -96,12 +96,13 @@ class ResponsePreparationTest extends UnitTest
     /** @test */
     public function testCacheControlHeadersWithValidatorsPresent()
     {
-        $response = $this->factory->make()->withHeader('Expires', Carbon::expires(10));
+        $date = gmdate('D, d M Y H:i:s T', time() + 10);
+        $response = $this->factory->make()->withHeader('Expires', $date);
         $response = $this->preparation->prepare($response, $this->request);
         $this->assertSame('private, must-revalidate', $response->getHeaderLine('cache-control'));
         
         $response = $this->factory->make()
-                                  ->withHeader('Last-Modified', Carbon::lastModified(-1000));
+                                  ->withHeader('Last-Modified', gmdate('D, d M Y H:i:s T', 10));
         
         $response = $this->preparation->prepare($response, $this->request);
         $this->assertSame('private, must-revalidate', $response->getHeaderLine('cache-control'));

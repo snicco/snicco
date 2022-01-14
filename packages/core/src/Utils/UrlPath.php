@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Support;
+namespace Snicco\Core\Utils;
 
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
@@ -11,7 +11,7 @@ use function ltrim;
 use function rtrim;
 
 /**
- * @interal A simple value object to work with url path segments
+ * @framework-only
  */
 final class UrlPath
 {

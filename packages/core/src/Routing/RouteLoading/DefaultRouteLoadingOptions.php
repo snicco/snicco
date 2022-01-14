@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\RouteLoading;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Routing\RouteLoader;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 

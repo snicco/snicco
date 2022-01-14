@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Support\Functions
+namespace Snicco\Core\Utils
 {
     
     use Closure;
     use Snicco\Support\Arr;
     
     /**
-     * @internal
      * Return the default value of the given value.
      *
      * @param  mixed  $value
      *
+     * @framework-only
      * @return mixed
      */
     function value($value, ...$args)
@@ -22,11 +22,12 @@ namespace Snicco\Core\Support\Functions
     }
     
     /**
-     * Returns all traits used by a class, its parent classes and trait of their traits.
+     * Returns all traits used by a class, its parent classes and traits of their traits.
      *
      * @param  object|string  $class
      *
-     * @return array
+     * @framework-only
+     * @return string[]
      */
     function classUsesRecursive($class) :array
     {
@@ -46,7 +47,7 @@ namespace Snicco\Core\Support\Functions
     /**
      * @param  string|object  $class_or_object
      *
-     * @interal
+     * @framework-only
      */
     function isInterface($class_or_object, string $interface) :bool
     {
@@ -74,6 +75,7 @@ namespace Snicco\Core\Support\Functions
      *
      * @param  string  $trait
      *
+     * @framework-only
      * @return array
      */
     function traitUsesRecursive(string $trait) :array
@@ -95,6 +97,7 @@ namespace Snicco\Core\Support\Functions
      * @param  mixed  $default
      *
      * @return mixed
+     * @framework-only
      */
     function dataGet($target, $key, $default = null)
     {

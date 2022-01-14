@@ -10,7 +10,7 @@ use Snicco\Support\Str;
 use Snicco\Session\Session;
 use Snicco\Core\DIContainer;
 use Snicco\Support\Repository;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Http\Psr7\Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;

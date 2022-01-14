@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher;
 
 use Throwable;
-use Snicco\Core\Support\ReflectionDependencies;
 use Snicco\EventDispatcher\Contracts\Event;
+use Snicco\Core\Utils\ReflectionDependencies;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 use Snicco\EventDispatcher\Exceptions\MappedEventCreationException;
 

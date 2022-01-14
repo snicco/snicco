@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Auth\unit\Middleware;
 
 use Mockery;
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Core\Routing\Route\Route;
+use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;

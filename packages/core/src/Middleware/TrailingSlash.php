@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\AbstractMiddleware;

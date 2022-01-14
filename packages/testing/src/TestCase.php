@@ -8,7 +8,7 @@ use Mockery;
 use RuntimeException;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Core\Http\Psr7\Request;
@@ -36,7 +36,7 @@ use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 
-use function Snicco\Core\Support\Functions\classUsesRecursive;
+use function Snicco\Core\Utils\Functions\classUsesRecursive;
 
 abstract class TestCase extends WPTestCase
 {

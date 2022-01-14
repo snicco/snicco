@@ -8,7 +8,7 @@ use Snicco\Core\DIContainer;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Http\AbstractMiddleware;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Utils\ReflectionDependencies;
 
 /**
  * @internal
@@ -27,7 +27,7 @@ final class MiddlewareFactory
     {
         if ( ! empty($route_arguments)) {
             $constructor_args = (new ReflectionDependencies($this->container))
-                ->build($middleware_class, $route_arguments);
+                ->build([$middleware_class, '__construct'], $route_arguments);
             
             return new $middleware_class(...array_values($constructor_args));
         }

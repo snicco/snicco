@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware\Internal;
 
 use Snicco\Core\DIContainer;
+use Snicco\Core\Utils\Reflection;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\AbstractController;
-use Snicco\Core\Support\ReflectsCallable;
-use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Utils\ReflectionDependencies;
 
 use function array_filter;
 use function method_exists;
@@ -20,7 +20,7 @@ use function call_user_func_array;
 final class ControllerAction
 {
     
-    use ReflectsCallable;
+    //use ReflectsCallable;
     
     private array       $class_callable;
     private DIContainer $container;
@@ -40,7 +40,7 @@ final class ControllerAction
             $controller->setContainer($this->container);
         }
         
-        if ($this->firstParameterType($this->class_callable) !== Request::class) {
+        if (Reflection::firstParameterType($this->class_callable) !== Request::class) {
             $args = array_filter($args, function ($value) {
                 return ! $value instanceof Request;
             });

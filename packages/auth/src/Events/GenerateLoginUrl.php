@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\Core\EventDispatcher\Events\CoreEvent;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 

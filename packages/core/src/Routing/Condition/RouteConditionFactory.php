@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing\Condition;
 
 use Webmozart\Assert\Assert;
 use Snicco\Core\DIContainer;
-use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Utils\ReflectionDependencies;
 
 /**
  * @interal
@@ -28,7 +28,7 @@ final class RouteConditionFactory
         
         $deps = new ReflectionDependencies($this->container_adapter);
         
-        $deps = $deps->build($class, $args);
+        $deps = $deps->build([$class, 'construct'], $args);
         
         /** @var AbstractRouteCondition $instance */
         $instance = new $class(...$deps);

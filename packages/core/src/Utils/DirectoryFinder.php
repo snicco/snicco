@@ -1,16 +1,19 @@
 <?php
 
-namespace Snicco\Core\Support;
+namespace Snicco\Core\Utils;
 
 use Symfony\Component\Finder\Finder;
 
+/**
+ * @framework-only
+ */
 final class DirectoryFinder
 {
     
     /**
-     * Get all the directories within a given directory.
+     * @return string[]
      */
-    public function directories(string $directory) :array
+    public function allDirsInDir(string $directory) :array
     {
         $directories = [];
         

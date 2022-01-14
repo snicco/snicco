@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Support;
+namespace Snicco\Core\Utils;
 
 use RuntimeException;
 use Webmozart\Assert\Assert;
 
 /**
- * @interal
+ * @note framework-only
  */
 final class CacheFile
 {

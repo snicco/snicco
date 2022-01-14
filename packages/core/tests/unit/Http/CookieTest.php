@@ -8,7 +8,7 @@ use DateTime;
 use LogicException;
 use Snicco\Core\Http\Cookie;
 use InvalidArgumentException;
-use Snicco\Core\Support\Carbon;
+use Snicco\Core\Utils\Carbon;
 use Tests\Codeception\shared\UnitTest;
 
 class CookieTest extends UnitTest
@@ -87,7 +87,7 @@ class CookieTest extends UnitTest
             'httponly' => true,
             'samesite' => 'Strict',
         ], $cookie->properties());
-    
+        
         $cookie = $cookie->withSameSite('lax');
         $this->assertSame([
             'value' => 'bar',
@@ -99,7 +99,7 @@ class CookieTest extends UnitTest
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-    
+        
         $cookie = $cookie->withSameSite('none');
         $this->assertSame([
             'value' => 'bar',
@@ -113,7 +113,7 @@ class CookieTest extends UnitTest
         ], $cookie->properties());
         
         $this->expectException(LogicException::class);
-    
+        
         $cookie->withSameSite('bogus');
     }
     
@@ -138,27 +138,7 @@ class CookieTest extends UnitTest
         $cookie = new Cookie('foo', 'bar');
         
         $date = new DateTime('2000-01-01');
-    
-        $cookie = $cookie->withExpiryTimestamp($date);
         
-        $this->assertSame([
-            'value' => 'bar',
-            'domain' => null,
-            'hostonly' => true,
-            'path' => '/',
-            'expires' => $date->getTimestamp(),
-            'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax',
-        ], $cookie->properties());
-    }
-    
-    public function testExpiresCarbon()
-    {
-        $cookie = new Cookie('foo', 'bar');
-        
-        $date = Carbon::createFromDate('2000', '01', '01');
-    
         $cookie = $cookie->withExpiryTimestamp($date);
         
         $this->assertSame([
