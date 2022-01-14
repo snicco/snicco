@@ -3,7 +3,7 @@
 namespace Snicco\Core\ExceptionHandling;
 
 use Snicco\Support\Arr;
-use Snicco\Core\Support\Finder;
+use Snicco\Core\Support\DirectoryFinder;
 use Snicco\Core\Application\Application;
 
 class WhoopsHandler
@@ -34,7 +34,7 @@ class WhoopsHandler
     public static function allDirsExpectVendor(Application $app) :array
     {
         $dirs = Arr::except(
-            array_flip((new Finder())->directories($app->basePath())),
+            array_flip((new DirectoryFinder())->directories($app->basePath())),
             [$app->basePath('vendor')]
         );
         

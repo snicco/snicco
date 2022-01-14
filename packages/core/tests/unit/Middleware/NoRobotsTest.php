@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Middleware;
 
 use Snicco\Core\Middleware\NoRobots;
-use Tests\Core\MiddlewareTestCase;
+use Tests\Core\InternalMiddlewareTestCase;
 
-class NoRobotsTest extends MiddlewareTestCase
+class NoRobotsTest extends InternalMiddlewareTestCase
 {
     
     /** @test */
@@ -28,7 +28,7 @@ class NoRobotsTest extends MiddlewareTestCase
     /** @test */
     public function no_index_can_be_configured_separately()
     {
-        $middleware = new NoRobots('false');
+        $middleware = new NoRobots(false);
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
         
@@ -43,7 +43,7 @@ class NoRobotsTest extends MiddlewareTestCase
     /** @test */
     public function no_follow_can_be_configured_separately()
     {
-        $middleware = new NoRobots('noindex', 'false');
+        $middleware = new NoRobots(true, false);
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
         
@@ -58,7 +58,7 @@ class NoRobotsTest extends MiddlewareTestCase
     /** @test */
     public function no_archive_can_be_configured_separately()
     {
-        $middleware = new NoRobots('noindex', 'nofollow', 'false');
+        $middleware = new NoRobots(true, true, false);
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
         

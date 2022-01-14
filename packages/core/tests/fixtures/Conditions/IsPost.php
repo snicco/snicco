@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Core\fixtures\Conditions;
 
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Condition;
+use Snicco\Core\Routing\Condition\AbstractRouteCondition;
 
-class IsPost implements Condition
+class IsPost implements AbstractRouteCondition
 {
     
     private bool $pass;

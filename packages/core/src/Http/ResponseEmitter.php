@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 
+use function min;
 use function header;
+use function strlen;
+use function sprintf;
+use function strtolower;
 use function headers_sent;
 use function connection_status;
 
@@ -16,20 +19,14 @@ use function connection_status;
  *
  * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
  */
-class ResponseEmitter
+final class ResponseEmitter
 {
     
-    protected ResponsePreparation $preparation;
+    private int $response_chunk_size;
     
-    /**
-     * @var int
-     */
-    private $response_chunk_size;
-    
-    public function __construct(ResponsePreparation $preparation, int $response_chunk_size = 4096)
+    public function __construct(int $response_chunk_size = 4096)
     {
         $this->response_chunk_size = $response_chunk_size;
-        $this->preparation = $preparation;
     }
     
     public function emit(Response $response) :void
@@ -62,11 +59,6 @@ class ResponseEmitter
         }
     }
     
-    public function prepare(Response $response, Request $request) :Response
-    {
-        return $this->preparation->prepare($response, $request);
-    }
-    
     public function emitCookies(Cookies $cookies) :void
     {
         if (headers_sent()) {
@@ -81,7 +73,7 @@ class ResponseEmitter
         }
     }
     
-    protected function isResponseEmpty(Response $response) :bool
+    private function isResponseEmpty(Response $response) :bool
     {
         if ($response->isEmpty()) {
             return true;
@@ -95,7 +87,7 @@ class ResponseEmitter
         return $seekable ? $stream->read(1) === '' : $stream->eof();
     }
     
-    protected function emitStatusLine(Response $response) :void
+    private function emitStatusLine(Response $response) :void
     {
         $statusLine = sprintf(
             'HTTP/%s %s %s',
@@ -106,7 +98,7 @@ class ResponseEmitter
         header($statusLine, true, $response->getStatusCode());
     }
     
-    protected function emitBody(Response $response) :void
+    private function emitBody(Response $response) :void
     {
         $body = $response->getBody();
         

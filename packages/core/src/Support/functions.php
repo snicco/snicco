@@ -44,6 +44,32 @@ namespace Snicco\Core\Support\Functions
     }
     
     /**
+     * @param  string|object  $class_or_object
+     *
+     * @interal
+     */
+    function isInterface($class_or_object, string $interface) :bool
+    {
+        $class = is_object($class_or_object)
+            ? get_class($class_or_object)
+            : $class_or_object;
+        
+        $interface_exists = interface_exists($class);
+        
+        if ($interface_exists && $interface === $class) {
+            return true;
+        }
+        
+        if ( ! class_exists($class) && ! $interface_exists) {
+            return false;
+        }
+        
+        $implements = (array) class_implements($class);
+        
+        return in_array($interface, $implements, true);
+    }
+    
+    /**
      * Returns all traits used by a trait and its traits.
      *
      * @param  string  $trait

@@ -6,7 +6,6 @@ namespace Tests\Core\integration\Application;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Application\Application;
 use Snicco\Core\Http\StatelessRedirector;
@@ -15,6 +14,7 @@ use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\Http\Responses\RedirectResponse;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 use const DS;
@@ -182,7 +182,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->delete('/alias/match')->assertDelegatedToWordPress();
+        $this->delete('/alias/match')->assertDelegated();
         $this->post('/alias/match')->assertOk()->assertSee('match');
     }
     
@@ -191,7 +191,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->assertInstanceOf(UrlGenerator::class, TestApp::url());
+        $this->assertInstanceOf(InternalUrlGenerator::class, TestApp::url());
     }
     
     /** @test */

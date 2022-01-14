@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher\Listeners;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Routing\Route;
-use Snicco\Core\Contracts\RouteCollectionInterface;
+use Snicco\Core\Routing\Route\Route;
+use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 
 class FilterWpQuery
 {
     
     /**
-     * @var RouteCollectionInterface
+     * @var Routes
      */
     private $routes;
     
-    public function __construct(RouteCollectionInterface $routes)
+    public function __construct(Routes $routes)
     {
         $this->routes = $routes;
     }

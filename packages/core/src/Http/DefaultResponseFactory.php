@@ -12,10 +12,9 @@ use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Redirector;
 use Snicco\Core\Contracts\Responsable;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Http\Responses\NullResponse;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
@@ -29,22 +28,13 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 final class DefaultResponseFactory implements ResponseFactory, Redirector
 {
     
-    /**
-     * @var Psr17ResponseFactory
-     */
-    private $psr_response;
+    private Psr17ResponseFactory $psr_response;
     
-    /**
-     * @var Psr17StreamFactory
-     */
-    private $psr_stream;
+    private Psr17StreamFactory $psr_stream;
     
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $url;
+    private UrlGenerator $url;
     
-    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGeneratorInterface $url)
+    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGenerator $url)
     {
         $this->psr_response = $response;
         $this->psr_stream = $stream;
@@ -76,14 +66,9 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         return $this->psr_stream->createStream($content);
     }
     
-    public function null() :NullResponse
+    public function delegate(bool $should_headers_be_sent = true) :DelegatedResponse
     {
-        return new NullResponse($this->psr_response->createResponse());
-    }
-    
-    public function delegateToWP() :DelegatedResponse
-    {
-        return new DelegatedResponse($this->createResponse());
+        return new DelegatedResponse($should_headers_be_sent, $this->createResponse());
     }
     
     public function redirect(string $location, int $status_code = 302) :RedirectResponse

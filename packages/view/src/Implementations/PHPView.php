@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\View\Implementations;
 
+use RuntimeException;
+use Snicco\Support\Str;
 use Snicco\View\Contracts\ViewInterface;
-
-use function \get_file_data;
 
 /**
  * @api
@@ -109,7 +109,7 @@ class PHPView implements ViewInterface
             return $this->context;
         }
         
-        if(isset($this->context[$key])) {
+        if (isset($this->context[$key])) {
             return $this->context[$key];
         }
         
@@ -123,23 +123,45 @@ class PHPView implements ViewInterface
      */
     private function parseParentView() :?PHPView
     {
-        if (empty($file_headers = $this->parseFileHeaders())) {
+        $parent_view_name = $this->parseExtends();
+        
+        if (null === $parent_view_name) {
             return null;
         }
-        
-        $parent_view_name = trim($file_headers[0]);
         
         return $this->engine->make([$parent_view_name]);
     }
     
-    private function parseFileHeaders() :array
+    private function parseExtends() :?string
     {
-        return array_filter(
-            get_file_data(
-                $this->filepath,
-                [self::PARENT_FILE_INDICATOR]
-            )
-        );
+        $data = file_get_contents($this->filepath, false, null, 0, 100);
+        
+        if (false === $data) {
+            throw new RuntimeException("Cant read file contents of view [$this->filepath].");
+        }
+        
+        $scope = Str::betweenFirst($data, '/*', '*/');
+        
+        $match = preg_match('/(?:Extends:\s?)(.+)/', $scope, $matches);
+        
+        if (false === $match) {
+            throw new RuntimeException("preg_match failed on string [$scope]");
+        }
+        if (0 === $match) {
+            return null;
+        }
+        
+        if ( ! isset($matches[1])) {
+            return null;
+        }
+        
+        $match = str_replace(' ', '', $matches[1]);
+        
+        if ('' === $match) {
+            return null;
+        }
+        
+        return $match;
     }
     
 }

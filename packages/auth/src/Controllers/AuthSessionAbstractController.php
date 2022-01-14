@@ -8,7 +8,6 @@ use Closure;
 use Snicco\Support\Arr;
 use Snicco\Session\Session;
 use Snicco\Core\Support\Url;
-use Snicco\Core\Routing\Pipeline;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Responsable;
@@ -19,6 +18,7 @@ use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionAbstractController extends AbstractController
@@ -44,7 +44,7 @@ class AuthSessionAbstractController extends AbstractController
         return $view_response->forRequest($request);
     }
     
-    public function store(Request $request, Pipeline $auth_pipeline, AbstractLoginResponse $responsable)
+    public function store(Request $request, MiddlewarePipeline $auth_pipeline, AbstractLoginResponse $responsable)
     {
         /**
          * @todo replace with generic pipeline instead of middleware.

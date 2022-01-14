@@ -4,43 +4,51 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Core\Support\WP;
+use Closure;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
-class Authorize extends AbstractMiddleware
+/**
+ * @api
+ */
+final class Authorize extends AbstractMiddleware
 {
     
     private string  $capability;
     private ?int    $object_id;
-    private ?string $key;
+    private Closure $grant_access;
     
-    public function __construct(string $capability = 'manage_options', string $object_id = null, string $key = null)
+    public function __construct(Closure $grant_access, $capability, int $object_id = null)
     {
+        $this->grant_access = $grant_access;
         $this->capability = $capability;
-        $this->object_id = (int) $object_id;
-        $this->key = $key;
+        $this->object_id = $object_id;
     }
     
+    /**
+     * @throws AuthorizationException
+     */
     public function handle(Request $request, $next) :ResponseInterface
     {
         $args = [];
         if ($this->object_id) {
-            $args[] = intval($this->object_id);
-        }
-        if ($this->key) {
-            $args[] = $this->key;
+            $args[] = $this->object_id;
         }
         
-        if (WP::currentUserCan($this->capability, ...$args)) {
+        if ($this->userCan($args)) {
             return $next($request);
         }
         
         throw new AuthorizationException(
-            "Authorization failed for required capability $this->capability"
+            "Authorization failed for path [{$request->path()}] with required capability [$this->capability]."
         );
+    }
+    
+    private function userCan(array $args) :bool
+    {
+        return call_user_func($this->grant_access, $this->capability, $args);
     }
     
 }

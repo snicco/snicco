@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Snicco\Auth\Listeners;
 
 use Snicco\Core\Support\WP;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Auth\Events\GenerateLogoutUrl;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class WPLoginLinks
 {
     
-    private UrlGenerator $url_generator;
+    private InternalUrlGenerator $url_generator;
     
-    public function __construct(UrlGenerator $url_generator)
+    public function __construct(InternalUrlGenerator $url_generator)
     {
         $this->url_generator = $url_generator;
     }

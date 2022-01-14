@@ -75,7 +75,7 @@ class WP
         return Mockery::mock(WordpressApi::class);
     }
     
-    private static function getInstance()
+    private static function getInstance() :object
     {
         if ( ! static::$instance) {
             static::$instance = new WordpressApi();

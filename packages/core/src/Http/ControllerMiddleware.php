@@ -7,7 +7,7 @@ namespace Snicco\Core\Http;
 use LogicException;
 use Snicco\Support\Arr;
 
-class ControllerMiddleware
+final class ControllerMiddleware
 {
     
     private string $middleware;
@@ -84,7 +84,7 @@ class ControllerMiddleware
         return in_array($method, $this->whitelist, true);
     }
     
-    public function name()
+    public function name() :string
     {
         return $this->middleware;
     }

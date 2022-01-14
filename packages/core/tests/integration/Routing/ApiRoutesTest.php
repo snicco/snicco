@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Routing;
 
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
@@ -30,7 +30,7 @@ class ApiRoutesTest extends FrameworkTestCase
         
         // This will shut the script down.
         $this->dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->request->isWpFrontEnd();
+            return $event->request->isToFrontend();
         });
     }
     

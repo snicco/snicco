@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Middleware;
 
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class AuthUnconfirmed extends AbstractMiddleware
 {
     
-    private UrlGenerator $url;
+    private InternalUrlGenerator $url;
     
-    public function __construct(UrlGenerator $url)
+    public function __construct(InternalUrlGenerator $url)
     {
         $this->url = $url;
     }

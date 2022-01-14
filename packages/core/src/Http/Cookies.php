@@ -32,20 +32,14 @@ use function array_key_exists;
 final class Cookies
 {
     
-    /**
-     * @var array
-     */
-    private $request_cookies;
+    private array $request_cookies;
     
     /**
-     * @var array
+     * @var array<string,array>
      */
-    private $response_cookies = [];
+    private array $response_cookies = [];
     
-    /**
-     * @var array
-     */
-    private $defaults = [
+    private array $defaults = [
         'value' => '',
         'domain' => null,
         'hostonly' => true,
@@ -72,7 +66,7 @@ final class Cookies
     public static function parseHeader($header) :array
     {
         if (is_array($header)) {
-            $header = isset($header[0]) ? $header[0] : '';
+            $header = $header[0] ?? '';
         }
         
         if ( ! is_string($header)) {

@@ -8,28 +8,28 @@ use Closure;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Session\Session;
-use Snicco\Core\Support\Url;
 use Snicco\Support\Repository;
+use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Routing\UrlGenerator;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
+use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Testing\Constraints\SeeInOrder;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
 use Snicco\Core\Http\Responses\DelegatedResponse;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class TestResponse
 {
     
-    public Response        $psr_response;
-    protected string       $streamed_content;
-    private Repository     $headers;
-    private int            $status_code;
-    private ?ViewInterface $view    = null;
-    private ?Session       $session = null;
-    private Application    $app;
+    public Response          $psr_response;
+    protected string         $streamed_content;
+    private Repository       $headers;
+    private int              $status_code;
+    private ?ViewInterface   $view    = null;
+    private ?Session         $session = null;
+    private ContainerAdapter $container;
     
     public function __construct(Response $response)
     {
@@ -54,9 +54,9 @@ class TestResponse
         $this->view = $rendered_view;
     }
     
-    public function setApp(Application $app)
+    public function setContainer(ContainerAdapter $container)
     {
-        $this->app = $app;
+        $this->container = $container;
     }
     
     public function body() :string
@@ -64,30 +64,22 @@ class TestResponse
         return $this->streamed_content;
     }
     
-    public function assertNullResponse() :TestResponse
+    public function assertDelegated() :TestResponse
     {
-        PHPUnit::assertInstanceOf(
-            NullResponse::class,
-            $this->psr_response,
-            "A response was returned unexpectedly."
+        return $this->assertInstance(
+            DelegatedResponse::class,
+            "The response is a complete response and not a delegated response."
         );
-        
-        return $this;
     }
     
-    public function assertDelegatedToWordPress() :TestResponse
-    {
-        return $this->assertInstance(DelegatedResponse::class);
-    }
-    
-    public function assertNotDelegatedToWordPress() :TestResponse
+    public function assertNotDelegated() :TestResponse
     {
         return $this->assertNotInstance(DelegatedResponse::class);
     }
     
-    public function assertInstance(string $class) :TestResponse
+    public function assertInstance(string $class, string $message = '') :TestResponse
     {
-        PHPUnit::assertInstanceOf($class, $this->psr_response);
+        PHPUnit::assertInstanceOf($class, $this->psr_response, $message);
         
         return $this;
     }
@@ -99,7 +91,7 @@ class TestResponse
      */
     public function assertSuccessful() :TestResponse
     {
-        $this->assertNotDelegatedToWordPress();
+        $this->assertNotDelegated();
         
         PHPUnit::assertTrue(
             $this->isSuccessful(),
@@ -116,7 +108,7 @@ class TestResponse
      */
     public function assertOk() :TestResponse
     {
-        $this->assertNotDelegatedToWordPress();
+        $this->assertNotDelegated();
         
         PHPUnit::assertTrue(
             $this->isOk(),
@@ -171,8 +163,7 @@ class TestResponse
      */
     public function assertStatus($status) :TestResponse
     {
-        $this->assertNotNullResponse();
-        $this->assertNotDelegatedToWordPress();
+        $this->assertNotDelegated();
         
         $actual = $this->getStatusCode();
         
@@ -181,13 +172,6 @@ class TestResponse
             $status,
             "Expected status code {$status} but received {$actual}."
         );
-        
-        return $this;
-    }
-    
-    public function assertNotNullResponse()
-    {
-        PHPUnit::assertNotInstanceOf(NullResponse::class, $this->psr_response);
         
         return $this;
     }
@@ -252,16 +236,16 @@ class TestResponse
         }
         
         $location = $this->psr_response->getHeaderLine('location');
-        $path = Url::addLeading($path);
-        PHPUnit::assertSame($path, parse_url($location, PHP_URL_PATH));
+        $path = UrlPath::fromString($path);
+        PHPUnit::assertSame($path->asString(), parse_url($location, PHP_URL_PATH));
         
         return $this;
     }
     
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
     {
-        /** @var UrlGenerator $url */
-        $url = $this->app->resolve(UrlGenerator::class);
+        /** @var InternalUrlGenerator $url */
+        $url = $this->container[InternalUrlGenerator::class];
         
         $this->assertRedirect();
         
@@ -421,6 +405,15 @@ class TestResponse
         }
         
         return $this;
+    }
+    
+    public function assertBodyExact(string $expected)
+    {
+        PHPUnit::assertSame(
+            $expected,
+            $this->streamed_content,
+            "Response is different than expected."
+        );
     }
     
     /**

@@ -151,7 +151,7 @@ class Application implements ArrayAccess
         }
         
         $env = $this['env'];
-        
+        // @todo value object
         if ( ! in_array($env, ['local', 'production', 'testing'])) {
             throw new RuntimeException(
                 "Allowed values for the environment are ['local','production','testing']"

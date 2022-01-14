@@ -5,22 +5,21 @@ declare(strict_types=1);
 namespace Snicco\Core\Contracts;
 
 use Webmozart\Assert\Assert;
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Application\Config;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
 abstract class AbstractMiddleware implements MiddlewareInterface
 {
     
-    /**
-     * @var ContainerAdapter
-     */
-    private $container;
+    private ContainerAdapter $container;
     
     public function setContainer(ContainerAdapter $container)
     {
@@ -56,9 +55,22 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         return $this->container[Redirector::class];
     }
     
-    protected function url() :UrlGeneratorInterface
+    protected function url() :UrlGenerator
     {
-        return $this->container[UrlGeneratorInterface::class];
+        return $this->container[UrlGenerator::class];
+    }
+    
+    /**
+     * @param  mixed  $default
+     *
+     * @return mixed
+     */
+    protected function config(string $key, $default = null)
+    {
+        /** @var Config $config */
+        $config = $this->container[Config::class];
+        Assert::isInstanceOf(Config::class, $config);
+        return $config->get($key, $default);
     }
     
     protected function render(string $template_identifier, array $data = []) :Response

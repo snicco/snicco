@@ -7,17 +7,17 @@ namespace Snicco\Auth\Responses;
 use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Application\Config;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Contracts\AbstractLoginView;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class MagicLinkLoginView extends AbstractLoginView
 {
     
-    private UrlGenerator $url;
-    private ViewEngine   $view_engine;
-    private Config       $config;
+    private InternalUrlGenerator $url;
+    private ViewEngine           $view_engine;
+    private Config               $config;
     
-    public function __construct(ViewEngine $view, UrlGenerator $url, Config $config)
+    public function __construct(ViewEngine $view, InternalUrlGenerator $url, Config $config)
     {
         $this->view_engine = $view;
         $this->url = $url;

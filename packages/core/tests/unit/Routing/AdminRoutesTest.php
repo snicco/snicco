@@ -4,299 +4,233 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
+use LogicException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Routing\Route\Route;
+use Snicco\Core\Routing\Exception\BadRouteConfiguration;
+use Tests\Core\fixtures\Controllers\Web\RoutingTestController;
+use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
 class AdminRoutesTest extends RoutingTestCase
 {
     
+    private AdminRoutingConfigurator $admin_configurator;
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->admin_configurator = $this->adminRouteConfigurator();
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_for_admin_routes_that_declare_patterns()
+    {
+        $this->expectException(BadRouteConfiguration::class);
+        $this->expectExceptionMessage(
+            "Admin routes can not define route parameters.\nViolating route [admin1]."
+        );
+        $this->admin_configurator->page('admin1', 'admin.php/foo/{bar}', Route::DELEGATE, [], null);
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_admin_routes_are_registered_with_pending_attributes_without_a_call_to_group()
+    {
+        $this->expectException(LogicException::class);
+        $this->admin_configurator->middleware('foo')->page(
+            'admin.1',
+            'admin.php/foo',
+            Route::DELEGATE,
+            [],
+            null
+        );
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_admin_routes_are_registered_with_the_prefix_declared_explicitly()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            "You should not add the prefix [/wp-admin] to the admin route [admin.1]"
+        );
+        
+        $this->admin_configurator->page(
+            'admin.1',
+            '/wp-admin/admin.php/foo',
+            Route::DELEGATE,
+            [],
+            null
+        );
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_an_admin_route_is_registered_without_using_the_admin_method()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                "You tried to register the route [r1] that goes to the admin dashboard without using the dedicated admin() method on an instance of [%s]",
+                AdminRoutingConfigurator::class
+            )
+        );
+        
+        $this->admin_configurator->get(
+            'r1',
+            '/wp-admin/admin.php/foo',
+            RoutingTestController::class
+        );
+    }
+    
     /** @test */
     public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('admin.php/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            'admin.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
         $request = $this->adminRequest('GET', 'foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
     public function routes_to_different_admin_pages_dont_match()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('admin.php/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            'options.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
         $request = $this->adminRequest('GET', 'bar');
-        $this->assertResponse('', $request);
+        $this->assertResponseBody('', $request);
     }
     
     /** @test */
-    public function the_admin_preset_works_with_nested_route_groups()
+    public function non_get_requests_do_not_match()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->name('foo_group')->group(function () {
-                    $this->router->get('admin.php/foo', function (Request $request) {
-                        return $request->input('page');
-                    });
-                });
-            });
-        });
+        $router = $this->admin_configurator;
+        $router->page('r1', 'admin.php/foo', RoutingTestController::class, [], null);
         
-        $request = $this->adminRequest('GET', 'foo');
-        $this->assertResponse('foo', $request);
+        $request = $this->adminRequest('POST', 'foo');
+        
+        $response = $this->runKernel($request);
+        $response->assertDelegated();
     }
     
     /** @test */
     public function two_different_admin_routes_can_be_created()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('admin.php/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-                
-                $this->router->get('admin.php/bar', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            'admin.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
+        $this->admin_configurator->page(
+            'r2',
+            'admin.php/bar',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
         $request = $this->adminRequest('GET', 'foo');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->adminRequest('GET', 'bar');
-        $this->assertResponse('bar', $request);
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->adminRequest('GET', 'baz');
-        $this->assertResponse('', $request);
-    }
-    
-    /** @test */
-    public function admin_routes_can_match_different_inbuilt_wp_subpages()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('users.php/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
-        
-        $request = $this->adminRequest('GET', 'foo', 'users.php');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function a_route_with_the_same_page_query_var_but_different_parent_menu_doesnt_match()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('users.php/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
-        
-        $request = $this->adminRequest('GET', 'foo', 'admin.php');
-        $this->assertResponse('', $request);
+        $this->assertResponseBody('', $request);
     }
     
     /** @test */
     public function reverse_routing_works_with_admin_routes()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->name('admin')->group(function () {
-                $this->router->name('foo')
-                             ->get('admin.php/foo', function (Request $request) {
-                                 return $request->input('page');
-                             });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            'admin.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
-        $url = $this->generator->toRoute('admin.foo', ['bar' => 'baz']);
-        $this->assertSame('/wp-admin/admin.php?page=foo&bar=baz', $url);
+        $url = $this->generator->toRoute('r1', ['bar' => 'baz']);
+        $this->assertSame('/wp-admin/admin.php?bar=baz&page=foo', $url);
     }
     
     /** @test */
-    public function admin_routes_strip_a_possible_trailing_slash_in_the_route_definition()
+    public function a_route_with_the_same_page_query_var_but_different_parent_menu_doesnt_match()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('admin.php/foo/', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
-        
-        $request = $this->adminRequest('GET', 'foo');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function admin_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('admin/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            '/admin.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
         $request = $this->adminRequest('GET', 'foo');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function options_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('options/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
-        
-        $request =
-            $this->adminRequest('GET', 'foo', 'options-general.php');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /**
-     * ALIASING ADMIN ROUTES
-     */
-    
-    /** @test */
-    public function tools_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('tools/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->assertResponseBody(RoutingTestController::static, $request);
         
         $request = $this->adminRequest('GET', 'foo', 'tools.php');
-        $this->assertResponse('foo', $request);
+        $this->assertResponseBody('', $request);
     }
     
     /** @test */
-    public function users_php_routes_can_be_aliases_for_convenience()
+    public function admin_routes_do_not_match_for_non_admin_requests_that_have_the_same_rewritten_url_but_are_not_loaded_from_withing_the_admin_dashboard()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('users/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            'options.php/foo',
+            RoutingTestController::class,
+            [],
+            null
+        );
         
-        $request = $this->adminRequest('GET', 'foo', 'users.php');
-        $this->assertResponse('foo', $request);
+        $request = $this->frontendRequest('GET', '/wp-admin/admin.php/foo');
+        $this->runKernel($request)->assertDelegated();
+        
+        $request = $this->adminRequest('GET', 'foo', 'options.php');
+        $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
     /** @test */
-    public function plugins_php_routes_can_be_aliases_for_convenience()
+    public function the_real_request_path_is_available_in_the_controller_not_the_rewritten_one()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('plugins/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->admin_configurator->page(
+            'r1',
+            'admin.php/foo',
+            [RoutingTestController::class, 'returnFullRequest'],
+            [],
+            null
+        );
         
-        $request = $this->adminRequest('GET', 'foo', 'plugins.php');
-        $this->assertResponse('foo', $request);
+        $request = $this->adminRequest('GET', 'foo');
+        $as_string = (string) $request->getUri();
+        $this->assertStringContainsString('page=foo', $as_string);
+        $this->assertResponseBody($as_string, $request);
     }
     
     /** @test */
-    public function themes_php_routes_can_be_aliases_for_convenience()
+    public function admin_routes_work_with_redirects()
     {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('themes/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $this->routeConfigurator()->prefix('/wp-admin')
+             ->group(function (AdminRoutingConfigurator $router) {
+                 $router->redirect('options.php/foo', '/foobar');
+             });
         
-        $request = $this->adminRequest('GET', 'foo', 'themes.php');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function comments_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('comments/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $request = $this->adminRequest('GET', 'foo', 'options.php');
         
-        $request =
-            $this->adminRequest('GET', 'foo', 'edit-comments.php');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function upload_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('upload/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
+        $response = $this->runKernel($request);
         
-        $request = $this->adminRequest('GET', 'foo', 'upload.php');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function edit_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('posts/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
-        
-        $request = $this->adminRequest('GET', 'foo', 'edit.php');
-        $this->assertResponse('foo', $request);
-    }
-    
-    /** @test */
-    public function index_php_routes_can_be_aliases_for_convenience()
-    {
-        $this->createRoutes(function () {
-            $this->router->prefix('wp-admin')->group(function () {
-                $this->router->get('dashboard/foo', function (Request $request) {
-                    return $request->input('page');
-                });
-            });
-        });
-        
-        $request = $this->adminRequest('GET', 'foo', 'index.php');
-        $this->assertResponse('foo', $request);
+        $response->assertNotDelegated()->assertRedirect('/foobar', 302);
     }
     
 }

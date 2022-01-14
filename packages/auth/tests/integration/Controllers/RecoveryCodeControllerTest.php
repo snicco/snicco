@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\Routing\UrlGenerator;
 use Tests\Auth\integration\AuthTestCase;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class RecoveryCodeControllerTest extends AuthTestCase
 {
@@ -33,7 +33,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
         $this->actingAs($calvin = $this->createAdmin());
         
         $response = $this->get('/auth/two-factor/recovery-codes');
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
@@ -161,7 +161,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     
     private function routePath()
     {
-        return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
+        return $this->app->resolve(InternalUrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
     }
     
 }

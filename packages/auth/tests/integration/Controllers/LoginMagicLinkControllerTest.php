@@ -35,7 +35,7 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         
         $response = $this->post('/auth/login/create-magic-link');
         
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */

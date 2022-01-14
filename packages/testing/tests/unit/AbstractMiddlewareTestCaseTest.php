@@ -7,15 +7,15 @@ namespace Tests\Testing\unit;
 use Mockery;
 use RuntimeException;
 use Snicco\Testing\TestResponse;
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Snicco\Testing\MiddlewareTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use PHPUnit\Framework\ExpectationFailedException;
-use Snicco\Core\Routing\FastRoute\RouteUrlGenerator;
 use Snicco\Core\Contracts\RouteUrlGeneratorInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
+use Snicco\Core\Routing\UrlMatcher\RouteUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class MiddlewareTestCaseTest extends MiddlewareTestCase
@@ -148,7 +148,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         
         $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         
-        $this->assertSame('bar', $this->receivedRequest()->getAttribute('foo'));
+        $this->assertSame('bar', $this->getReceivedRequest()->getAttribute('foo'));
     }
     
     /** @test */
@@ -167,7 +167,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
         
         try {
-            $this->assertSame('bar', $this->receivedRequest()->getAttribute('foo'));
+            $this->assertSame('bar', $this->getReceivedRequest()->getAttribute('foo'));
             $this->fail('Test assertions gave false result.');
         } catch (RuntimeException $e) {
             $this->assertStringStartsWith('The next middleware was not called.', $e->getMessage());
@@ -199,7 +199,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /** @test */
     public function testCustomResponseForNextMiddleware()
     {
-        $this->setNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function () {
             return $this->response_factory->html('foo');
         });
         
@@ -221,7 +221,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /** @test */
     public function testNextMiddlewareCalledIsStillTrueWithCustomResponse()
     {
-        $this->setNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function () {
             return $this->response_factory->html('foo');
         });
         

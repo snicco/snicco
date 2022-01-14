@@ -10,7 +10,7 @@ use PHPUnit\Framework\Assert;
 use function trim;
 use function explode;
 
-class HeaderStack
+final class HeaderStack
 {
     
     /**

@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
-use Snicco\Core\Routing\Delegate;
+use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Contracts\AbstractMiddleware;
 
-class TrailingSlash extends AbstractMiddleware
+/**
+ * @note Do not use this middleware for any routes that go directly to a file on your file system.
+ * @api
+ */
+final class TrailingSlash extends AbstractMiddleware
 {
     
-    /**
-     * @var bool
-     */
-    private $trailing_slash;
+    private bool $trailing_slash;
     
     public function __construct(bool $trailing_slash = true)
     {
@@ -26,25 +26,21 @@ class TrailingSlash extends AbstractMiddleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        if ($request->isWpAdmin() || $request->isWpAjax()) {
-            return $next($request);
-        }
-        
-        $path = $request->path();
+        $path = UrlPath::fromString($request->path());
         
         $accept_request = $this->trailing_slash
-            ? Str::endsWith($path, '/')
-            : Str::doesNotEndWith($path, '/');
+            ? Str::endsWith($path->asString(), '/')
+            : Str::doesNotEndWith($path->asString(), '/');
         
-        if ($accept_request || $path === '/') {
+        if ($accept_request || $path->equals('/')) {
             return $next($request);
         }
         
         $redirect_to = $this->trailing_slash
-            ? Url::addTrailing($path)
-            : Url::removeTrailing($path);
+            ? $path->withTrailingSlash()
+            : $path->withoutTrailingSlash();
         
-        return $this->redirect()->to($redirect_to, 301);
+        return $this->redirect()->to($redirect_to->asString(), 301);
     }
     
 }

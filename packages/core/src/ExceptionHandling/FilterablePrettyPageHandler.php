@@ -31,8 +31,8 @@ class FilterablePrettyPageHandler extends PrettyPageHandler
             }
             
             $frames->filter(function (Frame $frame) use ($class, $class_path) {
-                return ! Str::contains($frame->getFile(), $class_path)
-                       && ! Str::contains($frame->getClass(), $class);
+                return ! Str::contains($frame->getFile() ?? '', $class_path)
+                       && ! Str::contains($frame->getClass() ?? '', $class);
             });
         }
         

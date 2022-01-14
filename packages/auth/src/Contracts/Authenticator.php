@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Contracts;
 
 use WP_User;
-use Snicco\Core\Routing\Delegate;
 use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Contracts\AbstractMiddleware;

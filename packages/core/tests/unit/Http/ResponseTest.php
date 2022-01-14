@@ -4,42 +4,29 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Mockery;
 use Snicco\Core\Http\Cookie;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Tests\Codeception\shared\helpers\CreateUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class ResponseTest extends UnitTest
 {
     
     use CreatePsr17Factories;
+    use CreateUrlGenerator;
     
-    /**
-     * @var ResponseFactory
-     */
-    private $factory;
+    private ResponseFactory $factory;
     
-    /**
-     * @var Response
-     */
-    private $response;
+    private Response $response;
     
     protected function setUp() :void
     {
         parent::setUp();
-        $this->factory = $this->createResponseFactory();
+        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
         $this->response = $this->factory->make();
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
     }
     
     public function testIsPsrResponse()
@@ -306,11 +293,6 @@ class ResponseTest extends UnitTest
         
         $this->expectExceptionMessage("Keys have to be strings");
         $response = $this->response->withErrors(['foo', 'bar']);
-    }
-    
-    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGeneratorInterface
-    {
-        return Mockery::mock(UrlGeneratorInterface::class);
     }
     
 }

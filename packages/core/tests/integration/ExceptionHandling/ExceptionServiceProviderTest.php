@@ -7,12 +7,12 @@ namespace Tests\Core\integration\ExceptionHandling;
 use Whoops\Run;
 use ReflectionClass;
 use Whoops\RunInterface;
-use Snicco\Core\Routing\Pipeline;
 use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Snicco\Core\Contracts\ExceptionHandler;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 
@@ -84,7 +84,7 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         $filtered = $this->app->config('app.hide_debug_traces');
         $this->assertNotEmpty($filtered);
-        $this->assertContains(Pipeline::class, $filtered);
+        $this->assertContains(MiddlewarePipeline::class, $filtered);
     }
     
     /** @test */

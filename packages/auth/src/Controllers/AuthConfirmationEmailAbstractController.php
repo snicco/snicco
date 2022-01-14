@@ -7,11 +7,11 @@ namespace Snicco\Auth\Controllers;
 use WP_User;
 use Snicco\Session\Session;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\UrlGenerator;
 use Snicco\Auth\Mail\ConfirmAuthMail;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Traits\InteractsWithTime;
 use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class AuthConfirmationEmailAbstractController extends AbstractController
 {
@@ -24,7 +24,7 @@ class AuthConfirmationEmailAbstractController extends AbstractController
     
     public function __construct(
         MailBuilderInterface $mail_builder,
-        UrlGenerator $url,
+        InternalUrlGenerator $url,
         int $cool_of_period = 15,
         $link_lifetime_in_seconds = 300
     ) {

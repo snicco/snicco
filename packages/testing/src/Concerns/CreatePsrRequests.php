@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use Snicco\Support\Str;
-use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -20,7 +19,7 @@ trait CreatePsrRequests
     
     abstract protected function psrUriFactory() :UriFactoryInterface;
     
-    protected function frontendRequest(string $method = 'GET', $uri = '/') :Request
+    final protected function frontendRequest(string $method = 'GET', $uri = '/', array $server = []) :Request
     {
         $method = strtoupper($method);
         $uri = $this->createUri($uri);
@@ -29,16 +28,20 @@ trait CreatePsrRequests
             $this->psrServerRequestFactory()->createServerRequest(
                 $method,
                 $uri,
-                ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'index.php']
+                array_merge(['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'index.php'], $server),
             )
         );
         
         parse_str($request->getUri()->getQuery(), $query);
-        return $request->withQueryParams($query);
+        return $request->withQueryParams($query)->withAttribute(
+            Request::TYPE_ATTRIBUTE,
+            Request::TYPE_FRONTEND
+        );
     }
     
-    protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
+    final protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
     {
+        $menu_slug = trim($menu_slug, '/');
         $method = strtoupper($method);
         $url = $this->adminUrlTo($menu_slug, $parent);
         $uri = $this->createUri($url);
@@ -51,34 +54,17 @@ trait CreatePsrRequests
             )
         );
         
-        return $request->withQueryParams(['page' => $menu_slug]);
-    }
-    
-    protected function adminAjaxRequest(string $method, string $action, array $data = []) :Request
-    {
-        $method = strtoupper($method);
-        $uri = $this->createUri($this->ajaxUrl($method === 'GET' ? $action : ''));
-        
-        $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                $method,
-                $uri,
-                ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-            )
+        return $request->withQueryParams(['page' => $menu_slug])->withAttribute(
+            Request::TYPE_ATTRIBUTE,
+            Request::TYPE_ADMIN_AREA
         );
-        
-        if ($request->isGet()) {
-            return $request->withQueryParams(array_merge(['action' => $action], $data));
-        }
-        
-        return $request->withParsedBody(array_merge(['action' => $action], $data));
     }
     
     private function createUri($uri) :UriInterface
     {
         if (is_string($uri)) {
             if ( ! Str::contains($uri, 'http')) {
-                $uri = Url::addLeading($uri);
+                $uri = '/'.ltrim($uri, '/');
             }
         }
         

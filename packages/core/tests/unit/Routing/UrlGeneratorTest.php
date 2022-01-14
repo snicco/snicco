@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Routing;
 
+use InvalidArgumentException;
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Routing\UrlGenerationContext;
-use Snicco\Core\Contracts\UrlGeneratorInterface;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Core\Routing\Exception\BadRouteParameter;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
-use Snicco\Core\ExceptionHandling\Exceptions\BadRouteParameter;
 
 class UrlGeneratorTest extends RoutingTestCase
 {
     
-    protected $app_domain = 'foobar.com';
+    protected string $app_domain = 'foobar.com';
     
     /** @test */
     public function absolute_paths_are_used_by_default()
@@ -35,7 +36,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function absolute_urls_can_be_used()
     {
-        $url = $this->generator->to('foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generator->to('foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
     
@@ -48,7 +49,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $url = $this->generator->to(
             '/foo',
             ['bar' => 'baz'],
-            UrlGeneratorInterface::ABSOLUTE_URL
+            UrlGenerator::ABSOLUTE_URL
         );
         $this->assertSame('https://foobar.com/foo?bar=baz', $url);
     }
@@ -62,7 +63,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $url = $this->generator->to(
             'foo?boom=bam',
             ['bar' => 'baz'],
-            UrlGeneratorInterface::ABSOLUTE_URL
+            UrlGenerator::ABSOLUTE_URL
         );
         $this->assertSame('https://foobar.com/foo?boom=bam&bar=baz', $url);
     }
@@ -79,7 +80,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $url = $this->generator->to(
             'foo?city=münchen',
             ['bar' => 'baz'],
-            UrlGeneratorInterface::ABSOLUTE_URL
+            UrlGenerator::ABSOLUTE_URL
         );
         $this->assertSame('https://foobar.com'.$expected, $url);
     }
@@ -93,7 +94,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $url = $this->generator->to(
             'foo#section1',
             ['bar' => 'baz'],
-            UrlGeneratorInterface::ABSOLUTE_URL
+            UrlGenerator::ABSOLUTE_URL
         );
         $this->assertSame('https://foobar.com/foo?bar=baz#section1', $url);
     }
@@ -114,7 +115,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $url = $this->generator->to(
             'foo',
             ['bar' => 'baz', '_fragment' => 'section1'],
-            UrlGeneratorInterface::ABSOLUTE_URL
+            UrlGenerator::ABSOLUTE_URL
         );
         $this->assertSame('https://foobar.com/foo?bar=baz#section1', $url);
     }
@@ -129,119 +130,130 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function the_current_scheme_is_used_if_no_explicit_scheme_is_provided()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'https://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com'),
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foo.com/foo', $url);
         
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'http://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com'),
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('http://foo.com/foo', $url);
     }
     
     /** @test */
     public function the_current_scheme_can_be_overwritten()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'https://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com')
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL, false);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
         $this->assertSame('http://foo.com/foo', $url);
         
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'http://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com')
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL, true);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, true);
         $this->assertSame('https://foo.com/foo', $url);
     }
     
     /** @test */
     public function a_scheme_can_be_forced_for_all_generated_urls()
     {
-        $context = new UrlGenerationContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            false,
             true
         );
         
-        $generator = $this->newUrlGenerator($context);
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foo.com/foo', $url);
     }
     
     /** @test */
     public function a_forced_scheme_can_be_explicitly_overwritten()
     {
-        $context = new UrlGenerationContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            false,
             true
         );
         
-        $generator = $this->newUrlGenerator($context);
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL, false);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
         $this->assertSame('http://foo.com/foo', $url);
     }
     
     /** @test */
     public function a_relative_link_with_a_forced_secure_schema_will_be_absolute_if_the_current_scheme_is_not_secure()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'http://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com')
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_PATH, true);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH, true);
         $this->assertSame('https://foo.com/foo', $url);
         
-        $context = new UrlGenerationContext(
+        $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('GET', 'http://foo.com'),
-            false,
             true
         );
         
-        $generator = $this->newUrlGenerator($context);
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $generator = $this->refreshUrlGenerator($context);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH);
         $this->assertSame('https://foo.com/foo', $url);
     }
     
     /** @test */
     public function a_relative_link_will_not_be_upgraded_to_a_full_url_if_the_request_is_secure()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'https://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com')
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
-        $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_PATH, true);
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH, true);
         $this->assertSame('/foo', $url);
     }
     
     /** @test */
     public function if_trailing_slashes_are_used_generated_urls_end_with_a_trailing_trash()
     {
-        $generator = $this->newUrlGenerator(
-            new UrlGenerationContext($this->frontendRequest('GET', 'https://foo.com'), true),
+        $generator = $this->refreshUrlGenerator(
+            UrlGenerationContext::fromRequest(
+                $this->frontendRequest('GET', 'https://foo.com')
+            ),
         );
         
-        $this->assertSame('/foo/', $generator->to('/foo'));
+        $this->assertSame('/foo/', $generator->to('/foo/'));
         
         $this->assertSame(
             '/foo/?bar=baz#section1',
-            $generator->to('/foo', ['bar' => 'baz', '_fragment' => 'section1'])
+            $generator->to('/foo/', ['bar' => 'baz', '_fragment' => 'section1'])
         );
         
         $this->assertSame(
             'https://foo.com/foo/',
-            $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            $generator->to('/foo/', [], UrlGenerator::ABSOLUTE_URL)
         );
     }
     
     /** @test */
     public function trailing_slashes_are_not_added_for_urls_that_go_to_a_file()
     {
-        $generator = $this->newUrlGenerator(null, true);
+        $generator = $this->refreshUrlGenerator(null, true);
         
         $path = '/wp-admin/index.php';
         $url = $this->generator->to($path);
@@ -249,7 +261,7 @@ class UrlGeneratorTest extends RoutingTestCase
         
         $this->assertSame(
             'https://foobar.com/wp-admin/index.php',
-            $generator->to($path, [], UrlGeneratorInterface::ABSOLUTE_URL)
+            $generator->to($path, [], UrlGenerator::ABSOLUTE_URL)
         );
     }
     
@@ -273,13 +285,17 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_secure()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'https://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com')
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
         $this->assertSame('https://foo.com/foo', $generator->secure('foo'));
         
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'http://foo.com'));
-        $generator = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com')
+        );
+        $generator = $this->refreshUrlGenerator($context);
         
         $this->assertSame(
             'https://foo.com/foo?foo=bar',
@@ -290,26 +306,30 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_absolute_url_with_non_standard_https_port()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'https://foo.com:4000'));
-        $g = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'https://foo.com:4000')
+        );
+        $g = $this->refreshUrlGenerator($context);
         
         $this->assertSame('/foo', $g->to('foo'));
         $this->assertSame(
             'https://foo.com:4000/foo',
-            $g->to('foo', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            $g->to('foo', [], UrlGenerator::ABSOLUTE_URL)
         );
     }
     
     /** @test */
     public function test_absolute_url_with_non_standard_http_port()
     {
-        $context = new UrlGenerationContext($this->frontendRequest('GET', 'http://foo.com:8080'));
-        $g = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest(
+            $this->frontendRequest('GET', 'http://foo.com:8080')
+        );
+        $g = $this->refreshUrlGenerator($context);
         
         $this->assertSame('/foo', $g->to('foo'));
         $this->assertSame(
             'http://foo.com:8080/foo',
-            $g->to('foo', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            $g->to('foo', [], UrlGenerator::ABSOLUTE_URL)
         );
     }
     
@@ -320,13 +340,13 @@ class UrlGeneratorTest extends RoutingTestCase
         $r1 = $request->withAddedHeader('referer', 'https://other-site.com');
         $r2 = $request->withAddedHeader('referer', '/foo');
         
-        $context = new UrlGenerationContext($r1);
-        $g = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest($r1);
+        $g = $this->refreshUrlGenerator($context);
         
         $this->assertSame('https://other-site.com', $g->previous());
         
-        $context = new UrlGenerationContext($r2);
-        $g = $this->newUrlGenerator($context);
+        $context = UrlGenerationContext::fromRequest($r2);
+        $g = $this->refreshUrlGenerator($context);
         
         $this->assertSame('/foo', $g->previous());
     }
@@ -342,7 +362,9 @@ class UrlGeneratorTest extends RoutingTestCase
     {
         $r = $this->frontendRequest('GET', 'https://foobar.com/foo/bar');
         
-        $g = $this->newUrlGenerator(new UrlGenerationContext($r));
+        $g = $this->refreshUrlGenerator(
+            UrlGenerationContext::fromRequest($r)
+        );
         
         $this->assertSame('https://foobar.com/foo/bar', $g->canonical());
     }
@@ -351,7 +373,9 @@ class UrlGeneratorTest extends RoutingTestCase
     public function the_canonical_stays_url_encoded_and_is_not_double_url_encoded()
     {
         $r = $this->frontendRequest('GET', 'https://foobar.com/münchen');
-        $g = $this->newUrlGenerator(new UrlGenerationContext($r));
+        $g = $this->refreshUrlGenerator(
+            UrlGenerationContext::fromRequest($r)
+        );
         $this->assertSame('https://foobar.com/'.rawurlencode('münchen'), $g->canonical());
     }
     
@@ -360,7 +384,9 @@ class UrlGeneratorTest extends RoutingTestCase
     {
         $r = $this->frontendRequest('GET', 'http://foobar.com:8080/foo/bar?city=münchen#section1');
         
-        $g = $this->newUrlGenerator(new UrlGenerationContext($r));
+        $g = $this->refreshUrlGenerator(
+            UrlGenerationContext::fromRequest($r)
+        );
         
         $this->assertSame(
             'http://foobar.com:8080/foo/bar?city='.rawurlencode('münchen').'#section1',
@@ -375,10 +401,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function a_route_can_be_named()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo')->name('foo_route')->noAction();
-            $this->router->name('bar_route')->get('bar')->noAction();
-        });
+        $this->routeConfigurator()->get('foo_route', '/foo');
+        $this->routeConfigurator()->post('bar_route', '/bar');
         
         $url = $this->generator->toRoute('foo_route');
         $this->assertSame('/foo', $url);
@@ -388,31 +412,34 @@ class UrlGeneratorTest extends RoutingTestCase
     }
     
     /** @test */
+    public function an_exception_is_thrown_when_a_route_name_starts_with_a_leading_slash()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        
+        $this->routeConfigurator()->get('/foo_route', '/foo');
+    }
+    
+    /** @test */
     public function an_absolute_url_can_be_created()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo')->name('foo_route')->noAction();
-        });
+        $this->routeConfigurator()->get('foo_route', '/foo');
         
-        $url = $this->generator->toRoute('foo_route', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generator->toRoute('foo_route', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
     
     /** @test */
     public function route_names_are_merged_on_multiple_levels()
     {
-        $this->createRoutes(function () {
-            $this->router
-                ->name('foo')
-                ->noAction()
-                ->group(function () {
-                    $this->router->name('bar')->group(function () {
-                        $this->router->get('baz')->name('baz');
-                    });
-                    
-                    $this->router->get('biz')->name('biz');
-                });
-        });
+        $this->routeConfigurator()
+             ->name('foo')
+             ->group(function () {
+                 $this->routeConfigurator()->name('bar')->group(function () {
+                     $this->routeConfigurator()->get('baz', '/baz');
+                 });
+            
+                 $this->routeConfigurator()->get('biz', '/biz');
+             });
         
         $this->assertSame('/baz', $this->generator->toRoute('foo.bar.baz'));
         $this->assertSame('/biz', $this->generator->toRoute('foo.biz'));
@@ -425,16 +452,13 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function group_names_are_applied_to_child_routes()
     {
-        $this->createRoutes(function () {
-            $this->router
-                ->name('foo')
-                ->noAction()
-                ->group(function () {
-                    $this->router->get('bar')->name('bar');
-                    $this->router->get('baz')->name('baz');
-                    $this->router->name('biz')->get('biz');
-                });
-        });
+        $this->routeConfigurator()
+             ->name('foo')
+             ->group(function () {
+                 $this->routeConfigurator()->get('bar', '/bar');
+                 $this->routeConfigurator()->get('baz', '/baz');
+                 $this->routeConfigurator()->get('biz', '/biz');
+             });
         
         $this->assertSame('/bar', $this->generator->toRoute('foo.bar'));
         $this->assertSame('/baz', $this->generator->toRoute('foo.baz'));
@@ -444,9 +468,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function urls_for_routes_with_required_segments_can_be_generated()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo/{required}')->name('foo')->noAction();
-        });
+        $this->routeConfigurator()->get('foo', '/foo/{required}');
         
         $url = $this->generator->toRoute('foo', ['required' => 'bar']);
         $this->assertSame('/foo/bar', $url);
@@ -455,29 +477,36 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function urls_for_routes_with_optional_segments_can_be_generated()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo/{required}/{optional?}')->name('foo')->noAction();
-        });
+        $this->routeConfigurator()->get('foo', 'foo/{required}/{optional?}');
+        $this->routeConfigurator()->get('bar', 'bar/{required}/{optional?}/');
         
         $url = $this->generator->toRoute('foo', [
             'required' => 'bar',
         ]);
         $this->assertSame('/foo/bar', $url);
         
+        $url = $this->generator->toRoute('bar', [
+            'required' => 'baz',
+        ]);
+        $this->assertSame('/bar/baz/', $url);
+        
         $url = $this->generator->toRoute('foo', [
             'required' => 'bar',
             'optional' => 'baz',
         ]);
         $this->assertSame('/foo/bar/baz', $url);
+        
+        $url = $this->generator->toRoute('bar', [
+            'required' => 'baz',
+            'optional' => 'biz',
+        ]);
+        $this->assertSame('/bar/baz/biz/', $url);
     }
     
     /** @test */
     public function optional_segments_can_be_created_after_fixed_segments()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo/{optional?}')->name('foo')->noAction();
-        });
-        
+        $this->routeConfigurator()->get('foo', 'foo/{optional?}');
         $url = $this->generator->toRoute('foo', ['optional' => 'bar']);
         $this->assertSame('/foo/bar', $url);
     }
@@ -485,13 +514,11 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function multiple_optional_segments_can_be_used()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo/{opt1?}/{opt2?}/')->name('foo')->noAction();
-            $this->router->get('bar/{required}/{opt1?}/{opt2?}')->name('bar')->noAction();
-        });
+        $this->routeConfigurator()->get('foo', 'foo/{opt1?}/{opt2?}/');
+        $this->routeConfigurator()->get('bar', 'bar/{required}/{opt1?}/{opt2?}');
         
         $url = $this->generator->toRoute('foo', ['opt1' => 'bar', 'opt2' => 'baz']);
-        $this->assertSame('/foo/bar/baz', $url);
+        $this->assertSame('/foo/bar/baz/', $url);
         
         $url = $this->generator->toRoute('bar', [
             'required' => 'biz',
@@ -504,12 +531,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function required_segments_can_be_created_with_regex_constraints()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo/{required}')
-                         ->name('foo')
-                         ->and('required', '[a]+')
-                         ->noAction();
-        });
+        $this->routeConfigurator()->get('foo', '/foo/{required}')
+             ->requirements(['required' => '[a]+']);
         
         $url = $this->generator->toRoute('foo', ['required' => 'aaa']);
         $this->assertSame('/foo/aaa', $url);
@@ -524,12 +547,8 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function optional_segments_can_be_created_with_regex_constraints()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo/{optional?}')
-                         ->name('foo')
-                         ->and('optional', '[a]+')
-                         ->noAction();
-        });
+        $this->routeConfigurator()->get('foo', '/foo/{optional?}')
+             ->requirements(['optional' => '[a]+']);
         
         // without param
         $url = $this->generator->toRoute('foo');
@@ -550,24 +569,21 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function required_and_optional_segments_can_be_created_with_regex()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/foo/{required}/{optional?}')
-                         ->name('foo')
-                         ->and(['required', '\w+', 'optional', '\w+'])
-                         ->noAction();
-            
-            $this->router->get('/bar/{required}/{optional?}')
-                         ->name('bar')
-                         ->and(['required' => '\w+', 'optional' => '\w+'])->noAction();
-            
-            $this->router->get('/baz/{required}/{optional1?}/{optional2?}')
-                         ->name('foobar')
-                         ->and([
-                             'required' => '\w+',
-                             'optional1' => '\w+',
-                             'optional2' => '\w+',
-                         ])->noAction();
-        });
+        $this->routeConfigurator()->get('foo', '/foo/{required}/{optional?}')
+             ->requirements([
+                 'required' => '\w+',
+                 'optional' => '\w+',
+             ]);
+        
+        $this->routeConfigurator()->get('bar', '/bar/{required}/{optional?}')
+             ->requirements(['required' => '\w+', 'optional' => '\w+']);
+        
+        $this->routeConfigurator()->get('foobar', '/baz/{required}/{optional1?}/{optional2?}')
+             ->requirements([
+                 'required' => '\w+',
+                 'optional1' => '\w+',
+                 'optional2' => '\w+',
+             ]);
         
         $url = $this->generator->toRoute('foo', ['required' => 'bar']);
         $this->assertSame('/foo/bar', $url);
@@ -591,9 +607,7 @@ class UrlGeneratorTest extends RoutingTestCase
     {
         $this->expectExceptionMessage('Required parameter [required] is missing for route [foo].');
         
-        $this->createRoutes(function () {
-            $this->router->get('foo/{required}')->name('foo')->noAction();
-        });
+        $this->routeConfigurator()->get('foo', 'foo/{required}');
         
         $this->generator->toRoute('foo');
     }
@@ -606,46 +620,20 @@ class UrlGeneratorTest extends RoutingTestCase
     }
     
     /** @test */
-    public function a_named_route_is_not_added_twice_if_the_name_attribute_is_added_after_the_http_verb()
+    public function a_route_is_replaced_if_another_route_with_the_same_name_is_added()
     {
-        $this->createRoutes(function () {
-            $this->router->get('foo')->name('route1')->noAction();
-            $this->router->get('bar')->name('route1')->noAction();
-        });
+        $this->routeConfigurator()->get('route1', 'foo');
+        $this->routeConfigurator()->get('route1', 'bar');
         
         $url = $this->generator->toRoute('route1');
-        $this->assertSame('/foo', $url);
-    }
-    
-    /** @test */
-    public function a_named_route_is_not_added_twice_if_the_name_attribute_is_added_before_the_http_verb()
-    {
-        $this->createRoutes(function () {
-            $this->router->name('route1')->get('foo')->noAction();
-            $this->router->name('route1')->get('bar')->noAction();
-        });
-        
-        $this->assertSame('/foo', $this->generator->toRoute('route1'));
-    }
-    
-    /** @test */
-    public function a_named_route_is_not_added_twice_if_the_first_route_name_is_added_after_the_http_verb()
-    {
-        $this->createRoutes(function () {
-            $this->router->get('foo')->name('route1')->noAction();
-            $this->router->name('route1')->get('bar')->noAction();
-        });
-        
-        $this->assertSame('/foo', $this->generator->toRoute('route1'));
+        $this->assertSame('/bar', $url);
     }
     
     /** @test */
     public function generated_urls_are_cached_if_no_route_arguments_are_required()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/static')->name('static')->noAction();
-            $this->router->get('/foo/{required}')->name('foo')->noAction();
-        });
+        $this->routeConfigurator()->get('static', '/static');
+        $this->routeConfigurator()->get('foo', '/foo/{required}');
         
         $url = $this->generator->toRoute('static');
         $this->assertSame('/static', $url);
@@ -663,15 +651,12 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_with_complex_reqex()
     {
-        $this->createRoutes(function () {
-            $this->router
-                ->get('/teams/{team}/{player?}')
-                ->name('teams')
-                ->and([
-                    'team' => 'm{1}.+united[xy]',
-                    'player' => 'a{2,}calvin',
-                ])->noAction();
-        });
+        $this->routeConfigurator()
+             ->get('teams', '/teams/{team}/{player?}')
+             ->requirements([
+                 'team' => 'm{1}.+united[xy]',
+                 'player' => 'a{2,}calvin',
+             ]);
         
         $url = $this->generator->toRoute('teams', [
             'team' => 'manchesterunitedx',
@@ -739,9 +724,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function additional_parameters_are_added_as_query_arguments()
     {
-        $this->createRoutes(function () {
-            $this->router->get('/{team}/{player}')->name('teams')->noAction();
-        });
+        $this->routeConfigurator()->get('teams', '/{team}/{player}');
         
         $url = $this->generator->toRoute(
             'teams',
@@ -761,6 +744,52 @@ class UrlGeneratorTest extends RoutingTestCase
                     .'?foo=bar&baz=biz#section1';
         
         $this->assertSame($expected, $url);
+    }
+    
+    /** @test */
+    public function test_toLogin_with_named_login_route()
+    {
+        $this->routeConfigurator()->get('login', '/login');
+        
+        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/login?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
+    /** @test */
+    public function test_toLogin_with_named_auth_login_route()
+    {
+        $this->routeConfigurator()->get('auth.login', '/login');
+        
+        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/login?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
+    /** @test */
+    public function test_two_login_with_named_framework_auth_login_route()
+    {
+        $this->routeConfigurator()->get('framework.auth.login', '/login');
+        
+        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/login?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
+    }
+    
+    /** @test */
+    public function if_no_login_route_matches_the_admin_dashboard_default_is_used()
+    {
+        $this->assertSame('/wp-login.php?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame(
+            'https://foobar.com/wp-login.php?foo=bar',
+            $this->generator->toLogin(['foo' => 'bar'], UrlGenerator::ABSOLUTE_URL)
+        );
     }
     
 }

@@ -6,12 +6,12 @@ namespace Tests\Core\unit\ExceptionHandling\fixtures;
 
 use Exception;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\Core\Contracts\ResponseFactory;
 
 class ExceptionWithDependencyInjection extends Exception
 {
     
-    public function render(Request $request, DefaultResponseFactory $response_factory)
+    public function render(Request $request, ResponseFactory $response_factory)
     {
         return $response_factory
             ->html($request->getAttribute('foo'))

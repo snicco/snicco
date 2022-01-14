@@ -4,91 +4,83 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http;
 
-use Snicco\Support\Arr;
-use Snicco\Core\Routing\Pipeline;
+use Closure;
+use LogicException;
+use RuntimeException;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\Responses\NullResponse;
-use Snicco\Core\Middleware\Core\RouteRunner;
-use Snicco\Core\Middleware\Core\ShareCookies;
-use Snicco\Core\Middleware\Core\MethodOverride;
+use Snicco\Core\Middleware\MethodOverride;
+use Snicco\Core\Middleware\Internal\RouteRunner;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Core\Http\Responses\DelegatedResponse;
-use Snicco\Core\EventDispatcher\Events\ResponseSent;
-use Snicco\Core\Middleware\Core\SetRequestAttributes;
-use Snicco\Core\Middleware\Core\RoutingAbstractMiddleware;
-use Snicco\Core\Middleware\Core\OutputBufferAbstractMiddleware;
-use Snicco\Core\Middleware\Core\AllowMatchingAdminAndAjaxRoutes;
-use Snicco\Core\Middleware\Core\EvaluateResponseAbstractMiddleware;
+use Snicco\Core\Http\Exceptions\RequestHasNoType;
+use Snicco\Core\Middleware\Internal\PrepareResponse;
+use Snicco\Core\Middleware\Internal\RoutingMiddleware;
+use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
+use Snicco\Core\Middleware\Internal\MiddlewareBlueprint;
 
-class HttpKernel
+/**
+ * @todo The kernel should not send the response.
+ */
+final class HttpKernel
 {
     
-    private Pipeline $pipeline;
-    
-    private array $core_middleware = [
-        SetRequestAttributes::class,
+    private const CORE_MIDDLEWARE = [
+        PrepareResponse::class,
+        // MethodOverride needs to be in the kernel. It can be used as a route middleware.
+        // As the route would never match to retrieve the middleware in the first place.
         MethodOverride::class,
-        EvaluateResponseAbstractMiddleware::class,
-        ShareCookies::class,
-        AllowMatchingAdminAndAjaxRoutes::class,
-        OutputBufferAbstractMiddleware::class,
-        RoutingAbstractMiddleware::class,
+        RoutingMiddleware::class,
         RouteRunner::class,
     ];
     
-    private ResponseEmitter $emitter;
+    private MiddlewarePipeline $pipeline;
     
     private Dispatcher $event_dispatcher;
     
-    public function __construct(Pipeline $pipeline, ResponseEmitter $emitter, Dispatcher $event_dispatcher)
+    // @todo Use the dispatcher to send some events related to handling the request.
+    public function __construct(MiddlewarePipeline $pipeline, Dispatcher $event_dispatcher)
     {
         $this->pipeline = $pipeline;
-        $this->emitter = $emitter;
         $this->event_dispatcher = $event_dispatcher;
     }
     
-    public function run(Request $request) :Response
+    public function handle(Request $request) :Response
     {
-        $response = $this->handle($request);
+        $this->validateRequest($request);
         
-        return $this->sendResponse($response, $request);
-    }
-    
-    private function handle(Request $request) :Response
-    {
+        $middleware = array_map(
+            fn($middleware) => new MiddlewareBlueprint($middleware),
+            self::CORE_MIDDLEWARE
+        );
+        
         return $this->pipeline->send($request)
-                              ->through($this->gatherMiddleware($request))
-                              ->run();
+                              ->through($middleware)
+                              ->then($this->handleExhaustedMiddlewareStack());
     }
     
-    private function gatherMiddleware(Request $request) :array
+    // This should never happen.
+    private function handleExhaustedMiddlewareStack() :Closure
     {
-        if ( ! $request->isWpAdmin()) {
-            Arr::pullByValue(OutputBufferAbstractMiddleware::class, $this->core_middleware);
-        }
-        
-        return $this->core_middleware;
+        return function (Request $request) {
+            throw new RuntimeException(
+                sprintf(
+                    'Middleware stack returned no response for request [%s].',
+                    (string) $request->getUri()
+                )
+            );
+        };
     }
     
-    private function sendResponse(Response $response, Request $request) :Response
+    private function validateRequest(Request $request)
     {
-        if ($response instanceof NullResponse) {
-            return $response;
+        try {
+            // This will throw an exception if no type is set.
+            $request->isToFrontend();
+        } catch (RequestHasNoType $e) {
+            throw new LogicException(
+                'The HttpKernel tried to handle a request without a declared type. This is not allowed.'
+            );
         }
-        
-        $response = $this->emitter->prepare($response, $request);
-        
-        if ($response instanceof DelegatedResponse) {
-            $this->emitter->emitHeaders($response,);
-            return $response;
-        }
-        
-        $this->emitter->emit($response);
-        
-        $this->event_dispatcher->dispatch(new ResponseSent($response, $request));
-        
-        return $response;
     }
     
 }

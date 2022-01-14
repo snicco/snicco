@@ -13,7 +13,7 @@ use Snicco\Core\Support\WP;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Traits\ReflectsCallable;
+use Snicco\Core\Support\ReflectsCallable;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\ExceptionHandler;

@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Mockery;
 use stdClass;
-use Snicco\Core\Support\WP;
 use InvalidArgumentException;
-use Snicco\Core\Routing\Route;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Routing\Route\Route;
 use Snicco\Core\Contracts\Responsable;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Routing\RouteCollection;
-use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Core\Http\DefaultResponseFactory;
-use Snicco\Core\Routing\UrlGenerationContext;
+use Snicco\Core\Routing\Route\RouteCollection;
+use Tests\Codeception\shared\helpers\CreateUrlGenerator;
+use Snicco\Core\Routing\UrlGenerator\UrlGenerationContext;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 
 class DefaultResponseFactoryTest extends UnitTest
 {
     
     use CreatePsr17Factories;
+    use CreateUrlGenerator;
     
-    /**
-     * @var DefaultResponseFactory
-     */
-    private $factory;
+    private DefaultResponseFactory $factory;
     
     protected function setUp() :void
     {
         parent::setUp();
         $this->app_domain = 'foo.com';
-        $this->routes = new RouteCollection();
-        $this->factory = $this->createResponseFactory();
+        $this->routes = new RouteCollection([]);
+        $this->factory = $this->createResponseFactory(
+            $this->createUrlGenerator(
+                UrlGenerationContext::forConsole($this->app_domain),
+                $this->routes
+            ),
+        );
     }
     
     public function test_make()
@@ -56,14 +56,6 @@ class DefaultResponseFactoryTest extends UnitTest
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode(['foo' => 'bar']), (string) $response->getBody());
-    }
-    
-    /** @test */
-    public function test_null()
-    {
-        $response = $this->factory->null();
-        
-        $this->assertInstanceOf(NullResponse::class, $response);
     }
     
     /** @test */
@@ -191,41 +183,31 @@ class DefaultResponseFactoryTest extends UnitTest
     /** @test */
     public function test_home_goes_to_the_home_route_if_it_exists()
     {
-        WP::shouldReceive('adminUrl')->andReturn('');
-        WP::shouldReceive('wpAdminFolder')->andReturn('');
+        $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
         
-        $home_route = new Route(['GET'], '/home/{user_id}');
-        $home_route->noAction()->name('home');
-        $this->routes->add($home_route);
-        $this->routes->addToUrlMatcher();
+        $factory = $this->createResponseFactory(
+            $this->createUrlGenerator(null, new RouteCollection([$home_route]))
+        );
         
-        $response = $this->factory->home(['user_id' => 1, 'foo' => 'bar'], 307);
+        $response = $factory->home(['user_id' => 1, 'foo' => 'bar'], 307);
         
         $this->assertSame('/home/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
-        
-        WP::reset();
-        Mockery::close();
     }
     
     /** @test */
     public function test_toRoute()
     {
-        WP::shouldReceive('adminUrl')->andReturn('');
-        WP::shouldReceive('wpAdminFolder')->andReturn('');
+        $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
         
-        $home_route = new Route(['GET'], '/home/{user_id}');
-        $home_route->noAction()->name('home');
-        $this->routes->add($home_route);
-        $this->routes->addToUrlMatcher();
+        $factory = $this->createResponseFactory(
+            $this->createUrlGenerator(null, new RouteCollection([$route]))
+        );
         
-        $response = $this->factory->toRoute('home', ['user_id' => 1, 'foo' => 'bar'], 307);
+        $response = $factory->toRoute('r1', ['param' => 1, 'foo' => 'bar'], 307);
         
-        $this->assertSame('/home/1?foo=bar', $response->getHeaderLine('location'));
+        $this->assertSame('/foo/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
-        
-        WP::reset();
-        Mockery::close();
     }
     
     /** @test */
@@ -237,14 +219,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $url = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->refresh();
@@ -259,17 +237,13 @@ class DefaultResponseFactoryTest extends UnitTest
         $request = $this->psrServerRequestFactory()
                         ->createServerRequest(
                             'GET',
-                            $url = 'https://foobar.com/foo?bar=baz#section1'
+                            'https://foobar.com/foo?bar=baz#section1'
                         )->withAddedHeader('referer', '/foo/bar');
-        
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->back('/', 307);
@@ -287,14 +261,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $url = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->back('/foobar_fallback', 307);
@@ -324,14 +294,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $url = 'http://foobar.com/'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->secure('/foo', 307);
@@ -369,14 +335,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $current = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->deny('login', 307, ['foo' => 'bar']);
@@ -397,14 +359,10 @@ class DefaultResponseFactoryTest extends UnitTest
                             $original = 'https://foobar.com/foo?bar=baz#section1'
                         );
         
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
-        
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->deny('login', 307, ['foo' => 'bar']);
@@ -413,17 +371,13 @@ class DefaultResponseFactoryTest extends UnitTest
         $request = $this->psrServerRequestFactory()
                         ->createServerRequest(
                             'GET',
-                            $redirected_to
+                            'https://foobar.com'.$redirected_to
                         );
-        
-        $request = new Request($request);
-        $context = new UrlGenerationContext($request);
-        $g = $this->newUrlGenerator($context);
         
         $factory = new DefaultResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $g
+            $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
         );
         
         $response = $factory->intended('/home', 307);
@@ -438,6 +392,13 @@ class DefaultResponseFactoryTest extends UnitTest
         $response = $this->factory->intended('/home', 307);
         $this->assertSame(307, $response->getStatusCode());
         $this->assertSame('/home', $response->getHeaderLine('location'));
+    }
+    
+    /** @test */
+    public function test_delegate()
+    {
+        $this->assertTrue($this->factory->delegate()->shouldHeadersBeSent());
+        $this->assertFalse($this->factory->delegate(false)->shouldHeadersBeSent());
     }
     
 }

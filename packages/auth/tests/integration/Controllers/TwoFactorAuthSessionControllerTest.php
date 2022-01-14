@@ -31,7 +31,7 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
         
         $response = $this->get('/auth/two-factor/challenge');
         
-        $response->assertDelegatedToWordPress();
+        $response->assertDelegated();
     }
     
     /** @test */
