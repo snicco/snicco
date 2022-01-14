@@ -9,7 +9,7 @@ use Snicco\Support\Str;
 use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Http\AbstractMiddleware;
 
 /**
  * @api

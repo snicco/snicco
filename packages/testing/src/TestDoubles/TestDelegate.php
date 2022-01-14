@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Testing\TestDoubles;
 
 use Closure;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Testing\Assertable;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\ResponseFactory;
 
 class TestDelegate
 {

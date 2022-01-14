@@ -7,7 +7,7 @@ namespace Snicco\Core\Middleware\Internal;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Core\Routing\Exception\MethodNotAllowed;
 

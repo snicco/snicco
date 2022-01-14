@@ -8,7 +8,6 @@ use Throwable;
 use Psr\Log\LogLevel;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Contracts\ExceptionHandler;
 
 class NullExceptionHandler implements ExceptionHandler
 {

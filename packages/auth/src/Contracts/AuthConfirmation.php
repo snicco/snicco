@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Contracts;
 
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\ResponseFactory;
 
 interface AuthConfirmation
 {

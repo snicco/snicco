@@ -25,7 +25,7 @@ class ReflectionDependencies
     /**
      * @var DIContainer
      */
-    private $container;
+    private DIContainer $container;
     
     public function __construct(DIContainer $container)
     {

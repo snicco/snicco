@@ -7,7 +7,7 @@ namespace Snicco\Core\Middleware;
 use Snicco\Support\Str;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 

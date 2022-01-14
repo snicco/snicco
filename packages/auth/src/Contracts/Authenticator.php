@@ -8,8 +8,8 @@ use WP_User;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Http\Responses\NullResponse;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 
 abstract class Authenticator extends AbstractMiddleware

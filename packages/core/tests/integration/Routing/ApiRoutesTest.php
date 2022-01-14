@@ -6,10 +6,10 @@ namespace Tests\Core\integration\Routing;
 
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Delegate;
+use Snicco\Core\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Http\DefaultResponseFactory;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 

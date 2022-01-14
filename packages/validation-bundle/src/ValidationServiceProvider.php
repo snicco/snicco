@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Validation;
 
-use Snicco\Core\Http\Psr7\Request;
 use Respect\Validation\Factory;
+use Snicco\Core\Http\Psr7\Request;
+use Snicco\Core\Http\ResponseFactory;
 use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Contracts\ResponseFactory;
-use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Validation\Exceptions\ValidationException;
-use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;
+use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationServiceProvider extends ServiceProvider
 {

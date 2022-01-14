@@ -6,7 +6,7 @@ namespace Tests\Core\unit\ExceptionHandling\fixtures;
 
 use Exception;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\ResponseFactory;
 
 class ExceptionWithDependencyInjection extends Exception
 {

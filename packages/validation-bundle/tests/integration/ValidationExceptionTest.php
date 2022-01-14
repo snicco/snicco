@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Validation\integration;
 
-use Snicco\Core\Contracts\ExceptionHandler;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\SessionBundle\SessionServiceProvider;
 use Snicco\Validation\ValidationServiceProvider;
+use Snicco\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Validation\Exceptions\ValidationException;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
 

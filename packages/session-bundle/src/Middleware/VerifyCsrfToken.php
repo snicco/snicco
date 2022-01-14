@@ -7,8 +7,8 @@ namespace Snicco\SessionBundle\Middleware;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Session\ValueObjects\CsrfToken;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
 
 use function sprintf;

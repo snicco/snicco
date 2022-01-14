@@ -6,7 +6,7 @@ namespace Snicco\Auth\Confirmation;
 
 use Snicco\Core\Shared\Encryptor;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Http\ResponseFactory;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;

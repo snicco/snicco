@@ -6,8 +6,8 @@ namespace Snicco\Core\Middleware\Internal;
 
 use Snicco\Core\DIContainer;
 use Psr\Http\Server\MiddlewareInterface;
+use Snicco\Core\Http\AbstractMiddleware;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Core\Support\ReflectionDependencies;
 
 /**

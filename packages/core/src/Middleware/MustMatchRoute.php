@@ -6,7 +6,7 @@ namespace Snicco\Core\Middleware;
 
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\AbstractMiddleware;
+use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Http\Responses\DelegatedResponse;
 use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
 

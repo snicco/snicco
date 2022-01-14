@@ -6,10 +6,10 @@ namespace Tests\Core\integration\Application;
 
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Application\Application_OLD;
+use Snicco\Core\Http\Redirector;
+use Snicco\Core\Http\ResponseFactory;
 use Snicco\Core\Http\StatelessRedirector;
-use Snicco\Core\Contracts\ResponseFactory;
+use Snicco\Core\Application\Application_OLD;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
+use Snicco\Core\Http\ResponseFactory;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Contracts\ResponseFactory;
 use Tests\Codeception\shared\helpers\CreateUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 

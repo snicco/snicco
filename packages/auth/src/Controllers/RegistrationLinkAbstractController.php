@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
+use Snicco\Core\Http\Responsable;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Contracts\Responsable;
 use Snicco\Core\Http\AbstractController;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
 use Snicco\Mail\Contracts\MailBuilderInterface;

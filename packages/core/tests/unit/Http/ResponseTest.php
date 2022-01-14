@@ -6,9 +6,9 @@ namespace Tests\Core\unit\Http;
 
 use Snicco\Core\Http\Cookie;
 use Snicco\Core\Http\Psr7\Response;
+use Snicco\Core\Http\ResponseFactory;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Contracts\ResponseFactory;
 use Tests\Codeception\shared\helpers\CreateUrlGenerator;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 

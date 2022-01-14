@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Codeception\shared\helpers;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Snicco\Core\Http\ResponseFactory;
 use Psr\Http\Message\UriFactoryInterface;
-use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;

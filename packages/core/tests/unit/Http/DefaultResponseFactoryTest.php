@@ -6,9 +6,9 @@ namespace Tests\Core\unit\Http;
 
 use stdClass;
 use InvalidArgumentException;
+use Snicco\Core\Http\Responsable;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Routing\Route\Route;
-use Snicco\Core\Contracts\Responsable;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\DefaultResponseFactory;
