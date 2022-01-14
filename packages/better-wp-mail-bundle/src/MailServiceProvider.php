@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Contracts\Mailer;

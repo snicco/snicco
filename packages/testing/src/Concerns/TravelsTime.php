@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Core\Support\Carbon;
+use Snicco\Core\Utils\Carbon;
 
 trait TravelsTime
 {

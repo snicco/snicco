@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing\UrlMatcher;
 
 use Snicco\Support\Arr;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
 use function trim;

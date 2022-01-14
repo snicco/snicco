@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Core\Configuration\WritableConfig;

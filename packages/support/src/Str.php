@@ -10,6 +10,9 @@ use function mb_substr;
 use function mb_strrpos;
 use function random_bytes;
 
+/**
+ * @todo remove everything non essential.
+ */
 class Str
 {
     

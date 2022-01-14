@@ -7,8 +7,11 @@ namespace Snicco\Support;
 use ArrayAccess;
 use InvalidArgumentException;
 
-use function Snicco\Core\Support\Functions\value;
+use function Snicco\Core\Utils\value;
 
+/**
+ * @todo remove everything non essential.
+ */
 class Arr
 {
     
@@ -17,11 +20,6 @@ class Arr
         $array = array_values($array);
         
         return [$array[0] => $array[1]];
-    }
-    
-    public static function flattenOnePreserveKeys(array $array) :array
-    {
-        return is_array(static::firstEl($array)) ? static::firstEl($array) : $array;
     }
     
     public static function firstEl($array)

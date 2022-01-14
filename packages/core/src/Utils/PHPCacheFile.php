@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Support;
+namespace Snicco\Core\Utils;
 
 use Webmozart\Assert\Assert;
 
 /**
- * @interal
+ * @framework-only
  */
 final class PHPCacheFile
 {

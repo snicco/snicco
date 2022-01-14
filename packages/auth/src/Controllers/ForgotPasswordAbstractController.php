@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;

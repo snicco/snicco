@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Mail;
 
-use Snicco\Core\Support\WP;
 use Snicco\Mail\Email;
+use Snicco\Core\Utils\WP;
 
 class ConfirmRegistrationEmail extends Email
 {

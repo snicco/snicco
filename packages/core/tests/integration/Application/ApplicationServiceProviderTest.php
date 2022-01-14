@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\integration\Application;
 
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Http\Redirector;
 use Snicco\Core\Http\ResponseFactory;

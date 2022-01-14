@@ -20,7 +20,7 @@ use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Core\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
-use function Snicco\Core\Support\Functions\isInterface;
+use function Snicco\Core\Utils\isInterface;
 
 /**
  * @api

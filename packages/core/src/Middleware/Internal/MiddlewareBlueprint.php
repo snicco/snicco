@@ -7,7 +7,7 @@ namespace Snicco\Core\Middleware\Internal;
 use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
-use function Snicco\Core\Support\Functions\isInterface;
+use function Snicco\Core\Utils\isInterface;
 
 /**
  * @api

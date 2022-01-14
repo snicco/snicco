@@ -8,7 +8,7 @@ use stdClass;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 
-use function Snicco\Core\Support\Functions\dataGet;
+use function Snicco\Core\Utils\dataGet;
 
 trait InteractsWithInput
 {

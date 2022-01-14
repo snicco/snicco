@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared\helpers;
 
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 
 /**
  * @internal

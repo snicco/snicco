@@ -9,20 +9,17 @@ use Throwable;
 use RuntimeException;
 use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
-use Snicco\Core\Support\WP;
+use Snicco\Core\Utils\WP;
 use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Http\ResponseFactory;
-use Snicco\Core\Support\ReflectsCallable;
 use Psr\Log\LoggerInterface as Psr3Logger;
-use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Utils\ReflectionDependencies;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
 class ProductionExceptionHandler implements ExceptionHandler
 {
-    
-    use ReflectsCallable;
     
     public const STOP_REPORTING = false;
     

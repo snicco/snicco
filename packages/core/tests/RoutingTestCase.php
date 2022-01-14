@@ -11,7 +11,7 @@ use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Redirector;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Support\PHPCacheFile;
+use Snicco\Core\Utils\PHPCacheFile;
 use Snicco\Core\Http\ResponseFactory;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Middleware\ShareCookies;

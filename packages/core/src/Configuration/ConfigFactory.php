@@ -6,7 +6,7 @@ namespace Snicco\Core\Configuration;
 
 use JsonException;
 use RuntimeException;
-use Snicco\Core\Support\CacheFile;
+use Snicco\Core\Utils\CacheFile;
 use Symfony\Component\Finder\Finder;
 
 use function json_encode;

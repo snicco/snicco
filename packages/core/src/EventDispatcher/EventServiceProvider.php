@@ -10,7 +10,7 @@ use Snicco\Core\Routing\Route\Routes;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Http\ResponsePostProcessor;
-use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Utils\ReflectionDependencies;
 use Snicco\Core\EventDispatcher\Events\PreWP404;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Core\EventDispatcher\Events\AdminInit;

@@ -36,7 +36,7 @@
       "Snicco\\Core\\": "src"
     },
     "files": [
-      "src/Support/functions.php"
+      "src/Utils/functions.php"
     ]
   },
   "autoload-dev": {

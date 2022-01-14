@@ -8,12 +8,15 @@ use ArrayAccess;
 use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Support\CacheFile;
+use Snicco\Core\Utils\CacheFile;
 use Snicco\Core\Configuration\ConfigFactory;
 use Snicco\Core\Configuration\ReadOnlyConfig;
 use Snicco\Core\Configuration\WritableConfig;
 use Psr\Container\ContainerInterface as PsrContainer;
 
+/**
+ * @api
+ */
 final class Application implements ArrayAccess
 {
     

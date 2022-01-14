@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Routing\AdminDashboard;
 
 use Webmozart\Assert\Assert;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 
 /**
  * @api

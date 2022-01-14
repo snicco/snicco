@@ -6,8 +6,8 @@ namespace Snicco\Auth\Controllers;
 
 use Closure;
 use Snicco\Support\Arr;
+use Snicco\Core\Utils\Url;
 use Snicco\Session\Session;
-use Snicco\Core\Support\Url;
 use Snicco\Core\Http\Responsable;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;

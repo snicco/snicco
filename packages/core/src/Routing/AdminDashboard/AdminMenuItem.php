@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing\AdminDashboard;
 
 use Snicco\Support\Str;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Routing\Route\Route;
 
 use function mb_convert_case;

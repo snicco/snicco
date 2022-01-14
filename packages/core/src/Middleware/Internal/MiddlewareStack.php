@@ -12,7 +12,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Middleware\Exceptions\FoundInvalidMiddleware;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;
 
-use function Snicco\Core\Support\Functions\isInterface;
+use function Snicco\Core\Utils\isInterface;
 
 /**
  * The middleware stack is responsible for parsing and normalized all middleware for a request.

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Support;
 
+use LogicException;
 use Snicco\Core\DIContainer;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Support\ReflectionDependencies;
+use Snicco\Core\Utils\ReflectionDependencies;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\helpers\CreateContainer;
@@ -17,13 +18,13 @@ class ReflectionDependenciesTest extends UnitTest
     use CreateContainer;
     
     private DIContainer $container;
-    private ReflectionDependencies $route_action_dependencies;
+    private ReflectionDependencies $reflection_dependencies;
     
     protected function setUp() :void
     {
         parent::setUp();
         $this->container = $this->createContainer();
-        $this->route_action_dependencies = new ReflectionDependencies($this->container);
+        $this->reflection_dependencies = new ReflectionDependencies($this->container);
     }
     
     /**
@@ -31,7 +32,7 @@ class ReflectionDependenciesTest extends UnitTest
      */
     public function testMethodWithNoDependencies()
     {
-        $args = $this->route_action_dependencies->build(
+        $args = $this->reflection_dependencies->build(
             [TestRouteAction::class, 'withNoClassDependencies'],
             ['1', '2']
         );
@@ -47,7 +48,7 @@ class ReflectionDependenciesTest extends UnitTest
             $foo_class = new Foo()
         );
         
-        $args = $this->route_action_dependencies->build(
+        $args = $this->reflection_dependencies->build(
             [TestRouteAction::class, 'withClassDependencies'],
             ['1', '2']
         );
@@ -66,7 +67,7 @@ class ReflectionDependenciesTest extends UnitTest
         $bar = new Bar();
         $bar->bar = 'custom_value';
         
-        $args = $this->route_action_dependencies->build(
+        $args = $this->reflection_dependencies->build(
             [TestRouteAction::class, 'withClassInParameters'],
             [$bar, '1', '2']
         );
@@ -86,29 +87,9 @@ class ReflectionDependenciesTest extends UnitTest
         $bar = new Bar();
         $bar->bar = 'custom_value';
         
-        $args = $this->route_action_dependencies->build(
+        $args = $this->reflection_dependencies->build(
             [TestRouteAction::class, 'withClassInParameters'],
             ['1', '2', $bar]
-        );
-        
-        $this->assertSame([$bar, $foo_class, '1', '2'], $args);
-        $this->assertSame('custom_value', $bar->bar);
-    }
-    
-    /** @test */
-    public function testWithClosure()
-    {
-        $this->container->instance(
-            Foo::class,
-            $foo_class = new Foo()
-        );
-        
-        $bar = new Bar();
-        $bar->bar = 'custom_value';
-        
-        $args = $this->route_action_dependencies->build(
-            function (Bar $class1, Foo $class2, $dep1, $dep2) { },
-            [$bar, '1', '2']
         );
         
         $this->assertSame([$bar, $foo_class, '1', '2'], $args);
@@ -121,7 +102,7 @@ class ReflectionDependenciesTest extends UnitTest
         $bar = new Bar();
         $foo = new Foo();
         
-        $args = $this->route_action_dependencies->build(
+        $args = $this->reflection_dependencies->build(
             [TestRouteAction::class, 'withDefaultValue'],
             [$bar, $foo, '1']
         );
@@ -134,7 +115,7 @@ class ReflectionDependenciesTest extends UnitTest
     {
         $this->container->instance(Foo::class, $foo = new Foo());
         
-        $args = $this->route_action_dependencies->build(
+        $args = $this->reflection_dependencies->build(
             [TestRouteAction::class, 'withObjectValue'],
             ['val', $bar = new Bar()]
         );
@@ -142,10 +123,27 @@ class ReflectionDependenciesTest extends UnitTest
         $this->assertSame([$foo, 'val', $bar], $args);
     }
     
+    /** @test */
+    public function test_throws_exception_if_primitive_is_defined_before_class()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            'Cant instantiate [Tests\Core\unit\Support\TestRouteAction::wrongOrder].'
+        );
+        
+        $args = $this->reflection_dependencies->build(
+            [TestRouteAction::class, 'wrongOrder'],
+        );
+    }
+    
 }
 
 class TestRouteAction
 {
+    
+    public function wrongOrder(string $foo, Foo $bar)
+    {
+    }
     
     public function withNoClassDependencies($foo, $bar)
     {

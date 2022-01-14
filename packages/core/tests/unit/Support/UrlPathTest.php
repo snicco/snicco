@@ -7,7 +7,7 @@ namespace Tests\Core\unit\Support;
 use Generator;
 use Snicco\Support\Str;
 use InvalidArgumentException;
-use Snicco\Core\Support\UrlPath;
+use Snicco\Core\Utils\UrlPath;
 use Tests\Codeception\shared\UnitTest;
 
 class UrlPathTest extends UnitTest

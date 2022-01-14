@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
-use Snicco\Core\Support\WP;
 use BaconQrCode\Writer;
+use Snicco\Core\Utils\WP;
 use Snicco\Core\Shared\Encryptor;
 use PragmaRX\Google2FA\Google2FA;
 use BaconQrCode\Renderer\Color\Rgb;
