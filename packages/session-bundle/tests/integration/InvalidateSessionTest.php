@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\SessionBundle\integration;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Snicco\Core\Http\Cookies;
 use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Session\ValueObjects\SessionId;

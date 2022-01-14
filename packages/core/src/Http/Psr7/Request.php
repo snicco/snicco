@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http\Psr7;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Snicco\Core\Http\Cookies;
-use Snicco\Support\Repository;
+use Snicco\Core\Utils\Repository;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Core\Routing\UrlMatcher\RoutingResult;

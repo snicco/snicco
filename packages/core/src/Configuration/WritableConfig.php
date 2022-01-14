@@ -6,8 +6,8 @@ namespace Snicco\Core\Configuration;
 
 use Closure;
 use ArrayAccess;
-use Snicco\Support\Arr;
-use Snicco\Support\Repository;
+use Snicco\StrArr\Arr;
+use Snicco\Core\Utils\Repository;
 
 /**
  * @api
@@ -27,11 +27,11 @@ final class WritableConfig implements ArrayAccess
         return new self(new Repository($items));
     }
     
-    public function extend(string $key, $app_config) :void
+    public function extend(string $key, $extend_with) :void
     {
-        $user_config = $this->repository->get($key, []);
+        $existing_config = $this->repository->get($key, []);
         
-        $value = $this->replace($app_config, $user_config);
+        $value = $this->replace($extend_with, $existing_config);
         
         $this->repository->set($key, $value);
     }
@@ -96,7 +96,7 @@ final class WritableConfig implements ArrayAccess
      *
      * @return mixed
      */
-    private function replace($app_config, $user_config)
+    private function _replace($app_config, $user_config)
     {
         if ($this->isEmptyArray($user_config) && ! $this->isEmptyArray($app_config)) {
             return $app_config;
@@ -122,9 +122,36 @@ final class WritableConfig implements ArrayAccess
         return $result;
     }
     
+    private function replace($extend_with, $exiting_config)
+    {
+        if ($this->isEmptyArray($exiting_config) && ! $this->isEmptyArray($extend_with)) {
+            return $extend_with;
+        }
+        
+        if ( ! is_array($extend_with)) {
+            return $exiting_config;
+        }
+        
+        $app_config_is_indexed = array_keys($extend_with) === range(0, count($extend_with) - 1);
+        $user_config_is_indexed =
+            array_keys($exiting_config) === range(0, count($exiting_config) - 1);
+        
+        if ($app_config_is_indexed && $user_config_is_indexed) {
+            return Arr::combineNumerical($exiting_config, $extend_with);
+        }
+        
+        $result = $exiting_config;
+        
+        foreach ($extend_with as $key => $app_value) {
+            $result[$key] = $this->replace($app_value, Arr::get($exiting_config, $key, []));
+        }
+        
+        return $result;
+    }
+    
     private function isEmptyArray($value) :bool
     {
-        return $value === [];
+        return [] === $value;
     }
     
 }

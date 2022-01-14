@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing\Route;
 
 use Serializable;
 use RuntimeException;
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Snicco\Core\Middleware\Internal\MiddlewareStack;

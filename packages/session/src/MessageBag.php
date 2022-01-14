@@ -13,8 +13,8 @@ namespace Snicco\Session;
 
 use Countable;
 use JsonSerializable;
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 
 use function count;
 use function is_null;

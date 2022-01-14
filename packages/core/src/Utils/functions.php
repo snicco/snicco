@@ -6,7 +6,7 @@ namespace Snicco\Core\Utils
 {
     
     use Closure;
-    use Snicco\Support\Arr;
+    use Snicco\StrArr\Arr;
     
     /**
      * Return the default value of the given value.

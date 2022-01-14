@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Database\fixtures\Factories;
 
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ActivityFactory extends Factory

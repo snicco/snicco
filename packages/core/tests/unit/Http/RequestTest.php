@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Http;
 
-use Snicco\Support\Repository;
+use Snicco\Core\Utils\Repository;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Routing\Route\Route;
 use Tests\Codeception\shared\UnitTest;

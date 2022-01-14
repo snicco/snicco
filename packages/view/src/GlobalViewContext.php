@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\View;
 
 use Closure;
-use Snicco\Support\Repository;
+use Snicco\Core\Utils\Repository;
 
 /**
  * @api

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\Condition;
 
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Snicco\Core\Http\Psr7\Request;
 
 /**

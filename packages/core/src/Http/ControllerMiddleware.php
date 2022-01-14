@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use LogicException;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 
 final class ControllerMiddleware
 {

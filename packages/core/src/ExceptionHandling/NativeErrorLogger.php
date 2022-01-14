@@ -3,7 +3,7 @@
 namespace Snicco\Core\ExceptionHandling;
 
 use Throwable;
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Psr\Log\AbstractLogger;
 
 class NativeErrorLogger extends AbstractLogger

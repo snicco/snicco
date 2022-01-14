@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared;
 
-use Snicco\Support\Arr;
+use Snicco\Core\Utils\Arr;
 use PHPUnit\Framework\Assert;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\ResponseEmitter;
-use Snicco\Core\Application\Application_OLD;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
+use Snicco\Core\Application\Application_OLD;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\helpers\CreateContainer;
 

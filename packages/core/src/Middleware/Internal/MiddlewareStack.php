@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Middleware\Internal;
 
 use RuntimeException;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Server\MiddlewareInterface;

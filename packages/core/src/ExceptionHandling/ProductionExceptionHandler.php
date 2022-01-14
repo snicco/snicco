@@ -7,7 +7,7 @@ namespace Snicco\Core\ExceptionHandling;
 use Closure;
 use Throwable;
 use RuntimeException;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Whoops\Run as Whoops;
 use Snicco\Core\Utils\WP;
 use Snicco\Core\DIContainer;

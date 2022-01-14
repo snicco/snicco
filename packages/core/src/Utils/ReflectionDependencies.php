@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\Utils;
 
 use LogicException;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use ReflectionParameter;
 use ReflectionException;
 use Webmozart\Assert\Assert;

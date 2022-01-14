@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Testing;
 
 use Closure;
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 use Snicco\Session\Session;
 use Snicco\Core\DIContainer;
-use Snicco\Support\Repository;
 use Snicco\Core\Utils\UrlPath;
+use Snicco\Core\Utils\Repository;
 use Snicco\Core\Http\Psr7\Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;

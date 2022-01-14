@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\EventDispatcher\Events;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 
 use function rest_get_url_prefix;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\fixtures\TestDoubles;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use PHPUnit\Framework\Assert;
 
 use function trim;

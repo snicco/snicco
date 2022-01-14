@@ -7,7 +7,7 @@ namespace Snicco\Core\Middleware\Internal;
 use Closure;
 use Throwable;
 use LogicException;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\StrArr;
 
 use ArrayAccess;
 use InvalidArgumentException;
@@ -12,38 +12,8 @@ use function Snicco\Core\Utils\value;
 /**
  * @todo remove everything non essential.
  */
-class Arr
+final class Arr
 {
-    
-    public static function combineFirstTwo(array $array) :array
-    {
-        $array = array_values($array);
-        
-        return [$array[0] => $array[1]];
-    }
-    
-    public static function firstEl($array)
-    {
-        return self::nthEl(Arr::wrap($array), 0);
-    }
-    
-    public static function nthEl(array $array, int $offset = 0)
-    {
-        $array = Arr::wrap($array);
-        
-        if (empty($array)) {
-            return null;
-        }
-        
-        return array_values($array)[$offset] ?? null;
-    }
-    
-    public static function firstKey(array $array)
-    {
-        $array = static::wrap($array);
-        
-        return static::firstEl(array_keys($array));
-    }
     
     public static function combineNumerical(array $merge_into, $values) :array
     {

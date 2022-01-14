@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Http\Psr7;
 
 use stdClass;
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 
 use function Snicco\Core\Utils\dataGet;
 

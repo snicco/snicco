@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Configuration;
 
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Snicco\Core\Exception\BadConfigType;
 use Snicco\Core\Exception\MissingConfigKey;
 
