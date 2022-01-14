@@ -2,41 +2,87 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Application;
+namespace Snicco\Core\Configuration;
 
 use Closure;
+use ArrayAccess;
 use Snicco\Support\Arr;
 use Snicco\Support\Repository;
 
-class Config extends Repository
+/**
+ * @api
+ */
+final class WritableConfig implements ArrayAccess
 {
     
-    public function remove(string $key)
+    private Repository $repository;
+    
+    public function __construct(?Repository $repository = null)
     {
-        Arr::forget($this->items, $key);
+        $this->repository = $repository ?? new Repository();
+    }
+    
+    public static function fromArray(array $items) :self
+    {
+        return new self(new Repository($items));
     }
     
     public function extend(string $key, $app_config) :void
     {
-        $user_config = $this->get($key, []);
+        $user_config = $this->repository->get($key, []);
         
         $value = $this->replace($app_config, $user_config);
         
-        $this->set($key, $value);
+        $this->repository->set($key, $value);
+    }
+    
+    public function get(string $key, $default = null)
+    {
+        return $this->repository->get($key, $default);
+    }
+    
+    public function set(string $key, $value) :void
+    {
+        $this->repository->set($key, $value);
     }
     
     public function extendIfEmpty(string $key, Closure $default)
     {
-        $user_config = $this->get($key, []);
+        $user_config = $this->repository->get($key, []);
         
         if ($user_config !== false && empty(str_replace(' ', '', $user_config))) {
-            $this->set($key, $default($this));
+            $this->repository->set($key, $default($this));
         }
     }
     
-    public function seedFromCache(array $items)
+    public function toArray() :array
     {
-        $this->items = $items;
+        return $this->repository->toArray();
+    }
+    
+    public function offsetExists($offset) :bool
+    {
+        return $this->repository->offsetExists($offset);
+    }
+    
+    public function offsetGet($offset)
+    {
+        return $this->repository->offsetGet($offset);
+    }
+    
+    public function offsetSet($offset, $value) :void
+    {
+        $this->repository->offsetSet($offset, $value);
+    }
+    
+    public function offsetUnset($offset) :void
+    {
+        $this->repository->offsetUnset($offset);
+    }
+    
+    public function has(string $key) :bool
+    {
+        return $this->offsetExists($key);
     }
     
     /**

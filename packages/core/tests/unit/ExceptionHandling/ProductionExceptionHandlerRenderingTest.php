@@ -16,7 +16,7 @@ use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Shared\ContainerAdapter;
-use Snicco\Core\Application\Application;
+use Snicco\Core\Application\Application_OLD;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
 use Snicco\Testing\Concerns\CreatePsrRequests;
@@ -310,7 +310,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     
     private function getWhoops()
     {
-        $app = Mockery::mock(Application::class);
+        $app = Mockery::mock(Application_OLD::class);
         $app->shouldReceive('config')->once()->with('app.editor')->andReturn('phpstorm');
         $app->shouldReceive('basePath')->twice()->withNoArgs()->andReturn(__DIR__);
         $app->shouldReceive('basePath')->once()->with('vendor')->andReturn(

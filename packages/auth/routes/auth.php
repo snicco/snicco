@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Snicco\Core\Routing\Router;
-use Snicco\Core\Application\Config;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Auth\Controllers\AccountAbstractController;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Controllers\RecoveryCodeAbstractController;
@@ -18,7 +18,7 @@ use Snicco\Auth\Controllers\AuthConfirmationEmailAbstractController;
 use Snicco\Auth\Controllers\TwoFactorAuthPreferenceAbstractController;
 
 /** @var Router $router */
-/** @var Config $config */
+/** @var WritableConfig $config */
 
 // Dynamic endpoints which the developer can configure in the config to his likings.
 $login = $config->get('auth.endpoints.login');

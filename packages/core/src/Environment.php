@@ -2,14 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Core\Application;
+namespace Snicco\Core;
 
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 
 use const PHP_SAPI;
 
-final class AppEnvironment
+/**
+ * This class is an immutable value object that represent the environment the application is
+ * running in.
+ *
+ * @api
+ */
+final class Environment
 {
     
     const TESTING = 'testing';
@@ -54,22 +60,22 @@ final class AppEnvironment
         return new self($environment, $debug);
     }
     
-    public static function production() :AppEnvironment
+    public static function prod() :Environment
     {
         return new self(self::PROD, false);
     }
     
-    public static function testing(bool $debug = false) :AppEnvironment
+    public static function testing(bool $debug = false) :Environment
     {
         return new self(self::TESTING, $debug);
     }
     
-    public static function dev(bool $debug = true) :AppEnvironment
+    public static function dev(bool $debug = true) :Environment
     {
         return new self(self::DEV, $debug);
     }
     
-    public static function staging(bool $debug = false) :AppEnvironment
+    public static function staging(bool $debug = false) :Environment
     {
         return new self(self::STAGING, $debug);
     }

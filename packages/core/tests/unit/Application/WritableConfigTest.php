@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\Core\unit\Application;
 
-use Snicco\Core\Application\Config;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Core\Configuration\WritableConfig;
 
-class ConfigTest extends UnitTest
+class WritableConfigTest extends UnitTest
 {
     
-    private Config $config;
+    private WritableConfig $config;
     
     public function setUp() :void
     {
         parent::setUp();
         
-        $this->config = new Config();
+        $this->config = new WritableConfig();
     }
     
     protected function tearDown() :void
@@ -79,15 +79,17 @@ class ConfigTest extends UnitTest
     /** @test */
     public function user_config_has_precedence_over_default_config_and_gets_merged_recursively()
     {
-        $config = new Config([
-            'foo' => [
-                'foo' => 'foo',
-                'bar' => 'bar',
-                'baz' => [
+        $config = WritableConfig::fromArray(
+            [
+                'foo' => [
                     'foo' => 'foo',
+                    'bar' => 'bar',
+                    'baz' => [
+                        'foo' => 'foo',
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
         
         $config->extend('foo', [
             'bar' => 'foobarbaz',
@@ -117,7 +119,7 @@ class ConfigTest extends UnitTest
     /** @test */
     public function everything_works_with_dot_notation_as_well()
     {
-        $config = new Config([
+        $config = WritableConfig::fromArray([
             'foo' => [
                 'foo' => 'foo',
                 'bar' => 'baz',
@@ -143,7 +145,7 @@ class ConfigTest extends UnitTest
     /** @test */
     public function numerically_indexed_arrays_get_replaced()
     {
-        $config = new Config([
+        $config = WritableConfig::fromArray([
             'first' => [
                 'foo',
             ],
@@ -165,7 +167,7 @@ class ConfigTest extends UnitTest
     /** @test */
     public function test_extend_with_closure()
     {
-        $config = new Config([
+        $config = WritableConfig::fromArray([
             'first' => [
                 'foo' => 'foo',
                 'bar' => false,
@@ -212,32 +214,6 @@ class ConfigTest extends UnitTest
         // test replace with config value
         $config->extendIfEmpty('second.foo.baz', fn($config) => $config->get('first.foo'));
         $this->assertSame('foo', $config->get('second.foo.baz'));
-    }
-    
-    /** @test */
-    public function testFromArray()
-    {
-        $config = new Config(['first' => ['foo' => 'bar']]);
-        
-        $this->assertSame('bar', $config->get('first.foo'));
-        $this->assertNull($config->get('second.foo'));
-        
-        $config->seedFromCache([
-            'first' => [
-                'foo' => 'baz',
-            ],
-            'second' => [
-                'foo' => [
-                    'bar',
-                    'baz',
-                
-                ],
-            ],
-        ]);
-        
-        // will be overwritten.
-        $this->assertSame('baz', $config->get('first.foo'));
-        $this->assertSame(['bar', 'baz'], $config->get('second.foo'));
     }
     
 }

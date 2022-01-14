@@ -14,19 +14,19 @@ use Snicco\Core\Http\HttpKernel;
 use Snicco\Testing\TestResponse;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\UriInterface;
-use Snicco\Core\Application\Config;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Application\Application;
 use Snicco\View\Contracts\ViewInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Snicco\Core\Application\Application_OLD;
+use Snicco\Core\Configuration\WritableConfig;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 
 /**
  * @property Session|null $session
- * @property Application $app
+ * @property Application_OLD $app
  * @property ServerRequestFactoryInterface $request_factory
  * @property bool $routes_loaded
- * @property Config $config
+ * @property WritableConfig $config
  */
 trait MakesHttpRequests
 {

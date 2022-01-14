@@ -8,13 +8,13 @@ use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Session\Session;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Core\Application\Application;
+use Snicco\Core\Application\Application_OLD;
 use Snicco\Session\ValueObjects\CsrfToken;
 use Snicco\Session\Contracts\SessionDriver;
 
 /**
  * @property Session|null $session
- * @property Application $app
+ * @property Application_OLD $app
  * @property array $default_headers
  * @property array $default_cookies
  */

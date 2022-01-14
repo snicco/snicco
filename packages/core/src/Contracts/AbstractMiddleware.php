@@ -7,13 +7,13 @@ namespace Snicco\Core\Contracts;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Application\Config;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
 abstract class AbstractMiddleware implements MiddlewareInterface
@@ -67,9 +67,9 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     protected function config(string $key, $default = null)
     {
-        /** @var Config $config */
-        $config = $this->container[Config::class];
-        Assert::isInstanceOf(Config::class, $config);
+        /** @var WritableConfig $config */
+        $config = $this->container[WritableConfig::class];
+        Assert::isInstanceOf(WritableConfig::class, $config);
         return $config->get($key, $default);
     }
     

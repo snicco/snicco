@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Routing;
 
 use Tests\Core\RoutingTestCase;
-use Snicco\Core\Application\Config;
+use Snicco\Core\Configuration\WritableConfig;
 use Tests\Core\fixtures\Conditions\TrueRouteCondition;
 use Tests\Core\fixtures\Conditions\MaybeRouteCondition;
 use Tests\Core\fixtures\Conditions\FalseRouteCondition;
@@ -79,8 +79,8 @@ class RouteConditionsTest extends RoutingTestCase
     /** @test */
     public function conditions_have_access_to_the_config()
     {
-        $config = new Config();
-        $this->container[Config::class] = $config;
+        $config = new WritableConfig();
+        $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
         
         $this->routeConfigurator()->get(
@@ -98,8 +98,8 @@ class RouteConditionsTest extends RoutingTestCase
     /** @test */
     public function a_condition_can_be_negated()
     {
-        $config = new Config();
-        $this->container[Config::class] = $config;
+        $config = new WritableConfig();
+        $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
         
         $this->routeConfigurator()->get(

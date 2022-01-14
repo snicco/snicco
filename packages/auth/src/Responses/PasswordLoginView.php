@@ -6,8 +6,8 @@ namespace Snicco\Auth\Responses;
 
 use Snicco\Core\Support\WP;
 use Snicco\View\ViewEngine;
-use Snicco\Core\Application\Config;
 use Snicco\Auth\Contracts\AbstractLoginView;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 
 class PasswordLoginView extends AbstractLoginView
@@ -15,12 +15,12 @@ class PasswordLoginView extends AbstractLoginView
     
     private InternalUrlGenerator $url;
     private ViewEngine           $view_engine;
-    private Config               $config;
+    private WritableConfig       $config;
     private bool                 $pw_resets;
     private bool                 $registration;
     private bool                 $allow_remember;
     
-    public function __construct(ViewEngine $view, InternalUrlGenerator $url, Config $config)
+    public function __construct(ViewEngine $view, InternalUrlGenerator $url, WritableConfig $config)
     {
         $this->view_engine = $view;
         $this->url = $url;

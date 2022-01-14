@@ -700,7 +700,7 @@ class TestResponse
     {
         $hasErrors = $this->session()->has('errors');
         
-        $errors = $hasErrors ? $this->session()->get('errors')->all() : [];
+        $errors = $hasErrors ? $this->session()->get('errors')->toArray() : [];
         
         PHPUnit::assertFalse(
             $hasErrors,

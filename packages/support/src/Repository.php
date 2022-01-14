@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Modified version of the Illuminate/Config class with strict type hinting.
+ * Modified version of the Illuminate/Config class with strict type hinting and final attribute.
  *
  * License: The MIT License (MIT) https://github.com/illuminate/config/blob/v8.35.1/LICENSE.md
  * Copyright (c) Taylor Otwell
@@ -13,16 +13,10 @@ namespace Snicco\Support;
 
 use ArrayAccess;
 
-/**
- * @todo strict type checks
- */
-class Repository implements ArrayAccess
+final class Repository implements ArrayAccess
 {
     
-    /**
-     * @var array
-     */
-    protected $items = [];
+    private array $items;
     
     public function __construct(array $items = [])
     {
@@ -35,8 +29,6 @@ class Repository implements ArrayAccess
     }
     
     /**
-     * Get the specified configuration value.
-     *
      * @param  array|string  $key
      * @param  mixed  $default
      *
@@ -51,19 +43,12 @@ class Repository implements ArrayAccess
         return Arr::get($this->items, $key, $default);
     }
     
-    public function add(array $items)
+    public function add(array $items) :void
     {
         $this->set($items);
     }
     
-    /**
-     * Get many configuration values.
-     *
-     * @param  string[]  $keys
-     *
-     * @return array
-     */
-    public function getMany($keys) :array
+    public function getMany(array $keys) :array
     {
         $config = [];
         
@@ -93,15 +78,7 @@ class Repository implements ArrayAccess
         }
     }
     
-    /**
-     * Prepend a value onto an array configuration value.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
-     *
-     * @return void
-     */
-    public function prepend(string $key, $value)
+    public function prepend(string $key, $value) :void
     {
         $array = $this->get($key);
         
@@ -110,12 +87,6 @@ class Repository implements ArrayAccess
         $this->set($key, $array);
     }
     
-    /**
-     * Push a value onto an array configuration value.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
-     */
     public function push(string $key, $value) :void
     {
         $array = $this->get($key);
@@ -125,58 +96,44 @@ class Repository implements ArrayAccess
         $this->set($key, $array);
     }
     
-    public function all() :array
+    public function toArray() :array
     {
         return $this->items;
     }
     
     /**
-     * Determine if the given configuration option exists.
-     *
-     * @param  string  $key
-     *
-     * @return bool
+     * @param  string  $offset
      */
-    public function offsetExists($key)
+    public function offsetExists($offset) :bool
     {
-        return $this->has($key);
+        return $this->has($offset);
     }
     
     /**
-     * Get a configuration option.
-     *
-     * @param  string  $key
+     * @param  string  $offset
      *
      * @return mixed
      */
-    public function offsetGet($key)
+    public function offsetGet($offset)
     {
-        return $this->get($key);
+        return $this->get($offset);
     }
     
     /**
-     * Set a configuration option.
-     *
-     * @param  string  $key
+     * @param  string  $offset
      * @param  mixed  $value
-     *
-     * @return void
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($offset, $value) :void
     {
-        $this->set($key, $value);
+        $this->set($offset, $value);
     }
     
     /**
-     * Unset a configuration option.
-     *
-     * @param  string  $key
-     *
-     * @return void
+     * @param  string  $offset
      */
-    public function offsetUnset($key)
+    public function offsetUnset($offset) :void
     {
-        $this->set($key);
+        $this->set($offset);
     }
     
 }

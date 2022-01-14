@@ -12,18 +12,18 @@ use Snicco\Core\Support\WP;
 use Snicco\Session\Session;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Application\Config;
 use Illuminate\Container\Container;
 use Snicco\Core\Middleware\Delegate;
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Support\Facades\Facade;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
-use Snicco\Core\Application\Application;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Core\Contracts\ExceptionHandler;
+use Snicco\Core\Application\Application_OLD;
 use Mockery\Exception\InvalidCountException;
+use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Core\Contracts\AbstractMiddleware;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
@@ -49,10 +49,10 @@ abstract class TestCase extends WPTestCase
     use InteractsWithWordpressUsers;
     use TravelsTime;
     
-    protected Application                   $app;
+    protected Application_OLD               $app;
     protected ?Session                      $session       = null;
     protected Request                       $request;
-    protected Config                        $config;
+    protected WritableConfig                $config;
     protected ServerRequestFactoryInterface $request_factory;
     protected HttpKernel                    $kernel;
     protected bool                          $routes_loaded = false;
@@ -160,7 +160,7 @@ abstract class TestCase extends WPTestCase
         WP::reset();
     }
     
-    abstract protected function createApplication() :Application;
+    abstract protected function createApplication() :Application_OLD;
     
     protected function baseUrl() :string
     {

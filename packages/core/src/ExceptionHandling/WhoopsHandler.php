@@ -4,12 +4,12 @@ namespace Snicco\Core\ExceptionHandling;
 
 use Snicco\Support\Arr;
 use Snicco\Core\Support\DirectoryFinder;
-use Snicco\Core\Application\Application;
+use Snicco\Core\Application\Application_OLD;
 
 class WhoopsHandler
 {
     
-    public static function get(Application $app)
+    public static function get(Application_OLD $app)
     {
         $hide_frames = $app->config('app.hide_debug_traces', []);
         
@@ -31,7 +31,7 @@ class WhoopsHandler
         return $handler;
     }
     
-    public static function allDirsExpectVendor(Application $app) :array
+    public static function allDirsExpectVendor(Application_OLD $app) :array
     {
         $dirs = Arr::except(
             array_flip((new DirectoryFinder())->directories($app->basePath())),

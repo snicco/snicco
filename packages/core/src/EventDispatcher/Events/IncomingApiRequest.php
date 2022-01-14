@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Core\EventDispatcher\Events;
 
-
 use Snicco\Support\Str;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Application\Config;
+use Snicco\Core\Configuration\WritableConfig;
 
 class IncomingApiRequest extends IncomingRequest
 {
     
-    private Config $config;
+    private WritableConfig $config;
     
-    public function __construct(Request $request, Config $config)
+    public function __construct(Request $request, WritableConfig $config)
     {
         parent::__construct($request);
         $this->config = $config;

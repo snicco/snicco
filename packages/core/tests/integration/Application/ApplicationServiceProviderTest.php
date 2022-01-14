@@ -7,7 +7,7 @@ namespace Tests\Core\integration\Application;
 use Snicco\Core\Support\WP;
 use Snicco\Core\Routing\Router;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Application\Application;
+use Snicco\Core\Application\Application_OLD;
 use Snicco\Core\Http\StatelessRedirector;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Http\DefaultResponseFactory;
@@ -109,7 +109,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $this->assertInstanceOf(Application::class, TestApp::app());
+        $this->assertInstanceOf(Application_OLD::class, TestApp::app());
         $this->assertSame($this->app, TestApp::app());
     }
     

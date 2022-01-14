@@ -45,7 +45,7 @@ namespace Snicco\SessionBundle
      */
     function getSessionFromManager(Request $request, SessionManagerInterface $session_manager) :SessionInterface
     {
-        $cookies = $request->cookies()->all();
+        $cookies = $request->cookies()->toArray();
         return $session_manager->start(new CookiePool($cookies));
     }
     
@@ -57,15 +57,15 @@ namespace Snicco\SessionBundle
         $http_cookie = new Cookie($session_cookie->name(), $session_cookie->value());
         $http_cookie = $http_cookie->withPath($session_cookie->path());
         $http_cookie = $http_cookie->withDomain($session_cookie->domain());
-    
+        
         if ( ! $session_cookie->httpOnly()) {
             $http_cookie = $http_cookie->withJsAccess();
         }
-    
+        
         if ( ! $session_cookie->secureOnly()) {
             $http_cookie = $http_cookie->withUnsecureHttp();
         }
-    
+        
         $http_cookie = $http_cookie->withSameSite($session_cookie->sameSite());
         return $http_cookie->withExpiryTimestamp($session_cookie->expiryTimestamp());
     }
