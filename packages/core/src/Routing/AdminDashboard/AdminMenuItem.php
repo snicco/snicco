@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\AdminDashboard;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Routing\Route\Route;

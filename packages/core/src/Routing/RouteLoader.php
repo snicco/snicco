@@ -6,7 +6,7 @@ namespace Snicco\Core\Routing;
 
 use Closure;
 use LogicException;
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use ReflectionFunction;
 use ReflectionException;
 use ReflectionParameter;

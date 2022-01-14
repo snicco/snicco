@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Utils;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
 
 use function ltrim;

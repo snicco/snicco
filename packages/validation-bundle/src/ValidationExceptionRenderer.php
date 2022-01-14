@@ -2,7 +2,7 @@
 
 namespace Snicco\Validation;
 
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\ResponseFactory;
 use Snicco\Validation\Exceptions\ValidationException;

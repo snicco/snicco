@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Core\unit\Support;
 
 use Generator;
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use InvalidArgumentException;
 use Snicco\Core\Utils\UrlPath;
 use Tests\Codeception\shared\UnitTest;

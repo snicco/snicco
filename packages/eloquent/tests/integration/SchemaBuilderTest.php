@@ -2,7 +2,7 @@
 
 namespace Tests\Database\integration;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use mysqli_sql_exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;

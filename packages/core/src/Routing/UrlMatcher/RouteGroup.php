@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Routing\UrlMatcher;
 
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Routing\RoutingConfigurator\RoutingConfigurator;

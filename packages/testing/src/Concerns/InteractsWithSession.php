@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 use Snicco\Session\Session;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Core\Application\Application_OLD;

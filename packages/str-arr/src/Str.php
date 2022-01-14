@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\StrArr;
 
 use function bin2hex;
 use function mb_strpos;
@@ -13,7 +13,7 @@ use function random_bytes;
 /**
  * @todo remove everything non essential.
  */
-class Str
+final class Str
 {
     
     /**

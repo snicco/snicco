@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Support\Str;
+use Snicco\StrArr\Str;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\UriFactoryInterface;

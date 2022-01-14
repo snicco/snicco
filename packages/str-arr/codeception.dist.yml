@@ -1,0 +1,7 @@
+namespace: Tests\StrArr
+extends: "%CODECEPTION_PACKAGE_YML%"
+
+params:
+  - ../../codeception/.env.testing
+
+

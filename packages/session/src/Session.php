@@ -6,7 +6,7 @@ namespace Snicco\Session;
 
 use Closure;
 use DateTimeImmutable;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Snicco\Session\Events\SessionRotated;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Session\ValueObjects\CsrfToken;
@@ -351,7 +351,7 @@ final class Session implements SessionInterface
     public function withErrors($provider, string $bag = 'default') :void
     {
         $value = $this->toMessageBag($provider);
-    
+        
         $errors = $this->errors();
         $errors->put($bag, $value);
         $this->flash('errors', $errors);

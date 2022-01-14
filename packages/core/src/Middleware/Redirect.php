@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware;
 
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Http\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;

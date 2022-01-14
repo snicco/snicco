@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Support\Str;
-use Snicco\Support\Arr;
+use Snicco\StrArr\Str;
+use Snicco\StrArr\Arr;
 use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
 use Snicco\View\ViewEngine;

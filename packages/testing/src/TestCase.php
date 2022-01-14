@@ -6,8 +6,8 @@ namespace Snicco\Testing;
 
 use Mockery;
 use RuntimeException;
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
 use Snicco\Core\Http\HttpKernel;

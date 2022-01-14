@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Http\Psr7;
 
-use Snicco\Support\Arr;
-use Snicco\Support\Str;
+use Snicco\StrArr\Arr;
+use Snicco\StrArr\Str;
 
 trait InspectsRequest
 {

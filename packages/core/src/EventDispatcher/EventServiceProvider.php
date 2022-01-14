@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\EventDispatcher;
 
-use Snicco\Support\Arr;
+use Snicco\StrArr\Arr;
 use Snicco\Core\Http\HttpKernel;
 use Snicco\Core\Routing\Route\Routes;
 use Snicco\EventDispatcher\EventMapper;

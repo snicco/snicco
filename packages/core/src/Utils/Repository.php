@@ -9,9 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Support;
+namespace Snicco\Core\Utils;
 
 use ArrayAccess;
+use Snicco\StrArr\Arr;
 
 final class Repository implements ArrayAccess
 {

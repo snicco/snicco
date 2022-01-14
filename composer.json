@@ -9,7 +9,7 @@
     ],
     "type": "library",
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
@@ -35,6 +35,7 @@
         "psr/log": "^1.0.0",
         "respect/validation": "^2.0.0",
         "roots/wp-password-bcrypt": "dev-master",
+        "sniccowp/support": "dev-master",
         "symfony/finder": "^5.0-stable",
         "webmozart/assert": "^1.10"
     },
@@ -83,6 +84,7 @@
                 "packages/magic-links/src",
                 "packages/signed-url/src"
             ],
+            "Snicco\\StrArr\\": "packages/str-arr/src",
             "Snicco\\Support\\": "packages/support/src",
             "Snicco\\Testing\\": "packages/testing/src",
             "Snicco\\Validation\\": "packages/validation-bundle/src",
@@ -117,6 +119,7 @@
                 "packages/magic-links/tests",
                 "packages/signed-url/tests"
             ],
+            "Tests\\StrArr\\": "packages/str-arr/tests",
             "Tests\\Testing\\": "packages/testing/tests",
             "Tests\\Validation\\": "packages/validation-bundle/tests",
             "Tests\\ViewBundle\\": "packages/view-bundle/tests",
@@ -143,6 +146,7 @@
         "sniccowp/signed-url-middleware": "self.version",
         "sniccowp/signed-url-wp": "self.version",
         "sniccowp/signed-url-wp-bundle": "self.version",
+        "sniccowp/str-arr": "self.version",
         "sniccowp/support": "self.version",
         "sniccowp/testing": "self.version",
         "sniccowp/validation-bundle": "self.version",

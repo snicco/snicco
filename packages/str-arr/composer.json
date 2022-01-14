@@ -1,7 +1,6 @@
 {
-  "name": "sniccowp/support",
+  "name": "sniccowp/str-arr",
   "minimum-stability": "stable",
-  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -14,7 +13,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Support\\": "src"
+      "Snicco\\StrArr\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\StrArr\\": "tests"
     }
   }
 }
