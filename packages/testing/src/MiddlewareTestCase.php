@@ -6,13 +6,13 @@ namespace Snicco\Testing;
 
 use Closure;
 use RuntimeException;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Middleware\Delegate;
 use Snicco\Core\Routing\Route\Routes;
 use Snicco\Core\Contracts\Redirector;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Shared\ContainerAdapter;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Core\Contracts\ResponseFactory;
@@ -64,7 +64,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     abstract protected function psrStreamFactory() :StreamFactoryInterface;
     
-    abstract protected function createContainer() :ContainerAdapter;
+    abstract protected function createContainer() :DIContainer;
     
     protected final function withRoutes(array $routes)
     {

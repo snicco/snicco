@@ -8,12 +8,12 @@ use Closure;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Session\Session;
+use Snicco\Core\DIContainer;
 use Snicco\Support\Repository;
 use Snicco\Core\Support\UrlPath;
 use Snicco\Core\Http\Psr7\Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Testing\Constraints\SeeInOrder;
 use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
@@ -23,13 +23,13 @@ use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
 class TestResponse
 {
     
-    public Response          $psr_response;
-    protected string         $streamed_content;
-    private Repository       $headers;
-    private int              $status_code;
-    private ?ViewInterface   $view    = null;
-    private ?Session         $session = null;
-    private ContainerAdapter $container;
+    public Response        $psr_response;
+    protected string       $streamed_content;
+    private Repository     $headers;
+    private int            $status_code;
+    private ?ViewInterface $view    = null;
+    private ?Session       $session = null;
+    private DIContainer    $container;
     
     public function __construct(Response $response)
     {
@@ -54,7 +54,7 @@ class TestResponse
         $this->view = $rendered_view;
     }
     
-    public function setContainer(ContainerAdapter $container)
+    public function setContainer(DIContainer $container)
     {
         $this->container = $container;
     }

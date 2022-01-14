@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use Webmozart\Assert\Assert;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Contracts\Redirector;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Contracts\ResponseFactory;
 use Snicco\Core\Contracts\TemplateRenderer;
 use Snicco\Core\Configuration\WritableConfig;
@@ -24,7 +24,7 @@ abstract class AbstractController
      */
     private array $middleware = [];
     
-    private ContainerAdapter $container;
+    private DIContainer $container;
     
     /**
      * @interal
@@ -48,7 +48,7 @@ abstract class AbstractController
     /**
      * @interal
      */
-    public function setContainer(ContainerAdapter $container)
+    public function setContainer(DIContainer $container)
     {
         $this->container = $container;
     }

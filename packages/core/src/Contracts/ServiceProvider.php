@@ -7,15 +7,15 @@ namespace Snicco\Core\Contracts;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Core\Support\WP;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Application\Application_OLD;
 use Snicco\Core\Configuration\WritableConfig;
 
 abstract class ServiceProvider
 {
     
-    protected ContainerAdapter $container;
+    protected DIContainer $container;
     
     protected WritableConfig $config;
     
@@ -23,7 +23,7 @@ abstract class ServiceProvider
     
     protected ?Request $current_request = null;
     
-    public function __construct(ContainerAdapter $container_adapter, WritableConfig $config)
+    public function __construct(DIContainer $container_adapter, WritableConfig $config)
     {
         $this->container = $container_adapter;
         $this->config = $config;

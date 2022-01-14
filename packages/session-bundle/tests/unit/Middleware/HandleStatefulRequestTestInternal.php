@@ -17,7 +17,7 @@ use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\ValueObjects\SessionConfig;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
-use Snicco\PimpleContainer\PimpleContainerAdapter;
+use Snicco\PimpleContainer\PimpleDIContainer;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\Session\Contracts\MutableSessionInterface;
 use Snicco\Core\Middleware\Internal\MiddlewareFactory;
@@ -72,7 +72,7 @@ final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
     /** @test */
     public function the_session_cookie_is_always_added_to_the_response()
     {
-        $c = new PimpleContainerAdapter();
+        $c = new PimpleDIContainer();
         
         $manager = $this->getSessionManager(SessionConfig::fromDefaults('test_cookie'));
         

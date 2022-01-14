@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Internal;
 
-use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\DIContainer;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Core\Contracts\AbstractMiddleware;
@@ -16,9 +16,9 @@ use Snicco\Core\Support\ReflectionDependencies;
 final class MiddlewareFactory
 {
     
-    private ContainerAdapter $container;
+    private DIContainer $container;
     
-    public function __construct(ContainerAdapter $container)
+    public function __construct(DIContainer $container)
     {
         $this->container = $container;
     }

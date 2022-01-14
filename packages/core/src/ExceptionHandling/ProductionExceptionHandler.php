@@ -10,9 +10,9 @@ use RuntimeException;
 use Snicco\Support\Arr;
 use Whoops\Run as Whoops;
 use Snicco\Core\Support\WP;
+use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Shared\ContainerAdapter;
 use Snicco\Core\Support\ReflectsCallable;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Core\Contracts\ResponseFactory;
@@ -27,10 +27,10 @@ class ProductionExceptionHandler implements ExceptionHandler
     
     public const STOP_REPORTING = false;
     
-    protected ContainerAdapter $container;
-    protected Psr3Logger       $logger;
-    protected array            $dont_report = [];
-    protected array            $dont_flash  = [];
+    protected DIContainer $container;
+    protected Psr3Logger  $logger;
+    protected array       $dont_report = [];
+    protected array       $dont_flash  = [];
     
     /**
      * @var ResponseFactory
@@ -52,7 +52,7 @@ class ProductionExceptionHandler implements ExceptionHandler
     /**
      * @param  null|Whoops  $whoops
      */
-    public function __construct(ContainerAdapter $container, Psr3Logger $logger, ResponseFactory $response_factory, $whoops = null)
+    public function __construct(DIContainer $container, Psr3Logger $logger, ResponseFactory $response_factory, $whoops = null)
     {
         $this->container = $container;
         $this->logger = $logger;

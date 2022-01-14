@@ -6,8 +6,8 @@ namespace Tests\IllumianteContainerBridge\unit;
 
 use Illuminate\Container\Container;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Core\Shared\FrozenServiceException;
-use Snicco\Illuminate\IlluminateContainerAdapter;
+use Snicco\Illuminate\IlluminateDIContainer;
+use Snicco\Core\Exception\FrozenServiceException;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
 
@@ -15,14 +15,14 @@ final class IlluminateContainerAdapterTest extends UnitTest
 {
     
     /**
-     * @var IlluminateContainerAdapter
+     * @var IlluminateDIContainer
      */
     private $illuminate_container_adapter;
     
     protected function setUp() :void
     {
         parent::setUp();
-        $this->illuminate_container_adapter = new IlluminateContainerAdapter(new Container());
+        $this->illuminate_container_adapter = new IlluminateDIContainer(new Container());
     }
     
     /** @test */

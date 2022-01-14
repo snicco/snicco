@@ -6490,13 +6490,13 @@ return [
                                                           .'/packages/core/src/Routing/UrlMatcher/RoutingResult.php',
     'Snicco\\Core\\Routing\\UrlMatcher\\UrlMatcher' => $baseDir
                                                        .'/packages/core/src/Routing/UrlMatcher/UrlMatcher.php',
-    'Snicco\\Core\\Shared\\ContainerAdapter' => $baseDir
-                                                .'/packages/core/src/Shared/ContainerAdapter.php',
+    'Snicco\\Core\\DIContainer' => $baseDir
+                                   .'/packages/core/src/Shared/ContainerAdapter.php',
     'Snicco\\Core\\Shared\\Encryptor' => $baseDir.'/packages/core/src/Shared/Encryptor.php',
     'Snicco\\Core\\Shared\\Exceptions\\EncryptException' => $baseDir
                                                             .'/packages/core/src/Shared/Exceptions/EncryptException.php',
-    'Snicco\\Core\\Shared\\FrozenServiceException' => $baseDir
-                                                      .'/packages/core/src/Shared/FrozenServiceException.php',
+    'Snicco\\Core\\Exception\\FrozenServiceException' => $baseDir
+                                                         .'/packages/core/src/Shared/FrozenServiceException.php',
     'Snicco\\Core\\Support\\CacheFile' => $baseDir.'/packages/core/src/Support/CacheFile.php',
     'Snicco\\Core\\Support\\Carbon' => $baseDir.'/packages/core/src/Support/Carbon.php',
     'Snicco\\Core\\Support\\DirectoryFinder' => $baseDir
@@ -6600,8 +6600,8 @@ return [
     'Snicco\\EventDispatcher\\Implementations\\ParameterBasedListenerFactory' => $baseDir
                                                                                  .'/packages/better-wp-hooks/src/Implementations/ParameterBasedListenerFactory.php',
     'Snicco\\EventDispatcher\\Listener' => $baseDir.'/packages/better-wp-hooks/src/Listener.php',
-    'Snicco\\Illuminate\\IlluminateContainerAdapter' => $baseDir
-                                                        .'/packages/illuminate-container-bridge/src/IlluminateContainerAdapter.php',
+    'Snicco\\Illuminate\\IlluminateDIContainer' => $baseDir
+                                                   .'/packages/illuminate-container-bridge/src/IlluminateContainerAdapter.php',
     'Snicco\\MailBundle\\FrameworkMailEventDispatcher' => $baseDir
                                                           .'/packages/better-wp-mail-bundle/src/FrameworkMailEventDispatcher.php',
     'Snicco\\MailBundle\\MailServiceProvider' => $baseDir
@@ -6657,8 +6657,8 @@ return [
                                               .'/packages/better-wp-mail/src/ValueObjects/Envelope.php',
     'Snicco\\Mail\\ValueObjects\\MailDefaults' => $baseDir
                                                   .'/packages/better-wp-mail/src/ValueObjects/MailDefaults.php',
-    'Snicco\\PimpleContainer\\PimpleContainerAdapter' => $baseDir
-                                                         .'/packages/pimple-container-bridge/src/PimpleContainerAdapter.php',
+    'Snicco\\PimpleContainer\\PimpleDIContainer' => $baseDir
+                                                    .'/packages/pimple-container-bridge/src/PimpleContainerAdapter.php',
     'Snicco\\SessionBundle\\BetterWPHooks\\Events\\UserLoggedIn' => $baseDir
                                                                     .'/packages/session-bundle/src/BetterWPHooks/Events/UserLoggedIn.php',
     'Snicco\\SessionBundle\\BetterWPHooks\\Events\\UserLoggedOut' => $baseDir

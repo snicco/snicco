@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\View\unit;
 
-use Snicco\Core\Shared\ContainerAdapter;
+use Snicco\Core\DIContainer;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;
@@ -22,7 +22,7 @@ class ViewComposerFactoryTest extends UnitTest
     private DependencyInjectionViewComposerFactory $factory;
     
     /**
-     * @var ContainerAdapter
+     * @var DIContainer
      */
     private $container;
     
