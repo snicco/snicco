@@ -66,7 +66,7 @@ final class OpenRedirectProtection extends AbstractMiddleware
     {
         return array_map(function ($pattern) {
             if (Str::startsWith($pattern, '*.')) {
-                return $this->allSubdomains(Str::after($pattern, '*.'));
+                return $this->allSubdomains(Str::afterFirst($pattern, '*.'));
             }
             
             return '/'.preg_quote($pattern, '/').'/';

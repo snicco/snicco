@@ -28,6 +28,7 @@ use function func_get_args;
 
 /**
  * @interal Don't depend on this class in your code. Depend on {@see SessionInterface}
+ * @todo add session is locked exception to all state changing methods
  */
 final class Session implements SessionInterface
 {
@@ -133,7 +134,7 @@ final class Session implements SessionInterface
     
     public function exists($keys) :bool
     {
-        $keys = Arr::wrap($keys);
+        $keys = Arr::toArray($keys);
         
         foreach ($keys as $key) {
             if ( ! Arr::has($this->attributes, $key)) {
@@ -146,6 +147,7 @@ final class Session implements SessionInterface
     
     public function flash(string $key, $value = true) :void
     {
+        $this->checkLocked();
         $this->put($key, $value);
         
         $this->push('_flash.new', $key);
@@ -155,6 +157,7 @@ final class Session implements SessionInterface
     
     public function flashInput(array $input) :void
     {
+        $this->checkLocked();
         $this->flash('_old_input', $input);
     }
     
@@ -168,6 +171,7 @@ final class Session implements SessionInterface
     
     public function forget($keys) :void
     {
+        $this->checkLocked();
         Arr::forget($this->attributes, $keys);
     }
     

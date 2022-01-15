@@ -143,7 +143,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
      */
     public function middleware($middleware) :self
     {
-        $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::wrap($middleware);
+        $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::toArray($middleware);
         return $this;
     }
     

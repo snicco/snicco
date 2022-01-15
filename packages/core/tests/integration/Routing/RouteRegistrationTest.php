@@ -197,7 +197,7 @@ class RoutingDefinitionServiceProvider extends ServiceProvider
     
     public function register() :void
     {
-        $routes = Arr::wrap($this->config->get('routing.definitions'));
+        $routes = Arr::toArray($this->config->get('routing.definitions'));
         
         $routes = array_merge($routes, [TEST_APP_BASE_PATH.DS.'other-routes']);
         

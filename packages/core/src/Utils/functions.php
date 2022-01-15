@@ -5,21 +5,20 @@ declare(strict_types=1);
 namespace Snicco\Core\Utils
 {
     
-    use Closure;
     use Snicco\StrArr\Arr;
     
-    /**
-     * Return the default value of the given value.
-     *
-     * @param  mixed  $value
-     *
-     * @framework-only
-     * @return mixed
-     */
-    function value($value, ...$args)
-    {
-        return $value instanceof Closure ? $value(...$args) : $value;
-    }
+    ///**
+    // * Return the default value of the given value.
+    // *
+    // * @param  mixed  $value
+    // *
+    // * @framework-only
+    // * @return mixed
+    // */
+    //function value($value, ...$args)
+    //{
+    //    return $value instanceof Closure ? $value(...$args) : $value;
+    //}
     
     /**
      * Returns all traits used by a class, its parent classes and traits of their traits.

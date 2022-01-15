@@ -55,7 +55,7 @@ final class MiddlewarePipeline
     public function through($middleware) :MiddlewarePipeline
     {
         $new = clone $this;
-        $middleware = Arr::wrap($middleware);
+        $middleware = Arr::toArray($middleware);
         Assert::allIsInstanceOf($middleware, MiddlewareBlueprint::class);
         $new->middleware = $middleware;
         return $new;

@@ -143,25 +143,18 @@ class WritableConfigTest extends UnitTest
     }
     
     /** @test */
-    public function numerically_indexed_arrays_get_replaced()
+    public function numerically_indexed_arrays_are_merged_and_unique_values_remain()
     {
         $config = WritableConfig::fromArray([
             'first' => [
                 'foo',
+                'bar',
             ],
-            'second' => [
-                'foo' => [
-                    'bar',
-                    'baz',
-                
-                ],
-            ],
-        
         ]);
         
-        $config->extend('first', ['foo', 'bar', 'baz']);
+        $config->extend('first', ['boo', 'bar', 'biz', 'foo']);
         
-        $this->assertEquals(['foo', 'bar', 'baz'], $config->get('first'));
+        $this->assertEquals(['foo', 'bar', 'boo', 'biz'], $config->get('first'));
     }
     
     /** @test */

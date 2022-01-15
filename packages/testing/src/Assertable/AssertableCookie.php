@@ -48,7 +48,7 @@ class AssertableCookie
     public function __construct(string $set_cookie_header)
     {
         $this->parseHeader($set_cookie_header);
-        $this->name = Str::before($set_cookie_header, '=');
+        $this->name = Str::beforeFirst($set_cookie_header, '=');
     }
     
     public function assertValue(string $value) :AssertableCookie

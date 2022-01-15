@@ -20,7 +20,7 @@ class QueryStringCondition extends AbstractRouteCondition
     
     public function __construct($query_string_arguments)
     {
-        $this->query_string_arguments = Arr::wrap($query_string_arguments);
+        $this->query_string_arguments = Arr::toArray($query_string_arguments);
     }
     
     public function isSatisfied(Request $request) :bool

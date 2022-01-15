@@ -27,7 +27,7 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
     public function getApiRouteAttributes(string $file_name_without_extension_and_version, ?string $parsed_version) :array
     {
         if ($parsed_version) {
-            $_name = Str::before(
+            $_name = Str::beforeFirst(
                 $file_name_without_extension_and_version,
                 RouteLoader::VERSION_FLAG
             );

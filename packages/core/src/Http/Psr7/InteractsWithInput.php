@@ -38,7 +38,7 @@ trait InteractsWithInput
     {
         $qs = $this->getUri()->getQuery();
         
-        while (Str::endsWith($qs, ['&', '='])) {
+        while (Str::endsWith($qs, '&') || Str::endsWith($qs, '=')) {
             $qs = mb_substr($qs, 0, -1);
         }
         

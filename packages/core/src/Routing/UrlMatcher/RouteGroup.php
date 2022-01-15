@@ -32,7 +32,7 @@ final class RouteGroup
         
         $this->name = Arr::get($attributes, RoutingConfigurator::NAME_KEY, '');
         
-        $middleware = Arr::wrap(Arr::get($attributes, RoutingConfigurator::MIDDLEWARE_KEY, []));
+        $middleware = Arr::toArray(Arr::get($attributes, RoutingConfigurator::MIDDLEWARE_KEY, []));
         Assert::allString($middleware);
         $this->middleware = $middleware;
     }

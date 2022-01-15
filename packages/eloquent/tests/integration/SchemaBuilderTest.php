@@ -1078,7 +1078,7 @@ class SchemaBuilderTest extends WPTestCase
         
         $columns = $builder->getFullColumnInfo('books');
         
-        $this->assertSame('latin1', Str::before($columns['name']->Collation, '_'));
+        $this->assertSame('latin1', Str::beforeFirst($columns['name']->Collation, '_'));
     }
     
     /**
@@ -1831,7 +1831,7 @@ class TestSchemaBuilder extends MySqlBuilder
     {
         $collation = $this->getTableCollation($table);
         
-        return Str::before($collation, '_');
+        return Str::beforeFirst($collation, '_');
     }
     
     public function getTableCollation($table)

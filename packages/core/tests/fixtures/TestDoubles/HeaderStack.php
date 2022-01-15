@@ -83,7 +83,7 @@ final class HeaderStack
                 if ($value) {
                     Assert::assertStringContainsString(
                         $value,
-                        $actual = trim(Str::after($item['header'], ':')),
+                        $actual = trim(Str::afterFirst($item['header'], ':')),
                         "The value for header [{$header}] is: [{$actual}]. Expected: [{$value}]"
                     );
                 }
