@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit\Support;
+namespace Tests\Core\unit\Utils;
 
 use LogicException;
 use Snicco\Core\DIContainer;
@@ -128,7 +128,7 @@ class ReflectionDependenciesTest extends UnitTest
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            'Cant instantiate [Tests\Core\unit\Support\TestRouteAction::wrongOrder].'
+            'Cant instantiate [Tests\Core\unit\Utils\TestRouteAction::wrongOrder].'
         );
         
         $args = $this->reflection_dependencies->build(
