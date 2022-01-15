@@ -116,7 +116,7 @@ final class Request implements ServerRequestInterface
         );
     }
     
-    final function routeIs(...$patterns) :bool
+    final function routeIs(string $pattern) :bool
     {
         $route = $this->routingResult()->route();
         
@@ -124,15 +124,7 @@ final class Request implements ServerRequestInterface
             return false;
         }
         
-        $name = $route->getName();
-        
-        foreach ($patterns as $pattern) {
-            if (Str::is($pattern, $name)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return Str::is($pattern, $route->getName());
     }
     
     /**

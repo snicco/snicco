@@ -137,8 +137,7 @@ class RequestTest extends UnitTest
         
         $this->assertFalse($request->routeIs('bar'));
         $this->assertTrue($request->routeIs('foobar'));
-        $this->assertTrue($request->routeIs('bar', 'foobar'));
-        $this->assertFalse($request->routeIs(['bar', 'baz']));
+        $this->assertFalse($request->routeIs('foo'));
         
         $this->assertTrue($request->routeIs('foo*'));
     }

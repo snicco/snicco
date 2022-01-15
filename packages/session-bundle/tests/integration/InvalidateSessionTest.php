@@ -83,7 +83,7 @@ class InvalidateSessionTest extends FrameworkTestCase
         $cookies = $this->sentCookies()->toHeaders();
         $this->assertStringContainsString("{$session_config->cookieName()}=", $cookies[0]);
         
-        $sent_id_as_string = explode('=', Str::before($cookies[0], ';'))[1];
+        $sent_id_as_string = explode('=', Str::beforeFirst($cookies[0], ';'))[1];
         $this->assertSame($new_id_as_hash, SessionId::fromCookieId($sent_id_as_string)->asHash());
         
         // The data is the same
@@ -138,7 +138,7 @@ class InvalidateSessionTest extends FrameworkTestCase
         $cookies = $this->sentCookies()->toHeaders();
         $this->assertStringContainsString("{$session_config->cookieName()}=", $cookies[0]);
         
-        $sent_id_as_string = explode('=', Str::before($cookies[0], ';'))[1];
+        $sent_id_as_string = explode('=', Str::beforeFirst($cookies[0], ';'))[1];
         $this->assertSame($new_id_as_hash, SessionId::fromCookieId($sent_id_as_string)->asHash());
         
         // The data is gone

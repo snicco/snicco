@@ -51,7 +51,7 @@ final class InternalUrlGenerator implements UrlGenerator
         
         $route_path = $route->getPattern();
         
-        if (Str::startsWith($route_path, $this->admin_area->urlPrefix())) {
+        if (Str::startsWith($route_path, (string) $this->admin_area->urlPrefix())) {
             [$route_path, $q] = $this->admin_area->rewriteForUrlGeneration($route_path);
             $arguments = array_merge($arguments, $q);
         }
@@ -195,7 +195,7 @@ final class InternalUrlGenerator implements UrlGenerator
                 return $valid_url_or_path;
             }
             
-            $path = Str::after($valid_url_or_path, $this->context->getHost());
+            $path = Str::afterFirst($valid_url_or_path, $this->context->getHost());
             return '/'.ltrim($path, '/');
         }
         

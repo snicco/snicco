@@ -46,7 +46,7 @@ final class ControllerMiddleware
             );
         }
         
-        $this->whitelist = Arr::wrap($methods);
+        $this->whitelist = Arr::toArray($methods);
         
         return $this;
     }
@@ -66,7 +66,7 @@ final class ControllerMiddleware
             );
         }
         
-        $this->blacklist = Arr::wrap($methods);
+        $this->blacklist = Arr::toArray($methods);
         
         return $this;
     }

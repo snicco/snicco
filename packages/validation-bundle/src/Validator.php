@@ -110,7 +110,7 @@ class Validator
         $_r = [];
         
         foreach ($rules as $key => $rule) {
-            $rule = Arr::wrap($rule);
+            $rule = Arr::toArray($rule);
             
             if ( ! isset($rule[2])) {
                 $optional = ($rule[1] ?? 'required') === 'optional';
@@ -222,7 +222,7 @@ class Validator
     
     private function replaceWithCustomMessage($e, $attribute_name)
     {
-        return $this->custom_messages[Str::after($attribute_name, '*')] ?? $e->getMessage();
+        return $this->custom_messages[Str::afterFirst($attribute_name, '*')] ?? $e->getMessage();
     }
     
     private function replaceRawInputWithAttributeName($input, $name, $message)

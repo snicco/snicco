@@ -106,14 +106,14 @@ class EventServiceProvider extends ServiceProvider
         
         foreach ($this->config->get('events.mapped', []) as $hook_name => $events) {
             foreach ($events as $event) {
-                $event = Arr::wrap($event);
+                $event = Arr::toArray($event);
                 $event_mapper->map($hook_name, $event[0], $event[1] ?? 10);
             }
         }
         unset($hook_name);
         
         foreach ($this->config->get('events.first', []) as $hook_name => $events) {
-            foreach (Arr::wrap($events) as $event) {
+            foreach (Arr::toArray($events) as $event) {
                 $event_mapper->mapFirst($hook_name, $event);
             }
         }
@@ -121,7 +121,7 @@ class EventServiceProvider extends ServiceProvider
         unset($hook_name);
         
         foreach ($this->config->get('events.last', []) as $hook_name => $events) {
-            foreach (Arr::wrap($events) as $event) {
+            foreach (Arr::toArray($events) as $event) {
                 $event_mapper->mapLast($hook_name, $event);
             }
         }

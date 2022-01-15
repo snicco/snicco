@@ -91,37 +91,12 @@ final class WritableConfig implements ArrayAccess
      * - If both are an indexed array, the config value will be used.
      * - If either is a keyed array, array_replace will be used with config having priority.
      *
-     * @param  mixed  $app_config
-     * @param  mixed  $user_config
+     * @param  mixed  $extend_with
+     * @param  mixed  $exiting_config
      *
      * @return mixed
+     * @todo refactor this mess. Its from the early days.
      */
-    private function _replace($app_config, $user_config)
-    {
-        if ($this->isEmptyArray($user_config) && ! $this->isEmptyArray($app_config)) {
-            return $app_config;
-        }
-        
-        if ( ! is_array($app_config)) {
-            return $user_config;
-        }
-        
-        $app_config_is_indexed = array_keys($app_config) === range(0, count($app_config) - 1);
-        $user_config_is_indexed = array_keys($user_config) === range(0, count($user_config) - 1);
-        
-        if ($app_config_is_indexed && $user_config_is_indexed) {
-            return Arr::combineNumerical($user_config, $app_config);
-        }
-        
-        $result = $user_config;
-        
-        foreach ($app_config as $key => $app_value) {
-            $result[$key] = $this->replace($app_value, Arr::get($user_config, $key, []));
-        }
-        
-        return $result;
-    }
-    
     private function replace($extend_with, $exiting_config)
     {
         if ($this->isEmptyArray($exiting_config) && ! $this->isEmptyArray($extend_with)) {
@@ -137,7 +112,7 @@ final class WritableConfig implements ArrayAccess
             array_keys($exiting_config) === range(0, count($exiting_config) - 1);
         
         if ($app_config_is_indexed && $user_config_is_indexed) {
-            return Arr::combineNumerical($exiting_config, $extend_with);
+            return array_values(array_unique(array_merge($exiting_config, $extend_with)));
         }
         
         $result = $exiting_config;

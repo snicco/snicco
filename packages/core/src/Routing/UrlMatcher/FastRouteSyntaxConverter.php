@@ -101,7 +101,7 @@ final class FastRouteSyntaxConverter
         
         $first = $matches[0];
         
-        $before = Str::before($url_pattern, $first);
+        $before = Str::beforeFirst($url_pattern, $first);
         $after = Str::afterLast($url_pattern, $first);
         
         $url_pattern = $before.rtrim($first, ']').rtrim($after, '/').']';

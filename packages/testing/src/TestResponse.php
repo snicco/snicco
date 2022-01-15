@@ -394,7 +394,7 @@ class TestResponse
      */
     public function assertSee($value, $escape = true) :TestResponse
     {
-        $value = Arr::wrap($value);
+        $value = Arr::toArray($value);
         
         $values = $escape
             ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES, 'UTF-8'), $value)
@@ -445,7 +445,7 @@ class TestResponse
      */
     public function assertSeeText($value, bool $escape = true) :TestResponse
     {
-        $value = Arr::wrap($value);
+        $value = Arr::toArray($value);
         
         $values = $escape
             ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $value)
@@ -489,7 +489,7 @@ class TestResponse
      */
     public function assertDontSee($value, $escape = true) :TestResponse
     {
-        $value = Arr::wrap($value);
+        $value = Arr::toArray($value);
         
         $values = $escape
             ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $value)
@@ -513,7 +513,7 @@ class TestResponse
      */
     public function assertDontSeeText($value, $escape = true) :TestResponse
     {
-        $value = Arr::wrap($value);
+        $value = Arr::toArray($value);
         
         $values = $escape
             ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $value)

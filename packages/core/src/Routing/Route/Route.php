@@ -427,7 +427,7 @@ final class Route implements Serializable
     
     private function addMiddleware(string $m) :void
     {
-        $middleware_id = Str::before($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
+        $middleware_id = Str::beforeFirst($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
         Assert::keyNotExists(
             $this->middleware,
             $middleware_id,

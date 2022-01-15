@@ -159,7 +159,7 @@ final class RouteLoader
         
         if (1 === $res) {
             Assert::keyExists($match, 1);
-            return [Str::before($filename, self::VERSION_FLAG), $match[1]];
+            return [Str::beforeFirst($filename, self::VERSION_FLAG), $match[1]];
         }
         return [$filename, null];
     }

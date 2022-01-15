@@ -52,7 +52,7 @@ class BulkPasswordResetEmailAbstractController extends AbstractController
             return $this->response_factory->redirect()->back();
         }
         
-        $users = array_map('intval', Arr::wrap($request->input('users')));
+        $users = array_map('intval', Arr::toArray($request->input('users')));
         
         $reset_count = 0;
         

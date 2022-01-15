@@ -123,7 +123,7 @@ class NativeErrorLogger extends AbstractLogger
         $imploded = array_values($imploded);
         
         foreach ($imploded as $key => $line) {
-            $imploded[$key] = "#$key /".Str::after($line, '/');
+            $imploded[$key] = "#$key /".Str::afterFirst($line, '/');
         }
         
         return implode('', $imploded);

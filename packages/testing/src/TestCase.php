@@ -259,7 +259,7 @@ abstract class TestCase extends WPTestCase
     
     protected function withAddedMiddleware(string $group, $middleware) :TestCase
     {
-        $this->config->extend("middleware.groups.$group", Arr::wrap($middleware));
+        $this->config->extend("middleware.groups.$group", Arr::toArray($middleware));
         
         return $this;
     }
@@ -325,7 +325,7 @@ abstract class TestCase extends WPTestCase
             return $this;
         }
         
-        foreach (Arr::wrap($middleware) as $abstract) {
+        foreach (Arr::toArray($middleware) as $abstract) {
             if ( ! $abstract instanceof AbstractMiddleware) {
                 throw new RuntimeException(
                     "You are trying to enable the middleware [$abstract] but it does not implement [Snicco\Contracts\Middleware]."
@@ -355,7 +355,7 @@ abstract class TestCase extends WPTestCase
     
     protected function withOutConfig($keys) :TestCase
     {
-        foreach (Arr::wrap($keys) as $key) {
+        foreach (Arr::toArray($keys) as $key) {
             $this->config->remove($key);
         }
         
