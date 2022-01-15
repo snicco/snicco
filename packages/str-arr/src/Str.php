@@ -142,7 +142,7 @@ final class Str
      */
     public static function is($pattern, string $value) :bool
     {
-        $patterns = Arr::wrap($pattern);
+        $patterns = Arr::toArray($pattern);
         
         if (empty($patterns)) {
             return false;
