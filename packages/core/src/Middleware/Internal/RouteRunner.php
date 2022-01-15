@@ -10,6 +10,7 @@ use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Middleware\Delegate;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Core\Http\AbstractMiddleware;
+use Psr\Container\ContainerExceptionInterface;
 
 /**
  * @internal
@@ -28,6 +29,9 @@ final class RouteRunner extends AbstractMiddleware
         $this->container = $container;
     }
     
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
         $result = $request->routingResult();
@@ -51,8 +55,8 @@ final class RouteRunner extends AbstractMiddleware
             ->through($middleware)
             ->then(function (Request $request) use ($result, $action) {
                 $response = $action->execute(
+                    $request,
                     array_merge(
-                        [$request],
                         $result->decodedSegments(),
                         $result->route()->getDefaults()
                     )

@@ -57,40 +57,6 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
     }
     
     /** @test */
-    public function its_possible_to_require_a_class_but_not_the_request()
-    {
-        $foo = new Foo();
-        $this->container[Foo::class] = $foo;
-        $foo->foo = 'FOO';
-        
-        $this->routeConfigurator()->get(
-            'r1',
-            'teams/{team}/{player}',
-            [RoutingTestController::class, 'twoParamsWithDependency']
-        );
-        
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponseBody('FOO:dortmund:calvin', $request);
-    }
-    
-    /** @test */
-    public function its_possible_to_require_a_class_and_the_request_plus_params()
-    {
-        $foo = new Foo();
-        $this->container[Foo::class] = $foo;
-        $foo->foo = 'FOO';
-        
-        $this->routeConfigurator()->get(
-            'r1',
-            'teams/{team}/{player}',
-            [RoutingTestController::class, 'twoParamsWithDependencyAndRequest']
-        );
-        
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponseBody('FOO:dortmund:calvin', $request);
-    }
-    
-    /** @test */
     public function controllers_are_resolved_from_the_container()
     {
         $foo = new Foo();
@@ -108,10 +74,6 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
     /** @test */
     public function arguments_from_conditions_are_passed_after_class_dependencies()
     {
-        $foo = new Foo();
-        $this->container[Foo::class] = $foo;
-        $foo->foo = 'FOO';
-        
         $config = new WritableConfig();
         $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
@@ -126,11 +88,11 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
         $this->routeConfigurator()->get(
             'r1',
             'teams/{team}/{player}',
-            [RoutingTestController::class, 'requestDependencyParamsCondition']
+            [RoutingTestController::class, 'requestParamsConditionArgs']
         )->condition(RouteConditionWithDependency::class, true);
         
         $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
-        $this->assertResponseBody('FOO:dortmund:calvin:FOO_CONFIG', $request);
+        $this->assertResponseBody('dortmund:calvin:FOO_CONFIG', $request);
     }
     
 }

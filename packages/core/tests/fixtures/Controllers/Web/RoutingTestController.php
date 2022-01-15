@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Core\fixtures\Controllers\Web;
 
 use Snicco\Core\Http\Psr7\Request;
-use Tests\Codeception\shared\TestDependencies\Foo;
 
 class RoutingTestController
 {
@@ -43,19 +42,9 @@ class RoutingTestController
         return $param1.':'.$param2;
     }
     
-    public function twoParamsWithDependency(Foo $foo, string $param1, string $param2) :string
+    public function requestParamsConditionArgs(Request $request, string $param1, string $param2, string $condition_arg) :string
     {
-        return $foo->foo.':'.$param1.':'.$param2;
-    }
-    
-    public function twoParamsWithDependencyAndRequest(Request $request, Foo $foo, string $param1, string $param2) :string
-    {
-        return $foo->foo.':'.$param1.':'.$param2;
-    }
-    
-    public function requestDependencyParamsCondition(Request $request, Foo $foo, string $param1, string $param2, string $condition_arg) :string
-    {
-        return $foo->foo.':'.$param1.':'.$param2.':'.$condition_arg;
+        return $param1.':'.$param2.':'.$condition_arg;
     }
     
     public function twoOptional($param1 = 'default1', string $param2 = 'default2') :string
