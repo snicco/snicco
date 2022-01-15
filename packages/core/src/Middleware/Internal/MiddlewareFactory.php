@@ -6,8 +6,8 @@ namespace Snicco\Core\Middleware\Internal;
 
 use Closure;
 use LogicException;
-use Snicco\Core\DIContainer;
 use InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Http\AbstractMiddleware;
 use Psr\Container\NotFoundExceptionInterface;
@@ -21,9 +21,9 @@ use function Snicco\Core\Utils\isInterface;
 final class MiddlewareFactory
 {
     
-    private DIContainer $container;
+    private ContainerInterface $container;
     
-    public function __construct(DIContainer $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
