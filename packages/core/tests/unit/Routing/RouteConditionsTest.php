@@ -77,40 +77,27 @@ class RouteConditionsTest extends RoutingTestCase
     }
     
     /** @test */
-    public function conditions_have_access_to_the_config()
-    {
-        $config = new WritableConfig();
-        $this->container[WritableConfig::class] = $config;
-        $config->set('foo', 'FOO_CONFIG');
-        
-        $this->routeConfigurator()->get(
-            'r1',
-            '/foo/{param}',
-            [RoutingTestController::class, 'twoParams']
-        )
-             ->condition(RouteConditionWithDependency::class, true);
-        
-        $response = $this->runKernel($this->frontendRequest('GET', '/foo/bar'));
-        
-        $response->assertSee('bar:FOO_CONFIG');
-    }
-    
-    /** @test */
     public function a_condition_can_be_negated()
     {
         $config = new WritableConfig();
         $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
         
+        $this->container->instance(RouteConditionWithDependency::class, function ($pass) {
+            return new RouteConditionWithDependency(
+                $this->container[WritableConfig::class],
+                $pass
+            );
+        });
+        
         $this->routeConfigurator()->get(
             'r1',
             '/foo/{param}',
             [RoutingTestController::class, 'twoParams']
-        )
-             ->condition(
-                 RouteConditionWithDependency::class,
-                 false
-             );
+        )->condition(
+            RouteConditionWithDependency::class,
+            false
+        );
         
         $this->routeConfigurator()->get(
             'r2',

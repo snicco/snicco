@@ -116,6 +116,13 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
         $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
         
+        $this->container->instance(RouteConditionWithDependency::class, function (bool $pass) {
+            return new RouteConditionWithDependency(
+                $this->container[WritableConfig::class],
+                $pass
+            );
+        });
+        
         $this->routeConfigurator()->get(
             'r1',
             'teams/{team}/{player}',
