@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use Webmozart\Assert\Assert;
-use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Response;
+use Psr\Container\ContainerInterface;
 use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
@@ -21,10 +21,11 @@ abstract class AbstractController
      */
     private array $middleware = [];
     
-    private DIContainer $container;
+    private ContainerInterface $container;
     
     /**
      * @interal
+     * @return string[]
      */
     public function getMiddleware(string $method = null) :array
     {
@@ -45,7 +46,7 @@ abstract class AbstractController
     /**
      * @interal
      */
-    public function setContainer(DIContainer $container)
+    public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
     }

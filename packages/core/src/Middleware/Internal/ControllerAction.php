@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Internal;
 
-use Snicco\Core\DIContainer;
+use ReflectionException;
 use Snicco\Core\Utils\Reflection;
 use Snicco\Core\Http\Psr7\Request;
+use Psr\Container\ContainerInterface;
 use Snicco\Core\Http\AbstractController;
-use Snicco\Core\Utils\ReflectionDependencies;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 
-use function array_filter;
-use function method_exists;
+use function array_unshift;
 use function call_user_func_array;
 
 /**
@@ -20,54 +21,71 @@ use function call_user_func_array;
 final class ControllerAction
 {
     
-    //use ReflectsCallable;
+    private ContainerInterface $container;
+    private array              $class_callable;
+    private object             $controller_instance;
     
-    private array       $class_callable;
-    private DIContainer $container;
-    private object      $controller_instance;
-    
-    public function __construct(array $class_callable, DIContainer $container)
+    public function __construct(array $class_callable, ContainerInterface $container)
     {
         $this->class_callable = $class_callable;
         $this->container = $container;
     }
     
-    public function execute(array $args)
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     * @throws ContainerExceptionInterface
+     */
+    public function execute(Request $request, array $captured_args_decoded)
     {
-        $controller = $this->controller_instance ?? $this->container->get($this->class_callable[0]);
+        $controller = $this->controller_instance ?? $this->resolveControllerMiddleware();
         
         if ($controller instanceof AbstractController) {
             $controller->setContainer($this->container);
         }
         
-        if (Reflection::firstParameterType($this->class_callable) !== Request::class) {
-            $args = array_filter($args, function ($value) {
-                return ! $value instanceof Request;
-            });
+        if (Reflection::firstParameterType($this->class_callable) === Request::class) {
+            array_unshift($captured_args_decoded, $request);
         }
-        
-        $deps = (new ReflectionDependencies($this->container))->build($this->class_callable, $args);
         
         return call_user_func_array(
             [$controller, $this->class_callable[1]],
-            $deps
+            $captured_args_decoded
         );
     }
     
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function getMiddleware() :array
     {
         return $this->resolveControllerMiddleware();
     }
     
+    /**
+     * @throws ContainerExceptionInterface
+     */
     private function resolveControllerMiddleware() :array
     {
-        if ( ! method_exists($this->class_callable[0], 'getMiddleware')) {
+        $this->controller_instance = $this->instantiateController($this->class_callable[0]);
+        
+        if ( ! $this->controller_instance instanceof AbstractController) {
             return [];
         }
         
-        $this->controller_instance = $this->container->get($this->class_callable[0]);
-        
         return $this->controller_instance->getMiddleware($this->class_callable[1]);
+    }
+    
+    /**
+     * @throws ContainerExceptionInterface
+     */
+    private function instantiateController(string $class) :object
+    {
+        try {
+            return $this->container->get($class);
+        } catch (NotFoundExceptionInterface $e) {
+            return new $class;
+        }
     }
     
 }
