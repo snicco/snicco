@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit\Support;
+namespace Tests\Core\unit\Utils;
 
 use ReflectionFunctionAbstract;
 use Snicco\Core\Utils\Reflection;
