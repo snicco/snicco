@@ -7,7 +7,7 @@ namespace Snicco\Core\Http;
 use Webmozart\Assert\Assert;
 use Snicco\Core\Http\Psr7\Response;
 use Psr\Container\ContainerInterface;
-use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Core\Configuration\ReadOnlyConfig;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
 /**
@@ -51,45 +51,40 @@ abstract class AbstractController
         $this->container = $container;
     }
     
-    protected function middleware(string $middleware_name) :ControllerMiddleware
-    {
-        return $this->middleware[] = new ControllerMiddleware($middleware_name);
-    }
-    
-    protected function redirect() :Redirector
+    final protected function redirect() :Redirector
     {
         return $this->container[Redirector::class];
     }
     
-    protected function url() :UrlGenerator
+    final protected function url() :UrlGenerator
     {
         return $this->container[UrlGenerator::class];
     }
     
-    protected function respond() :ResponseFactory
+    final protected function respond() :ResponseFactory
     {
         return $this->container[ResponseFactory::class];
     }
     
-    /**
-     * @param  mixed  $default
-     *
-     * @return mixed
-     */
-    protected function config(string $key, $default = null)
+    final protected function config() :ReadOnlyConfig
     {
-        /** @var WritableConfig $config */
-        $config = $this->container[WritableConfig::class];
-        Assert::isInstanceOf(WritableConfig::class, $config);
-        return $config->get($key, $default);
+        /** @var ReadOnlyConfig $config */
+        $config = $this->container[ReadOnlyConfig::class];
+        Assert::isInstanceOf(ReadOnlyConfig::class, $config);
+        return $config;
     }
     
-    protected function render(string $template_identifier, array $data = []) :Response
+    final protected function render(string $template_identifier, array $data = []) :Response
     {
         /** @var TemplateRenderer $renderer */
         $renderer = $this->container[TemplateRenderer::class];
         Assert::isInstanceOf(TemplateRenderer::class, $renderer);
         return $this->respond()->html($renderer->render($template_identifier, $data));
+    }
+    
+    final protected function middleware(string $middleware_name) :ControllerMiddleware
+    {
+        return $this->middleware[] = new ControllerMiddleware($middleware_name);
     }
     
 }

@@ -6,7 +6,6 @@ namespace Snicco\Core\Routing\Condition;
 
 use Closure;
 use LogicException;
-use Webmozart\Assert\Assert;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -33,7 +32,7 @@ final class RouteConditionFactory
         $class = $blueprint->class();
         $args = $blueprint->passedArgs();
         
-        if ($this->container->has($class)) {
+        try {
             $instance = $this->container->get($class);
             if ($instance instanceof Closure) {
                 $instance = $instance(...array_values($args));
@@ -47,12 +46,11 @@ final class RouteConditionFactory
                     )
                 );
             }
-        }
-        else {
+        } catch (NotFoundExceptionInterface $e) {
+            // Don't check if the entry is in the container with has since many DI-containers
+            // are capable of constructing the service with auto-wiring.
             $instance = new $class(...array_values($args));
         }
-        
-        Assert::isInstanceOf($instance, AbstractRouteCondition::class);
         
         if ($blueprint->isNegated()) {
             return new NegatedRouteCondition($instance);

@@ -120,8 +120,9 @@ final class MiddlewareFactoryTest extends UnitTest
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
             sprintf(
-                "Resolving a middleware from the container must return an instance of [%s].\nGot [object]",
+                "Resolving a middleware from the container must return an instance of [%s].\nGot [%s]",
                 MiddlewareInterface::class,
+                Foo::class
             )
         );
         

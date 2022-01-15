@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Snicco\Core\Http;
 
 use Webmozart\Assert\Assert;
-use Snicco\Core\DIContainer;
 use Snicco\Core\Http\Psr7\Request;
 use Snicco\Core\Http\Psr7\Response;
 use Snicco\Core\Middleware\Delegate;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Core\Configuration\ReadOnlyConfig;
 use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 
 abstract class AbstractMiddleware implements MiddlewareInterface
 {
     
-    private DIContainer $container;
+    private ContainerInterface $container;
     
-    public function setContainer(DIContainer $container)
+    public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -45,35 +45,30 @@ abstract class AbstractMiddleware implements MiddlewareInterface
      */
     abstract public function handle(Request $request, Delegate $next) :ResponseInterface;
     
-    protected function respond() :ResponseFactory
+    final protected function respond() :ResponseFactory
     {
         return $this->container[ResponseFactory::class];
     }
     
-    protected function redirect() :Redirector
+    final protected function redirect() :Redirector
     {
         return $this->container[Redirector::class];
     }
     
-    protected function url() :UrlGenerator
+    final protected function url() :UrlGenerator
     {
         return $this->container[UrlGenerator::class];
     }
     
-    /**
-     * @param  mixed  $default
-     *
-     * @return mixed
-     */
-    protected function config(string $key, $default = null)
+    final protected function config() :ReadOnlyConfig
     {
-        /** @var WritableConfig $config */
-        $config = $this->container[WritableConfig::class];
-        Assert::isInstanceOf(WritableConfig::class, $config);
-        return $config->get($key, $default);
+        /** @var ReadOnlyConfig $config */
+        $config = $this->container[ReadOnlyConfig::class];
+        Assert::isInstanceOf(ReadOnlyConfig::class, $config);
+        return $config;
     }
     
-    protected function render(string $template_identifier, array $data = []) :Response
+    final protected function render(string $template_identifier, array $data = []) :Response
     {
         /** @var TemplateRenderer $renderer */
         $renderer = $this->container[TemplateRenderer::class];
