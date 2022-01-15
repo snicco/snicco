@@ -42,8 +42,9 @@ final class MiddlewareFactory
             );
         }
         
-        if ($this->container->has($middleware_class)) {
+        try {
             $middleware = $this->container->get($middleware_class);
+            
             if ($middleware instanceof Closure) {
                 $middleware = $middleware(...array_values($route_arguments));
             }
@@ -52,12 +53,13 @@ final class MiddlewareFactory
                     sprintf(
                         "Resolving a middleware from the container must return an instance of [%s].\nGot [%s]",
                         MiddlewareInterface::class,
-                        gettype($middleware)
+                        is_object($middleware) ? get_class($middleware) : gettype($middleware)
                     )
                 );
             }
-        }
-        else {
+        } catch (NotFoundExceptionInterface $e) {
+            // Don't check if the entry is in the container with has since many DI-containers
+            // are capable of constructing the service with auto-wiring.
             $middleware = new $middleware_class(...array_values($route_arguments));
         }
         
