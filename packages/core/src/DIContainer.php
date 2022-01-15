@@ -32,8 +32,8 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
     abstract public function factory(string $id, Closure $service) :void;
     
     /**
-     * Register a shared binding in the container.
-     * Once resolved the same instance will be returned.
+     * Register a lazy service in the container. Once the service is resolved the stored closure
+     * MUST be run and return the service defined in the closure. NOT the closure itself.
      *
      * @param  string  $id
      * @param  Closure  $service  When trying to overwrite an already resolved singleton.
@@ -51,26 +51,26 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
     abstract public function primitive(string $id, $value) :void;
     
     /**
-     * Register an existing instance as shared in the container.
+     * Store the passed service as is in the container.
      *
      * @param  string  $id
      * @param  object  $service  When trying to overwrite an already resolved singleton.
      *
      * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
      */
-    public function instance(string $id, object $service) :void
+    final public function instance(string $id, object $service) :void
     {
         $this->singleton($id, function () use ($service) {
             return $service;
         });
     }
     
-    public function offsetGet($offset)
+    final public function offsetGet($offset)
     {
         return $this->get($offset);
     }
     
-    public function offsetSet($offset, $value) :void
+    final public function offsetSet($offset, $value) :void
     {
         if ($value instanceof Closure) {
             $this->singleton($offset, $value);
