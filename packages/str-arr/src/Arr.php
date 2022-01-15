@@ -443,6 +443,12 @@ final class Arr
      */
     public static function dataGet($target, $key, $default = null)
     {
+        if ( ! is_string($key) && ! is_array($key)) {
+            throw new InvalidArgumentException(
+                sprintf('$key has to be string or array. Got [%s]', gettype($key))
+            );
+        }
+        
         $key = is_array($key) ? $key : explode('.', $key);
         
         foreach ($key as $i => $segment) {

@@ -91,7 +91,6 @@ class InteractsWithInputTest extends UnitTest
                     'player' => 'calvin',
                 ],
             ]
-        
         );
         
         $this->assertSame([
