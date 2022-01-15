@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit;
+namespace Tests\Core;
 
 use Snicco\Core\Environment;
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 
-final class EnvironmentTest extends UnitTest
+final class EnvironmentTest extends TestCase
 {
     
     /** @test */

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\HttpRouting\unit\Utils;
+namespace Tests\HttpRouting\Utils;
 
 use Snicco\Core\Utils\Repository;
 use Tests\Codeception\shared\UnitTest;

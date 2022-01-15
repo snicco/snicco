@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit;
+namespace Tests\Core;
 
 use LogicException;
 use Snicco\Core\Plugin;
@@ -25,7 +25,7 @@ final class ApplicationTest extends UnitTest
     protected function setUp() :void
     {
         parent::setUp();
-        $this->base_dir = dirname(__DIR__).'/fixtures';
+        $this->base_dir = __DIR__.'/fixtures';
     }
     
     /** @test */
@@ -172,7 +172,9 @@ final class ApplicationTest extends UnitTest
         $this->assertSame('bar', $received_config['app.foo']);
     }
     
-    /** @test */
+    /**
+     * @test
+     */
     public function test_config_on_the_app_returns_are_read_only_config()
     {
         $app = new Application(
@@ -191,7 +193,6 @@ final class ApplicationTest extends UnitTest
         }
         
         $app->boot();
-        
         $config = $app->config();
         $this->assertInstanceOf(ReadOnlyConfig::class, $config);
         $this->assertSame('bar', $config->get('app.foo'));

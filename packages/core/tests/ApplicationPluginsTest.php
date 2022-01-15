@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit;
+namespace Tests\Core;
 
 use stdClass;
 use RuntimeException;
@@ -26,7 +26,7 @@ final class ApplicationPluginsTest extends UnitTest
     {
         parent::setUp();
         $_SERVER['_plugins'] = [];
-        $this->base_dir = dirname(__DIR__).'/fixtures';
+        $this->base_dir = __DIR__.'/fixtures';
     }
     
     protected function tearDown() :void
