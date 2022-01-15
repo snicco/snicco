@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Validation;
 
 use Respect\Validation\Factory;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Snicco\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Validation\Exceptions\ValidationException;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;

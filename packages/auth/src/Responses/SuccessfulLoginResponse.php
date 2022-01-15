@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use WP_User;
-use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\HttpRouting\Http\Psr7\Response;
 
 /**
  * @internal

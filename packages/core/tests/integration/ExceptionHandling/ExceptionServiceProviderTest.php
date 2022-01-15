@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\ExceptionHandling;
+namespace Tests\HttpRouting\integration\ExceptionHandling;
 
 use Whoops\Run;
 use ReflectionClass;
@@ -12,9 +12,9 @@ use Whoops\Handler\PrettyPageHandler;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\ExceptionHandling\ExceptionHandler;
-use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 
 class ExceptionServiceProviderTest extends FrameworkTestCase
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Routing;
+namespace Tests\HttpRouting\integration\Routing;
 
 use Snicco\EventDispatcher\Event;
-use Tests\Codeception\shared\FrameworkTestCase;
+use Tests\HttpRouting\fixtures\WebMiddleware;
 use Snicco\EventDispatcher\Events\ResponseSent;
-use Tests\Core\fixtures\Middleware\WebMiddleware;
+use Tests\Codeception\shared\FrameworkTestCase;
 
 class WordpressConditionRoutes extends FrameworkTestCase
 {

@@ -8,7 +8,7 @@ use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Core\Configuration\WritableConfig;
-use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class PasswordLoginView extends AbstractLoginView
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\EventDispatcher;
+namespace Tests\HttpRouting\integration\EventDispatcher;
 
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\EventDispatcher\Contracts\Dispatcher;

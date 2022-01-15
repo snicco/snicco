@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher\Listeners;
 
 use Snicco\Core\Utils\WP;
-use Snicco\Core\Routing\Route\Route;
-use Snicco\Core\Routing\Route\Routes;
+use Snicco\HttpRouting\Routing\Route\Route;
+use Snicco\HttpRouting\Routing\Route\Routes;
 use Snicco\Core\EventDispatcher\Events\WPQueryFilterable;
 
 class FilterWpQuery

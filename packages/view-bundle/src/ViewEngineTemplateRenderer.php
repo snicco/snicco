@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\ViewBundle;
 
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\TemplateRenderer;
+use Snicco\HttpRouting\Http\TemplateRenderer;
 
 /**
  * @interal

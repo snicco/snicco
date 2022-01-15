@@ -6,8 +6,8 @@ namespace Snicco\Testing\Assertable;
 
 use PHPUnit\Framework\Assert;
 use Snicco\Testing\TestResponse;
-use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\HttpRouting\Http\Psr7\Response;
 
 class MiddlewareTestResponse extends TestResponse
 {

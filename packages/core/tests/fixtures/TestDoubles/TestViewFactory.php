@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\fixtures\TestDoubles;
+namespace Tests\HttpRouting\fixtures\TestDoubles;
 
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\Contracts\ViewInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Http;
+namespace Tests\HttpRouting\integration\Http;
 
 use Tests\Codeception\shared\FrameworkTestCase;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Core\integration\Http;
+namespace Tests\HttpRouting\integration\Http;
 
-use Snicco\Core\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;

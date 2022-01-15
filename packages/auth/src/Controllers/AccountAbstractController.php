@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Events\UserDeleted;
 use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\DeletesUsers;
-use Snicco\Core\Http\AbstractController;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\CreatesNewUser;
 use Snicco\Auth\Contracts\CreateAccountView;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
 use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;

@@ -6,9 +6,9 @@ namespace Snicco\Auth\Authenticators;
 
 use WP_User;
 use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Contracts\Authenticator;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;

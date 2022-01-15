@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Routing;
+namespace Tests\HttpRouting\integration\Routing;
 
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Middleware\Delegate;
-use Snicco\Core\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Core\Http\AbstractMiddleware;
-use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Middleware\Delegate;
+use Snicco\HttpRouting\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\HttpRouting\Http\DefaultResponseFactory;
 use Snicco\Core\EventDispatcher\Events\ResponseSent;
 
 class ApiRoutesTest extends FrameworkTestCase

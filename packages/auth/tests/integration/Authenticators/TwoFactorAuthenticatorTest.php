@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Authenticators;
 
 use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\Authenticator;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Tests\Auth\integration\Stubs\TestTwoFactorProvider;

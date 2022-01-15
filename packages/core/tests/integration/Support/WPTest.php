@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Support;
+namespace Tests\HttpRouting\integration\Support;
 
 use Mockery;
 use Snicco\Core\Utils\WP;

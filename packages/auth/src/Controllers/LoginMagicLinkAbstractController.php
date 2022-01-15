@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\Core\Http\AbstractController;
 use Snicco\Auth\Mail\MagicLinkLoginMail;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;

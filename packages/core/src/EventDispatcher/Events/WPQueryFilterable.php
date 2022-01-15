@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher\Events;
 
 use WP;
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 
 class WPQueryFilterable extends CoreEvent implements MappedFilter

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core\EventDispatcher\Events;
 
 use Snicco\StrArr\Str;
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Core\Configuration\WritableConfig;
 
 class IncomingApiRequest extends IncomingRequest

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\Codeception\shared\helpers;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Snicco\Core\Http\ResponseFactory;
 use Psr\Http\Message\UriFactoryInterface;
-use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\Core\Routing\UrlGenerator\UrlGenerator;
 use Psr\Http\Message\UploadedFileFactoryInterface;
+use Snicco\HttpRouting\Http\DefaultResponseFactory;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 /**
  * @internal

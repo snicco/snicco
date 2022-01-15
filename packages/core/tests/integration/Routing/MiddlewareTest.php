@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Routing;
+namespace Tests\HttpRouting\integration\Routing;
 
+use Tests\HttpRouting\fixtures\WebMiddleware;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Tests\Core\fixtures\Middleware\WebMiddleware;
-use Tests\Core\fixtures\Middleware\GlobalMiddleware;
+use Tests\HttpRouting\fixtures\GlobalMiddleware;
 
 class MiddlewareTest extends FrameworkTestCase
 {

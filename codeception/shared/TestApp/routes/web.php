@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Http\ResponseFactory;
-use Tests\Core\fixtures\Conditions\IsPost;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Tests\Core\fixtures\Middleware\WebMiddleware;
-use Tests\Core\fixtures\Middleware\FooMiddleware;
-use Tests\Core\fixtures\Middleware\FoobarMiddleware;
+use Tests\HttpRouting\fixtures\WebMiddleware;
+use Tests\HttpRouting\fixtures\FooMiddleware;
+use Tests\HttpRouting\fixtures\FoobarMiddleware;
+use Tests\HttpRouting\fixtures\Conditions\IsPost;
 
 $pass_condition = $GLOBALS['test']['pass_fallback_route_condition'] ?? false;
 

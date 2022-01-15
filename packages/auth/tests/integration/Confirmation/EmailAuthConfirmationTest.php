@@ -6,8 +6,8 @@ namespace Tests\Auth\integration\Confirmation;
 
 use Snicco\Core\Contracts\MagicLink;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\Core\Routing\InMemoryMagicLink;
-use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\HttpRouting\Routing\InMemoryMagicLink;
+use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class EmailAuthConfirmationTest extends AuthTestCase
 {

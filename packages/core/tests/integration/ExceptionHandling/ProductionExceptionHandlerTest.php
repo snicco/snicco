@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\ExceptionHandling;
+namespace Tests\HttpRouting\integration\ExceptionHandling;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\Test\TestLogger;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
+use Snicco\HttpRouting\Routing\Router;
 
 /**
  * @var Router $router

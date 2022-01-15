@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Testing;
 
-use Snicco\Core\Http\Cookies;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\Cookies;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 
 class TestResponseEmitter
 {

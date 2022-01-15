@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\InternalMiddlewareTestCase;
-use Snicco\Core\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Session\Contracts\SessionInterface;
+use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\AllowMutableSession;
 

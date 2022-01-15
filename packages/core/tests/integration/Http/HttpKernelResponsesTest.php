@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Core\integration\Http;
+namespace Tests\HttpRouting\integration\Http;
 
-use Snicco\Core\Http\ResponseEmitter;
 use Snicco\Testing\TestResponseEmitter;
+use Snicco\HttpRouting\Http\ResponseEmitter;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 class HttpKernelResponsesTest extends FrameworkTestCase

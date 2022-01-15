@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\integration;
 
 use Snicco\StrArr\Str;
-use Snicco\Core\Http\Cookies;
-use Snicco\Core\Http\ResponseEmitter;
+use Snicco\HttpRouting\Http\Cookies;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Session\Exceptions\BadSessionID;
+use Snicco\HttpRouting\Http\ResponseEmitter;
 use Snicco\Session\ValueObjects\SessionConfig;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Tests\Codeception\shared\FrameworkTestCase;

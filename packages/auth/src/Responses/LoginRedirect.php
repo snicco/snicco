@@ -6,8 +6,8 @@ namespace Snicco\Auth\Responses;
 
 use Snicco\SessionBundle\StatefulRedirector;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
-use Snicco\Core\Http\Responses\RedirectResponse;
-use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\HttpRouting\Http\Responses\RedirectResponse;
+use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class LoginRedirect extends AbstractLoginResponse
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Tests\Core\fixtures\Conditions\TrueRouteCondition;
+use Tests\HttpRouting\fixtures\Conditions\TrueRouteCondition;
 
 return [
     

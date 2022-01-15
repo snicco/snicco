@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Core\integration\Application;
+namespace Tests\HttpRouting\integration\Application;
 
 use Tests\Codeception\shared\FrameworkTestCase;
 

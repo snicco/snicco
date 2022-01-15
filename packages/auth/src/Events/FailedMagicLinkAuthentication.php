@@ -2,7 +2,7 @@
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Request;
 
 class FailedMagicLinkAuthentication extends BannableEvent
 {
