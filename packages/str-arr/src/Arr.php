@@ -434,6 +434,52 @@ final class Arr
         return $merged;
     }
     
+    /**
+     * @param  array|ArrayAccess|object  $target
+     * @param  string|array  $key
+     * @param  mixed  $default
+     *
+     * @return array|mixed
+     */
+    public static function dataGet($target, $key, $default = null)
+    {
+        $key = is_array($key) ? $key : explode('.', $key);
+        
+        foreach ($key as $i => $segment) {
+            unset($key[$i]);
+            
+            if (is_null($segment)) {
+                return $target;
+            }
+            
+            if ($segment === '*') {
+                if ( ! is_array($target)) {
+                    return self::returnDefault($default);
+                }
+                
+                $result = [];
+                
+                foreach ($target as $item) {
+                    $result[] = self::dataGet($item, $key);
+                }
+                
+                return in_array('*', $key) ? self::collapse($result) : $result;
+            }
+            
+            if (self::accessible($target) && self::exists($target, $segment)) {
+                $target = $target[$segment];
+            }
+            elseif (is_object($target) && isset($target->{$segment})) {
+                $target = $target->{$segment};
+            }
+            else {
+                return self::returnDefault($default);
+            }
+        }
+        
+        return $target;
+    }
+    
     private static function returnDefault($default)
     {
         return $default instanceof Closure ? $default() : $default;

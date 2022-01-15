@@ -64,6 +64,9 @@ trait InteractsWithInput
         return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
     
+    /**
+     * This method supports "*" as wildcards in the key.
+     */
     final public function input($key = null, $default = null)
     {
         return dataGet($this->all(), $key, $default);
