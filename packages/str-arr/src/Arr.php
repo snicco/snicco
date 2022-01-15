@@ -1,11 +1,12 @@
 <?php
 
 /*
- * Modified version of the Illuminate/Arr class with strict
+ * Trimmed down version of the Illuminate/Arr class with the following modifications
  * - strict type hinting
  * - final class attribute
  * - way less permissive with invalid input like null values.
  * - removal of the Collection class and substitution with ArrayObject|ArrayAccess where applicable.
+ * - removal of unneeded doc-blocks
  *
  * https://github.com/laravel/framework/blob/v8.35.1/src/Illuminate/Collections/Arr.php
  *
@@ -23,6 +24,23 @@ use Closure;
 use ArrayAccess;
 use ArrayObject;
 use InvalidArgumentException;
+
+use function count;
+use function strpos;
+use function gettype;
+use function sprintf;
+use function explode;
+use function is_null;
+use function is_array;
+use function array_rand;
+use function array_flip;
+use function is_iterable;
+use function array_merge;
+use function array_shift;
+use function array_values;
+use function array_key_exists;
+use function iterator_to_array;
+use function array_intersect_key;
 
 final class Arr
 {
