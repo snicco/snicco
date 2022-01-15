@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Utils\WP;
+use Snicco\Component\Core\Utils\WP;
 
 ?>
 

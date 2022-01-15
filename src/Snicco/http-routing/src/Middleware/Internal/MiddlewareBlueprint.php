@@ -7,7 +7,7 @@ namespace Snicco\HttpRouting\Middleware\Internal;
 use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
-use function Snicco\Core\Utils\isInterface;
+use function Snicco\Component\Core\Utils\isInterface;
 
 /**
  * @api

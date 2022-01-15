@@ -9,15 +9,15 @@ use Psr\Log\LoggerInterface;
 use Snicco\SignedUrl\UrlSigner;
 use Snicco\SignedUrl\Sha256Hasher;
 use Snicco\SignedUrl\Contracts\Hasher;
-use Snicco\Core\Application\SharedKeys;
 use Snicco\SignedUrl\SignedUrlValidator;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\SignedUrlWP\Storage\WPDBStorage;
 use Snicco\SignedUrl\Storage\InMemoryStorage;
 use Snicco\SignedUrlMiddleware\CollectGarbage;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\SignedUrl\Contracts\SignedUrlStorage;
+use Snicco\Component\Core\Application\SharedKeys;
 use Snicco\SignedUrlMiddleware\ValidateSignature;
+use Snicco\Component\Core\Contracts\ServiceProvider;
 
 final class SignedUrlServiceProvider extends ServiceProvider
 {

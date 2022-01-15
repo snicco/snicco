@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers\Compat;
 
 use WP_User;
-use Snicco\Core\Utils\WP;
 use Snicco\Mail\MailBuilder;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\Psr7\Response;

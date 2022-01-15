@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\HttpRouting\Utils;
 
 use Generator;
-use Snicco\StrArr\Str;
 use InvalidArgumentException;
-use Snicco\Core\Utils\UrlPath;
+use Snicco\Component\StrArr\Str;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Utils\UrlPath;
 
 class UrlPathTest extends UnitTest
 {

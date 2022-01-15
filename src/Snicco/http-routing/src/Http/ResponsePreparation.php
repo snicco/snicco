@@ -2,8 +2,8 @@
 
 namespace Snicco\HttpRouting\Http;
 
-use Snicco\StrArr\Str;
-use Snicco\StrArr\Arr;
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\StrArr\Arr;
 use Psr\Http\Message\StreamInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\Psr7\Response;

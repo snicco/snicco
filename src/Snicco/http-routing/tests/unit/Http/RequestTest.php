@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\HttpRouting\unit\Http;
 
-use Snicco\Core\Utils\Repository;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Core\Utils\Repository;
 use Snicco\HttpRouting\Routing\Route\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Testing\Concerns\CreatePsrRequests;

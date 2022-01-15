@@ -6,7 +6,7 @@ namespace Tests\HttpRouting\unit\Middleware;
 
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\HttpRouting\Middleware\MustMatchRoute;
-use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\NotFoundException;
 
 final class MustMatchRouteTest extends InternalMiddlewareTestCase
 {

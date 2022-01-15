@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$site_name = esc_html(\Snicco\Core\Utils\WP::siteName());
+$site_name = esc_html(\Snicco\Component\Core\Utils\WP::siteName());
 
 ?>
 

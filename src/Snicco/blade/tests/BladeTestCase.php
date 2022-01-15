@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Blade;
 
-use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Blade\BladeStandalone;
 use Snicco\View\GlobalViewContext;
+use Snicco\Component\Core\Utils\WP;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Support\Facades\Facade;

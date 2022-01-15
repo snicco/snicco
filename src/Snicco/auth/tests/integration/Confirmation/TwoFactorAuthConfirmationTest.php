@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Auth\integration\Confirmation;
 
-use Snicco\Core\Shared\Encryptor;
 use Tests\Auth\integration\AuthTestCase;
+use Snicco\Component\Core\Shared\Encryptor;
 use Tests\Auth\integration\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Routing\UrlMatcher;
 
-use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
+use Snicco\Component\StrArr\Str;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Routing\Route\Route;
 use Snicco\HttpRouting\Routing\Route\Routes;

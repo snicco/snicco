@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers\Compat;
 
-use Snicco\StrArr\Arr;
-use Snicco\Core\Utils\WP;
 use Snicco\Mail\MailBuilder;
+use Snicco\Component\StrArr\Arr;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Auth\Traits\SendsPasswordResetMails;
-use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 use function get_userdata;
 use function check_admin_referer;

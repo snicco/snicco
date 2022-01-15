@@ -9,12 +9,12 @@ use InvalidArgumentException;
 use Snicco\View\GlobalViewContext;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\HttpRouting\Http\TemplateRenderer;
 use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Contracts\ViewComposerFactory;
 use Snicco\View\Implementations\PHPViewFactory;
-use Snicco\Core\ExceptionHandling\HtmlErrorRender;
+use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\Core\ExceptionHandling\HtmlErrorRender;
 
 use function in_array;
 use function strtoupper;

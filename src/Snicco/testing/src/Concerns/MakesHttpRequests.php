@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\StrArr\Str;
-use Snicco\StrArr\Arr;
-use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
 use Snicco\View\ViewEngine;
 use InvalidArgumentException;
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\StrArr\Arr;
 use Snicco\Testing\TestResponse;
 use Psr\Http\Message\UriInterface;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\HttpRouting\Http\HttpKernel;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\Core\Application\Application_OLD;
-use Snicco\Core\Configuration\WritableConfig;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Snicco\Component\Core\Application\Application_OLD;
+use Snicco\Component\Core\Configuration\WritableConfig;
 
 /**
  * @property Session|null $session

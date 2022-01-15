@@ -7,13 +7,13 @@ namespace Snicco\HttpRouting\Middleware\Internal;
 use Closure;
 use Throwable;
 use LogicException;
-use Snicco\StrArr\Arr;
 use Webmozart\Assert\Assert;
+use Snicco\Component\StrArr\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\HttpRouting\Middleware\Delegate;
-use Snicco\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
 
 use function is_string;
 use function array_map;

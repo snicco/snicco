@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\SessionBundle\BetterWPHooks\Events;
 
 use WP_User;
-use Snicco\Core\EventDispatcher\Events\CoreEvent;
 use Snicco\EventDispatcher\Contracts\MappedAction;
+use Snicco\Component\Core\EventDispatcher\Events\CoreEvent;
 
 class UserLoggedIn extends CoreEvent implements MappedAction
 {

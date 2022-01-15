@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth;
 
-use Snicco\StrArr\Arr;
 use Snicco\Session\Session;
+use Snicco\Component\StrArr\Arr;
 use Snicco\Session\SessionManager;
 use Snicco\HttpRouting\Http\Cookie;
 use Snicco\HttpRouting\Http\Psr7\Request;

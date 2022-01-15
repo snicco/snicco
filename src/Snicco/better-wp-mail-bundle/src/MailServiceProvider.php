@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Contracts\Mailer;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Mail\Testing\FakeMailer;
 use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Contracts\MailRenderer;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\Mail\ValueObjects\MailDefaults;
 use Snicco\Mail\Renderer\AggregateRenderer;
 use Snicco\Mail\Renderer\FilesystemRenderer;
-use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Mail\Contracts\MailEventDispatcher;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\Core\Configuration\WritableConfig;
 
 /**
  * @internal

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\HttpRouting\Middleware\Internal;
 
 use RuntimeException;
-use Snicco\StrArr\Arr;
 use Webmozart\Assert\Assert;
+use Snicco\Component\StrArr\Arr;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Middleware\Exceptions\FoundInvalidMiddleware;
 use Snicco\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 
-use function Snicco\Core\Utils\isInterface;
+use function Snicco\Component\Core\Utils\isInterface;
 
 /**
  * The middleware stack is responsible for parsing and normalized all middleware for a request.

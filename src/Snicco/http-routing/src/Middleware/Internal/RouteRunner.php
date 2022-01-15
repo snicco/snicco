@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Middleware\Internal;
 
-use Snicco\Core\DIContainer;
+use Snicco\Component\Core\DIContainer;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\Psr7\Response;

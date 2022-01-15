@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Auth\unit\Middleware;
 
 use Mockery;
-use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Routing\Route\Route;
 use Snicco\Auth\Middleware\AuthUnconfirmed;

@@ -6,7 +6,7 @@ namespace Snicco\Auth\Mail;
 
 use WP_User;
 use Snicco\Mail\Email;
-use Snicco\Core\Utils\WP;
+use Snicco\Component\Core\Utils\WP;
 
 class MagicLinkLoginMail extends Email
 {

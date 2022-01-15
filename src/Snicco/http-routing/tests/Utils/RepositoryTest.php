@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\HttpRouting\Utils;
 
-use Snicco\Core\Utils\Repository;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Utils\Repository;
 
 class RepositoryTest extends UnitTest
 {

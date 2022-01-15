@@ -6,7 +6,7 @@ namespace Snicco\Session;
 
 use Closure;
 use DateTimeImmutable;
-use Snicco\StrArr\Arr;
+use Snicco\Component\StrArr\Arr;
 use Snicco\Session\Events\SessionRotated;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Session\ValueObjects\CsrfToken;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\HttpRouting\Middleware\Internal;
 
 use ReflectionException;
-use Snicco\Core\Utils\Reflection;
 use Psr\Container\ContainerInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Core\Utils\Reflection;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\HttpRouting\Http\AbstractController;

@@ -10,8 +10,8 @@ use Snicco\Blade\BladeStandalone;
 use Illuminate\Support\Facades\Blade;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Component\Core\Contracts\ServiceProvider;
 
 class BladeServiceProvider extends ServiceProvider
 {

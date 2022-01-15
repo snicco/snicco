@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\HttpRouting\unit\Routing;
 
-use Snicco\Core\Utils\PHPCacheFile;
 use Tests\HttpRouting\RoutingTestCase;
+use Snicco\Component\Core\Utils\PHPCacheFile;
 use Tests\HttpRouting\fixtures\Conditions\MaybeRouteCondition;
 use Tests\HttpRouting\fixtures\Controller\RoutingTestController;
 

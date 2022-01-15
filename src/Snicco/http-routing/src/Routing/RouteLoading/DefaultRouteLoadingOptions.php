@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Routing\RouteLoading;
 
-use Snicco\StrArr\Str;
-use Snicco\Core\Utils\UrlPath;
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\Core\Utils\UrlPath;
 use Snicco\HttpRouting\Routing\RouteLoader;
 use Snicco\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 

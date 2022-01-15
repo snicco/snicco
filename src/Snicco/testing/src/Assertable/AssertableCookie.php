@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Assertable;
 
-use Snicco\StrArr\Str;
+use Snicco\Component\StrArr\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 class AssertableCookie

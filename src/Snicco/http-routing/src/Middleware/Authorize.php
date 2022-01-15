@@ -8,7 +8,7 @@ use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 /**
  * @api

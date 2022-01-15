@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Http\Psr7;
 
-use Snicco\StrArr\Str;
-use Snicco\Core\Utils\Repository;
+use Snicco\Component\StrArr\Str;
 use Snicco\HttpRouting\Http\Cookies;
+use Snicco\Component\Core\Utils\Repository;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\HttpRouting\Http\Exceptions\RequestHasNoType;

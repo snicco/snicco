@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\View\Implementations;
 
 use RuntimeException;
-use Snicco\StrArr\Str;
+use Snicco\Component\StrArr\Str;
 use Snicco\View\Contracts\ViewInterface;
 
 /**

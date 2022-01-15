@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Listeners;
 
-use Snicco\Core\Utils\WP;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;

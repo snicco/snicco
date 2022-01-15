@@ -9,12 +9,12 @@ use Countable;
 use ArrayAccess;
 use Traversable;
 use InvalidArgumentException;
+use Test\Helpers\CreateContainer;
 use Psr\Container\ContainerInterface;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\PimpleContainer\PimpleDIContainer;
-use Tests\Codeception\shared\helpers\CreateContainer;
 
-use function Snicco\Core\Utils\isInterface;
+use function Snicco\Component\Core\Utils\isInterface;
 
 final class FunctionsTest extends UnitTest
 {

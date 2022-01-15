@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Authenticators;
 
 use WP_User;
-use Snicco\Core\Contracts\MagicLink;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Core\Contracts\MagicLink;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 

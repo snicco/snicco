@@ -6,7 +6,7 @@ namespace Snicco\Testing;
 
 use Closure;
 use RuntimeException;
-use Snicco\Core\DIContainer;
+use Snicco\Component\Core\DIContainer;
 use Snicco\HttpRouting\Http\Redirector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;

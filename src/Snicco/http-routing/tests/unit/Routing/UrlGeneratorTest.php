@@ -8,8 +8,8 @@ use InvalidArgumentException;
 use Tests\HttpRouting\RoutingTestCase;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\HttpRouting\Routing\Exception\BadRouteParameter;
-use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 class UrlGeneratorTest extends RoutingTestCase
 {

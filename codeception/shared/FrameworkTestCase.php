@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared;
 
-use Snicco\Core\Utils\Arr;
 use PHPUnit\Framework\Assert;
 use Snicco\Testing\TestResponse;
+use Test\Helpers\CreateContainer;
+use Snicco\Component\Core\Utils\Arr;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
 use Snicco\HttpRouting\Http\ResponseEmitter;
-use Snicco\Core\Application\Application_OLD;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Tests\Codeception\shared\helpers\CreateContainer;
+use Snicco\Component\Core\Application\Application_OLD;
 
 use function add_filter;
 

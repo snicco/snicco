@@ -7,7 +7,7 @@ use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Middleware\Delegate;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
-use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class TwoFactorEnabled extends AbstractMiddleware
 {

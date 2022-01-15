@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\DefuseEncryption;
 
-use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\Contracts\ServiceProvider;
+use Snicco\Component\Core\Shared\Encryptor;
+use Snicco\Component\Core\Contracts\ServiceProvider;
 
 final class DefuseEncryptionServiceProvider extends ServiceProvider
 {

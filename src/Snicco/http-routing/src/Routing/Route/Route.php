@@ -6,9 +6,9 @@ namespace Snicco\HttpRouting\Routing\Route;
 
 use Serializable;
 use RuntimeException;
-use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
+use Snicco\Component\StrArr\Str;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewareStack;
 use Snicco\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\HttpRouting\Routing\Controller\FallBackController;

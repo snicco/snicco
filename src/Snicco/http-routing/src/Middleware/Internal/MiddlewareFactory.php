@@ -13,7 +13,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 
-use function Snicco\Core\Utils\isInterface;
+use function Snicco\Component\Core\Utils\isInterface;
 
 /**
  * @internal

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\View\fixtures\TestDoubles;
 
-use Snicco\StrArr\Arr;
+use Snicco\Component\StrArr\Arr;
 use Snicco\View\Implementations\PHPView;
 use Snicco\View\Contracts\ViewInterface;
 

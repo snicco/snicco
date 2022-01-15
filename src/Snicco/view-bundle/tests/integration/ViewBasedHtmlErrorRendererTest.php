@@ -10,10 +10,10 @@ use Snicco\View\Contracts\ViewFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Exceptions\ViewRenderingException;
-use Snicco\Core\ExceptionHandling\ExceptionHandler;
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
-use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
-use Snicco\Core\ExceptionHandling\Exceptions\ErrorViewException;
+use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\ErrorViewException;
 
 final class ViewBasedHtmlErrorRendererTest extends FrameworkTestCase
 {

@@ -6,7 +6,7 @@ namespace Snicco\HttpRouting\Routing\Route;
 
 use ArrayIterator;
 use Webmozart\Assert\Assert;
-use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 use function count;
 

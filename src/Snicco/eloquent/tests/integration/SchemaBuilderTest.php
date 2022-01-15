@@ -2,8 +2,8 @@
 
 namespace Tests\Database\integration;
 
-use Snicco\StrArr\Str;
 use mysqli_sql_exception;
+use Snicco\Component\StrArr\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;

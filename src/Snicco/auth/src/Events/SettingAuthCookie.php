@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Events;
 
 use WP_User;
-use Snicco\Core\EventDispatcher\Events\CoreEvent;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
+use Snicco\Component\Core\EventDispatcher\Events\CoreEvent;
 
 class SettingAuthCookie extends CoreEvent implements MappedFilter
 {
