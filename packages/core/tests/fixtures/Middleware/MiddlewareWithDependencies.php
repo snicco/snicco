@@ -14,8 +14,8 @@ use Tests\Codeception\shared\TestDependencies\Foo;
 class MiddlewareWithDependencies extends AbstractMiddleware
 {
     
-    private Foo $foo;
-    private Bar $bar;
+    public Foo $foo;
+    public Bar $bar;
     
     public function __construct(Foo $foo, Bar $bar)
     {

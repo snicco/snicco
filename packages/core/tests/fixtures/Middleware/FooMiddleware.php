@@ -11,7 +11,7 @@ use Snicco\Core\Http\AbstractMiddleware;
 class FooMiddleware extends AbstractMiddleware
 {
     
-    private string $foo;
+    public string $foo;
     
     public function __construct($foo = 'foo_middleware')
     {

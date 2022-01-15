@@ -372,7 +372,7 @@ class MiddlewareDependency implements MiddlewareInterface
     /**
      * @var Bar
      */
-    private $bar;
+    public $bar;
     
     public function __construct(\Tests\Codeception\shared\TestDependencies\Bar $bar)
     {

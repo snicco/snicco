@@ -96,6 +96,18 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
         $this->container->instance(Foo::class, $foo);
         $this->container->instance(Bar::class, $bar);
         
+        $this->container->instance(
+            MiddlewareWithClassAndParamDependencies::class,
+            function ($foo, $bar) {
+                return new MiddlewareWithClassAndParamDependencies(
+                    $this->container[Foo::class],
+                    $this->container[Bar::class],
+                    $foo,
+                    $bar
+                );
+            }
+        );
+        
         $this->withMiddlewareAlias([
             'm' => MiddlewareWithClassAndParamDependencies::class,
         ]);

@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Core\Middleware\Internal;
 
+use Closure;
+use LogicException;
 use Snicco\Core\DIContainer;
+use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Core\Http\AbstractMiddleware;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Core\Utils\ReflectionDependencies;
+use Psr\Container\ContainerExceptionInterface;
+
+use function Snicco\Core\Utils\isInterface;
 
 /**
  * @internal
@@ -23,19 +28,37 @@ final class MiddlewareFactory
         $this->container = $container;
     }
     
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function create(string $middleware_class, array $route_arguments = []) :MiddlewareInterface
     {
-        if ( ! empty($route_arguments)) {
-            $constructor_args = (new ReflectionDependencies($this->container))
-                ->build([$middleware_class, '__construct'], $route_arguments);
-            
-            return new $middleware_class(...array_values($constructor_args));
+        if ( ! isInterface($middleware_class, MiddlewareInterface::class)) {
+            throw new InvalidArgumentException(
+                "Middleware [$middleware_class] has to be an instance of ["
+                .MiddlewareInterface::class
+                ."]."
+            );
         }
         
-        try {
+        if ($this->container->has($middleware_class)) {
             $middleware = $this->container->get($middleware_class);
-        } catch (NotFoundExceptionInterface $e) {
-            $middleware = new $middleware_class;
+            if ($middleware instanceof Closure) {
+                $middleware = $middleware(...array_values($route_arguments));
+            }
+            if ( ! $middleware instanceof MiddlewareInterface) {
+                throw new LogicException(
+                    sprintf(
+                        "Resolving a middleware from the container must return an instance of [%s].\nGot [%s]",
+                        MiddlewareInterface::class,
+                        gettype($middleware)
+                    )
+                );
+            }
+        }
+        else {
+            $middleware = new $middleware_class(...array_values($route_arguments));
         }
         
         if ($middleware instanceof AbstractMiddleware) {
