@@ -6,12 +6,12 @@ namespace Snicco\HttpRouting\Routing;
 
 use Closure;
 use LogicException;
-use Snicco\StrArr\Str;
 use ReflectionFunction;
 use ReflectionException;
 use ReflectionParameter;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
+use Snicco\Component\StrArr\Str;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Snicco\HttpRouting\Routing\RouteLoading\RouteLoadingOptions;
@@ -20,7 +20,7 @@ use Snicco\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
-use function Snicco\Core\Utils\isInterface;
+use function Snicco\Component\Core\Utils\isInterface;
 
 /**
  * @api

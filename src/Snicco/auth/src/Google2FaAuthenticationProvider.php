@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Auth;
 
 use BaconQrCode\Writer;
-use Snicco\Core\Utils\WP;
-use Snicco\Core\Shared\Encryptor;
 use PragmaRX\Google2FA\Google2FA;
+use Snicco\Component\Core\Utils\WP;
 use BaconQrCode\Renderer\Color\Rgb;
 use Snicco\Auth\Traits\ResolvesUser;
 use BaconQrCode\Renderer\ImageRenderer;
+use Snicco\Component\Core\Shared\Encryptor;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Middleware;
 
-use Snicco\StrArr\Str;
-use Snicco\Core\Utils\UrlPath;
+use Snicco\Component\StrArr\Str;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\Core\Utils\UrlPath;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 

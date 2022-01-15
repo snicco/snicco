@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Auth\unit\Middleware;
 
 use Mockery;
-use Snicco\Core\Utils\WP;
 use Snicco\SessionBundle\Keys;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\HttpRouting\Http\Psr7\Request;

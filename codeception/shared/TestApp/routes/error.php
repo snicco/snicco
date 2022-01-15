@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /** @var \Snicco\HttpRouting\Routing\Router $router */
 
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 $router->get('error/500', function () {
     throw new HttpException(500, 'Secret logging stuff.');

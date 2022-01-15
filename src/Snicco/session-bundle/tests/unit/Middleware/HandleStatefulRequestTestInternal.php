@@ -20,11 +20,11 @@ use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\Session\Contracts\MutableSessionInterface;
-use Snicco\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
+use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
 
 final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
 {

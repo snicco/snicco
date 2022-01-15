@@ -6,8 +6,8 @@ namespace Tests\HttpRouting\Utils;
 
 use stdClass;
 use InvalidArgumentException;
-use Snicco\Core\Utils\PHPCacheFile;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Utils\PHPCacheFile;
 
 final class PHPCacheFileTest extends UnitTest
 {

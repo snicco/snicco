@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\HttpRouting\fixtures;
 
-use Snicco\StrArr\Str;
 use PHPUnit\Framework\Assert;
+use Snicco\Component\StrArr\Str;
 
 use function trim;
 use function explode;

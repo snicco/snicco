@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Core\Utils\WP;
-use Snicco\Core\EventDispatcher\Events\CoreEvent;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
+use Snicco\Component\Core\EventDispatcher\Events\CoreEvent;
 
 class GenerateLoginUrl extends CoreEvent implements MappedFilter
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Core\EventDispatcher\Events\CoreEvent;
+use Snicco\Component\Core\EventDispatcher\Events\CoreEvent;
 
 class UserWasLoggedOut extends CoreEvent
 {

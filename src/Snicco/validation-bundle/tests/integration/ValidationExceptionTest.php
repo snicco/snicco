@@ -7,9 +7,9 @@ namespace Tests\Validation\integration;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\SessionBundle\SessionServiceProvider;
 use Snicco\Validation\ValidationServiceProvider;
-use Snicco\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Validation\Exceptions\ValidationException;
-use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationExceptionTest extends FrameworkTestCase
 {

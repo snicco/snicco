@@ -21,7 +21,6 @@ use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
-use Snicco\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
@@ -35,8 +34,9 @@ use Snicco\SessionBundle\Middleware\StartSessionMiddleware;
 use Snicco\Auth\Controllers\ResetPasswordAbstractController;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedOut;
 use Snicco\Auth\Controllers\ForgotPasswordAbstractController;
+use Snicco\Component\Core\EventDispatcher\Events\ResponseSent;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionAbstractController;
-use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 class AuthServiceProviderTest extends AuthTestCase
 {

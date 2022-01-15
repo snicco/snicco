@@ -14,8 +14,8 @@ use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Snicco\HttpRouting\Http\Responses\RedirectResponse;
 use Snicco\HttpRouting\Http\Responses\DelegatedResponse;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 /**

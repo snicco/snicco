@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\HttpRouting\Utils;
 
 use ReflectionFunctionAbstract;
-use Snicco\Core\Utils\Reflection;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Utils\Reflection;
 
 final class ReflectionTest extends UnitTest
 {

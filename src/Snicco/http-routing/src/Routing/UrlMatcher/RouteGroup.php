@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Routing\UrlMatcher;
 
-use Snicco\StrArr\Arr;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Utils\UrlPath;
+use Snicco\Component\StrArr\Arr;
+use Snicco\Component\Core\Utils\UrlPath;
 use Snicco\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 
 use function trim;

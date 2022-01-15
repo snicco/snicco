@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\HttpRouting\unit\Routing;
 
 use Tests\HttpRouting\RoutingTestCase;
-use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Component\Core\Configuration\WritableConfig;
 use Tests\HttpRouting\fixtures\Conditions\TrueRouteCondition;
 use Tests\HttpRouting\fixtures\Conditions\MaybeRouteCondition;
 use Tests\HttpRouting\fixtures\Conditions\FalseRouteCondition;

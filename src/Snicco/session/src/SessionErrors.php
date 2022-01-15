@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\StrArr\Arr;
+use Snicco\Component\StrArr\Arr;
 
 /**
  * @api

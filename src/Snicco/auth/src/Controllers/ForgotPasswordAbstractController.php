@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
-use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;

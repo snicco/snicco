@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\HttpRouting\Routing\Route\Route;
 use Snicco\HttpRouting\Routing\Route\RouteCollection;
-use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 final class RouteCollectionTest extends UnitTest
 {

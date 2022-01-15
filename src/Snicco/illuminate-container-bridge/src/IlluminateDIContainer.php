@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Illuminate;
 
 use Closure;
-use Snicco\Core\DIContainer;
 use Illuminate\Container\Container;
-use Snicco\Core\Exception\FrozenServiceException;
+use Snicco\Component\Core\DIContainer;
+use Snicco\Component\Core\Exception\FrozenServiceException;
 
 final class IlluminateDIContainer extends DIContainer
 {

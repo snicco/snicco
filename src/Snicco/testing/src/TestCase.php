@@ -6,10 +6,10 @@ namespace Snicco\Testing;
 
 use Mockery;
 use RuntimeException;
-use Snicco\StrArr\Arr;
-use Snicco\StrArr\Str;
-use Snicco\Core\Utils\WP;
 use Snicco\Session\Session;
+use Snicco\Component\StrArr\Arr;
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\Core\Utils\WP;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Support\Facades\Facade;
@@ -18,25 +18,25 @@ use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\HttpRouting\Middleware\Delegate;
-use Snicco\Core\Application\Application_OLD;
 use Mockery\Exception\InvalidCountException;
-use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Testing\Concerns\InteractsWithEvents;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Testing\Concerns\InteractsWithSession;
-use Snicco\Core\ExceptionHandling\ExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Concerns\InteractsWithContainer;
-use Snicco\Core\ExceptionHandling\NullExceptionHandler;
+use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\Core\Application\Application_OLD;
+use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
+use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
 
-use function Snicco\Core\Utils\Functions\classUsesRecursive;
+use function Snicco\Component\Core\Utils\Functions\classUsesRecursive;
 
 abstract class TestCase extends WPTestCase
 {

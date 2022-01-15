@@ -13,10 +13,10 @@ use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Middleware\Delegate;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 use PHPUnit\Framework\ExpectationFailedException;
-use Snicco\Core\Contracts\RouteUrlGeneratorInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
 use Snicco\HttpRouting\Routing\UrlMatcher\RouteUrlGenerator;
+use Snicco\Component\Core\Contracts\RouteUrlGeneratorInterface;
 
 class MiddlewareTestCaseTest extends MiddlewareTestCase
 {

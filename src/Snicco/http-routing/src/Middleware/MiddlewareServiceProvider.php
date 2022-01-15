@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Middleware;
 
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\HttpRouting\Http\ResponseEmitter;
 use Snicco\HttpRouting\Routing\Route\Routes;
 use Psr\Http\Message\StreamFactoryInterface;
+use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\HttpRouting\Middleware\Internal\RouteRunner;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewareStack;
 use Snicco\HttpRouting\Middleware\Internal\RoutingMiddleware;

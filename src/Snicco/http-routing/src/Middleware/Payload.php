@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Snicco\HttpRouting\Middleware;
 
 use RuntimeException;
-use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
+use Snicco\Component\StrArr\Str;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 /**
  * @api

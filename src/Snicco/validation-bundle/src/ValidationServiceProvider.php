@@ -6,12 +6,12 @@ namespace Snicco\Validation;
 
 use Respect\Validation\Factory;
 use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\HttpRouting\Http\ResponseFactory;
-use Snicco\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Validation\Exceptions\ValidationException;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;
-use Snicco\Core\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Core\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationServiceProvider extends ServiceProvider
 {

@@ -8,7 +8,7 @@ use Closure;
 use Webmozart\Assert\Assert;
 use Snicco\HttpRouting\Middleware\Authorize;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
-use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AuthorizeTest extends InternalMiddlewareTestCase
 {

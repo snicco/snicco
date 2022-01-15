@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Tests\HttpRouting\unit\Middleware;
 
 use LogicException;
-use Snicco\Core\DIContainer;
+use Test\Helpers\CreateContainer;
+use Snicco\Component\Core\DIContainer;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,7 +16,6 @@ use Tests\HttpRouting\fixtures\FooMiddleware;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\Codeception\shared\TestDependencies\Foo;
-use Tests\Codeception\shared\helpers\CreateContainer;
 use Tests\HttpRouting\fixtures\MiddlewareWithDependencies;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewareFactory;
 

@@ -7,7 +7,7 @@ namespace Snicco\HttpRouting\Http;
 use Webmozart\Assert\Assert;
 use Psr\Container\ContainerInterface;
 use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\Core\Configuration\ReadOnlyConfig;
+use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 /**

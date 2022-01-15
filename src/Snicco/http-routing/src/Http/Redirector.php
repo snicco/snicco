@@ -6,7 +6,7 @@ namespace Snicco\HttpRouting\Http;
 
 use Snicco\HttpRouting\Http\Responses\RedirectResponse;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 interface Redirector
 {

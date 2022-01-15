@@ -13,7 +13,7 @@ use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\HttpRouting\Middleware\Delegate;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Core\Configuration\ReadOnlyConfig;
+use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 abstract class AbstractMiddleware implements MiddlewareInterface

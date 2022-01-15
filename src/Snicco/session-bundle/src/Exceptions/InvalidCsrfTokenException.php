@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\SessionBundle\Exceptions;
 
 use Throwable;
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 class InvalidCsrfTokenException extends HttpException
 {

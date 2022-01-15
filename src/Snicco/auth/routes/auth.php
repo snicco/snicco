@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Snicco\HttpRouting\Routing\Router;
-use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Auth\Controllers\AccountAbstractController;
+use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
 use Snicco\Auth\Controllers\RecoveryCodeAbstractController;
 use Snicco\Auth\Controllers\ResetPasswordAbstractController;

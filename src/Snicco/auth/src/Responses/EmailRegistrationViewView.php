@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 
 class EmailRegistrationViewView extends AbstractRegistrationView

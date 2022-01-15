@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\View\unit;
 
-use Snicco\Core\DIContainer;
+use Test\Helpers\CreateContainer;
+use Snicco\Component\Core\DIContainer;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;
 use Tests\View\fixtures\TestDoubles\TestView;
-use Tests\Codeception\shared\TestDependencies\Bar;
 use Tests\View\fixtures\ViewComposers\FooComposer;
-use Tests\Codeception\shared\helpers\CreateContainer;
+use Tests\Codeception\shared\TestDependencies\Bar;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 
 class ViewComposerFactoryTest extends UnitTest

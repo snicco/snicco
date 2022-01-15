@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\DefuseEncryption\unit;
 
-use Snicco\Core\Shared\Encryptor;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Shared\Encryptor;
 use Snicco\DefuseEncryption\DefuseEncryptor;
 use Defuse\Crypto\Exception\BadFormatException;
 

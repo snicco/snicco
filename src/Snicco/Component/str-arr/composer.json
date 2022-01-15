@@ -1,0 +1,25 @@
+{
+  "name": "sniccowp/str-arr",
+  "description": "A standalone implementation of Laravel's Str and Arr classes.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\StrArr\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\StrArr\\Tests\\": "tests"
+    }
+  }
+}

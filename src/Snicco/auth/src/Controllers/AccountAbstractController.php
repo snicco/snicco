@@ -15,7 +15,7 @@ use Snicco\Auth\Contracts\CreateAccountView;
 use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
-use Snicco\Core\ExceptionHandling\Exceptions\AuthorizationException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AccountAbstractController extends AbstractController
 {

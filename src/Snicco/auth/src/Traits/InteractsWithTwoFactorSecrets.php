@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Auth\Traits;
 
 use WP_User;
-use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\ExceptionHandling\Exceptions\DecryptException;
+use Snicco\Component\Core\Shared\Encryptor;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\DecryptException;
 
 /**
  * @property Encryptor $encryptor

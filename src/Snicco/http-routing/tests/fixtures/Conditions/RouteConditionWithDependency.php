@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\HttpRouting\fixtures\Conditions;
 
 use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\HttpRouting\Routing\Condition\AbstractRouteCondition;
 
 class RouteConditionWithDependency extends AbstractRouteCondition

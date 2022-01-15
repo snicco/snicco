@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 /**
  * @api

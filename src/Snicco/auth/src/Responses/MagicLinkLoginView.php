@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
+use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Contracts\AbstractLoginView;
-use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class MagicLinkLoginView extends AbstractLoginView

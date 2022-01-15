@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 use Snicco\Session\Session;
-use Snicco\Core\Utils\ViewErrorBag;
+use Snicco\Component\Core\Utils\ViewErrorBag;
 
 /** @var ViewErrorBag $errors */
 /** @var Session $session */

@@ -7,7 +7,7 @@ namespace Tests\HttpRouting\unit\Middleware;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Middleware\JsonPayload;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 class JsonPayloadTest extends InternalMiddlewareTestCase
 {

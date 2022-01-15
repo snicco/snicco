@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Confirmation;
 
-use Snicco\Core\Shared\Encryptor;
 use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Core\Shared\Encryptor;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\HttpRouting\Http\ResponseFactory;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Authenticators;
 
 use WP_User;
-use Snicco\Core\Shared\Encryptor;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\Core\Shared\Encryptor;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;

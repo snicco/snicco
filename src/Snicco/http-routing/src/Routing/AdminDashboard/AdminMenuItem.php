@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Routing\AdminDashboard;
 
-use Snicco\StrArr\Str;
 use Webmozart\Assert\Assert;
-use Snicco\Core\Utils\UrlPath;
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\Core\Utils\UrlPath;
 use Snicco\HttpRouting\Routing\Route\Route;
 
 use function mb_convert_case;

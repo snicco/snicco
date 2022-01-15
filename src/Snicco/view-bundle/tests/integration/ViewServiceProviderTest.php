@@ -15,9 +15,9 @@ use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Implementations\PHPViewFactory;
 use Snicco\ViewBundle\ViewEngineTemplateRenderer;
 use Snicco\ViewBundle\ViewBasedHtmlErrorRenderer;
-use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Tests\View\fixtures\ViewComposers\FooComposer;
 use Tests\Codeception\shared\TestDependencies\Bar;
+use Snicco\Component\Core\ExceptionHandling\HtmlErrorRender;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 
 use const DS;

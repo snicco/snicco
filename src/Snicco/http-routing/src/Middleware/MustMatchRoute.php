@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\HttpRouting\Http\Responses\DelegatedResponse;
-use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\NotFoundException;
 
 /**
  * @api

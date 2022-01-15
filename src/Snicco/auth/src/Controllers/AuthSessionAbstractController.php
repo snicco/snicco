@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Closure;
-use Snicco\StrArr\Arr;
-use Snicco\Core\Utils\Url;
 use Snicco\Session\Session;
+use Snicco\Component\StrArr\Arr;
+use Snicco\Component\Core\Utils\Url;
 use Snicco\HttpRouting\Http\Responsable;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\HttpRouting\Http\Psr7\Request;
@@ -19,7 +19,7 @@ use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 use Snicco\HttpRouting\Http\Responses\NullResponse;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
-use Snicco\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionAbstractController extends AbstractController
 {

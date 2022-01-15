@@ -16,14 +16,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tests\HttpRouting\fixtures\FooMiddleware;
 use Tests\HttpRouting\fixtures\BarMiddleware;
-use Snicco\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\HttpRouting\Http\Psr7\Response as AppResponse;
 use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 use Snicco\HttpRouting\Middleware\Internal\MiddlewareBlueprint;
-use Snicco\Core\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\NotFoundException;
 
 class MiddlewarePipelineTest extends RoutingTestCase
 {

@@ -6,7 +6,7 @@ namespace Snicco\Validation\Exceptions;
 
 use Throwable;
 use Snicco\Session\MessageBag;
-use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 class ValidationException extends HttpException
 {

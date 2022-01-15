@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\HttpRouting\Http\Psr7;
 
 use stdClass;
-use Snicco\StrArr\Arr;
-use Snicco\StrArr\Str;
+use Snicco\Component\StrArr\Arr;
+use Snicco\Component\StrArr\Str;
 
 trait InteractsWithInput
 {

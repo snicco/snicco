@@ -6,8 +6,8 @@ namespace Tests\HttpRouting\unit\Routing;
 
 use Tests\HttpRouting\RoutingTestCase;
 use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\Core\Configuration\WritableConfig;
 use Tests\Codeception\shared\TestDependencies\Foo;
+use Snicco\Component\Core\Configuration\WritableConfig;
 use Tests\HttpRouting\fixtures\Controller\RoutingTestController;
 use Tests\HttpRouting\fixtures\Controller\ControllerWithDependencies;
 use Tests\HttpRouting\fixtures\Conditions\RouteConditionWithDependency;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Codeception\shared;
 
-use Snicco\Core\DIContainer;
-use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Configuration\WritableConfig;
+use Snicco\Component\Core\DIContainer;
+use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\Core\Configuration\WritableConfig;
 
 final class CustomizeConfigProvider extends ServiceProvider
 {

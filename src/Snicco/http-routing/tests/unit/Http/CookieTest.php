@@ -7,9 +7,9 @@ namespace Tests\HttpRouting\unit\Http;
 use DateTime;
 use LogicException;
 use InvalidArgumentException;
-use Snicco\Core\Utils\Carbon;
 use Snicco\HttpRouting\Http\Cookie;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Utils\Carbon;
 
 class CookieTest extends UnitTest
 {

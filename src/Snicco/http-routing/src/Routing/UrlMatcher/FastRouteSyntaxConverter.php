@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\HttpRouting\Routing\UrlMatcher;
 
-use Snicco\StrArr\Str;
+use Snicco\Component\StrArr\Str;
 use Snicco\HttpRouting\Routing\Route\Route;
 
 use function rtrim;

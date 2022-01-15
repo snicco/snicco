@@ -7,9 +7,9 @@ namespace Tests\IllumianteContainerBridge\unit;
 use Illuminate\Container\Container;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Illuminate\IlluminateDIContainer;
-use Snicco\Core\Exception\FrozenServiceException;
 use Tests\Codeception\shared\TestDependencies\Foo;
 use Tests\Codeception\shared\TestDependencies\Bar;
+use Snicco\Component\Core\Exception\FrozenServiceException;
 
 final class IlluminateContainerAdapterTest extends UnitTest
 {

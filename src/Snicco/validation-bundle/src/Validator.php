@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Validation;
 
 use LogicException;
-use Snicco\StrArr\Arr;
-use Snicco\StrArr\Str;
 use Snicco\Session\MessageBag;
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\StrArr\Arr;
 use Respect\Validation\Rules\Not;
 use Respect\Validation\Validator as v;
 use Respect\Validation\Exceptions\ValidationException as RespectValidationError;

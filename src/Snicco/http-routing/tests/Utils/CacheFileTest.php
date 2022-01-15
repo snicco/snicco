@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\HttpRouting\Utils;
 
 use InvalidArgumentException;
-use Snicco\Core\Utils\CacheFile;
 use Tests\Codeception\shared\UnitTest;
+use Snicco\Component\Core\Utils\CacheFile;
 
 final class CacheFileTest extends UnitTest
 {

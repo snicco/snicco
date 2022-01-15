@@ -6,12 +6,12 @@ namespace Tests\Auth\integration;
 
 use WP_User;
 use Snicco\Auth\RecoveryCode;
-use Snicco\Core\Shared\Encryptor;
 use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\MailBundle\MailServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Component\Core\Shared\Encryptor;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Tests\Codeception\shared\FrameworkTestCase;

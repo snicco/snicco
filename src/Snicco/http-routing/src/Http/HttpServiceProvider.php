@@ -6,8 +6,8 @@ namespace Snicco\HttpRouting\Http;
 
 use RuntimeException;
 use RKA\Middleware\IpAddress;
-use Snicco\Core\Contracts\ServiceProvider;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\HttpRouting\Routing\Controller\ViewController;
 use Snicco\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\HttpRouting\Routing\Controller\FallBackController;
