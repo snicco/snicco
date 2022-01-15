@@ -6,9 +6,9 @@ namespace Snicco\Auth\Responses;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class EmailAuthConfirmationView extends AbstractEmailAuthConfirmationView
 {

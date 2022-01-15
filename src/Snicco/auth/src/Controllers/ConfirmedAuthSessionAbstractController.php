@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Events\FailedAuthConfirmation;
-use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\SessionBundle\Events\SessionWasRegenerated;
+use Snicco\Component\HttpRouting\Http\AbstractController;
 
 class ConfirmedAuthSessionAbstractController extends AbstractController
 {

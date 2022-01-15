@@ -13,12 +13,18 @@
         "php": "^7.4",
         "ext-json": "*",
         "ext-mbstring": "*",
+        "nikic/fast-route": "1.3.0",
         "pimple/pimple": "^3.0.0",
         "psr/container": "^1.0.0",
+        "psr/http-message": "^1.0.0",
+        "psr/http-server-middleware": "^1.0.0",
         "symfony/finder": "^5.0-stable",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
+        "adriansuter/php-autoload-override": "^1.2",
+        "nyholm/psr7": "^1.0.0",
+        "nyholm/psr7-server": "^1.0-stable",
         "phpunit/phpunit": "^9.5",
         "sniccowp/pimple-bridge": "dev-master",
         "symplify/monorepo-builder": "^9.4"
@@ -29,15 +35,19 @@
         ],
         "psr-4": {
             "Snicco\\Bridge\\Pimple\\": "src/Snicco/Bridge/pimple/src",
+            "Snicco\\Bundle\\Testing\\": "src/Snicco/Bundle/testing/src",
             "Snicco\\Component\\Core\\": "src/Snicco/Component/core/src",
+            "Snicco\\Component\\HttpRouting\\": "src/Snicco/Component/http-routing/src",
             "Snicco\\Component\\StrArr\\": "src/Snicco/Component/str-arr/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Snicco\\Bridge\\Pimple\\Tests\\": "src/Snicco/Bridge/pimple/tests",
+            "Snicco\\Bundle\\Testing\\Tests\\": "src/Snicco/Bundle/testing/tests",
             "Snicco\\Component\\Core\\Testing\\": "src/Snicco/Component/core/Testing",
             "Snicco\\Component\\Core\\Tests\\": "src/Snicco/Component/core/tests",
+            "Snicco\\Component\\HttpRouting\\Tests\\": "src/Snicco/Component/http-routing/tests",
             "Snicco\\Component\\StrArr\\Tests\\": "src/Snicco/Component/str-arr/tests"
         }
     },
@@ -62,8 +72,10 @@
     },
     "replace": {
         "sniccowp/core": "self.version",
+        "sniccowp/http-routing": "self.version",
         "sniccowp/pimple-brige": "self.version",
-        "sniccowp/str-arr": "self.version"
+        "sniccowp/str-arr": "self.version",
+        "sniccowp/testing-bundle": "self.version"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

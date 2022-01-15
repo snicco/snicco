@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\AbstractController;
 
 class WPLoginRedirectAbstractController extends AbstractController
 {

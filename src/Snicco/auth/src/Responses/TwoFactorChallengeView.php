@@ -6,7 +6,7 @@ namespace Snicco\Auth\Responses;
 
 use Snicco\View\ViewEngine;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class TwoFactorChallengeView extends Abstract2FaChallengeView
 {

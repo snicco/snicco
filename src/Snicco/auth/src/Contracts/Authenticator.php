@@ -6,11 +6,11 @@ namespace Snicco\Auth\Contracts;
 
 use WP_User;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Middleware\Delegate;
-use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
-use Snicco\HttpRouting\Http\Responses\NullResponse;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Http\Responses\NullResponse;
 
 abstract class Authenticator extends AbstractMiddleware
 {

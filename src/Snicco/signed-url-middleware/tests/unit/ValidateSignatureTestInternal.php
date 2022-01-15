@@ -12,11 +12,11 @@ use Snicco\SignedUrl\UrlSigner;
 use Snicco\SignedUrl\Sha256Hasher;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\SignedUrl\SignedUrlValidator;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\SignedUrl\Storage\InMemoryStorage;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SignedUrlMiddleware\ValidateSignature;
 use Snicco\SignedUrl\Exceptions\InvalidSignature;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 final class ValidateSignatureTestInternal extends InternalMiddlewareTestCase
 {

@@ -9,22 +9,22 @@ use DateTimeImmutable;
 use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
 use Snicco\Session\ImmutableSession;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\PimpleContainer\PimpleDIContainer;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\ValueObjects\SessionConfig;
-use Snicco\HttpRouting\Middleware\ShareCookies;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\Session\Contracts\MutableSessionInterface;
+use Snicco\Component\HttpRouting\Middleware\ShareCookies;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
-use Tests\Codeception\shared\helpers\CreatePsr17Factories;
-use Snicco\HttpRouting\Middleware\Internal\MiddlewareFactory;
-use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
+use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
+use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 
 final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
 {

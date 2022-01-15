@@ -8,7 +8,7 @@ use Tests\Auth\integration\AuthTestCase;
 use Snicco\Component\Core\Shared\Encryptor;
 use Tests\Auth\integration\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class TwoFactorAuthConfirmationTest extends AuthTestCase
 {

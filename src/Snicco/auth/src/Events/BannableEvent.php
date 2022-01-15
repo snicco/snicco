@@ -3,7 +3,7 @@
 namespace Snicco\Auth\Events;
 
 use Snicco\Auth\Fail2Ban\Bannable;
-use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Core\EventDispatcher\Events\CoreEvent;
 
 abstract class BannableEvent extends CoreEvent implements Bannable

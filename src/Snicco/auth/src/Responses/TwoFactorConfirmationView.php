@@ -6,7 +6,7 @@ namespace Snicco\Auth\Responses;
 
 use Snicco\View\ViewEngine;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 
 class TwoFactorConfirmationView extends Abstract2FAuthConfirmationView

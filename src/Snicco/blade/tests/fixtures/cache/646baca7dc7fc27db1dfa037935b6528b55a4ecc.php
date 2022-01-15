@@ -1,0 +1,1 @@
+<?php echo e($name ?? 'no local context [name]'); ?><?php echo e($globals->get('surname') ?? 'no global context [surname]'); ?><?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/framework/packages/blade/tests/fixtures/views/components/view-composer-parent.blade.php ENDPATH**/ ?>

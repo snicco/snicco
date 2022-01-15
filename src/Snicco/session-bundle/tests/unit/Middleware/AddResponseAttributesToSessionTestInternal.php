@@ -6,10 +6,10 @@ namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
 use Snicco\Session\MessageBag;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Session\Contracts\SessionInterface;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\AddResponseAttributesToSession;
 

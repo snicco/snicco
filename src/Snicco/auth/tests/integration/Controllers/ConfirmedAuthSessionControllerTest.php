@@ -8,9 +8,9 @@ use Snicco\View\ViewEngine;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Events\FailedAuthConfirmation;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\SessionBundle\Events\SessionWasRegenerated;
 
 class ConfirmedAuthSessionControllerTest extends AuthTestCase

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Traits;
 
 use WP_User;
-use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 trait UsesCurrentRequest
 {

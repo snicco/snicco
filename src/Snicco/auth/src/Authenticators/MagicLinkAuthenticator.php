@@ -7,9 +7,9 @@ namespace Snicco\Auth\Authenticators;
 use WP_User;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Core\Contracts\MagicLink;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 
 class MagicLinkAuthenticator extends Authenticator

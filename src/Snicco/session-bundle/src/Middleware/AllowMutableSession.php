@@ -6,11 +6,11 @@ namespace Snicco\SessionBundle\Middleware;
 
 use Snicco\SessionBundle\Keys;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Middleware\Delegate;
 use Snicco\Session\Contracts\SessionInterface;
-use Snicco\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Session\Contracts\SessionManagerInterface;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 
 use function Snicco\SessionBundle\getSessionFromManager;
 

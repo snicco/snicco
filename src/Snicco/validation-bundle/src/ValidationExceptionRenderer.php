@@ -3,9 +3,9 @@
 namespace Snicco\Validation;
 
 use Snicco\Component\StrArr\Arr;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Validation\Exceptions\ValidationException;
+use Snicco\Component\HttpRouting\Http\ResponseFactory;
 
 /**
  * @todo refactor

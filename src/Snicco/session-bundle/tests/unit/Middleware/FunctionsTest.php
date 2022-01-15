@@ -9,11 +9,11 @@ use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
 use Snicco\Session\ImmutableSession;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Session\Contracts\SessionInterface;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Session\Contracts\ImmutableSessionInterface;
-use Tests\Codeception\shared\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 
 use function Snicco\SessionBundle\getReadSession;
 use function Snicco\SessionBundle\getWriteSession;

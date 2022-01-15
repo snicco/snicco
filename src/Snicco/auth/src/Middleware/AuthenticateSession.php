@@ -10,11 +10,11 @@ use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LoginResponse;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\HttpRouting\Middleware\Delegate;
-use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 
 class AuthenticateSession extends AbstractMiddleware
 {
