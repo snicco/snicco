@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Core;
 
 use ArrayAccess;
+use JsonException;
 use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
@@ -119,6 +120,9 @@ final class Application implements ArrayAccess
         return isset($this->plugins[$alias]);
     }
     
+    /**
+     * @throws JsonException
+     */
     private function loadConfiguration() :WritableConfig
     {
         $cache_file = null;

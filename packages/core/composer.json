@@ -13,10 +13,8 @@
     "ext-mbstring": "*",
     "webmozart/assert": "^1.10",
     "sniccowp/str-arr": "dev-master",
-    "sniccowp/event-dispatcher": "dev-master",
     "symfony/finder": "^5.0-stable",
-    "psr/container": "^1.0.0",
-    "psr/log": "^1.0.0"
+    "psr/container": "^1.0.0"
   },
   "autoload": {
     "psr-4": {

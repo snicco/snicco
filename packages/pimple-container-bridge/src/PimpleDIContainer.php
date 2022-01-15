@@ -24,7 +24,7 @@ final class PimpleDIContainer extends DIContainer
         try {
             $this->pimple[$id] = $this->pimple->factory($service);
         } catch (FrozenServiceException $e) {
-            throw \Snicco\Core\Exception\FrozenServiceException::from($e);
+            throw \Snicco\Core\Exception\FrozenServiceException::fromPrevious($e);
         }
     }
     
@@ -33,7 +33,7 @@ final class PimpleDIContainer extends DIContainer
         try {
             $this->pimple[$id] = $service;
         } catch (FrozenServiceException $e) {
-            throw \Snicco\Core\Exception\FrozenServiceException::from($e);
+            throw \Snicco\Core\Exception\FrozenServiceException::fromPrevious($e);
         }
     }
     

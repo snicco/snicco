@@ -6,6 +6,9 @@ namespace Snicco\Core\Exception;
 
 use LogicException;
 
+/**
+ * @api
+ */
 final class BadConfigType extends LogicException
 {
     

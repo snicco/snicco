@@ -199,7 +199,7 @@ final class ApplicationTest extends UnitTest
     
 }
 
-class DummyPlugin extends Plugin
+class DummyPlugin implements Plugin
 {
     
     public WritableConfig $config;
