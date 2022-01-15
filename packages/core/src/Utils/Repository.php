@@ -14,6 +14,9 @@ namespace Snicco\Core\Utils;
 use ArrayAccess;
 use Snicco\StrArr\Arr;
 
+/**
+ * @api
+ */
 final class Repository implements ArrayAccess
 {
     

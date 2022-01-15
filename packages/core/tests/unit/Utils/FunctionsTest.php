@@ -75,6 +75,13 @@ final class FunctionsTest extends UnitTest
         $foo = isInterface(TestTraversable::class, 'Foo');
     }
     
+    /** @test */
+    public function test_with_child_interface_as_string()
+    {
+        $this->assertTrue(isInterface(Iterator::class, Traversable::class));
+        $this->assertFalse(isInterface(Traversable::class, Iterator::class));
+    }
+    
 }
 
 class TestTraversable implements Iterator
