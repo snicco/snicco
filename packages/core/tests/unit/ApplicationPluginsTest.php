@@ -169,7 +169,7 @@ final class ApplicationPluginsTest extends UnitTest
     
 }
 
-class Plugin1 extends Plugin
+class Plugin1 implements Plugin
 {
     
     private ?string $alias;
@@ -215,7 +215,7 @@ class Plugin1 extends Plugin
     
 }
 
-class Plugin2 extends Plugin
+class Plugin2 implements Plugin
 {
     
     private ?string $alias;
@@ -261,7 +261,7 @@ class Plugin2 extends Plugin
     
 }
 
-class PluginAssertOrder extends Plugin
+class PluginAssertOrder implements Plugin
 {
     
     public bool     $booted     = false;
@@ -313,7 +313,7 @@ class PluginAssertOrder extends Plugin
     
 }
 
-class PluginThatLogsUsedPlugins extends Plugin
+class PluginThatLogsUsedPlugins implements Plugin
 {
     
     public function alias() :string

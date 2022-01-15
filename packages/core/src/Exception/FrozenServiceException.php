@@ -8,12 +8,15 @@ use Throwable;
 use RuntimeException;
 use Psr\Container\ContainerExceptionInterface;
 
+/**
+ * @api
+ */
 final class FrozenServiceException extends RuntimeException implements ContainerExceptionInterface
 {
     
-    public static function from(Throwable $throwable) :FrozenServiceException
+    public static function fromPrevious(Throwable $throwable) :FrozenServiceException
     {
-        return new static($throwable->getMessage(), $throwable->getCode(), $throwable);
+        return new self($throwable->getMessage(), $throwable->getCode(), $throwable);
     }
     
 }

@@ -11,11 +11,11 @@ use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\View\Implementations\PHPView;
 use Snicco\View\Contracts\ViewInterface;
+use Tests\View\fixtures\TestDoubles\TestView;
 use Snicco\View\Implementations\PHPViewFinder;
 use Snicco\View\Implementations\PHPViewFactory;
 use Snicco\View\Exceptions\ViewNotFoundException;
 use Snicco\View\Exceptions\ViewRenderingException;
-use Tests\HttpRouting\fixtures\TestDoubles\TestView;
 use Snicco\View\Implementations\NewableInstanceViewComposerFactory;
 
 use const DS;
