@@ -148,7 +148,6 @@ class InteractsWithInputTest extends UnitTest
             'product' => [
                 'name' => 'shoe',
                 'price' => '10',
-            
             ],
         ]);
         
