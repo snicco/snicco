@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit\Configuration;
+namespace Tests\Core\Configuration;
 
 use Tests\Codeception\shared\UnitTest;
 use Snicco\Core\Configuration\WritableConfig;

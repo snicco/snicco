@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\HttpRouting\unit\Utils;
+namespace Tests\HttpRouting\Utils;
 
 use InvalidArgumentException;
 use Snicco\Core\Utils\CacheFile;

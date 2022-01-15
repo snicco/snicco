@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit;
+namespace Tests\Core;
 
 use Snicco\Core\Directories;
 use InvalidArgumentException;
@@ -16,7 +16,7 @@ final class DirectoriesTest extends UnitTest
     protected function setUp() :void
     {
         parent::setUp();
-        $this->valid_base_dir = dirname(__DIR__).'/fixtures';
+        $this->valid_base_dir = __DIR__.'/fixtures';
     }
     
     /** @test */

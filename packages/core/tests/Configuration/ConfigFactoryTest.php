@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit\Configuration;
+namespace Tests\Core\Configuration;
 
 use RuntimeException;
 use Snicco\Core\Application;
@@ -26,7 +26,7 @@ final class ConfigFactoryTest extends UnitTest
     protected function setUp() :void
     {
         parent::setUp();
-        $this->base_dir = dirname(__DIR__, 2).'/fixtures';
+        $this->base_dir = dirname(__DIR__).'/fixtures';
         $this->cache_dir = $this->base_dir.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'cache';
         $this->cleanDirs();
     }
