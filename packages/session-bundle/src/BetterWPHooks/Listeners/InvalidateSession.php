@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\SessionBundle\BetterWPHooks\Listeners;
 
-use Snicco\Core\Http\Cookies;
-use Snicco\Core\Http\ResponseEmitter;
+use Snicco\HttpRouting\Http\Cookies;
 use Snicco\Session\ValueObjects\CookiePool;
+use Snicco\HttpRouting\Http\ResponseEmitter;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedIn;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedOut;

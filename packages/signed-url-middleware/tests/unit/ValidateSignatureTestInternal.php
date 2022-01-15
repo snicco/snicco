@@ -9,12 +9,12 @@ use Psr\Log\NullLogger;
 use Snicco\SignedUrl\Secret;
 use Psr\Log\Test\TestLogger;
 use Snicco\SignedUrl\UrlSigner;
-use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\SignedUrl\Sha256Hasher;
-use Snicco\Core\Http\Psr7\Request;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\SignedUrl\SignedUrlValidator;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\SignedUrl\Storage\InMemoryStorage;
+use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SignedUrlMiddleware\ValidateSignature;
 use Snicco\SignedUrl\Exceptions\InvalidSignature;
 

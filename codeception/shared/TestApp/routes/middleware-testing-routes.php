@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
+use Snicco\HttpRouting\Routing\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Tests\Core\fixtures\Middleware\GlobalMiddleware;
+use Tests\HttpRouting\fixtures\GlobalMiddleware;
 
 TestApp::route()->createInGroup(function (Router $router) {
     $router->get('foo', function () {

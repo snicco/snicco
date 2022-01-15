@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Application;
+namespace Tests\HttpRouting\integration\Application;
 
 use Snicco\Core\Utils\WP;
-use Snicco\Core\Routing\Router;
-use Snicco\Core\Http\Redirector;
-use Snicco\Core\Http\ResponseFactory;
-use Snicco\Core\Http\StatelessRedirector;
+use Snicco\HttpRouting\Routing\Router;
+use Snicco\HttpRouting\Http\Redirector;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Snicco\Core\Application\Application_OLD;
-use Snicco\Core\Http\DefaultResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Http\Responses\RedirectResponse;
-use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\HttpRouting\Http\StatelessRedirector;
+use Snicco\HttpRouting\Http\DefaultResponseFactory;
+use Snicco\HttpRouting\Http\Responses\RedirectResponse;
+use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Core\ExceptionHandling\Exceptions\ConfigurationException;
 
 use const DS;

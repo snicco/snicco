@@ -4,7 +4,7 @@ namespace Snicco\ViewBundle;
 
 use Throwable;
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Core\ExceptionHandling\HtmlErrorRender;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 use Snicco\Core\ExceptionHandling\Exceptions\ErrorViewException;

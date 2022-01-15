@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\fixtures\TestDoubles;
+namespace Tests\HttpRouting\fixtures\TestDoubles;
 
 use Snicco\StrArr\Arr;
 use Snicco\View\Implementations\PHPView;

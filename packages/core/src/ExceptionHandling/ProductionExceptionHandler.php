@@ -11,10 +11,10 @@ use Snicco\StrArr\Arr;
 use Whoops\Run as Whoops;
 use Snicco\Core\Utils\WP;
 use Snicco\Core\DIContainer;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Psr\Log\LoggerInterface as Psr3Logger;
+use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Snicco\Core\Utils\ReflectionDependencies;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 

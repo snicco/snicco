@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\unit\Utils;
+namespace Tests\HttpRouting\unit\Utils;
 
 use Generator;
 use Snicco\StrArr\Str;

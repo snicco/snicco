@@ -7,12 +7,12 @@ namespace Tests\Auth\unit\Middleware;
 use Mockery;
 use Snicco\Core\Utils\WP;
 use Snicco\SessionBundle\Keys;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Routing\Route\Route;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Testing\Concerns\TravelsTime;
-use Tests\Core\InternalMiddlewareTestCase;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Routing\Route\Route;
 use Snicco\Session\Contracts\SessionInterface;
+use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 

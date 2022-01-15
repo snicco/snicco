@@ -2,11 +2,11 @@
 
 namespace Tests\Auth\integration\Fail2Ban;
 
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Auth\Fail2Ban\Bannable;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
+use Snicco\HttpRouting\Http\Psr7\Request;
 
 class Fail2BanTest extends AuthTestCase
 {

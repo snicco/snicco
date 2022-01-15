@@ -11,14 +11,14 @@ use Snicco\Session\Session;
 use Snicco\Core\DIContainer;
 use Snicco\Core\Utils\UrlPath;
 use Snicco\Core\Utils\Repository;
-use Snicco\Core\Http\Psr7\Response;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\View\Contracts\ViewInterface;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Testing\Constraints\SeeInOrder;
-use Snicco\Core\Http\Responses\NullResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
-use Snicco\Core\Http\Responses\DelegatedResponse;
-use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\HttpRouting\Http\Responses\NullResponse;
+use Snicco\HttpRouting\Http\Responses\DelegatedResponse;
+use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class TestResponse
 {

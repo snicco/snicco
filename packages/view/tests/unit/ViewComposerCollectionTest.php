@@ -10,7 +10,7 @@ use Tests\Codeception\shared\UnitTest;
 use Snicco\View\ViewComposerCollection;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;
-use Tests\Core\fixtures\TestDoubles\TestView;
+use Tests\HttpRouting\fixtures\TestDoubles\TestView;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 use Snicco\View\Implementations\NewableInstanceViewComposerFactory;
 

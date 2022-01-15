@@ -7,10 +7,10 @@ namespace Snicco\Auth\Controllers\Compat;
 use WP_User;
 use Snicco\Core\Utils\WP;
 use Snicco\Mail\MailBuilder;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\Core\Http\AbstractController;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Auth\Traits\SendsPasswordResetMails;
 
 /**

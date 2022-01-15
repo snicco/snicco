@@ -8,9 +8,9 @@ use Snicco\Core\DIContainer;
 use Tests\Codeception\shared\UnitTest;
 use Snicco\View\Contracts\ViewComposer;
 use Snicco\View\Contracts\ViewInterface;
-use Tests\Core\fixtures\TestDoubles\TestView;
 use Tests\View\fixtures\ViewComposers\FooComposer;
 use Tests\Codeception\shared\TestDependencies\Bar;
+use Tests\HttpRouting\fixtures\TestDoubles\TestView;
 use Tests\Codeception\shared\helpers\CreateContainer;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 

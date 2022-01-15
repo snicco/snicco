@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\Core\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
+use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class EmailAuthConfirmationView extends AbstractEmailAuthConfirmationView
 {

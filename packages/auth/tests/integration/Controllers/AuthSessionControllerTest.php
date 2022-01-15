@@ -6,12 +6,12 @@ namespace Tests\Auth\integration\Controllers;
 
 use WP_User;
 use Snicco\Testing\TestResponse;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Events\UserWasLoggedIn;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\Authenticator;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 
 class AuthSessionControllerTest extends AuthTestCase

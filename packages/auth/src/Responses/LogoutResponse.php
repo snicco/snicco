@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Core\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\HttpRouting\Http\Psr7\Response;
 
 class LogoutResponse extends Response
 {

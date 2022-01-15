@@ -7,15 +7,15 @@ namespace Snicco\Auth\Controllers;
 use WP_User;
 use Snicco\Core\Utils\WP;
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
-use Snicco\Core\Http\AbstractController;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Mail\Contracts\MailBuilderInterface;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
+use Snicco\HttpRouting\Http\Responses\RedirectResponse;
 
 class ForgotPasswordAbstractController extends AbstractController
 {

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Auth\Middleware;
 
 use Snicco\Session\Session;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\AuthSessionManager;
-use Snicco\Core\Middleware\Delegate;
 use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LoginResponse;
-use Snicco\Core\Http\AbstractMiddleware;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Responses\LogoutResponse;
+use Snicco\HttpRouting\Middleware\Delegate;
+use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class AuthenticateSession extends AbstractMiddleware

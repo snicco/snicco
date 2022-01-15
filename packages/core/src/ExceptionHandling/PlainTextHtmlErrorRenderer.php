@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Core\ExceptionHandling;
 
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Core\ExceptionHandling\Exceptions\HttpException;
 
 /** @todo tests */

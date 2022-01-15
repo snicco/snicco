@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Http;
+namespace Tests\HttpRouting\integration\Http;
 
-use Snicco\Core\Middleware\Secure;
-use Snicco\Core\Middleware\WwwRedirect;
-use Snicco\Core\Middleware\TrailingSlash;
-use Snicco\Core\Middleware\MustMatchRoute;
+use Snicco\HttpRouting\Middleware\Secure;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\HttpRouting\Middleware\WwwRedirect;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Core\Middleware\Internal\RouteRunner;
-use Snicco\Core\Middleware\OpenRedirectProtection;
-use Snicco\Core\Middleware\Internal\MiddlewareStack;
-use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
-use Snicco\Core\Middleware\OutputBufferAbstractMiddleware;
+use Snicco\HttpRouting\Middleware\TrailingSlash;
+use Snicco\HttpRouting\Middleware\MustMatchRoute;
+use Snicco\HttpRouting\Middleware\Internal\RouteRunner;
+use Snicco\HttpRouting\Middleware\OpenRedirectProtection;
+use Snicco\HttpRouting\Middleware\Internal\MiddlewareStack;
+use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
+use Snicco\HttpRouting\Middleware\OutputBufferAbstractMiddleware;
 
 class MiddlewareServiceProviderTest extends FrameworkTestCase
 {

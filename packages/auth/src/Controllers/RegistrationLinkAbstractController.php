@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\Core\Http\Responsable;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\AbstractController;
+use Snicco\HttpRouting\Http\Responsable;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Mail\Contracts\MailBuilderInterface;
-use Snicco\Core\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
+use Snicco\HttpRouting\Http\Responses\RedirectResponse;
 
 class RegistrationLinkAbstractController extends AbstractController
 {

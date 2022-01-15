@@ -3,8 +3,8 @@
 namespace Snicco\Validation;
 
 use Snicco\StrArr\Arr;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Snicco\Validation\Exceptions\ValidationException;
 
 /**

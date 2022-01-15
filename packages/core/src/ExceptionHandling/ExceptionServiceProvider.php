@@ -9,12 +9,12 @@ use Whoops\Run as Whoops;
 use Whoops\RunInterface;
 use Psr\Log\LoggerInterface;
 use Illuminate\Container\Container;
-use Snicco\Core\Middleware\Delegate;
 use Whoops\Handler\HandlerInterface;
-use Snicco\Core\Http\ResponseFactory;
-use Snicco\Core\Http\AbstractMiddleware;
 use Snicco\Core\Contracts\ServiceProvider;
-use Snicco\Core\Middleware\Internal\MiddlewarePipeline;
+use Snicco\HttpRouting\Middleware\Delegate;
+use Snicco\HttpRouting\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\AbstractMiddleware;
+use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 
 class ExceptionServiceProvider extends ServiceProvider
 {

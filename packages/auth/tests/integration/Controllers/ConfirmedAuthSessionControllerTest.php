@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Auth\integration\Controllers;
 
 use Snicco\View\ViewEngine;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Events\FailedAuthConfirmation;
 use Snicco\SessionBundle\Events\SessionWasRegenerated;

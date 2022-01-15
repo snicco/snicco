@@ -2,10 +2,10 @@
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\Core\Http\AbstractController;
 use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;

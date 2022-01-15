@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Snicco\Core\Routing\Router;
+use Snicco\HttpRouting\Routing\Router;
 use Snicco\Core\Configuration\WritableConfig;
 use Snicco\Auth\Controllers\AccountAbstractController;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;

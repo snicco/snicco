@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Authenticators;
 
 use Snicco\Core\Shared\Encryptor;
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;

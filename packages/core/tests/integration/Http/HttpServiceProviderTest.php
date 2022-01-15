@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Http;
+namespace Tests\HttpRouting\integration\Http;
 
 use ReflectionClass;
 use RKA\Middleware\IpAddress;
-use Snicco\Core\Http\HttpKernel;
-use Snicco\Core\Http\Redirector;
-use Snicco\Core\Http\ResponseFactory;
+use Snicco\HttpRouting\Http\Redirector;
+use Snicco\HttpRouting\Http\HttpKernel;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Core\Http\ResponsePostProcessor;
-use Snicco\Core\Http\DefaultResponseFactory;
+use Snicco\HttpRouting\Http\ResponseFactory;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\HttpRouting\Http\ResponsePostProcessor;
+use Snicco\HttpRouting\Http\DefaultResponseFactory;
 
 class HttpServiceProviderTest extends FrameworkTestCase
 {

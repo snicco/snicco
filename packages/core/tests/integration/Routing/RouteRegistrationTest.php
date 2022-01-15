@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\Routing;
+namespace Tests\HttpRouting\integration\Routing;
 
 use Snicco\StrArr\Arr;
 use Snicco\Core\Utils\WP;

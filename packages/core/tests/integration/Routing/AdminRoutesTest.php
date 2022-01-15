@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Core\integration\Routing;
+namespace Tests\HttpRouting\integration\Routing;
 
 use Mockery;
-use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\ResponseEmitter;
-use Snicco\Core\Http\ResponsePreparation;
+use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\ResponseEmitter;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\HttpRouting\Http\ResponsePreparation;
 use Snicco\Core\EventDispatcher\Events\AdminInit;
 
 class AdminRoutesTest extends FrameworkTestCase

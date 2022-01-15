@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Controllers;
 
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
-use Snicco\Core\Http\AbstractController;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Events\FailedAuthConfirmation;
+use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\SessionBundle\Events\SessionWasRegenerated;
 

@@ -6,12 +6,12 @@ namespace Tests\Auth\unit\Middleware;
 
 use Mockery as m;
 use Snicco\Session\Session;
-use Snicco\Core\Http\Psr7\Request;
-use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Testing\Concerns\TravelsTime;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Auth\Middleware\AuthenticateSession;
+use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Tests\Codeception\shared\helpers\HashesSessionIds;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\integration\EventDispatcher\Events;
+namespace Tests\HttpRouting\integration\EventDispatcher\Events;
 
-use Snicco\Core\EventDispatcher\Events\DoShutdown;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Core\EventDispatcher\Events\DoShutdown;
 
 use function add_filter;
 use function remove_filter;

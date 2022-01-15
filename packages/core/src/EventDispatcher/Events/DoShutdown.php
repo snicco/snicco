@@ -3,8 +3,8 @@
 namespace Snicco\Core\EventDispatcher\Events;
 
 
-use Snicco\Core\Http\Psr7\Request;
-use Snicco\Core\Http\Psr7\Response;
+use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\EventDispatcher\Contracts\Mutable;
 
 class DoShutdown extends CoreEvent implements Mutable

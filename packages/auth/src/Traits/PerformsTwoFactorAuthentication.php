@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Traits;
 
 use Snicco\Auth\RecoveryCode;
-use Snicco\Core\Http\Psr7\Request;
+use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
 trait PerformsTwoFactorAuthentication

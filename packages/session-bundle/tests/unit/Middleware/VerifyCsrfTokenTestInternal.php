@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Tests\Core\InternalMiddlewareTestCase;
 use Snicco\Session\ImmutableSession;
 use Snicco\Session\ValueObjects\CsrfToken;
+use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\VerifyCsrfToken;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
