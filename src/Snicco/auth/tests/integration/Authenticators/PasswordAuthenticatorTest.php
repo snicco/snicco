@@ -9,7 +9,7 @@ use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class PasswordAuthenticatorTest extends AuthTestCase
 {

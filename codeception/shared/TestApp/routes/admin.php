@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 

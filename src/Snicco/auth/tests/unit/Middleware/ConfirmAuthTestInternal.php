@@ -9,11 +9,11 @@ use Snicco\SessionBundle\Keys;
 use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Testing\Concerns\TravelsTime;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Routing\Route\Route;
 use Snicco\Session\Contracts\SessionInterface;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Tests\Codeception\shared\helpers\SessionHelpers;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Tests\Codeception\shared\helpers\CreateDefaultWpApiMocks;
 
 class ConfirmAuthTestInternal extends InternalMiddlewareTestCase

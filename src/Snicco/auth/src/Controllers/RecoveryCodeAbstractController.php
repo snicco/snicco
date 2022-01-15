@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Core\Shared\Encryptor;
-use Snicco\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+use Snicco\Component\HttpRouting\Http\AbstractController;
 
 class RecoveryCodeAbstractController extends AbstractController
 {

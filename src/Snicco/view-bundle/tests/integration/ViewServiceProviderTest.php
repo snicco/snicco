@@ -9,7 +9,6 @@ use Snicco\View\GlobalViewContext;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\ViewBundle\ViewServiceProvider;
-use Snicco\HttpRouting\Http\TemplateRenderer;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\View\Implementations\PHPViewFactory;
@@ -17,6 +16,7 @@ use Snicco\ViewBundle\ViewEngineTemplateRenderer;
 use Snicco\ViewBundle\ViewBasedHtmlErrorRenderer;
 use Tests\View\fixtures\ViewComposers\FooComposer;
 use Tests\Codeception\shared\TestDependencies\Bar;
+use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\Core\ExceptionHandling\HtmlErrorRender;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
 

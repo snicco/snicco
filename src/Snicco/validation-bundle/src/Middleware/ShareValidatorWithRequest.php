@@ -6,9 +6,9 @@ namespace Snicco\Validation\Middleware;
 
 use Snicco\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Middleware\Delegate;
-use Snicco\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 
 class ShareValidatorWithRequest extends AbstractMiddleware
 {

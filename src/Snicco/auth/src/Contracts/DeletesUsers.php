@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Contracts;
 
-use Snicco\HttpRouting\Http\Responsable;
+use Snicco\Component\HttpRouting\Http\Responsable;
 
 interface DeletesUsers
 {

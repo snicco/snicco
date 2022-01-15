@@ -32,5 +32,10 @@
       "Snicco\\Component\\Core\\Tests\\": "tests",
       "Snicco\\Component\\Core\\Testing\\": "Testing"
     }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
   }
 }

@@ -1,0 +1,1 @@
+<?php echo e($globals['foo'] ?? 'failed'); ?><?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/sniccowp/packages/blade/tests/fixtures/views/globals.blade.php ENDPATH**/ ?>

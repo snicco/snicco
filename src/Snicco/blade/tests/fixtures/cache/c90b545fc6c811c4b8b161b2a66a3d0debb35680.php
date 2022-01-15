@@ -1,0 +1,1 @@
+<?php echo json_encode($json, 15, 512) ?><?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/framework/packages/blade/tests/fixtures/views/blade-features/json.blade.php ENDPATH**/ ?>

@@ -9,14 +9,14 @@ use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use Snicco\SessionBundle\Keys;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\HttpRouting\Middleware\Delegate;
 use Snicco\Session\Contracts\SessionInterface;
-use Snicco\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Session\Exceptions\CantDestroySession;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Contracts\ImmutableSessionInterface;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 
 use function sprintf;
 use function Snicco\SessionBundle\sessionCookieToHttpCookie;

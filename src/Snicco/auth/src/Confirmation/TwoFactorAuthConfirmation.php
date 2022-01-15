@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Confirmation;
 
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Core\Shared\Encryptor;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\ResponseFactory;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;

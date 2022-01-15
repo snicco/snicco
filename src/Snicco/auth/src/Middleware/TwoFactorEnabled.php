@@ -3,10 +3,10 @@
 namespace Snicco\Auth\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Middleware\Delegate;
-use Snicco\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class TwoFactorEnabled extends AbstractMiddleware

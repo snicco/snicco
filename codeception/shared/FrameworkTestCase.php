@@ -11,8 +11,8 @@ use Snicco\Component\Core\Utils\Arr;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
-use Snicco\HttpRouting\Http\ResponseEmitter;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\Component\HttpRouting\Http\ResponseEmitter;
 use Snicco\Component\Core\Application\Application_OLD;
 
 use function add_filter;

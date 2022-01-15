@@ -6,7 +6,7 @@ namespace Snicco\Auth\Responses;
 
 use WP_User;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 class LoginResponse extends Response
 {

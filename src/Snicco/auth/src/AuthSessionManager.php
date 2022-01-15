@@ -7,9 +7,9 @@ namespace Snicco\Auth;
 use Snicco\Session\Session;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Session\SessionManager;
-use Snicco\HttpRouting\Http\Cookie;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Component\HttpRouting\Http\Cookie;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 class AuthSessionManager
 {

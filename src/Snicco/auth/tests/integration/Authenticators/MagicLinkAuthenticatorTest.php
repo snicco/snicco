@@ -8,12 +8,12 @@ use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Component\Core\Contracts\MagicLink;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class MagicLinkAuthenticatorTest extends AuthTestCase
 {

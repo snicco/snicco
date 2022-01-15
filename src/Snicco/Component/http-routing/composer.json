@@ -1,0 +1,42 @@
+{
+  "name": "sniccowp/http-routing",
+  "description": "The HTTP and routing component of the sniccowp framework",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "ext-json": "*",
+    "psr/container": "^1.0.0",
+    "psr/http-message": "^1.0.0",
+    "psr/http-server-middleware": "^1.0.0",
+    "nikic/fast-route": "1.3.0",
+    "sniccowp/str-arr": "dev-master",
+    "symfony/finder": "^5.0-stable",
+    "webmozart/assert": "^1.10"
+  },
+  "require-dev": {
+    "nyholm/psr7-server": "^1.0-stable",
+    "nyholm/psr7": "^1.0.0",
+    "adriansuter/php-autoload-override": "^1.2",
+    "sniccowp/pimple-bridge": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\HttpRouting\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\HttpRouting\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

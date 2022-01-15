@@ -3,9 +3,9 @@
 namespace Snicco\Component\Core\ExceptionHandling\Exceptions;
 
 use Throwable;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\ResponseFactory;
 
 class ErrorViewException extends HttpException
 {

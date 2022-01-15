@@ -2,7 +2,7 @@
 
 namespace Snicco\Auth\Events;
 
-use Snicco\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 class FailedPasswordResetLinkRequest extends BannableEvent
 {

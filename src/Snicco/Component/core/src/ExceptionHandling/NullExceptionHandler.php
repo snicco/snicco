@@ -6,8 +6,8 @@ namespace Snicco\Component\Core\ExceptionHandling;
 
 use Throwable;
 use Psr\Log\LogLevel;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 class NullExceptionHandler implements ExceptionHandler
 {

@@ -10,12 +10,12 @@ use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
-use Snicco\HttpRouting\Http\Responses\RedirectResponse;
+use Snicco\Component\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
 
 class ForgotPasswordAbstractController extends AbstractController
 {

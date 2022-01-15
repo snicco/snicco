@@ -9,7 +9,7 @@ use Tests\Auth\integration\AuthTestCase;
 use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Auth\Controllers\AuthSessionAbstractController;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 /** @see AuthSessionAbstractController */

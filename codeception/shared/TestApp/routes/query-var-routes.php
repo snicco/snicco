@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\Assert;
-use Snicco\HttpRouting\Routing\Router;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\Component\HttpRouting\Routing\Router;
 
 TestApp::route()->prefix('wpquery')->createInGroup(function (Router $router) {
     $router->get('foo', function () {

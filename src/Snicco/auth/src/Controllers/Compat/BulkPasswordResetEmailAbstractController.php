@@ -7,10 +7,10 @@ namespace Snicco\Auth\Controllers\Compat;
 use Snicco\Mail\MailBuilder;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\Core\Utils\WP;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Auth\Traits\SendsPasswordResetMails;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\AbstractController;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 use function get_userdata;

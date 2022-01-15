@@ -1,0 +1,1 @@
+FOO<?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/sniccowp/packages/blade/tests/fixtures/views/foo.blade.php ENDPATH**/ ?>

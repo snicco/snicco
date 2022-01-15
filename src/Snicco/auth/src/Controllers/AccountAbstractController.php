@@ -9,12 +9,12 @@ use Snicco\Auth\Events\UserDeleted;
 use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\DeletesUsers;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\CreatesNewUser;
 use Snicco\Auth\Contracts\CreateAccountView;
-use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
+use Snicco\Component\HttpRouting\Http\AbstractController;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AccountAbstractController extends AbstractController

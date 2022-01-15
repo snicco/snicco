@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\integration;
 
 use Snicco\Component\StrArr\Str;
-use Snicco\HttpRouting\Http\Cookies;
 use Snicco\Session\ValueObjects\SessionId;
 use Snicco\Session\Exceptions\BadSessionID;
-use Snicco\HttpRouting\Http\ResponseEmitter;
+use Snicco\Component\HttpRouting\Http\Cookies;
 use Snicco\Session\ValueObjects\SessionConfig;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\SessionBundle\SessionServiceProvider;
+use Snicco\Component\HttpRouting\Http\ResponseEmitter;
 use Snicco\Session\ValueObjects\SerializedSessionData;
 
 use function do_action;

@@ -7,7 +7,7 @@ namespace Snicco\Auth\Listeners;
 use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Auth\Events\GenerateLogoutUrl;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class WPLoginLinks
 {

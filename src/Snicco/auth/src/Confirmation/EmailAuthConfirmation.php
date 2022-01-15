@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Confirmation;
 
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Component\Core\Contracts\MagicLink;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
-use Snicco\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 
 class EmailAuthConfirmation implements AuthConfirmation
 {

@@ -8,10 +8,10 @@ use WP_User;
 use Snicco\Mail\MailBuilder;
 use Snicco\Component\Core\Utils\WP;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\HttpRouting\Http\Psr7\Request;
-use Snicco\HttpRouting\Http\Psr7\Response;
-use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Auth\Traits\SendsPasswordResetMails;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\AbstractController;
 
 /**
  * This controller is duplicated the logic when an admin user is sending

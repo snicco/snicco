@@ -6,11 +6,11 @@ namespace Snicco\SessionBundle
 {
     
     use LogicException;
-    use Snicco\HttpRouting\Http\Cookie;
-    use Snicco\HttpRouting\Http\Psr7\Request;
     use Snicco\Session\ValueObjects\CookiePool;
+    use Snicco\Component\HttpRouting\Http\Cookie;
     use Snicco\Session\Contracts\SessionInterface;
     use Snicco\Session\ValueObjects\SessionCookie;
+    use Snicco\Component\HttpRouting\Http\Psr7\Request;
     use Snicco\Session\Contracts\SessionManagerInterface;
     use Snicco\Session\Contracts\ImmutableSessionInterface;
     

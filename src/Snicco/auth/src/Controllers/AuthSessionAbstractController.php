@@ -8,17 +8,17 @@ use Closure;
 use Snicco\Session\Session;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\Core\Utils\Url;
-use Snicco\HttpRouting\Http\Responsable;
 use Snicco\Auth\Responses\LoginResponse;
-use Snicco\HttpRouting\Http\Psr7\Request;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\HttpRouting\Http\Psr7\Response;
 use Snicco\Auth\Contracts\AbstractLoginView;
-use Snicco\HttpRouting\Http\AbstractController;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
+use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
-use Snicco\HttpRouting\Http\Responses\NullResponse;
-use Snicco\HttpRouting\Middleware\Internal\MiddlewarePipeline;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\Http\Responses\NullResponse;
+use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionAbstractController extends AbstractController
