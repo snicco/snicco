@@ -6,10 +6,10 @@ namespace Snicco\Component\Core\Tests\Utils;
 
 use stdClass;
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Utils\PHPCacheFile;
 
-final class PHPCacheFileTest extends UnitTest
+final class PHPCacheFileTest extends TestCase
 {
     
     private string $file;
