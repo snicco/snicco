@@ -8,37 +8,32 @@ use Iterator;
 use Countable;
 use ArrayAccess;
 use Traversable;
+use JsonSerializable;
 use InvalidArgumentException;
-use Test\Helpers\CreateContainer;
+use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Tests\Codeception\shared\UnitTest;
-use Snicco\PimpleContainer\PimpleDIContainer;
 
 use function Snicco\Component\Core\Utils\isInterface;
 
-final class FunctionsTest extends UnitTest
+final class FunctionsTest extends TestCase
 {
-    
-    use CreateContainer;
     
     /** @test */
     public function test_isInterface_with_object()
     {
-        $container = $this->createContainer();
+        $subject = new TestSubject();
         
-        $this->assertFalse(isInterface($container, Countable::class));
-        $this->assertTrue(isInterface($container, ContainerInterface::class));
-        $this->assertTrue(isInterface($container, ArrayAccess::class));
-        $this->assertFalse(isInterface($container, Traversable::class));
+        $this->assertTrue(isInterface($subject, Countable::class));
+        
+        $this->assertFalse(isInterface($subject, JsonSerializable::class));
     }
     
     /** @test */
     public function test_is_interface_with_class_string()
     {
-        $this->assertFalse(isInterface(PimpleDIContainer::class, Countable::class));
-        $this->assertTrue(isInterface(PimpleDIContainer::class, ContainerInterface::class));
-        $this->assertTrue(isInterface(PimpleDIContainer::class, ArrayAccess::class));
-        $this->assertFalse(isInterface(PimpleDIContainer::class, Traversable::class));
+        $this->assertTrue(isInterface(TestSubject::class, Countable::class));
+        
+        $this->assertFalse(isInterface(TestSubject::class, JsonSerializable::class));
     }
     
     /** @test */
@@ -84,32 +79,36 @@ final class FunctionsTest extends UnitTest
     
 }
 
+class TestSubject implements Countable
+{
+    
+    public function count()
+    {
+    }
+    
+}
+
 class TestTraversable implements Iterator
 {
     
     public function current()
     {
-        // TODO: Implement current() method.
     }
     
     public function next()
     {
-        // TODO: Implement next() method.
     }
     
     public function key()
     {
-        // TODO: Implement key() method.
     }
     
     public function valid()
     {
-        // TODO: Implement valid() method.
     }
     
     public function rewind()
     {
-        // TODO: Implement rewind() method.
     }
     
 }

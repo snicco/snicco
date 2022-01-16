@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\Core\Tests\Utils;
 
 use ReflectionFunctionAbstract;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Utils\Reflection;
 
-final class ReflectionTest extends UnitTest
+final class ReflectionTest extends TestCase
 {
     
     /** @test */

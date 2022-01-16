@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Core\Tests\Utils;
 
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Utils\Repository;
 
-class RepositoryTest extends UnitTest
+class RepositoryTest extends TestCase
 {
     
     /** @test */

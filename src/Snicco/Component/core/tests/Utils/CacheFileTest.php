@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\Core\Tests\Utils;
 
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Utils\CacheFile;
 
-final class CacheFileTest extends UnitTest
+final class CacheFileTest extends TestCase
 {
     
     private string $file;

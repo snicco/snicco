@@ -6,11 +6,11 @@ namespace Snicco\Component\Core\Tests\Utils;
 
 use Generator;
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\StrArr\Str;
-use Tests\Codeception\shared\UnitTest;
 use Snicco\Component\Core\Utils\UrlPath;
 
-class UrlPathTest extends UnitTest
+class UrlPathTest extends TestCase
 {
     
     /**
