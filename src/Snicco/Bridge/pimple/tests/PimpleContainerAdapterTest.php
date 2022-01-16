@@ -7,7 +7,7 @@ namespace Snicco\Bridge\Pimple\Tests;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\DIContainer;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Component\Core\Testing\DIContainerContractTest;
+use Snicco\Component\Core\DIContainerContractTest;
 
 final class PimpleContainerAdapterTest extends TestCase
 {
