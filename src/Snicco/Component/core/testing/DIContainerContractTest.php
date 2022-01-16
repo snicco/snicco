@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Core;
+namespace Snicco\Component\Core\Testing;
 
+use Snicco\Component\Core\DIContainer;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Core\Exception\FrozenServiceException;
 
