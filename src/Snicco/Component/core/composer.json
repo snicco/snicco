@@ -30,7 +30,7 @@
   "autoload-dev": {
     "psr-4": {
       "Snicco\\Component\\Core\\Tests\\": "tests",
-      "Snicco\\Component\\Core\\Testing\\": "Testing"
+      "Snicco\\Component\\Core\\Testing\\": "testing"
     }
   },
   "config": {

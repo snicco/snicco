@@ -173,7 +173,10 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     private function getNext() :Delegate
     {
         return new Delegate(
-            new Snicco\Bundle\Testing\TestDoubles\TestDelegate($this->response_factory, $this->next_middleware_response)
+            new Snicco\Bundle\Testing\TestDoubles\TestDelegate(
+                $this->response_factory,
+                $this->next_middleware_response
+            )
         );
     }
     
