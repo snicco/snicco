@@ -45,7 +45,7 @@
         "psr-4": {
             "Snicco\\Bridge\\Pimple\\Tests\\": "src/Snicco/Bridge/pimple/tests",
             "Snicco\\Bundle\\Testing\\Tests\\": "src/Snicco/Bundle/testing/tests",
-            "Snicco\\Component\\Core\\Testing\\": "src/Snicco/Component/core/Testing",
+            "Snicco\\Component\\Core\\Testing\\": "src/Snicco/Component/core/testing",
             "Snicco\\Component\\Core\\Tests\\": "src/Snicco/Component/core/tests",
             "Snicco\\Component\\HttpRouting\\Tests\\": "src/Snicco/Component/http-routing/tests",
             "Snicco\\Component\\StrArr\\Tests\\": "src/Snicco/Component/str-arr/tests"
