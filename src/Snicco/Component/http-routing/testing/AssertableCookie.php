@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bundle\Testing\Assertable;
+namespace Snicco\Component\HttpRouting\Testing;
 
 use Snicco\Component\StrArr\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 
+/**
+ * @todo More test assertions.
+ */
 final class AssertableCookie
 {
     
@@ -27,7 +30,6 @@ final class AssertableCookie
     public function __construct(string $set_cookie_header)
     {
         $this->parseHeader($set_cookie_header);
-        $this->name = Str::beforeFirst($set_cookie_header, '=');
     }
     
     public function assertValue(string $value) :AssertableCookie
@@ -35,13 +37,14 @@ final class AssertableCookie
         PHPUnit::assertSame(
             $value,
             $this->value,
-            "The [$this->name] cookie value [$value] does not match the actual value [$this->value]"
+            "Wrong value for cookie [$this->name]."
         );
         return $this;
     }
     
     private function parseHeader(string $set_cookie_header)
     {
+        $this->name = Str::beforeFirst($set_cookie_header, '=');
         $this->value = Str::betweenFirst($set_cookie_header, '=', ';');
         $this->path = Str::betweenFirst($set_cookie_header, 'path=', ';');
         $this->expires = Str::betweenFirst($set_cookie_header, 'expires=', ';');
