@@ -1,0 +1,30 @@
+{
+  "name": "sniccowp/scopable-wp",
+  "description": "This small package tries to solve the pain point of not being able to solve to scope code that references WordPress core code.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "ext-ctype": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\ScopableWP\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\ScopableWP\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}
