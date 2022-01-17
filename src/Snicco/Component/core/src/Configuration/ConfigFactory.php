@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Core\Configuration;
 
-use JsonException;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
-use Snicco\Component\Core\Utils\CacheFile;
+use Snicco\Component\Core\Utils\PHPCacheFile;
 
-use function json_encode;
+use function is_array;
+use function var_export;
 use function file_put_contents;
 
 /**
@@ -19,10 +19,9 @@ final class ConfigFactory
 {
     
     /**
-     * @throws JsonException If config can't be decoded from cache.
      * @throws RuntimeException If no config files are found or config cache can't be written.
      */
-    public function create(string $config_directory, ?CacheFile $cache_file = null) :WritableConfig
+    public function create(string $config_directory, ?PHPCacheFile $cache_file = null) :Configuration
     {
         if ($cache_file && $cache_file->isCreated()) {
             return $this->createFromCache($cache_file);
@@ -38,12 +37,18 @@ final class ConfigFactory
             );
         }
         
+        if ( ! isset($config_files['app'])) {
+            throw new RuntimeException(
+                "The [app.php] config file was not found in the config dir [$config_directory]."
+            );
+        }
+        
         foreach ($config_files as $name => $path) {
             $items = require $path;
             if ( ! is_array($items)) {
                 throw new RuntimeException("Reading the [$name] config did not return an array.");
             }
-            $config->extend($name, $items);
+            $config->merge($name, $items);
         }
         
         if ($cache_file && ! $cache_file->isCreated()) {
@@ -53,26 +58,36 @@ final class ConfigFactory
         return $config;
     }
     
-    protected function createFromCache(CacheFile $cached_config) :WritableConfig
+    protected function createFromCache(PHPCacheFile $cached_config) :ReadOnlyConfig
     {
-        $items = json_decode($cached_config->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $items = $cached_config->require();
         
-        if (json_last_error()) {
-            throw new RuntimeException("Cant read config from cache.\n".json_last_error_msg());
+        if ( ! is_array($items)) {
+            throw new RuntimeException(
+                "The cached config did not return an array.\nUsed cache file [{$cached_config->realPath()}]."
+            );
         }
         
-        return WritableConfig::fromArray($items);
+        if ( ! isset($items['app'])) {
+            throw new RuntimeException(
+                "The [app] key is not present in the cached config.\nUsed cache file [{$cached_config->realpath()}]."
+            );
+        }
+        
+        return ReadOnlyConfig::fromArray($items);
     }
     
-    protected function writeConfigCache(CacheFile $cache_file, WritableConfig $config) :void
+    protected function writeConfigCache(PHPCacheFile $cache_file, WritableConfig $config) :void
     {
         $success = file_put_contents(
-            $cache_file->realPath(),
-            json_encode($config->toArray(), JSON_THROW_ON_ERROR)
+            $cache_file->realpath(),
+            '<?php return '.var_export($config->toArray(), true).';'
         );
         
         if (false === $success) {
-            throw new RuntimeException("Could not write configuration to cache file.");
+            throw new RuntimeException(
+                "Could not write configuration to cache file [{$cache_file->realpath()}]."
+            );
         }
     }
     

@@ -10,10 +10,16 @@ use Symfony\Component\Finder\Finder;
 use Snicco\Component\Core\Application;
 use Snicco\Component\Core\Directories;
 use Snicco\Component\Core\Environment;
-use Snicco\Component\Core\Utils\CacheFile;
+use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\Core\Configuration\ConfigFactory;
 use Snicco\Component\Core\Configuration\WritableConfig;
+use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\Component\Core\Tests\helpers\CreateTestContainer;
+
+use function var_export;
+use function file_put_contents;
+
+use const DIRECTORY_SEPARATOR;
 
 final class ConfigFactoryTest extends TestCase
 {
@@ -78,11 +84,11 @@ final class ConfigFactoryTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
         
-        $this->assertFalse(is_file($this->cache_dir.'/prod.config.json'));
+        $this->assertFalse(is_file($this->cache_dir.'/prod.config.php'));
         
         $config = (new ConfigFactory())->create(
             $app->directories()->configDir(),
-            new CacheFile($app->directories()->cacheDir(), 'prod.config.json')
+            new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
         );
         
         $this->assertTrue($config->has('app'));
@@ -92,7 +98,7 @@ final class ConfigFactoryTest extends TestCase
         $this->assertSame('baz', $config['custom-config.foo']);
         
         $this->assertTrue(
-            is_file($this->cache_dir.'/prod.config.json'),
+            is_file($this->cache_dir.'/prod.config.php'),
             "Config cache not created."
         );
     }
@@ -113,8 +119,8 @@ final class ConfigFactoryTest extends TestCase
         ];
         
         $success = file_put_contents(
-            $this->cache_dir.DIRECTORY_SEPARATOR.'prod.config.json',
-            json_encode($arr)
+            $this->cache_dir.DIRECTORY_SEPARATOR.'prod.config.php',
+            '<?php return '.var_export($arr, true).';'
         );
         
         if (false === $success) {
@@ -123,10 +129,48 @@ final class ConfigFactoryTest extends TestCase
         
         $config = (new ConfigFactory())->create(
             $app->directories()->configDir(),
-            new CacheFile($app->directories()->cacheDir(), 'prod.config.json')
+            new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
         );
         
+        $this->assertInstanceOf(ReadOnlyConfig::class, $config);
+        
         $this->assertSame('baz', $config->get('app.foo'));
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_the_cached_config_does_not_contain_the_app_key()
+    {
+        $app = new Application(
+            $this->createContainer(),
+            Environment::prod(),
+            Directories::fromDefaults($this->base_dir)
+        );
+        
+        $arr = [
+            'wrong' => [
+                'foo' => 'baz',
+            ],
+        ];
+        
+        $success = file_put_contents(
+            $file = $this->cache_dir.DIRECTORY_SEPARATOR.'prod.config.php',
+            '<?php return '.var_export($arr, true).';'
+        );
+        
+        if (false === $success) {
+            throw new RuntimeException('cache not created in test setup');
+        }
+        
+        $this->expectException(RuntimeException::class);
+        
+        $this->expectExceptionMessage(
+            "The [app] key is not present in the cached config.\nUsed cache file [$file]."
+        );
+        
+        (new ConfigFactory())->create(
+            $app->directories()->configDir(),
+            new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
+        );
     }
     
     protected function cleanDirs() :void

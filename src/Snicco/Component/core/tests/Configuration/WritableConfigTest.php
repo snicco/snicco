@@ -29,7 +29,7 @@ class WritableConfigTest extends TestCase
     /** @test */
     public function a_value_can_be_a_boolean_false()
     {
-        $this->config->extend('foo', false);
+        $this->config->merge('foo', false);
         
         $this->assertSame(false, $this->config->get('foo'));
     }
@@ -37,7 +37,7 @@ class WritableConfigTest extends TestCase
     /** @test */
     public function a_value_can_be_null()
     {
-        $this->config->extend('foo', null);
+        $this->config->merge('foo', null);
         
         $this->assertSame(null, $this->config->get('foo'));
     }
@@ -45,8 +45,8 @@ class WritableConfigTest extends TestCase
     /** @test */
     public function a_value_can_be_string_int_zero()
     {
-        $this->config->extend('foo', '0');
-        $this->config->extend('bar', 0);
+        $this->config->merge('foo', '0');
+        $this->config->merge('bar', 0);
         
         $this->assertSame('0', $this->config->get('foo'));
         $this->assertSame(0, $this->config->get('bar'));
@@ -57,7 +57,7 @@ class WritableConfigTest extends TestCase
     {
         $this->assertSame(null, $this->config->get('foo'));
         
-        $this->config->extend('foo', 'bar');
+        $this->config->merge('foo', 'bar');
         
         $this->assertEquals('bar', $this->config->get('foo'));
     }
@@ -71,7 +71,7 @@ class WritableConfigTest extends TestCase
         
         $this->assertSame('bar', $this->config->get('foo'));
         
-        $this->config->extend('foo', 'baz');
+        $this->config->merge('foo', 'baz');
         
         $this->assertSame('bar', $this->config->get('foo'));
     }
@@ -91,7 +91,7 @@ class WritableConfigTest extends TestCase
             ]
         );
         
-        $config->extend('foo', [
+        $config->merge('foo', [
             'bar' => 'foobarbaz',
             'baz' => [
                 'bar' => 'bar',
@@ -129,16 +129,16 @@ class WritableConfigTest extends TestCase
             ],
         ]);
         
-        $config->extend('foo.bar', 'biz');
+        $config->merge('foo.bar', 'biz');
         $this->assertEquals('baz', $config->get('foo.bar'));
         
-        $config->extend('foo.boo', 'bam');
+        $config->merge('foo.boo', 'bam');
         $this->assertEquals('bam', $config->get('foo.boo'));
         
-        $config->extend('foo.baz', ['bam' => 'boom']);
+        $config->merge('foo.baz', ['bam' => 'boom']);
         $this->assertEquals(['biz' => 'boo', 'bam' => 'boom'], $config->get('foo.baz'));
         
-        $config->extend('foo.baz.biz', 'bogus');
+        $config->merge('foo.baz.biz', 'bogus');
         $this->assertEquals('boo', $config->get('foo.baz.biz'));
     }
     
@@ -152,7 +152,7 @@ class WritableConfigTest extends TestCase
             ],
         ]);
         
-        $config->extend('first', ['boo', 'bar', 'biz', 'foo']);
+        $config->merge('first', ['boo', 'bar', 'biz', 'foo']);
         
         $this->assertEquals(['foo', 'bar', 'boo', 'biz'], $config->get('first'));
     }
@@ -181,31 +181,31 @@ class WritableConfigTest extends TestCase
         
         ]);
         
-        $config->extendIfEmpty('first', fn() => 'bar');
+        $config->mergeIfMissing('first', fn() => 'bar');
         $this->assertSame('foo', $config->get('first.foo'));
         
         // boolean false should be kept
-        $config->extendIfEmpty('first.bar', fn() => true);
+        $config->mergeIfMissing('first.bar', fn() => true);
         $this->assertSame(false, $config->get('first.bar'));
         
         // null should be replaced.
-        $config->extendIfEmpty('first.baz', fn() => true);
+        $config->mergeIfMissing('first.baz', fn() => true);
         $this->assertSame(true, $config->get('first.baz'));
         
         // empty array will be replaced
-        $config->extendIfEmpty('third', fn() => true);
+        $config->mergeIfMissing('third', fn() => true);
         $this->assertSame(true, $config->get('third'));
         
         // empty strings will be replaced
-        $config->extendIfEmpty('second.empty', fn() => 'not-empty');
+        $config->mergeIfMissing('second.empty', fn() => 'not-empty');
         $this->assertSame('not-empty', $config->get('second.empty'));
         
         // empty string with spaces will be replaced
-        $config->extendIfEmpty('second.spaces', fn() => 'not-empty');
+        $config->mergeIfMissing('second.spaces', fn() => 'not-empty');
         $this->assertSame('not-empty', $config->get('second.spaces'));
         
         // test replace with config value
-        $config->extendIfEmpty('second.foo.baz', fn($config) => $config->get('first.foo'));
+        $config->mergeIfMissing('second.foo.baz', fn($config) => $config->get('first.foo'));
         $this->assertSame('foo', $config->get('second.foo.baz'));
     }
     

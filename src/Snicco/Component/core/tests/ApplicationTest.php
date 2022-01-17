@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Component\Core\Tests;
 
 use LogicException;
+use RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Core\Plugin;
+use Snicco\Component\Core\Bundle;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\Core\Directories;
 use Snicco\Component\Core\Environment;
@@ -147,29 +148,23 @@ final class ApplicationTest extends TestCase
     }
     
     /** @test */
-    public function booting_the_application_runs_all_bootstrappers_and_plugins()
+    public function test_exception_if_app_php_config_file_is_not_found()
     {
-        $plugin = new DummyPlugin();
-        
         $app = new Application(
-            $container = $this->createContainer(),
+            $this->createContainer(),
             Environment::testing(),
-            Directories::fromDefaults($this->base_dir),
-            [$plugin]
+            Directories::fromDefaults($this->base_dir.'/base_dir_without_app_config')
         );
         
-        $this->assertFalse($plugin->booted);
-        $this->assertFalse($plugin->configured);
-        $this->assertFalse($plugin->registered);
+        $this->expectException(RuntimeException::class);
+        
+        $dir = $this->base_dir.'/base_dir_without_app_config/config';
+        
+        $this->expectExceptionMessage(
+            "The [app.php] config file was not found in the config dir [$dir]."
+        );
         
         $app->boot();
-        
-        $this->assertTrue($plugin->booted);
-        $this->assertTrue($plugin->configured);
-        $this->assertTrue($plugin->registered);
-        
-        $received_config = $plugin->config;
-        $this->assertSame('bar', $received_config['app.foo']);
     }
     
     /**
@@ -200,13 +195,13 @@ final class ApplicationTest extends TestCase
     
 }
 
-class DummyPlugin implements Plugin
+class DummyBundle implements Bundle
 {
     
-    public WritableConfig $config;
-    public bool           $configured = false;
-    public bool           $registered = false;
-    public bool           $booted     = false;
+    public ?WritableConfig $config     = null;
+    public bool            $configured = false;
+    public bool            $registered = false;
+    public bool            $booted     = false;
     
     public function configure(WritableConfig $config, Application $app) :void
     {

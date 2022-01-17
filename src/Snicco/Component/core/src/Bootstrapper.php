@@ -13,7 +13,7 @@ interface Bootstrapper
 {
     
     /**
-     * This method will be called after the application config has been loaded from the disk.
+     * This method will be called after the application config has been loaded.
      * This is method is the place to validate and or extend configuration values.
      * It will be called before the register method.
      */
