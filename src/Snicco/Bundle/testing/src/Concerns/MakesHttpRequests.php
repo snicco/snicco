@@ -20,6 +20,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Core\Application\Application_OLD;
 use Snicco\Component\Core\Configuration\WritableConfig;
+use Snicco\Component\HttpRouting\Testing\BuildsWordPressUrls;
 
 /**
  * @property Session|null $session

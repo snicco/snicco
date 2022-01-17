@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Testing\Concerns\CreatePsrRequests;
+use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Routing\Condition\QueryStringCondition;
 
 final class QueryStringConditionTest extends UnitTest
 {
     
-    use CreatePsr17Factories;
-    use CreatePsrRequests;
+    use CreateTestPsr17Factories;
+    use CreatesPsrRequests;
     
     /** @test */
     public function test_is_satisfied_can_pass()

@@ -18,6 +18,10 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
+use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
+
 /**
  * @interal You should never depend on this concrete response factory implementation.
  * Always depend on the @see ResponseFactory interface
@@ -119,11 +123,11 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         throw new InvalidArgumentException('Invalid response returned by a route.');
     }
     
+    /** @todo This should use a dedicated json response class. */
     public function json($content, int $status_code = 200) :Response
     {
-        /** @todo This needs more parsing or a dedicated JsonResponseClass. See symfony/illuminate */
         return $this->make($status_code)
-                    ->json($this->createStream(json_encode($content)));
+                    ->json($this->createStream(json_encode($content, JSON_THROW_ON_ERROR)));
     }
     
     public function home(array $arguments = [], int $status_code = 302) :RedirectResponse

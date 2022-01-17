@@ -1,0 +1,24 @@
+{
+  "name": "sniccowp/view",
+  "description": "Provides a unified API for various templating Engines.",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\Templating\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\Templating\\Tests\\": "tests"
+    }
+  }
+}

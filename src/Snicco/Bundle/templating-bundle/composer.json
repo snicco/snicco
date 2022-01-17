@@ -1,0 +1,26 @@
+{
+  "name": "sniccowp/templating-bundle",
+  "description": "Integrates sniccowp/templating with the sniccowp/core package",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/templating": "dev-master",
+    "sniccowp/core": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bundle\\Templating\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bundle\\Templating\\Tests\\": "tests"
+    }
+  }
+}

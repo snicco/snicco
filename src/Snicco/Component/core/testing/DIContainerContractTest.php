@@ -204,6 +204,17 @@ trait DIContainerContractTest
     }
     
     /** @test */
+    public function test_lock_throws_for_primitive()
+    {
+        $container = $this->createContainer();
+        $container->lock();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        $container->primitive('foo', 'bar');
+    }
+    
+    /** @test */
     public function test_lock_throws_exception_for_array_set()
     {
         $container = $this->createContainer();

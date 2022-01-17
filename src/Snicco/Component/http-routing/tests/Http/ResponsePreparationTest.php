@@ -9,12 +9,12 @@ use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Tests\fixtures\HeaderStack;
 use Snicco\Component\HttpRouting\Http\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class ResponsePreparationTest extends TestCase
 {
     
-    use CreatePsr17Factories;
+    use CreateTestPsr17Factories;
     use CreateUrlGenerator;
     
     private DefaultResponseFactory $factory;

@@ -7,15 +7,15 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 use InvalidArgumentException;
 use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
 final class UrlGenerationContextTest extends UnitTest
 {
     
-    use CreatePsr17Factories;
-    use CreatePsrRequests;
+    use CreateTestPsr17Factories;
+    use CreatesPsrRequests;
     
     private ServerRequestInterface $base_request;
     

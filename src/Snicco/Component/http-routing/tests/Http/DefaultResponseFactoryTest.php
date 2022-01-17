@@ -14,13 +14,13 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Http\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
 class DefaultResponseFactoryTest extends TestCase
 {
     
-    use CreatePsr17Factories;
+    use CreateTestPsr17Factories;
     use CreateUrlGenerator;
     
     private DefaultResponseFactory $factory;

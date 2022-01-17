@@ -10,12 +10,12 @@ use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class ResponseTest extends TestCase
 {
     
-    use CreatePsr17Factories;
+    use CreateTestPsr17Factories;
     use CreateUrlGenerator;
     
     private ResponseFactory $factory;

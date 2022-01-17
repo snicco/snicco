@@ -31,7 +31,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\HttpRouting\\Tests\\": "tests"
+      "Snicco\\Component\\HttpRouting\\Tests\\": "tests",
+      "Snicco\\Component\\HttpRouting\\Testing\\": "testing"
     }
   },
   "config": {

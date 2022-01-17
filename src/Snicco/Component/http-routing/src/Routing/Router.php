@@ -127,6 +127,10 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         return $this->createRoute($name, $path, $methods, $controller);
     }
     
+    /**
+     * @todo bad routes are only found when dispatching. We might need a validate method on the
+     *       UrlMatcher interface.
+     */
     public function dispatch(Request $request) :RoutingResult
     {
         $data = $this->getFastRouteData();

@@ -1,0 +1,29 @@
+{
+  "name": "sniccowp/eloquent",
+  "description": "Use the Laravels Eloquent ORM in WordPress. Fully tested with Eloquent 8.x",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "ext-mysqli": "*",
+    "illuminate/database": "^v8.0.0"
+  },
+  "require-dev": {
+    "fakerphp/faker": "^1.0.0-stable"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\Eloquent\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\Eloquent\\Tests\\": "tests"
+    }
+  }
+}

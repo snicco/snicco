@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/better-wp-mail-bundle",
+  "description": "Integrates sniccowp/better-wp-mail with sniccowp/core",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/better-wp-mail": "dev-master",
+    "sniccowp/templating-bundle": "dev-master",
+    "sniccowp/core": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bundle\\BetterWPMail\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bundle\\BetterWPMail\\Tests": "tests"
+    }
+  }
+}

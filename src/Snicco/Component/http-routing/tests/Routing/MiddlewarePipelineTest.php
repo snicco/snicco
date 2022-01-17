@@ -18,9 +18,9 @@ use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Response as AppResponse;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareBlueprint;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\NotFoundException;
@@ -282,7 +282,7 @@ class MiddlewarePipelineTest extends RoutingTestCase
 class PipelineTestExceptionHandler implements ExceptionHandler
 {
     
-    use CreatePsr17Factories;
+    use CreateTestPsr17Factories;
     
     public function toHttpResponse(Throwable $e, Request $request) :AppResponse
     {

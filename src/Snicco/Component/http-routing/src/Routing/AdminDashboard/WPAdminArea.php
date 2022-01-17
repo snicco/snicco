@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Routing\AdminDashboard;
 use Webmozart\Assert\Assert;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
+use function trim;
 use function rtrim;
 use function ltrim;
 use function explode;
@@ -49,7 +50,7 @@ final class WPAdminArea implements AdminArea
         return [
             $parts[0].'.php',
             [
-                'page' => $parts[1],
+                'page' => trim($parts[1], '/'),
             ],
         ];
     }
