@@ -12,8 +12,6 @@ use Snicco\Component\Core\Directories;
 use Snicco\Component\Core\Environment;
 use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\Core\Configuration\ConfigFactory;
-use Snicco\Component\Core\Configuration\WritableConfig;
-use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\Component\Core\Tests\helpers\CreateTestContainer;
 
 use function var_export;
@@ -52,9 +50,11 @@ final class ConfigFactoryTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
         
-        $config = (new ConfigFactory())->create($app->directories()->configDir());
+        $config = (new ConfigFactory())->load($app->directories()->configDir());
         
-        $this->assertInstanceOf(WritableConfig::class, $config);
+        $this->assertIsArray($config);
+        $this->assertArrayHasKey('app', $config);
+        $this->assertArrayHasKey('custom-config', $config);
     }
     
     /** @test */
@@ -66,13 +66,10 @@ final class ConfigFactoryTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
         
-        $config = (new ConfigFactory())->create($app->directories()->configDir());
+        $config = (new ConfigFactory())->load($app->directories()->configDir());
         
-        $this->assertTrue($config->has('app'));
-        $this->assertSame('bar', $config['app.foo']);
-        
-        $this->assertTrue($config->has('custom-config'));
-        $this->assertSame('baz', $config['custom-config.foo']);
+        $this->assertSame('bar', $config['app']['foo']);
+        $this->assertSame('baz', $config['custom-config']['foo']);
     }
     
     /** @test */
@@ -84,23 +81,27 @@ final class ConfigFactoryTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
         
-        $this->assertFalse(is_file($this->cache_dir.'/prod.config.php'));
+        $file = new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php');
         
-        $config = (new ConfigFactory())->create(
-            $app->directories()->configDir(),
-            new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
-        );
+        $this->assertFalse($file->isCreated());
         
-        $this->assertTrue($config->has('app'));
-        $this->assertSame('bar', $config['app.foo']);
+        $factory = new ConfigFactory();
         
-        $this->assertTrue($config->has('custom-config'));
-        $this->assertSame('baz', $config['custom-config.foo']);
+        $config = [
+            'app' => [
+                'foo' => 'bar',
+            ],
+        ];
+        
+        $factory->writeToCache($file->realPath(), $config);
         
         $this->assertTrue(
-            is_file($this->cache_dir.'/prod.config.php'),
+            $file->isCreated(),
             "Config cache not created."
         );
+        
+        $loaded = $factory->load($app->directories()->configDir(), $file);
+        $this->assertEquals($config, $loaded);
     }
     
     /** @test */
@@ -127,14 +128,13 @@ final class ConfigFactoryTest extends TestCase
             throw new RuntimeException("cache not created in test setup");
         }
         
-        $config = (new ConfigFactory())->create(
+        $config = (new ConfigFactory())->load(
             $app->directories()->configDir(),
             new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
         );
         
-        $this->assertInstanceOf(ReadOnlyConfig::class, $config);
-        
-        $this->assertSame('baz', $config->get('app.foo'));
+        $this->assertIsArray($config);
+        $this->assertSame('baz', $config['app']['foo']);
     }
     
     /** @test */
@@ -167,7 +167,7 @@ final class ConfigFactoryTest extends TestCase
             "The [app] key is not present in the cached config.\nUsed cache file [$file]."
         );
         
-        (new ConfigFactory())->create(
+        (new ConfigFactory())->load(
             $app->directories()->configDir(),
             new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
         );

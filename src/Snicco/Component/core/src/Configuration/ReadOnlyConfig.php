@@ -10,10 +10,14 @@ use Snicco\Component\StrArr\Arr;
 use Snicco\Component\Core\Exception\BadConfigType;
 use Snicco\Component\Core\Exception\MissingConfigKey;
 
+use function is_int;
+use function gettype;
+use function is_bool;
+
 /**
  * @api
  */
-final class ReadOnlyConfig implements ArrayAccess, Configuration
+final class ReadOnlyConfig implements ArrayAccess
 {
     
     private array $items;
@@ -50,7 +54,7 @@ final class ReadOnlyConfig implements ArrayAccess, Configuration
      * @throws BadConfigType
      * @throws MissingConfigKey
      */
-    public function getString(string $key) :string
+    public function string(string $key) :string
     {
         $val = $this->get($key);
         if ( ! is_string($val)) {
@@ -63,7 +67,7 @@ final class ReadOnlyConfig implements ArrayAccess, Configuration
      * @throws BadConfigType
      * @throws MissingConfigKey
      */
-    public function getInteger(string $key) :int
+    public function integer(string $key) :int
     {
         $val = $this->get($key);
         if ( ! is_int($val)) {
@@ -76,11 +80,24 @@ final class ReadOnlyConfig implements ArrayAccess, Configuration
      * @throws BadConfigType
      * @throws MissingConfigKey
      */
-    public function getArray(string $key) :array
+    public function array(string $key) :array
     {
         $val = $this->get($key);
         if ( ! is_array($val)) {
             throw BadConfigType::forKey($key, 'array', gettype($val));
+        }
+        return $val;
+    }
+    
+    /**
+     * @throws BadConfigType
+     * @throws MissingConfigKey
+     */
+    public function boolean(string $key) :bool
+    {
+        $val = $this->get($key);
+        if ( ! is_bool($val)) {
+            throw BadConfigType::forKey($key, 'boolean', gettype($val));
         }
         return $val;
     }
@@ -90,12 +107,13 @@ final class ReadOnlyConfig implements ArrayAccess, Configuration
         return Arr::has($this->items, $offset);
     }
     
+    /**
+     * @return mixed
+     * @throws MissingConfigKey
+     */
     public function offsetGet($offset)
     {
-        if ( ! Arr::has($this->items, $offset)) {
-            throw new LogicException("The config has no item with key [$offset]");
-        }
-        return Arr::get($this->items, $offset);
+        return $this->get($offset);
     }
     
     public function offsetSet($offset, $value)
@@ -106,6 +124,11 @@ final class ReadOnlyConfig implements ArrayAccess, Configuration
     public function offsetUnset($offset)
     {
         throw new LogicException('The configuration is read-only and cannot be changed.');
+    }
+    
+    public function toArray() :array
+    {
+        return $this->items;
     }
     
 }

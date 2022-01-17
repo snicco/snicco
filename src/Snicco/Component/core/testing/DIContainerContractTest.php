@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Core\Testing;
 
+use stdClass;
 use Snicco\Component\Core\DIContainer;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Component\Core\Exception\FrozenServiceException;
+use Snicco\Component\Core\Exception\FrozenService;
+use Snicco\Component\Core\Exception\ContainerIsLocked;
 
 trait DIContainerContractTest
 {
@@ -126,7 +128,7 @@ trait DIContainerContractTest
                 return new Bar();
             });
             PHPUnit::fail('No exception thrown');
-        } catch (FrozenServiceException $e) {
+        } catch (FrozenService $e) {
             //
         }
         
@@ -135,7 +137,7 @@ trait DIContainerContractTest
                 return new Bar();
             });
             PHPUnit::fail('No exception thrown');
-        } catch (FrozenServiceException $e) {
+        } catch (FrozenService $e) {
             //
         }
         
@@ -147,7 +149,7 @@ trait DIContainerContractTest
                 return new Foo();
             });
             PHPUnit::fail('No exception thrown');
-        } catch (FrozenServiceException $e) {
+        } catch (FrozenService $e) {
             //
         }
     }
@@ -164,8 +166,64 @@ trait DIContainerContractTest
         try {
             $container->primitive('baz', 'boo');
             PHPUnit::fail("Overwriting a primitive value should throw an exception.");
-        } catch (FrozenServiceException $e) {
+        } catch (FrozenService $e) {
         }
+    }
+    
+    /** @test */
+    public function test_lock_throws_exception_for_singleton()
+    {
+        $container = $this->createContainer();
+        $container->lock();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        $container->singleton('foo', fn() => 'bar');
+    }
+    
+    /** @test */
+    public function test_lock_throws_exception_for_factory()
+    {
+        $container = $this->createContainer();
+        $container->lock();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        $container->factory('foo', fn() => 'bar');
+    }
+    
+    /** @test */
+    public function test_lock_throws_exception_for_instance()
+    {
+        $container = $this->createContainer();
+        $container->lock();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        $container->instance('foo', new stdClass());
+    }
+    
+    /** @test */
+    public function test_lock_throws_exception_for_array_set()
+    {
+        $container = $this->createContainer();
+        $container->lock();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        $container['foo'] = 'bar';
+    }
+    
+    /** @test */
+    public function test_lock_throws_exception_for_array_unset()
+    {
+        $container = $this->createContainer();
+        $container['foo'] = 'bar';
+        $container->lock();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        unset($container['foo']);
     }
     
 }

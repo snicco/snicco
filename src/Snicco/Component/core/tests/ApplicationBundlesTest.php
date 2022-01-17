@@ -51,7 +51,6 @@ final class ApplicationBundlesTest extends TestCase
         );
         
         $app1->boot();
-        
         $this->assertFalse($app1->usesBundle('bundle_prod'));
         
         $app2 = new Application(

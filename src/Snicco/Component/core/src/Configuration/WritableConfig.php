@@ -9,10 +9,12 @@ use ArrayAccess;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\Core\Utils\Repository;
 
+use function str_replace;
+
 /**
  * @api
  */
-final class WritableConfig implements ArrayAccess, Configuration
+final class WritableConfig implements ArrayAccess
 {
     
     private Repository $repository;
@@ -48,9 +50,21 @@ final class WritableConfig implements ArrayAccess, Configuration
     
     public function mergeIfMissing(string $key, Closure $default)
     {
-        $user_config = $this->repository->get($key, []);
+        $existing_config = $this->repository->get($key, []);
         
-        if ($user_config !== false && empty(str_replace(' ', '', $user_config))) {
+        // keep boolean false
+        if (false === $existing_config) {
+            return;
+        }
+        
+        // replace empty arrays or NULL
+        if ([] === $existing_config || null === $existing_config) {
+            $this->repository->set($key, $default($this));
+            return;
+        }
+        
+        // replace empty strings.
+        if ('' === str_replace(' ', '', $existing_config)) {
             $this->repository->set($key, $default($this));
         }
     }

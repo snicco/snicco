@@ -8,6 +8,7 @@ use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Snicco\Component\Core\Utils\PHPCacheFile;
 
+use function count;
 use function is_array;
 use function var_export;
 use function file_put_contents;
@@ -21,44 +22,30 @@ final class ConfigFactory
     /**
      * @throws RuntimeException If no config files are found or config cache can't be written.
      */
-    public function create(string $config_directory, ?PHPCacheFile $cache_file = null) :Configuration
+    public function load(string $config_directory, ?PHPCacheFile $cache_file = null) :array
     {
-        if ($cache_file && $cache_file->isCreated()) {
-            return $this->createFromCache($cache_file);
+        if ( ! $cache_file) {
+            return $this->loadFromFiles($config_directory);
         }
         
-        $config = new WritableConfig();
-        
-        $config_files = $this->findConfigFiles($config_directory);
-        
-        if ( ! count($config_files)) {
-            throw new RuntimeException(
-                "No configuration files found in directory [$config_directory]."
-            );
-        }
-        
-        if ( ! isset($config_files['app'])) {
-            throw new RuntimeException(
-                "The [app.php] config file was not found in the config dir [$config_directory]."
-            );
-        }
-        
-        foreach ($config_files as $name => $path) {
-            $items = require $path;
-            if ( ! is_array($items)) {
-                throw new RuntimeException("Reading the [$name] config did not return an array.");
-            }
-            $config->merge($name, $items);
-        }
-        
-        if ($cache_file && ! $cache_file->isCreated()) {
-            $this->writeConfigCache($cache_file, $config);
-        }
-        
-        return $config;
+        return $this->loadFromCache($cache_file);
     }
     
-    protected function createFromCache(PHPCacheFile $cached_config) :ReadOnlyConfig
+    public function writeToCache(string $realpath, array $config) :void
+    {
+        $success = file_put_contents(
+            $realpath,
+            '<?php return '.var_export($config, true).';'
+        );
+        
+        if (false === $success) {
+            throw new RuntimeException(
+                "Could not write configuration to cache file [$realpath]."
+            );
+        }
+    }
+    
+    private function loadFromCache(PHPCacheFile $cached_config) :array
     {
         $items = $cached_config->require();
         
@@ -74,21 +61,7 @@ final class ConfigFactory
             );
         }
         
-        return ReadOnlyConfig::fromArray($items);
-    }
-    
-    protected function writeConfigCache(PHPCacheFile $cache_file, WritableConfig $config) :void
-    {
-        $success = file_put_contents(
-            $cache_file->realpath(),
-            '<?php return '.var_export($config->toArray(), true).';'
-        );
-        
-        if (false === $success) {
-            throw new RuntimeException(
-                "Could not write configuration to cache file [{$cache_file->realpath()}]."
-            );
-        }
+        return $items;
     }
     
     /**
@@ -105,6 +78,34 @@ final class ConfigFactory
         ksort($files, SORT_NATURAL);
         
         return $files;
+    }
+    
+    private function loadFromFiles(string $config_directory) :array
+    {
+        $config_files = $this->findConfigFiles($config_directory);
+        
+        if ( ! count($config_files)) {
+            throw new RuntimeException(
+                "No configuration files found in directory [$config_directory]."
+            );
+        }
+        
+        if ( ! isset($config_files['app'])) {
+            throw new RuntimeException(
+                "The [app.php] config file was not found in the config dir [$config_directory]."
+            );
+        }
+        
+        $config = [];
+        
+        foreach ($config_files as $name => $path) {
+            $items = require $path;
+            if ( ! is_array($items)) {
+                throw new RuntimeException("Reading the [$name] config did not return an array.");
+            }
+            $config[$name] = $items;
+        }
+        return $config;
     }
     
 }

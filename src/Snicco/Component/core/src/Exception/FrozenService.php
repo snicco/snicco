@@ -11,10 +11,10 @@ use Psr\Container\ContainerExceptionInterface;
 /**
  * @api
  */
-final class FrozenServiceException extends RuntimeException implements ContainerExceptionInterface
+final class FrozenService extends RuntimeException implements ContainerExceptionInterface
 {
     
-    public static function fromPrevious(Throwable $throwable) :FrozenServiceException
+    public static function fromPrevious(Throwable $throwable) :FrozenService
     {
         return new self($throwable->getMessage(), $throwable->getCode(), $throwable);
     }

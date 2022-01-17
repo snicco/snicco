@@ -7,19 +7,20 @@ namespace Snicco\Component\Core\Tests;
 use LogicException;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Core\Bundle;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\Core\Directories;
 use Snicco\Component\Core\Environment;
 use Snicco\Component\Core\Application;
+use Snicco\Component\Core\Exception\ContainerIsLocked;
 use Snicco\Component\Core\Configuration\ReadOnlyConfig;
-use Snicco\Component\Core\Configuration\WritableConfig;
+use Snicco\Component\Core\Tests\helpers\WriteTestConfig;
 use Snicco\Component\Core\Tests\helpers\CreateTestContainer;
 
 final class ApplicationTest extends TestCase
 {
     
     use CreateTestContainer;
+    use WriteTestConfig;
     
     private string $base_dir;
     
@@ -27,6 +28,13 @@ final class ApplicationTest extends TestCase
     {
         parent::setUp();
         $this->base_dir = __DIR__.'/fixtures';
+        $this->cleanDirs([$this->base_dir.'/var/cache']);
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        $this->cleanDirs([$this->base_dir.'/var/cache']);
     }
     
     /** @test */
@@ -167,13 +175,11 @@ final class ApplicationTest extends TestCase
         $app->boot();
     }
     
-    /**
-     * @test
-     */
-    public function test_config_on_the_app_returns_are_read_only_config()
+    /** @test */
+    public function the_config_method_on_the_app_returns_are_read_only_config()
     {
         $app = new Application(
-            $container = $this->createContainer(),
+            $this->createContainer(),
             Environment::testing(),
             Directories::fromDefaults($this->base_dir)
         );
@@ -193,40 +199,38 @@ final class ApplicationTest extends TestCase
         $this->assertSame('bar', $config->get('app.foo'));
     }
     
-}
-
-class DummyBundle implements Bundle
-{
-    
-    public ?WritableConfig $config     = null;
-    public bool            $configured = false;
-    public bool            $registered = false;
-    public bool            $booted     = false;
-    
-    public function configure(WritableConfig $config, Application $app) :void
+    /** @test */
+    public function offset_set_throws_after_booting()
     {
-        $this->config = $config;
-        $this->configured = true;
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+        
+        $app->boot();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        $container['foo'] = 'bar';
     }
     
-    public function register(Application $app) :void
+    /** @test */
+    public function offset_unset_throws_after_booting()
     {
-        $this->registered = true;
-    }
-    
-    public function bootstrap(Application $app) :void
-    {
-        $this->booted = true;
-    }
-    
-    public function alias() :string
-    {
-        return 'dummy_plugin';
-    }
-    
-    public function runsInEnvironments(Environment $env) :bool
-    {
-        return true;
+        $app = new Application(
+            $container = $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+        
+        $container['foo'] = 'bar';
+        
+        $app->boot();
+        
+        $this->expectException(ContainerIsLocked::class);
+        
+        unset($container['foo']);
     }
     
 }

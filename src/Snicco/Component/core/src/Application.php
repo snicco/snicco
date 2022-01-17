@@ -10,7 +10,6 @@ use RuntimeException;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\Core\Configuration\ConfigFactory;
-use Snicco\Component\Core\Configuration\Configuration;
 use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\Component\Core\Configuration\WritableConfig;
 
@@ -21,7 +20,7 @@ use function get_class;
 /**
  * @api
  */
-class Application implements ArrayAccess
+final class Application implements ArrayAccess
 {
     
     private DIContainer    $container;
@@ -37,6 +36,11 @@ class Application implements ArrayAccess
      */
     private array $bundles = [];
     
+    /**
+     * @var Bootstrapper[]
+     */
+    private iterable $bootstrappers = [];
+    
     public function __construct(
         DIContainer $container,
         Environment $env,
@@ -51,14 +55,49 @@ class Application implements ArrayAccess
         $this->container[ContainerInterface::class] = $this->container;
     }
     
+    public function boot() :void
+    {
+        if (true === $this->booted) {
+            throw new LogicException('The application cant be booted twice.');
+        }
+        
+        $is_cached = $this->isConfigurationCached();
+        $config_factory = new ConfigFactory();
+        
+        $loaded_config = $this->loadConfiguration(
+            $config_factory,
+            $is_cached ? $this->config_cache : null
+        );
+        
+        foreach ($this->bundles($loaded_config) as $bundle) {
+            $this->addBundle($bundle);
+        }
+        
+        foreach ($this->bootstrappers($loaded_config) as $bootstrapper) {
+            $this->addBootstrapper($bootstrapper);
+        }
+        
+        if ( ! $is_cached) {
+            $this->configureBundles($config = WritableConfig::fromArray($loaded_config));
+            $this->read_only_config = ReadOnlyConfig::fromWritableConfig($config);
+            $this->maybeCacheConfiguration($config_factory);
+        }
+        else {
+            $this->read_only_config = ReadOnlyConfig::fromArray($loaded_config);
+        }
+        
+        $this->registerBundles();
+        $this->bootBundles();
+        
+        $this->booted = true;
+        $this->container->lock();
+    }
+    
     public function offsetExists($offset) :bool
     {
         return $this->container->offsetExists($offset);
     }
     
-    /**
-     * @return mixed
-     */
     public function offsetGet($offset)
     {
         return $this->container->offsetGet($offset);
@@ -89,48 +128,6 @@ class Application implements ArrayAccess
         return $this->dirs;
     }
     
-    public function boot() :void
-    {
-        if (true === $this->booted) {
-            throw new LogicException("The application cant be booted twice.");
-        }
-        
-        $configuration = $this->loadConfiguration();
-        
-        foreach ($this->bundles($configuration) as $bundle) {
-            $this->addBundle($bundle);
-        }
-        
-        if ($configuration instanceof WritableConfig) {
-            foreach ($this->bundles as $bundle) {
-                $bundle->configure($configuration, $this);
-            }
-            $this->read_only_config = ReadOnlyConfig::fromWritableConfig($configuration);
-        }
-        elseif ($configuration instanceof ReadOnlyConfig) {
-            $this->read_only_config = $configuration;
-        }
-        else {
-            throw new RuntimeException(
-                sprintf(
-                    "The configuration has to be an instance of [%s] or [%s]",
-                    ReadOnlyConfig::class,
-                    WritableConfig::class
-                )
-            );
-        }
-        
-        foreach ($this->bundles as $bundle) {
-            $bundle->register($this);
-        }
-        
-        foreach ($this->bundles as $bundle) {
-            $bundle->bootstrap($this);
-        }
-        
-        $this->booted = true;
-    }
-    
     public function config() :ReadOnlyConfig
     {
         if ( ! isset($this->read_only_config)) {
@@ -151,15 +148,32 @@ class Application implements ArrayAccess
         return $this->config_cache->isCreated();
     }
     
-    private function loadConfiguration() :Configuration
+    protected function registerBundles() :void
     {
-        $cache_file = null;
-        
-        if ($this->env->isProduction() || $this->env()->isStaging()) {
-            $cache_file = $this->config_cache;
+        foreach ($this->bundles as $bundle) {
+            $bundle->register($this);
         }
-        
-        return (new ConfigFactory())->create($this->dirs->configDir(), $cache_file);
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper->register($this);
+        }
+    }
+    
+    protected function bootBundles() :void
+    {
+        foreach ($this->bundles as $bundle) {
+            $bundle->bootstrap($this);
+        }
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper->bootstrap($this);
+        }
+    }
+    
+    private function loadConfiguration(ConfigFactory $loader, ?PHPCacheFile $cache_file = null) :array
+    {
+        return $loader->load(
+            $this->dirs->configDir(),
+            $cache_file
+        );
     }
     
     private function addBundle(Bundle $bundle) :void
@@ -182,11 +196,9 @@ class Application implements ArrayAccess
     }
     
     /**
-     * @param  Configuration  $configuration
-     *
      * @return Bundle[]
      */
-    private function bundles(Configuration $configuration) :iterable
+    private function bundles(array $configuration) :iterable
     {
         $bundles = $configuration['bundles'] ?? [];
         foreach ($bundles as $class => $envs) {
@@ -194,6 +206,46 @@ class Application implements ArrayAccess
                 yield new $class();
             }
         }
+    }
+    
+    private function configureBundles(WritableConfig $config)
+    {
+        foreach ($this->bundles as $bundle) {
+            $bundle->configure($config, $this);
+        }
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper->configure($config, $this);
+        }
+    }
+    
+    private function maybeCacheConfiguration(ConfigFactory $config_factory) :void
+    {
+        if ( ! $this->env->isProduction() && ! $this->env()->isStaging()) {
+            return;
+        }
+        
+        $config_factory->writeToCache(
+            $this->config_cache->realPath(),
+            $this->read_only_config->toArray()
+        );
+    }
+    
+    /**
+     * @param  array  $loaded_config
+     *
+     * @return Bootstrapper[]
+     */
+    private function bootstrappers(array $loaded_config) :iterable
+    {
+        $boot_with = $loaded_config['app']['bootstrappers'] ?? [];
+        foreach ($boot_with as $class) {
+            yield new $class();
+        }
+    }
+    
+    private function addBootstrapper(Bootstrapper $bootstrapper) :void
+    {
+        $this->bootstrappers[] = $bootstrapper;
     }
     
 }

@@ -6,8 +6,10 @@ namespace Snicco\Component\Core;
 
 use Closure;
 use ArrayAccess;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Snicco\Component\Core\Exception\FrozenService;
 use Psr\Container\ContainerInterface as PsrContainer;
-use Snicco\Component\Core\Exception\FrozenServiceException;
 
 /**
  * The DependencyInjection(DI) container takes care of lazily constructing and loading services
@@ -21,13 +23,21 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 {
     
     /**
+     * After the lock method is called state changing method on the container must throw an
+     * exception.
+     *
+     * @throws FrozenService
+     */
+    abstract public function lock() :void;
+    
+    /**
      * Register a binding with the container.
      * This will not be a singleton but a new object everytime it gets resolved.
      *
      * @param  string  $id
      * @param  Closure  $service
      *
-     * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
+     * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
     abstract public function factory(string $id, Closure $service) :void;
     
@@ -38,7 +48,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @param  string  $id
      * @param  Closure  $service  When trying to overwrite an already resolved singleton.
      *
-     * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
+     * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
     abstract public function singleton(string $id, Closure $service) :void;
     
@@ -56,7 +66,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @param  string  $id
      * @param  object  $service  When trying to overwrite an already resolved singleton.
      *
-     * @throws FrozenServiceException When trying to overwrite an already resolved singleton.
+     * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
     final public function instance(string $id, object $service) :void
     {
@@ -65,6 +75,10 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
         });
     }
     
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     final public function offsetGet($offset)
     {
         return $this->get($offset);
