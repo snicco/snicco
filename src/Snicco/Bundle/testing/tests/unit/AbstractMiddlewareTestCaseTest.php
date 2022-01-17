@@ -15,13 +15,13 @@ use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Bundle\Testing\Assertable\MiddlewareTestResponse;
 use Snicco\Component\Core\Contracts\RouteUrlGeneratorInterface;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RouteUrlGenerator;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class MiddlewareTestCaseTest extends MiddlewareTestCase
 {
     
-    use CreatePsr17Factories;
+    use CreateTestPsr17Factories;
     
     /** @test */
     public function testResponseIsTestResponse()

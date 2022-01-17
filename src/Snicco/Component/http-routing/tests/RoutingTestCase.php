@@ -6,11 +6,10 @@ namespace Snicco\Component\HttpRouting\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Testing\TestResponse;
-use Test\Helpers\CreateContainer;
+use Psr\Container\ContainerInterface;
 use Snicco\Component\Core\DIContainer;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Component\Core\Utils\PHPCacheFile;
-use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\HttpKernel;
@@ -23,6 +22,7 @@ use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Middleware\MustMatchRoute;
+use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
@@ -34,15 +34,16 @@ use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareStack;
 use Snicco\Component\HttpRouting\Middleware\Internal\PrepareResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\Component\HttpRouting\Middleware\Internal\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorFactory;
@@ -59,22 +60,22 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator
 class RoutingTestCase extends TestCase
 {
     
-    const CONTROLLER_NAMESPACE = 'Tests\\HttpRouting\\fixtures\\Controller';
+    use CreateTestPsr17Factories;
+    use CreatesPsrRequests;
+    use CreateTestPsrContainer;
     
-    use CreatePsr17Factories;
-    use CreatePsrRequests;
-    use CreateContainer;
+    const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
     
-    protected string          $app_domain = 'foobar.com';
-    protected string          $routes_dir;
-    protected ResponseFactory $response_factory;
-    protected DIContainer     $container;
-    protected FakeDispatcher  $event_dispatcher;
-    protected UrlGenerator    $generator;
+    protected string             $app_domain = 'foobar.com';
+    protected string             $routes_dir;
+    protected ResponseFactory    $response_factory;
+    protected ContainerInterface $container;
+    protected FakeDispatcher     $event_dispatcher;
+    protected UrlGenerator       $generator;
     
     private Router                 $router;
     private HttpKernel             $kernel;
-    private AdminArea              $admin_dashboard;
+    private AdminArea              $admin_area;
     private UrlGenerationContext   $request_context;
     private MiddlewareStack        $middleware_stack;
     private WebRoutingConfigurator $routing_configurator;
@@ -171,22 +172,22 @@ class RoutingTestCase extends TestCase
         
         $this->request_context = $context;
         
-        $this->admin_dashboard ??= WPAdminArea::fromDefaults();
+        $this->admin_area ??= WPAdminArea::fromDefaults();
         
         $this->router = new Router(
             $this->container[RouteConditionFactory::class],
             new UrlGeneratorFactory(
                 $context,
-                $this->admin_dashboard,
+                $this->admin_area,
                 new RFC3986Encoder(),
             ),
-            $this->admin_dashboard,
+            $this->admin_area,
             $cache_file
         );
         
         $this->routing_configurator = new RoutingConfiguratorUsingRouter(
             $this->router,
-            $this->admin_dashboard->urlPrefix(),
+            $this->admin_area->urlPrefix(),
             $config
         );
         
@@ -202,9 +203,19 @@ class RoutingTestCase extends TestCase
         return $this->generator;
     }
     
-    final protected function adminDashboard() :AdminArea
+    protected function baseUrl() :string
     {
-        return $this->admin_dashboard;
+        return 'https://'.$this->app_domain;
+    }
+    
+    protected function adminArea() :AdminArea
+    {
+        return $this->admin_area;
+    }
+    
+    protected function urlGenerator() :UrlGenerator
+    {
+        return $this->generator;
     }
     
     final private function defaultMiddlewareAliases() :array
@@ -225,8 +236,8 @@ class RoutingTestCase extends TestCase
         $this->container = $this->createContainer();
         $this->container->instance(DIContainer::class, $this->container);
         
-        $this->admin_dashboard = WPAdminArea::fromDefaults();
-        $this->container[AdminArea::class] = $this->admin_dashboard;
+        $this->admin_area = WPAdminArea::fromDefaults();
+        $this->container[AdminArea::class] = $this->admin_area;
         
         $condition_factory = new RouteConditionFactory($this->container);
         $this->container[RouteConditionFactory::class] = $condition_factory;
@@ -246,10 +257,9 @@ class RoutingTestCase extends TestCase
                 $middleware_factory = new MiddlewareFactory($this->container),
                 $error_handler,
             ),
-            $this->event_dispatcher =
-                new FakeDispatcher(
-                    new EventDispatcher(new DependencyInversionListenerFactory($this->container))
-                )
+            $this->event_dispatcher = new FakeDispatcher(
+                new EventDispatcher()
+            )
         );
         
         // Middleware

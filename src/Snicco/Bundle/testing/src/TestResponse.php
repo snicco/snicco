@@ -15,7 +15,7 @@ use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\Constraints\SeeInOrder;
 use Snicco\Component\Core\Utils\Repository;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Bundle\Testing\Assertable\AssertableCookie;
+use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Http\Responses\NullResponse;
 use Snicco\Component\HttpRouting\Http\Responses\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;

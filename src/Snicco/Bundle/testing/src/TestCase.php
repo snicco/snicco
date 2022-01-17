@@ -247,7 +247,7 @@ abstract class TestCase extends WPTestCase
         
         foreach ($items as $key => $value) {
             if (is_array($this->config->get($key))) {
-                $this->config->extend($key, $value);
+                $this->config->merge($key, $value);
             }
             else {
                 $this->config->set($key, $value);
@@ -259,7 +259,7 @@ abstract class TestCase extends WPTestCase
     
     protected function withAddedMiddleware(string $group, $middleware) :TestCase
     {
-        $this->config->extend("middleware.groups.$group", Arr::toArray($middleware));
+        $this->config->merge("middleware.groups.$group", Arr::toArray($middleware));
         
         return $this;
     }
@@ -370,7 +370,7 @@ abstract class TestCase extends WPTestCase
     
     private function mergeServiceProviders() :void
     {
-        $this->config->extend('app.providers', $this->packageProviders());
+        $this->config->merge('app.providers', $this->packageProviders());
     }
     
     // bind a base request for the test so that we don't get possible errors inside CaptureRequest::bootstrap()

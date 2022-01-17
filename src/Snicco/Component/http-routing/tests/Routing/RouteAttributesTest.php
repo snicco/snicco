@@ -17,8 +17,6 @@ class RouteAttributesTest extends RoutingTestCase
     
     /**
      * @test
-     * @todo bad routes are only found when dispatching. We might need a validate method on the
-     *     UrlMatcher interface.
      */
     public function exceptions_are_thrown_for_static_routes_that_shadow_each_other()
     {
@@ -28,7 +26,7 @@ class RouteAttributesTest extends RoutingTestCase
         $this->routeConfigurator()->get('r1', '/foo');
         $this->routeConfigurator()->get('r2', '/foo');
         
-        $this->runKernel($this->frontendRequest('GET', '/bogus'));
+        $this->runKernel($this->frontendRequest('/bogus'));
     }
     
     /** @test */
@@ -36,7 +34,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     

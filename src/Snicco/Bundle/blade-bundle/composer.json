@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/blade-bundle",
+  "description": "Integrates Laravels Blade templating into sniccowp/core.",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/blade-bridge": "dev-master",
+    "sniccowp/templating-bundle": "dev-master",
+    "sniccowp/core": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\BladeBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\BladeBundle\\": "tests"
+    }
+  }
+}

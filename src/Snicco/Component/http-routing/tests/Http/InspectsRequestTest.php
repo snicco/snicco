@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Testing\Concerns\CreatePsrRequests;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class InspectsRequestTest extends TestCase
 {
     
-    use CreatePsr17Factories;
-    use CreatePsrRequests;
+    use CreateTestPsr17Factories;
+    use CreatesPsrRequests;
     
     public function testIsGet()
     {

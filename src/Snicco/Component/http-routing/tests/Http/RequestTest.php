@@ -7,20 +7,20 @@ namespace Snicco\Component\HttpRouting\Tests\Http;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Utils\Repository;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Testing\Concerns\CreatePsrRequests;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Http\Exceptions\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
-use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class RequestTest extends TestCase
 {
     
     private Request                $request;
     private ServerRequestInterface $psr_request;
-    use CreatePsrRequests;
-    use CreatePsr17Factories;
+    use CreatesPsrRequests;
+    use CreateTestPsr17Factories;
     
     protected function setUp() :void
     {

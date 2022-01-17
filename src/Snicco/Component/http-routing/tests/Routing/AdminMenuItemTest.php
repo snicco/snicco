@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminMenuItem;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-final class AdminMenuItemTest extends UnitTest
+final class AdminMenuItemTest extends TestCase
 {
     
     /** @test */
