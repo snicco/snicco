@@ -37,8 +37,6 @@ class Application implements ArrayAccess
      */
     private array $bundles = [];
     
-    private bool $bundles_configured = false;
-    
     public function __construct(
         DIContainer $container,
         Environment $env,
@@ -83,11 +81,6 @@ class Application implements ArrayAccess
     
     public function di() :DIContainer
     {
-        if (false === $this->bundles_configured) {
-            throw new LogicException(
-                "The container is not available before all bundles have been configured."
-            );
-        }
         return $this->container;
     }
     
@@ -104,7 +97,7 @@ class Application implements ArrayAccess
         
         $configuration = $this->loadConfiguration();
         
-        foreach ($this->bundleIterator($configuration) as $bundle) {
+        foreach ($this->bundles($configuration) as $bundle) {
             $this->addBundle($bundle);
         }
         
@@ -193,7 +186,7 @@ class Application implements ArrayAccess
      *
      * @return Bundle[]
      */
-    private function bundleIterator(Configuration $configuration) :iterable
+    private function bundles(Configuration $configuration) :iterable
     {
         $bundles = $configuration['bundles'] ?? [];
         foreach ($bundles as $class => $envs) {
