@@ -7,7 +7,7 @@ namespace Snicco\Component\Core;
 /**
  * @api
  */
-interface Plugin extends Bootstrapper
+interface Bundle extends Bootstrapper
 {
     
     /**

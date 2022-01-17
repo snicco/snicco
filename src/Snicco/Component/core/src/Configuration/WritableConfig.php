@@ -12,7 +12,7 @@ use Snicco\Component\Core\Utils\Repository;
 /**
  * @api
  */
-final class WritableConfig implements ArrayAccess
+final class WritableConfig implements ArrayAccess, Configuration
 {
     
     private Repository $repository;
@@ -27,7 +27,7 @@ final class WritableConfig implements ArrayAccess
         return new self(new Repository($items));
     }
     
-    public function extend(string $key, $extend_with) :void
+    public function merge(string $key, $extend_with) :void
     {
         $existing_config = $this->repository->get($key, []);
         
@@ -46,7 +46,7 @@ final class WritableConfig implements ArrayAccess
         $this->repository->set($key, $value);
     }
     
-    public function extendIfEmpty(string $key, Closure $default)
+    public function mergeIfMissing(string $key, Closure $default)
     {
         $user_config = $this->repository->get($key, []);
         
