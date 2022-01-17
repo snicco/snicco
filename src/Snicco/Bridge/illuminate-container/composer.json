@@ -1,8 +1,8 @@
 {
   "name": "sniccowp/illuminate-container-brige",
-  "description": "Integrates sniccowp/core with the popular illuminate/container package",
+  "description": "Provides an adapter for the Laravel DI container for sniccowp/core",
   "minimum-stability": "stable",
-  "license": "GPL-3.0-only",
+  "license": "MIT",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -10,17 +10,23 @@
     }
   ],
   "require": {
+    "php": "^7.4",
     "illuminate/container": "^8.0.0",
     "sniccowp/core": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Illuminate\\": "src"
+      "Snicco\\Bridge\\IlluminateContainer\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\IllumianteContainerBridge\\": "tests"
+      "Snicco\\Bridge\\IlluminateContainer\\Tests\\": "tests"
     }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
   }
 }

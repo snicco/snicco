@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Illuminate;
+namespace Snicco\Bridge\IlluminateContainer;
 
 use Closure;
 use Illuminate\Container\Container;
 use Snicco\Component\Core\DIContainer;
-use Snicco\Component\Core\Exception\FrozenServiceException;
+use Snicco\Component\Core\Exception\FrozenService;
+use Snicco\Component\Core\Exception\ContainerIsLocked;
 
-final class IlluminateDIContainer extends DIContainer
+use function sprintf;
+
+final class IlluminateContainerAdapter extends DIContainer
 {
     
-    /**
-     * @var Container
-     */
-    private $illuminate_container;
+    private Container $illuminate_container;
+    private bool      $locked = false;
     
     public function __construct(Container $container = null)
     {
@@ -36,7 +37,8 @@ final class IlluminateDIContainer extends DIContainer
     
     public function primitive(string $id, $value) :void
     {
-        $this->illuminate_container->instance($id, $value);
+        $this->checkIfCanBeOverwritten($id);
+        $this->illuminate_container->singleton($id, fn() => $value);
     }
     
     public function get(string $id)
@@ -44,23 +46,35 @@ final class IlluminateDIContainer extends DIContainer
         return $this->illuminate_container->get($id);
     }
     
-    public function has(string $id)
+    public function has(string $id) :bool
     {
         return $this->illuminate_container->has($id);
     }
     
-    public function offsetExists($offset)
+    public function offsetExists($offset) :bool
     {
         return $this->illuminate_container->offsetExists($offset);
     }
     
     public function offsetUnset($offset)
     {
+        if (true === $this->locked) {
+            throw ContainerIsLocked::whileRemovingId($offset);
+        }
         $this->illuminate_container->offsetUnset($offset);
+    }
+    
+    public function lock() :void
+    {
+        $this->locked = true;
     }
     
     private function checkIfCanBeOverwritten(string $id)
     {
+        if (true === $this->locked) {
+            throw ContainerIsLocked::whileSettingId($id);
+        }
+        
         if ( ! $this->illuminate_container->resolved($id)) {
             return;
         }
@@ -69,7 +83,7 @@ final class IlluminateDIContainer extends DIContainer
             return;
         }
         
-        throw new FrozenServiceException(
+        throw new FrozenService(
             sprintf('Singleton [%s] was already resolved and can not be overwritten.', $id)
         );
     }
