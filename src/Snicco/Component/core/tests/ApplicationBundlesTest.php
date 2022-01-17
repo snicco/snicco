@@ -11,6 +11,7 @@ use Snicco\Component\Core\Bundle;
 use Snicco\Component\Core\Application;
 use Snicco\Component\Core\Directories;
 use Snicco\Component\Core\Environment;
+use Snicco\Component\Core\Exception\MissingConfigKey;
 use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\Core\Tests\helpers\WriteTestConfig;
 use Snicco\Component\Core\Tests\helpers\CreateTestContainer;
@@ -232,6 +233,69 @@ final class ApplicationBundlesTest extends TestCase
         ]);
         
         $app->boot();
+    }
+    
+    /** @test */
+    public function the_configure_method_will_not_called_if_the_configuration_is_cached()
+    {
+        $app = new Application(
+            $this->createContainer(),
+            Environment::prod(),
+            Directories::fromDefaults($this->base_dir),
+        );
+        
+        $this->writeConfig($app, [
+            'bundles' => [
+                BundleThatConfigures::class => ['all' => true],
+            ],
+        ]);
+        
+        $app->boot();
+        
+        // configure is not called.
+        try {
+            $app->config()->get('app.configured_value');
+            $this->fail("Bundle::configure should not be called for a cached configuration.");
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('app.configured_value', $e->getMessage());
+        }
+        
+        // register was called
+        $this->assertTrue($app['bundle_that_configures.registered']);
+        // boot was called
+        $this->assertTrue($app['bundle_that_configures.booted']);
+        // plugin is used
+        $this->assertTrue($app->usesBundle('bundle_that_configures'));
+    }
+    
+}
+
+class BundleThatConfigures implements Bundle
+{
+    
+    public function configure(WritableConfig $config, Application $app) :void
+    {
+        $config->set('app.configured_value', 'bar');
+    }
+    
+    public function register(Application $app) :void
+    {
+        $app[$this->alias().'.registered'] = true;
+    }
+    
+    public function bootstrap(Application $app) :void
+    {
+        $app[$this->alias().'.booted'] = true;
+    }
+    
+    public function alias() :string
+    {
+        return 'bundle_that_configures';
+    }
+    
+    public function runsInEnvironments(Environment $env) :bool
+    {
+        return true;
     }
     
 }
