@@ -7,6 +7,9 @@ namespace Snicco\Component\Core\Exception;
 use RuntimeException;
 use Psr\Container\ContainerExceptionInterface;
 
+/**
+ * @api
+ */
 final class ContainerIsLocked extends RuntimeException implements ContainerExceptionInterface
 {
     
