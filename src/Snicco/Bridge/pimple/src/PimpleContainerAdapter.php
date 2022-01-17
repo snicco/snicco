@@ -30,7 +30,7 @@ final class PimpleContainerAdapter extends DIContainer
         try {
             $this->pimple[$id] = $this->pimple->factory($service);
         } catch (FrozenServiceException $e) {
-            throw FrozenService::fromPrevious($e);
+            throw FrozenService::forId($id);
         }
     }
     
@@ -42,7 +42,7 @@ final class PimpleContainerAdapter extends DIContainer
         try {
             $this->pimple[$id] = $service;
         } catch (FrozenServiceException $e) {
-            throw FrozenService::fromPrevious($e);
+            throw FrozenService::forId($id);
         }
     }
     
