@@ -40,14 +40,14 @@ final class ReadOnlyConfigTest extends TestCase
     {
         $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
         
-        $this->assertSame('bar', $config->getString('foo'));
+        $this->assertSame('bar', $config->string('foo'));
         
         $this->expectException(BadConfigType::class);
         $this->expectExceptionMessage(
             "Expected config value for key [baz] to be [string].\nGot [integer]."
         );
         
-        $config->getString('baz');
+        $config->string('baz');
     }
     
     /** @test */
@@ -55,14 +55,14 @@ final class ReadOnlyConfigTest extends TestCase
     {
         $config = ReadOnlyConfig::fromArray(['foo' => 1, 'baz' => 'biz']);
         
-        $this->assertSame(1, $config->getInteger('foo'));
+        $this->assertSame(1, $config->integer('foo'));
         
         $this->expectException(BadConfigType::class);
         $this->expectExceptionMessage(
             "Expected config value for key [baz] to be [integer].\nGot [string]."
         );
         
-        $config->getInteger('baz');
+        $config->integer('baz');
     }
     
     /** @test */
@@ -70,14 +70,31 @@ final class ReadOnlyConfigTest extends TestCase
     {
         $config = ReadOnlyConfig::fromArray(['foo' => ['bar'], 'baz' => 'biz']);
         
-        $this->assertSame(['bar'], $config->getArray('foo'));
+        $this->assertSame(['bar'], $config->array('foo'));
         
         $this->expectException(BadConfigType::class);
         $this->expectExceptionMessage(
             "Expected config value for key [baz] to be [array].\nGot [string]."
         );
         
-        $config->getArray('baz');
+        $config->array('baz');
+    }
+    
+    /** @test */
+    public function test_boolean()
+    {
+        $config =
+            ReadOnlyConfig::fromArray(['foo' => ['bar' => true], 'baz' => false, 'biz' => 'boo']);
+        
+        $this->assertSame(false, $config->boolean('baz'));
+        $this->assertSame(true, $config->boolean('foo.bar'));
+        
+        $this->expectException(BadConfigType::class);
+        $this->expectExceptionMessage(
+            "Expected config value for key [biz] to be [boolean].\nGot [string]."
+        );
+        
+        $config->boolean('biz');
     }
     
     /** @test */
@@ -93,8 +110,8 @@ final class ReadOnlyConfigTest extends TestCase
     {
         $config = ReadOnlyConfig::fromArray(['foo' => ['bar' => 'baz']]);
         
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("The config has no item with key [foo.biz]");
+        $this->expectException(MissingConfigKey::class);
+        $this->expectExceptionMessage("The key [foo.biz] does not exist in the configuration.");
         
         $val = $config['foo.biz'];
     }
