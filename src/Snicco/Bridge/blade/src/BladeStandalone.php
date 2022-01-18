@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Blade;
+namespace Snicco\Bridge\Blade;
 
-use RuntimeException;
+use BadMethodCallException;
 use Illuminate\Support\Fluent;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
@@ -17,29 +17,15 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
-use function is_user_logged_in;
-use function wp_get_current_user;
-
 /**
  * @api
  */
 final class BladeStandalone
 {
     
-    /**
-     * @var string
-     */
-    private $view_cache_directory;
-    
-    /**
-     * @var array
-     */
-    private $view_directories;
-    
-    /**
-     * @var ViewComposerCollection
-     */
-    private $composers;
+    private string $view_cache_directory;
+    private array $view_directories;
+    private ViewComposerCollection $composers;
     
     /**
      * @var Container|Application
@@ -57,11 +43,6 @@ final class BladeStandalone
         }
     }
     
-    /**
-     * After bootstrapping Blade this view factory should be used in the framework view component.
-     *
-     * @return BladeViewFactory
-     */
     public function getBladeViewFactory() :BladeViewFactory
     {
         return $this->illuminate_container[BladeViewFactory::class];
@@ -70,49 +51,42 @@ final class BladeStandalone
     public function boostrap()
     {
         $this->bindDependencies();
-        
         $this->bootIlluminateViewServiceProvider();
-        
         $this->listenToEvents();
-        
-        $this->bindWordPressDirectives();
-        
+        $this->disableUnsupportedDirectives();
         $this->bindFrameworkDependencies();
     }
     
-    // The ViewServiceProvider will take care of registering all the internal bindings that blade needs to function.
-    private function bootIlluminateViewServiceProvider() :void
+    /**
+     * @api
+     */
+    public function bindWordPressDirectives(ScopableWP $wp) :void
     {
-        ((new ViewServiceProvider($this->illuminate_container)))->register();
-    }
-    
-    // Register custom blade directives
-    private function bindWordPressDirectives() :void
-    {
-        Blade::if('auth', function () { return is_user_logged_in(); });
+        Blade::if('auth', fn() => $wp->isUserLoggedIn());
         
-        Blade::if('guest', function () { return ! is_user_logged_in(); });
+        Blade::if('guest', fn() => ! $wp->isUserLoggedIn());
         
-        Blade::if('role', function ($expression) {
+        Blade::if('role', function ($expression) use ($wp) {
             if ($expression === 'admin') {
                 $expression = 'administrator';
             }
-            $user = wp_get_current_user();
+            $user = $wp->getCurrentUser();
             if ( ! empty($user->roles) && is_array($user->roles)
                  && in_array(
                      $expression,
-                     $user->roles
+                     $user->roles,
+                     true
                  )) {
                 return true;
             }
             return false;
         });
-        
-        Blade::directive('service', function () {
-            throw new RuntimeException(
-                'The service directive is not allowed. Dont use it. Its evil.'
-            );
-        });
+    }
+    
+    // Register custom blade directives
+    private function bootIlluminateViewServiceProvider() :void
+    {
+        ((new ViewServiceProvider($this->illuminate_container)))->register();
     }
     
     // These are all the dependencies that Blade expects to be present in the global service container.
@@ -174,6 +148,27 @@ final class BladeStandalone
         $this->illuminate_container->bindIf(BladeViewFactory::class, function ($container) {
             return new BladeViewFactory($container->make('view'), $this->view_directories);
         }, true);
+    }
+    
+    private function disableUnsupportedDirectives() :void
+    {
+        Blade::directive('service', function () {
+            throw new BadMethodCallException(
+                'The service directive is not supported. Dont use it. Its evil.'
+            );
+        });
+        
+        Blade::directive('csrf', function () {
+            throw new BadMethodCallException(
+                'The csrf directive is not supported as it requires the entire laravel framework.'
+            );
+        });
+        
+        Blade::directive('method', function () {
+            throw new BadMethodCallException(
+                'The method directive is not supported because form-method spoofing is not supported in WordPress.'
+            );
+        });
     }
     
 }

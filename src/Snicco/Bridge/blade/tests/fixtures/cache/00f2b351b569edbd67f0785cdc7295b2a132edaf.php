@@ -1,1 +1,0 @@
-<?php echo e('<script type="text/javascript">alert("Hacked!");</script>'); ?><?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/sniccowp/packages/blade/tests/fixtures/views/blade-features/xss.blade.php ENDPATH**/ ?>

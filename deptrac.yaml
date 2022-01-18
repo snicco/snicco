@@ -1,9 +1,11 @@
 parameters:
   paths:
     - ./src/Snicco/Component
+    - ./src/Snicco/Bridge
+    - ./src/Snicco/Bundle
 
   layers:
-
+    # components
     - name: parameter_bag
       collectors:
         - type: className
@@ -24,20 +26,44 @@ parameters:
         - type: className
           regex: Snicco\\Component\\Templating\\.*
 
-    - name: scopable-wp
+    - name: scopable_wp
       collectors:
         - type: className
           regex: Snicco\\Component\\ScopableWP\\.*
 
-  ruleset:
+    # bridge
+    - name: pimple_bridge
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\Pimple\\.*
 
+    - name: illuminate_container_brige
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\IlluminateContainer\\.*
+
+    - name: blade_bridge
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\Blade\\.*
+
+  ruleset:
+    # components
     parameter_bag:
       - str-arr
-
     core:
       - str-arr
       - parameter_bag
-
+      - pimple_bridge
     templating:
       - str-arr
       - parameter_bag
+
+    # bridge
+    pimple_bridge:
+      - core
+    illuminate_container_brige:
+      - core
+    blade_bridge:
+      - templating
+      - scopable_wp

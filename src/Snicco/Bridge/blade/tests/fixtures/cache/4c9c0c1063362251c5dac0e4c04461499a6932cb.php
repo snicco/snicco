@@ -1,1 +1,0 @@
-hello <?php echo e($name); ?><?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/sniccowp/packages/blade/tests/fixtures/views/variables.blade.php ENDPATH**/ ?>

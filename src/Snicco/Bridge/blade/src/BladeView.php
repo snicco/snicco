@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Blade;
+namespace Snicco\Bridge\Blade;
 
 use Throwable;
 use Snicco\Component\Templating\View\View;
@@ -15,10 +15,7 @@ use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 final class BladeView implements View, IlluminateViewContract
 {
     
-    /**
-     * @var IlluminateViewContract
-     */
-    private $illuminate_view;
+    private \Illuminate\View\View $illuminate_view;
     
     public function __construct($illuminate_view)
     {
@@ -62,19 +59,9 @@ final class BladeView implements View, IlluminateViewContract
         return $this;
     }
     
-    public function context(string $key = null, $default = null)
+    public function context() :array
     {
-        $data = $this->illuminate_view->getData();
-        
-        if ($key === null) {
-            return $data;
-        }
-        
-        if (isset($data[$key])) {
-            return $data[$key];
-        }
-        
-        return $default;
+        return $this->illuminate_view->getData();
     }
     
     public function getData() :array
