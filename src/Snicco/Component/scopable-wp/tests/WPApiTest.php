@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Component\ScopableWP\Tests;
 
-use InvalidArgumentException;
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\ScopableWP\WPApi;
 
+/**
+ * @api integration tests that load WordPress code.
+ */
 final class WPApiTest extends TestCase
 {
     
@@ -25,8 +28,11 @@ final class WPApiTest extends TestCase
             $wp_api = new TestWPApi();
             $wp_api->bogus();
             $this->fail("An exception should have been thrown");
-        } catch (InvalidArgumentException $e) {
-            $this->assertSame("Called undefined WordPress function [bogus].", $e->getMessage());
+        } catch (BadMethodCallException $e) {
+            $this->assertSame(
+                "Method [bogus] is not defined on class [Snicco\Component\ScopableWP\Tests\TestWPApi] and neither [\wp_bogus] nor [\bogus] are defined in the global namespace.",
+                $e->getMessage()
+            );
         }
     }
     
@@ -35,7 +41,7 @@ final class WPApiTest extends TestCase
     {
         $this->expectNotice();
         $this->expectNoticeMessage(
-            "Tried to call method [isString]"
+            "Tried to call method [isString] on [Snicco\Component\ScopableWP\Tests\TestWPApi] but its not defined"
         );
         
         $wp_api = new TestWPApi();
