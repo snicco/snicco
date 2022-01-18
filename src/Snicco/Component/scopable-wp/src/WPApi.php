@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\ScopableWP;
 
-use InvalidArgumentException;
+use BadMethodCallException;
 
 use function ucwords;
 use function sprintf;
@@ -35,22 +35,35 @@ use const E_USER_NOTICE;
 class WPApi
 {
     
-    const VERSION = '1.0.0';
+    public const VERSION = '1.0.0';
     
     private static array $snake_cache = [];
     
     public function __call($name, $arguments)
     {
         $method = $this->methodNameToSnakeCase($name);
-        $method = '\\'.$method;
+        $prefixed = '\\wp_'.$method;
+        $global = '\\'.$method;
         
-        if ( ! function_exists($method)) {
-            throw new InvalidArgumentException(
-                sprintf("Called undefined WordPress function [%s].", $name)
+        if (function_exists($prefixed)) {
+            $proxy_to = $prefixed;
+        }
+        elseif (function_exists($global)) {
+            $proxy_to = $global;
+        }
+        else {
+            throw new BadMethodCallException(
+                sprintf(
+                    'Method [%s] is not defined on class [%s] and neither [%s] nor [%s] are defined in the global namespace.',
+                    $name,
+                    static::class,
+                    $prefixed,
+                    $global
+                )
             );
         }
         
-        $this->triggerNotice($name, $method);
+        $this->triggerNotice($name, $proxy_to);
         
         return call_user_func_array($name, $arguments);
     }
@@ -75,27 +88,27 @@ class WPApi
         return apply_filters($hook_name, $value, ...$args);
     }
     
-    public function cacheGet($key, string $group = '', $force = false, &$found = null)
+    public function wpCacheGet($key, string $group = '', $force = false, &$found = null)
     {
         return wp_cache_get($key, $group, $force, $found);
     }
     
-    public function cacheSet($key, $data, string $group = '', int $expire = 0) :bool
+    public function wpCacheSet($key, $data, string $group = '', int $expire = 0) :bool
     {
         return wp_cache_set($key, $data, $expire);
     }
     
-    public function cacheDelete($key, string $group = '') :bool
+    public function wpCacheDelete($key, string $group = '') :bool
     {
         return wp_cache_delete($key, $group);
     }
     
-    public function cacheIncr($key, int $offset = 1, string $group = '')
+    public function wpCacheIncr($key, int $offset = 1, string $group = '')
     {
         return wp_cache_incr($key, $offset, $group);
     }
     
-    public function cacheDecr($key, int $offset = 1, string $group = '')
+    public function wpCacheDecr($key, int $offset = 1, string $group = '')
     {
         return wp_cache_decr($key, $offset, $group);
     }
@@ -127,10 +140,10 @@ class WPApi
     {
         trigger_error(
             sprintf(
-                "Tried to call method [%s] on [%s] but its not defined.There might be an autoload conflict.\nUsed version [%s].\nProxying to global WordPress function [%s].",
+                "Tried to call method [%s] on [%s] but its not defined.There might be an autoload conflict.\nUsed version of scopable-wp [%s].\nProxying to global function [%s].",
                 $called_instance_method,
-                self::class,
-                self::VERSION,
+                static::class,
+                static::VERSION,
                 $proxies_to
             ),
             E_USER_NOTICE
