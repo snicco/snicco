@@ -1,15 +1,8 @@
 <?php
 
-/*
- * Modified version of the Illuminate/Config class with strict type hinting and final attribute.
- *
- * License: The MIT License (MIT) https://github.com/illuminate/config/blob/v8.35.1/LICENSE.md
- * Copyright (c) Taylor Otwell
- */
-
 declare(strict_types=1);
 
-namespace Snicco\Component\Core\Utils;
+namespace Snicco\Component\ParameterBag;
 
 use ArrayAccess;
 use Snicco\Component\StrArr\Arr;
@@ -17,7 +10,7 @@ use Snicco\Component\StrArr\Arr;
 /**
  * @api
  */
-final class Repository implements ArrayAccess
+final class ParameterPag implements ArrayAccess
 {
     
     private array $items;
@@ -33,53 +26,31 @@ final class Repository implements ArrayAccess
     }
     
     /**
-     * @param  array|string  $key
      * @param  mixed  $default
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
-        if (is_array($key)) {
-            return $this->getMany($key);
-        }
-        
         return Arr::get($this->items, $key, $default);
     }
     
+    /**
+     * @param  array<string,mixed>  $items
+     */
     public function add(array $items) :void
     {
-        $this->set($items);
-    }
-    
-    public function getMany(array $keys) :array
-    {
-        $config = [];
-        
-        foreach ($keys as $key => $default) {
-            if (is_numeric($key)) {
-                [$key, $default] = [$default, null];
-            }
-            
-            $config[$key] = Arr::get($this->items, $key, $default);
+        foreach ($items as $key => $value) {
+            $this->set($key, $value);
         }
-        
-        return $config;
     }
     
     /**
-     * Set a given configuration value.
-     *
-     * @param  array|string  $key
      * @param  mixed  $value
      */
-    public function set($key, $value = null) :void
+    public function set(string $key, $value) :void
     {
-        $keys = is_array($key) ? $key : [$key => $value];
-        
-        foreach ($keys as $key => $value) {
-            Arr::set($this->items, $key, $value);
-        }
+        Arr::set($this->items, $key, $value);
     }
     
     public function prepend(string $key, $value) :void
@@ -91,13 +62,18 @@ final class Repository implements ArrayAccess
         $this->set($key, $array);
     }
     
-    public function push(string $key, $value) :void
+    public function append(string $key, $value) :void
     {
         $array = $this->get($key);
         
         $array[] = $value;
         
         $this->set($key, $array);
+    }
+    
+    public function remove(string $key) :void
+    {
+        Arr::forget($this->items, $key);
     }
     
     public function toArray() :array
@@ -137,7 +113,7 @@ final class Repository implements ArrayAccess
      */
     public function offsetUnset($offset) :void
     {
-        $this->set($offset);
+        $this->remove($offset);
     }
     
 }
