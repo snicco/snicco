@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Blade;
+namespace Snicco\Bridge\Blade;
 
 use Illuminate\View\Component as IlluminateComponent;
 
@@ -12,8 +12,7 @@ use Illuminate\View\Component as IlluminateComponent;
 abstract class BladeComponent extends IlluminateComponent
 {
     
-    /** @var BladeViewFactory */
-    private $engine;
+    private BladeViewFactory $engine;
     
     public function setEngine(BladeViewFactory $engine)
     {

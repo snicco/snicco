@@ -1,1 +1,0 @@
-<?php echo e($user->first_name); ?>.<?php /**PATH /Users/calvinalkan/wpvaletsites/sniccowp/framework/packages/blade/tests/fixtures/views/blade-features/user.blade.php ENDPATH**/ ?>

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Blade\fixtures\Components;
+namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
-use Snicco\Blade\BladeComponent;
-use Tests\Codeception\shared\TestDependencies\Foo;
+use Snicco\Bridge\Blade\BladeComponent;
+use Snicco\Bridge\Blade\Tests\fixtures\TestDependencies\Foo;
 
 class Dependency extends BladeComponent
 {
@@ -18,7 +18,7 @@ class Dependency extends BladeComponent
     public function __construct(Foo $foo, $message)
     {
         $this->foo = $foo;
-        $this->message = $foo->foo.$message;
+        $this->message = $foo->value.$message;
     }
     
     public function render()

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Blade;
+namespace Snicco\Bridge\Blade;
 
 use Closure;
 use Illuminate\Contracts\Foundation\Application;

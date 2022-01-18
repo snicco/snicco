@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Blade\fixtures\Components;
+namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
-use Snicco\Blade\BladeComponent;
+use Snicco\Bridge\Blade\BladeComponent;
 
 class Alert extends BladeComponent
 {

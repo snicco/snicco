@@ -15,12 +15,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Component\\Blade\\": "src"
+      "Snicco\\Bridge\\Blade\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\Blade\\Tests\\": "tests"
+      "Snicco\\Bridge\\Blade\\Tests\\": "tests"
     }
   }
 }
