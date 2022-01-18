@@ -10,6 +10,10 @@ use Snicco\Component\ScopableWP\WPApi;
 use function is_user_logged_in;
 use function wp_get_current_user;
 
+/**
+ * @api
+ * @final
+ */
 class ScopableWP extends WPApi
 {
     
