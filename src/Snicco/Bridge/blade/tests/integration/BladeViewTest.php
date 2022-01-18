@@ -6,8 +6,8 @@ namespace Tests\Blade\integration;
 
 use Snicco\Blade\BladeView;
 use Tests\Blade\BladeTestCase;
-use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Exceptions\ViewRenderingException;
+use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 class BladeViewTest extends BladeTestCase
 {
@@ -18,7 +18,7 @@ class BladeViewTest extends BladeTestCase
         $view = $this->view_engine->make('foo');
         
         $this->assertInstanceOf(BladeView::class, $view);
-        $this->assertInstanceOf(ViewInterface::class, $view);
+        $this->assertInstanceOf(View::class, $view);
         $this->assertViewContent('FOO', $view->toString());
     }
     
@@ -34,7 +34,7 @@ class BladeViewTest extends BladeTestCase
     /** @test */
     public function view_errors_are_caught()
     {
-        $this->expectException(ViewRenderingException::class);
+        $this->expectException(ViewCantBeRendered::class);
         
         $view = $this->view_engine->make('variables');
         $view->with('bogus', 'calvin');
@@ -66,7 +66,7 @@ class BladeViewTest extends BladeTestCase
         $view = $this->view_engine->make($path);
         
         $this->assertInstanceOf(BladeView::class, $view);
-        $this->assertInstanceOf(ViewInterface::class, $view);
+        $this->assertInstanceOf(View::class, $view);
         $this->assertViewContent('FOO', $view->toString());
     }
     

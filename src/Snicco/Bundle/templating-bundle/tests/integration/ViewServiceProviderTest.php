@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\ViewBundle\integration;
 
-use Snicco\View\ViewEngine;
-use Snicco\View\GlobalViewContext;
-use Snicco\View\Contracts\ViewFactory;
-use Snicco\View\ViewComposerCollection;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Component\Templating\ViewEngine;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\View\Implementations\PHPViewFactory;
 use Snicco\ViewBundle\ViewEngineTemplateRenderer;
 use Snicco\ViewBundle\ViewBasedHtmlErrorRenderer;
+use Snicco\Component\Templating\GlobalViewContext;
 use Tests\View\fixtures\ViewComposers\FooComposer;
 use Tests\Codeception\shared\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
+use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Core\ExceptionHandling\HtmlErrorRender;
 use Snicco\ViewBundle\DependencyInjectionViewComposerFactory;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 use const DS;
 

@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\View;
+namespace Snicco\Component\Templating;
 
-use Snicco\View\Contracts\ViewFactory;
-use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Exceptions\ViewNotFoundException;
+use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\Exception\ViewNotFound;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 /**
- * @api This class is a facade to the underlying ViewFactories.
+ * @api
  */
 final class ViewEngine
 {
@@ -17,14 +18,7 @@ final class ViewEngine
     /**
      * @var ViewFactory[]
      */
-    private $view_factories;
-    
-    /**
-     * The root view that was rendered.
-     *
-     * @var ViewInterface|null
-     */
-    private $rendered_view;
+    private array $view_factories;
     
     public function __construct(ViewFactory ...$view_factories)
     {
@@ -32,66 +26,44 @@ final class ViewEngine
     }
     
     /**
-     * Returns the view context as a string.
+     * Renders a view's content as a string.
      *
-     * @param  string|string[]  $views
      * @param  array<string, mixed>  $context
      *
-     * @return string
-     * @throws ViewNotFoundException
+     * @throws ViewNotFound
+     * @throws ViewCantBeRendered
      */
-    public function render($views, array $context = []) :string
+    public function render(string $view, array $context = []) :string
     {
-        $view = $this->make($views)->with($context);
+        $view = $this->make($view)->with($context);
         
         return $view->toString();
     }
     
     /**
-     * Create a view instance.
-     *
-     * @param  string|string[]  $views
-     *
-     * @return ViewInterface
-     * @throws ViewNotFoundException When no view can be created with any view factory
+     * @throws ViewNotFound When no view can be created with any view factory.
      */
-    public function make($views) :ViewInterface
+    public function make(string $view) :View
     {
-        $views = (array) $views;
+        $view = $this->createView($view);
         
-        $view = $this->getView($views);
-        
-        if ( ! isset($this->rendered_view)) {
-            $this->rendered_view = $view;
-        }
-        
-        return $view->with('__view', $this);
+        return $view->with('view', $this);
     }
     
-    /**
-     * The root view that was rendered.
-     *
-     * @return ViewInterface|null
-     */
-    public function rootView() :?ViewInterface
-    {
-        return $this->rendered_view ?? null;
-    }
-    
-    private function getView(array $views) :ViewInterface
+    private function createView(string $view) :View
     {
         foreach ($this->view_factories as $view_factory) {
             try {
-                return $view_factory->make($views);
-            } catch (ViewNotFoundException $e) {
+                return $view_factory->make($view);
+            } catch (ViewNotFound $e) {
                 //
             }
         }
         
-        throw new ViewNotFoundException(
+        throw new ViewNotFound(
             sprintf(
-                "None of the used view factories supports any of the views [%s].\nTried with:\n%s",
-                implode(',', $views),
+                "None of the used view factories can render the view [%s].\nTried with:\n%s",
+                $view,
                 implode(
                     "\n",
                     array_map(function (ViewFactory $v) {

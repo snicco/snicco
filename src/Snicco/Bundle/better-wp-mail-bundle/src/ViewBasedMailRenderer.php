@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\View\ViewEngine;
 use Snicco\Mail\Contracts\MailRenderer;
-use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Exceptions\ViewNotFoundException;
+use Snicco\Component\Templating\ViewEngine;
 use Snicco\Mail\Exceptions\MailRenderingException;
-use Snicco\View\Exceptions\ViewRenderingException;
+use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\Exception\ViewNotFound;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 /**
  * @interal
@@ -28,7 +28,7 @@ final class ViewBasedMailRenderer implements MailRenderer
     {
         try {
             $view = $this->view_engine->make($template_name);
-        } catch (ViewNotFoundException $not_found_exception) {
+        } catch (ViewNotFound $not_found_exception) {
             throw new MailRenderingException(
                 "The mail template [$template_name] does not exist: Caused by: {$not_found_exception->getMessage()}",
                 $not_found_exception->getCode(),
@@ -39,7 +39,7 @@ final class ViewBasedMailRenderer implements MailRenderer
         try {
             $view->with($context);
             return $view->toString();
-        } catch (ViewRenderingException $e) {
+        } catch (ViewCantBeRendered $e) {
             throw new MailRenderingException(
                 "The mail template [$template_name] could not be rendered: Caused by: {$e->getMessage()}",
                 $e->getCode(),
@@ -51,8 +51,8 @@ final class ViewBasedMailRenderer implements MailRenderer
     public function supports(string $view, ?string $extension = null) :bool
     {
         try {
-            return $this->view_engine->make($view) instanceof ViewInterface;
-        } catch (ViewNotFoundException $e) {
+            return $this->view_engine->make($view) instanceof View;
+        } catch (ViewNotFound $e) {
             return false;
         }
     }

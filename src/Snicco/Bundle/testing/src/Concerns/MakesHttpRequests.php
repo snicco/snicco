@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use Snicco\Session\Session;
-use Snicco\View\ViewEngine;
 use InvalidArgumentException;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Testing\TestResponse;
 use Psr\Http\Message\UriInterface;
 use Snicco\Component\Core\Utils\WP;
-use Snicco\View\Contracts\ViewInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\HttpRouting\Http\HttpKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Snicco\Component\Templating\View\View;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Core\Application\Application_OLD;
 use Snicco\Component\Core\Configuration\WritableConfig;
@@ -381,7 +381,7 @@ trait MakesHttpRequests
         if ($this->app->container()->has(ViewEngine::class)) {
             $view_factory = $this->app->resolve(ViewEngine::class);
             
-            if ($view_factory->rootView() instanceof ViewInterface) {
+            if ($view_factory->rootView() instanceof View) {
                 $response->setRenderedView($view_factory->rootView());
             }
         }

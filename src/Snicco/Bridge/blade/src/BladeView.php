@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Blade;
 
 use Throwable;
-use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Exceptions\ViewRenderingException;
+use Snicco\Component\Templating\View\View;
 use Illuminate\Contracts\View\View as IlluminateViewContract;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 /**
  * @internal
  */
-final class BladeView implements ViewInterface, IlluminateViewContract
+final class BladeView implements View, IlluminateViewContract
 {
     
     /**
@@ -30,7 +30,7 @@ final class BladeView implements ViewInterface, IlluminateViewContract
         try {
             return $this->illuminate_view->render();
         } catch (Throwable $e) {
-            throw new ViewRenderingException(
+            throw new ViewCantBeRendered(
                 "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
                 $e->getCode(),
                 $e,
@@ -56,7 +56,7 @@ final class BladeView implements ViewInterface, IlluminateViewContract
      *
      * @return $this
      */
-    public function with($key, $value = null) :ViewInterface
+    public function with($key, $value = null) :View
     {
         $this->illuminate_view->with($key, $value);
         return $this;

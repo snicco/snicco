@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\Codeception\shared\helpers;
 
 use PHPUnit\Framework\Assert;
-use Snicco\View\Contracts\ViewInterface;
+use Snicco\Component\Templating\View\View;
 
 trait AssertViewContent
 {
     
     protected function assertViewContent(string $expected, $actual)
     {
-        $actual = ($actual instanceof ViewInterface) ? $actual->toString() : $actual;
+        $actual = ($actual instanceof View) ? $actual->toString() : $actual;
         
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
         

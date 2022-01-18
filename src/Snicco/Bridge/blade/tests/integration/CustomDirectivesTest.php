@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Blade\integration;
 
 use Tests\Blade\BladeTestCase;
-use Snicco\View\Contracts\ViewInterface;
+use Snicco\Component\Templating\View\View;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 
 class CustomDirectivesTest extends BladeTestCase
@@ -81,7 +81,7 @@ class CustomDirectivesTest extends BladeTestCase
         $this->assertViewContent('', $content);
     }
     
-    private function view(string $view) :ViewInterface
+    private function view(string $view) :View
     {
         return $this->view_engine->make('blade-features.'.$view);
     }

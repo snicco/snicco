@@ -11,9 +11,9 @@ use Snicco\Component\StrArr\Str;
 use Snicco\Component\Core\DIContainer;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Core\Utils\UrlPath;
-use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\Constraints\SeeInOrder;
-use Snicco\Component\Core\Utils\Repository;
+use Snicco\Component\Templating\View\View;
+use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Http\Responses\NullResponse;
@@ -23,18 +23,18 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 class TestResponse
 {
     
-    public Response        $psr_response;
-    protected string       $streamed_content;
-    private Repository     $headers;
-    private int            $status_code;
-    private ?ViewInterface $view    = null;
-    private ?Session       $session = null;
-    private DIContainer    $container;
+    public Response      $psr_response;
+    protected string     $streamed_content;
+    private ParameterPag $headers;
+    private int          $status_code;
+    private ?View        $view    = null;
+    private ?Session     $session = null;
+    private DIContainer  $container;
     
     public function __construct(Response $response)
     {
         $this->psr_response = $response;
-        $this->headers = new Repository($this->psr_response->getHeaders());
+        $this->headers = new ParameterPag($this->psr_response->getHeaders());
         $this->streamed_content = (string) $this->psr_response->getBody();
         $this->status_code = $this->psr_response->getStatusCode();
     }
@@ -49,7 +49,7 @@ class TestResponse
         $this->session = $session;
     }
     
-    public function setRenderedView(ViewInterface $rendered_view)
+    public function setRenderedView(View $rendered_view)
     {
         $this->view = $rendered_view;
     }
@@ -910,7 +910,7 @@ class TestResponse
      */
     private function ensureResponseHasView() :TestResponse
     {
-        if ( ! $this->view instanceof ViewInterface) {
+        if ( ! $this->view instanceof View) {
             PHPUnit::fail('The response is not a view.');
         }
         

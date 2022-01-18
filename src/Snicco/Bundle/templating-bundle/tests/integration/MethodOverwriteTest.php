@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\ViewBundle\integration;
 
-use Snicco\View\ViewEngine;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Component\Templating\ViewEngine;
 use Tests\Codeception\shared\FrameworkTestCase;
 
 final class MethodOverwriteTest extends FrameworkTestCase

@@ -9,9 +9,9 @@ use Snicco\Testing\TestResponse;
 use Test\Helpers\CreateContainer;
 use Snicco\Component\Core\Utils\Arr;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
 use Tests\Codeception\shared\TestApp\TestApp;
+use Snicco\Component\Templating\View\View;
 use Snicco\Component\HttpRouting\Http\ResponseEmitter;
 use Snicco\Component\Core\Application\Application_OLD;
 
@@ -116,7 +116,7 @@ class FrameworkTestCase extends BaseTestCase
     
     protected function assertViewContent(string $expected, $actual)
     {
-        $actual = ($actual instanceof ViewInterface) ? $actual->toString() : $actual;
+        $actual = ($actual instanceof View) ? $actual->toString() : $actual;
         
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", "", $actual);
         

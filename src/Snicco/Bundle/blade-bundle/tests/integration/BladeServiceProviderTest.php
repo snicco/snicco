@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\BladeBundle\integration;
 
-use Snicco\View\ViewEngine;
 use Illuminate\View\Factory;
 use Snicco\Blade\BladeViewFactory;
 use Illuminate\Support\MessageBag;
 use Illuminate\View\FileViewFinder;
 use Illuminate\Container\Container;
 use Illuminate\Support\ViewErrorBag;
-use Snicco\View\Contracts\ViewFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Component\Templating\ViewEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Compilers\BladeCompiler;
 use Snicco\BladeBundle\BladeServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\SessionBundle\SessionServiceProvider;
-use Snicco\View\Exceptions\ViewRenderingException;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 class BladeServiceProviderTest extends FrameworkTestCase
 {
@@ -92,7 +92,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
         try {
             $view->toString();
             $this->fail('No exception thrown.');
-        } catch (ViewRenderingException $e) {
+        } catch (ViewCantBeRendered $e) {
             $this->assertStringContainsString(
                 'The csrf directive does not work.',
                 $e->getMessage()
@@ -111,7 +111,7 @@ class BladeServiceProviderTest extends FrameworkTestCase
         try {
             $view->toString();
             $this->fail('No exception thrown.');
-        } catch (ViewRenderingException $e) {
+        } catch (ViewCantBeRendered $e) {
             $this->assertStringContainsString(
                 'The method directive does not work.',
                 $e->getMessage()

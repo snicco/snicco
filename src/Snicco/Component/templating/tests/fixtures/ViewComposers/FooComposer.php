@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\View\fixtures\ViewComposers;
 
-use Snicco\View\Contracts\ViewComposer;
-use Snicco\View\Contracts\ViewInterface;
 use Tests\Codeception\shared\TestDependencies\Bar;
+use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ViewComposer\ViewComposer;
 
 class FooComposer implements ViewComposer
 {
@@ -18,7 +18,7 @@ class FooComposer implements ViewComposer
         $this->bar = $bar;
     }
     
-    public function compose(ViewInterface $view) :void
+    public function compose(View $view) :void
     {
         $view->with(['foo' => $this->bar->bar]);
     }

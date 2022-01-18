@@ -6,11 +6,11 @@ namespace Tests\ViewBundle\integration;
 
 use Mockery;
 use Snicco\Testing\TestResponse;
-use Snicco\View\Contracts\ViewFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\View\Exceptions\ViewRenderingException;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
 use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 use Snicco\Component\Core\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\ErrorViewException;
@@ -45,7 +45,7 @@ final class ViewBasedHtmlErrorRendererTest extends FrameworkTestCase
     public function an_exception_while_trying_to_render_a_default_error_view_will_throw_an_special_error_view_exception()
     {
         $this->view_factory->shouldReceive('make')->once()->andThrow(
-            $view_exception = new ViewRenderingException()
+            $view_exception = new ViewCantBeRendered()
         );
         
         /** @var ProductionExceptionHandler $handler */

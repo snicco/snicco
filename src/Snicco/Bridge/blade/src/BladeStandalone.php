@@ -12,10 +12,10 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Facade;
-use Snicco\View\ViewComposerCollection;
 use Illuminate\View\ViewServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 use function is_user_logged_in;
 use function wp_get_current_user;

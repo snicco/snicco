@@ -2,31 +2,34 @@
 
 declare(strict_types=1);
 
-namespace Snicco\View;
+namespace Snicco\Component\Templating;
 
 use Closure;
-use Snicco\Component\Core\Utils\Repository;
+use Snicco\Component\ParameterBag\ParameterPag;
 
 /**
  * @api
  */
-class GlobalViewContext
+final class GlobalViewContext
 {
     
     /**
-     * @var array
+     * @var array<string,mixed>
      */
-    private $context = [];
+    private array $context = [];
     
     public function add(string $name, $context)
     {
         if (is_array($context)) {
-            $context = new Repository($context);
+            $context = new ParameterPag($context);
         }
         
         $this->context[$name] = $context;
     }
     
+    /**
+     * @interal
+     */
     public function get() :array
     {
         return array_map(function ($context) {
