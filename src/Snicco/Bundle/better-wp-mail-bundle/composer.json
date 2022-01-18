@@ -21,7 +21,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Bundle\\BetterWPMail\\Tests": "tests"
+      "Snicco\\Bundle\\BetterWPMail\\Tests\\": "tests"
     }
   }
 }

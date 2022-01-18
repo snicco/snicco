@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\BladeBundle\integration;
 
-use Snicco\View\ViewEngine;
 use Snicco\ViewBundle\ViewServiceProvider;
+use Snicco\Component\Templating\ViewEngine;
 use Snicco\BladeBundle\BladeServiceProvider;
 use Tests\Codeception\shared\FrameworkTestCase;
 

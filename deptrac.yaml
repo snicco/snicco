@@ -1,0 +1,43 @@
+parameters:
+  paths:
+    - ./src/Snicco/Component
+
+  layers:
+
+    - name: parameter_bag
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\ParameterBag\\.*
+
+    - name: str-arr
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\StrArr\\.*
+
+    - name: core
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Core\\.*
+
+    - name: templating
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Templating\\.*
+
+    - name: scopable-wp
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\ScopableWP\\.*
+
+  ruleset:
+
+    parameter_bag:
+      - str-arr
+
+    core:
+      - str-arr
+      - parameter_bag
+
+    templating:
+      - str-arr
+      - parameter_bag

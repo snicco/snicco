@@ -1,6 +1,6 @@
 {
-  "name": "sniccowp/view",
-  "description": "Provides a unified API for various templating Engines.",
+  "name": "sniccowp/templating",
+  "description": "Provides a unified API for various templating engines.",
   "minimum-stability": "stable",
   "authors": [
     {
@@ -9,7 +9,8 @@
     }
   ],
   "require": {
-    "php": "^7.4"
+    "php": "^7.4",
+    "sniccowp/str-arr": "dev-master"
   },
   "autoload": {
     "psr-4": {

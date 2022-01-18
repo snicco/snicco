@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\View\fixtures\TestDoubles;
+namespace Snicco\Component\Templating\Tests\fixtures\TestDoubles;
 
-use Snicco\Component\StrArr\Arr;
-use Snicco\View\Implementations\PHPView;
-use Snicco\View\Contracts\ViewInterface;
+use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\View\PHPView;
 
-class TestView implements ViewInterface
+class TestView implements View
 {
     
     private array  $context = [];
@@ -19,7 +18,7 @@ class TestView implements ViewInterface
         $this->name = $name;
     }
     
-    public function with($key, $value = null) :ViewInterface
+    public function with($key, $value = null) :View
     {
         if (is_array($key)) {
             $this->context = array_merge($this->context(), $key);
@@ -31,18 +30,9 @@ class TestView implements ViewInterface
         return $this;
     }
     
-    public function context(string $key = null, $default = null)
+    public function context() :array
     {
-        if ($key === null) {
-            return $this->context;
-        }
-        
-        return Arr::get($this->context, $key, $default);
-    }
-    
-    public function toResponsable()
-    {
-        return $this->toString();
+        return $this->context;
     }
     
     public function toString() :string

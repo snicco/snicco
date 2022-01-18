@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\SessionBundle\Middleware;
 
-use Snicco\View\GlobalViewContext;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;

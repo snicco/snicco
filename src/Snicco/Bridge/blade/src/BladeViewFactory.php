@@ -8,10 +8,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\ViewName;
 use InvalidArgumentException;
-use Snicco\View\Contracts\ViewFactory;
-use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Exceptions\ViewNotFoundException;
+use Snicco\Component\Templating\View\View;
 use Illuminate\View\Factory as IlluminateViewFactory;
+use Snicco\Component\Templating\Exception\ViewNotFound;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 /**
  * @internal
@@ -39,9 +39,9 @@ class BladeViewFactory implements ViewFactory
      * @param  string|string[]  $views
      *
      * @return BladeView
-     * @throws ViewNotFoundException
+     * @throws ViewNotFound
      */
-    public function make($views) :ViewInterface
+    public function make($views) :View
     {
         try {
             $view = $this->view_factory->first(
@@ -50,7 +50,7 @@ class BladeViewFactory implements ViewFactory
             
             return new BladeView($view);
         } catch (InvalidArgumentException $e) {
-            throw new ViewNotFoundException(
+            throw new ViewNotFound(
                 'Could not find any of the views: ['
                 .implode(',', Arr::wrap($views))
                 .'] with the blade engine.',

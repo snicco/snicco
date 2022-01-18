@@ -8,10 +8,10 @@ use LogicException;
 use RuntimeException;
 use Snicco\Blade\BladeStandalone;
 use Illuminate\Support\Facades\Blade;
-use Snicco\View\Contracts\ViewFactory;
-use Snicco\View\ViewComposerCollection;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 class BladeServiceProvider extends ServiceProvider
 {
@@ -58,7 +58,7 @@ class BladeServiceProvider extends ServiceProvider
                 'The csrf directive does not work. You should use the $csrf object that all views have access to if you are using the stateful middleware group.'
             );
         });
-    
+        
         Blade::directive('method', function () {
             throw new LogicException(
                 'The method directive does not work. You should use the $method object that all views have access to.'

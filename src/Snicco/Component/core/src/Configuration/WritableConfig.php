@@ -7,7 +7,7 @@ namespace Snicco\Component\Core\Configuration;
 use Closure;
 use ArrayAccess;
 use Snicco\Component\StrArr\Arr;
-use Snicco\Component\Core\Utils\Repository;
+use Snicco\Component\ParameterBag\ParameterPag;
 
 use function str_replace;
 
@@ -17,16 +17,16 @@ use function str_replace;
 final class WritableConfig implements ArrayAccess
 {
     
-    private Repository $repository;
+    private ParameterPag $repository;
     
-    public function __construct(?Repository $repository = null)
+    public function __construct(?ParameterPag $repository = null)
     {
-        $this->repository = $repository ?? new Repository();
+        $this->repository = $repository ?? new ParameterPag();
     }
     
     public static function fromArray(array $items) :self
     {
-        return new self(new Repository($items));
+        return new self(new ParameterPag($items));
     }
     
     public function merge(string $key, $extend_with) :void

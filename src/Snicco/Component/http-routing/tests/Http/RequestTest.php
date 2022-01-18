@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Core\Utils\Repository;
 use Psr\Http\Message\ServerRequestInterface;
+use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
@@ -120,12 +120,12 @@ class RequestTest extends TestCase
     public function testCookies()
     {
         $cookies = $this->request->cookies();
-        $this->assertInstanceOf(Repository::class, $cookies);
+        $this->assertInstanceOf(ParameterPag::class, $cookies);
         $this->assertSame([], $cookies->toArray());
         
         $request = $this->request->withCookies(['foo' => 'bar']);
         $cookies = $request->cookies();
-        $this->assertInstanceOf(Repository::class, $cookies);
+        $this->assertInstanceOf(ParameterPag::class, $cookies);
         $this->assertSame(['foo' => 'bar'], $cookies->toArray());
     }
     

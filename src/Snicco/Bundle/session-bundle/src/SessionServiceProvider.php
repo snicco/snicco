@@ -6,7 +6,6 @@ namespace Snicco\SessionBundle;
 
 use LogicException;
 use Psr\Log\LoggerInterface;
-use Snicco\View\GlobalViewContext;
 use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
@@ -19,6 +18,7 @@ use Snicco\Session\EventDispatcherUsingWPHooks;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
 use Snicco\SessionBundle\Middleware\StartSession;
+use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\SessionBundle\Middleware\VerifyCsrfToken;
 use Snicco\Session\Contracts\SessionEventDispatcher;

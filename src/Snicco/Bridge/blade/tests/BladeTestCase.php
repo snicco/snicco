@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Blade;
 
-use Snicco\View\ViewEngine;
 use Snicco\Blade\BladeStandalone;
-use Snicco\View\GlobalViewContext;
 use Snicco\Component\Core\Utils\WP;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Support\Facades\Facade;
-use Snicco\View\ViewComposerCollection;
+use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\GlobalViewContext;
 use Tests\Codeception\shared\helpers\AssertViewContent;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 class BladeTestCase extends WPTestCase
 {

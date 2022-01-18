@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\ViewBundle;
 
-use Snicco\View\ViewEngine;
 use InvalidArgumentException;
-use Snicco\View\GlobalViewContext;
-use Snicco\View\Contracts\ViewFactory;
-use Snicco\View\ViewComposerCollection;
-use Snicco\View\Implementations\PHPViewFinder;
-use Snicco\View\Contracts\ViewComposerFactory;
-use Snicco\View\Implementations\PHPViewFactory;
+use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
+use Snicco\Component\Templating\ViewFactory\ViewFactory;
+use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
+use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Core\ExceptionHandling\HtmlErrorRender;
+use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 use function in_array;
 use function strtoupper;

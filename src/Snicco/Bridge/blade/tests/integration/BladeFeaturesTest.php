@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Blade\integration;
 
 use Tests\Blade\BladeTestCase;
-use Snicco\View\Exceptions\ViewRenderingException;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
+use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 class BladeFeaturesTest extends BladeTestCase
 {
@@ -163,7 +163,7 @@ class BladeFeaturesTest extends BladeTestCase
         try {
             $view->toString();
             $this->fail("@service was allowed.");
-        } catch (ViewRenderingException $e) {
+        } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 "The service directive is not allowed. Dont use it. Its evil.",
                 $e->getPrevious()->getMessage()

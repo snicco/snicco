@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use Snicco\Component\StrArr\Str;
-use Snicco\Component\Core\Utils\Repository;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\Http\Cookies;
+use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\HttpRouting\Http\Exceptions\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 
@@ -56,7 +56,7 @@ final class Request implements ServerRequestInterface
     
     final public function withCookies(array $cookies) :Request
     {
-        return $this->withAttribute('cookies', new Repository($cookies));
+        return $this->withAttribute('cookies', new ParameterPag($cookies));
     }
     
     final public function userAgent()
@@ -86,10 +86,10 @@ final class Request implements ServerRequestInterface
         return $this->getUri()->__toString();
     }
     
-    final public function cookies() :Repository
+    final public function cookies() :ParameterPag
     {
-        /** @var Repository $bag */
-        $bag = $this->getAttribute('cookies', new Repository());
+        /** @var ParameterPag $bag */
+        $bag = $this->getAttribute('cookies', new ParameterPag());
         
         if ($bag->toArray() === []) {
             $cookies = Cookies::parseHeader($this->getHeader('Cookie'));

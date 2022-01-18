@@ -6,11 +6,11 @@ namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
 use Snicco\Session\SessionErrors;
-use Snicco\View\GlobalViewContext;
 use Snicco\Session\ImmutableSession;
 use Snicco\Session\ValueObjects\CsrfToken;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
+use Snicco\Component\Templating\GlobalViewContext;
 use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\ShareSessionWithViews;
 

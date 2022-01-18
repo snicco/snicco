@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\View\ViewEngine;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Contracts\Mailer;
 use Snicco\Component\Core\Utils\WP;
@@ -12,6 +11,7 @@ use Snicco\Mail\Testing\FakeMailer;
 use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Contracts\MailRenderer;
 use Snicco\Mail\ValueObjects\MailDefaults;
+use Snicco\Component\Templating\ViewEngine;
 use Snicco\Mail\Renderer\AggregateRenderer;
 use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Contracts\MailEventDispatcher;

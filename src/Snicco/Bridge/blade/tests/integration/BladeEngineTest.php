@@ -6,7 +6,7 @@ namespace Tests\Blade\integration;
 
 use Snicco\Blade\BladeView;
 use Tests\Blade\BladeTestCase;
-use Snicco\View\Exceptions\ViewNotFoundException;
+use Snicco\Component\Templating\Exception\ViewNotFound;
 
 class BladeEngineTest extends BladeTestCase
 {
@@ -20,7 +20,7 @@ class BladeEngineTest extends BladeTestCase
     /** @test */
     public function exceptions_get_caught_and_translated()
     {
-        $this->expectException(ViewNotFoundException::class);
+        $this->expectException(ViewNotFound::class);
         
         $this->assertInstanceOf(BladeView::class, $this->view_engine->make('bogus'));
     }
