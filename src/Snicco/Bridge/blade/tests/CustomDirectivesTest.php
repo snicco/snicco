@@ -6,8 +6,8 @@ namespace Snicco\Bridge\Blade\Tests;
 
 use Mockery;
 use WP_User;
-use Snicco\Bridge\Blade\ScopableWP;
 use Snicco\Component\Templating\View\View;
+use Snicco\Component\ScopableWP\ScopableWP;
 
 class CustomDirectivesTest extends BladeTestCase
 {
