@@ -7,7 +7,7 @@ namespace Snicco\Component\ScopableWP\Tests;
 use Mockery;
 use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\ScopableWP\WPApi;
+use Snicco\Component\ScopableWP\ScopableWP;
 
 /**
  * @api integration tests that load WordPress code.
@@ -24,7 +24,7 @@ final class WPApiTest extends TestCase
     /** @test */
     public function methods_that_exists_will_be_called_on_the_subject()
     {
-        $wp_api = new TestWPApi();
+        $wp_api = new TestScopableWP();
         $this->assertSame('method1', $wp_api->method1());
     }
     
@@ -32,7 +32,7 @@ final class WPApiTest extends TestCase
     public function methods_that_dont_exists_in_the_global_namespace_will_throw_an_exception()
     {
         try {
-            $wp_api = new TestWPApi();
+            $wp_api = new TestScopableWP();
             $wp_api->bogus();
             $this->fail("An exception should have been thrown");
         } catch (BadMethodCallException $e) {
@@ -51,7 +51,7 @@ final class WPApiTest extends TestCase
             "Tried to call method [isString] on [Snicco\Component\ScopableWP\Tests\TestWPApi] but its not defined"
         );
         
-        $wp_api = new TestWPApi();
+        $wp_api = new TestScopableWP();
         
         $wp_api->isString('foo');
     }
@@ -59,7 +59,7 @@ final class WPApiTest extends TestCase
     /** @test */
     public function mockery_can_scope_the_class()
     {
-        $mock = Mockery::mock(TestWPApi::class);
+        $mock = Mockery::mock(TestScopableWP::class);
         $mock->shouldReceive('cacheGet')
              ->with('foo')->andReturn(1);
         
@@ -72,7 +72,7 @@ final class WPApiTest extends TestCase
     
 }
 
-class TestWPApi extends WPApi
+class TestScopableWP extends ScopableWP
 {
     
     public function method1() :string
@@ -85,9 +85,9 @@ class TestWPApi extends WPApi
 class UsesMock
 {
     
-    private WPApi $wp;
+    private ScopableWP $wp;
     
-    public function __construct(WPApi $wp)
+    public function __construct(ScopableWP $wp)
     {
         $this->wp = $wp;
     }

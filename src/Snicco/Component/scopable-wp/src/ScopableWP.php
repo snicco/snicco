@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\ScopableWP;
 
+use WP_User;
 use BadMethodCallException;
 
 use function ucwords;
@@ -22,6 +23,8 @@ use function wp_cache_incr;
 use function wp_cache_decr;
 use function function_exists;
 use function wp_cache_delete;
+use function is_user_logged_in;
+use function wp_get_current_user;
 use function call_user_func_array;
 
 use const E_USER_NOTICE;
@@ -37,7 +40,7 @@ use const E_USER_NOTICE;
  *
  * @api
  */
-class WPApi
+class ScopableWP
 {
     
     public const VERSION = '1.0.0';
@@ -103,6 +106,22 @@ class WPApi
     public function applyFilters(string $hook_name, $value, ...$args)
     {
         return apply_filters($hook_name, $value, ...$args);
+    }
+    
+    /**
+     * @final
+     */
+    public function isUserLoggedIn() :bool
+    {
+        return is_user_logged_in();
+    }
+    
+    /**
+     * @final
+     */
+    public function getCurrentUser() :WP_User
+    {
+        return wp_get_current_user();
     }
     
     /**

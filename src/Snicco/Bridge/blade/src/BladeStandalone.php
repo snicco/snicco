@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\View\ViewServiceProvider;
+use Snicco\Component\ScopableWP\ScopableWP;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
