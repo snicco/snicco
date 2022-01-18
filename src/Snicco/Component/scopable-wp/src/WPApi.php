@@ -29,6 +29,11 @@ use const E_USER_NOTICE;
 /**
  * Extend this class in your code to and add only the methods that your reference in your code.
  * ALWAYS call WordPress code through this class and your plugin will be scopable with ease.
+ * CONSIDER ALL METHODS IN THIS CLASS FINAL. The only reason they are not marked as final is that
+ * an interface does not make sense for this package and because mocking calls to WordPress would
+ * be
+ * extremely inconvenient with methods being final. That said, you should never overwrite any
+ * methods of this class.
  *
  * @api
  */
@@ -68,47 +73,74 @@ class WPApi
         return call_user_func_array($name, $arguments);
     }
     
+    /**
+     * @final
+     */
     public function addFilter(string $hook_name, callable $callback, int $priority = 10, int $accepted_args = 1)
     {
         return add_filter($hook_name, $callback, $priority, $accepted_args);
     }
     
+    /**
+     * @final
+     */
     public function addAction(string $hook_name, callable $callback, int $priority = 10, int $accepted_args = 1)
     {
         return add_action($hook_name, $callback, $priority, $accepted_args);
     }
     
+    /**
+     * @final
+     */
     public function doAction(string $hook_name, ...$args) :void
     {
         do_action($hook_name, ...$args);
     }
     
+    /**
+     * @final
+     */
     public function applyFilters(string $hook_name, $value, ...$args)
     {
         return apply_filters($hook_name, $value, ...$args);
     }
     
-    public function wpCacheGet($key, string $group = '', $force = false, &$found = null)
+    /**
+     * @final
+     */
+    public function cacheGet($key, string $group = '', $force = false, &$found = null)
     {
         return wp_cache_get($key, $group, $force, $found);
     }
     
-    public function wpCacheSet($key, $data, string $group = '', int $expire = 0) :bool
+    /**
+     * @final
+     */
+    public function cacheSet($key, $data, string $group = '', int $expire = 0) :bool
     {
         return wp_cache_set($key, $data, $expire);
     }
     
-    public function wpCacheDelete($key, string $group = '') :bool
+    /**
+     * @final
+     */
+    public function cacheDelete($key, string $group = '') :bool
     {
         return wp_cache_delete($key, $group);
     }
     
-    public function wpCacheIncr($key, int $offset = 1, string $group = '')
+    /**
+     * @final
+     */
+    public function cacheIncr($key, int $offset = 1, string $group = '')
     {
         return wp_cache_incr($key, $offset, $group);
     }
     
-    public function wpCacheDecr($key, int $offset = 1, string $group = '')
+    /**
+     * @final
+     */
+    public function cacheDecr($key, int $offset = 1, string $group = '')
     {
         return wp_cache_decr($key, $offset, $group);
     }

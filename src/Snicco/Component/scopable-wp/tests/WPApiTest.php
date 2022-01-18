@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\ScopableWP\Tests;
 
+use Mockery;
 use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\ScopableWP\WPApi;
@@ -13,6 +14,12 @@ use Snicco\Component\ScopableWP\WPApi;
  */
 final class WPApiTest extends TestCase
 {
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
     
     /** @test */
     public function methods_that_exists_will_be_called_on_the_subject()
@@ -49,6 +56,20 @@ final class WPApiTest extends TestCase
         $wp_api->isString('foo');
     }
     
+    /** @test */
+    public function mockery_can_scope_the_class()
+    {
+        $mock = Mockery::mock(TestWPApi::class);
+        $mock->shouldReceive('cacheGet')
+             ->with('foo')->andReturn(1);
+        
+        $subject = new UsesMock($mock);
+        
+        $res = $subject->getSomething('foo');
+        
+        $this->assertSame(1, $res);
+    }
+    
 }
 
 class TestWPApi extends WPApi
@@ -60,3 +81,21 @@ class TestWPApi extends WPApi
     }
     
 }
+
+class UsesMock
+{
+    
+    private WPApi $wp;
+    
+    public function __construct(WPApi $wp)
+    {
+        $this->wp = $wp;
+    }
+    
+    public function getSomething(string $key) :int
+    {
+        return $this->wp->cacheGet($key);
+    }
+    
+}
+
