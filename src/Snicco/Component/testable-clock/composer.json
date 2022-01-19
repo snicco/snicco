@@ -1,0 +1,28 @@
+{
+  "name": "sniccowp/testable-clock",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\TestableClock\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\TestableClock\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}
