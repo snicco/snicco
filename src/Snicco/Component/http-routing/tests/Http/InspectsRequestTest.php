@@ -6,6 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class InspectsRequestTest extends TestCase
@@ -13,6 +14,7 @@ class InspectsRequestTest extends TestCase
     
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
+    use CreateUrlGenerator;
     
     public function testIsGet()
     {

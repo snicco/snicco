@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\SignedUrlBundle;
 
-use Snicco\SignedUrl\Secret;
 use Psr\Log\LoggerInterface;
-use Snicco\SignedUrl\UrlSigner;
-use Snicco\SignedUrl\Sha256Hasher;
-use Snicco\SignedUrl\Contracts\Hasher;
-use Snicco\SignedUrl\SignedUrlValidator;
+use Snicco\Component\SignedUrl\Secret;
+use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\SignedUrlWP\Storage\WPDBStorage;
-use Snicco\SignedUrl\Storage\InMemoryStorage;
-use Snicco\SignedUrlMiddleware\CollectGarbage;
+use Snicco\Component\SignedUrl\Hasher\Hasher;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
 use Snicco\Component\Core\Application\SharedKeys;
-use Snicco\SignedUrlMiddleware\ValidateSignature;
+use Snicco\Component\SignedUrl\SignedUrlValidator;
+use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
 use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Bridge\SignedUrlMiddleware\CollectGarbage;
+use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
+use Snicco\Bridge\SignedUrlMiddleware\ValidateSignature;
+use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 
 final class SignedUrlServiceProvider extends ServiceProvider
 {

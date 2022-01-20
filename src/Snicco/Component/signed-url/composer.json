@@ -12,7 +12,11 @@
   "require": {
     "php": "^7.4",
     "webmozart/assert": "^1.10",
-    "paragonie/constant_time_encoding": "^2.4"
+    "paragonie/constant_time_encoding": "^2.4",
+    "sniccowp/testable-clock": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
   },
   "autoload": {
     "psr-4": {
@@ -21,10 +25,11 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\SignedUrl\\Tests\\": "tests"
+      "Snicco\\Component\\SignedUrl\\Tests\\": "tests",
+      "Snicco\\Component\\SignedUrl\\Testing\\": "testing"
     }
   },
   "bin": [
-    "bin/generate-secret"
+    "bin/generate-signed-url-secret"
   ]
 }

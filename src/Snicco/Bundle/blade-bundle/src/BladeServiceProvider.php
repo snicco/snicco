@@ -6,8 +6,8 @@ namespace Snicco\BladeBundle;
 
 use LogicException;
 use RuntimeException;
-use Snicco\Blade\BladeStandalone;
 use Illuminate\Support\Facades\Blade;
+use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;

@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrl\Storage;
+namespace Snicco\Component\SignedUrl\Storage;
 
 use ArrayAccess;
-use Snicco\SignedUrl\SignedUrl;
-use Snicco\SignedUrl\Contracts\SignedUrlClock;
-use Snicco\SignedUrl\Exceptions\BadIdentifier;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
-use Snicco\SignedUrl\SignedUrlClockUsingDateTimeImmutable;
+use InvalidArgumentException;
+use Snicco\Component\SignedUrl\SignedUrl;
+use Snicco\Component\TestableClock\Clock;
+use Snicco\Component\TestableClock\SystemClock;
+use Snicco\Component\SignedUrl\Exception\BadIdentifier;
 
 use function intval;
+use function is_array;
 
 final class SessionStorage implements SignedUrlStorage
 {
@@ -23,42 +24,43 @@ final class SessionStorage implements SignedUrlStorage
      */
     private $storage;
     
-    /**
-     * @var SignedUrlClock
-     */
-    private $clock;
+    private Clock $clock;
     
-    public function __construct(&$storage, SignedUrlClock $clock = null)
+    public function __construct(&$storage, Clock $clock = null)
     {
         if ($storage instanceof ArrayAccess) {
             $this->storage = $storage;
         }
-        else {
+        elseif (is_array($storage)) {
             $this->storage = &$storage;
         }
-        $this->clock = $clock ?? new SignedUrlClockUsingDateTimeImmutable();
+        else {
+            throw new InvalidArgumentException(
+                '$storage must be an array or instance of ArrayAccess'
+            );
+        }
+        $this->clock = $clock ?? new SystemClock();
     }
     
-    public function decrementUsage(string $identifier) :void
+    public function consume(string $identifier) :void
     {
         $left_usage = $this->remainingUsage($identifier);
-        if ($left_usage === 0) {
+        if ($left_usage < 1) {
             throw BadIdentifier::for($identifier);
         }
         
-        $_temp = $this->storage[self::namespace];
-        $_temp[$identifier]['left_usages'] = ($left_usage - 1);
+        $new_usage = $left_usage - 1;
         
-        $this->storage[self::namespace] = $_temp;
-    }
-    
-    public function remainingUsage(string $identifier) :int
-    {
-        if ( ! isset($this->storage[self::namespace][$identifier])) {
-            return 0;
+        $_temp = $this->storage[self::namespace];
+        
+        if (0 === $new_usage) {
+            unset($_temp[$identifier]);
+        }
+        else {
+            $_temp[$identifier]['left_usages'] = $new_usage;
         }
         
-        return intval($this->storage[self::namespace][$identifier]['left_usages'] ?? 0);
+        $this->storage[self::namespace] = $_temp;
     }
     
     public function store(SignedUrl $signed_url) :void
@@ -84,6 +86,15 @@ final class SessionStorage implements SignedUrlStorage
                 $this->storage[self::namespace] = $_temp;
             }
         }
+    }
+    
+    private function remainingUsage(string $identifier) :int
+    {
+        if ( ! isset($this->storage[self::namespace][$identifier])) {
+            return 0;
+        }
+        
+        return intval($this->storage[self::namespace][$identifier]['left_usages'] ?? 0);
     }
     
 }
