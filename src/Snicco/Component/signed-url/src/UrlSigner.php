@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrl;
+namespace Snicco\Component\SignedUrl;
 
 use LogicException;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
-use Snicco\SignedUrl\Contracts\Hasher;
 use ParagonIE\ConstantTime\Base64UrlSafe;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
+use Snicco\Component\SignedUrl\Hasher\Hasher;
+use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
+use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
 
 use function time;
 use function rtrim;
@@ -25,15 +26,8 @@ use function random_bytes;
 final class UrlSigner
 {
     
-    /**
-     * @var SignedUrlStorage
-     */
-    private $storage;
-    
-    /**
-     * @var Hasher
-     */
-    private $hasher;
+    private SignedUrlStorage $storage;
+    private Hasher           $hasher;
     
     public function __construct(
         SignedUrlStorage $storage,
@@ -43,6 +37,9 @@ final class UrlSigner
         $this->hasher = $hasher;
     }
     
+    /**
+     * @throws UnavailableStorage
+     */
     public function sign(string $protect, int $lifetime_in_sec, int $max_usage = 1, string $request_context = '') :SignedUrl
     {
         Assert::notEmpty($protect);
@@ -59,20 +56,25 @@ final class UrlSigner
         
         // We create a random identifier for storing the signed url usage limit.
         // We don't store the signature or a hash of it.
+        // We do this, so that a read-only sql injection does allow access protected urls.
+        // (Assuming the filesystem is not compromised)
         $identifier = Base64UrlSafe::encode(random_bytes(16));
         
-        // The signature consists of the identifier, request context the developer passed
-        // such as ip address or user agent and the protected path with an expires_at query parameter.
+        // The signature consists of the identifier, the request context the developer passed
+        // (such as ip address or user agent) and the protected path with an expires_at query parameter.
         $plain_text_signature = $identifier.
                                 $request_context.
                                 $this->appendExpiryQueryParam($path_with_query, $expires_at);
         
         $signature = Base64UrlSafe::encode($this->hasher->hash($plain_text_signature));
         
-        // We append the expires_at and signature timestamp to the path, so it can be easily validated.
+        // We append the expires_at and signature timestamp to the path, so that it can be easily validated.
         // If any of the plain text parts have been tampered validation wil fail.
         $path_with_query = $this->appendExpiryQueryParam($path_with_query, $expires_at)
-                           .'&signature='.$identifier.'|'.$signature;
+                           .'&'.SignedUrl::SIGNATURE_KEY.'='
+                           .$identifier
+                           .'|'
+                           .$signature;
         
         $url = ($domain_and_scheme = $this->getDomainAndSchema($parts))
             ? $domain_and_scheme.$path_with_query
@@ -94,10 +96,10 @@ final class UrlSigner
     private function appendExpiryQueryParam(string $path, int $expires_at) :string
     {
         if ( ! strpos($path, '?')) {
-            return $path.'?expires='.$expires_at;
+            return $path.'?'.SignedUrl::EXPIRE_KEY.'='.$expires_at;
         }
         
-        return rtrim($path, '&').'expires='.$expires_at;
+        return rtrim($path, '&').SignedUrl::EXPIRE_KEY.'='.$expires_at;
     }
     
     private function getPath(array $parts) :string

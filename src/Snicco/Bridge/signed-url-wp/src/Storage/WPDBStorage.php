@@ -6,11 +6,11 @@ namespace Snicco\SignedUrlWP\Storage;
 
 use wpdb;
 use RuntimeException;
-use Snicco\SignedUrl\SignedUrl;
-use Snicco\SignedUrl\Contracts\SignedUrlClock;
-use Snicco\SignedUrl\Exceptions\BadIdentifier;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
-use Snicco\SignedUrl\SignedUrlClockUsingDateTimeImmutable;
+use Snicco\Component\SignedUrl\SignedUrl;
+use Snicco\Component\SignedUrl\Exception\BadIdentifier;
+use Snicco\Component\SignedUrl\Contracts\SignedUrlClock;
+use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
+use Snicco\Component\SignedUrl\SignedUrlClockUsingDateTimeImmutable;
 
 use function str_replace;
 
@@ -65,7 +65,7 @@ final class WPDBStorage implements SignedUrlStorage
         }
     }
     
-    public function decrementUsage(string $identifier) :void
+    public function consume(string $identifier) :void
     {
         $left_usages = $this->remainingUsage($identifier);
         
@@ -98,17 +98,17 @@ final class WPDBStorage implements SignedUrlStorage
     {
         $query = "select left_usages from $this->table where id = %s limit 1";
         $query = $this->db->prepare($query, $identifier);
-    
+        
         $val = $this->db->get_results($query, ARRAY_N);
-    
+        
         if ( ! empty($this->db->last_error)) {
             throw new RuntimeException($this->db->last_error);
         }
-    
+        
         if (empty($val)) {
             return 0;
         }
-    
+        
         return (int) $val[0][0];
     }
     

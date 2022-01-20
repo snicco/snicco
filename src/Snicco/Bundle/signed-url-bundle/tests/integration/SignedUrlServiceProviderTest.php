@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\SignedUrlBundle\integration;
 
-use Snicco\SignedUrl\Secret;
-use Snicco\SignedUrl\UrlSigner;
-use Snicco\SignedUrl\SignedUrlValidator;
-use Snicco\SignedUrlMiddleware\CollectGarbage;
+use Snicco\Component\SignedUrl\Secret;
+use Snicco\Component\SignedUrl\UrlSigner;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\SignedUrlMiddleware\ValidateSignature;
+use Snicco\Component\SignedUrl\SignedUrlValidator;
 use Snicco\SignedUrlBundle\SignedUrlServiceProvider;
+use Snicco\Bridge\SignedUrlMiddleware\CollectGarbage;
+use Snicco\Bridge\SignedUrlMiddleware\ValidateSignature;
 
 final class SignedUrlServiceProviderTest extends FrameworkTestCase
 {

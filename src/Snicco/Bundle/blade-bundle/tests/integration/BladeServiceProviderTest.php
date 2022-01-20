@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\BladeBundle\integration;
 
 use Illuminate\View\Factory;
-use Snicco\Blade\BladeViewFactory;
 use Illuminate\Support\MessageBag;
 use Illuminate\View\FileViewFinder;
 use Illuminate\Container\Container;
 use Illuminate\Support\ViewErrorBag;
+use Snicco\Bridge\Blade\BladeViewFactory;
 use Snicco\ViewBundle\ViewServiceProvider;
 use Snicco\Component\Templating\ViewEngine;
 use Illuminate\View\Engines\EngineResolver;

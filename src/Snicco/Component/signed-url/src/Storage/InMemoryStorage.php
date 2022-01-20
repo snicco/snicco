@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrl\Storage;
+namespace Snicco\Component\SignedUrl\Storage;
 
-use Snicco\SignedUrl\SignedUrl;
-use Snicco\SignedUrl\Contracts\SignedUrlClock;
-use Snicco\SignedUrl\Exceptions\BadIdentifier;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
-use Snicco\Session\ValueObjects\ClockUsingDateTimeImmutable;
+use Snicco\Component\SignedUrl\SignedUrl;
+use Snicco\Component\TestableClock\Clock;
+use Snicco\Component\TestableClock\SystemClock;
+use Snicco\Component\SignedUrl\Exception\BadIdentifier;
 
 final class InMemoryStorage implements SignedUrlStorage
 {
@@ -18,14 +17,11 @@ final class InMemoryStorage implements SignedUrlStorage
      */
     private $links = [];
     
-    /**
-     * @var SignedUrlClock
-     */
-    private $clock;
+    private Clock $clock;
     
-    public function __construct(?SignedUrlClock $clock = null)
+    public function __construct(?Clock $clock = null)
     {
-        $this->clock = $clock ?? new ClockUsingDateTimeImmutable();
+        $this->clock = $clock ?? new SystemClock();
     }
     
     public function gc() :void
@@ -50,7 +46,7 @@ final class InMemoryStorage implements SignedUrlStorage
         return $this->links;
     }
     
-    public function decrementUsage(string $identifier) :void
+    public function consume(string $identifier) :void
     {
         if ( ! isset($this->links[$identifier])) {
             throw BadIdentifier::for($identifier);
@@ -65,15 +61,6 @@ final class InMemoryStorage implements SignedUrlStorage
         else {
             $this->links[$identifier]['usages_left'] = $new;
         }
-    }
-    
-    public function remainingUsage(string $identifier) :int
-    {
-        if ( ! isset($this->links[$identifier])) {
-            return 0;
-        }
-        
-        return $this->links[$identifier]['usages_left'];
     }
     
 }

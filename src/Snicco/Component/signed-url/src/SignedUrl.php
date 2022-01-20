@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrl;
+namespace Snicco\Component\SignedUrl;
 
 use Webmozart\Assert\Assert;
 
@@ -17,30 +17,11 @@ final class SignedUrl
     const EXPIRE_KEY = 'expires';
     const SIGNATURE_KEY = 'signature';
     
-    /**
-     * @var string
-     */
-    private $link_target;
-    
-    /**
-     * @var string
-     */
-    private $identifier;
-    
-    /**
-     * @var int
-     */
-    private $expires_at;
-    
-    /**
-     * @var int
-     */
-    private $max_usage;
-    
-    /**
-     * @var string
-     */
-    private $protects;
+    private string $link_target;
+    private string $identifier;
+    private int    $expires_at;
+    private int    $max_usage;
+    private string $protects;
     
     private function __construct(string $link_target, string $protects, string $identifier, int $expires_at, int $max_usage)
     {

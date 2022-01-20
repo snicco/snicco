@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrl;
+namespace Snicco\Component\SignedUrl;
 
 use Webmozart\Assert\Assert;
 use ParagonIE\ConstantTime\Hex;
@@ -16,10 +16,7 @@ use function random_bytes;
 final class Secret
 {
     
-    /**
-     * @var string
-     */
-    private $hex_encoded;
+    private string $hex_encoded;
     
     private function __construct(string $hex_encoded)
     {
@@ -37,7 +34,6 @@ final class Secret
     public static function fromHexEncoded(string $string) :Secret
     {
         // This is not foolproof and just a quick check to catch obviously wrong secrets.
-        
         $parts = explode('|', $string);
         
         Assert::count($parts, 2, "Your stored secret seems to be malformed.");

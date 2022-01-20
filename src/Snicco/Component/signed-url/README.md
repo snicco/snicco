@@ -54,21 +54,20 @@ composer require sniccowp/signed-url
 
 ### Creating a secret
 
+Run the following command from your project root and store the generated secret in a secure location that is outside
+your web root.
+
+```shell
+vendor/bin/generate-signed-url-secret
+```
+
+**This secret should NEVER be stored in VCS.**
+
+In your application you should load the secret from an environment variable.
+
 ```php
 // require 'vendor/autoload.php';
-
-if(!is_file('path-outside-webroot.txt')) {
-
-    $secret = \Snicco\SignedUrl\Secret::generate();
-    file_put_contents('path-outside-webroot.txt', $secret->asString());
-    
-} else {
-
-    // even better: Load in from an .env file
-    $secret = \Snicco\SignedUrl\Secret::fromHexEncoded(
-       file_get_contents('path-outside-webroot.txt')
-    );
-}
+$secret = \Snicco\Component\SignedUrl\Secret::fromHexEncoded($_SERVER['SIGNED_URL_SECRET']);
 ```
 
 ### Creating a signed-url
@@ -77,13 +76,13 @@ if(!is_file('path-outside-webroot.txt')) {
 $secret = /* */
 
 // This is a simple interface, provide your own if you like.
-$hasher = new \Snicco\SignedUrl\Sha256Hasher($secret);
+$hasher = new \Snicco\Component\SignedUrl\Hasher\Sha256Hasher($secret);
 
 // This is a simple interface.
 // check the provided storages below in the repo or simple provide your own.
-$storage = new \Snicco\SignedUrl\Storage\SessionStorage($_SESSION);
+$storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($_SESSION);
 
-$signer = new \Snicco\SignedUrl\UrlSigner($storage, $hasher);
+$signer = new \Snicco\Component\SignedUrl\UrlSigner($storage, $hasher);
 
 $lifetime_in_sec = 60;
 
@@ -122,7 +121,7 @@ which makes usage dead simple.
 try {
     // 0-100
     $percentage = 2;
-   \Snicco\SignedUrl\GarbageCollector::clean($storage, $percentage);
+   \Snicco\Component\SignedUrl\GarbageCollector::clean($storage, $percentage);
    
 } catch (RuntimeException $e) {
     // gc did not work for some reason. Log and continue.
@@ -130,7 +129,7 @@ try {
     
 }
 
-$validator = new \Snicco\SignedUrl\SignedUrlValidator($storage, $hasher);
+$validator = new \Snicco\Component\SignedUrl\SignedUrlValidator($storage, $hasher);
 
 $request_target = $_SERVER['PATH_INFO'].'?'.$_SERVER['QUERY_STRING'];
 
@@ -141,17 +140,17 @@ try {
     
     $validator->validate( $request_target, $context);
     
-} catch (\Snicco\SignedUrl\Exceptions\InvalidSignature $e ) {
+} catch (\Snicco\Component\SignedUrl\Exception\InvalidSignature $e ) {
         
    error_log("invalid signature.");     
    echo "This link has expired. Please request a new one."
     
-} catch (\Snicco\SignedUrl\Exceptions\SignedUrlExpired $e ) {
+} catch (\Snicco\Component\SignedUrl\Exception\SignedUrlExpired $e ) {
 
    error_log("signed url expired.");    
    echo "This link has expired. Please request a new one."
    
-} catch (\Snicco\SignedUrl\Exceptions\SignedUrlUsageExceeded $e ) {
+} catch (\Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded $e ) {
 
    error_log("signed url usage exceeded.");  
    echo "This link has expired. Please request a new one."
@@ -178,10 +177,10 @@ https://www.php.net/manual/de/function.mysqli-report.php
 ```php
 $mysqli = /*   */
 $table_name = 'signed_urls'
-$storage = new \Snicco\SignedUrl\Storage\MysqliStorage($storage, $table_name);
+$storage = new \Snicco\Bridge\SingedUrlMysqli\MysqliStorage($storage, $table_name);
 ```
 
-#### pdo:
+#### pdo (mysql only):
 
 ***
 
@@ -192,7 +191,7 @@ https://www.php.net/manual/de/pdo.error-handling.php
 ```php
 $pdo = /*   */
 $table_name = 'signed_urls'
-$storage = new \Snicco\SignedUrl\Storage\PDOStorage($pdo, $table_name);
+$storage = new \Snicco\Component\SignedUrl\Storage\PDOStorage($pdo, $table_name);
 ```
 
 #### Creating tables for pdo and mysqli storage:
@@ -220,9 +219,9 @@ Will use an array passed by reference or an object implementing ArrayAccess.
 
 ```php
 $arr = new MyArrayAccess();
-$storage = new \Snicco\SignedUrl\Storage\SessionStorage($arr);
+$storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($arr);
 
-$storage = new \Snicco\SignedUrl\Storage\SessionStorage($_SESSION);
+$storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($_SESSION);
 ```
 
 ### memory:
@@ -232,7 +231,7 @@ $storage = new \Snicco\SignedUrl\Storage\SessionStorage($_SESSION);
 You can use this class for during unit testing.
 
 ```php
-$storage = new \Snicco\SignedUrl\Storage\InMemoryStorage()
+$storage = new \Snicco\Component\SignedUrl\Storage\InMemoryStorage()
 ```
 
 ### WordPress bundle:

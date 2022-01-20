@@ -20,6 +20,7 @@ return static function (ContainerConfigurator $containerConfigurator) :void {
         ComposerJsonSection::REQUIRE_DEV => [
             'phpunit/phpunit' => '^9.5',
             'symplify/monorepo-builder' => '^9.4',
+            'symfony/phpunit-bridge' => '^5.0',
         ],
         ComposerJsonSection::AUTHORS => [
             [

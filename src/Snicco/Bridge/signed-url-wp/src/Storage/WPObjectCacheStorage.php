@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\SignedUrlWP\Storage;
 
 use RuntimeException;
-use Snicco\SignedUrl\SignedUrl;
-use Snicco\SignedUrl\Contracts\SignedUrlClock;
-use Snicco\SignedUrl\Exceptions\BadIdentifier;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
-use Snicco\SignedUrl\SignedUrlClockUsingDateTimeImmutable;
+use Snicco\Component\SignedUrl\SignedUrl;
+use Snicco\Component\SignedUrl\Exception\BadIdentifier;
+use Snicco\Component\SignedUrl\Contracts\SignedUrlClock;
+use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
+use Snicco\Component\SignedUrl\SignedUrlClockUsingDateTimeImmutable;
 
 use function intval;
 use function wp_cache_set;
@@ -36,7 +36,7 @@ final class WPObjectCacheStorage implements SignedUrlStorage
         $this->clock = $clock ?? new SignedUrlClockUsingDateTimeImmutable();
     }
     
-    public function decrementUsage(string $identifier) :void
+    public function consume(string $identifier) :void
     {
         $left_usages = wp_cache_decr($identifier, 1, $this->cache_group);
         

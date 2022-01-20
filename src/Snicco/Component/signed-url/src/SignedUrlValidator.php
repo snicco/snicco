@@ -2,15 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrl;
+namespace Snicco\Component\SignedUrl;
 
-use Snicco\SignedUrl\Contracts\Hasher;
 use ParagonIE\ConstantTime\Base64UrlSafe;
-use Snicco\SignedUrl\Contracts\SignedUrlClock;
-use Snicco\SignedUrl\Contracts\SignedUrlStorage;
-use Snicco\SignedUrl\Exceptions\SignedUrlExpired;
-use Snicco\SignedUrl\Exceptions\InvalidSignature;
-use Snicco\SignedUrl\Exceptions\SignedUrlUsageExceeded;
+use Snicco\Component\TestableClock\Clock;
+use Snicco\Component\SignedUrl\Hasher\Hasher;
+use Snicco\Component\TestableClock\SystemClock;
+use Snicco\Component\SignedUrl\Exception\BadIdentifier;
+use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
+use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
+use Snicco\Component\SignedUrl\Exception\InvalidSignature;
+use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
+use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
 
 use function rtrim;
 use function ltrim;
@@ -24,36 +27,26 @@ use function preg_replace;
 final class SignedUrlValidator
 {
     
-    /**
-     * @var SignedUrlStorage
-     */
-    private $storage;
+    private SignedUrlStorage $storage;
+    private Clock            $clock;
+    private Hasher           $hasher;
     
-    /**
-     * @var SignedUrlClock
-     */
-    private $clock;
-    
-    /**
-     * @var Hasher
-     */
-    private $hasher;
-    
-    public function __construct(SignedUrlStorage $storage, Hasher $hasher, SignedUrlClock $clock = null)
+    public function __construct(SignedUrlStorage $storage, Hasher $hasher, Clock $clock = null)
     {
         $this->storage = $storage;
         $this->hasher = $hasher;
-        $this->clock = $clock ?? new SignedUrlClockUsingDateTimeImmutable();
+        $this->clock = $clock ?? new SystemClock();
     }
     
     /**
-     * @param  string  $request_target  $psr->request->getRequestTarget() or
+     * @param  string  $request_target  $psr->request->getRequestTarget() ||
      *     $_SERVER['PATHINFO].?$_SERVER['QUERY_STRING']
      * @param  string  $request_context  Any additional request context to check against.
      *
      * @throws InvalidSignature
      * @throws SignedUrlExpired
      * @throws SignedUrlUsageExceeded
+     * @throws UnavailableStorage
      */
     public function validate(string $request_target, string $request_context = '') :void
     {
@@ -75,19 +68,17 @@ final class SignedUrlValidator
         $expected_signature = Base64UrlSafe::encode(
             $this->hasher->hash($plaint_text_signature)
         );
-    
+        
         $this->validateExpiration(intval($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
         $this->validateSignature($expected_signature, $provided_signature, $path);
         $this->validateUsage($identifier, $path);
-        
-        $this->storage->decrementUsage($identifier);
     }
     
     private function queryStringWithoutSignature($query_string) :string
     {
         $str = rtrim(
             preg_replace(
-                '/(^|&)signature=[^&]+/',
+                '/(^|&)'.SignedUrl::SIGNATURE_KEY.'=[^&]+/',
                 '',
                 $query_string
             ),
@@ -117,18 +108,20 @@ final class SignedUrlValidator
     private function validateExpiration(int $expires, string $path) :void
     {
         $diff = $expires - $this->clock->currentTimestamp();
-    
+        
         if ($diff < 0) {
             $diff = abs($diff);
             throw new SignedUrlExpired("Signed url expired by [$diff] seconds for path [$path].");
         }
     }
     
-    private function validateUsage(string $hashed_signature, $path) :void
+    private function validateUsage(string $identifier, $path) :void
     {
-        if ($this->storage->remainingUsage($hashed_signature) === 0) {
+        try {
+            $this->storage->consume($identifier);
+        } catch (BadIdentifier $e) {
             throw new SignedUrlUsageExceeded(
-                "Signed url usages exceeded for path [$path]."
+                "Signed url usages exceeded for path [$path].", $e->getCode(), $e
             );
         }
     }
