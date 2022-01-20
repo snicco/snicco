@@ -6,32 +6,32 @@ namespace Snicco\SessionBundle;
 
 use LogicException;
 use Psr\Log\LoggerInterface;
-use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthServiceProvider;
-use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Drivers\EncryptedDriver;
-use Snicco\Session\ValueObjects\SessionConfig;
-use Snicco\Session\Contracts\SessionEncryptor;
-use Snicco\Session\Drivers\ArraySessionDriver;
-use Snicco\Session\Drivers\WPObjectCacheDriver;
-use Snicco\Session\EventDispatcherUsingWPHooks;
+use Snicco\Component\Session\SessionEncryptor;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Session\Drivers\DatabaseSessionDriver;
 use Snicco\SessionBundle\Middleware\StartSession;
 use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Session\Driver\SessionDriver;
+use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\SessionBundle\Middleware\VerifyCsrfToken;
-use Snicco\Session\Contracts\SessionEventDispatcher;
-use Snicco\Session\Contracts\SessionManagerInterface;
+use Snicco\Component\Session\Driver\EncryptedDriver;
 use Snicco\Component\HttpRouting\Http\ResponseEmitter;
+use Snicco\Bridge\SessionWP\Driver\WPObjectCacheDriver;
+use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\SessionBundle\Middleware\AllowMutableSession;
+use Snicco\Bridge\SessionWP\EventDispatcherUsingWPHooks;
+use Snicco\Bridge\SessionWP\Driver\DatabaseSessionDriver;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
 use Snicco\SessionBundle\Middleware\ShareSessionWithViews;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedIn;
+use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedOut;
-use Snicco\Session\ValueObjects\ClockUsingDateTimeImmutable;
+use Snicco\Component\Session\SessionManager\FactorySessionManager;
 use Snicco\SessionBundle\BetterWPHooks\Listeners\InvalidateSession;
 use Snicco\SessionBundle\Middleware\AddResponseAttributesToSession;
+use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
+use Snicco\Component\Session\ValueObject\ClockUsingDateTimeImmutable;
 use Snicco\SessionBundle\BetterWPHooks\SessionEventDispatcherUsingBetterWPHooks;
 
 use function is_null;
@@ -136,7 +136,7 @@ class SessionServiceProvider extends ServiceProvider
             }
             
             if ($this->app->isRunningUnitTest() && is_null($driver)) {
-                $driver = new ArraySessionDriver();
+                $driver = new InMemoryDriver();
             }
             
             if (is_null($driver)) {
@@ -162,8 +162,8 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindSessionManager()
     {
-        $this->container->singleton(SessionManagerInterface::class, function () {
-            return new SessionManager(
+        $this->container->singleton(SessionManager::class, function () {
+            return new FactorySessionManager(
                 $this->container[SessionConfig::class],
                 $this->container[SessionDriver::class],
                 new ClockUsingDateTimeImmutable(),
@@ -195,7 +195,7 @@ class SessionServiceProvider extends ServiceProvider
         $this->container->singleton(InvalidateSession::class, function () {
             return new InvalidateSession(
                 $this->container[ResponseEmitter::class],
-                $this->container[SessionManagerInterface::class],
+                $this->container[SessionManager::class],
             );
         });
     }
@@ -217,13 +217,13 @@ class SessionServiceProvider extends ServiceProvider
         
         $this->container->singleton(HandleStatefulRequest::class, function () {
             return new HandleStatefulRequest(
-                $this->container[SessionManagerInterface::class],
+                $this->container[SessionManager::class],
                 $this->container[LoggerInterface::class],
             );
         });
         
         $this->container->singleton(AllowMutableSession::class, function () {
-            return new AllowMutableSession($this->container[SessionManagerInterface::class]);
+            return new AllowMutableSession($this->container[SessionManager::class]);
         });
         
         $this->container->singleton(StartSession::class, function () {
@@ -232,7 +232,7 @@ class SessionServiceProvider extends ServiceProvider
             
             return new StartSession(
                 $config->cookiePath(),
-                $this->container[SessionManagerInterface::class]
+                $this->container[SessionManager::class]
             );
         });
         

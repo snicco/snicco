@@ -1,0 +1,26 @@
+{
+  "name": "sniccowp/session-wp",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/session": "dev-master",
+    "sniccowp/testable-clock": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bridge\\SessionWP\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bridge\\SessionWP\\Tests\\": "tests"
+    }
+  }
+}

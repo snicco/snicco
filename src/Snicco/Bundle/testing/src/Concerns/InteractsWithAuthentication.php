@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use WP_User;
-use Snicco\Session\Session;
+use Snicco\Component\Session\SessionInterface;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 use function wp_logout;
@@ -13,7 +13,7 @@ use function wp_get_current_user;
 use function wp_set_current_user;
 
 /**
- * @property Session|null $session
+ * @property SessionInterface|null $session
  */
 trait InteractsWithAuthentication
 {
@@ -25,7 +25,7 @@ trait InteractsWithAuthentication
     {
         wp_logout();
         
-        if ($this->session instanceof Session) {
+        if ($this->session instanceof SessionInterface) {
             $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10));
             $this->session->setLastActivity(time());
             $this->withSessionCookie();

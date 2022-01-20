@@ -6,12 +6,12 @@ namespace Snicco\Testing;
 
 use Mockery;
 use RuntimeException;
-use Snicco\Session\Session;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\Core\Utils\WP;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
+use Snicco\Component\Session\SessionInterface;
 use Illuminate\Support\Facades\Facade;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -50,7 +50,7 @@ abstract class TestCase extends WPTestCase
     use TravelsTime;
     
     protected Application_OLD               $app;
-    protected ?Session                      $session       = null;
+    protected ?SessionInterface             $session       = null;
     protected Request                       $request;
     protected WritableConfig                $config;
     protected ServerRequestFactoryInterface $request_factory;

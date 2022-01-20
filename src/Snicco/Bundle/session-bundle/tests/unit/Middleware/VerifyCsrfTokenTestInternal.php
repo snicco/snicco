@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\ImmutableSession;
-use Snicco\Session\ValueObjects\CsrfToken;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
-use Tests\Codeception\shared\helpers\SessionHelpers;
+use Snicco\Component\Session\ValueObject\ReadOnly;
+use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\SessionBundle\Middleware\VerifyCsrfToken;
+use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;
 
 class VerifyCsrfTokenTestInternal extends InternalMiddlewareTestCase
@@ -33,7 +33,7 @@ class VerifyCsrfTokenTestInternal extends InternalMiddlewareTestCase
         $request = $this->frontendRequest('POST', '/foo');
         $request = $request->withAttribute(
             Keys::READ_SESSION,
-            ImmutableSession::fromSession($this->newSession())
+            ReadOnly::fromSession($this->newSession())
         );
         
         $this->expectException(InvalidCsrfTokenException::class);
@@ -50,7 +50,7 @@ class VerifyCsrfTokenTestInternal extends InternalMiddlewareTestCase
         ]);
         $request = $request->withAttribute(
             Keys::READ_SESSION,
-            ImmutableSession::fromSession($this->newSession())
+            ReadOnly::fromSession($this->newSession())
         );
         
         $this->expectException(InvalidCsrfTokenException::class);
@@ -61,7 +61,7 @@ class VerifyCsrfTokenTestInternal extends InternalMiddlewareTestCase
     /** @test */
     public function matching_csrf_tokens_will_work()
     {
-        $session = ImmutableSession::fromSession($this->newSession());
+        $session = ReadOnly::fromSession($this->newSession());
         
         $middleware = new VerifyCsrfToken();
         $request = $this->frontendRequest('POST', '/foo')->withParsedBody([
@@ -78,7 +78,7 @@ class VerifyCsrfTokenTestInternal extends InternalMiddlewareTestCase
     /** @test */
     public function csrf_tokens_can_be_accepted_in_the_header()
     {
-        $session = ImmutableSession::fromSession($this->newSession());
+        $session = ReadOnly::fromSession($this->newSession());
         
         $middleware = new VerifyCsrfToken();
         $request = $this->frontendRequest('POST', '/foo')->withAddedHeader(
@@ -100,7 +100,7 @@ class VerifyCsrfTokenTestInternal extends InternalMiddlewareTestCase
         $request = $this->frontendRequest('POST', '/foo/bar')->withParsedBody([]);
         $request = $request->withAttribute(
             Keys::READ_SESSION,
-            ImmutableSession::fromSession($this->newSession())
+            ReadOnly::fromSession($this->newSession())
         );
         
         $this->runMiddleware($middleware, $request)->assertNextMiddlewareCalled();

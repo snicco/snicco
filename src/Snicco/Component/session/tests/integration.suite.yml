@@ -1,3 +1,0 @@
-namespace: Tests\Session\integration
-extends: "%CODECEPTION_INTEGRATION_YML%"
-

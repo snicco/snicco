@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\integration;
 
 use Snicco\Component\StrArr\Str;
-use Snicco\Session\ValueObjects\SessionId;
-use Snicco\Session\Exceptions\BadSessionID;
 use Snicco\Component\HttpRouting\Http\Cookies;
-use Snicco\Session\ValueObjects\SessionConfig;
-use Snicco\Session\Drivers\ArraySessionDriver;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\SessionBundle\SessionServiceProvider;
+use Snicco\Component\Session\ValueObject\SessionId;
+use Snicco\Component\Session\Driver\InMemoryDriver;
+use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\HttpRouting\Http\ResponseEmitter;
-use Snicco\Session\ValueObjects\SerializedSessionData;
+use Snicco\Component\Session\ValueObject\SessionConfig;
+use Snicco\Component\Session\ValueObject\SerializedSessionData;
 
 use function do_action;
 
@@ -45,7 +45,7 @@ class InvalidateSessionTest extends FrameworkTestCase
         
         $_COOKIE[$session_config->cookieName()] = $session_id->asString();
         
-        /** @var ArraySessionDriver $array_driver */
+        /** @var InMemoryDriver $array_driver */
         $array_driver = $this->sessionDriver();
         
         $array_driver->write(
@@ -100,7 +100,7 @@ class InvalidateSessionTest extends FrameworkTestCase
         
         $_COOKIE[$session_config->cookieName()] = $session_id->asString();
         
-        /** @var ArraySessionDriver $array_driver */
+        /** @var InMemoryDriver $array_driver */
         $array_driver = $this->sessionDriver();
         
         $array_driver->write(

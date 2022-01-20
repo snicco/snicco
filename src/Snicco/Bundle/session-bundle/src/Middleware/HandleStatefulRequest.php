@@ -8,15 +8,15 @@ use RuntimeException;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use Snicco\SessionBundle\Keys;
+use Snicco\Component\Session\Session;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Session\Contracts\SessionInterface;
-use Snicco\Session\Exceptions\CantDestroySession;
+use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Session\Contracts\SessionManagerInterface;
-use Snicco\Session\Contracts\ImmutableSessionInterface;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\Session\Exception\CantDestroySession;
+use Snicco\Component\Session\SessionManager\SessionManager;
 
 use function sprintf;
 use function Snicco\SessionBundle\sessionCookieToHttpCookie;
@@ -28,7 +28,7 @@ final class HandleStatefulRequest extends AbstractMiddleware
 {
     
     /**
-     * @var SessionManagerInterface
+     * @var SessionManager
      */
     private $session_manager;
     
@@ -37,7 +37,7 @@ final class HandleStatefulRequest extends AbstractMiddleware
      */
     private $logger;
     
-    public function __construct(SessionManagerInterface $session_manager, LoggerInterface $logger = null)
+    public function __construct(SessionManager $session_manager, LoggerInterface $logger = null)
     {
         $this->session_manager = $session_manager;
         $this->logger = $logger ?? new NullLogger();
@@ -51,7 +51,7 @@ final class HandleStatefulRequest extends AbstractMiddleware
         // SessionManager and is not a concern here.
         $read_session = $request->getAttribute(Keys::READ_SESSION);
         
-        if ( ! $read_session instanceof ImmutableSessionInterface) {
+        if ( ! $read_session instanceof ImmutableSession) {
             throw new RuntimeException(
                 sprintf(
                     "A read-only session has not been shared with the request.\nMake sure that the [%s] middleware is running before the [%s] middleware.",
@@ -65,7 +65,7 @@ final class HandleStatefulRequest extends AbstractMiddleware
         
         $response = $next($request);
         
-        if ($write_session instanceof SessionInterface) {
+        if ($write_session instanceof Session) {
             try {
                 $this->session_manager->save($write_session);
             } catch (CantDestroySession $e) {
@@ -82,7 +82,7 @@ final class HandleStatefulRequest extends AbstractMiddleware
         );
     }
     
-    private function addCookieToResponse(Response $response, ImmutableSessionInterface $read_session) :Response
+    private function addCookieToResponse(Response $response, ImmutableSession $read_session) :Response
     {
         $session_cookie = $this->session_manager->toCookie($read_session);
         

@@ -2,107 +2,92 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Session;
+namespace Snicco\Component\Session;
 
-use Snicco\Session\ValueObjects\CsrfToken;
-use Snicco\Session\ValueObjects\SessionId;
-use Snicco\Session\Contracts\SessionInterface;
-use Snicco\Session\Contracts\ImmutableSessionInterface;
+use Snicco\Component\Session\ValueObject\SessionId;
+use Snicco\Component\Session\ValueObject\CsrfToken;
 
 /**
- * @interal
+ * @api
  */
-final class ImmutableSession implements ImmutableSessionInterface
+interface ImmutableSession
 {
     
+    public function id() :SessionId;
+    
     /**
-     * @var SessionInterface
+     * @return int UNIX timestamp
      */
-    private $session;
+    public function createdAt() :int;
     
-    private function __construct(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
+    /**
+     * @return int UNIX timestamp
+     */
+    public function lastRotation() :int;
     
-    public static function fromSession(SessionInterface $session) :ImmutableSession
-    {
-        return new ImmutableSession($session);
-    }
+    /**
+     * @return int UNIX timestamp
+     */
+    public function lastActivity() :int;
     
-    public function all() :array
-    {
-        return $this->session->all();
-    }
+    /**
+     * Checks if the given key is in the session and that the value is not NULL.
+     */
+    public function has(string $key) :bool;
     
-    public function boolean(string $key, bool $default = false) :bool
-    {
-        return $this->session->boolean($key, $default);
-    }
+    /**
+     * Check if the value for the key is truthy. {@see filter_var()}
+     */
+    public function boolean(string $key, bool $default = false) :bool;
     
-    public function createdAt() :int
-    {
-        return $this->session->createdAt();
-    }
+    /**
+     * Get the previous input of a user, typically during a form submission.
+     */
+    public function oldInput(string $key = null, $default = null);
     
-    public function csrfToken() :CsrfToken
-    {
-        return $this->session->csrfToken();
-    }
+    public function hasOldInput(string $key = null) :bool;
     
-    public function errors() :SessionErrors
-    {
-        return $this->session->errors();
-    }
+    /**
+     * Return all USER-PROVIDED entries in the session.
+     *
+     * @return array
+     */
+    public function all() :array;
     
-    public function exists($keys) :bool
-    {
-        return $this->session->exists($keys);
-    }
+    /**
+     * @param  string|string[]  $keys
+     */
+    public function only($keys) :array;
     
-    public function get(string $key, $default = null)
-    {
-        return $this->session->get($key, $default);
-    }
+    /**
+     * Returns true if all the given keys are not in the session.
+     *
+     * @param  string|string[]  $keys
+     */
+    public function missing($keys) :bool;
     
-    public function has(string $key) :bool
-    {
-        return $this->session->has($key);
-    }
+    /**
+     * Returns true if all the given keys are in the session.
+     *
+     * @param  string|string[]  $keys
+     */
+    public function exists($keys) :bool;
     
-    public function hasOldInput(string $key = null) :bool
-    {
-        return $this->session->hasOldInput($key);
-    }
+    /**
+     * Get a value form the session with dot notation.
+     * $session->get('user.name', 'calvin')
+     *
+     * @return mixed
+     */
+    public function get(string $key, $default = null);
     
-    public function id() :SessionId
-    {
-        return $this->session->id();
-    }
-    
-    public function lastActivity() :int
-    {
-        return $this->session->lastActivity();
-    }
-    
-    public function lastRotation() :int
-    {
-        return $this->session->lastRotation();
-    }
-    
-    public function missing($keys) :bool
-    {
-        return $this->session->missing($keys);
-    }
-    
-    public function oldInput(string $key = null, $default = null)
-    {
-        return $this->session->oldInput($key, $default);
-    }
-    
-    public function only($keys) :array
-    {
-        return $this->session->only($keys);
-    }
+    /**
+     * Returns a secure, random string that CAN be used to implement csrf protection using the
+     * token synchronizer pattern. The token is managed internally and regenerated whenever the
+     * session id is rotated/invalidated.
+     *
+     * @return CsrfToken
+     */
+    public function csrfToken() :CsrfToken;
     
 }

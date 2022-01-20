@@ -31,6 +31,16 @@ parameters:
         - type: className
           regex: Snicco\\Component\\ScopableWP\\.*
 
+    - name: session
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Session\\.*
+
+    - name: testable_clock
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\TestableClock\\.*
+
     # bridge
     - name: pimple_bridge
       collectors:
@@ -58,6 +68,10 @@ parameters:
     templating:
       - str-arr
       - parameter_bag
+
+    session:
+      - str-arr
+      - testable_clock
 
     # bridge
     pimple_bridge:

@@ -7,21 +7,20 @@ namespace Tests\SessionBundle\unit\Middleware;
 use Mockery as m;
 use RuntimeException;
 use DateTimeImmutable;
-use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\ValueObjects\SessionId;
-use Snicco\Session\ValueObjects\SessionConfig;
-use Snicco\Session\Drivers\ArraySessionDriver;
-use Snicco\Session\Contracts\SessionInterface;
+use Snicco\Component\Session\MutableSession;
+use Snicco\Component\Session\SessionInterface;
+use Snicco\Component\Session\ImmutableSession;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SessionBundle\Middleware\StartSession;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Session\ValueObject\SessionId;
+use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Tests\Codeception\shared\helpers\SessionHelpers;
-use Snicco\Session\Contracts\MutableSessionInterface;
-use Snicco\Session\Contracts\SessionManagerInterface;
-use Snicco\Session\ValueObjects\SerializedSessionData;
-use Snicco\Session\Contracts\ImmutableSessionInterface;
+use Snicco\Component\Session\ValueObject\SessionConfig;
+use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
+use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\ValueObject\SerializedSessionData;
 
 final class StartSessionTestInternal extends InternalMiddlewareTestCase
 {
@@ -43,9 +42,9 @@ final class StartSessionTestInternal extends InternalMiddlewareTestCase
     /** @test */
     public function an_exception_is_thrown_if_the_request_path_does_not_match_the_cookie_path_in_the_config()
     {
-        $mock = m::mock(SessionManagerInterface::class);
+        $mock = m::mock(SessionManager::class);
         $mock->shouldReceive('start')->andReturn(
-            new Session(SessionId::createFresh(), [], new DateTimeImmutable())
+            new SessionInterface(SessionId::createFresh(), [], new DateTimeImmutable())
         )->byDefault();
         
         try {
@@ -121,7 +120,7 @@ final class StartSessionTestInternal extends InternalMiddlewareTestCase
         
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $session = $request->getAttribute(Keys::READ_SESSION);
-            $this->assertInstanceOf(ImmutableSessionInterface::class, $session);
+            $this->assertInstanceOf(ImmutableSession::class, $session);
             return $response->withAddedHeader('X-Called', '1');
         });
         
@@ -134,7 +133,7 @@ final class StartSessionTestInternal extends InternalMiddlewareTestCase
     public function a_session_is_started_from_an_existing_cookie_id()
     {
         $id = SessionId::createFresh();
-        $driver = new ArraySessionDriver();
+        $driver = new InMemoryDriver();
         $driver->write($id->asHash(), SerializedSessionData::fromArray(['foo' => 'bar'], time()));
         
         $request = $this->frontendRequest('GET', '/foo')
@@ -145,8 +144,8 @@ final class StartSessionTestInternal extends InternalMiddlewareTestCase
         $this->withNextMiddlewareResponse(
             function (Response $response, Request $request) use ($id) {
                 $session = $request->getAttribute(Keys::READ_SESSION);
-                $this->assertInstanceOf(ImmutableSessionInterface::class, $session);
-                $this->assertNotInstanceOf(Session::class, $session);
+                $this->assertInstanceOf(ImmutableSession::class, $session);
+                $this->assertNotInstanceOf(SessionInterface::class, $session);
                 $this->assertTrue($id->sameAs($session->id()));
                 return $response->withAddedHeader('X-Called', '1');
             }
@@ -167,7 +166,7 @@ final class StartSessionTestInternal extends InternalMiddlewareTestCase
             $this->assertNull($write_session);
             
             $read_session = $request->getAttribute(Keys::READ_SESSION);
-            $this->assertInstanceOf(ImmutableSessionInterface::class, $read_session);
+            $this->assertInstanceOf(ImmutableSession::class, $read_session);
             
             return $response->withAddedHeader('X-Called', '1');
         });
@@ -185,11 +184,11 @@ final class StartSessionTestInternal extends InternalMiddlewareTestCase
         
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $write_session = $request->getAttribute(Keys::WRITE_SESSION);
-            $this->assertInstanceOf(MutableSessionInterface::class, $write_session);
+            $this->assertInstanceOf(MutableSession::class, $write_session);
             $this->assertInstanceOf(SessionInterface::class, $write_session);
             
             $read_session = $request->getAttribute(Keys::READ_SESSION);
-            $this->assertInstanceOf(ImmutableSessionInterface::class, $read_session);
+            $this->assertInstanceOf(ImmutableSession::class, $read_session);
             
             return $response->withAddedHeader('X-Called', '1');
         });
