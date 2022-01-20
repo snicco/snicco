@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Testing;
 
 use Closure;
-use Snicco\Session\Session;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
+use Snicco\Component\Session\SessionInterface;
 use Snicco\Component\Core\DIContainer;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Core\Utils\UrlPath;
@@ -23,13 +23,13 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 class TestResponse
 {
     
-    public Response      $psr_response;
-    protected string     $streamed_content;
-    private ParameterPag $headers;
-    private int          $status_code;
-    private ?View        $view    = null;
-    private ?Session     $session = null;
-    private DIContainer  $container;
+    public Response           $psr_response;
+    protected string          $streamed_content;
+    private ParameterPag      $headers;
+    private int               $status_code;
+    private ?View             $view    = null;
+    private ?SessionInterface $session = null;
+    private DIContainer       $container;
     
     public function __construct(Response $response)
     {
@@ -44,7 +44,7 @@ class TestResponse
         return $this->psr_response->{$method}(...$args);
     }
     
-    public function setSession(Session $session)
+    public function setSession(SessionInterface $session)
     {
         $this->session = $session;
     }
@@ -649,7 +649,7 @@ class TestResponse
         return $this;
     }
     
-    public function session() :?Session
+    public function session() :?SessionInterface
     {
         return $this->session;
     }

@@ -6,23 +6,23 @@ namespace Tests\SessionBundle\integration;
 
 use LogicException;
 use Snicco\ViewBundle\ViewServiceProvider;
-use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Drivers\EncryptedDriver;
-use Snicco\Session\ValueObjects\SessionConfig;
-use Snicco\Session\Contracts\SessionEncryptor;
+use Snicco\Component\Session\SessionEncryptor;
 use Tests\Codeception\shared\FrameworkTestCase;
-use Snicco\Session\Drivers\WPObjectCacheDriver;
 use Snicco\SessionBundle\SessionServiceProvider;
-use Snicco\Session\Drivers\DatabaseSessionDriver;
 use Snicco\SessionBundle\Middleware\StartSession;
+use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\SessionBundle\Middleware\VerifyCsrfToken;
-use Snicco\Session\Contracts\SessionEventDispatcher;
-use Snicco\Session\Contracts\SessionManagerInterface;
+use Snicco\Component\Session\Driver\EncryptedDriver;
+use Snicco\Bridge\SessionWP\Driver\WPObjectCacheDriver;
+use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\SessionBundle\Middleware\AllowMutableSession;
+use Snicco\Bridge\SessionWP\Driver\DatabaseSessionDriver;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
 use Snicco\SessionBundle\Middleware\ShareSessionWithViews;
+use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\DefuseEncryption\DefuseEncryptionServiceProvider;
 use Snicco\SessionBundle\Middleware\AddResponseAttributesToSession;
+use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 use Snicco\SessionBundle\BetterWPHooks\SessionEventDispatcherUsingBetterWPHooks;
 
 class SessionServiceProviderTest extends FrameworkTestCase
@@ -199,10 +199,10 @@ class SessionServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $manager = $this->app[SessionManagerInterface::class];
-        $manager2 = $this->app[SessionManagerInterface::class];
+        $manager = $this->app[SessionManager::class];
+        $manager2 = $this->app[SessionManager::class];
         
-        $this->assertInstanceOf(SessionManagerInterface::class, $manager);
+        $this->assertInstanceOf(SessionManager::class, $manager);
         $this->assertSame($manager, $manager2);
     }
     

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Session\Session;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\StrArr\Arr;
+use Snicco\Component\Session\SessionInterface;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Session\ValueObjects\CsrfToken;
-use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Component\Session\Driver\SessionDriver;
+use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\Core\Application\Application_OLD;
 
 /**
- * @property Session|null $session
+ * @property SessionInterface|null $session
  * @property Application_OLD $app
  * @property array $default_headers
  * @property array $default_cookies

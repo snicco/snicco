@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\SessionBundle\BetterWPHooks\Listeners;
 
-use Snicco\Session\ValueObjects\CookiePool;
 use Snicco\Component\HttpRouting\Http\Cookies;
-use Snicco\Session\Contracts\SessionManagerInterface;
+use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\HttpRouting\Http\ResponseEmitter;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedIn;
+use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedOut;
 
 use function Snicco\SessionBundle\sessionCookieToHttpCookie;
@@ -22,11 +22,11 @@ final class InvalidateSession
     private $emitter;
     
     /**
-     * @var SessionManagerInterface
+     * @var SessionManager
      */
     private $session_manager;
     
-    public function __construct(ResponseEmitter $emitter, SessionManagerInterface $session_manager)
+    public function __construct(ResponseEmitter $emitter, SessionManager $session_manager)
     {
         $this->emitter = $emitter;
         $this->session_manager = $session_manager;

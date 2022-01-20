@@ -6,21 +6,21 @@ namespace Tests\SessionBundle\unit\Middleware;
 
 use RuntimeException;
 use DateTimeImmutable;
-use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\ImmutableSession;
-use Snicco\Session\ValueObjects\SessionId;
+use Snicco\Component\Session\MutableSession;
 use Snicco\PimpleContainer\PimpleDIContainer;
-use Snicco\Session\Drivers\ArraySessionDriver;
-use Snicco\Session\ValueObjects\SessionConfig;
+use Snicco\Component\Session\SessionInterface;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
+use Snicco\Component\Session\ValueObject\ReadOnly;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Session\ValueObject\SessionId;
+use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Tests\Codeception\shared\helpers\SessionHelpers;
-use Snicco\Session\Contracts\MutableSessionInterface;
+use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\HttpRouting\Middleware\ShareCookies;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
+use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
@@ -36,20 +36,20 @@ final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
     public function a_dirty_request_is_saved()
     {
         $id = SessionId::createFresh();
-        $driver = new ArraySessionDriver();
+        $driver = new InMemoryDriver();
         
         $manager = $this->getSessionManager(SessionConfig::fromDefaults('test_cookie'), $driver);
         
         $middleware = new HandleStatefulRequest($manager);
         
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
-            /** @var MutableSessionInterface $session */
+            /** @var MutableSession $session */
             $session = $request->getAttribute(Keys::WRITE_SESSION);
             $session->put('foo', 'baz');
             return $response;
         });
         
-        $session = new Session($id, ['foo' => 'bar'], new DateTimeImmutable());
+        $session = new SessionInterface($id, ['foo' => 'bar'], new DateTimeImmutable());
         
         $request = $this->frontendRequest()
                         ->withAddedHeader('Cookie', "test_cookie={$id->asString()}")
@@ -59,7 +59,7 @@ final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
                         )
                         ->withAttribute(
                             Keys::READ_SESSION,
-                            ImmutableSession::fromSession($session)
+                            ReadOnly::fromSession($session)
                         );
         
         $response = $this->runMiddleware($middleware, $request);
@@ -78,8 +78,8 @@ final class HandleStatefulRequestTestInternal extends InternalMiddlewareTestCase
         
         $middleware = new HandleStatefulRequest($manager);
         
-        $session = ImmutableSession::fromSession(
-            new Session(
+        $session = ReadOnly::fromSession(
+            new SessionInterface(
                 SessionId::createFresh(),
                 ['foo' => 'bar'],
                 new DateTimeImmutable()

@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 /**
- * This array will be passed as into {@see \Snicco\Session\ValueObjects\SessionConfig::__construct}
+ * This array will be passed as into
+ * {@see \Snicco\Component\Session\ValueObject\SessionConfig::__construct}
  */
 return [
     

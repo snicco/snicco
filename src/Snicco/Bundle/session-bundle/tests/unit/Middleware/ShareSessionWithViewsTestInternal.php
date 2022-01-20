@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\SessionErrors;
-use Snicco\Session\ImmutableSession;
-use Snicco\Session\ValueObjects\CsrfToken;
+use Snicco\Component\Session\SessionErrors;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\SessionBundle\ImmutableSessionWrapper;
 use Snicco\Component\Templating\GlobalViewContext;
-use Tests\Codeception\shared\helpers\SessionHelpers;
+use Snicco\Component\Session\ValueObject\ReadOnly;
+use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\SessionBundle\Middleware\ShareSessionWithViews;
+use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 
 final class ShareSessionWithViewsTestInternal extends InternalMiddlewareTestCase
 {
@@ -39,7 +39,7 @@ final class ShareSessionWithViewsTestInternal extends InternalMiddlewareTestCase
         $request = $this->frontendRequest();
         $request = $request->withAttribute(
             Keys::READ_SESSION,
-            $session = ImmutableSession::fromSession($session)
+            $session = ReadOnly::fromSession($session)
         );
         
         $middleware = new ShareSessionWithViews($context = new GlobalViewContext());

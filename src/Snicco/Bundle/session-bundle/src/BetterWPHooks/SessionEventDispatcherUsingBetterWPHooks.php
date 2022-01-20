@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\SessionBundle\BetterWPHooks;
 
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Session\Contracts\SessionEventDispatcher;
+use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 
 final class SessionEventDispatcherUsingBetterWPHooks implements SessionEventDispatcher
 {

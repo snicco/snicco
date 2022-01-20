@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use DateTimeImmutable;
-use Snicco\Session\Session;
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\ImmutableSession;
+use Snicco\Component\Session\SessionInterface;
 use Tests\Codeception\shared\UnitTest;
-use Snicco\Session\ValueObjects\SessionId;
-use Snicco\Session\Contracts\SessionInterface;
+use Snicco\Component\Session\ValueObject\ReadOnly;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Session\Contracts\ImmutableSessionInterface;
+use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\HttpRouting\Tests\helpers\CreatePsr17Factories;
 
 use function Snicco\SessionBundle\getReadSession;
@@ -41,14 +39,14 @@ final class FunctionsTest extends UnitTest
     {
         $request = $this->request->withAttribute(
             Keys::READ_SESSION,
-            ImmutableSession::fromSession(
-                new Session(SessionId::createFresh(), [], new DateTimeImmutable())
+            ReadOnly::fromSession(
+                new SessionInterface(SessionId::createFresh(), [], new DateTimeImmutable())
             )
         );
         
         $session = getReadSession($request);
         
-        $this->assertInstanceOf(ImmutableSessionInterface::class, $session);
+        $this->assertInstanceOf(ReadOnly::class, $session);
     }
     
     /** @test */
@@ -64,7 +62,7 @@ final class FunctionsTest extends UnitTest
     {
         $request = $this->request->withAttribute(
             Keys::WRITE_SESSION,
-            new Session(SessionId::createFresh(), [], new DateTimeImmutable())
+            new SessionInterface(SessionId::createFresh(), [], new DateTimeImmutable())
         );
         
         $session = getWriteSession($request);

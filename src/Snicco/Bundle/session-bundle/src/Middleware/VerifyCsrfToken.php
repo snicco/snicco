@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\SessionBundle\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Session\ValueObjects\CsrfToken;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\SessionBundle\Exceptions\InvalidCsrfTokenException;

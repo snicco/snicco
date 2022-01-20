@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\MessageBag;
-use Snicco\Session\Contracts\SessionInterface;
+use Snicco\Component\Session\Session;
+use Snicco\Component\Session\MessageBag;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Tests\Codeception\shared\helpers\SessionHelpers;
+use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 use Snicco\SessionBundle\Middleware\AddResponseAttributesToSession;
 
 final class AddResponseAttributesToSessionTestInternal extends InternalMiddlewareTestCase
@@ -24,7 +24,7 @@ final class AddResponseAttributesToSessionTestInternal extends InternalMiddlewar
     private $request;
     
     /**
-     * @var SessionInterface
+     * @var Session
      */
     private $session;
     

@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Session\Session;
 use InvalidArgumentException;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Testing\TestResponse;
 use Psr\Http\Message\UriInterface;
 use Snicco\Component\Core\Utils\WP;
+use Snicco\Component\Session\SessionInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\HttpRouting\Http\HttpKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Psr\Http\Message\ServerRequestFactoryInterface;
-use Snicco\Component\Templating\View\View;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Core\Application\Application_OLD;
 use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\HttpRouting\Testing\BuildsWordPressUrls;
 
 /**
- * @property Session|null $session
+ * @property SessionInterface|null $session
  * @property Application_OLD $app
  * @property ServerRequestFactoryInterface $request_factory
  * @property bool $routes_loaded
@@ -386,7 +386,7 @@ trait MakesHttpRequests
             }
         }
         
-        if ($this->session instanceof Session) {
+        if ($this->session instanceof SessionInterface) {
             $response->setSession($this->session);
         }
         

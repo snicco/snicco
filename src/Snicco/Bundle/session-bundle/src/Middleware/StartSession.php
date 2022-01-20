@@ -6,12 +6,12 @@ namespace Snicco\SessionBundle\Middleware;
 
 use RuntimeException;
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\ImmutableSession;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\Session\ValueObject\ReadOnly;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\Session\SessionManager\SessionManager;
 
 use function rtrim;
 use function sprintf;
@@ -29,11 +29,11 @@ final class StartSession extends AbstractMiddleware
     private $cookie_path;
     
     /**
-     * @var SessionManagerInterface
+     * @var SessionManager
      */
     private $session_manager;
     
-    public function __construct(string $cookie_path, SessionManagerInterface $session_manager)
+    public function __construct(string $cookie_path, SessionManager $session_manager)
     {
         $this->cookie_path = $cookie_path.'*';
         $this->session_manager = $session_manager;
@@ -48,7 +48,7 @@ final class StartSession extends AbstractMiddleware
         // All routes should have read access to the session
         $request = $request->withAttribute(
             Keys::READ_SESSION,
-            ImmutableSession::fromSession($session)
+            ReadOnly::fromSession($session)
         );
         
         // Non-Read methods should not have write-access to the current session.

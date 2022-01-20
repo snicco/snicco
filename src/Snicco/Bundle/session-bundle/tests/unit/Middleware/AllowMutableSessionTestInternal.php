@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\SessionBundle\unit\Middleware;
 
 use Snicco\SessionBundle\Keys;
-use Snicco\Session\Contracts\SessionInterface;
+use Snicco\Component\Session\Session;
 use Tests\HttpRouting\InternalMiddlewareTestCase;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Tests\Codeception\shared\helpers\SessionHelpers;
 use Snicco\SessionBundle\Middleware\AllowMutableSession;
+use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 
 final class AllowMutableSessionTestInternal extends InternalMiddlewareTestCase
 {
@@ -26,7 +26,7 @@ final class AllowMutableSessionTestInternal extends InternalMiddlewareTestCase
         
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $this->assertInstanceOf(
-                SessionInterface::class,
+                Session::class,
                 $request->getAttribute(Keys::WRITE_SESSION)
             );
             

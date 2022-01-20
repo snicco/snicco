@@ -6,22 +6,22 @@ namespace Snicco\SessionBundle
 {
     
     use LogicException;
-    use Snicco\Session\ValueObjects\CookiePool;
+    use Snicco\Component\Session\Session;
     use Snicco\Component\HttpRouting\Http\Cookie;
-    use Snicco\Session\Contracts\SessionInterface;
-    use Snicco\Session\ValueObjects\SessionCookie;
+    use Snicco\Component\Session\ImmutableSession;
     use Snicco\Component\HttpRouting\Http\Psr7\Request;
-    use Snicco\Session\Contracts\SessionManagerInterface;
-    use Snicco\Session\Contracts\ImmutableSessionInterface;
+    use Snicco\Component\Session\ValueObject\CookiePool;
+    use Snicco\Component\Session\ValueObject\SessionCookie;
+    use Snicco\Component\Session\SessionManager\SessionManager;
     
     /**
      * @throws LogicException
      * @api
      */
-    function getReadSession(Request $request) :ImmutableSessionInterface
+    function getReadSession(Request $request) :ImmutableSession
     {
         $session = $request->getAttribute(Keys::READ_SESSION);
-        if ( ! $session instanceof ImmutableSessionInterface) {
+        if ( ! $session instanceof ImmutableSession) {
             throw new LogicException("No read-only session has been shared with the request.");
         }
         return $session;
@@ -31,10 +31,10 @@ namespace Snicco\SessionBundle
      * @throws LogicException
      * @api
      */
-    function getWriteSession(Request $request) :SessionInterface
+    function getWriteSession(Request $request) :Session
     {
         $session = $request->getAttribute(Keys::WRITE_SESSION);
-        if ( ! $session instanceof SessionInterface) {
+        if ( ! $session instanceof Session) {
             throw new LogicException("No writable session has been shared with the request.");
         }
         return $session;
@@ -43,7 +43,7 @@ namespace Snicco\SessionBundle
     /**
      * @interal
      */
-    function getSessionFromManager(Request $request, SessionManagerInterface $session_manager) :SessionInterface
+    function getSessionFromManager(Request $request, SessionManager $session_manager) :Session
     {
         $cookies = $request->cookies()->toArray();
         return $session_manager->start(new CookiePool($cookies));
