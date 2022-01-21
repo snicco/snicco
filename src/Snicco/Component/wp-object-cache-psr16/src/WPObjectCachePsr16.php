@@ -8,6 +8,8 @@ use Traversable;
 use DateInterval;
 use DateTimeImmutable;
 use Psr\SimpleCache\CacheInterface;
+use Snicco\Component\WPObjectCachePsr16\Exception\BadKey;
+use Snicco\Component\WPObjectCachePsr16\Exception\BadTtl;
 
 use function is_int;
 use function sprintf;
