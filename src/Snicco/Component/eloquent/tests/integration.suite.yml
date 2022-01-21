@@ -1,3 +1,0 @@
-namespace: Tests\Database\integration
-extends: "%CODECEPTION_INTEGRATION_YML%"
-

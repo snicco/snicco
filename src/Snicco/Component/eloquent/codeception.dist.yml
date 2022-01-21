@@ -1,9 +1,21 @@
-namespace: Tests\Database
-extends: "%CODECEPTION_PACKAGE_YML%"
+namespace: Snicco\Component\Eloquent
+paths:
+  tests: tests
+  output: tests/_output
+  data: tests/_data
+  support: tests/_support
+
+bootstrap: bootstrap.php
 
 params:
-  - ../../codeception/.env.testing
+  - env
 
-groups:
-  db: [ tests/integration ]
-  eloquent: [ tests/integration ]
+settings:
+  colors: true
+  disallow_test_output: true
+  error_level: E_ALL
+  log_incomplete_skipped: true
+  report_useless_tests: true
+
+coverage:
+  enabled: false
