@@ -19,8 +19,6 @@ use function wp_cache_get;
 use function wp_cache_set;
 use function trigger_error;
 use function apply_filters;
-use function wp_cache_incr;
-use function wp_cache_decr;
 use function function_exists;
 use function wp_cache_delete;
 use function is_user_logged_in;
@@ -73,7 +71,7 @@ class ScopableWP
         
         $this->triggerNotice($name, $proxy_to);
         
-        return call_user_func_array($name, $arguments);
+        return call_user_func_array($proxy_to, $arguments);
     }
     
     /**
@@ -137,7 +135,7 @@ class ScopableWP
      */
     public function cacheSet($key, $data, string $group = '', int $expire = 0) :bool
     {
-        return wp_cache_set($key, $data, $expire);
+        return wp_cache_set($key, $data, $group, $expire);
     }
     
     /**
@@ -146,22 +144,6 @@ class ScopableWP
     public function cacheDelete($key, string $group = '') :bool
     {
         return wp_cache_delete($key, $group);
-    }
-    
-    /**
-     * @final
-     */
-    public function cacheIncr($key, int $offset = 1, string $group = '')
-    {
-        return wp_cache_incr($key, $offset, $group);
-    }
-    
-    /**
-     * @final
-     */
-    public function cacheDecr($key, int $offset = 1, string $group = '')
-    {
-        return wp_cache_decr($key, $offset, $group);
     }
     
     private function methodNameToSnakeCase(string $method_name)
@@ -191,7 +173,7 @@ class ScopableWP
     {
         trigger_error(
             sprintf(
-                "Tried to call method [%s] on [%s] but its not defined.There might be an autoload conflict.\nUsed version of scopable-wp [%s].\nProxying to global function [%s].",
+                "Tried to call method [%s] on [%s] but its not defined. There might be an autoload conflict.\nUsed version of scopable-wp [%s].\nProxying to global function [%s].",
                 $called_instance_method,
                 static::class,
                 static::VERSION,
