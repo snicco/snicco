@@ -132,7 +132,7 @@ final class WPObjectCachePsr16 implements CacheInterface
         
         $iterator = [];
         
-        // Don't set values in this loop because there might be invalid keys in a later integration.
+        // Don't set values in this loop because there might be invalid keys in a later iteration.
         foreach ($values as $key => $value) {
             if (is_int($key)) {
                 $key = (string) $key;
@@ -168,6 +168,9 @@ final class WPObjectCachePsr16 implements CacheInterface
         }
         
         $res = true;
+        foreach ($keys as $key) {
+            $this->validateKey($key);
+        }
         foreach ($keys as $key) {
             $res = $this->delete($key);
         }
