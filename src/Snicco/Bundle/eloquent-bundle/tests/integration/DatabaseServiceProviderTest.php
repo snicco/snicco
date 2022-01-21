@@ -6,18 +6,18 @@ namespace Tests\EloquentBundle\integration;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
-use Snicco\Database\MysqliConnection;
 use Illuminate\Database\Eloquent\Model;
-use Snicco\Database\WPConnectionResolver;
-use Tests\Database\fixtures\Models\Country;
-use Tests\Database\helpers\WPDBTestHelpers;
 use Illuminate\Database\ConnectionInterface;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Tests\Database\helpers\WithTestTransactions;
 use Snicco\EloquentBundle\DatabaseServiceProvider;
 use Illuminate\Database\ConnectionResolverInterface;
+use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
+use Snicco\Component\Eloquent\Tests\fixtures\Model\Country;
+use Snicco\Component\Eloquent\Illuminate\WPConnectionResolver;
 use Illuminate\Contracts\Events\Dispatcher as IlluminateDispatcher;
+use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
+use Snicco\Component\Eloquent\Tests\fixtures\Helper\WithTestTransactions;
 
 class DatabaseServiceProviderTest extends FrameworkTestCase
 {

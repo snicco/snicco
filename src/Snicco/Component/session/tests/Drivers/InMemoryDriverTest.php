@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Session\Tests\unit\Drivers;
+namespace Snicco\Component\Session\Tests\Drivers;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\TestableClock\Clock;

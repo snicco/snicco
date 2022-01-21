@@ -6,7 +6,6 @@ phpunit.xml
 /tests/integration/Blade/cache/*
 !/tests/integration/Blade/cache/.gitkeep
 composer.lock
-/packages/**/codeception.yml
 codeception.ymll
 /.deptrac.cache
 packages/blade/tests/fixtures/cache/*
@@ -15,3 +14,13 @@ packages/blade/tests/fixtures/cache/*
 /packages/*/tests/_output/failed
 /codeception/.env.testing
 /vendor/composer/
+_output
+/tests/.env.testing
+
+# repos
+/src/Snicco/*/*/codeception.yml
+/src/Snicco/*/*/vendor
+/src/Snicco/*/*/composer.lock
+/src/Snicco/*/*/phpunit.xml
+/src/Snicco/*/*/tests/_output/*
+

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\EloquentBundle;
 
-use Snicco\Database\WPEloquentStandalone;
 use Illuminate\Database\ConnectionInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\Eloquent\WPEloquentStandalone;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Illuminate\Database\ConnectionResolverInterface;
 

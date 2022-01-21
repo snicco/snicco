@@ -13,11 +13,4 @@
          colors="true"
          bootstrap="vendor/autoload.php"
 >
-    <testsuite name="unit">
-        <directory>tests</directory>
-        <exludes>tests/wordpress</exludes>
-    </testsuite>
-    <testsuite name="wordpress">
-        <directory>tests/wordpress</directory>
-    </testsuite>
 </phpunit>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Session\Tests\unit\ValueObject;
+namespace Snicco\Component\Session\Tests\ValueObject;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\ValueObject\SerializedSessionData;
