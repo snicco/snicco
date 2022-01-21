@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Database\Illuminate;
+namespace Snicco\Component\Eloquent\Illuminate;
 
-use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
-class WPModel extends EloquentModel
+/**
+ * @api
+ */
+class WPModel extends IlluminateModel
 {
     
-    public static $factory_namespace;
+    public static string $factory_namespace;
     
 }

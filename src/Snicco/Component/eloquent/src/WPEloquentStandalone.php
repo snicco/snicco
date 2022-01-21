@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Database;
+namespace Snicco\Component\Eloquent;
 
 use Faker\Factory;
 use RuntimeException;
@@ -10,18 +10,25 @@ use Illuminate\Support\Fluent;
 use Illuminate\Container\Container;
 use Faker\Generator as FakerGenerator;
 use Illuminate\Support\Facades\Facade;
-use Snicco\Database\Illuminate\WPModel;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
+use Snicco\Component\Eloquent\Illuminate\WPModel;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\DatabaseTransactionsManager;
 use Illuminate\Database\Connectors\ConnectionFactory;
-use Snicco\Database\Contracts\MysqliConnectionFactory;
+use Snicco\Component\Eloquent\Illuminate\WPConnectionResolver;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Illuminate\Database\Eloquent\Factories\Factory as EloquentFactory;
 
+use function rtrim;
+use function class_exists;
+
+/**
+ * @api
+ */
 final class WPEloquentStandalone
 {
     
@@ -29,32 +36,19 @@ final class WPEloquentStandalone
      * @var Container|Application
      */
     private $illuminate_container;
-    
-    /**
-     * @var array
-     */
-    private $connection_configuration;
-    
-    /**
-     * @var MysqliConnectionFactory
-     */
-    private $mysqli_factory;
-    
-    /**
-     * @var bool
-     */
-    private $enable_global_facades;
+    private array $connection_configuration;
+    private bool $enable_global_facades;
     
     public function __construct(
         array $connection_configuration = [],
-        bool $enable_global_facades = true,
-        ?MysqliConnectionFactory $mysqli_factory = null
+        bool $enable_global_facades = true
     ) {
         $this->illuminate_container = Container::getInstance();
+        
         if ($this->illuminate_container->has('sniccowp_eloquent_bootstrapped')) {
             throw new RuntimeException(
                 "EloquentStandalone can only be bootstrapped once because eloquent uses a global service locator.
-                 If you are using this library in a distributed package you need to run it through a php-prefixer to avoid unintended code collision."
+                 If you are using this library in a distributed package you need to run it through a php-scoper to avoid unintended code collision."
             );
         }
         
@@ -67,12 +61,17 @@ final class WPEloquentStandalone
         
         $this->enable_global_facades = $enable_global_facades;
         $this->connection_configuration = $connection_configuration;
-        $this->mysqli_factory = $mysqli_factory ?? new MysqliFactoryUsingWpdb();
         $this->illuminate_container->instance('sniccowp_eloquent_bootstrapped', true);
     }
     
     public function withDatabaseFactories(string $model_namespace, string $factory_namespace, string $faker_locale = 'en_US')
     {
+        if ( ! class_exists(FakerGenerator::class)) {
+            throw new RuntimeException(
+                "Faker is not installed. Please try running composer require fakerphp/faker --dev"
+            );
+        }
+        
         $this->illuminate_container->singletonIf(
             FakerGenerator::class,
             function () use ($faker_locale) {
@@ -83,11 +82,11 @@ final class WPEloquentStandalone
         );
         EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace) {
             $model = class_basename($model);
-            return $factory_namespace.$model.'Factory';
+            return rtrim($factory_namespace, '\\').'\\'.$model.'Factory';
         });
         EloquentFactory::guessModelNamesUsing(function ($factory) use ($model_namespace) {
             $model = class_basename($factory);
-            return str_replace('Factory', '', $model_namespace.$model);
+            return str_replace('Factory', '', rtrim($model_namespace, '\\').'\\'.$model);
         });
         WPModel::$factory_namespace = $factory_namespace;
     }
@@ -135,7 +134,7 @@ final class WPEloquentStandalone
         
         return new WPConnectionResolver(
             $illuminate_database_manager,
-            $this->mysqli_factory
+            new MysqliFactory()
         );
     }
     
