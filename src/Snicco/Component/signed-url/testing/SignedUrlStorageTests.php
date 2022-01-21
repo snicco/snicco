@@ -15,53 +15,56 @@ trait SignedUrlStorageTests
 {
     
     /** @test */
-    public function garbage_collection_works()
+    final public function garbage_collection_works()
     {
         $storage = $this->createStorage($clock = new TestClock());
         
         $storage->store(
-            $link1 = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 9, 10)
+            $foo_url =
+                $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 2, 10)
         );
         
         $storage->store(
-            $link2 = $this->createSignedUrl('/bar?signature=bar_signature', 'bar_signature', 10, 10)
+            $bar_url =
+                $this->createSignedUrl('/bar?signature=bar_signature', 'bar_signature', 3, 10)
         );
         
-        $clock->travelIntoFuture(9);
+        $this->advanceTime(2, $clock);
         
         $storage->gc();
         
         // both valid
-        $storage->consume($link1->identifier());
-        $storage->consume($link2->identifier());
+        $storage->consume($foo_url->identifier());
+        $storage->consume($bar_url->identifier());
         
-        $clock->travelIntoFuture(1);
+        $this->advanceTime(1, $clock);
+        
         $storage->gc();
         
         try {
             // first one invalid
-            $storage->consume($link1->identifier());
+            $storage->consume($foo_url->identifier());
             PHPUnit::fail("Garbage collection did not remove an expired link");
         } catch (BadIdentifier $e) {
-            PHPUnit::assertStringContainsString($link1->identifier(), $e->getMessage());
+            PHPUnit::assertStringContainsString($foo_url->identifier(), $e->getMessage());
         }
         // still valid
-        $storage->consume($link2->identifier());
+        $storage->consume($bar_url->identifier());
         
-        $clock->travelIntoFuture(1);
+        $this->advanceTime(1, $clock);
         $storage->gc();
         
         try {
             // second one invalid
-            $storage->consume($link2->identifier());
+            $storage->consume($bar_url->identifier());
             PHPUnit::fail('Garbage collection did not remove an expired link');
         } catch (BadIdentifier $e) {
-            PHPUnit::assertStringContainsString($link2->identifier(), $e->getMessage());
+            PHPUnit::assertStringContainsString($bar_url->identifier(), $e->getMessage());
         }
     }
     
     /** @test */
-    public function the_url_is_removed_from_storage_after_the_last_max_usages()
+    final function the_url_is_removed_from_storage_after_the_last_max_usages()
     {
         $storage = $this->createStorage(new TestClock());
         
@@ -85,7 +88,7 @@ trait SignedUrlStorageTests
     }
     
     /** @test */
-    public function decrementing_a_missing_signature_throws_an_exception()
+    final function decrementing_a_missing_signature_throws_an_exception()
     {
         $storage = $this->createStorage($clock = new TestClock());
         
@@ -104,6 +107,11 @@ trait SignedUrlStorageTests
                 $e->getMessage()
             );
         }
+    }
+    
+    protected function advanceTime(int $seconds, TestClock $clock)
+    {
+        $clock->travelIntoFuture($seconds);
     }
     
     abstract protected function createStorage(Clock $clock) :SignedUrlStorage;

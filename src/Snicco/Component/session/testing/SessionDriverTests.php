@@ -177,10 +177,18 @@ trait SessionDriverTests
             (new DateTimeImmutable())->setTimestamp($clock->currentTimestamp() + 1)
         );
         
+        $data = $driver->read('session1');
+        
         PHPUnit::assertSame(
             $clock->currentTimestamp() + 1,
-            $driver->read('session1')->lastActivity()->getTimestamp(),
+            $data->lastActivity()->getTimestamp(),
             "session was not touched correctly."
+        );
+        
+        PHPUnit::assertSame(
+            ['foo' => 'bar'],
+            $data->asArray(),
+            "touching the session should not change the content."
         );
     }
     

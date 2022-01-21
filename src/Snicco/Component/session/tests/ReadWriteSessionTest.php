@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Session\Tests\unit;
+namespace Snicco\Component\Session\Tests;
 
 use Mockery;
 use DateTimeImmutable;

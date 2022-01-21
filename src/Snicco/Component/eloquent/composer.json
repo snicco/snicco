@@ -16,8 +16,8 @@
   },
   "require-dev": {
     "fakerphp/faker": "^1.0.0-stable",
-    "phpunit/phpunit": "^9.5.0",
-    "lucatume/wp-browser": "^3.0.22",
+    "phpunit/phpunit": "^9.5",
+    "lucatume/wp-browser": "3.0.22",
     "mockery/mockery": "^1.4.0"
   },
   "autoload": {

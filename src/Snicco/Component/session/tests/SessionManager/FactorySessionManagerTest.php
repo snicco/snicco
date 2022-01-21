@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Session\Tests\unit\SessionManager;
+namespace Snicco\Component\Session\Tests\SessionManager;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
