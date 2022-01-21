@@ -1,3 +1,4 @@
 /.phpunit.cache/
 /vendor
 composer.lock
+codception.yml
