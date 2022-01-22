@@ -6,6 +6,17 @@ parameters:
 
   layers:
     # components
+
+    - name: event_dispatcher
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\EventDispatcher\\.*
+
+    - name: better_wp_hooks
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\BetterWPHooks\\.*
+
     - name: parameter_bag
       collectors:
         - type: className
@@ -72,6 +83,9 @@ parameters:
     session:
       - str-arr
       - testable_clock
+
+    better_wp_hooks:
+      - event_dispatcher
 
     # bridge
     pimple_bridge:

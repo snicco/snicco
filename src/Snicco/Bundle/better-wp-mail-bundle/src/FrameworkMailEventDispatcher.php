@@ -7,7 +7,7 @@ namespace Snicco\MailBundle;
 use Snicco\Mail\Event\SendingEmail;
 use Snicco\Mail\Event\EmailWasSent;
 use Snicco\Mail\Contracts\MailEventDispatcher;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 
 /**
  * @interal

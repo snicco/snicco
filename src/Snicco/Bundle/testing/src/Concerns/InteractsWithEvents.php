@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\Component\EventDispatcher\Dispatcher\FakeDispatcher;
 
 trait InteractsWithEvents
 {
