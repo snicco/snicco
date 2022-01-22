@@ -8,7 +8,7 @@ use Closure;
 use ReflectionException;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\Model;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
 
 final class IlluminateEventDispatcherAdapter implements IlluminateEventDispatcher

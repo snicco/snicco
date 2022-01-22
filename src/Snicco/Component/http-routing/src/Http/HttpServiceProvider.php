@@ -6,8 +6,8 @@ namespace Snicco\Component\HttpRouting\Http;
 
 use RuntimeException;
 use RKA\Middleware\IpAddress;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;

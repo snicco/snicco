@@ -1,0 +1,34 @@
+{
+  "name": "sniccowp/better-wp-hooks",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/event-dispatcher": "dev-master",
+    "sniccowp/scopable-wp": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "lucatume/wp-browser": "3.0.22"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPHooks\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPHooks\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

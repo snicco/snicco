@@ -23,6 +23,7 @@
         "paragonie/constant_time_encoding": "^2.4",
         "pimple/pimple": "^3.0.0",
         "psr/container": "^1.0.0",
+        "psr/event-dispatcher": "^1.0",
         "psr/http-message": "^1.0.0",
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.0.0",
@@ -34,7 +35,6 @@
         "adriansuter/php-autoload-override": "^1.2",
         "cache/array-adapter": "^1.0.0",
         "cache/integration-tests": "0.17.0",
-        "codeception/codeception": "4.1.28",
         "fakerphp/faker": "^1.0.0-stable",
         "lucatume/wp-browser": "3.0.22",
         "mockery/mockery": "^1.4.0",
@@ -42,14 +42,13 @@
         "nyholm/psr7-server": "^1.0-stable",
         "phpunit/phpunit": "^9.5",
         "sniccowp/pimple-bridge": "dev-master",
-        "symplify/monorepo-builder": "^9.4",
-        "vlucas/phpdotenv": "^5.4"
+        "symplify/monorepo-builder": "^9.4"
     },
     "autoload": {
         "files": [
             "src/Snicco/Bundle/session-bundle/src/functions.php",
-            "src/Snicco/Component/EventDispatcher/better-wp-hooks/src/functions.php",
-            "src/Snicco/Component/core/src/Utils/functions.php"
+            "src/Snicco/Component/core/src/Utils/functions.php",
+            "src/Snicco/Component/event-dispatcher/src/functions.php"
         ],
         "psr-4": {
             "Snicco\\BladeBundle\\": "src/Snicco/Bundle/blade-bundle/src",
@@ -69,22 +68,21 @@
             "Snicco\\Bundle\\SignedUrl\\": "src/Snicco/Bundle/signed-url-bundle/src",
             "Snicco\\Bundle\\Templating\\": "src/Snicco/Bundle/templating-bundle/src",
             "Snicco\\Bundle\\Testing\\": "src/Snicco/Bundle/testing/src",
+            "Snicco\\Component\\BetterWPHooks\\": "src/Snicco/Component/better-wp-hooks/src",
             "Snicco\\Component\\BetterWPMail\\": "src/Snicco/Component/better-wp-mail/src",
             "Snicco\\Component\\Core\\": "src/Snicco/Component/core/src",
             "Snicco\\Component\\Eloquent\\": "src/Snicco/Component/eloquent/src",
+            "Snicco\\Component\\EventDispatcher\\": "src/Snicco/Component/event-dispatcher/src",
             "Snicco\\Component\\HttpRouting\\": "src/Snicco/Component/http-routing/src",
-            "Snicco\\Component\\MiddlewareTestCase\\": "src/Snicco/Component/middleware-testcase/src",
             "Snicco\\Component\\ParameterBag\\": "src/Snicco/Component/parameter-bag/src",
             "Snicco\\Component\\ScopableWP\\": "src/Snicco/Component/scopable-wp/src",
             "Snicco\\Component\\Session\\": "src/Snicco/Component/session/src",
-            "Snicco\\Component\\SignedUrlMiddleware\\": "src/Snicco/Component/signed-url-middleware/src",
             "Snicco\\Component\\SignedUrlWP\\": "src/Snicco/Bridge/signed-url-wp/src",
             "Snicco\\Component\\SignedUrl\\": "src/Snicco/Component/signed-url/src",
             "Snicco\\Component\\StrArr\\": "src/Snicco/Component/str-arr/src",
             "Snicco\\Component\\Templating\\": "src/Snicco/Component/templating/src",
             "Snicco\\Component\\TestableClock\\": "src/Snicco/Component/testable-clock/src",
-            "Snicco\\Component\\WPObjectCachePsr16\\": "src/Snicco/Component/wp-object-cache-psr16/src",
-            "Snicco\\EventDispatcher\\": "src/Snicco/Component/EventDispatcher/better-wp-hooks/src"
+            "Snicco\\Component\\WPObjectCachePsr16\\": "src/Snicco/Component/wp-object-cache-psr16/src"
         }
     },
     "autoload-dev": {
@@ -105,18 +103,18 @@
             "Snicco\\Bundle\\SignedUrl\\Tests\\": "src/Snicco/Bundle/signed-url-bundle/tests",
             "Snicco\\Bundle\\Templating\\Tests\\": "src/Snicco/Bundle/templating-bundle/tests",
             "Snicco\\Bundle\\Testing\\Tests\\": "src/Snicco/Bundle/testing/tests",
+            "Snicco\\Component\\BetterWPHooks\\Tests\\": "src/Snicco/Component/better-wp-hooks/tests",
             "Snicco\\Component\\BetterWPMail\\Tests\\": "src/Snicco/Component/better-wp-mail/tests",
             "Snicco\\Component\\Core\\Testing\\": "src/Snicco/Component/core/testing",
             "Snicco\\Component\\Core\\Tests\\": "src/Snicco/Component/core/tests",
             "Snicco\\Component\\Eloquent\\Tests\\": "src/Snicco/Component/eloquent/tests",
+            "Snicco\\Component\\EventDispatcher\\Tests\\": "src/Snicco/Component/event-dispatcher/tests",
             "Snicco\\Component\\HttpRouting\\Testing\\": "src/Snicco/Component/http-routing/testing",
             "Snicco\\Component\\HttpRouting\\Tests\\": "src/Snicco/Component/http-routing/tests",
-            "Snicco\\Component\\MiddlewareTestCase\\Tests\\": "src/Snicco/Component/middleware-testcase/tests",
             "Snicco\\Component\\ParameterBag\\Tests\\": "src/Snicco/Component/parameter-bag/tests",
             "Snicco\\Component\\ScopableWP\\Tests\\": "src/Snicco/Component/scopable-wp/tests",
             "Snicco\\Component\\Session\\Testing\\": "src/Snicco/Component/session/testing",
             "Snicco\\Component\\Session\\Tests\\": "src/Snicco/Component/session/tests",
-            "Snicco\\Component\\SignedUrlMiddleware\\Tests\\": "src/Snicco/Component/signed-url-middleware/tests",
             "Snicco\\Component\\SignedUrlWP\\Tests\\": "src/Snicco/Bridge/signed-url-wp/tests",
             "Snicco\\Component\\SignedUrl\\Testing\\": "src/Snicco/Component/signed-url/testing",
             "Snicco\\Component\\SignedUrl\\Tests\\": "src/Snicco/Component/signed-url/tests",
@@ -124,7 +122,6 @@
             "Snicco\\Component\\Templating\\Tests\\": "src/Snicco/Component/templating/tests",
             "Snicco\\Component\\TestableClock\\Tests\\": "src/Snicco/Component/testable-clock/tests",
             "Snicco\\Component\\WPObjectCachePsr16\\Tests\\": "src/Snicco/Component/wp-object-cache-psr16/tests",
-            "Tests\\BetterWPHooks\\": "src/Snicco/Component/EventDispatcher/better-wp-hooks/tests",
             "Tests\\BladeBundle\\": "src/Snicco/Bundle/blade-bundle/tests"
         }
     },
@@ -156,6 +153,7 @@
         "sniccowp/eloquent": "self.version",
         "sniccowp/eloquent-bundle": "self.version",
         "sniccowp/encryption-bundle": "self.version",
+        "sniccowp/event-dispatcher": "self.version",
         "sniccowp/http-routing": "self.version",
         "sniccowp/illuminate-container-brige": "self.version",
         "sniccowp/middleware-testcase": "self.version",

@@ -1,6 +1,6 @@
 {
   "name": "sniccowp/eloquent",
-  "description": "Use the Laravels Eloquent ORM in WordPress. Fully tested with Eloquent 8.x",
+  "description": "Use the Laravels Eloquent ORM in WordPress. Fully tested with Eloquent 8.x.",
   "minimum-stability": "stable",
   "authors": [
     {

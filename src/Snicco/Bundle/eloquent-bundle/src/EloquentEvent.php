@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\EloquentBundle;
 
 use Illuminate\Database\Eloquent\Model;
-use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\Contracts\Mutable;
+use Snicco\Component\EventDispatcher\Contracts\Event;
+use Snicco\Component\EventDispatcher\Contracts\Mutable;
 
 class EloquentEvent implements Event, Mutable
 {

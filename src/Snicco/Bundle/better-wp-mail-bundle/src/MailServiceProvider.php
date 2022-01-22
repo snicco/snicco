@@ -16,9 +16,9 @@ use Snicco\Mail\Renderer\AggregateRenderer;
 use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Contracts\MailEventDispatcher;
 use Snicco\Mail\Contracts\MailBuilderInterface;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Component\Core\Configuration\WritableConfig;
+use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 
 /**
  * @internal
