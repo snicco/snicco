@@ -8,11 +8,7 @@ use Closure;
 use WP_Hook;
 use LogicException;
 use InvalidArgumentException;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Component\EventDispatcher\Contracts\MappedFilter;
-use Snicco\Component\EventDispatcher\Contracts\MappedAction;
-use Snicco\Component\EventDispatcher\Contracts\MappedEventFactory;
-use Snicco\Component\EventDispatcher\Implementations\ParameterBasedEventFactory;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 
 use function add_action;
 use function add_filter;
@@ -33,7 +29,7 @@ final class EventMapper
     private $event_factory;
     
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
     private $event_dispatcher;
     
@@ -47,7 +43,7 @@ final class EventMapper
      */
     private $mapped_filters = [];
     
-    public function __construct(Dispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
+    public function __construct(EventDispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
     {
         $this->event_dispatcher = $event_dispatcher;
         $this->event_factory = $event_factory ?? new ParameterBasedEventFactory();

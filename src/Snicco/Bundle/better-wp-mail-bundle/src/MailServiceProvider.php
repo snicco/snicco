@@ -17,8 +17,8 @@ use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Contracts\MailEventDispatcher;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\Component\Core\Contracts\ServiceProvider;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Core\Configuration\WritableConfig;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 
 /**
  * @internal
@@ -88,7 +88,7 @@ class MailServiceProvider extends ServiceProvider
     {
         $this->container->singleton(MailEventDispatcher::class, function () {
             return new FrameworkMailEventDispatcher(
-                $this->container[Dispatcher::class]
+                $this->container[EventDispatcher::class]
             );
         });
     }

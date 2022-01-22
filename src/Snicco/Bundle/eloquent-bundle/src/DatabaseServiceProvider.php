@@ -8,7 +8,7 @@ use Illuminate\Database\ConnectionInterface;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Illuminate\Database\ConnectionResolverInterface;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
@@ -49,7 +49,7 @@ class DatabaseServiceProvider extends ServiceProvider
         }
         
         $eloquent->withEvents(
-            new IlluminateEventDispatcherAdapter($this->container[Dispatcher::class])
+            new IlluminateEventDispatcherAdapter($this->container[EventDispatcher::class])
         );
     }
     

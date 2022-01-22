@@ -8,18 +8,18 @@ use Closure;
 use ReflectionException;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\Model;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
 
 final class IlluminateEventDispatcherAdapter implements IlluminateEventDispatcher
 {
     
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
     private $dispatcher;
     
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(EventDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\EloquentBundle;
 
 use Illuminate\Database\Eloquent\Model;
-use Snicco\Component\EventDispatcher\Contracts\Event;
-use Snicco\Component\EventDispatcher\Contracts\Mutable;
+use Snicco\Component\BetterWPHooks\Mutable;
+use Snicco\Component\EventDispatcher\Event;
 
 class EloquentEvent implements Event, Mutable
 {
@@ -27,12 +27,12 @@ class EloquentEvent implements Event, Mutable
         $this->name = $name;
     }
     
-    public function getPayload()
+    public function payload()
     {
         return $this->model;
     }
     
-    public function getName() :string
+    public function name() :string
     {
         return $this->name ?? static::class;
     }

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\SessionBundle\BetterWPHooks;
 
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 
 final class SessionEventDispatcherUsingBetterWPHooks implements SessionEventDispatcher
 {
     
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
     private $dispatcher;
     
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(EventDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }

@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Component\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\Component\EventDispatcher\TestableEventDispatcher;
 
 trait InteractsWithEvents
 {
     
-    /** @var FakeDispatcher */
+    /** @var TestableEventDispatcher */
     protected $dispatcher;
     
     /**
      * @param  string|array  $events
      */
-    protected function fakeEvents($events) :FakeDispatcher
+    protected function fakeEvents($events) :TestableEventDispatcher
     {
         $this->dispatcher->fake($events);
         return $this->dispatcher;
@@ -30,7 +30,7 @@ trait InteractsWithEvents
         return $this->dispatcher;
     }
     
-    protected function fakeAll() :FakeDispatcher
+    protected function fakeAll() :TestableEventDispatcher
     {
         $this->dispatcher->fakeAll();
         return $this->dispatcher;

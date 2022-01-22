@@ -6,16 +6,17 @@ namespace Snicco\Component\BetterWPHooks\Tests\wordpress;
 
 use LogicException;
 use Codeception\TestCase\WPTestCase;
+use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\BetterWPHooks\EventMapper;
+use Snicco\Component\BetterWPHooks\MappedAction;
+use Snicco\Component\BetterWPHooks\MappedFilter;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
-use Snicco\Component\EventDispatcher\Contracts\Event;
-use Snicco\Component\EventDispatcher\Contracts\MappedFilter;
-use Snicco\Component\EventDispatcher\Contracts\MappedAction;
-use Snicco\Component\EventDispatcher\Tests\fixtures\FooEvent;
-use Snicco\Component\EventDispatcher\Dispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
+use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FooEvent;
+use Snicco\Component\EventDispatcher\Tests\fixtures\Event\GreaterThenThree;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
-use Snicco\Component\EventDispatcher\Implementations\ParameterBasedListenerFactory;
+use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
 use function implode;
 use function do_action;
@@ -28,14 +29,14 @@ class EventMapperTest extends WPTestCase
     
     use AssertListenerResponse;
     
-    private EventMapper     $event_mapper;
-    private EventDispatcher $dispatcher;
+    private EventMapper            $event_mapper;
+    private DefaultEventDispatcher $dispatcher;
     
     protected function setUp() :void
     {
         parent::setUp();
-        $this->dispatcher = new EventDispatcher(
-            new ParameterBasedListenerFactory()
+        $this->dispatcher = new DefaultEventDispatcher(
+            new NewableListenerFactory()
         );
         $this->event_mapper = new EventMapper($this->dispatcher);
         $this->resetListenersResponses();
@@ -457,6 +458,32 @@ class EventMapperTest extends WPTestCase
         );
         $this->event_mapper->map('foobar', EventFilter1::class);
         $this->event_mapper->map('foobar', EventFilter1::class);
+    }
+    
+    /** @test */
+    public function test_dispatches_conditionally_can_prevent_the_event_dispatching()
+    {
+        $dispatcher = $this->getDispatcher();
+        $dispatcher->listen(function (GreaterThenThree $event) {
+            $this->respondedToEvent(GreaterThenThree::class, 'closure1', $event->val);
+        });
+        
+        $dispatcher->dispatch(new GreaterThenThree(3));
+        
+        $this->assertListenerNotRun(GreaterThenThree::class, 'closure1');
+    }
+    
+    /** @test */
+    public function test_dispatches_conditionally_dispatching_works_if_passing()
+    {
+        $dispatcher = $this->getDispatcher();
+        $dispatcher->listen(function (GreaterThenThree $event) {
+            $this->respondedToEvent(GreaterThenThree::class, 'closure1', $event->val);
+        });
+        
+        $dispatcher->dispatch(new GreaterThenThree(4));
+        
+        $this->assertListenerRun(GreaterThenThree::class, 'closure1', 4);
     }
     
 }

@@ -11,20 +11,6 @@ use PHPUnit\Framework\ExpectationFailedException;
 trait AssertPHPUnitFailures
 {
     
-    private function assertFailsWithMessageContaining(string $message, Closure $closure)
-    {
-        try {
-            $closure();
-            PHPUnit::fail("The test was expected to fail a PHPUnit assertion.");
-        } catch (ExpectationFailedException $e) {
-            PHPUnit::assertStringContainsString(
-                $message,
-                $e->getMessage(),
-                "The test failed but the failure message was not as expected."
-            );
-        }
-    }
-    
     private function assertFailsWithMessageStarting(string $message, Closure $closure)
     {
         try {
@@ -32,20 +18,6 @@ trait AssertPHPUnitFailures
             PHPUnit::fail("The test was expected to fail a PHPUnit assertion.");
         } catch (ExpectationFailedException $e) {
             PHPUnit::assertStringStartsWith(
-                $message,
-                $e->getMessage(),
-                "The test failed but the failure message was not as expected."
-            );
-        }
-    }
-    
-    private function assertFailsWithMessage(string $message, Closure $closure)
-    {
-        try {
-            $closure();
-            PHPUnit::fail("The test was expected to fail a PHPUnit assertion.");
-        } catch (ExpectationFailedException $e) {
-            PHPUnit::assertEquals(
                 $message,
                 $e->getMessage(),
                 "The test failed but the failure message was not as expected."
