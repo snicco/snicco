@@ -29,6 +29,9 @@
       "Snicco\\Component\\EventDispatcher\\Tests\\": "tests"
     }
   },
+  "suggest": {
+    "phpunit/phpunit": "To use the assertions on TestableEventDispatcher [^9.5]"
+  },
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
