@@ -27,12 +27,12 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Concerns\InteractsWithContainer;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Core\Application\Application_OLD;
 use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
 
@@ -104,7 +104,7 @@ abstract class TestCase extends WPTestCase
         $this->afterApplicationBooted(function () {
             $this->replaceBindings();
             $this->setProperties();
-            $this->dispatcher = $this->app[Dispatcher::class];
+            $this->dispatcher = $this->app[EventDispatcher::class];
         });
         
         foreach ($this->after_application_created as $callback) {

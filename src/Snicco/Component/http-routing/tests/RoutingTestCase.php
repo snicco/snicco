@@ -21,13 +21,13 @@ use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Middleware\MustMatchRoute;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
+use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
 use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\EventDispatcher\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
-use Snicco\Component\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
-use Snicco\Component\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Component\HttpRouting\Middleware\Internal\RouteRunner;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\Core\ExceptionHandling\NullExceptionHandler;
@@ -66,12 +66,12 @@ class RoutingTestCase extends TestCase
     
     const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
     
-    protected string             $app_domain = 'foobar.com';
-    protected string             $routes_dir;
-    protected ResponseFactory    $response_factory;
-    protected ContainerInterface $container;
-    protected FakeDispatcher     $event_dispatcher;
-    protected UrlGenerator       $generator;
+    protected string                  $app_domain = 'foobar.com';
+    protected string                  $routes_dir;
+    protected ResponseFactory         $response_factory;
+    protected ContainerInterface      $container;
+    protected TestableEventDispatcher $event_dispatcher;
+    protected UrlGenerator            $generator;
     
     private Router                 $router;
     private HttpKernel             $kernel;
@@ -257,8 +257,8 @@ class RoutingTestCase extends TestCase
                 $middleware_factory = new MiddlewareFactory($this->container),
                 $error_handler,
             ),
-            $this->event_dispatcher = new FakeDispatcher(
-                new EventDispatcher()
+            $this->event_dispatcher = new TestableEventDispatcher(
+                new DefaultEventDispatcher()
             )
         );
         

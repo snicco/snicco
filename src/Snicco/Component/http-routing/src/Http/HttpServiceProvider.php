@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Http;
 use RuntimeException;
 use RKA\Middleware\IpAddress;
 use Snicco\Component\Core\Contracts\ServiceProvider;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -80,7 +80,7 @@ class HttpServiceProvider extends ServiceProvider
     {
         $this->container->singleton(ResponsePostProcessor::class, function () {
             return new ResponsePostProcessor(
-                $this->container[Dispatcher::class],
+                $this->container[EventDispatcher::class],
                 $this->app->isRunningUnitTest()
             );
         });
@@ -92,7 +92,7 @@ class HttpServiceProvider extends ServiceProvider
             return new HttpKernel(
                 $this->container[MiddlewarePipeline::class],
                 $this->container[ResponseEmitter::class],
-                $this->container[Dispatcher::class],
+                $this->container[EventDispatcher::class],
             );
         });
     }

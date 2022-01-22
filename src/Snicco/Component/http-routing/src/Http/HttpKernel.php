@@ -9,7 +9,7 @@ use LogicException;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Middleware\Internal\RouteRunner;
 use Snicco\Component\HttpRouting\Http\Exceptions\RequestHasNoType;
@@ -32,10 +32,10 @@ final class HttpKernel
     
     private MiddlewarePipeline $pipeline;
     
-    private Dispatcher $event_dispatcher;
+    private EventDispatcher $event_dispatcher;
     
     // @todo Use the dispatcher to send some events related to handling the request.
-    public function __construct(MiddlewarePipeline $pipeline, Dispatcher $event_dispatcher)
+    public function __construct(MiddlewarePipeline $pipeline, EventDispatcher $event_dispatcher)
     {
         $this->pipeline = $pipeline;
         $this->event_dispatcher = $event_dispatcher;

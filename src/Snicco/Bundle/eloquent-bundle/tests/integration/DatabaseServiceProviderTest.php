@@ -11,7 +11,7 @@ use Illuminate\Database\ConnectionInterface;
 use Tests\Codeception\shared\FrameworkTestCase;
 use Snicco\EloquentBundle\DatabaseServiceProvider;
 use Illuminate\Database\ConnectionResolverInterface;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Model\Country;
 use Snicco\Component\Eloquent\Illuminate\WPConnectionResolver;
@@ -83,8 +83,8 @@ class DatabaseServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        /** @var Dispatcher $dispatcher */
-        $dispatcher = $this->app->resolve(Dispatcher::class);
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->app->resolve(EventDispatcher::class);
         $dispatcher->listen("eloquent.saving: ".Country::class, function (Country $country) {
             $country->name = 'spain';
         });

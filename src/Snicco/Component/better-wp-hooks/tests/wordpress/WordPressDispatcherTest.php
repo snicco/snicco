@@ -6,11 +6,11 @@ namespace Snicco\Component\BetterWPHooks\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\EventDispatcher\ImmutableEvent;
-use Snicco\Component\BetterWPHooks\WordPressDispatcher;
-use Snicco\Component\EventDispatcher\Dispatcher\EventDispatcher;
-use Snicco\Component\EventDispatcher\Tests\fixtures\ActionEvent;
-use Snicco\Component\EventDispatcher\Tests\fixtures\FilterableEvent;
-use Snicco\Component\EventDispatcher\Tests\fixtures\ForbiddenToWordPressEvent;
+use Snicco\Component\BetterWPHooks\WordPressEventDispatcher;
+use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
+use Snicco\Component\EventDispatcher\Tests\fixtures\Event\ActionEvent;
+use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FilterableEvent;
+use Snicco\Component\EventDispatcher\Tests\fixtures\Event\ForbiddenToWordPressEvent;
 
 use function add_action;
 use function add_filter;
@@ -105,10 +105,10 @@ final class WordPressDispatcherTest extends WPTestCase
         $this->assertSame(0, $count, 'WordPress filter was called when it was forbidden.');
     }
     
-    private function getDispatcher() :WordPressDispatcher
+    private function getDispatcher() :WordPressEventDispatcher
     {
-        return new WordPressDispatcher(
-            new EventDispatcher()
+        return new WordPressEventDispatcher(
+            new DefaultEventDispatcher()
         );
     }
     

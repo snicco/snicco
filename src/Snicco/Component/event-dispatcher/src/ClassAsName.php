@@ -10,7 +10,7 @@ namespace Snicco\Component\EventDispatcher;
 trait ClassAsName
 {
     
-    public function getName() :string
+    public function name() :string
     {
         return static::class;
     }

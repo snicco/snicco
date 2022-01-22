@@ -7,7 +7,7 @@ namespace Snicco\MailBundle;
 use Snicco\Mail\Event\SendingEmail;
 use Snicco\Mail\Event\EmailWasSent;
 use Snicco\Mail\Contracts\MailEventDispatcher;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @interal
@@ -15,9 +15,9 @@ use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 final class FrameworkMailEventDispatcher implements MailEventDispatcher
 {
     
-    private Dispatcher $dispatcher;
+    private EventDispatcher $dispatcher;
     
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(EventDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }

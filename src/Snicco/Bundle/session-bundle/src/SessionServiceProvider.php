@@ -15,13 +15,13 @@ use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\SessionBundle\Middleware\VerifyCsrfToken;
 use Snicco\Component\Session\Driver\EncryptedDriver;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\HttpRouting\Http\ResponseEmitter;
 use Snicco\Bridge\SessionWP\Driver\WPObjectCacheDriver;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\SessionBundle\Middleware\AllowMutableSession;
 use Snicco\Bridge\SessionWP\EventDispatcherUsingWPHooks;
 use Snicco\Bridge\SessionWP\Driver\DatabaseSessionDriver;
-use Snicco\Component\EventDispatcher\Contracts\Dispatcher;
 use Snicco\SessionBundle\Middleware\HandleStatefulRequest;
 use Snicco\SessionBundle\Middleware\ShareSessionWithViews;
 use Snicco\SessionBundle\BetterWPHooks\Events\UserLoggedIn;
@@ -204,7 +204,7 @@ class SessionServiceProvider extends ServiceProvider
     {
         $this->container->singleton(SessionEventDispatcher::class, function () {
             return new SessionEventDispatcherUsingBetterWPHooks(
-                $this->container[Dispatcher::class]
+                $this->container[EventDispatcher::class]
             );
         });
     }
