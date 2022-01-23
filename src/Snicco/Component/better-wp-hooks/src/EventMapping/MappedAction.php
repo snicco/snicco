@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPHooks;
+namespace Snicco\Component\BetterWPHooks\EventMapping;
 
 use Snicco\Component\EventDispatcher\Event;
 
@@ -11,7 +11,7 @@ use Snicco\Component\EventDispatcher\Event;
  *
  * @api
  */
-interface MappedAction extends Event, IsForbiddenToWordPress, DispatchesConditionally
+interface MappedAction extends Event, DispatchesConditionally
 {
 
 }

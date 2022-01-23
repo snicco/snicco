@@ -37,6 +37,7 @@ use const E_USER_NOTICE;
  * methods of this class.
  *
  * @api
+ * @note No new (public) methods will be added to this class until a next major version.
  */
 class ScopableWP
 {

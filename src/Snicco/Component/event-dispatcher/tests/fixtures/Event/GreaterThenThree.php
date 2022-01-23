@@ -7,7 +7,7 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Event;
 use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
-use Snicco\Component\BetterWPHooks\DispatchesConditionally;
+use Snicco\Component\BetterWPHooks\EventMapping\DispatchesConditionally;
 
 class GreaterThenThree implements Event, DispatchesConditionally
 {
