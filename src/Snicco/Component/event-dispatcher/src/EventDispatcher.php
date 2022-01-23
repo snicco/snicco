@@ -27,6 +27,11 @@ interface EventDispatcher extends EventDispatcherInterface
     public function listen($event_name, $listener = null, bool $can_be_removed = true) :void;
     
     /**
+     * @param  string  $event_subscriber  a class name that implements {@see EventSubscriber}
+     */
+    public function subscribe(string $event_subscriber) :void;
+    
+    /**
      * @note Wildcard Listeners can not be removed. They can be muted instead for a specific
      *       pattern.
      *

@@ -13,12 +13,14 @@ use Psr\EventDispatcher\StoppableEventInterface as StoppablePsrEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\ListenerFactory;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
-use function in_array;
+use function sprintf;
 use function is_array;
+use function in_array;
 use function is_string;
 use function array_merge;
 use function class_exists;
 use function method_exists;
+use function call_user_func;
 use function class_implements;
 use function get_parent_class;
 use function Snicco\Component\EventDispatcher\functions\getTypeHintedObjectFromClosure;
@@ -26,17 +28,10 @@ use function Snicco\Component\EventDispatcher\functions\getTypeHintedObjectFromC
 /**
  * @api
  */
-final class DefaultEventDispatcher implements EventDispatcher
+final class BaseEventDispatcher implements EventDispatcher
 {
     
     private ListenerFactory $listener_factory;
-    
-    /**
-     * @var string[]
-     */
-    private array $internal_interfaces = [
-        Event::class,
-    ];
     
     /**
      * @var array<string,array<array,Closure>>
@@ -128,7 +123,29 @@ final class DefaultEventDispatcher implements EventDispatcher
         unset($this->listeners[$event_name][$id]);
     }
     
-    private function getListenersForEvent(string $event_name) :array
+    public function subscribe(string $event_subscriber) :void
+    {
+        if ( ! in_array(
+            EventSubscriber::class,
+            (array) class_implements($event_subscriber),
+            true
+        )) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "[%s] does not implement [%s].",
+                    $event_subscriber,
+                    EventSubscriber::class
+                )
+            );
+        }
+        
+        $events = call_user_func([$event_subscriber, 'subscribedEvents']);
+        foreach ($events as $name => $method) {
+            $this->listen($name, [$event_subscriber, $method]);
+        }
+    }
+    
+    private function getListenersForEvent(string $event_name, bool $include_reflection = true) :array
     {
         if (isset($this->listener_cache[$event_name])) {
             $listeners = $this->listener_cache[$event_name];
@@ -136,20 +153,9 @@ final class DefaultEventDispatcher implements EventDispatcher
         else {
             $listeners = $this->listeners[$event_name] ?? [];
             
-            if (class_exists($event_name)) {
-                foreach ((array) class_implements($event_name) as $interface) {
-                    if (in_array($interface, $this->internal_interfaces, true)) {
-                        continue;
-                    }
-                    $listeners = array_merge($listeners, $this->getListenersForEvent($interface));
-                }
-                
-                $parent = get_parent_class($event_name);
-                
-                if ($parent && (new ReflectionClass($parent))->isAbstract()) {
-                    $listeners = array_merge($listeners, $this->getListenersForEvent($parent));
-                }
-            }
+            $listeners = $include_reflection
+                ? $this->mergeReflectionListeners($event_name, $listeners)
+                : $listeners;
         }
         
         $this->listener_cache[$event_name] = $listeners;
@@ -246,6 +252,24 @@ final class DefaultEventDispatcher implements EventDispatcher
             return $event;
         }
         return GenericEvent::fromObject($event);
+    }
+    
+    private function mergeReflectionListeners(string $event_name, array $listeners) :array
+    {
+        if ( ! class_exists($event_name)) {
+            return $listeners;
+        }
+        
+        foreach ((array) class_implements($event_name) as $interface) {
+            $listeners = array_merge($listeners, $this->getListenersForEvent($interface, false));
+        }
+        
+        $parent = get_parent_class($event_name);
+        
+        if ($parent && (new ReflectionClass($parent))->isAbstract()) {
+            $listeners = array_merge($listeners, $this->getListenersForEvent($parent, false));
+        }
+        return $listeners;
     }
     
 }

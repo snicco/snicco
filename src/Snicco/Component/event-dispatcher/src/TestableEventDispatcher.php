@@ -182,6 +182,11 @@ final class TestableEventDispatcher implements EventDispatcher
         $this->dispatched_events = [];
     }
     
+    public function subscribe(string $event_subscriber) :void
+    {
+        $this->real_dispatcher->subscribe($event_subscriber);
+    }
+    
     private function shouldFakeEvent(string $event_name) :bool
     {
         if ($this->fake_all) {
