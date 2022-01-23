@@ -16,12 +16,12 @@ use Snicco\Component\HttpRouting\Http\HttpKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\ResponseFactory;
 use Snicco\Component\HttpRouting\Middleware\ShareCookies;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Middleware\MustMatchRoute;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
 use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
 use Snicco\Component\EventDispatcher\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
@@ -258,7 +258,7 @@ class RoutingTestCase extends TestCase
                 $error_handler,
             ),
             $this->event_dispatcher = new TestableEventDispatcher(
-                new DefaultEventDispatcher()
+                new BaseEventDispatcher()
             )
         );
         

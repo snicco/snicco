@@ -8,7 +8,7 @@ use stdClass;
 use Codeception\TestCase\WPTestCase;
 use Symfony\Component\EventDispatcher\Event;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\BetterWPHooks\Tests\fixtures\FilterEvent;
 use Snicco\Component\BetterWPHooks\Tests\fixtures\StoppableEvent;
 use Snicco\Component\BetterWPHooks\Tests\fixtures\CustomNameEvent;
@@ -164,7 +164,7 @@ final class WPEventDispatcherTest extends WPTestCase
     private function getDispatcher() :WPEventDispatcher
     {
         return new WPEventDispatcher(
-            new DefaultEventDispatcher()
+            new BaseEventDispatcher()
         );
     }
     

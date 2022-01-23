@@ -71,4 +71,9 @@ final class WPEventDispatcher implements EventDispatcher
         $this->dispatcher->listen($event_name, $listener);
     }
     
+    public function subscribe(string $event_subscriber) :void
+    {
+        $this->dispatcher->subscribe($event_subscriber);
+    }
+    
 }

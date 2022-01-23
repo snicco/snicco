@@ -8,7 +8,7 @@ use stdClass;
 use Pimple\Container;
 use PHPUnit\Framework\TestCase;
 use Pimple\Psr11\Container as PimplePsr11;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ListenerFactory\ContainerListenerFactory;
 
 final class EventDispatcherWithContainerTest extends TestCase
@@ -25,7 +25,7 @@ final class EventDispatcherWithContainerTest extends TestCase
         
         $pimple[Dependency::class] = new Dependency('FOOBAR');
         
-        $event_dispatcher = new DefaultEventDispatcher(
+        $event_dispatcher = new BaseEventDispatcher(
             new ContainerListenerFactory($container)
         );
         

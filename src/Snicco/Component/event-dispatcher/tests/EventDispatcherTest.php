@@ -8,8 +8,8 @@ use stdClass;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\Exception\CantRemove;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FooEvent;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\BarEvent;
@@ -469,7 +469,7 @@ class EventDispatcherTest extends TestCase
     
     private function getDispatcher() :EventDispatcher
     {
-        return new DefaultEventDispatcher(
+        return new BaseEventDispatcher(
             new NewableListenerFactory()
         );
     }

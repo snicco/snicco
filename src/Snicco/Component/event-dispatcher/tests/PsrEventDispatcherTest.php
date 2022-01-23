@@ -6,7 +6,7 @@ namespace Snicco\Component\EventDispatcher\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\StoppableEventInterface;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 
 final class PsrEventDispatcherTest extends TestCase
@@ -29,7 +29,7 @@ final class PsrEventDispatcherTest extends TestCase
     /** @test */
     public function objects_are_dispatched_as_mutable_classes()
     {
-        $psr_dispatcher = new DefaultEventDispatcher();
+        $psr_dispatcher = new BaseEventDispatcher();
         
         $psr_dispatcher->listen(Object1::class, function (Object1 $event) {
             $event->foo = 'FOO';
@@ -50,7 +50,7 @@ final class PsrEventDispatcherTest extends TestCase
     /** @test */
     public function event_propagation_will_be_stopped_if_the_psr_interface_is_implemented()
     {
-        $psr_dispatcher = new DefaultEventDispatcher();
+        $psr_dispatcher = new BaseEventDispatcher();
         
         $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event) {
             $this->assertSame(1, $event->count);

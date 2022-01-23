@@ -7,7 +7,7 @@ namespace Snicco\Component\EventDispatcher\Tests;
 use stdClass;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\GenericEvent;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\TestableEventDispatcher;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertPHPUnitFailures;
@@ -28,7 +28,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         parent::setUp();
         $this->resetListenersResponses();
-        $dispatcher = new DefaultEventDispatcher(new NewableListenerFactory());
+        $dispatcher = new BaseEventDispatcher(new NewableListenerFactory());
         $this->fake_dispatcher = new TestableEventDispatcher($dispatcher);
     }
     

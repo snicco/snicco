@@ -11,8 +11,8 @@ use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\BetterWPHooks\ScopableWP;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
-use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedFilter;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedAction;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
@@ -31,13 +31,13 @@ class EventMapperTest extends WPTestCase
     
     use AssertListenerResponse;
     
-    private EventMapper            $event_mapper;
-    private DefaultEventDispatcher $dispatcher;
+    private EventMapper         $event_mapper;
+    private BaseEventDispatcher $dispatcher;
     
     protected function setUp() :void
     {
         parent::setUp();
-        $this->dispatcher = new DefaultEventDispatcher(
+        $this->dispatcher = new BaseEventDispatcher(
             new NewableListenerFactory()
         );
         $this->event_mapper = new EventMapper($this->dispatcher, new ScopableWP());
