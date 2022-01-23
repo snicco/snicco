@@ -6,36 +6,40 @@ parameters:
 
   layers:
     # components
-
-    - name: event_dispatcher
-      collectors:
-        - type: className
-          regex: Snicco\\Component\\EventDispatcher\\.*
-
     - name: better_wp_hooks
       collectors:
         - type: className
           regex: Snicco\\Component\\BetterWPHooks\\.*
 
-    - name: parameter_bag
+    - name: better_wp_mail
       collectors:
         - type: className
-          regex: Snicco\\Component\\ParameterBag\\.*
-
-    - name: str-arr
-      collectors:
-        - type: className
-          regex: Snicco\\Component\\StrArr\\.*
+          regex: Snicco\\Component\\BetterWPMail\\.*
 
     - name: core
       collectors:
         - type: className
           regex: Snicco\\Component\\Core\\.*
 
-    - name: templating
+    - name: eloquent
       collectors:
         - type: className
-          regex: Snicco\\Component\\Templating\\.*
+          regex: Snicco\\Component\\Eloquent\\.*
+
+    - name: event_dispatcher
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\EventDispatcher\\.*
+
+    - name: http_routing
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\HttpRouting\\.*
+
+    - name: parameter_bag
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\ParameterBag\\.*
 
     - name: scopable_wp
       collectors:
@@ -47,26 +51,71 @@ parameters:
         - type: className
           regex: Snicco\\Component\\Session\\.*
 
+    - name: signed_url
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\SignedUrl\\.*
+
+    - name: str-arr
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\StrArr\\.*
+
+    - name: templating
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Templating\\.*
+
     - name: testable_clock
       collectors:
         - type: className
           regex: Snicco\\Component\\TestableClock\\.*
 
-    # bridge
-    - name: pimple_bridge
+    - name: wp_object_cache_psr16
       collectors:
         - type: className
-          regex: Snicco\\Bridge\\Pimple\\.*
+          regex: Snicco\\Component\\WPObjectCachePsr16\\.*
 
-    - name: illuminate_container_brige
-      collectors:
-        - type: className
-          regex: Snicco\\Bridge\\IlluminateContainer\\.*
-
-    - name: blade_bridge
-      collectors:
-        - type: className
-          regex: Snicco\\Bridge\\Blade\\.*
+        #brige
+        #    - name: blade_bridge
+        #      collectors:
+        #        - type: className
+        #          regex: Snicco\\Bridge\\Blade\\.*
+        #
+        #    - name: illuminate_container_bridge
+        #      collectors:
+        #        - type: className
+        #          regex: Snicco\\Bridge\\IlluminateContainer\\.*
+        #
+  #        - name: pimple_bridge
+  #          collectors:
+  #            - type: className
+  #              regex: Snicco\\Bridge\\Pimple\\.*
+  #
+  #    - name: session_psr16
+  #      collectors:
+  #        - type: className
+  #          regex: Snicco\\Bridge\\SessionPsr16\\.*
+  #
+  #    - name: session_wp
+  #      collectors:
+  #        - type: className
+  #          regex: Snicco\\Bridge\\SessionWP\\.*
+  #
+  #    - name: signed_url_middleware
+  #      collectors:
+  #        - type: className
+  #          regex: Snicco\\Bridge\\SignedUrlMiddleware\\.*
+  #
+  #    - name: signed_url_psr16
+  #      collectors:
+  #        - type: className
+  #          regex: Snicco\\Bridge\\SignedUrlPsr16\\.*
+  #
+  #    - name: signed_url_wp
+  #      collectors:
+  #        - type: className
+  #          regex: Snicco\\Bridge\\SignedUrlWP\\.*
 
   ruleset:
     # components
@@ -75,7 +124,7 @@ parameters:
     core:
       - str-arr
       - parameter_bag
-      - pimple_bridge
+    #      - pimple_bridge
     templating:
       - str-arr
       - parameter_bag
@@ -87,11 +136,16 @@ parameters:
     better_wp_hooks:
       - event_dispatcher
 
-    # bridge
-    pimple_bridge:
-      - core
-    illuminate_container_brige:
-      - core
-    blade_bridge:
-      - templating
+    signed_url:
+      - testable_clock
+
+    wp_object_cache_psr16:
       - scopable_wp
+
+#    # bridge
+#    pimple_bridge:
+#      - core
+#
+#    blade_bridge:
+#      - templating
+#      - scopable_wp

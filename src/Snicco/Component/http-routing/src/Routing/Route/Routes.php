@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use Countable;
 use IteratorAggregate;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 /**
  * @api
