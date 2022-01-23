@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 /**
  * @api
