@@ -6,6 +6,9 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures;
 
 use PHPUnit\Framework\Assert;
 
+/**
+ * @api
+ */
 trait AssertListenerResponse
 {
     

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPHooks;
+namespace Snicco\Component\BetterWPHooks\Exception;
 
 use Throwable;
 use RuntimeException;

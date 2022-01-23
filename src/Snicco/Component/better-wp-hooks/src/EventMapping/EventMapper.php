@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPHooks;
+namespace Snicco\Component\BetterWPHooks\EventMapping;
 
 use Closure;
-use WP_Hook;
 use LogicException;
 use InvalidArgumentException;
+use Snicco\Component\BetterWPHooks\ScopableWP;
 use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\BetterWPHooks\EventFactory\MappedEventFactory;
+use Snicco\Component\BetterWPHooks\EventFactory\ParameterBasedEventFactory;
 
-use function add_action;
-use function add_filter;
-use function current_filter;
 use function array_key_first;
 
 use const PHP_INT_MIN;
@@ -23,80 +22,61 @@ use const PHP_INT_MIN;
 final class EventMapper
 {
     
-    /**
-     * @var MappedEventFactory
-     */
-    private $event_factory;
+    private EventDispatcher    $event_dispatcher;
+    private ScopableWP         $wp;
+    private MappedEventFactory $event_factory;
     
     /**
-     * @var EventDispatcher
+     * @var array<string,array<string,string>>
      */
-    private $event_dispatcher;
+    private array $mapped_actions = [];
     
     /**
-     * @var array
+     * @var array<string,array<string,string>>
      */
-    private $mapped_actions = [];
+    private array $mapped_filters = [];
     
-    /**
-     * @var array
-     */
-    private $mapped_filters = [];
-    
-    public function __construct(EventDispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
+    public function __construct(EventDispatcher $event_dispatcher, ScopableWP $wp, ?MappedEventFactory $event_factory = null)
     {
         $this->event_dispatcher = $event_dispatcher;
+        $this->wp = $wp;
         $this->event_factory = $event_factory ?? new ParameterBasedEventFactory();
     }
     
     /**
      * Map a WordPress hook to a dedicated event class with the provided priority.
-     *
-     * @param  string  $wordpress_hook_name
-     * @param  string  $map_to  The class name of the event that should be mapped
-     * @param  int  $priority  The WordPress priority on which the mapping should happen.
-     *
-     * @throws InvalidArgumentException|LogicException
      */
-    public function map(string $wordpress_hook_name, string $map_to, int $priority = 10)
+    public function map(string $wordpress_hook_name, string $map_to_event_class, int $priority = 10) :void
     {
-        $this->validate($wordpress_hook_name, $map_to);
-        
-        $this->mapValidated($wordpress_hook_name, $map_to, $priority);
+        $this->validate($wordpress_hook_name, $map_to_event_class);
+        $this->mapValidated($wordpress_hook_name, $map_to_event_class, $priority);
     }
     
     /**
      * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE
      * any other callbacks are run for the hook.
-     *
-     * @param  string  $wordpress_hook_name
-     * @param  string  $map_to  The class name of the event that should be mapped
-     *
-     * @throws InvalidArgumentException|LogicException
      */
-    public function mapFirst(string $wordpress_hook_name, string $map_to)
+    public function mapFirst(string $wordpress_hook_name, string $map_to_event_class) :void
     {
-        $this->validate($wordpress_hook_name, $map_to);
-        
-        $this->ensureFirst($wordpress_hook_name, $map_to);
+        $this->validate($wordpress_hook_name, $map_to_event_class);
+        $this->ensureFirst($wordpress_hook_name, $map_to_event_class);
     }
     
     /**
      * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all
      * other callbacks are run for the hook.
-     *
-     * @param  string  $wordpress_hook_name
-     * @param  string  $map_to  The class name of the event that should be mapped
-     *
-     * @throws InvalidArgumentException|LogicException
      */
-    public function mapLast(string $wordpress_hook_name, string $map_to)
+    public function mapLast(string $wordpress_hook_name, string $map_to) :void
     {
         $this->validate($wordpress_hook_name, $map_to);
         $this->ensureLast($wordpress_hook_name, $map_to);
     }
     
-    private function validate(string $wordpress_hook_name, string $map_to)
+    /**
+     * @throws LogicException If the hook is already mapped to the same event class
+     * @throws InvalidArgumentException If $map_to is not either a MappedAction or MappedFilter
+     */
+    private function validate(string $wordpress_hook_name, string $map_to) :void
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
@@ -133,10 +113,20 @@ final class EventMapper
     private function mapValidated(string $wordpress_hook_name, string $map_to, int $priority)
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
-            add_action($wordpress_hook_name, $this->dispatchMappedAction($map_to), $priority, 9999);
+            $this->wp->addAction(
+                $wordpress_hook_name,
+                $this->dispatchMappedAction($map_to),
+                $priority,
+                9999
+            );
         }
         else {
-            add_filter($wordpress_hook_name, $this->dispatchMappedFilter($map_to), $priority, 9999);
+            $this->wp->addFilter(
+                $wordpress_hook_name,
+                $this->dispatchMappedFilter($map_to),
+                $priority,
+                9999
+            );
         }
     }
     
@@ -155,6 +145,11 @@ final class EventMapper
                 $args_from_wordpress_hooks
             );
             
+            if ( ! $event->shouldDispatch()) {
+                // We don't need to return any values here.
+                return;
+            }
+            
             $this->event_dispatcher->dispatch($event);
         };
     }
@@ -166,6 +161,11 @@ final class EventMapper
                 $event_class,
                 $args_from_wordpress_hooks
             );
+            
+            if ( ! $event->shouldDispatch()) {
+                // It's crucial to return the first argument here.
+                return $args_from_wordpress_hooks[0];
+            }
             
             $payload = $this->event_dispatcher->dispatch($event);
             
@@ -179,20 +179,16 @@ final class EventMapper
         };
     }
     
-    private function getWordPressHook(string $wordpress_hook_name) :?WP_Hook
-    {
-        return $GLOBALS['wp_filter'][$wordpress_hook_name] ?? null;
-    }
-    
     private function ensureFirst(string $wordpress_hook_name, string $map_to)
     {
-        if (current_filter() === $wordpress_hook_name) {
+        $filter = $this->wp->currentFilter();
+        if ($filter && $filter === $wordpress_hook_name) {
             throw new LogicException(
                 "You can can't map the event [$map_to] to the hook [$wordpress_hook_name] after it was fired."
             );
         }
         
-        $wp_hook = $this->getWordPressHook($wordpress_hook_name);
+        $wp_hook = $this->wp->getHook($wordpress_hook_name);
         
         // Unless there is another filter registered with the priority PHP_INT_MIN
         // all we have to do is add our mapped event at this priority.
@@ -217,16 +213,18 @@ final class EventMapper
         $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
         
         $wp_hook->callbacks[$lowest_priority + 1] = $callbacks;
+        
+        // This is important in order to keep the relative priority.
         ksort($wp_hook->callbacks, SORT_NUMERIC);
     }
     
     private function ensureLast(string $wordpress_hook_name, string $map_to)
     {
-        add_action($wordpress_hook_name, function (...$args) use ($map_to) {
+        $this->wp->addAction($wordpress_hook_name, function (...$args) use ($map_to) {
             // Even if somebody else registered a filter with PHP_INT_MAX our mapped action
             // will be run after the present callback unless it was also added during runtime
             // at the priority PHP_INT_MAX -1 which is highly unlikely.
-            $this->mapValidated(current_filter(), $map_to, PHP_INT_MAX);
+            $this->mapValidated($this->wp->currentFilter(), $map_to, PHP_INT_MAX);
             return $args[0];
         }, PHP_INT_MAX - 1, 999);
     }

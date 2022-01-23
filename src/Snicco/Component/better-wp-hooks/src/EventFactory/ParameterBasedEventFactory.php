@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPHooks;
+namespace Snicco\Component\BetterWPHooks\EventFactory;
 
 use Throwable;
 use Snicco\Component\EventDispatcher\Event;
+use Snicco\Component\BetterWPHooks\Exception\CantCreateMappedEvent;
 
 /**
- * @internal
+ * @api
  */
 final class ParameterBasedEventFactory implements MappedEventFactory
 {

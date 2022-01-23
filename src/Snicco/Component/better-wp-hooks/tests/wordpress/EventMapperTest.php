@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPHooks\Tests\wordpress;
 
 use LogicException;
+use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\EventDispatcher\Event;
-use Snicco\Component\BetterWPHooks\EventMapper;
-use Snicco\Component\BetterWPHooks\MappedAction;
-use Snicco\Component\BetterWPHooks\MappedFilter;
+use Snicco\Component\BetterWPHooks\ScopableWP;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
+use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\EventDispatcher\DefaultEventDispatcher;
-use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FooEvent;
-use Snicco\Component\EventDispatcher\Tests\fixtures\Event\GreaterThenThree;
+use Snicco\Component\BetterWPHooks\EventMapping\MappedFilter;
+use Snicco\Component\BetterWPHooks\EventMapping\MappedAction;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
@@ -23,6 +23,8 @@ use function do_action;
 use function add_filter;
 use function add_action;
 use function apply_filters;
+
+use const PHP_INT_MIN;
 
 class EventMapperTest extends WPTestCase
 {
@@ -38,8 +40,14 @@ class EventMapperTest extends WPTestCase
         $this->dispatcher = new DefaultEventDispatcher(
             new NewableListenerFactory()
         );
-        $this->event_mapper = new EventMapper($this->dispatcher);
+        $this->event_mapper = new EventMapper($this->dispatcher, new ScopableWP());
         $this->resetListenersResponses();
+    }
+    
+    protected function tearDown() :void
+    {
+        $this->resetListenersResponses();
+        parent::tearDown();
     }
     
     /**
@@ -52,7 +60,7 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->map('foo', EmptyActionEvent::class);
         
         $this->dispatcher->listen(EmptyActionEvent::class, function () {
-            $this->respondedToEvent(FooEvent::class, 'closure1', 'foo');
+            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
         });
         
         do_action('bogus');
@@ -65,7 +73,7 @@ class EventMapperTest extends WPTestCase
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
         
-        $this->dispatcher->listen(EmptyActionEvent::class, function () {
+        $this->dispatcher->listen(EmptyActionEvent::class, function (EmptyActionEvent $event) {
             $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
         });
         
@@ -99,7 +107,7 @@ class EventMapperTest extends WPTestCase
     }
     
     /** @test */
-    public function events_mapped_to_a_wordpress_action_are_immutable()
+    public function events_mapped_to_a_wordpress_action_are_passed_by_reference()
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
         
@@ -117,8 +125,7 @@ class EventMapperTest extends WPTestCase
         
         $this->assertListenerRun(EmptyActionEvent::class, 'closure1', 'foo');
         
-        // The value is still foo since the event is immutable.
-        $this->assertListenerRun(EmptyActionEvent::class, 'closure2', 'foo');
+        $this->assertListenerRun(EmptyActionEvent::class, 'closure2', 'foobar');
     }
     
     /** @test */
@@ -139,10 +146,11 @@ class EventMapperTest extends WPTestCase
         do_action('empty');
         
         $this->assertListenerRun(EmptyActionEvent::class, 'closure1', 'foo');
+        $this->assertSame(1, $count);
     }
     
     /** @test */
-    public function two_custom_events_can_be_mapped_to_one_action()
+    public function two_different_custom_events_can_be_mapped_to_one_action()
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
@@ -198,7 +206,7 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->map('foo', EmptyActionEvent::class);
         
         $this->dispatcher->listen(EmptyActionEvent::class, function () {
-            $this->respondedToEvent(FooEvent::class, 'closure1', 'foo');
+            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
         });
         
         apply_filters('bogus', 'foo');
@@ -249,7 +257,7 @@ class EventMapperTest extends WPTestCase
     }
     
     /** @test */
-    public function two_filters_can_be_mapped_to_a_wordpress_filter()
+    public function two_different_custom_events_can_be_mapped_to_a_wordpress_filter()
     {
         add_filter('filter', function (string $value) {
             return $value.'_wp_filtered_1_';
@@ -301,13 +309,13 @@ class EventMapperTest extends WPTestCase
     }
     
     /** @test */
-    public function test_map_first_if_already_present()
+    public function test_map_first_if_another_callback_is_registered_before()
     {
         $count = 0;
         
         add_action('wp_hook', function () use (&$count) {
             $count++;
-        }, 10);
+        }, PHP_INT_MIN, 10);
         
         $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
         
@@ -359,7 +367,7 @@ class EventMapperTest extends WPTestCase
     }
     
     /** @test */
-    public function test_exception_if_filtering_during_the_same_same_filter()
+    public function test_exception_if_filtering_during_the_same_filter()
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -439,17 +447,17 @@ class EventMapperTest extends WPTestCase
     /** @test */
     public function a_mapped_event_has_to_have_on_of_the_valid_interfaces()
     {
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            "The event [".
-            NormalEvent::class
-            ."] has to implement either the [MappedAction] or the [MappedFilter] interface."
+            "has to implement either"
         );
         $this->event_mapper->map('foobar', NormalEvent::class);
     }
     
     /** @test */
-    public function cant_map_the_same_event_twice()
+    public function cant_map_the_same_hook_twice_to_the_same_custom_event()
     {
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
             sprintf(
                 "Tried to map the event class [%s] twice to the [foobar] filter.",
@@ -461,29 +469,111 @@ class EventMapperTest extends WPTestCase
     }
     
     /** @test */
-    public function test_dispatches_conditionally_can_prevent_the_event_dispatching()
+    public function conditional_filters_are_prevented_if_conditions_dont_match()
     {
-        $dispatcher = $this->getDispatcher();
-        $dispatcher->listen(function (GreaterThenThree $event) {
-            $this->respondedToEvent(GreaterThenThree::class, 'closure1', $event->val);
+        $this->event_mapper->map('filter', ConditionalFilter::class);
+        
+        $this->dispatcher->listen(ConditionalFilter::class, function (ConditionalFilter $event) {
+            $event->value1 = 'CUSTOM';
         });
         
-        $dispatcher->dispatch(new GreaterThenThree(3));
+        add_filter('filter', function ($value1, $value2) {
+            $this->assertSame('foo', $value1);
+            $this->assertSame('PREVENT', $value2);
+            return $value1.':filtered';
+        }, 10, 2);
         
-        $this->assertListenerNotRun(GreaterThenThree::class, 'closure1');
+        $final_value = apply_filters('filter', 'foo', 'PREVENT');
+        
+        $this->assertSame('foo:filtered', $final_value);
     }
     
     /** @test */
-    public function test_dispatches_conditionally_dispatching_works_if_passing()
+    public function conditional_filter_events_are_dispatched_if_conditions_match()
     {
-        $dispatcher = $this->getDispatcher();
-        $dispatcher->listen(function (GreaterThenThree $event) {
-            $this->respondedToEvent(GreaterThenThree::class, 'closure1', $event->val);
+        $this->event_mapper->map('filter', ConditionalFilter::class);
+        
+        $this->dispatcher->listen(ConditionalFilter::class, function (ConditionalFilter $event) {
+            $event->value1 = 'CUSTOM';
         });
         
-        $dispatcher->dispatch(new GreaterThenThree(4));
+        add_filter('filter', function ($value1, $value2) {
+            $this->assertSame('CUSTOM', $value1);
+            $this->assertSame('bar', $value2);
+            return $value1.':filtered';
+        }, 10, 2);
         
-        $this->assertListenerRun(GreaterThenThree::class, 'closure1', 4);
+        $final_value = apply_filters('filter', 'foo', 'bar');
+        
+        $this->assertSame('CUSTOM:filtered', $final_value);
+    }
+    
+    /** @test */
+    public function conditional_actions_are_prevented_if_conditions_dont_match()
+    {
+        $this->event_mapper->map('action', ConditionalAction::class);
+        
+        $this->dispatcher->listen(ConditionalAction::class, function (ConditionalAction $event) {
+            $this->respondedToEvent(ConditionalAction::class, 'listener1', $event->value);
+        });
+        
+        $count = 0;
+        add_action('action', function ($value) use (&$count) {
+            $this->assertSame('PREVENT', $value);
+            $count++;
+        }, 10, 2);
+        
+        do_action('action', 'PREVENT');
+        
+        $this->assertListenerNotRun(ConditionalAction::class, 'listener1');
+        $this->assertSame(1, $count);
+    }
+    
+}
+
+class ConditionalFilter implements MappedFilter
+{
+    
+    use ClassAsName;
+    use ClassAsPayload;
+    
+    public string  $value1;
+    private string $value2;
+    
+    public function __construct(string $value1, string $value2)
+    {
+        $this->value1 = $value1;
+        $this->value2 = $value2;
+    }
+    
+    public function shouldDispatch() :bool
+    {
+        return $this->value2 !== 'PREVENT';
+    }
+    
+    public function filterableAttribute()
+    {
+        return $this->value1;
+    }
+    
+}
+
+class ConditionalAction implements MappedAction
+{
+    
+    use ClassAsName;
+    use ClassAsPayload;
+    
+    public string $value;
+    
+    public function __construct(string $value)
+    {
+        $this->value = $value;
+    }
+    
+    public function shouldDispatch() :bool
+    {
+        return $this->value !== 'PREVENT';
     }
     
 }
