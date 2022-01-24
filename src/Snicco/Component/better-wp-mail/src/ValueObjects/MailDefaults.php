@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\ValueObjects;
 
-use Snicco\Component\BetterWPMail\WP\ScopableWP;
+use Snicco\Component\BetterWPMail\ScopableWP;
 
 /**
  * @api
@@ -40,14 +40,14 @@ final class MailDefaults
         );
     }
     
-    public function getFrom() :Address
+    public function getFrom() :Mailbox
     {
-        return Address::create([$this->from_email, $this->from_name]);
+        return Mailbox::create([$this->from_email, $this->from_name]);
     }
     
-    public function getReplyTo() :Address
+    public function getReplyTo() :Mailbox
     {
-        return Address::create([$this->reply_to_email, $this->reply_to_name]);
+        return Mailbox::create([$this->reply_to_email, $this->reply_to_name]);
     }
     
 }

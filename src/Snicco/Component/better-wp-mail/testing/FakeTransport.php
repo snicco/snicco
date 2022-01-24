@@ -7,15 +7,16 @@ namespace Snicco\Component\BetterWPMail\Testing;
 use Closure;
 use WP_User;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Component\BetterWPMail\WP\ScopableWP;
+use Snicco\Component\BetterWPMail\ScopableWP;
 use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\Contracts\Transport;
-use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\Transport\Transport;
+use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
-use Snicco\Component\BetterWPMail\ValueObjects\AddressList;
+use Snicco\Component\BetterWPMail\ValueObjects\MailboxList;
 
 use function count;
 use function sprintf;
+use function wp_parse_url;
 
 final class FakeTransport implements Transport
 {
@@ -122,7 +123,7 @@ final class FakeTransport implements Transport
      */
     public function assertSentTo($recipient, string $email_class)
     {
-        $expected_recipient = Address::create($recipient);
+        $expected_recipient = Mailbox::create($recipient);
         
         $this->assertSent(
             $email_class,
@@ -137,7 +138,7 @@ final class FakeTransport implements Transport
      */
     public function assertNotSentTo($recipient, string $mailable_class)
     {
-        $expected_recipient = Address::create($recipient);
+        $expected_recipient = Mailbox::create($recipient);
         $matching = $this->sentEmailsThatMatchCondition(
             $mailable_class,
             function (Email $email, Envelope $envelope) use ($expected_recipient) {
@@ -198,7 +199,7 @@ final class FakeTransport implements Transport
     {
         $to = [];
         foreach ((array) $attributes['to'] as $recipient) {
-            $to[] = Address::create($recipient);
+            $to[] = Mailbox::create($recipient);
         }
         
         $headers = (array) $attributes['headers'];
@@ -216,11 +217,11 @@ final class FakeTransport implements Transport
         foreach (($headers) as $header) {
             if (strpos($header, 'Cc:') !== false) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $carbon_copies[] = Address::create($matches['value']);
+                $carbon_copies[] = Mailbox::create($matches['value']);
             }
             if (strpos($header, 'Bcc:') !== false) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $blind_carbon_copies[] = Address::create($matches['value']);
+                $blind_carbon_copies[] = Mailbox::create($matches['value']);
             }
             
             if (strpos($header, 'From:') !== false) {
@@ -229,12 +230,12 @@ final class FakeTransport implements Transport
             }
             if (strpos($header, 'Reply-To:') !== false) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $reply_to[] = Address::create($matches['value']);
+                $reply_to[] = Mailbox::create($matches['value']);
             }
         }
         
         $from = $this->wp->applyFilters('wp_mail_from', $from);
-        $from = Address::create($from);
+        $from = Mailbox::create($from);
         
         $wp_mail = new WPMail();
         
@@ -243,7 +244,7 @@ final class FakeTransport implements Transport
                            ->withHtmlBody($attributes['message'])
                            ->withFrom($from);
         
-        $recipients = new AddressList($to);
+        $recipients = new MailboxList($to);
         
         if (count($carbon_copies)) {
             $wp_mail = $wp_mail->withCc($carbon_copies);
@@ -258,7 +259,7 @@ final class FakeTransport implements Transport
         }
         
         foreach ($attachments as $attachment) {
-            $wp_mail->withAttachment(
+            $wp_mail->addAttachment(
                 $attachment
             );
         }

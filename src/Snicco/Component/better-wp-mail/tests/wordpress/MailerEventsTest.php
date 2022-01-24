@@ -7,13 +7,13 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 use MockPHPMailer;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPMail\Mailer;
-use Snicco\Component\BetterWPMail\WP\ScopableWP;
+use Snicco\Component\BetterWPMail\ScopableWP;
+use Snicco\Component\BetterWPMail\Event\MailEvents;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
-use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
+use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
-use Snicco\Component\BetterWPMail\WP\MailDispatcherUsingHooks;
-use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Event\MailEventsUsingWPHooks;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\WelcomeEmail;
 
 final class MailerEventsTest extends WPTestCase
@@ -115,9 +115,9 @@ final class MailerEventsTest extends WPTestCase
         $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
     }
     
-    private function getEventDispatcher() :MailEventDispatcher
+    private function getEventDispatcher() :MailEvents
     {
-        return new MailDispatcherUsingHooks(new ScopableWP());
+        return new MailEventsUsingWPHooks(new ScopableWP());
     }
     
     private function getSentMails() :array

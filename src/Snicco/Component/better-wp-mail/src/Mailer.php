@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail;
 
 use LogicException;
+use Snicco\Component\BetterWPMail\Event\NullEvents;
+use Snicco\Component\BetterWPMail\Event\MailEvents;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\Contracts\Transport;
-use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\Transport\Transport;
+use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
-use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
-use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
-use Snicco\Component\BetterWPMail\ValueObjects\AddressList;
+use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
+use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
+use Snicco\Component\BetterWPMail\ValueObjects\MailboxList;
+use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
-use Snicco\Component\BetterWPMail\Contracts\TransportException;
-use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
 
 use function count;
 use function iterator_to_array;
@@ -29,25 +30,25 @@ use function iterator_to_array;
 final class Mailer
 {
     
-    private MailDefaults        $default_config;
-    private Transport           $transport;
-    private MailRenderer        $mail_renderer;
-    private MailEventDispatcher $event_dispatcher;
+    private MailDefaults $default_config;
+    private Transport    $transport;
+    private MailRenderer $mail_renderer;
+    private MailEvents   $event_dispatcher;
     
     public function __construct(
         ?Transport $transport = null,
         ?MailRenderer $mail_renderer = null,
-        ?MailEventDispatcher $event_dispatcher = null,
+        ?MailEvents $event_dispatcher = null,
         ?MailDefaults $default_config = null
     ) {
         $this->transport = $transport ?? new WPMailTransport();
         $this->mail_renderer = $mail_renderer ?? new AggregateRenderer(new FilesystemRenderer());
-        $this->event_dispatcher = $event_dispatcher ?? new NullDispatcher();
+        $this->event_dispatcher = $event_dispatcher ?? new NullEvents();
         $this->default_config = $default_config ?? MailDefaults::fromWordPressSettings();
     }
     
     /**
-     * @throws TransportException
+     * @throws CantSendEmail
      */
     public function send(Email $mail) :void
     {
@@ -67,7 +68,7 @@ final class Mailer
         $this->fireSentEvent($mail, $envelope);
     }
     
-    private function determineSender(Email $mail) :?Address
+    private function determineSender(Email $mail) :?Mailbox
     {
         if ($sender = $mail->sender()) {
             return $sender;
@@ -94,7 +95,7 @@ final class Mailer
             throw new LogicException('An email must have a text or an HTML body or attachments.');
         }
         
-        if ( ! count($mail->getCc()) && ! count($mail->getTo()) && ! count($mail->getBcc())) {
+        if ( ! count($mail->cc()) && ! count($mail->to()) && ! count($mail->bcc())) {
             throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
         }
         
@@ -141,11 +142,11 @@ final class Mailer
         return $mail;
     }
     
-    private function mergeRecipientsFromHeaders(Email $mail) :AddressList
+    private function mergeRecipientsFromHeaders(Email $mail) :MailboxList
     {
-        return $mail->getTo()
-                    ->merge($mail->getCc())
-                    ->merge($mail->getBcc());
+        return $mail->to()
+                    ->merge($mail->cc())
+                    ->merge($mail->bcc());
     }
     
 }

@@ -8,7 +8,7 @@ use LogicException;
 use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
 
 use function fopen;
 use function dirname;
@@ -32,8 +32,26 @@ final class EmailTest extends WPTestCase
         
         $this->assertNotSame($email, $new);
         
-        $this->assertCount(1, $new->getTo());
-        $this->assertCount(0, $email->getTo());
+        $this->assertCount(1, $new->to());
+        $this->assertCount(0, $email->to());
+    }
+    
+    /** @test */
+    public function test_to()
+    {
+        $email = (new Email())->withTo('calvin@web.de');
+        
+        $this->assertCount(1, $cc = $email->to());
+        $this->assertTrue($cc->has('calvin@web.de'));
+        
+        $email = $email->withTo('marlon@web.de');
+        $this->assertCount(1, $cc = $email->to());
+        $this->assertTrue($cc->has('marlon@web.de'));
+        
+        $email = $email->addTo('jon@web.de');
+        $this->assertCount(2, $cc = $email->to());
+        $this->assertTrue($cc->has('marlon@web.de'));
+        $this->assertTrue($cc->has('jon@web.de'));
     }
     
     /** @test */
@@ -41,7 +59,17 @@ final class EmailTest extends WPTestCase
     {
         $email = (new Email())->withCc('calvin@web.de');
         
-        $this->assertCount(1, $email->getCc());
+        $this->assertCount(1, $cc = $email->cc());
+        $this->assertTrue($cc->has('calvin@web.de'));
+        
+        $email = $email->withCc('marlon@web.de');
+        $this->assertCount(1, $cc = $email->cc());
+        $this->assertTrue($cc->has('marlon@web.de'));
+        
+        $email = $email->addCc('jon@web.de');
+        $this->assertCount(2, $cc = $email->cc());
+        $this->assertTrue($cc->has('marlon@web.de'));
+        $this->assertTrue($cc->has('jon@web.de'));
     }
     
     /** @test */
@@ -49,7 +77,17 @@ final class EmailTest extends WPTestCase
     {
         $email = (new Email())->withBcc('calvin@web.de');
         
-        $this->assertCount(1, $email->getBcc());
+        $this->assertCount(1, $bcc = $email->bcc());
+        $this->assertTrue($bcc->has('calvin@web.de'));
+        
+        $email = $email->withBcc('marlon@web.de');
+        $this->assertCount(1, $bcc = $email->bcc());
+        $this->assertTrue($bcc->has('marlon@web.de'));
+        
+        $email = $email->addBcc('jon@web.de');
+        $this->assertCount(2, $bcc = $email->bcc());
+        $this->assertTrue($bcc->has('marlon@web.de'));
+        $this->assertTrue($bcc->has('jon@web.de'));
     }
     
     /** @test */
@@ -69,7 +107,7 @@ final class EmailTest extends WPTestCase
         
         $email = $email->withSender('calvin@web.de');
         
-        $this->assertEquals(Address::create('calvin@web.de'), $email->sender());
+        $this->assertEquals(Mailbox::create('calvin@web.de'), $email->sender());
     }
     
     /** @test */
@@ -81,7 +119,7 @@ final class EmailTest extends WPTestCase
         
         $email = $email->withReturnPath('calvin@web.de');
         
-        $this->assertEquals(Address::create('calvin@web.de'), $email->returnPath());
+        $this->assertEquals(Mailbox::create('calvin@web.de'), $email->returnPath());
     }
     
     /** @test */
@@ -96,11 +134,14 @@ final class EmailTest extends WPTestCase
         $this->assertCount(1, $email->replyTo());
         
         // duplicate address does nothing
-        $email = $email->withReplyTo('calvin@web.de');
+        $email = $email->addReplyTo('calvin@web.de');
         $this->assertCount(1, $email->replyTo());
         
-        $email = $email->withReplyTo('marlon@web.de');
+        $email = $email->addReplyTo('marlon@web.de');
         $this->assertCount(2, $email->replyTo());
+        
+        $email = $email->withReplyTo('jon@web.de');
+        $this->assertCount(1, $email->replyTo());
     }
     
     /** @test */
@@ -115,11 +156,15 @@ final class EmailTest extends WPTestCase
         $this->assertCount(1, $email->from());
         
         // duplicate address does nothing
-        $email = $email->withFrom('calvin@web.de');
+        $email = $email->addFrom('calvin@web.de');
         $this->assertCount(1, $email->from());
         
-        $email = $email->withFrom('marlon@web.de');
+        $email = $email->addFrom('marlon@web.de');
         $this->assertCount(2, $email->from());
+        
+        $email = $email->withFrom('foo@web.de');
+        $this->assertCount(1, $from = $email->from());
+        $this->assertTrue($from->has('foo@web.de'));
     }
     
     /** @test */
@@ -129,7 +174,7 @@ final class EmailTest extends WPTestCase
         
         $this->assertCount(0, $email->attachments());
         
-        $email = $email->withAttachment(
+        $email = $email->addAttachment(
             $this->attachment_dir.'/php-elephant.jpg',
             'elephant',
             'image/jpg'
@@ -153,7 +198,7 @@ final class EmailTest extends WPTestCase
         
         $contents = file_get_contents($this->attachment_dir.'/php-elephant.jpg');
         
-        $email = $email->withBinaryAttachment(
+        $email = $email->addBinaryAttachment(
             $contents,
             'elephant',
             'image/jpg'
@@ -173,7 +218,7 @@ final class EmailTest extends WPTestCase
         
         $contents = fopen($this->attachment_dir.'/php-elephant.jpg', 'r');
         
-        $email = $email->withBinaryAttachment(
+        $email = $email->addBinaryAttachment(
             $contents,
             'elephant',
             'image/jpg'
@@ -195,7 +240,7 @@ final class EmailTest extends WPTestCase
         
         $this->assertCount(0, $email->attachments());
         
-        $email = $email->withEmbed(
+        $email = $email->addEmbed(
             $this->attachment_dir.'/php-elephant.jpg',
             'elephant',
             'image/jpg'
@@ -219,7 +264,7 @@ final class EmailTest extends WPTestCase
         
         $contents = file_get_contents($this->attachment_dir.'/php-elephant.jpg');
         
-        $email = $email->withBinaryEmbed(
+        $email = $email->addBinaryEmbed(
             $contents,
             'elephant',
             'image/jpg'
@@ -239,7 +284,7 @@ final class EmailTest extends WPTestCase
         
         $contents = fopen($this->attachment_dir.'/php-elephant.jpg', 'r');
         
-        $email = $email->withBinaryEmbed(
+        $email = $email->addBinaryEmbed(
             $contents,
             'elephant',
             'image/jpg'
@@ -336,15 +381,15 @@ final class EmailTest extends WPTestCase
         
         $this->assertSame([], $email->context());
         
-        $email = $email->withContext('foo', 'bar');
+        $email = $email->addContext('foo', 'bar');
         
         $this->assertSame(['foo' => 'bar'], $email->context());
         
-        $email = $email->withContext('foo', 'baz');
+        $email = $email->addContext('foo', 'baz');
         
         $this->assertSame(['foo' => 'baz'], $email->context());
         
-        $email = $email->withContext('bar', 'biz');
+        $email = $email->addContext('bar', 'biz');
         
         $this->assertSame(['foo' => 'baz', 'bar' => 'biz'], $email->context());
     }
@@ -356,11 +401,11 @@ final class EmailTest extends WPTestCase
         
         $this->assertSame([], $email->customHeaders());
         
-        $email = $email->withCustomHeaders(['X-FOO' => 'BAR']);
+        $email = $email->addCustomHeaders(['X-FOO' => 'BAR']);
         
         $this->assertSame(['X-FOO' => 'BAR'], $email->customHeaders());
         
-        $email = $email->withCustomHeaders(['X-BAZ' => 'BIZ']);
+        $email = $email->addCustomHeaders(['X-BAZ' => 'BIZ']);
         
         $this->assertSame(['X-FOO' => 'BAR', 'X-BAZ' => 'BIZ'], $email->customHeaders());
     }
@@ -396,7 +441,7 @@ final class EmailTest extends WPTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('[images] is a reserved context key');
         
-        $email->withContext('images', 'foo');
+        $email->addContext('images', 'foo');
     }
     
 }

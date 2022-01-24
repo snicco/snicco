@@ -120,8 +120,8 @@ final class FakeMailerTest extends WPTestCase
         $this->fake_transport->assertSent(
             TestMail::class,
             function (TestMail $email, Envelope $envelope) {
-                return $email->getTo()->has('c@web.de')
-                       && $envelope->sender()->getAddress() === 'm@web.de';
+                return $email->to()->has('c@web.de')
+                       && $envelope->sender()->address() === 'm@web.de';
             }
         );
     }
@@ -145,7 +145,7 @@ final class FakeMailerTest extends WPTestCase
             fn() => $this->fake_transport->assertSent(
                 TestMail::class,
                 function (TestMail $email) {
-                    return $email->getTo()->has('c@web.de');
+                    return $email->to()->has('c@web.de');
                 }
             )
         );
@@ -397,11 +397,11 @@ final class FakeMailerTest extends WPTestCase
         );
         
         $this->fake_transport->assertSent(WPMail::class, function (WPMail $email) {
-            return $email->getTo()->has('calvin@web.de')
-                   && $email->getCC()->has('Jane Doe <jane@web.de>')
-                   && $email->getBcc()->has('jon@web.de')
+            return $email->to()->has('calvin@web.de')
+                   && $email->cc()->has('Jane Doe <jane@web.de>')
+                   && $email->bcc()->has('jon@web.de')
                    && $email->subject() === 'subject'
-                   && iterator_to_array($email->replyTo())[0]->getName() === 'Office'
+                   && iterator_to_array($email->replyTo())[0]->name() === 'Office'
                    && iterator_to_array($email->from())[0]->toString()
                       === 'My Company <mycompany@web.de>';
         });

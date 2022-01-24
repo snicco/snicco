@@ -7,12 +7,12 @@ namespace Snicco\MailBundle;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
 use Snicco\Component\EventDispatcher\EventDispatcher;
-use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Event\MailEvents;
 
 /**
  * @interal
  */
-final class FrameworkMailEventDispatcher implements MailEventDispatcher
+final class FrameworkMailEvents implements MailEvents
 {
     
     private EventDispatcher $dispatcher;

@@ -7,9 +7,9 @@ namespace Snicco\MailBundle;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\Templating\Exception\ViewNotFound;
-use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
+use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
-use Snicco\Component\BetterWPMail\Exceptions\MailRenderingException;
+use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
 
 /**
  * @interal
@@ -29,7 +29,7 @@ final class ViewBasedMailRenderer implements MailRenderer
         try {
             $view = $this->view_engine->make($template_name);
         } catch (ViewNotFound $not_found_exception) {
-            throw new MailRenderingException(
+            throw new CantRenderMailContent(
                 "The mail template [$template_name] does not exist: Caused by: {$not_found_exception->getMessage()}",
                 $not_found_exception->getCode(),
                 $not_found_exception
@@ -40,7 +40,7 @@ final class ViewBasedMailRenderer implements MailRenderer
             $view->with($context);
             return $view->toString();
         } catch (ViewCantBeRendered $e) {
-            throw new MailRenderingException(
+            throw new CantRenderMailContent(
                 "The mail template [$template_name] could not be rendered: Caused by: {$e->getMessage()}",
                 $e->getCode(),
                 $e
@@ -48,10 +48,10 @@ final class ViewBasedMailRenderer implements MailRenderer
         }
     }
     
-    public function supports(string $view, ?string $extension = null) :bool
+    public function supports(string $template_name, ?string $extension = null) :bool
     {
         try {
-            return $this->view_engine->make($view) instanceof View;
+            return $this->view_engine->make($template_name) instanceof View;
         } catch (ViewNotFound $e) {
             return false;
         }

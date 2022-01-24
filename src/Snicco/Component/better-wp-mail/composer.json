@@ -9,7 +9,8 @@
     }
   ],
   "require": {
-    "php": "^7.4"
+    "php": "^7.4",
+    "sniccowp/scopable-wp": "dev-master"
   },
   "autoload": {
     "psr-4": {
@@ -18,7 +19,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\BetterWPMail\\Tests\\": "tests"
+      "Snicco\\Component\\BetterWPMail\\Tests\\": "tests",
+      "Snicco\\Component\\BetterWPMail\\Testing\\": "testing"
     }
   }
 }

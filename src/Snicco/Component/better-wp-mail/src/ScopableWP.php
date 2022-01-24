@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\WP;
+namespace Snicco\Component\BetterWPMail;
 
 use function wp_mail;
 use function get_bloginfo;
 use function remove_filter;
 use function network_home_url;
 
+/**
+ * @interal
+ */
 final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
     
