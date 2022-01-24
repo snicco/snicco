@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\BetterWPMail\integration;
+namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 
-use Snicco\Mail\Email;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Mail\Exceptions\MissingContentIdException;
+use Snicco\Component\BetterWPMail\Email;
+use Snicco\Component\BetterWPMail\Exceptions\MissingContentIdException;
 
 final class MissingCIDExceptionTest extends WPTestCase
 {

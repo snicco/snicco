@@ -11,6 +11,5 @@
          failOnWarning="true"
          verbose="true"
          colors="true"
-         bootstrap="tests/_bootstrap.php"
 >
 </phpunit>

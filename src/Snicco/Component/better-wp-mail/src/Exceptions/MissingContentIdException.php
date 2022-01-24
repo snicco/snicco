@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Exceptions;
+namespace Snicco\Component\BetterWPMail\Exceptions;
 
 use RuntimeException;
 

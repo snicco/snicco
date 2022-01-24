@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail;
+namespace Snicco\Component\BetterWPMail;
 
-use Snicco\Mail\Event\EmailWasSent;
-use Snicco\Mail\Event\SendingEmail;
-use Snicco\Mail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Event\EmailWasSent;
+use Snicco\Component\BetterWPMail\Event\SendingEmail;
+use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
 
 final class NullDispatcher implements MailEventDispatcher
 {

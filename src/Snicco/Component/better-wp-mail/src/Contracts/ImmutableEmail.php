@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Contracts;
+namespace Snicco\Component\BetterWPMail\Contracts;
 
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\Attachment;
-use Snicco\Mail\Exceptions\MissingContentIdException;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Attachment;
+use Snicco\Component\BetterWPMail\Exceptions\MissingContentIdException;
 
 /**
  * @api

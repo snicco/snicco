@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Testing;
+namespace Snicco\Component\BetterWPMail\Testing;
 
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\Attachment;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Attachment;
 
 final class WordPressMail
 {

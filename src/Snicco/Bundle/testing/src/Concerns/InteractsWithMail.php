@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Mail\Contracts\Mailer;
-use Snicco\Mail\Testing\FakeMailer;
+use Snicco\Component\BetterWPMail\Contracts\Transport;
+use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 
 trait InteractsWithMail
 {
     
     /**
-     * @var Mailer|FakeMailer
+     * @var Transport|FakeTransport
      */
-    protected Mailer $fake_mailer;
+    protected Transport $fake_mailer;
     
     protected function withFakeMailer()
     {
         $this->afterApplicationBooted(function () {
-            $this->fake_mailer = $this->app[Mailer::class];
+            $this->fake_mailer = $this->app[Transport::class];
         });
     }
     

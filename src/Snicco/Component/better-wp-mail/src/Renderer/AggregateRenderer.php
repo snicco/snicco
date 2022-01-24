@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Renderer;
+namespace Snicco\Component\BetterWPMail\Renderer;
 
-use Snicco\Mail\Contracts\MailRenderer;
-use Snicco\Mail\Exceptions\MailRenderingException;
+use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
+use Snicco\Component\BetterWPMail\Exceptions\MailRenderingException;
 
 /**
  * @api
@@ -14,9 +14,9 @@ final class AggregateRenderer implements MailRenderer
 {
     
     /**
-     * @var MailRenderer
+     * @var MailRenderer[]
      */
-    private $renderers;
+    private array $renderers;
     
     /**
      * @var array<string,MailRenderer>

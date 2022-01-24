@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Testing\Concerns;
+namespace Snicco\Bundle\Testing\Concerns;
 
 use WP_User;
 use PHPUnit\Framework\Assert as PHPUnit;

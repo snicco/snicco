@@ -2,35 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Mailer;
+namespace Snicco\Component\BetterWPMail\Mailer;
 
 use Closure;
 use WP_Error;
 use PHPMailer;
-use Snicco\Mail\Contracts\Mailer;
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\Envelope;
-use Snicco\Mail\Contracts\ImmutableEmail;
-use Snicco\Mail\Contracts\TransportException;
-use Snicco\Mail\Exceptions\WPMailTransportException;
+use Snicco\Component\BetterWPMail\ScopableWP;
+use Snicco\Component\BetterWPMail\ValueObjects\Email;
+use Snicco\Component\BetterWPMail\Contracts\Transport;
+use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\Contracts\TransportException;
+use Snicco\Component\BetterWPMail\Exceptions\WPMailTransportException;
 
-use function wp_mail;
-use function add_action;
-use function remove_filter;
+use function trim;
 
 /**
- * @internal
+ * @api
  */
-final class WordPressMailer implements Mailer
+final class WPMailTransport implements Transport
 {
     
+    private ScopableWP $wp;
+    
+    public function __construct(ScopableWP $wp = null)
+    {
+        $this->wp = $wp ? : new ScopableWP();
+    }
+    
     /**
-     * @param  ImmutableEmail  $email
-     * @param  Envelope  $envelope
-     *
      * @throws WPMailTransportException
      */
-    public function send(ImmutableEmail $email, Envelope $envelope) :void
+    public function send(Email $email, Envelope $envelope) :void
     {
         $failure_callable = $this->handleFailure();
         $just_in_time_callable = $this->justInTimeConfiguration($email, $envelope);
@@ -38,24 +40,24 @@ final class WordPressMailer implements Mailer
         $to = $this->getTo($email, $envelope);
         
         // neither WordPress nor PHPMailer for that matter support setting multiple From headers.
-        // So we just default to using the $envelope sender. It's not required to explicitly set to the
+        // So we just default to using the $envelope sender. It's not required to explicitly set the
         // sender on the phpmailer instance since that will be
         // taken care of automatically by phpmailer before sending.
-        $from = $this->stringifyAddresses([$envelope->getSender()], 'From:');
+        $from = $this->stringifyAddresses([$envelope->sender()], 'From:');
         
-        $reply_to = $this->stringifyAddresses($email->getReplyTo(), 'Reply-To:');
+        $reply_to = $this->stringifyAddresses($email->replyTo(), 'Reply-To:');
         
         $ccs = $this->stringifyAddresses($email->getCc(), 'Cc:');
         
         $bcc = $this->stringifyAddresses($email->getBcc(), 'Bcc:');
         
-        if ($html = $email->getHtmlBody()) {
-            $content_type = "Content-Type: text/html; charset={$email->getHtmlCharset()}";
+        if ($html = $email->htmlBody()) {
+            $content_type = "Content-Type: text/html; charset={$email->htmlCharset()}";
             $message = $html;
         }
         else {
-            $message = $email->getTextBody();
-            $content_type = "Content-Type: text/plain; charset={$email->getTextCharset()}";
+            $message = $email->textBody();
+            $content_type = "Content-Type: text/plain; charset={$email->textCharset()}";
         }
         
         if (is_resource($message)) {
@@ -73,19 +75,23 @@ final class WordPressMailer implements Mailer
             $reply_to,
             $from,
             [$content_type],
-            $email->getCustomHeaders()
+            $email->customHeaders()
         );
         
         try {
             // Don't set attachments here since WordPress only adds attachments by file path. Really?
-            wp_mail($to, $email->getSubject(), $message, $headers, []);
+            $success = $this->wp->mail($to, $email->subject(), $message, $headers, []);
+            
+            if (false === $success) {
+                throw new WPMailTransportException('Could not sent the mail with wp_mail().');
+            }
         } catch (PHPMailer\PHPMailer\Exception $e) {
             throw new WPMailTransportException("wp_mail() failure.", $e->getMessage(), $e);
         }
         finally {
             $this->resetPHPMailer();
-            remove_filter('wp_mail_failed', $failure_callable, 99999);
-            remove_filter('phpmailer_init', $just_in_time_callable, 99999);
+            $this->wp->removeFilter('wp_mail_failed', $failure_callable, 99999);
+            $this->wp->removeFilter('phpmailer_init', $just_in_time_callable, 99999);
         }
     }
     
@@ -100,7 +106,7 @@ final class WordPressMailer implements Mailer
             throw WPMailTransportException::becauseWPMailRaisedErrors($error);
         };
         
-        add_action('wp_mail_failed', $closure, 99999, 1);
+        $this->wp->addAction('wp_mail_failed', $closure, 99999, 1);
         
         return $closure;
     }
@@ -111,46 +117,50 @@ final class WordPressMailer implements Mailer
      * Here we directly configure the underlying PHPMailer instance which has all the options we
      * need.
      */
-    protected function justInTimeConfiguration(ImmutableEmail $mail, Envelope $envelope) :Closure
+    private function justInTimeConfiguration(Email $mail, Envelope $envelope) :Closure
     {
         $closure = function (PHPMailer $php_mailer) use ($mail, $envelope) {
-            if (($text = $mail->getTextBody()) && $mail->getHtmlBody() !== null) {
+            if (($text = $mail->textBody()) && $mail->htmlBody() !== null) {
                 $php_mailer->AltBody = $text;
             }
-            if ($priority = $mail->getPriority()) {
+            if ($priority = $mail->priority()) {
                 $php_mailer->Priority = $priority;
             }
-            foreach ($mail->getAttachments() as $attachment) {
-                if ($attachment->getDisposition() === 'inline') {
+            foreach ($mail->attachments() as $attachment) {
+                if ($attachment->disposition() === 'inline') {
                     $php_mailer->addStringEmbeddedImage(
-                        $attachment->getBody(),
-                        $attachment->getContentId(),
-                        $attachment->getName() ?? '',
-                        $attachment->getEncoding(),
-                        $attachment->getContentType(),
+                        $attachment->body(),
+                        $attachment->cid(),
+                        $attachment->name() ?? '',
+                        $attachment->encoding(),
+                        $attachment->contentType(),
                     );
                     continue;
                 }
                 
                 $php_mailer->addStringAttachment(
-                    $attachment->getBody(),
-                    $attachment->getName() ?? '',
-                    $attachment->getEncoding(),
-                    $attachment->getContentType(),
+                    $attachment->body(),
+                    $attachment->name() ?? '',
+                    $attachment->encoding(),
+                    $attachment->contentType(),
                 );
             }
         };
         
-        add_action('phpmailer_init', $closure, 99999, 1,);
+        $this->wp->addAction('phpmailer_init', $closure, 99999, 1,);
         
         return $closure;
     }
     
-    private function stringifyAddresses(array $addresses, string $prefix = '') :array
+    private function stringifyAddresses(iterable $addresses, string $prefix = '') :array
     {
-        return array_map(function (Address $address) use ($prefix) {
-            return trim($prefix.' '.$address->toString());
-        }, $addresses);
+        $stringify = [];
+        
+        foreach ($addresses as $address) {
+            $stringify[] = trim($prefix.' '.$address->toString());
+        }
+        
+        return $stringify;
     }
     
     // Reset properties that wp_mail does not flush by default();
@@ -164,13 +174,16 @@ final class WordPressMailer implements Mailer
         $phpmailer->clearReplyTos();
     }
     
-    private function getTo(ImmutableEmail $email, Envelope $envelope) :array
+    private function getTo(Email $email, Envelope $envelope) :array
     {
-        $merged = array_merge($email->getCc(), $email->getBcc());
+        $merged = $email->getCc()->merge($email->getBcc());
         
-        $to = array_filter($envelope->getRecipients(), function (Address $address) use ($merged) {
-            return in_array($address, $merged, true) === false;
-        });
+        $to = [];
+        foreach ($envelope->recipients() as $recipient) {
+            if ( ! $merged->has($recipient)) {
+                $to[] = $recipient;
+            }
+        }
         
         return $this->stringifyAddresses($to);
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObjects;
 
 /*
  * Slight modified version of the symfony/mailer package envelope
@@ -21,17 +21,10 @@ use InvalidArgumentException;
 final class Envelope
 {
     
-    /**
-     * @var Address
-     */
-    private $sender;
+    private Address     $sender;
+    private AddressList $recipients;
     
-    /**
-     * @var Address[]
-     */
-    private $recipients = [];
-    
-    public function __construct(Address $sender, Address ...$recipients)
+    public function __construct(Address $sender, AddressList $recipients)
     {
         // to ensure deliverability of bounce emails independent of UTF-8 capabilities of SMTP servers
         if ( ! preg_match('/^[^@\x80-\xFF]++@/', $sender->getAddress())) {
@@ -51,15 +44,12 @@ final class Envelope
         $this->recipients = $recipients;
     }
     
-    public function getSender() :Address
+    public function sender() :Address
     {
         return $this->sender;
     }
     
-    /**
-     * @return Address[]
-     */
-    public function getRecipients() :array
+    public function recipients() :AddressList
     {
         return $this->recipients;
     }

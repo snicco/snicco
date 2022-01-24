@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Renderer;
+namespace Snicco\Component\BetterWPMail\Renderer;
 
-use Snicco\Mail\Contracts\MailRenderer;
+use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
 
 final class FilesystemRenderer implements MailRenderer
 {

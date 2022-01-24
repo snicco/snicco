@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\Mail\Event\SendingEmail;
-use Snicco\Mail\Event\EmailWasSent;
-use Snicco\Mail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Event\SendingEmail;
+use Snicco\Component\BetterWPMail\Event\EmailWasSent;
 use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
 
 /**
  * @interal

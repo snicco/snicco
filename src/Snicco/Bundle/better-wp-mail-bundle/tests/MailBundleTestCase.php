@@ -6,8 +6,8 @@ namespace Tests\BetterWPMailBundle;
 
 use Snicco\MailBundle\MailServiceProvider;
 use Snicco\ViewBundle\ViewServiceProvider;
-use Snicco\Testing\Concerns\InteractsWithMail;
 use Tests\Codeception\shared\FrameworkTestCase;
+use Snicco\Bundle\Testing\Concerns\InteractsWithMail;
 
 class MailBundleTestCase extends FrameworkTestCase
 {

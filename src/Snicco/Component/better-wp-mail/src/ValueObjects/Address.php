@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObjects;
 
 use WP_User;
 use InvalidArgumentException;
 
+use function sprintf;
+use function gettype;
+use function filter_var;
+
+use const FILTER_VALIDATE_EMAIL;
+
 /**
- * Represents an "email mailbox". By default, the domain part is validated using the is_email()
- * function offered by WordPress.
+ * Represents an "email mailbox". By default, the domain part is validated using the filter_var.
  * For better validation it is recommended to use
  * https://github.com/egulias/EmailValidator
  *
@@ -24,17 +29,9 @@ final class Address
     /**
      * @var callable
      */
-    public static $email_validator;
-    
-    /**
-     * @var string
-     */
-    private $address;
-    
-    /**
-     * @var string
-     */
-    private $name;
+    public static  $email_validator;
+    private string $address;
+    private string $name;
     
     private function __construct(string $address, string $name = '')
     {
@@ -42,12 +39,12 @@ final class Address
         
         if (self::$email_validator === null) {
             self::$email_validator = function (string $email) {
-                return is_email($email);
+                return filter_var($email, FILTER_VALIDATE_EMAIL);
             };
         }
         
         if ( ! call_user_func(self::$email_validator, $address)) {
-            throw new InvalidArgumentException("[$address] ist not a valid address.");
+            throw new InvalidArgumentException("[$address] is not a valid email.");
         }
         
         $this->address = $address;
@@ -55,12 +52,16 @@ final class Address
     }
     
     /**
-     * @param  string|WP_User|array<string,string>  $address
+     * @param  Address|string|WP_User|array<string,string>  $address
      *
      * @throws InvalidArgumentException
      */
     public static function create($address) :Address
     {
+        if ($address instanceof Address) {
+            return $address;
+        }
+        
         if (is_string($address)) {
             if (strpos($address, '<') === false) {
                 return new self($address);
@@ -69,8 +70,7 @@ final class Address
             if ( ! preg_match(self::PATTERN, $address, $matches)) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        'Could not create an instance of "%s" from "%s".',
-                        self::class,
+                        "[%s] is not a valid address",
                         $address
                     )
                 );
@@ -88,15 +88,18 @@ final class Address
         
         if ( ! $address instanceof WP_User) {
             throw new InvalidArgumentException(
-                "Cant create Address. The passed value has to be either a string, array or WP_USER."
+                sprintf(
+                    '$address has to be string,array or an instance of WP_User. Got [%s].',
+                    gettype($address)
+                )
             );
         }
         
         if ($address->first_name) {
-            $name = $address->first_name.' '.$address->last_name ?? '';
+            $name = $address->first_name.' '.$address->last_name ? : '';
         }
         else {
-            $name = $address->display_name;
+            $name = $address->display_name ? : '';
         }
         
         return new self($address->user_email, $name);
