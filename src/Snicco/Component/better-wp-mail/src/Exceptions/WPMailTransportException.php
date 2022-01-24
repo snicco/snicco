@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Exceptions;
+namespace Snicco\Component\BetterWPMail\Exceptions;
 
 use WP_Error;
 use Throwable;
 use RuntimeException;
-use Snicco\Mail\Contracts\TransportException;
+use Snicco\Component\BetterWPMail\Contracts\TransportException;
 
 final class WPMailTransportException extends RuntimeException implements TransportException
 {

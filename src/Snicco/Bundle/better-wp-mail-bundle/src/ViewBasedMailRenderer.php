@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\Mail\Contracts\MailRenderer;
-use Snicco\Component\Templating\ViewEngine;
-use Snicco\Mail\Exceptions\MailRenderingException;
 use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\Templating\Exception\ViewNotFound;
+use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
+use Snicco\Component\BetterWPMail\Exceptions\MailRenderingException;
 
 /**
  * @interal

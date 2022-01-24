@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\BetterWPMail\fixtures\Emails;
+namespace Snicco\Component\BetterWPMail\Tests\fixtures\Emails;
 
-use Snicco\Mail\Email;
+use Snicco\Component\BetterWPMail\Email;
 
 class PureHTMLMail extends Email
 {

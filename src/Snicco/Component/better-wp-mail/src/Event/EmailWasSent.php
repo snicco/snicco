@@ -2,24 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Event;
+namespace Snicco\Component\BetterWPMail\Event;
 
-use Snicco\Mail\Email;
-use Snicco\Mail\ValueObjects\Envelope;
-use Snicco\Mail\Contracts\ImmutableEmail;
+use Snicco\Component\BetterWPMail\ValueObjects\Email;
+use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
 
 final class EmailWasSent
 {
     
-    /**
-     * @var Email
-     */
-    private $email;
-    
-    /**
-     * @var Envelope
-     */
-    private $envelope;
+    private Email    $email;
+    private Envelope $envelope;
     
     public function __construct(Email $email, Envelope $envelope)
     {
@@ -27,14 +19,14 @@ final class EmailWasSent
         $this->envelope = $envelope;
     }
     
-    public function getEmail() :ImmutableEmail
+    public function email() :Email
     {
-        return clone $this->email;
+        return $this->email;
     }
     
-    public function getEnvelope() :Envelope
+    public function envelope() :Envelope
     {
-        return clone $this->envelope;
+        return $this->envelope;
     }
     
 }

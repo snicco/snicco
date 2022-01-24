@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Event;
+namespace Snicco\Component\BetterWPMail\Event;
 
-use Snicco\Mail\Email;
+use Snicco\Component\BetterWPMail\ValueObjects\Email;
 
 final class SendingEmail
 {
     
-    /**
-     * @var Email
-     */
-    public $email;
+    public Email $email;
     
     public function __construct(Email $email)
     {

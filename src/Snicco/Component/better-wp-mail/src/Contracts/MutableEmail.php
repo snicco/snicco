@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Contracts;
+namespace Snicco\Component\BetterWPMail\Contracts;
 
-use Snicco\Mail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
 
 interface MutableEmail
 {

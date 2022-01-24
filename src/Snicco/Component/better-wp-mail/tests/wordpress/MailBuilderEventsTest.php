@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\BetterWPMail\integration;
+namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 
 use MockPHPMailer;
-use Snicco\Mail\MailBuilder;
-use Snicco\Mail\Event\SendingEmail;
-use Snicco\Mail\Event\EmailWasSent;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\Mailer\WordPressMailer;
-use Snicco\Mail\Renderer\FilesystemRenderer;
-use Snicco\Mail\Contracts\MailEventDispatcher;
-use Tests\BetterWPMail\fixtures\Emails\WelcomeEmail;
+use Snicco\Component\BetterWPMail\Mailer;
+use Snicco\Component\BetterWPMail\Event\SendingEmail;
+use Snicco\Component\BetterWPMail\Event\EmailWasSent;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
+use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
+use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Tests\fixtures\Emails\WelcomeEmail;
 
 final class MailBuilderEventsTest extends WPTestCase
 {
@@ -36,8 +36,8 @@ final class MailBuilderEventsTest extends WPTestCase
             $count++;
         });
         
-        $mail_builder = new MailBuilder(
-            new WordPressMailer(),
+        $mail_builder = new Mailer(
+            new WPMailTransport(),
             new FilesystemRenderer(),
             $this->getEventDispatcher()
         );
@@ -60,8 +60,8 @@ final class MailBuilderEventsTest extends WPTestCase
             $email->html('<h1>Custom Html</h1>');
         });
         
-        $mail_builder = new MailBuilder(
-            new WordPressMailer(),
+        $mail_builder = new Mailer(
+            new WPMailTransport(),
             new FilesystemRenderer(),
             $this->getEventDispatcher()
         );
@@ -85,8 +85,8 @@ final class MailBuilderEventsTest extends WPTestCase
             $count++;
         });
         
-        $mail_builder = new MailBuilder(
-            new WordPressMailer(),
+        $mail_builder = new Mailer(
+            new WPMailTransport(),
             new FilesystemRenderer(),
             $this->getEventDispatcher()
         );

@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\MailBundle;
 
-use Snicco\Mail\MailBuilder;
-use Snicco\Mail\Contracts\Mailer;
 use Snicco\Component\Core\Utils\WP;
-use Snicco\Mail\Testing\FakeMailer;
-use Snicco\Mail\Mailer\WordPressMailer;
-use Snicco\Mail\Contracts\MailRenderer;
-use Snicco\Mail\ValueObjects\MailDefaults;
+use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\Templating\ViewEngine;
-use Snicco\Mail\Renderer\AggregateRenderer;
-use Snicco\Mail\Renderer\FilesystemRenderer;
-use Snicco\Mail\Contracts\MailEventDispatcher;
-use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Core\Configuration\WritableConfig;
+use Snicco\Component\BetterWPMail\Testing\FakeTransport;
+use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
+use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
+use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
+use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
+use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
+use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Contracts\MailBuilderInterface;
 
 /**
  * @internal
@@ -45,8 +44,8 @@ class MailServiceProvider extends ServiceProvider
     {
         $this->container->singleton(Mailer::class, function () {
             return $this->app->isRunningUnitTest()
-                ? new FakeMailer()
-                : new WordPressMailer();
+                ? new FakeTransport()
+                : new WPMailTransport();
         });
     }
     
@@ -63,7 +62,7 @@ class MailServiceProvider extends ServiceProvider
     private function bindMailBuilder()
     {
         $this->container->singleton(MailBuilderInterface::class, function () {
-            return new MailBuilder(
+            return new Mailer(
                 $this->container[Mailer::class],
                 $this->container[MailRenderer::class],
                 $this->container[MailEventDispatcher::class],

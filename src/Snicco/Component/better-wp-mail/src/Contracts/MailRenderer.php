@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Contracts;
+namespace Snicco\Component\BetterWPMail\Contracts;
 
-use Snicco\Mail\Renderer\AggregateRenderer;
-use Snicco\Mail\Exceptions\MailRenderingException;
+use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
+use Snicco\Component\BetterWPMail\Exceptions\MailRenderingException;
 
 /**
  * @api

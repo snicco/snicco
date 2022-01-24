@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObjects;
 
-use function apply_filters;
+use Snicco\Component\BetterWPMail\ScopableWP;
 
 /**
  * @api
@@ -12,38 +12,25 @@ use function apply_filters;
 final class MailDefaults
 {
     
-    /**
-     * @var string
-     */
-    private $from_name;
-    
-    /**
-     * @var string
-     */
-    private $from_email;
-    
-    /**
-     * @var string
-     */
-    private $reply_to_name;
-    
-    /**
-     * @var string
-     */
-    private $reply_to_email;
+    private string $from_name;
+    private string $from_email;
+    private string $reply_to_name;
+    private string $reply_to_email;
     
     public function __construct(string $from_email, string $from_name, string $reply_to_email, string $reply_to_name)
     {
-        $this->from_email = apply_filters('wp_mail_from', $from_email);
-        $this->from_name = apply_filters('wp_mail_from_name', $from_name);
+        $this->from_email = $from_email;
+        $this->from_name = $from_name;
         $this->reply_to_name = $reply_to_name;
         $this->reply_to_email = $reply_to_email;
     }
     
-    public static function fromWordPressSettings() :MailDefaults
+    public static function fromWordPressSettings(ScopableWP $wp = null) :MailDefaults
     {
-        $email = apply_filters('wp_mail_from', get_bloginfo('admin_email'));
-        $name = apply_filters('wp_mail_from_name', get_bloginfo('name'));
+        $wp = $wp ? : new ScopableWP();
+        
+        $email = $wp->adminEmail();
+        $name = $wp->siteName();
         
         return new MailDefaults(
             $email,

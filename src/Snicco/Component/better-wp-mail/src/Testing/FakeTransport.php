@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Testing;
+namespace Snicco\Component\BetterWPMail\Testing;
 
 use Closure;
 use WP_User;
-use Snicco\Mail\Contracts\Mailer;
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\Envelope;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Mail\Contracts\ImmutableEmail;
+use Snicco\Component\BetterWPMail\Contracts\Transport;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\Contracts\ImmutableEmail;
 
 use function add_filter;
 
-final class FakeMailer implements Mailer
+final class FakeTransport implements Transport
 {
     
     /**

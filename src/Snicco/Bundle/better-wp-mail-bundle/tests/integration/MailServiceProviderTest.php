@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\BetterWPMailBundle\integration;
 
-use Snicco\Mail\MailBuilder;
-use Snicco\Mail\Contracts\Mailer;
-use Snicco\Mail\Testing\FakeMailer;
-use Snicco\Mail\Mailer\WordPressMailer;
-use Snicco\Mail\ValueObjects\MailDefaults;
 use Tests\Codeception\shared\TestApp\TestApp;
-use Snicco\Mail\Contracts\MailEventDispatcher;
-use Snicco\Mail\Contracts\MailBuilderInterface;
 use Tests\BetterWPMailBundle\MailBundleTestCase;
 use Snicco\MailBundle\FrameworkMailEventDispatcher;
+use Snicco\Component\BetterWPMail\Contracts\Transport;
+use Snicco\Component\BetterWPMail\Testing\FakeTransport;
+use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
+use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
+use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Contracts\MailBuilderInterface;
 
 class MailServiceProviderTest extends MaiLBundleTestCase
 {
@@ -23,11 +22,11 @@ class MailServiceProviderTest extends MaiLBundleTestCase
     {
         $this->bootApp();
         $this->assertInstanceOf(
-            MailBuilder::class,
+            Transport::class,
             $first = $this->app[MailBuilderInterface::class]
         );
         $this->assertInstanceOf(
-            MailBuilder::class,
+            Transport::class,
             $second = $this->app[MailBuilderInterface::class]
         );
         $this->assertSame($first, $second);
@@ -38,12 +37,12 @@ class MailServiceProviderTest extends MaiLBundleTestCase
     {
         $this->bootApp();
         $this->assertInstanceOf(
-            FakeMailer::class,
-            $first = $this->app[Mailer::class]
+            FakeTransport::class,
+            $first = $this->app[Transport::class]
         );
         $this->assertInstanceOf(
-            FakeMailer::class,
-            $second = $this->app[Mailer::class]
+            FakeTransport::class,
+            $second = $this->app[Transport::class]
         );
         $this->assertSame($first, $second);
     }
@@ -54,12 +53,12 @@ class MailServiceProviderTest extends MaiLBundleTestCase
         $this->withAddedConfig('app.env', 'production');
         $this->bootApp();
         $this->assertInstanceOf(
-            WordPressMailer::class,
-            $first = $this->app[Mailer::class]
+            WPMailTransport::class,
+            $first = $this->app[Transport::class]
         );
         $this->assertInstanceOf(
-            WordPressMailer::class,
-            $second = $this->app[Mailer::class]
+            WPMailTransport::class,
+            $second = $this->app[Transport::class]
         );
         $this->assertSame($first, $second);
     }
@@ -68,7 +67,7 @@ class MailServiceProviderTest extends MaiLBundleTestCase
     public function the_mail_alias_is_bound()
     {
         $this->bootApp();
-        $this->assertInstanceOf(MailBuilder::class, TestApp::mail());
+        $this->assertInstanceOf(Transport::class, TestApp::mail());
     }
     
     /** @test */

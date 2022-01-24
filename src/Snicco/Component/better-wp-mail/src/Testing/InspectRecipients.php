@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Testing;
+namespace Snicco\Component\BetterWPMail\Testing;
 
-use Snicco\Mail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
 
 trait InspectRecipients
 {
@@ -12,17 +12,17 @@ trait InspectRecipients
     /**
      * @var Address[]
      */
-    private $to;
+    private array $to;
     
     /**
      * @var Address[]
      */
-    private $cc;
+    private array $cc;
     
     /**
      * @var Address[]
      */
-    private $bcc;
+    private array $bcc;
     
     public function hasTo($recipient, bool $compare_email_only = true) :bool
     {

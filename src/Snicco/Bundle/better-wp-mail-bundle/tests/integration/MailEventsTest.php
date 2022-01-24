@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\BetterWPMailBundle\integration;
 
-use Snicco\Mail\Email;
-use Snicco\Mail\MailBuilder;
-use Snicco\Mail\Event\EmailWasSent;
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\Component\BetterWPMail\Email;
+use Snicco\Component\BetterWPMail\Mailer;
 use Tests\BetterWPMailBundle\MailBundleTestCase;
+use Snicco\Component\BetterWPMail\Event\EmailWasSent;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\Contracts\MailBuilderInterface;
 
 final class MailEventsTest extends MaiLBundleTestCase
 {
@@ -20,7 +20,7 @@ final class MailEventsTest extends MaiLBundleTestCase
         $this->withAddedConfig('mail.from.name', 'Marlon Alkan');
         $this->bootApp();
         
-        /** @var MailBuilder $mail_builder */
+        /** @var Mailer $mail_builder */
         $mail_builder = $this->app[MailBuilderInterface::class];
         
         $mail_builder->to('calvin@web.de')->send(new TestMail());
@@ -56,7 +56,7 @@ final class MailEventsTest extends MaiLBundleTestCase
             }
         );
         
-        /** @var MailBuilder $mail_builder */
+        /** @var Mailer $mail_builder */
         $mail_builder = $this->app[MailBuilderInterface::class];
         $mail_builder->to('calvin@web.de')->send(new TestMail());
         

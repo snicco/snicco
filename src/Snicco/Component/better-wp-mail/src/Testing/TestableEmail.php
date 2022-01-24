@@ -2,25 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Testing;
+namespace Snicco\Component\BetterWPMail\Testing;
 
-use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\Envelope;
-use Snicco\Mail\Contracts\ImmutableEmail;
+use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\Contracts\ImmutableEmail;
 
 final class TestableEmail implements ImmutableEmail
 {
     
     use InspectRecipients;
     
-    /**
-     * @var ImmutableEmail
-     */
-    private $mail;
-    /**
-     * @var Envelope
-     */
-    private $envelope;
+    private ImmutableEmail $mail;
+    private Envelope       $envelope;
     
     public function __construct(ImmutableEmail $mail, Envelope $envelope)
     {

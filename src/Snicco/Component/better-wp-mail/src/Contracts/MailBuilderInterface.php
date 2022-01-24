@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Contracts;
+namespace Snicco\Component\BetterWPMail\Contracts;
 
 use WP_User;
-use Snicco\Mail\Email;
+use Snicco\Component\BetterWPMail\Email;
 
 /**
  * @api
