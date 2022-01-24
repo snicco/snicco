@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\BetterWPMailBundle\integration;
 
+use Snicco\MailBundle\FrameworkMailEvents;
 use Tests\Codeception\shared\TestApp\TestApp;
 use Tests\BetterWPMailBundle\MailBundleTestCase;
-use Snicco\MailBundle\FrameworkMailEventDispatcher;
-use Snicco\Component\BetterWPMail\Contracts\Transport;
+use Snicco\Component\BetterWPMail\Event\MailEvents;
+use Snicco\Component\BetterWPMail\Transport\Transport;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
-use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
-use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\Contracts\MailBuilderInterface;
 
 class MailServiceProviderTest extends MaiLBundleTestCase
@@ -109,10 +109,10 @@ class MailServiceProviderTest extends MaiLBundleTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(
-            MailEventDispatcher::class,
-            $d = $this->app[MailEventDispatcher::class]
+            MailEvents::class,
+            $d = $this->app[MailEvents::class]
         );
-        $this->assertInstanceOf(FrameworkMailEventDispatcher::class, $d);
+        $this->assertInstanceOf(FrameworkMailEvents::class, $d);
     }
     
 }

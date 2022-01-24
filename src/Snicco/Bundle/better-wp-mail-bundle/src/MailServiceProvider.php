@@ -7,16 +7,16 @@ namespace Snicco\MailBundle;
 use Snicco\Component\Core\Utils\WP;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\BetterWPMail\Event\MailEvents;
 use Snicco\Component\Core\Contracts\ServiceProvider;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
-use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
-use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
+use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
+use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
-use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
 use Snicco\Component\BetterWPMail\Contracts\MailBuilderInterface;
 
 /**
@@ -65,7 +65,7 @@ class MailServiceProvider extends ServiceProvider
             return new Mailer(
                 $this->container[Mailer::class],
                 $this->container[MailRenderer::class],
-                $this->container[MailEventDispatcher::class],
+                $this->container[MailEvents::class],
                 $this->container[MailDefaults::class],
             );
         });
@@ -85,8 +85,8 @@ class MailServiceProvider extends ServiceProvider
     
     private function bindMailEventDispatcher()
     {
-        $this->container->singleton(MailEventDispatcher::class, function () {
-            return new FrameworkMailEventDispatcher(
+        $this->container->singleton(MailEvents::class, function () {
+            return new FrameworkMailEvents(
                 $this->container[EventDispatcher::class]
             );
         });

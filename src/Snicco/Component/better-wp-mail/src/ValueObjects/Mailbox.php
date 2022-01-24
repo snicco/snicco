@@ -20,7 +20,7 @@ use const FILTER_VALIDATE_EMAIL;
  *
  * @api
  */
-final class Address
+final class Mailbox
 {
     
     // @see https://regexr.com/69uh5
@@ -52,13 +52,13 @@ final class Address
     }
     
     /**
-     * @param  Address|string|WP_User|array<string,string>  $address
+     * @param  Mailbox|string|WP_User|array<string,string>  $address
      *
      * @throws InvalidArgumentException
      */
-    public static function create($address) :Address
+    public static function create($address) :Mailbox
     {
-        if ($address instanceof Address) {
+        if ($address instanceof Mailbox) {
             return $address;
         }
         
@@ -105,21 +105,21 @@ final class Address
         return new self($address->user_email, $name);
     }
     
-    public function getAddress() :string
+    public function address() :string
     {
         return $this->address;
     }
     
-    public function getName() :string
+    public function name() :string
     {
         return $this->name;
     }
     
     public function toString() :string
     {
-        return ($name = $this->getName())
-            ? ($name.' <'.$this->getAddress().'>')
-            : $this->getAddress();
+        return ($name = $this->name())
+            ? ($name.' <'.$this->address().'>')
+            : $this->address();
     }
     
     public function __toString()

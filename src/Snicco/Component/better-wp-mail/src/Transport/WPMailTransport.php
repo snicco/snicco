@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\Mailer;
+namespace Snicco\Component\BetterWPMail\Transport;
 
 use Closure;
 use WP_Error;
 use PHPMailer;
-use Snicco\Component\BetterWPMail\WP\ScopableWP;
+use Snicco\Component\BetterWPMail\ScopableWP;
 use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\Contracts\Transport;
 use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
-use Snicco\Component\BetterWPMail\Contracts\TransportException;
-use Snicco\Component\BetterWPMail\Exceptions\WPMailTransportException;
+use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
+use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
 
 use function trim;
 
@@ -30,7 +29,7 @@ final class WPMailTransport implements Transport
     }
     
     /**
-     * @throws WPMailTransportException
+     * @throws CantSendEmailWithWPMail
      */
     public function send(Email $email, Envelope $envelope) :void
     {
@@ -47,9 +46,9 @@ final class WPMailTransport implements Transport
         
         $reply_to = $this->stringifyAddresses($email->replyTo(), 'Reply-To:');
         
-        $ccs = $this->stringifyAddresses($email->getCc(), 'Cc:');
+        $ccs = $this->stringifyAddresses($email->cc(), 'Cc:');
         
-        $bcc = $this->stringifyAddresses($email->getBcc(), 'Bcc:');
+        $bcc = $this->stringifyAddresses($email->bcc(), 'Bcc:');
         
         if ($html = $email->htmlBody()) {
             $content_type = "Content-Type: text/html; charset={$email->htmlCharset()}";
@@ -65,7 +64,7 @@ final class WPMailTransport implements Transport
             $message = stream_get_contents($stream);
             fclose($stream);
             if ($message === false) {
-                throw new WPMailTransportException("Could not read from stream.");
+                throw new CantSendEmailWithWPMail("Could not read from stream.");
             }
         }
         
@@ -83,10 +82,10 @@ final class WPMailTransport implements Transport
             $success = $this->wp->mail($to, $email->subject(), $message, $headers, []);
             
             if (false === $success) {
-                throw new WPMailTransportException('Could not sent the mail with wp_mail().');
+                throw new CantSendEmailWithWPMail('Could not sent the mail with wp_mail().');
             }
         } catch (PHPMailer\PHPMailer\Exception $e) {
-            throw new WPMailTransportException("wp_mail() failure.", $e->getMessage(), $e);
+            throw new CantSendEmailWithWPMail("wp_mail() failure.", $e->getMessage(), $e);
         }
         finally {
             $this->resetPHPMailer();
@@ -96,14 +95,14 @@ final class WPMailTransport implements Transport
     }
     
     /**
-     * We want to throw a {@link TransportException} to confirm with the interface.
+     * We want to throw a {@link CantSendEmail} to confirm with the interface.
      * Throwing explicit exceptions we also allow a far better usage for clients since they would
      * have to create their own hook callbacks otherwise.
      */
     protected function handleFailure() :Closure
     {
         $closure = function (WP_Error $error) {
-            throw WPMailTransportException::becauseWPMailRaisedErrors($error);
+            throw CantSendEmailWithWPMail::becauseWPMailRaisedErrors($error);
         };
         
         $this->wp->addAction('wp_mail_failed', $closure, 99999, 1);
@@ -176,7 +175,7 @@ final class WPMailTransport implements Transport
     
     private function getTo(Email $email, Envelope $envelope) :array
     {
-        $merged = $email->getCc()->merge($email->getBcc());
+        $merged = $email->cc()->merge($email->bcc());
         
         $to = [];
         foreach ($envelope->recipients() as $recipient) {

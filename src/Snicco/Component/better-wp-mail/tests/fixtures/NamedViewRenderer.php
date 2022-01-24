@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Tests\fixtures;
 
-use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
+use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 
 class NamedViewRenderer implements MailRenderer
 {
@@ -14,9 +14,9 @@ class NamedViewRenderer implements MailRenderer
         return $template_name;
     }
     
-    public function supports(string $view, ?string $extension = null) :bool
+    public function supports(string $template_name, ?string $extension = null) :bool
     {
-        return $extension === 'php' || strpos($view, '.') !== false;
+        return $extension === 'php' || strpos($template_name, '.') !== false;
     }
     
 }

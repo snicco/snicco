@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\Contracts;
+namespace Snicco\Component\BetterWPMail\Exception;
 
-interface TransportException
+/**
+ * @api
+ */
+interface CantSendEmail
 {
     
     public function getDebugData() :string;

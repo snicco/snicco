@@ -8,7 +8,7 @@ use Snicco\Component\BetterWPMail\Email;
 use Snicco\Component\BetterWPMail\Mailer;
 use Tests\BetterWPMailBundle\MailBundleTestCase;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
-use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
 use Snicco\Component\BetterWPMail\Contracts\MailBuilderInterface;
 
 final class MailEventsTest extends MaiLBundleTestCase
@@ -45,7 +45,7 @@ final class MailEventsTest extends MaiLBundleTestCase
         $this->bootApp();
         
         $this->dispatcher->listen(TestMail::class, function (TestMail $mail) {
-            $mail->to(Address::create('marlon@web.de'));
+            $mail->to(Mailbox::create('marlon@web.de'));
         });
         
         $count = 0;

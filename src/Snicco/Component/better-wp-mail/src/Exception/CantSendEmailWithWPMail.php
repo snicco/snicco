@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\Exceptions;
+namespace Snicco\Component\BetterWPMail\Exception;
 
 use WP_Error;
 use Throwable;
 use RuntimeException;
-use Snicco\Component\BetterWPMail\Contracts\TransportException;
 
-final class WPMailTransportException extends RuntimeException implements TransportException
+/**
+ * @api
+ */
+final class CantSendEmailWithWPMail extends RuntimeException implements CantSendEmail
 {
     
-    /**
-     * @var string
-     */
-    private $debug_data;
+    private string $debug_data;
     
     public function __construct($message = "", string $debug_data = '', Throwable $previous = null)
     {
@@ -23,7 +22,7 @@ final class WPMailTransportException extends RuntimeException implements Transpo
         $this->debug_data = $debug_data;
     }
     
-    public static function becauseWPMailRaisedErrors(WP_Error $error) :WPMailTransportException
+    public static function becauseWPMailRaisedErrors(WP_Error $error) :CantSendEmailWithWPMail
     {
         $message = implode("\n", $error->get_error_messages('wp_mail_failed'));
         
@@ -40,7 +39,7 @@ final class WPMailTransportException extends RuntimeException implements Transpo
             }
         }
         
-        return new static(
+        return new self(
             "wp_mail() failure. Message: [$message]. Data: [$errors_as_string]",
             "Error Data: [$errors_as_string]."
         );

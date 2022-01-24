@@ -12,11 +12,14 @@ use function count;
 use function is_string;
 use function array_values;
 
-final class AddressList implements Countable, IteratorAggregate
+/**
+ * @api
+ */
+final class MailboxList implements Countable, IteratorAggregate
 {
     
     /**
-     * @var array<string,Address>
+     * @var array<string,Mailbox>
      */
     private array $addresses = [];
     
@@ -28,11 +31,11 @@ final class AddressList implements Countable, IteratorAggregate
     }
     
     /**
-     * @param  Address[]|AddressList  $list
+     * @param  Mailbox[]|MailboxList  $list
      *
-     * @return AddressList
+     * @return MailboxList
      */
-    public function merge($list) :AddressList
+    public function merge($list) :MailboxList
     {
         $new = clone $this;
         
@@ -48,7 +51,7 @@ final class AddressList implements Countable, IteratorAggregate
     }
     
     /**
-     * @return ArrayIterator|Address[]
+     * @return ArrayIterator|Mailbox[]
      */
     public function getIterator() :ArrayIterator
     {
@@ -56,20 +59,20 @@ final class AddressList implements Countable, IteratorAggregate
     }
     
     /**
-     * @param  string|Address  $address
+     * @param  string|Mailbox  $address
      *
      * @return bool
      */
     public function has($address) :bool
     {
-        $address = is_string($address) ? Address::create($address) : $address;
+        $address = is_string($address) ? Mailbox::create($address) : $address;
         
-        return isset($this->addresses[$address->getAddress()]);
+        return isset($this->addresses[$address->address()]);
     }
     
-    private function addAddress(Address $address)
+    private function addAddress(Mailbox $address)
     {
-        $email = $address->getAddress();
+        $email = $address->address();
         
         if (isset($this->addresses[$email])) {
             return;

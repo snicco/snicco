@@ -6,7 +6,7 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Component\BetterWPMail\ValueObjects\Address;
+use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
 use Snicco\Bundle\Testing\Concerns\InteractsWithWordpressUsers;
 
 final class AddressTest extends WPTestCase
@@ -17,15 +17,15 @@ final class AddressTest extends WPTestCase
     /** @test */
     public function test_from_string()
     {
-        $address = Address::create('calvin@web.de');
-        $this->assertSame('calvin@web.de', $address->getAddress());
+        $address = Mailbox::create('calvin@web.de');
+        $this->assertSame('calvin@web.de', $address->address());
         $this->assertSame('calvin@web.de', $address->toString());
-        $this->assertSame('', $address->getName());
+        $this->assertSame('', $address->name());
         
-        $address = Address::create('Calvin Alkan <calvin@web.de>');
-        $this->assertSame('calvin@web.de', $address->getAddress());
+        $address = Mailbox::create('Calvin Alkan <calvin@web.de>');
+        $this->assertSame('calvin@web.de', $address->address());
         $this->assertSame('Calvin Alkan <calvin@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan', $address->getName());
+        $this->assertSame('Calvin Alkan', $address->name());
     }
     
     /** @test */
@@ -33,7 +33,7 @@ final class AddressTest extends WPTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[calvin@webde] is not a valid email');
-        $address = Address::create('calvin@webde');
+        $address = Mailbox::create('calvin@webde');
     }
     
     /** @test */
@@ -41,30 +41,30 @@ final class AddressTest extends WPTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[Calvin <calvin@webde] is not a valid address');
-        $address = Address::create('Calvin <calvin@webde');
+        $address = Mailbox::create('Calvin <calvin@webde');
     }
     
     /** @test */
     public function test_from_array_with_names_keys()
     {
-        $address = Address::create(['name' => 'Calvin Alkan', 'email' => 'c@web.de']);
-        $this->assertSame('c@web.de', $address->getAddress());
+        $address = Mailbox::create(['name' => 'Calvin Alkan', 'email' => 'c@web.de']);
+        $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan', $address->getName());
+        $this->assertSame('Calvin Alkan', $address->name());
         
-        $address = Address::create(['email' => 'c@web.de', 'name' => 'Calvin Alkan',]);
-        $this->assertSame('c@web.de', $address->getAddress());
+        $address = Mailbox::create(['email' => 'c@web.de', 'name' => 'Calvin Alkan',]);
+        $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan', $address->getName());
+        $this->assertSame('Calvin Alkan', $address->name());
     }
     
     /** @test */
     public function test_from_array_with_numerical_keys()
     {
-        $address = Address::create(['c@web.de', 'Calvin Alkan']);
-        $this->assertSame('c@web.de', $address->getAddress());
+        $address = Mailbox::create(['c@web.de', 'Calvin Alkan']);
+        $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan', $address->getName());
+        $this->assertSame('Calvin Alkan', $address->name());
     }
     
     /** @test */
@@ -73,7 +73,7 @@ final class AddressTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[calvin alkan] is not a valid email.');
         
-        $address = Address::create(['Calvin Alkan', 'c@web.de']);
+        $address = Mailbox::create(['Calvin Alkan', 'c@web.de']);
     }
     
     /** @test */
@@ -85,22 +85,22 @@ final class AddressTest extends WPTestCase
             'user_email' => 'c@web.de',
         ]);
         
-        $address = Address::create($admin);
+        $address = Mailbox::create($admin);
         
-        $this->assertSame('c@web.de', $address->getAddress());
+        $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan', $address->getName());
+        $this->assertSame('Calvin Alkan', $address->name());
         
         $admin = $this->createAdmin([
             'first_name' => 'Marlon',
             'user_email' => 'm@web.de',
         ]);
         
-        $address = Address::create($admin);
+        $address = Mailbox::create($admin);
         
-        $this->assertSame('m@web.de', $address->getAddress());
+        $this->assertSame('m@web.de', $address->address());
         $this->assertSame('Marlon <m@web.de>', $address->toString());
-        $this->assertSame('Marlon', $address->getName());
+        $this->assertSame('Marlon', $address->name());
     }
     
     /** @test */
@@ -111,11 +111,11 @@ final class AddressTest extends WPTestCase
             'user_email' => 'c@web.de',
         ]);
         
-        $address = Address::create($admin);
+        $address = Mailbox::create($admin);
         
-        $this->assertSame('c@web.de', $address->getAddress());
+        $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan', $address->getName());
+        $this->assertSame('Calvin Alkan', $address->name());
     }
     
     /** @test */
@@ -126,7 +126,7 @@ final class AddressTest extends WPTestCase
             '$address has to be string,array or an instance of WP_User. Got [integer].'
         );
         
-        $address = Address::create(1);
+        $address = Mailbox::create(1);
     }
     
 }

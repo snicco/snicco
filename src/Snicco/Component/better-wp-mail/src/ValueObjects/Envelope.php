@@ -21,17 +21,17 @@ use InvalidArgumentException;
 final class Envelope
 {
     
-    private Address     $sender;
-    private AddressList $recipients;
+    private Mailbox     $sender;
+    private MailboxList $recipients;
     
-    public function __construct(Address $sender, AddressList $recipients)
+    public function __construct(Mailbox $sender, MailboxList $recipients)
     {
         // to ensure deliverability of bounce emails independent of UTF-8 capabilities of SMTP servers
-        if ( ! preg_match('/^[^@\x80-\xFF]++@/', $sender->getAddress())) {
+        if ( ! preg_match('/^[^@\x80-\xFF]++@/', $sender->address())) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid sender "%s": non-ASCII characters not supported in local-part of email.',
-                    $sender->getAddress()
+                    $sender->address()
                 )
             );
         }
@@ -44,12 +44,12 @@ final class Envelope
         $this->recipients = $recipients;
     }
     
-    public function sender() :Address
+    public function sender() :Mailbox
     {
         return $this->sender;
     }
     
-    public function recipients() :AddressList
+    public function recipients() :MailboxList
     {
         return $this->recipients;
     }

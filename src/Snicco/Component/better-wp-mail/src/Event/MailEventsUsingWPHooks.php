@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\WP;
+namespace Snicco\Component\BetterWPMail\Event;
 
-use Snicco\Component\BetterWPMail\Event\EmailWasSent;
-use Snicco\Component\BetterWPMail\Event\SendingEmail;
-use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
+use Snicco\Component\BetterWPMail\ScopableWP;
 
 use function get_class;
 
-final class MailDispatcherUsingHooks implements MailEventDispatcher
+/**
+ * @api
+ */
+final class MailEventsUsingWPHooks implements MailEvents
 {
     
     private ScopableWP $wp;

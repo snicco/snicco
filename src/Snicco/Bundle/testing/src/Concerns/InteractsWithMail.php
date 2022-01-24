@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Testing\Concerns;
 
-use Snicco\Component\BetterWPMail\Contracts\Transport;
+use Snicco\Component\BetterWPMail\Transport\Transport;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 
 trait InteractsWithMail
