@@ -20,7 +20,7 @@ final class EmailTest extends WPTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->attachment_dir = dirname(__DIR__).'/fixtures';
+        $this->attachment_dir = dirname(__DIR__, 2).'/fixtures';
     }
     
     /** @test */

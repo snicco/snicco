@@ -12,6 +12,6 @@ interface MailEventDispatcher
     
     public function fireSending(SendingEmail $sending_email) :void;
     
-    public function fireSent(EmailWasSent $mail_sent) :void;
+    public function fireSent(EmailWasSent $email_was_sent) :void;
     
 }

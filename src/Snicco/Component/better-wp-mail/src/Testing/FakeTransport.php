@@ -7,29 +7,39 @@ namespace Snicco\Component\BetterWPMail\Testing;
 use Closure;
 use WP_User;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Snicco\Component\BetterWPMail\WP\ScopableWP;
+use Snicco\Component\BetterWPMail\ValueObjects\Email;
 use Snicco\Component\BetterWPMail\Contracts\Transport;
 use Snicco\Component\BetterWPMail\ValueObjects\Address;
 use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
-use Snicco\Component\BetterWPMail\Contracts\ImmutableEmail;
+use Snicco\Component\BetterWPMail\ValueObjects\AddressList;
 
-use function add_filter;
+use function count;
+use function sprintf;
 
 final class FakeTransport implements Transport
 {
+    
+    private ScopableWP $wp;
     
     /**
      * @var array<string,<array>
      */
     private $sent_mails;
     
-    public function send(ImmutableEmail $email, Envelope $envelope) :void
+    public function __construct(ScopableWP $wp = null)
+    {
+        $this->wp = $wp ?? new ScopableWP();
+    }
+    
+    public function send(Email $email, Envelope $envelope) :void
     {
         $this->recordMail($email, $envelope);
     }
     
     public function interceptWordPressEmails()
     {
-        add_filter('pre_wp_mail', function ($null, $attributes) {
+        $this->wp->addFilter('pre_wp_mail', function ($null, $attributes) {
             $this->recordWPMail($attributes);
             
             return false;
@@ -41,67 +51,84 @@ final class FakeTransport implements Transport
         $this->sent_mails = [];
     }
     
-    public function assertSent(string $mailable_class, ?Closure $closure = null)
+    public function assertSent(string $email_class, ?Closure $closure = null)
     {
         PHPUnit::assertTrue(
-            $this->wasSent($mailable_class),
-            "No mailable of type [$mailable_class] sent."
+            $this->wasSent($email_class),
+            sprintf('No email of type [%s] was sent.', $email_class),
         );
         
         if ($closure) {
-            $sent = $this->getSent($mailable_class, $closure);
-            
-            $count = count($this->sent_mails[$mailable_class]);
+            $matching = $this->sentEmailsThatMatchCondition($email_class, $closure);
+            $count = count($this->sent_mails[$email_class]);
             
             PHPUnit::assertNotEmpty(
-                $sent,
-                "The mailable [$mailable_class] was sent [$count] time[s] but none matched the passed condition."
+                $matching,
+                sprintf(
+                    'The email [%s] was sent [%s] time[s] but no email matched the provided condition.',
+                    $email_class,
+                    $count
+                )
+            );
+            
+            PHPUnit::assertSame(
+                1,
+                count($matching),
+                sprintf(
+                    '[%d] emails were sent that match the provided condition.',
+                    count($matching)
+                )
             );
         }
     }
     
-    public function assertNotSent(string $mailable_class)
+    public function assertNotSent(string $email_class)
     {
-        PHPUnit::assertFalse(
-            $this->wasSent($mailable_class),
-            "A mailable of type [$mailable_class] sent."
+        $times = count($this->sentEmailsThatMatchCondition($email_class, fn() => true));
+        
+        PHPUnit::assertSame(
+            0,
+            $times,
+            sprintf(
+                "Email of type [%s] was sent [%d] %s.",
+                $email_class,
+                $times,
+                $times > 1 ? 'times' : 'time'
+            )
         );
     }
     
     public function assertSentTimes(string $mailable_class, int $expected)
     {
-        $this->assertSent($mailable_class);
-        $count = count($this->sent_mails[$mailable_class]);
+        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn() => true));
+        
         PHPUnit::assertSame(
             $expected,
-            $count,
-            "The mailable [$mailable_class] was sent [$count] time[s]."
+            $times,
+            sprintf(
+                'Email of type [%s] was sent [%d] %s. Expected [%d] %s.',
+                $mailable_class,
+                $times,
+                $times > 1 ? 'times' : 'time',
+                $expected,
+                $expected > 1 ? 'times' : 'time'
+            )
         );
     }
     
     /**
      * @param  string|WP_User|array<string,<string>  $recipient
-     * @param  string  $mailable_class
+     * @param  string  $email_class
      */
-    public function assertSentTo($recipient, string $mailable_class)
+    public function assertSentTo($recipient, string $email_class)
     {
-        $expected_recipient = Address::create($recipient)->toString();
+        $expected_recipient = Address::create($recipient);
         
-        PHPUnit::assertTrue(
-            $this->wasSentTo($mailable_class, $expected_recipient),
-            "No mailable of type [".$mailable_class."] was sent to [$expected_recipient]."
-        );
-    }
-    
-    /**
-     * @param  string|WP_User|array<string,<string>  $recipient
-     */
-    public function assertSentToExact($recipient, string $mailable_class)
-    {
-        $expected_recipient = Address::create($recipient)->toString();
-        PHPUnit::assertTrue(
-            $this->wasSentTo($mailable_class, $expected_recipient, false),
-            'No mailable of type ['.$mailable_class."] was sent to [$expected_recipient]."
+        $this->assertSent(
+            $email_class,
+            function (Email $email, Envelope $envelope) use ($expected_recipient) {
+                return $envelope->recipients()->has($expected_recipient);
+            }
         );
     }
     
@@ -110,10 +137,26 @@ final class FakeTransport implements Transport
      */
     public function assertNotSentTo($recipient, string $mailable_class)
     {
-        $expected_recipient = Address::create($recipient)->toString();
-        PHPUnit::assertFalse(
-            $this->wasSentTo($mailable_class, $expected_recipient),
-            'A mailable of type ['.$mailable_class."] was sent to [$expected_recipient]."
+        $expected_recipient = Address::create($recipient);
+        $matching = $this->sentEmailsThatMatchCondition(
+            $mailable_class,
+            function (Email $email, Envelope $envelope) use ($expected_recipient) {
+                return $envelope->recipients()->has($expected_recipient);
+            }
+        );
+        
+        $count = count($matching);
+        PHPUnit::assertSame(
+            0,
+            $count,
+            sprintf(
+                "[%d] %s of type [%s] %s sent to recipient [%s].",
+                $count,
+                $count > 1 ? 'emails' : 'email',
+                $mailable_class,
+                $count > 1 ? 'were' : 'was',
+                $expected_recipient->toString()
+            )
         );
     }
     
@@ -123,52 +166,22 @@ final class FakeTransport implements Transport
     }
     
     /**
-     * @param  string  $mailable_class
+     * @param  string  $email_class
      * @param  Closure  $condition
      *
-     * @return TestableEmail[]
+     * @return Email[]
      */
-    private function getSent(string $mailable_class, Closure $condition) :array
+    private function sentEmailsThatMatchCondition(string $email_class, Closure $condition) :array
     {
         $matching = [];
         
-        foreach ($this->sent_mails[$mailable_class] as $mail_data) {
-            $testable_mail = $this->getTestableMail($mail_data);
-            
-            if ($condition($testable_mail) === true) {
-                $matching[] = $testable_mail;
+        foreach ($this->sent_mails[$email_class] ?? [] as $mail_data) {
+            if ($condition($mail_data['email'], $mail_data['envelope']) === true) {
+                $matching[] = $mail_data['email'];
             }
         }
         
         return $matching;
-    }
-    
-    private function getTestableMail(array $data)
-    {
-        $email = $data['email'];
-        
-        if ($email instanceof WordPressMail) {
-            return $email;
-        }
-        
-        return new TestableEmail($email, $data['envelope']);
-    }
-    
-    private function wasSentTo(string $mailable_class, $recipient, bool $email_only = true) :bool
-    {
-        if ( ! $this->wasSent($mailable_class)) {
-            return false;
-        }
-        
-        foreach ($this->sent_mails[$mailable_class] as $data) {
-            $testable_mail = $this->getTestableMail($data);
-            
-            if ($testable_mail->hasTo($recipient, $email_only)) {
-                return true;
-            }
-        }
-        
-        return false;
     }
     
     private function recordMail($email, Envelope $envelope)
@@ -193,12 +206,12 @@ final class FakeTransport implements Transport
         $blind_carbon_copies = [];
         
         $reply_to = [];
-        $attachments = [];
-        $sitename = wp_parse_url(network_home_url(), PHP_URL_HOST);
-        if ('www.' === substr($sitename, 0, 4)) {
-            $sitename = substr($sitename, 4);
+        $attachments = $attributes['attachments'] ?? [];
+        $site_name = wp_parse_url($this->wp->siteUrl(), PHP_URL_HOST);
+        if ('www.' === substr($site_name, 0, 4)) {
+            $site_name = substr($site_name, 4);
         }
-        $from = 'wordpress@'.$sitename;
+        $from = 'wordpress@'.$site_name;
         
         foreach (($headers) as $header) {
             if (strpos($header, 'Cc:') !== false) {
@@ -220,24 +233,37 @@ final class FakeTransport implements Transport
             }
         }
         
-        $from = apply_filters('wp_mail_from', $from);
+        $from = $this->wp->applyFilters('wp_mail_from', $from);
         $from = Address::create($from);
         
-        $recipients = array_merge($to, $carbon_copies, $blind_carbon_copies);
+        $wp_mail = new WPMail();
         
-        $this->recordMail(
-            new WordPressMail(
-                $attributes['subject'],
-                $attributes['message'],
-                $to,
-                $carbon_copies,
-                $blind_carbon_copies,
-                [$from],
-                $reply_to,
-                $attachments
-            ),
-            new Envelope($from, ...$recipients)
-        );
+        $wp_mail = $wp_mail->withTo($to)
+                           ->withSubject($attributes['subject'])
+                           ->withHtmlBody($attributes['message'])
+                           ->withFrom($from);
+        
+        $recipients = new AddressList($to);
+        
+        if (count($carbon_copies)) {
+            $wp_mail = $wp_mail->withCc($carbon_copies);
+            $recipients = $recipients->merge($carbon_copies);
+        }
+        if (count($blind_carbon_copies)) {
+            $wp_mail = $wp_mail->withBcc($blind_carbon_copies);
+            $recipients = $recipients->merge($blind_carbon_copies);
+        }
+        if (count($reply_to)) {
+            $wp_mail = $wp_mail->withReplyTo($reply_to);
+        }
+        
+        foreach ($attachments as $attachment) {
+            $wp_mail->withAttachment(
+                $attachment
+            );
+        }
+        
+        $this->recordMail($wp_mail, new Envelope($from, $recipients));
     }
     
 }

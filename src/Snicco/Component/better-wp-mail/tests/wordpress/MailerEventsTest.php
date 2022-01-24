@@ -7,15 +7,16 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 use MockPHPMailer;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPMail\Mailer;
+use Snicco\Component\BetterWPMail\WP\ScopableWP;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
-use Snicco\Component\BetterWPMail\ValueObjects\Address;
 use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
+use Snicco\Component\BetterWPMail\WP\MailDispatcherUsingHooks;
 use Snicco\Component\BetterWPMail\Contracts\MailEventDispatcher;
-use Snicco\Component\BetterWPMail\Tests\fixtures\Emails\WelcomeEmail;
+use Snicco\Component\BetterWPMail\Tests\fixtures\Email\WelcomeEmail;
 
-final class MailBuilderEventsTest extends WPTestCase
+final class MailerEventsTest extends WPTestCase
 {
     
     protected function setUp() :void
@@ -32,49 +33,58 @@ final class MailBuilderEventsTest extends WPTestCase
     {
         $count = 0;
         
-        add_filter(WelcomeEmail::class, function (WelcomeEmail $email) use (&$count) {
-            $count++;
-        });
+        add_filter(
+            WelcomeEmail::class,
+            function (SendingEmail $email) use (&$count) {
+                $count++;
+            }
+        );
         
-        $mail_builder = new Mailer(
+        $mailer = new Mailer(
             new WPMailTransport(),
             new FilesystemRenderer(),
             $this->getEventDispatcher()
         );
         
-        $mail_builder->to(['c@web.de', 'Calvin Alkan'])->send(new WelcomeEmail());
+        $email = (new WelcomeEmail())->withTo(
+            'c@web.de'
+        );
+        
+        $mailer->send($email);
         
         $this->assertSame(1, $count, "Message event not fired.");
         
         $data = $this->getSentMails()[0];
         $header = $data['header'];
         
-        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
+        $this->assertStringContainsString('To: c@web.de', $header);
     }
     
     /** @test */
     public function the_mail_can_be_customized()
     {
-        add_filter(WelcomeEmail::class, function (WelcomeEmail $email) {
-            $email->to(Address::create('Marlon Alkan <m@web.de>'));
-            $email->html('<h1>Custom Html</h1>');
-        });
+        add_filter(
+            WelcomeEmail::class,
+            function (SendingEmail $event) {
+                $event->email = $event->email->withHtmlBody('Custom Html');
+            }
+        );
         
-        $mail_builder = new Mailer(
+        $mailer = new Mailer(
             new WPMailTransport(),
             new FilesystemRenderer(),
             $this->getEventDispatcher()
         );
         
-        $mail_builder->to(['c@web.de', 'Calvin Alkan'])->send(new WelcomeEmail());
+        $email = (new WelcomeEmail())->withTo(
+            'c@web.de'
+        )->withHtmlBody('foo');
+        $mailer->send($email);
         
         $data = $this->getSentMails()[0];
         $header = $data['header'];
         
-        $this->assertStringContainsString('<h1>Custom Html</h1>', $data['body']);
-        $this->assertStringContainsString('To: Marlon Alkan <m@web.de>', $header);
-        
-        $this->assertStringNotContainsString('Calvin Alkan', $header);
+        $this->assertStringContainsString('Custom Html', $data['body']);
     }
     
     /** @test */
@@ -82,16 +92,20 @@ final class MailBuilderEventsTest extends WPTestCase
     {
         $count = 0;
         add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count) {
+            $this->assertSame('foo', $sent_email->email()->htmlBody());
             $count++;
         });
         
-        $mail_builder = new Mailer(
+        $mailer = new Mailer(
             new WPMailTransport(),
             new FilesystemRenderer(),
             $this->getEventDispatcher()
         );
         
-        $mail_builder->to(['c@web.de', 'Calvin Alkan'])->send(new WelcomeEmail());
+        $email = (new WelcomeEmail())->withTo(
+            'Calvin Alkan <c@web.de>'
+        )->withHtmlBody('foo');
+        $mailer->send($email);
         
         $this->assertSame(1, $count, 'Message event not fired.');
         
@@ -101,9 +115,9 @@ final class MailBuilderEventsTest extends WPTestCase
         $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
     }
     
-    private function getEventDispatcher() :TestDispatcher
+    private function getEventDispatcher() :MailEventDispatcher
     {
-        return new TestDispatcher();
+        return new MailDispatcherUsingHooks(new ScopableWP());
     }
     
     private function getSentMails() :array
@@ -114,17 +128,3 @@ final class MailBuilderEventsTest extends WPTestCase
     
 }
 
-class TestDispatcher implements MailEventDispatcher
-{
-    
-    public function fireSending(SendingEmail $sending_email) :void
-    {
-        do_action(get_class($sending_email->email), $sending_email->email);
-    }
-    
-    public function fireSent(EmailWasSent $sent_email) :void
-    {
-        do_action(EmailWasSent::class, $sent_email);
-    }
-    
-}
