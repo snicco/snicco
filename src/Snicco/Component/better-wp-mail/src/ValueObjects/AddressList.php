@@ -62,9 +62,9 @@ final class AddressList implements Countable, IteratorAggregate
      */
     public function has($address) :bool
     {
-        $email = is_string($address) ? $address : $address->getAddress();
+        $address = is_string($address) ? Address::create($address) : $address;
         
-        return isset($this->addresses[$email]);
+        return isset($this->addresses[$address->getAddress()]);
     }
     
     private function addAddress(Address $address)

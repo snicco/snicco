@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail;
+namespace Snicco\Component\BetterWPMail\WP;
 
 use function wp_mail;
 use function get_bloginfo;
 use function remove_filter;
+use function network_home_url;
 
 final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
@@ -29,6 +30,11 @@ final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
     public function siteName() :string
     {
         return $this->applyFilters('wp_mail_from_name', get_bloginfo('name'));
+    }
+    
+    public function siteUrl() :string
+    {
+        return network_home_url();
     }
     
 }

@@ -16,7 +16,7 @@ final class NullDispatcher implements MailEventDispatcher
         // Do nothing
     }
     
-    public function fireSent(EmailWasSent $sent_email) :void
+    public function fireSent(EmailWasSent $email_was_sent) :void
     {
         // Do nothing
     }

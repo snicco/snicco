@@ -10,12 +10,12 @@ use LogicException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\Contracts\MailRenderer;
 use Snicco\Component\BetterWPMail\Mailer\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
 use Snicco\Bundle\Testing\Concerns\InteractsWithWordpressUsers;
+use Snicco\Component\BetterWPMail\Tests\fixtures\NamedViewRenderer;
 use Snicco\Component\BetterWPMail\Exceptions\MailRenderingException;
 use Snicco\Component\BetterWPMail\Exceptions\WPMailTransportException;
 
@@ -121,9 +121,15 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = (new TestMail())->withTo('client@web.de')
-                                 ->withReplyTo('Calvin Alkan <c@web.de>')
-                                 ->withReplyTo('Marlon Alkan <m@web.de>');
+        $email = (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+            'client@web.de'
+        )
+                                                                                     ->withReplyTo(
+                                                                                         'Calvin Alkan <c@web.de>'
+                                                                                     )
+                                                                                     ->withReplyTo(
+                                                                                         'Marlon Alkan <m@web.de>'
+                                                                                     );
         
         $mailer->send($email);
         
@@ -142,9 +148,15 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>')
-                                 ->withSubject('Hello')
-                                 ->withTextBody('PLAIN_TEXT');
+        $email = (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+            'Calvin Alkan <c@web.de>'
+        )
+                                                                                     ->withSubject(
+                                                                                         'Hello'
+                                                                                     )
+                                                                                     ->withTextBody(
+                                                                                         'PLAIN_TEXT'
+                                                                                     );
         
         $mailer->send($email);
         
@@ -164,9 +176,16 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>')
-                                 ->withSubject('Hello')
-                                 ->withTextTemplate($this->fixtures_dir.'/plain-text-mail.txt');
+        $email = (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+            'Calvin Alkan <c@web.de>'
+        )
+                                                                                     ->withSubject(
+                                                                                         'Hello'
+                                                                                     )
+                                                                                     ->withTextTemplate(
+                                                                                         $this->fixtures_dir
+                                                                                         .'/plain-text-mail.txt'
+                                                                                     );
         
         $mailer->send($email);
         
@@ -247,7 +266,11 @@ final class MailerTest extends WPTestCase
         
         $mailer = new Mailer();
         
-        $mailer->send((new TestMail())->withTo('calvin@web.de'));
+        $mailer->send(
+            (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+                'calvin@web.de'
+            )
+        );
         
         $header = $this->getSentMails()[0]['header'];
         
@@ -293,8 +316,6 @@ final class MailerTest extends WPTestCase
         
         $first_email = $this->getSentMails()[0];
         
-        $header = $first_email['header'];
-        
         $this->assertStringContainsString(
             'Content-Type: text/html; charset=us-ascii',
             $first_email['body']
@@ -310,7 +331,7 @@ final class MailerTest extends WPTestCase
         $admin1 = $this->createAdmin(['user_email' => 'admin1@web.de', 'display_name' => 'admin1']);
         $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
         
-        $email = new TestMail();
+        $email = new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail();
         
         $mailer->send($email->withTo([$admin1, $admin2]));
         
@@ -427,7 +448,11 @@ final class MailerTest extends WPTestCase
         try {
             $mailer = new Mailer();
             
-            $mailer->send((new TestMail())->withTo('calvin@web.de'));
+            $mailer->send(
+                (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+                    'calvin@web.de'
+                )
+            );
             
             $this->fail('No exception thrown.');
         } catch (WPMailTransportException $e) {
@@ -458,7 +483,11 @@ final class MailerTest extends WPTestCase
         
         try {
             $mailer = new Mailer();
-            $mailer->send((new TestMail())->withTo('calvin@web.de'));
+            $mailer->send(
+                (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+                    'calvin@web.de'
+                )
+            );
             $this->fail('No exception thrown.');
         } catch (WPMailTransportException $e) {
             $this->assertSame('', $phpmailer->AltBody);
@@ -470,7 +499,11 @@ final class MailerTest extends WPTestCase
     public function the_priority_is_reset()
     {
         $mailer = new Mailer();
-        $mailer->send((new TestMail())->withTo('calvin@web.de')->withPriority(5));
+        $mailer->send(
+            (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTo(
+                'calvin@web.de'
+            )->withPriority(5)
+        );
         
         $mail = $this->getSentMails()[0];
         
@@ -485,8 +518,14 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = (new TestMail())->withHtmlBody('<h1>ÜÜ</h1>')
-                                 ->withTextBody('öö')->withTo('calvin@web.de');
+        $email = (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withHtmlBody(
+            '<h1>ÜÜ</h1>'
+        )
+                                                                                     ->withTextBody(
+                                                                                         'öö'
+                                                                                     )->withTo(
+                'calvin@web.de'
+            );
         
         $mailer->send($email);
         
@@ -520,8 +559,14 @@ final class MailerTest extends WPTestCase
     public function all_filters_are_unhooked_after_sending_a_mail()
     {
         $mailer = new Mailer();
-        $email = (new TestMail())->withHtmlBody('<h1>ÜÜ</h1>')
-                                 ->withTextBody('öö')->withTo('calvin@web.de');
+        $email = (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withHtmlBody(
+            '<h1>ÜÜ</h1>'
+        )
+                                                                                     ->withTextBody(
+                                                                                         'öö'
+                                                                                     )->withTo(
+                'calvin@web.de'
+            );
         $mailer->send($email);
         
         wp_mail('marlon@web.de', 'foo', '<h1>bar</h1>', ['Content-Type: text/plain; charset=utf-8']
@@ -547,7 +592,7 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = new TestMail();
+        $email = new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail();
         $email = $email->withTo('c@web.de')
                        ->withTextBody('öö')
                        ->withHtmlBody('<h1>ÜÜ</h1>')
@@ -582,7 +627,7 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = new TestMail();
+        $email = new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail();
         $email = $email->withTo('c@web.de')
                        ->withTextBody('öö')
                        ->withHtmlBody('<h1>ÜÜ</h1>')
@@ -619,7 +664,7 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = new TestMail();
+        $email = new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail();
         $email = $email->withTo('c@web.de')
                        ->withTextBody('öö')
                        ->withHtmlBody('<h1>ÜÜ</h1>')
@@ -657,7 +702,7 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = new TestMail();
+        $email = new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail();
         $email = $email->withTo('c@web.de')
                        ->withTextBody('öö')
                        ->withHtmlBody('<h1>ÜÜ</h1>')
@@ -695,7 +740,7 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = new TestMail();
+        $email = new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail();
         $email = $email->withTo('c@web.de')
                        ->withTextBody('öö')
                        ->withHtmlBody('<h1>ÜÜ</h1>')
@@ -745,13 +790,20 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
         
-        $email = (new TestMail())->withTextBody('öö')
-                                 ->withEmbed(
-                                     $this->fixtures_dir.'/php-elephant.jpg',
-                                     'php-elephant-inline'
-                                 )
-                                 ->withHtmlTemplate($this->fixtures_dir.'/inline-attachment.php')
-                                 ->withTo('c@web.de');
+        $email =
+            (new \Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail())->withTextBody('öö')
+                                                                                ->withEmbed(
+                                                                                    $this->fixtures_dir
+                                                                                    .'/php-elephant.jpg',
+                                                                                    'php-elephant-inline'
+                                                                                )
+                                                                                ->withHtmlTemplate(
+                                                                                    $this->fixtures_dir
+                                                                                    .'/inline-attachment.php'
+                                                                                )
+                                                                                ->withTo(
+                                                                                    'c@web.de'
+                                                                                );
         
         $first_attachment = $email->attachments()[0];
         
@@ -794,31 +846,3 @@ final class MailerTest extends WPTestCase
     
 }
 
-class TestMail extends Email
-{
-    
-    protected string $subject = 'foo';
-    protected string $text    = 'bar';
-    
-}
-
-class NamedViewRenderer implements MailRenderer
-{
-    
-    public function getMailContent(string $template_name, array $context = []) :string
-    {
-        return $template_name;
-    }
-    
-    public function supports(string $view, ?string $extension = null) :bool
-    {
-        if (isset($GLOBALS['renderer_called_times'])) {
-            $val = $GLOBALS['renderer_called_times'];
-            $val++;
-            $GLOBALS['renderer_called_times'] = $val;
-        }
-        
-        return $extension === 'php' || strpos($view, '.') !== false;
-    }
-    
-}

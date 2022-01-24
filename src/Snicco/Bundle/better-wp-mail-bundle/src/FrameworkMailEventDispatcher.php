@@ -27,9 +27,9 @@ final class FrameworkMailEventDispatcher implements MailEventDispatcher
         $this->dispatcher->dispatch(get_class($sending_email->email), $sending_email->email);
     }
     
-    public function fireSent(EmailWasSent $mail_sent) :void
+    public function fireSent(EmailWasSent $mail_mail_sent) :void
     {
-        $this->dispatcher->dispatch($mail_sent);
+        $this->dispatcher->dispatch($mail_mail_sent);
     }
     
 }

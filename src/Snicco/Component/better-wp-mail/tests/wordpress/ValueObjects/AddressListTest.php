@@ -49,4 +49,19 @@ final class AddressListTest extends WPTestCase
         $this->assertSame(1, $count);
     }
     
+    /** @test */
+    public function test_has()
+    {
+        $address1 = Address::create('calvin@web.de');
+        $address2 = Address::create('marlon@web.de');
+        
+        $list = new AddressList([$address1, $address2]);
+        $this->assertTrue($list->has('calvin@web.de'));
+        $this->assertTrue($list->has('marlon@web.de'));
+        $this->assertFalse($list->has('john@web.de'));
+        
+        $this->assertTrue($list->has('Calvin Alkan <calvin@web.de>'));
+        $this->assertTrue($list->has(Address::create('calvin@web.de')));
+    }
+    
 }

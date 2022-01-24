@@ -41,9 +41,9 @@ final class Mailer
         ?MailDefaults $default_config = null
     ) {
         $this->transport = $transport ?? new WPMailTransport();
+        $this->mail_renderer = $mail_renderer ?? new AggregateRenderer(new FilesystemRenderer());
         $this->event_dispatcher = $event_dispatcher ?? new NullDispatcher();
         $this->default_config = $default_config ?? MailDefaults::fromWordPressSettings();
-        $this->mail_renderer = $mail_renderer ?? new AggregateRenderer(new FilesystemRenderer());
     }
     
     /**
@@ -113,7 +113,7 @@ final class Mailer
     // listeners that might fire later.
     private function fireSentEvent(Email $email, Envelope $envelope)
     {
-        $this->event_dispatcher->fireSent(new EmailWasSent(clone $email, clone $envelope));
+        $this->event_dispatcher->fireSent(new EmailWasSent($email, $envelope));
     }
     
     private function prepare(Email $mail) :Email

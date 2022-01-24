@@ -105,22 +105,6 @@ final class Address
         return new self($address->user_email, $name);
     }
     
-    /**
-     * @param  array<array<string,string>>|WP_User[]  $addresses
-     *
-     * @return Address[]
-     * @throws InvalidArgumentException
-     */
-    public static function createFromArray(array $addresses) :array
-    {
-        $a = [];
-        foreach ($addresses as $address) {
-            $a[] = self::create($address);
-        }
-        
-        return $a;
-    }
-    
     public function getAddress() :string
     {
         return $this->address;

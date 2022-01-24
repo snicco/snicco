@@ -7,7 +7,7 @@ namespace Snicco\Component\BetterWPMail\Mailer;
 use Closure;
 use WP_Error;
 use PHPMailer;
-use Snicco\Component\BetterWPMail\ScopableWP;
+use Snicco\Component\BetterWPMail\WP\ScopableWP;
 use Snicco\Component\BetterWPMail\ValueObjects\Email;
 use Snicco\Component\BetterWPMail\Contracts\Transport;
 use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
