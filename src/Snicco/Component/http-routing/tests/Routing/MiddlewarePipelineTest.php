@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Throwable;
+use Exception;
 use Psr\Log\LogLevel;
 use Nyholm\Psr7\Stream;
 use Nyholm\Psr7\Response;
@@ -279,7 +280,7 @@ class MiddlewarePipelineTest extends RoutingTestCase
     
 }
 
-class PipelineTestExceptionHandler implements ExceptionHandler
+class PipelineTestExceptionHandler
 {
     
     use CreateTestPsr17Factories;
@@ -335,7 +336,7 @@ class ThrowsExceptionMiddleware implements MiddlewareInterface
     
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
     {
-        throw new HttpException(404, 'Error Message');
+        throw new Exception(404, 'Error Message');
     }
     
 }

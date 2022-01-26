@@ -36,7 +36,7 @@ final class MiddlewarePipeline
     private Closure $request_handler;
     private bool    $exhausted  = false;
     
-    public function __construct(MiddlewareFactory $middleware_factory, ExceptionHandler $error_handler)
+    public function __construct(MiddlewareFactory $middleware_factory, $error_handler)
     {
         $this->middleware_factory = $middleware_factory;
         $this->error_handler = $error_handler;

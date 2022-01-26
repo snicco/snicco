@@ -18,7 +18,7 @@ trait CreateUrlGenerator
     {
         return new InternalUrlGenerator(
             $routes ?? new RouteCollection([]),
-            $context ?? UrlGenerationContext::forConsole('localhost.com'),
+            $context ?? UrlGenerationContext::forConsole('127.0.0.1'),
             WPAdminArea::fromDefaults(),
         );
     }

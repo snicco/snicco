@@ -40,6 +40,19 @@ final class CreatesPsrRequestsTests extends TestCase
     }
     
     /** @test */
+    public function a_full_uri_can_be_specified()
+    {
+        $request = $this->frontendRequest('http://foobar.com:8080/foo?bar=baz#section1');
+        $this->assertInstanceOf(Request::class, $request);
+        
+        $this->assertEquals(
+            'http://foobar.com:8080/foo?bar=baz#section1',
+            (string) $request->getUri()
+        );
+        $this->assertEquals(['bar' => 'baz'], $request->getQueryParams());
+    }
+    
+    /** @test */
     public function the_method_is_get_by_default()
     {
         $request = $this->frontendRequest('/foo');
@@ -73,11 +86,14 @@ final class CreatesPsrRequestsTests extends TestCase
     /** @test */
     public function test_admin_request()
     {
-        $request = $this->adminRequest('admin.php/foo?city=foo bar', ['X-FOO' => 'BAR']);
+        $request = $this->adminRequest(
+            '/wp-admin/admin.php?page=foo&city=foo bar',
+            ['X-FOO' => 'BAR']
+        );
         
         $this->assertInstanceOf(Request::class, $request);
         $this->assertEquals(
-            'https://foo.com/wp-admin/admin.php?city=foo%20bar&page=foo',
+            'https://foo.com/wp-admin/admin.php?page=foo&city=foo%20bar',
             (string) $request->getUri()
         );
         $this->assertEquals(['city' => 'foo bar', 'page' => 'foo'], $request->getQueryParams());
@@ -95,6 +111,11 @@ final class CreatesPsrRequestsTests extends TestCase
     public function psrUriFactory() :UriFactoryInterface
     {
         return new Psr17Factory();
+    }
+    
+    protected function host() :string
+    {
+        return 'foo.com';
     }
     
     protected function adminArea() :AdminArea

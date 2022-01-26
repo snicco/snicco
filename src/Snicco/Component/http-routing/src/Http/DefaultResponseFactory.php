@@ -15,7 +15,6 @@ use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Snicco\Component\HttpRouting\Http\Responses\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 use function json_encode;
