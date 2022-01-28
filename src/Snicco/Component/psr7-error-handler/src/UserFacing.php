@@ -12,6 +12,6 @@ interface UserFacing
     
     public function title() :string;
     
-    public function safeDetails() :string;
+    public function safeMessage() :string;
     
 }

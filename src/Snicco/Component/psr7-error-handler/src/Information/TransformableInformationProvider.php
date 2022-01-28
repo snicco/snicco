@@ -64,11 +64,11 @@ final class TransformableInformationProvider implements InformationProvider
     private function addMessage(int $status_code, array $info) :void
     {
         if ( ! isset($info['title'])) {
-            throw new InvalidArgumentException("Missing key title for status code [$status_code]");
+            throw new InvalidArgumentException("Missing key title for status code [$status_code].");
         }
-        if ( ! isset($info['details'])) {
+        if ( ! isset($info['message'])) {
             throw new InvalidArgumentException(
-                "Missing key details for status code [$status_code]"
+                "Missing key message for status code [$status_code]."
             );
         }
         $this->default_messages[$status_code] = $info;
@@ -89,19 +89,19 @@ final class TransformableInformationProvider implements InformationProvider
     {
         $info = $this->default_messages[$status_code] ?? $this->default_messages[500];
         $title = $info['title'];
-        $details = $info['details'];
+        $safe_message = $info['message'];
         
         if ($original instanceof UserFacing) {
             $title = $original->title();
-            $details = $original->safeDetails();
+            $safe_message = $original->safeMessage();
         }
         
         if ($transformed instanceof UserFacing) {
             $title = $transformed->title();
-            $details = $transformed->safeDetails();
+            $safe_message = $transformed->safeMessage();
         }
         
-        return [$title, $details];
+        return [$title, $safe_message];
     }
     
 }

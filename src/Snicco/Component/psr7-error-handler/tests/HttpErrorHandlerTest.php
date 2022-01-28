@@ -24,13 +24,13 @@ use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
-use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\TransformContentType;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\JsonExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\TooManyRequestsTransformer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer2;
+use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
 
 use function dirname;
 use function json_decode;
@@ -53,7 +53,7 @@ final class HttpErrorHandlerTest extends TestCase
         $this->response_factory = new Psr17Factory();
         $this->error_data = json_decode(
             file_get_contents(
-                dirname(__DIR__).'/resources/error-data.en.json'
+                dirname(__DIR__).'/resources/en_US.error.json'
             ),
             true
         );
@@ -119,7 +119,7 @@ final class HttpErrorHandlerTest extends TestCase
         
         $body = (string) $response->getBody();
         $title = $this->error_data[500]['title'];
-        $details = $this->error_data[500]['details'];
+        $details = $this->error_data[500]['message'];
         
         $this->assertStringContainsString('plain_text1', $body);
         $this->assertStringContainsString('id:'.$this->identifier->identify($e), $body);
@@ -203,7 +203,7 @@ final class HttpErrorHandlerTest extends TestCase
         
         // json displayer matched because of the header
         $this->assertSame($this->error_data[500]['title'], $body['title']);
-        $this->assertSame($this->error_data[500]['details'], $body['details']);
+        $this->assertSame($this->error_data[500]['message'], $body['details']);
         $this->assertSame($this->identifier->identify($e), $body['identifier']);
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
     }
