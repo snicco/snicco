@@ -140,11 +140,11 @@ final class ApplicationBundlesTest extends TestCase
         
         $this->assertTrue($app->config()->get('bundle1.configured'));
         $this->assertTrue($app['bundle1.registered']);
-        $this->assertTrue($app['bundle1.booted']);
+        $this->assertTrue($app['bundle1.booted']->val);
         
         $this->assertTrue($app->config()->get('bundle2.configured'));
         $this->assertTrue($app['bundle2.registered']);
-        $this->assertTrue($app['bundle2.booted']);
+        $this->assertTrue($app['bundle2.booted']->val);
     }
     
     /** @test */
@@ -160,7 +160,7 @@ final class ApplicationBundlesTest extends TestCase
         
         $this->assertTrue($app->config()['bundle_that_asserts_order.configured']);
         $this->assertTrue($app->di()['bundle_that_asserts_order.registered']);
-        $this->assertTrue($app->di()['bundle_that_asserts_order.bootstrapped']);
+        $this->assertTrue($app->di()['bundle_that_asserts_order.bootstrapped']->val);
     }
     
     /** @test */
@@ -202,7 +202,7 @@ final class ApplicationBundlesTest extends TestCase
         $app2->boot();
         
         $this->assertTrue(
-            isset($app2['custom_env_bundle_run']),
+            $app2['custom_env_bundle_run']->val,
             "bundle was not booted when it should be."
         );
     }
@@ -262,7 +262,7 @@ final class ApplicationBundlesTest extends TestCase
         // register was called
         $this->assertTrue($app['bundle_that_configures.registered']);
         // boot was called
-        $this->assertTrue($app['bundle_that_configures.booted']);
+        $this->assertTrue($app['bundle_that_configures.booted']->val);
         // plugin is used
         $this->assertTrue($app->usesBundle('bundle_that_configures'));
     }
@@ -280,11 +280,14 @@ class BundleThatConfigures implements Bundle
     public function register(Application $app) :void
     {
         $app[$this->alias().'.registered'] = true;
+        $std = new stdClass();
+        $std->val = false;
+        $app[$this->alias().'.booted'] = $std;
     }
     
     public function bootstrap(Application $app) :void
     {
-        $app[$this->alias().'.booted'] = true;
+        $app[$this->alias().'.booted']->val = true;
     }
     
     public function alias() :string
@@ -309,12 +312,14 @@ class BundleWithCustomEnv implements Bundle
     
     public function register(Application $app) :void
     {
-        //
+        $std = new stdClass();
+        $std->val = false;
+        $app['custom_env_bundle_run'] = $std;
     }
     
     public function bootstrap(Application $app) :void
     {
-        $app['custom_env_bundle_run'] = true;
+        $app['custom_env_bundle_run']->val = true;
     }
     
     public function alias() :string

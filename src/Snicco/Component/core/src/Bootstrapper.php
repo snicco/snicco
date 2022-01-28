@@ -40,6 +40,8 @@ interface Bootstrapper
      * The bootstrap method will be called for each bundle after the register method has been
      * called on each plugin. This is the place to make "things happen" (if needed) and instantiate
      * services.
+     *
+     * @note The service container is locked at this point. No services can be registered.
      */
     public function bootstrap(Application $app) :void;
     

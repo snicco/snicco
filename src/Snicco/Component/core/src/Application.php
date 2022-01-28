@@ -87,10 +87,9 @@ final class Application implements ArrayAccess
         }
         
         $this->registerBundles();
-        $this->bootBundles();
-        
-        $this->booted = true;
         $this->container->lock();
+        $this->bootBundles();
+        $this->booted = true;
     }
     
     public function offsetExists($offset) :bool

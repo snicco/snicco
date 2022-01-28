@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Core\Tests;
 
+use stdClass;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Bundle;
@@ -11,6 +12,7 @@ use Snicco\Component\Core\Application;
 use Snicco\Component\Core\Environment;
 use Snicco\Component\Core\Directories;
 use Snicco\Component\Core\Bootstrapper;
+use Snicco\Component\Core\Exception\ContainerIsLocked;
 use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\Core\Tests\helpers\WriteTestConfig;
 use Snicco\Component\Core\Tests\helpers\CreateTestContainer;
@@ -56,7 +58,7 @@ final class ApplicationBootstrappersTest extends TestCase
         $app->boot();
         
         $this->assertTrue($app['bootstrapper_1_registered']);
-        $this->assertTrue($app['bootstrapper_1_booted']);
+        $this->assertTrue($app['bootstrapper_1_booted']->val);
     }
     
     /** @test */
@@ -82,10 +84,33 @@ final class ApplicationBootstrappersTest extends TestCase
         $app->boot();
         
         $this->assertTrue($app->di()->get('bundle_info_registered'));
-        $this->assertTrue($app->di()->get('bundle_info_booted'));
+        $this->assertTrue($app->di()->get('bundle_info_booted')->val);
         
         $this->assertTrue($app->di()->get('bootstrapper_2_registered'));
-        $this->assertTrue($app->di()->get('bootstrapper_2_booted'));
+        $this->assertTrue($app->di()->get('bootstrapper_2_booted')->val);
+    }
+    
+    /** @test */
+    public function an_exception_is_thrown_if_the_container_is_modified_after_the_register_method()
+    {
+        $app = new Application(
+            $this->createContainer(),
+            Environment::prod(),
+            Directories::fromDefaults($this->base_dir)
+        );
+        
+        $this->writeConfig($app, [
+            'app' => [
+                'bootstrappers' => [
+                    BootrstrapperWithExceptionInBoostrap::class,
+                ],
+            ],
+        
+        ]);
+        
+        $this->expectException(ContainerIsLocked::class);
+        $this->expectExceptionMessage('id [foo]');
+        $app->boot();
     }
     
 }
@@ -105,11 +130,14 @@ class BundleInfo implements Bundle
     public function register(Application $app) :void
     {
         $app['bundle_info_registered'] = true;
+        $std = new stdClass();
+        $std->val = false;
+        $app['bundle_info_booted'] = $std;
     }
     
     public function bootstrap(Application $app) :void
     {
-        $app['bundle_info_booted'] = true;
+        $app['bundle_info_booted']->val = true;
     }
     
     public function alias() :string
@@ -130,11 +158,14 @@ class Bootstrap1 implements Bootstrapper
     public function register(Application $app) :void
     {
         $app['bootstrapper_1_registered'] = true;
+        $std = new stdClass();
+        $std->val = false;
+        $app['bootstrapper_1_booted'] = $std;
     }
     
     public function bootstrap(Application $app) :void
     {
-        $app['bootstrapper_1_booted'] = true;
+        $app['bootstrapper_1_booted']->val = true;
     }
     
     public function runsInEnvironments(Environment $env) :bool
@@ -158,19 +189,47 @@ class Bootstrap2 implements Bootstrapper
             throw new RuntimeException('Bootstrapper registered before bundle');
         }
         $app['bootstrapper_2_registered'] = true;
+        $std = new stdClass();
+        $std->val = false;
+        $app['bootstrapper_2_booted'] = $std;
     }
     
     public function bootstrap(Application $app) :void
     {
-        if ( ! $app->di()->has('bundle_info_booted')) {
+        if ( ! $app['bundle_info_booted']->val === true) {
             throw new RuntimeException('Bootstrapper bootstrapped before bundle');
         }
-        $app['bootstrapper_2_booted'] = true;
+        $app['bootstrapper_2_booted']->val = true;
     }
     
     public function runsInEnvironments(Environment $env) :bool
     {
         return true;
+    }
+    
+}
+
+class BootrstrapperWithExceptionInBoostrap implements Bootstrapper
+{
+    
+    public function runsInEnvironments(Environment $env) :bool
+    {
+        return true;
+    }
+    
+    public function configure(WritableConfig $config, Application $app) :void
+    {
+        //
+    }
+    
+    public function register(Application $app) :void
+    {
+        //
+    }
+    
+    public function bootstrap(Application $app) :void
+    {
+        $app['foo'] = 'bar';
     }
     
 }
