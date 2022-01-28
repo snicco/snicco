@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\ErrorHandler\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Filter;
 
 use Psr\Http\Message\RequestInterface;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\Displayer;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\HttpException;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\DisplayerFilter;
+use Snicco\Component\Psr7ErrorHandler\Displayer;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
 final class ContentTypeFilter implements DisplayerFilter
 {
     
-    public function filter(array $displayers, RequestInterface $request, HttpException $e) :array
+    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array
     {
         return array_filter($displayers, function (Displayer $displayer) use ($request) {
             return $this->matchingContentTypes($request, $displayer);

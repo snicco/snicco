@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\ErrorHandler\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Filter;
 
 use Psr\Http\Message\RequestInterface;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\HttpException;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\DisplayerFilter;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_map;
 
@@ -23,10 +23,10 @@ final class MultipleFilter implements DisplayerFilter
         $this->filters = array_map(fn(DisplayerFilter $filter) => $filter, $filter);
     }
     
-    public function filter(array $displayers, RequestInterface $request, HttpException $e) :array
+    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array
     {
         foreach ($this->filters as $filter) {
-            $displayers = $filter->filter($displayers, $request, $e);
+            $displayers = $filter->filter($displayers, $request, $info);
         }
         return $displayers;
     }

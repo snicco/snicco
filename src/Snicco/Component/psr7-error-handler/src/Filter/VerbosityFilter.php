@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\ErrorHandler\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Filter;
 
 use Psr\Http\Message\RequestInterface;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\Displayer;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\HttpException;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\DisplayerFilter;
+use Snicco\Component\Psr7ErrorHandler\Displayer;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
@@ -21,7 +21,7 @@ final class VerbosityFilter implements DisplayerFilter
         $this->show_verbose_filters = $show_verbose_filters;
     }
     
-    public function filter(array $displayers, RequestInterface $request, HttpException $e) :array
+    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array
     {
         return array_filter($displayers, function (Displayer $d) {
             if (false === $this->show_verbose_filters) {

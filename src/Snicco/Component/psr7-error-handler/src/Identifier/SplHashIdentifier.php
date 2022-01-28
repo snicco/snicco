@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\ErrorHandler\Identifier;
+namespace Snicco\Component\Psr7ErrorHandler\Identifier;
 
 use Throwable;
-use Snicco\Component\HttpRouting\Http\ErrorHandler\Identifier;
+use Snicco\Component\Psr7ErrorHandler\Identifier;
 
 use function spl_object_hash;
 
