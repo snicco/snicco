@@ -61,14 +61,35 @@ final class HttpErrorHandlerTest extends TestCase
     }
     
     /** @test */
-    public function by_default_a_500_will_be_returned_as_a_last_resort()
+    public function if_no_displayer_matches_a_fallback_response_will_be_returned()
     {
         $e = new Exception('Secret message here.');
         
         $response = $this->error_handler->handle($e, $this->base_request);
         
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('<h1>Internal Server Error</h1>', (string) $response->getBody());
+        
+        $body = (string) $response->getBody();
+        
+        $this->assertStringStartsWith('<h1>Oops! An Error Occurred</h1>', $body);
+        $this->assertStringNotContainsString('Secret message here', $body);
+        $this->assertStringContainsString(spl_object_hash($e), $body);
+    }
+    
+    /** @test */
+    public function the_fallback_response_has_the_correct_status_code_if_no_displayer_matches()
+    {
+        $e = new HttpException(404, 'Secret message here.');
+        
+        $response = $this->error_handler->handle($e, $this->base_request);
+        
+        $this->assertEquals(404, $response->getStatusCode());
+        
+        $body = (string) $response->getBody();
+        
+        $this->assertStringStartsWith('<h1>Oops! An Error Occurred</h1>', $body);
+        $this->assertStringNotContainsString('Secret message here', $body);
+        $this->assertStringContainsString(spl_object_hash($e), $body);
     }
     
     /** @test */
@@ -99,7 +120,10 @@ final class HttpErrorHandlerTest extends TestCase
         
         // default handler handles this.
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('<h1>Internal Server Error</h1>', (string) $response->getBody());
+        $this->assertStringStartsWith(
+            '<h1>Oops! An Error Occurred</h1>',
+            (string) $response->getBody()
+        );
         $this->assertEquals('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
     
