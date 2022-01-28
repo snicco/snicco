@@ -11,6 +11,9 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
+/**
+ * @api
+ */
 final class CanDisplayFilter implements DisplayerFilter
 {
     

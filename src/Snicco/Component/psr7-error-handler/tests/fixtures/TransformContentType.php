@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Tests\fixtures;
 
 use Throwable;
-use Snicco\Component\Psr7ErrorHandler\Transformer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
+use Snicco\Component\Psr7ErrorHandler\ExceptionTransformer;
 
-final class TransformContentType implements Transformer
+final class TransformContentType implements ExceptionTransformer
 {
     
     public function transform(Throwable $e) :Throwable

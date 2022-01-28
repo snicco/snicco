@@ -6,7 +6,10 @@ namespace Snicco\Component\Psr7ErrorHandler;
 
 use Throwable;
 
-interface Identifier
+/**
+ * @api
+ */
+interface ExceptionIdentifier
 {
     
     /**

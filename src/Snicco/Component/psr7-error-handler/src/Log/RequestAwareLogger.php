@@ -11,6 +11,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Http\Message\RequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
+/**
+ * @api
+ */
 final class RequestAwareLogger
 {
     
@@ -41,9 +44,13 @@ final class RequestAwareLogger
     public function log(ExceptionInformation $exception_information, RequestInterface $request) :void
     {
         $context = [
-            'exception' => $e = $exception_information->original(),
+            'exception' => $e = $exception_information->originalException(),
             'identifier' => $exception_information->identifier(),
         ];
+        
+        foreach ($this->context as $request_context) {
+            $context = $request_context->add($context, $request);
+        }
         
         $this->psr_logger->log(
             $this->determineLogLevel($e),

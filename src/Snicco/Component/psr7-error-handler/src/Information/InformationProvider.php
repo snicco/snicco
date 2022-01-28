@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Information;
 
-use Snicco\Component\Psr7ErrorHandler\IdentifiedThrowable;
+use Throwable;
 
+/**
+ * @api
+ */
 interface InformationProvider
 {
     
-    public function provideFor(IdentifiedThrowable $e) :ExceptionInformation;
+    public function provideFor(Throwable $e) :ExceptionInformation;
     
 }

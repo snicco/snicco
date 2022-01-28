@@ -7,12 +7,17 @@ namespace Snicco\Component\Psr7ErrorHandler\Information;
 use Throwable;
 use InvalidArgumentException;
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
-use Snicco\Component\Psr7ErrorHandler\Transformer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\Psr7ErrorHandler\IdentifiedThrowable;
+use Snicco\Component\Psr7ErrorHandler\ExceptionIdentifier;
+use Snicco\Component\Psr7ErrorHandler\ExceptionTransformer;
 
+/**
+ * @api
+ */
 final class HttpInformationProvider implements InformationProvider
 {
+    
+    private ExceptionIdentifier $identifier;
     
     /**
      * @var array<int,array<string,string>>
@@ -20,11 +25,11 @@ final class HttpInformationProvider implements InformationProvider
     private array $default_messages;
     
     /**
-     * @var Transformer[]
+     * @var ExceptionTransformer[]
      */
     private array $transformer;
     
-    public function __construct(array $data, Transformer ...$transformer)
+    public function __construct(array $data, ExceptionIdentifier $identifier, ExceptionTransformer ...$transformer)
     {
         foreach ($data as $status_code => $title_and_details) {
             $this->addMessage($status_code, $title_and_details);
@@ -35,11 +40,12 @@ final class HttpInformationProvider implements InformationProvider
             );
         }
         $this->transformer = $transformer;
+        $this->identifier = $identifier;
     }
     
-    public function provideFor(IdentifiedThrowable $e) :ExceptionInformation
+    public function provideFor(Throwable $e) :ExceptionInformation
     {
-        $original = $e->throwable();
+        $original = $e;
         $transformed = $this->transform($original);
         
         $status = $transformed instanceof HttpException ? $transformed->statusCode() : 500;
@@ -48,7 +54,7 @@ final class HttpInformationProvider implements InformationProvider
         
         return new ExceptionInformation(
             $status,
-            $e->identifier(),
+            $this->identifier->identify($original),
             $title,
             $details,
             $original,

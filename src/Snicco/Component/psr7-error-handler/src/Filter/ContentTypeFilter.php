@@ -11,6 +11,12 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
+/**
+ * @note This Filter assumes that content negotiation already happened and that the request has the
+ *       best negotiated content type filter already set. @see
+ *      {https://github.com/middlewares/negotiation/blob/master/src/ContentType.php#L156}
+ * @api
+ */
 final class ContentTypeFilter implements DisplayerFilter
 {
     

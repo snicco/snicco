@@ -11,6 +11,9 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
+/**
+ * @api
+ */
 final class VerbosityFilter implements DisplayerFilter
 {
     
@@ -24,12 +27,8 @@ final class VerbosityFilter implements DisplayerFilter
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array
     {
         return array_filter($displayers, function (Displayer $d) {
-            if (false === $this->show_verbose_filters) {
-                return false === $d->isVerbose();
-            }
-            return true;
-        }
-        );
+            return $this->show_verbose_filters || ! $d->isVerbose();
+        });
     }
     
 }

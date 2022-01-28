@@ -6,6 +6,9 @@ namespace Snicco\Component\Psr7ErrorHandler;
 
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
+/**
+ * @api
+ */
 interface Displayer
 {
     
