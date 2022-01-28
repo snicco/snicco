@@ -39,7 +39,7 @@ $middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
 ### Customize the failure response
 
 By default, a 403 response will be returned with a very basic HTML template. You can customize the html output by
-passing a callable as the fourth argument. You'll want to wrap your favorite template engine in this closure.
+passing a callable as the fourth argument. You'll want to wrap your favorite template engine in transformers closure.
 
 ```php
 // Same as above.
@@ -61,8 +61,8 @@ $middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
 
 ### Customizing the psr log levels:
 
-By default, invalid attempts will be logged with ` \Psr\Log\LogLevel::WARNING`. You can customize this behaviour by
-passing an associative array as the fifth parameter.
+By default, invalid attempts will be logged with ` \Psr\Log\LogLevel::WARNING`. You can customize transformers behaviour
+by passing an associative array as the fifth parameter.
 
 ```php
 // Same as above.
@@ -92,8 +92,8 @@ $middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
 
 #### Customizing the additional request context.
 
-As a sixth argument you can pass a closure that will receive the current request. Anything you return from this closure
-will be taken into account when validating the current request.
+As a sixth argument you can pass a closure that will receive the current request. Anything you return from transformers
+closure will be taken into account when validating the current request.
 
 **This has to match the request context that you used when the link was created!**
 <br>

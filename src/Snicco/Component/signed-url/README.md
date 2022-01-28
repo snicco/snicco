@@ -21,8 +21,8 @@
 ## Motivation
 
 While developing the [SniccoWP framework](https://github.com/sniccowp/sniccowp) we couldn't find any good
-**standalone** PHP-libraries for signing urls on GitHub. We needed this functionality in a couple of places, so we
-decided to roll our own implementation.
+**standalone** PHP-libraries for signing urls on GitHub. We needed transformers functionality in a couple of places, so
+we decided to roll our own implementation.
 
 By good we mean:
 
@@ -97,7 +97,7 @@ $mailer = /* */
 
 $href = $signed_url->asString();
 
-// $href will be something like this:
+// $href will be something like transformers:
 // https://example.com/unsubscribe?user_id=12expires=1639783661&signature=Del1cGmLB1wVET6PJieCrQ==|1MTBBGIpEGPVuGaKDjjrHDBusMNoWB15Ng5lKBSSLQY=
 
 $mailer->send('user12@gmail.com', "Click <a href='{{$href}}'> here <a/> to unsubscribe.")
@@ -196,7 +196,7 @@ $storage = new \Snicco\Component\SignedUrl\Storage\PDOStorage($pdo, $table_name)
 
 #### Creating tables for pdo and mysqli storage:
 
-Running migrations is out of scope for this library.
+Running migrations is out of scope for transformers library.
 
 Use your favorite migration library to create the following table (tweak to your likings).
 
@@ -228,7 +228,7 @@ $storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($_SESSION);
 
 ***
 
-You can use this class for during unit testing.
+You can use transformers class for during unit testing.
 
 ```php
 $storage = new \Snicco\Component\SignedUrl\Storage\InMemoryStorage()
@@ -238,7 +238,7 @@ $storage = new \Snicco\Component\SignedUrl\Storage\InMemoryStorage()
 
 ***
 
-If you are using this in WordPress there is
+If you are using transformers in WordPress there is
 a [dedicated bundle](https://github.com/sniccowp/sniccowp/tree/feature/extract-magic-link/packages/signed-url-wp) that
 provides access to a wpdb storage and an object cache storage.
 

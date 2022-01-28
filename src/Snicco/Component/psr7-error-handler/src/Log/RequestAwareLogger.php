@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\ErrorHandler\Log;
+namespace Snicco\Component\Psr7ErrorHandler\Log;
 
 use Throwable;
 use Exception;
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Psr\Http\Message\RequestInterface;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 final class RequestAwareLogger
 {
@@ -37,9 +38,12 @@ final class RequestAwareLogger
         }
     }
     
-    public function log(Throwable $e, RequestInterface $request, string $exception_identifier) :void
+    public function log(ExceptionInformation $exception_information, RequestInterface $request) :void
     {
-        $context = ['exception' => $e, 'identifier' => $exception_identifier];
+        $context = [
+            'exception' => $e = $exception_information->original(),
+            'identifier' => $exception_information->identifier(),
+        ];
         
         $this->psr_logger->log(
             $this->determineLogLevel($e),

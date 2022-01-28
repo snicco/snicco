@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\ErrorHandler\Log;
+namespace Snicco\Component\Psr7ErrorHandler\Log;
 
 interface RequestContext
 {
