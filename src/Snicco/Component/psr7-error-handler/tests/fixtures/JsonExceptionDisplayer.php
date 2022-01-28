@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Tests\fixtures;
 
-use Snicco\Component\Psr7ErrorHandler\Displayer;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function json_encode;
 
-final class JsonDisplayer implements Displayer
+final class JsonExceptionDisplayer implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string

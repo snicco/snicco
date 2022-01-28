@@ -10,11 +10,11 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\Psr7ErrorHandler\ExceptionIdentifier;
-use Snicco\Component\Psr7ErrorHandler\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
+use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
-use Snicco\Component\Psr7ErrorHandler\Information\HttpInformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
 
 final class HttpInformationProviderTest extends TestCase
 {
@@ -22,7 +22,7 @@ final class HttpInformationProviderTest extends TestCase
     /** @test */
     public function http_exceptions_use_the_correct_title_and_status_code()
     {
-        $provider = new HttpInformationProvider([
+        $provider = new TransformableInformationProvider([
             404 => [
                 'title' => 'Not Found',
                 'details' => 'The requested resource could not be found but may be available again in the future.',
@@ -35,7 +35,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new HttpException(404, 'secret stuff here');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertInstanceOf(ExceptionInformation::class, $information);
         $this->assertEquals(404, $information->statusCode());
@@ -56,7 +56,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Data for the 500 status code must be provided.");
         
-        $provider = new HttpInformationProvider([
+        $provider = new TransformableInformationProvider([
             404 => [
                 'title' => 'Not Found',
                 'details' => 'The requested resource could not be found but may be available again in the future.',
@@ -73,7 +73,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new RuntimeException('transform_me');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertEquals(401, $information->statusCode());
         $this->assertEquals('foobar_e', $information->identifier());
@@ -101,7 +101,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new RuntimeException('dont_transform_me');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertEquals(500, $information->statusCode());
         $this->assertEquals('foo_id', $information->identifier());
@@ -119,7 +119,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new RuntimeException('transform_me');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertSame(403, $information->statusCode());
         $this->assertSame('foo', $information->identifier());
@@ -138,7 +138,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new UserFacingException('Secret stuff here');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertSame(500, $information->statusCode());
         $this->assertSame($e, $information->originalException());
@@ -155,7 +155,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new UserFacingException('Secret stuff here');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertSame(403, $information->statusCode());
         $this->assertSame('foobar_id', $information->identifier());
@@ -172,7 +172,7 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new UserFacingException('Secret stuff here');
         
-        $information = $provider->provideFor($e);
+        $information = $provider->createFor($e);
         
         $this->assertSame(500, $information->statusCode());
         $this->assertSame('foo_id', $information->identifier());
@@ -181,7 +181,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('transformed_user_facing_details', $information->safeDetails());
     }
     
-    private function newProvider(array $data = [], ExceptionIdentifier $identifier = null, ExceptionTransformer ...$transformer) :HttpInformationProvider
+    private function newProvider(array $data = [], ExceptionIdentifier $identifier = null, ExceptionTransformer ...$transformer) :TransformableInformationProvider
     {
         if ( ! isset($data[500])) {
             $data[500] = [
@@ -189,7 +189,7 @@ final class HttpInformationProviderTest extends TestCase
                 'details' => 'An error has occurred and this resource cannot be displayed.',
             ];
         }
-        return new HttpInformationProvider(
+        return new TransformableInformationProvider(
             $data,
             $identifier ? : new SplHashIdentifier(),
             ...

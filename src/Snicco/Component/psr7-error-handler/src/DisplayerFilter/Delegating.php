@@ -2,24 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Psr7ErrorHandler\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
 
 use Psr\Http\Message\RequestInterface;
-use Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 /**
  * @api
  */
-final class MultipleFilter implements DisplayerFilter
+final class Delegating implements Filter
 {
     
     /**
-     * @var DisplayerFilter[]
+     * @var Filter[]
      */
     private array $filters;
     
-    public function __construct(DisplayerFilter ...$filter)
+    public function __construct(Filter ...$filter)
     {
         $this->filters = $filter;
     }

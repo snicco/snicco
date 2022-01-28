@@ -9,8 +9,10 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
-use Snicco\Component\Psr7ErrorHandler\Information\InformationProvider;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Filter;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProvider;
 
 use function strtolower;
 use function array_values;
@@ -22,25 +24,25 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
 {
     
     private ResponseFactoryInterface $response_factory;
-    private DisplayerFilter          $filter;
+    private Filter                   $filter;
     private RequestAwareLogger       $logger;
     private InformationProvider      $information_provider;
-    private Displayer                $fallback_displayer;
+    private ExceptionDisplayer       $fallback_displayer;
     
     /**
-     * @var Displayer[]
+     * @var ExceptionDisplayer[]
      */
     private array $displayers = [];
     
     /**
-     * @param  Displayer[]  $displayers
+     * @param  ExceptionDisplayer[]  $displayers
      */
     public function __construct(
         ResponseFactoryInterface $response_factory,
-        DisplayerFilter $filter,
+        Filter $filter,
         RequestAwareLogger $logger,
         InformationProvider $information_provider,
-        Displayer $default_displayer,
+        ExceptionDisplayer $default_displayer,
         array $displayers = []
     ) {
         $this->response_factory = $response_factory;
@@ -56,7 +58,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
     
     public function handle(Throwable $e, RequestInterface $request) :ResponseInterface
     {
-        $info = $this->information_provider->provideFor($e);
+        $info = $this->information_provider->createFor($e);
         
         $this->logException($info, $request);
         
@@ -68,12 +70,12 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $this->withHttpHeaders($info->transformedException(), $response);
     }
     
-    private function addDisplayer(Displayer $displayer) :void
+    private function addDisplayer(ExceptionDisplayer $displayer) :void
     {
         $this->displayers[] = $displayer;
     }
     
-    private function findBestDisplayer(RequestInterface $request, ExceptionInformation $info) :Displayer
+    private function findBestDisplayer(RequestInterface $request, ExceptionInformation $info) :ExceptionDisplayer
     {
         $displayers = array_values(
             $this->filter->filter($this->displayers, $request, $info)
@@ -87,7 +89,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $this->logger->log($info, $request);
     }
     
-    private function createResponse(ExceptionInformation $info, Displayer $displayer) :ResponseInterface
+    private function createResponse(ExceptionInformation $info, ExceptionDisplayer $displayer) :ResponseInterface
     {
         $response = $this->response_factory->createResponse(
             $info->statusCode()

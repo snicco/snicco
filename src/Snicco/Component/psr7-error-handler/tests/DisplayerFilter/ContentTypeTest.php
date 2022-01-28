@@ -2,29 +2,30 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Psr7ErrorHandler\Tests\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Tests\DisplayerFilter;
 
 use RuntimeException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Psr7ErrorHandler\Displayer;
-use Snicco\Component\Psr7ErrorHandler\Filter\VerbosityFilter;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
+use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer2;
 
 use function array_values;
 
-final class VerbosityFilterTest extends TestCase
+final class ContentTypeTest extends TestCase
 {
     
     /** @test */
     public function all_displayers_that_can_display_are_included()
     {
-        $filter = new VerbosityFilter(true);
+        $filter = new ContentType();
         $displayers = [
-            $d1 = new Verbose1(),
-            $d2 = new Verbose2(),
-            $d3 = new NonVerbose1(),
-            $d4 = new NonVerbose2(),
+            $d1 = new PlaintTextExceptionDisplayer1(),
+            $d2 = new PlainTextExceptionDisplayer2(),
+            $d3 = new JsonExceptionDisplayer1(),
+            $d4 = new JsonExceptionDisplayer2(),
         ];
         
         $e = new RuntimeException();
@@ -37,12 +38,11 @@ final class VerbosityFilterTest extends TestCase
             $info,
         );
         
-        $this->assertSame([$d1, $d2, $d3, $d4], array_values($filtered));
+        $this->assertSame([$d1, $d2], array_values($filtered));
         
-        $filter = new VerbosityFilter(false);
         $filtered = $filter->filter(
             $displayers,
-            $request->withHeader('Accept', 'text/plain'),
+            $request->withHeader('Accept', 'application/json'),
             $info,
         );
         
@@ -51,57 +51,7 @@ final class VerbosityFilterTest extends TestCase
     
 }
 
-class Verbose1 implements Displayer
-{
-    
-    public function display(ExceptionInformation $exception_information) :string
-    {
-        return '';
-    }
-    
-    public function supportedContentType() :string
-    {
-        return 'text/plain';
-    }
-    
-    public function isVerbose() :bool
-    {
-        return true;
-    }
-    
-    public function canDisplay(ExceptionInformation $exception_information) :bool
-    {
-        return true;
-    }
-    
-}
-
-class Verbose2 implements Displayer
-{
-    
-    public function display(ExceptionInformation $exception_information) :string
-    {
-        return '';
-    }
-    
-    public function supportedContentType() :string
-    {
-        return 'text/plain';
-    }
-    
-    public function isVerbose() :bool
-    {
-        return true;
-    }
-    
-    public function canDisplay(ExceptionInformation $exception_information) :bool
-    {
-        return true;
-    }
-    
-}
-
-class NonVerbose1 implements Displayer
+class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
@@ -126,7 +76,7 @@ class NonVerbose1 implements Displayer
     
 }
 
-class NonVerbose2 implements Displayer
+class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
@@ -137,6 +87,56 @@ class NonVerbose2 implements Displayer
     public function supportedContentType() :string
     {
         return 'text/plain';
+    }
+    
+    public function isVerbose() :bool
+    {
+        return false;
+    }
+    
+    public function canDisplay(ExceptionInformation $exception_information) :bool
+    {
+        return true;
+    }
+    
+}
+
+class JsonExceptionDisplayer1 implements ExceptionDisplayer
+{
+    
+    public function display(ExceptionInformation $exception_information) :string
+    {
+        return '';
+    }
+    
+    public function supportedContentType() :string
+    {
+        return 'application/json';
+    }
+    
+    public function isVerbose() :bool
+    {
+        return false;
+    }
+    
+    public function canDisplay(ExceptionInformation $exception_information) :bool
+    {
+        return true;
+    }
+    
+}
+
+class JsonExceptionDisplayer2 implements ExceptionDisplayer
+{
+    
+    public function display(ExceptionInformation $exception_information) :string
+    {
+        return '';
+    }
+    
+    public function supportedContentType() :string
+    {
+        return 'application/json';
     }
     
     public function isVerbose() :bool

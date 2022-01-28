@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Psr7ErrorHandler\Tests\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Tests\DisplayerFilter;
 
 use RuntimeException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Psr7ErrorHandler\Displayer;
-use Snicco\Component\Psr7ErrorHandler\Filter\MultipleFilter;
-use Snicco\Component\Psr7ErrorHandler\Filter\VerbosityFilter;
-use Snicco\Component\Psr7ErrorHandler\Filter\ContentTypeFilter;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_values;
 
-final class MultipleFilterTest extends TestCase
+final class DelegatingTest extends TestCase
 {
     
     /** @test */
     public function all_displayers_that_should_display_are_included()
     {
-        $filter = new MultipleFilter(
-            new VerbosityFilter(true),
-            new ContentTypeFilter()
+        $filter = new Delegating(
+            new Verbosity(true),
+            new ContentType()
         );
         
         $displayers = [
@@ -52,9 +52,9 @@ final class MultipleFilterTest extends TestCase
         
         $this->assertSame([$d3, $d4], array_values($filtered));
         
-        $filter = new MultipleFilter(
-            new VerbosityFilter(false),
-            new ContentTypeFilter()
+        $filter = new Delegating(
+            new Verbosity(false),
+            new ContentType()
         );
         
         $filtered = $filter->filter(
@@ -68,7 +68,7 @@ final class MultipleFilterTest extends TestCase
     
 }
 
-class VerbosePlain implements Displayer
+class VerbosePlain implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
@@ -93,7 +93,7 @@ class VerbosePlain implements Displayer
     
 }
 
-class NonVerbosePlain implements Displayer
+class NonVerbosePlain implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
@@ -118,7 +118,7 @@ class NonVerbosePlain implements Displayer
     
 }
 
-class VerboseJson implements Displayer
+class VerboseJson implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
@@ -143,7 +143,7 @@ class VerboseJson implements Displayer
     
 }
 
-class NonVerboseJson implements Displayer
+class NonVerboseJson implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string

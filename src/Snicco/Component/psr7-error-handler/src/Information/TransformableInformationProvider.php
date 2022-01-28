@@ -8,13 +8,12 @@ use Throwable;
 use InvalidArgumentException;
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\Psr7ErrorHandler\ExceptionIdentifier;
-use Snicco\Component\Psr7ErrorHandler\ExceptionTransformer;
+use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
 
 /**
  * @api
  */
-final class HttpInformationProvider implements InformationProvider
+final class TransformableInformationProvider implements InformationProvider
 {
     
     private ExceptionIdentifier $identifier;
@@ -43,7 +42,7 @@ final class HttpInformationProvider implements InformationProvider
         $this->identifier = $identifier;
     }
     
-    public function provideFor(Throwable $e) :ExceptionInformation
+    public function createFor(Throwable $e) :ExceptionInformation
     {
         $original = $e;
         $transformed = $this->transform($original);
