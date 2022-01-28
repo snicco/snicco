@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Core\Tests\fixtures\bundles;
 
+use stdClass;
 use RuntimeException;
 use Snicco\Component\Core\Bundle;
 use Snicco\Component\Core\Environment;
@@ -39,6 +40,9 @@ class Bundle2 implements Bundle
             throw new RuntimeException('bundle1 should have been registered first');
         }
         $app['bundle2.registered'] = true;
+        $std = new stdClass();
+        $std->val = false;
+        $app['bundle2.booted'] = $std;
     }
     
     public function bootstrap(Application $app) :void
@@ -46,7 +50,7 @@ class Bundle2 implements Bundle
         if ( ! isset($app['bundle1.booted'])) {
             throw new RuntimeException('bundle1 should have been booted first');
         }
-        $app['bundle2.booted'] = true;
+        $app['bundle2.booted']->val = true;
     }
     
     public function runsInEnvironments(Environment $env) :bool
