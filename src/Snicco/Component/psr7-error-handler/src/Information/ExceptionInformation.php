@@ -6,6 +6,9 @@ namespace Snicco\Component\Psr7ErrorHandler\Information;
 
 use Throwable;
 
+/**
+ * @api
+ */
 final class ExceptionInformation
 {
     
@@ -41,12 +44,12 @@ final class ExceptionInformation
         return $this->title;
     }
     
-    public function original() :Throwable
+    public function originalException() :Throwable
     {
         return $this->original;
     }
     
-    public function transformed() :Throwable
+    public function transformedException() :Throwable
     {
         return $this->transformed;
     }

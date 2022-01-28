@@ -8,8 +8,9 @@ use Psr\Http\Message\RequestInterface;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
-use function array_map;
-
+/**
+ * @api
+ */
 final class MultipleFilter implements DisplayerFilter
 {
     
@@ -20,7 +21,7 @@ final class MultipleFilter implements DisplayerFilter
     
     public function __construct(DisplayerFilter ...$filter)
     {
-        $this->filters = array_map(fn(DisplayerFilter $filter) => $filter, $filter);
+        $this->filters = $filter;
     }
     
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array

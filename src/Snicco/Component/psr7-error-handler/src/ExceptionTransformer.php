@@ -6,7 +6,10 @@ namespace Snicco\Component\Psr7ErrorHandler;
 
 use Throwable;
 
-interface Transformer
+/**
+ * @api
+ */
+interface ExceptionTransformer
 {
     
     public function transform(Throwable $e) :Throwable;

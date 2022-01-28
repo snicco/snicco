@@ -7,6 +7,9 @@ namespace Snicco\Component\Psr7ErrorHandler;
 use Throwable;
 use RuntimeException;
 
+/**
+ * @api
+ */
 class HttpException extends RuntimeException
 {
     
@@ -28,7 +31,7 @@ class HttpException extends RuntimeException
         );
     }
     
-    public static function fromPrevious(int $status_code, Throwable $previous, array $response_headers = []) :self
+    final public static function fromPrevious(int $status_code, Throwable $previous, array $response_headers = []) :self
     {
         return new self(
             $status_code,

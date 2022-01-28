@@ -9,9 +9,11 @@ use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\Test\TestLogger;
 use PHPUnit\Framework\TestCase;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Snicco\Component\Psr7ErrorHandler\Displayer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\Filter\MultipleFilter;
@@ -20,9 +22,10 @@ use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\Filter\CanDisplayFilter;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\SlowDown;
 use Snicco\Component\Psr7ErrorHandler\Filter\ContentTypeFilter;
+use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\JsonDisplayer;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextDisplayer2;
 use Snicco\Component\Psr7ErrorHandler\Information\HttpInformationProvider;
@@ -31,13 +34,12 @@ use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\TooManyRequestsTransformer;
 
 use function dirname;
 use function json_decode;
+use function json_encode;
 use function spl_object_hash;
 use function file_get_contents;
 
 final class HttpErrorHandlerTest extends TestCase
 {
-    
-    use CreateTestPsr17Factories;
     
     private HttpErrorHandler $error_handler;
     private RequestInterface $base_request;
@@ -48,16 +50,16 @@ final class HttpErrorHandlerTest extends TestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->response_factory = $this->psrResponseFactory();
+        $this->response_factory = new Psr17Factory();
         $this->error_data = json_decode(
             file_get_contents(
-                dirname(__DIR__).'/src/resources/error-data.en.json'
+                dirname(__DIR__).'/resources/error-data.en.json'
             ),
             true
         );
         $this->identifier = new SplHashIdentifier();
         $this->error_handler = $this->createErrorHandler();
-        $this->base_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/');
+        $this->base_request = $this->response_factory->createServerRequest('GET', '/');
     }
     
     /** @test */
@@ -142,7 +144,7 @@ final class HttpErrorHandlerTest extends TestCase
             '<h1>Oops! An Error Occurred</h1>',
             (string) $response->getBody()
         );
-        $this->assertEquals('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
+        $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
     }
     
     /** @test */
@@ -220,7 +222,7 @@ final class HttpErrorHandlerTest extends TestCase
         
         $this->assertSame(429, $response->getStatusCode());
         $this->assertSame('10', $response->getHeaderLine('X-Retry-After'));
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
+        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
     }
     
     /** @test */
@@ -243,7 +245,7 @@ final class HttpErrorHandlerTest extends TestCase
     /** @test */
     public function exceptions_are_logged()
     {
-        $handler = $this->createErrorHandler([], [], false, $logger = new TestLogger());
+        $handler = $this->createErrorHandler([], [], $logger = new TestLogger());
         
         $e = new Exception('secret stuff');
         
@@ -263,31 +265,72 @@ final class HttpErrorHandlerTest extends TestCase
         );
     }
     
+    /** @test */
+    public function a_custom_fallback_display_can_be_provided()
+    {
+        $handler = $this->createErrorHandler([], [], null, new JsonFallbackDisplayer());
+        
+        $e = new Exception('foobar');
+        
+        $response = $handler->handle($e, $this->base_request);
+        
+        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame('custom_fallback_displayer', json_decode((string) $response->getBody()));
+    }
+    
     private function createErrorHandler(
         array $displayers = [],
         array $transformers = [],
-        bool $debug = false,
         LoggerInterface $logger = null,
-        array $log_levels = []
+        Displayer $fallback = null
     ) :HttpErrorHandler {
         $filters = new MultipleFilter(
-            new VerbosityFilter($debug),
+            new VerbosityFilter(false),
             new ContentTypeFilter(),
             new CanDisplayFilter()
         );
         
-        $logger = new RequestAwareLogger($logger ? : new NullLogger(), $log_levels);
+        $logger = new RequestAwareLogger($logger ? : new NullLogger(), []);
         
-        $information_provider = new HttpInformationProvider($this->error_data, ...$transformers);
+        $information_provider = new HttpInformationProvider(
+            $this->error_data,
+            $this->identifier,
+            ...$transformers
+        );
         
         return new HttpErrorHandler(
             $this->response_factory,
             $filters,
             $logger,
-            $this->identifier,
             $information_provider,
+            $fallback ? : new FallbackDisplayer(),
             $displayers
         );
+    }
+    
+}
+
+class JsonFallbackDisplayer implements Displayer
+{
+    
+    public function display(ExceptionInformation $exception_information) :string
+    {
+        return json_encode('custom_fallback_displayer');
+    }
+    
+    public function supportedContentType() :string
+    {
+        return 'application/json';
+    }
+    
+    public function isVerbose() :bool
+    {
+        return false;
+    }
+    
+    public function canDisplay(ExceptionInformation $exception_information) :bool
+    {
+        return true;
     }
     
 }

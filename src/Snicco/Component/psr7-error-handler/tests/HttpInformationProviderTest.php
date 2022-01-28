@@ -9,9 +9,10 @@ use RuntimeException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
-use Snicco\Component\Psr7ErrorHandler\Transformer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\Psr7ErrorHandler\IdentifiedThrowable;
+use Snicco\Component\Psr7ErrorHandler\ExceptionIdentifier;
+use Snicco\Component\Psr7ErrorHandler\ExceptionTransformer;
+use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Information\HttpInformationProvider;
 
@@ -30,23 +31,23 @@ final class HttpInformationProviderTest extends TestCase
                 'title' => 'Internal Server Error',
                 'details' => 'no details for you.',
             ],
-        ]);
+        ], new StubIdentifier('foobar_exception'));
         
         $e = new HttpException(404, 'secret stuff here');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertInstanceOf(ExceptionInformation::class, $information);
         $this->assertEquals(404, $information->statusCode());
         $this->assertEquals('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('Not Found', $information->title());
         $this->assertSame(
             'The requested resource could not be found but may be available again in the future.',
             $information->safeDetails()
         );
-        $this->assertSame($e, $information->original());
-        $this->assertSame($e, $information->transformed());
+        $this->assertSame($e, $information->originalException());
+        $this->assertSame($e, $information->transformedException());
     }
     
     /** @test */
@@ -60,7 +61,7 @@ final class HttpInformationProviderTest extends TestCase
                 'title' => 'Not Found',
                 'details' => 'The requested resource could not be found but may be available again in the future.',
             ],
-        ]);
+        ], new StubIdentifier('foo'));
     }
     
     /** @test */
@@ -68,23 +69,23 @@ final class HttpInformationProviderTest extends TestCase
     {
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
-        ], new RuntimeToAuthTransformer());
+        ], new StubIdentifier('foobar_e'), new RuntimeToAuthTransformer());
         
         $e = new RuntimeException('transform_me');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertEquals(401, $information->statusCode());
-        $this->assertEquals('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertEquals('foobar_e', $information->identifier());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('Unauthorized', $information->title());
         $this->assertSame(
             'You need to log-in first.',
             $information->safeDetails()
         );
-        $this->assertSame($e, $information->original());
+        $this->assertSame($e, $information->originalException());
         
-        $transformed = $information->transformed();
+        $transformed = $information->transformedException();
         
         $this->assertNotSame($e, $transformed);
         $this->assertInstanceOf(HttpException::class, $transformed);
@@ -96,15 +97,15 @@ final class HttpInformationProviderTest extends TestCase
     {
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
-        ], new RuntimeToAuthTransformer());
+        ], new StubIdentifier('foo_id'), new RuntimeToAuthTransformer());
         
         $e = new RuntimeException('dont_transform_me');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertEquals(500, $information->statusCode());
-        $this->assertEquals('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertEquals('foo_id', $information->identifier());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('Internal Server Error', $information->title());
     }
     
@@ -114,15 +115,15 @@ final class HttpInformationProviderTest extends TestCase
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
             403 => ['title' => 'Forbidden', 'details' => 'You cant do this.'],
-        ], new RuntimeToAuthTransformer(), new LastTransformer());
+        ], new StubIdentifier('foo'), new RuntimeToAuthTransformer(), new LastTransformer());
         
         $e = new RuntimeException('transform_me');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertSame(403, $information->statusCode());
-        $this->assertSame('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertSame('foo', $information->identifier());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('Forbidden', $information->title());
         $this->assertSame('You cant do this.', $information->safeDetails());
     }
@@ -137,11 +138,10 @@ final class HttpInformationProviderTest extends TestCase
         
         $e = new UserFacingException('Secret stuff here');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertSame(500, $information->statusCode());
-        $this->assertSame('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('Foo title', $information->title());
         $this->assertSame('Bar details', $information->safeDetails());
     }
@@ -151,15 +151,15 @@ final class HttpInformationProviderTest extends TestCase
     {
         $provider = $this->newProvider([
             403 => ['title' => 'Forbidden', 'details' => 'You cant do this.'],
-        ], new TransformEverythingTo403());
+        ], new StubIdentifier('foobar_id'), new TransformEverythingTo403());
         
         $e = new UserFacingException('Secret stuff here');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertSame(403, $information->statusCode());
-        $this->assertSame('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertSame('foobar_id', $information->identifier());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('Foo title', $information->title());
         $this->assertSame('Bar details', $information->safeDetails());
     }
@@ -167,20 +167,21 @@ final class HttpInformationProviderTest extends TestCase
     /** @test */
     public function a_transformed_user_facing_exception_has_priority_over_a_provided_user_facing_exception()
     {
-        $provider = $this->newProvider([], new ToUserFacingException());
+        $provider =
+            $this->newProvider([], new StubIdentifier('foo_id'), new ToUserFacingException());
         
         $e = new UserFacingException('Secret stuff here');
         
-        $information = $provider->provideFor(new IdentifiedThrowable($e, 'foobar_exception'));
+        $information = $provider->provideFor($e);
         
         $this->assertSame(500, $information->statusCode());
-        $this->assertSame('foobar_exception', $information->identifier());
-        $this->assertSame($e, $information->original());
+        $this->assertSame('foo_id', $information->identifier());
+        $this->assertSame($e, $information->originalException());
         $this->assertSame('transformed_user_facing_title', $information->title());
         $this->assertSame('transformed_user_facing_details', $information->safeDetails());
     }
     
-    private function newProvider(array $data = [], Transformer ...$transformer) :HttpInformationProvider
+    private function newProvider(array $data = [], ExceptionIdentifier $identifier = null, ExceptionTransformer ...$transformer) :HttpInformationProvider
     {
         if ( ! isset($data[500])) {
             $data[500] = [
@@ -188,12 +189,34 @@ final class HttpInformationProviderTest extends TestCase
                 'details' => 'An error has occurred and this resource cannot be displayed.',
             ];
         }
-        return new HttpInformationProvider($data, ...$transformer);
+        return new HttpInformationProvider(
+            $data,
+            $identifier ? : new SplHashIdentifier(),
+            ...
+            $transformer
+        );
     }
     
 }
 
-class ToUserFacingException implements Transformer
+class StubIdentifier implements ExceptionIdentifier
+{
+    
+    private string $stub_id;
+    
+    public function __construct(string $stub_id)
+    {
+        $this->stub_id = $stub_id;
+    }
+    
+    public function identify(Throwable $e) :string
+    {
+        return $this->stub_id;
+    }
+    
+}
+
+class ToUserFacingException implements ExceptionTransformer
 {
     
     public function transform(Throwable $e) :Throwable
@@ -203,7 +226,7 @@ class ToUserFacingException implements Transformer
     
 }
 
-class TransformEverythingTo403 implements Transformer
+class TransformEverythingTo403 implements ExceptionTransformer
 {
     
     public function transform(Throwable $e) :Throwable
@@ -228,7 +251,7 @@ class UserFacingException extends RuntimeException implements UserFacing
     
 }
 
-class LastTransformer implements Transformer
+class LastTransformer implements ExceptionTransformer
 {
     
     public function transform(Throwable $e) :Throwable
@@ -238,7 +261,7 @@ class LastTransformer implements Transformer
     
 }
 
-class RuntimeToAuthTransformer implements Transformer
+class RuntimeToAuthTransformer implements ExceptionTransformer
 {
     
     public function transform(Throwable $e) :Throwable
