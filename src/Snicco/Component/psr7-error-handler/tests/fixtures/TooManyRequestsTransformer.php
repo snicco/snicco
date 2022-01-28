@@ -6,7 +6,7 @@ namespace Snicco\Component\Psr7ErrorHandler\Tests\fixtures;
 
 use Throwable;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\Psr7ErrorHandler\ExceptionTransformer;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 
 final class TooManyRequestsTransformer implements ExceptionTransformer
 {

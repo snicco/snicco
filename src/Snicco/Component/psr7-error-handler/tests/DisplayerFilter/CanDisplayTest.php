@@ -2,61 +2,60 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Psr7ErrorHandler\Tests\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Tests\DisplayerFilter;
 
 use RuntimeException;
+use InvalidArgumentException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Psr7ErrorHandler\Displayer;
-use Snicco\Component\Psr7ErrorHandler\Filter\ContentTypeFilter;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\CanDisplay;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
-use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextDisplayer2;
 
 use function array_values;
 
-final class ContentTypeFilterTest extends TestCase
+final class CanDisplayTest extends TestCase
 {
     
     /** @test */
     public function all_displayers_that_can_display_are_included()
     {
-        $filter = new ContentTypeFilter();
+        $filter = new CanDisplay();
         $displayers = [
-            $d1 = new PlaintTextDisplayer1(),
-            $d2 = new PlainTextDisplayer2(),
-            $d3 = new JsonDisplayer1(),
-            $d4 = new JsonDisplayer2(),
+            $d1 = new CanDisplayRuntimeException(),
+            $d2 = new CanDisplayRuntimeException2(),
+            $d3 = new CanDisplayInvalidArgException(),
         ];
         
         $e = new RuntimeException();
-        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e);
         $request = new ServerRequest('GET', '/foo');
         
         $filtered = $filter->filter(
             $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
+            $request,
+            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e)
         );
         
-        $this->assertSame([$d1, $d2], array_values($filtered));
+        $this->assertSame([$d1, $d2], $filtered);
+        
+        $e = new InvalidArgumentException();
         
         $filtered = $filter->filter(
             $displayers,
-            $request->withHeader('Accept', 'application/json'),
-            $info,
+            $request,
+            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e)
         );
         
-        $this->assertSame([$d3, $d4], array_values($filtered));
+        $this->assertSame([$d3], array_values($filtered));
     }
     
 }
 
-class PlaintTextDisplayer1 implements Displayer
+class CanDisplayRuntimeException implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
     {
-        return '';
     }
     
     public function supportedContentType() :string
@@ -71,17 +70,16 @@ class PlaintTextDisplayer1 implements Displayer
     
     public function canDisplay(ExceptionInformation $exception_information) :bool
     {
-        return true;
+        return $exception_information->originalException() instanceof RuntimeException;
     }
     
 }
 
-class PlaintTextDisplayer2 implements Displayer
+class CanDisplayRuntimeException2 implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
     {
-        return '';
     }
     
     public function supportedContentType() :string
@@ -96,22 +94,21 @@ class PlaintTextDisplayer2 implements Displayer
     
     public function canDisplay(ExceptionInformation $exception_information) :bool
     {
-        return true;
+        return $exception_information->originalException() instanceof RuntimeException;
     }
     
 }
 
-class JsonDisplayer1 implements Displayer
+class CanDisplayInvalidArgException implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
     {
-        return '';
     }
     
     public function supportedContentType() :string
     {
-        return 'application/json';
+        return 'text/plain';
     }
     
     public function isVerbose() :bool
@@ -121,32 +118,7 @@ class JsonDisplayer1 implements Displayer
     
     public function canDisplay(ExceptionInformation $exception_information) :bool
     {
-        return true;
-    }
-    
-}
-
-class JsonDisplayer2 implements Displayer
-{
-    
-    public function display(ExceptionInformation $exception_information) :string
-    {
-        return '';
-    }
-    
-    public function supportedContentType() :string
-    {
-        return 'application/json';
-    }
-    
-    public function isVerbose() :bool
-    {
-        return false;
-    }
-    
-    public function canDisplay(ExceptionInformation $exception_information) :bool
-    {
-        return true;
+        return $exception_information->originalException() instanceof InvalidArgumentException;
     }
     
 }

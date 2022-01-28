@@ -13,24 +13,24 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\Component\Psr7ErrorHandler\Displayer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
-use Snicco\Component\Psr7ErrorHandler\Filter\MultipleFilter;
-use Snicco\Component\Psr7ErrorHandler\Filter\VerbosityFilter;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
-use Snicco\Component\Psr7ErrorHandler\Filter\CanDisplayFilter;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\SlowDown;
-use Snicco\Component\Psr7ErrorHandler\Filter\ContentTypeFilter;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\CanDisplay;
 use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
-use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\JsonDisplayer;
+use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
-use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextDisplayer;
-use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextDisplayer2;
-use Snicco\Component\Psr7ErrorHandler\Information\HttpInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\TransformContentType;
+use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\JsonExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\TooManyRequestsTransformer;
+use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer;
+use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer2;
 
 use function dirname;
 use function json_decode;
@@ -109,7 +109,7 @@ final class HttpErrorHandlerTest extends TestCase
     {
         $e = new Exception('Secret message here.');
         
-        $response = $this->createErrorHandler([new PlainTextDisplayer()])->handle(
+        $response = $this->createErrorHandler([new PlainTextExceptionDisplayer()])->handle(
             $e,
             $this->base_request->withHeader('Accept', 'text/plain'),
         );
@@ -132,7 +132,7 @@ final class HttpErrorHandlerTest extends TestCase
     {
         $e = new Exception('Secret message here.');
         
-        $response = $this->createErrorHandler([new PlainTextDisplayer(false)])
+        $response = $this->createErrorHandler([new PlainTextExceptionDisplayer(false)])
                          ->handle(
                              $e,
                              $this->base_request->withHeader('Accept', 'text/plain'),
@@ -153,9 +153,9 @@ final class HttpErrorHandlerTest extends TestCase
         $e = new Exception('Secret message here.');
         
         $handler = $this->createErrorHandler([
-            new PlainTextDisplayer(),
-            new PlainTextDisplayer2(),
-            new JsonDisplayer(),
+            new PlainTextExceptionDisplayer(),
+            new PlainTextExceptionDisplayer2(),
+            new JsonExceptionDisplayer(),
         ]);
         
         $response = $handler->handle(
@@ -170,9 +170,9 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertStringNotContainsString('plain_text2', $body);
         
         $handler = $this->createErrorHandler([
-            new PlainTextDisplayer(false),
-            new PlainTextDisplayer2(),
-            new JsonDisplayer(),
+            new PlainTextExceptionDisplayer(false),
+            new PlainTextExceptionDisplayer2(),
+            new JsonExceptionDisplayer(),
         ]);
         
         $response = $handler->handle(
@@ -188,9 +188,9 @@ final class HttpErrorHandlerTest extends TestCase
         
         $e = new Exception('Secret message here.');
         $handler = $this->createErrorHandler([
-                new PlainTextDisplayer(),
-                new PlainTextDisplayer2(),
-                new JsonDisplayer(),
+                new PlainTextExceptionDisplayer(),
+                new PlainTextExceptionDisplayer2(),
+                new JsonExceptionDisplayer(),
             ]
         );
         $response = $handler->handle(
@@ -229,7 +229,7 @@ final class HttpErrorHandlerTest extends TestCase
     public function the_content_type_header_can_not_be_overwritten_by_a_transformer()
     {
         $handler = $this->createErrorHandler(
-            [new PlainTextDisplayer()],
+            [new PlainTextExceptionDisplayer()],
             [new TransformContentType()]
         );
         
@@ -268,7 +268,7 @@ final class HttpErrorHandlerTest extends TestCase
     /** @test */
     public function a_custom_fallback_display_can_be_provided()
     {
-        $handler = $this->createErrorHandler([], [], null, new JsonFallbackDisplayer());
+        $handler = $this->createErrorHandler([], [], null, new JsonFallbackExceptionDisplayer());
         
         $e = new Exception('foobar');
         
@@ -282,17 +282,17 @@ final class HttpErrorHandlerTest extends TestCase
         array $displayers = [],
         array $transformers = [],
         LoggerInterface $logger = null,
-        Displayer $fallback = null
+        ExceptionDisplayer $fallback = null
     ) :HttpErrorHandler {
-        $filters = new MultipleFilter(
-            new VerbosityFilter(false),
-            new ContentTypeFilter(),
-            new CanDisplayFilter()
+        $filters = new Delegating(
+            new Verbosity(false),
+            new ContentType(),
+            new CanDisplay()
         );
         
         $logger = new RequestAwareLogger($logger ? : new NullLogger(), []);
         
-        $information_provider = new HttpInformationProvider(
+        $information_provider = new TransformableInformationProvider(
             $this->error_data,
             $this->identifier,
             ...$transformers
@@ -310,7 +310,7 @@ final class HttpErrorHandlerTest extends TestCase
     
 }
 
-class JsonFallbackDisplayer implements Displayer
+class JsonFallbackExceptionDisplayer implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string

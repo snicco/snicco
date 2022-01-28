@@ -2,60 +2,111 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Psr7ErrorHandler\Tests\Filter;
+namespace Snicco\Component\Psr7ErrorHandler\Tests\DisplayerFilter;
 
 use RuntimeException;
-use InvalidArgumentException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Psr7ErrorHandler\Displayer;
-use Snicco\Component\Psr7ErrorHandler\Filter\CanDisplayFilter;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
+use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_values;
 
-final class CanDisplayFilterTest extends TestCase
+final class VerbosityTest extends TestCase
 {
     
     /** @test */
     public function all_displayers_that_can_display_are_included()
     {
-        $filter = new CanDisplayFilter();
+        $filter = new Verbosity(true);
         $displayers = [
-            $d1 = new CanDisplayRuntimeException(),
-            $d2 = new CanDisplayRuntimeException2(),
-            $d3 = new CanDisplayInvalidArgException(),
+            $d1 = new Verbose1(),
+            $d2 = new Verbose2(),
+            $d3 = new NonVerbose1(),
+            $d4 = new NonVerbose2(),
         ];
         
         $e = new RuntimeException();
+        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e);
         $request = new ServerRequest('GET', '/foo');
         
         $filtered = $filter->filter(
             $displayers,
-            $request,
-            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e)
+            $request->withHeader('Accept', 'text/plain'),
+            $info,
         );
         
-        $this->assertSame([$d1, $d2], $filtered);
+        $this->assertSame([$d1, $d2, $d3, $d4], array_values($filtered));
         
-        $e = new InvalidArgumentException();
-        
+        $filter = new Verbosity(false);
         $filtered = $filter->filter(
             $displayers,
-            $request,
-            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e)
+            $request->withHeader('Accept', 'text/plain'),
+            $info,
         );
         
-        $this->assertSame([$d3], array_values($filtered));
+        $this->assertSame([$d3, $d4], array_values($filtered));
     }
     
 }
 
-class CanDisplayRuntimeException implements Displayer
+class Verbose1 implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
     {
+        return '';
+    }
+    
+    public function supportedContentType() :string
+    {
+        return 'text/plain';
+    }
+    
+    public function isVerbose() :bool
+    {
+        return true;
+    }
+    
+    public function canDisplay(ExceptionInformation $exception_information) :bool
+    {
+        return true;
+    }
+    
+}
+
+class Verbose2 implements ExceptionDisplayer
+{
+    
+    public function display(ExceptionInformation $exception_information) :string
+    {
+        return '';
+    }
+    
+    public function supportedContentType() :string
+    {
+        return 'text/plain';
+    }
+    
+    public function isVerbose() :bool
+    {
+        return true;
+    }
+    
+    public function canDisplay(ExceptionInformation $exception_information) :bool
+    {
+        return true;
+    }
+    
+}
+
+class NonVerbose1 implements ExceptionDisplayer
+{
+    
+    public function display(ExceptionInformation $exception_information) :string
+    {
+        return '';
     }
     
     public function supportedContentType() :string
@@ -70,16 +121,17 @@ class CanDisplayRuntimeException implements Displayer
     
     public function canDisplay(ExceptionInformation $exception_information) :bool
     {
-        return $exception_information->originalException() instanceof RuntimeException;
+        return true;
     }
     
 }
 
-class CanDisplayRuntimeException2 implements Displayer
+class NonVerbose2 implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
     {
+        return '';
     }
     
     public function supportedContentType() :string
@@ -94,31 +146,7 @@ class CanDisplayRuntimeException2 implements Displayer
     
     public function canDisplay(ExceptionInformation $exception_information) :bool
     {
-        return $exception_information->originalException() instanceof RuntimeException;
-    }
-    
-}
-
-class CanDisplayInvalidArgException implements Displayer
-{
-    
-    public function display(ExceptionInformation $exception_information) :string
-    {
-    }
-    
-    public function supportedContentType() :string
-    {
-        return 'text/plain';
-    }
-    
-    public function isVerbose() :bool
-    {
-        return false;
-    }
-    
-    public function canDisplay(ExceptionInformation $exception_information) :bool
-    {
-        return $exception_information->originalException() instanceof InvalidArgumentException;
+        return true;
     }
     
 }

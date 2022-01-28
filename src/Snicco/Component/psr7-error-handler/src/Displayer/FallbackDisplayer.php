@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Displayer;
 
-use Snicco\Component\Psr7ErrorHandler\Displayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 /**
  * @api
  */
-final class FallbackDisplayer implements Displayer
+final class FallbackDisplayer implements ExceptionDisplayer
 {
     
     public function display(ExceptionInformation $exception_information) :string
