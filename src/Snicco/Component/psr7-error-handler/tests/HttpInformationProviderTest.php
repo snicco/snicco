@@ -25,11 +25,11 @@ final class HttpInformationProviderTest extends TestCase
         $provider = new TransformableInformationProvider([
             404 => [
                 'title' => 'Not Found',
-                'details' => 'The requested resource could not be found but may be available again in the future.',
+                'message' => 'The requested resource could not be found but may be available again in the future.',
             ],
             500 => [
                 'title' => 'Internal Server Error',
-                'details' => 'no details for you.',
+                'message' => 'no message for you.',
             ],
         ], new StubIdentifier('foobar_exception'));
         
@@ -59,7 +59,7 @@ final class HttpInformationProviderTest extends TestCase
         $provider = new TransformableInformationProvider([
             404 => [
                 'title' => 'Not Found',
-                'details' => 'The requested resource could not be found but may be available again in the future.',
+                'message' => 'The requested resource could not be found but may be available again in the future.',
             ],
         ], new StubIdentifier('foo'));
     }
@@ -68,7 +68,7 @@ final class HttpInformationProviderTest extends TestCase
     public function exceptions_can_be_transformed()
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
+            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
         ], new StubIdentifier('foobar_e'), new RuntimeToAuthTransformer());
         
         $e = new RuntimeException('transform_me');
@@ -96,7 +96,7 @@ final class HttpInformationProviderTest extends TestCase
     public function exceptions_will_only_be_transformed_if_a_transformer_decides_so()
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
+            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
         ], new StubIdentifier('foo_id'), new RuntimeToAuthTransformer());
         
         $e = new RuntimeException('dont_transform_me');
@@ -113,8 +113,8 @@ final class HttpInformationProviderTest extends TestCase
     public function multiple_transformers_can_be_used_in_the_same_order_they_were_run()
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
-            403 => ['title' => 'Forbidden', 'details' => 'You cant do this.'],
+            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
+            403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
         ], new StubIdentifier('foo'), new RuntimeToAuthTransformer(), new LastTransformer());
         
         $e = new RuntimeException('transform_me');
@@ -129,11 +129,11 @@ final class HttpInformationProviderTest extends TestCase
     }
     
     /** @test */
-    public function exceptions_that_implement_user_facing_will_be_used_to_get_the_title_and_details()
+    public function exceptions_that_implement_user_facing_will_be_used_to_get_the_title_and_message()
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'details' => 'You need to log-in first.'],
-            403 => ['title' => 'Forbidden', 'details' => 'You cant do this.'],
+            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
+            403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
         ]);
         
         $e = new UserFacingException('Secret stuff here');
@@ -143,14 +143,14 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame(500, $information->statusCode());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('Foo title', $information->title());
-        $this->assertSame('Bar details', $information->safeDetails());
+        $this->assertSame('Bar message', $information->safeDetails());
     }
     
     /** @test */
     public function user_facing_exceptions_will_be_used_even_if_a_transformer_transforms_them()
     {
         $provider = $this->newProvider([
-            403 => ['title' => 'Forbidden', 'details' => 'You cant do this.'],
+            403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
         ], new StubIdentifier('foobar_id'), new TransformEverythingTo403());
         
         $e = new UserFacingException('Secret stuff here');
@@ -161,7 +161,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('foobar_id', $information->identifier());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('Foo title', $information->title());
-        $this->assertSame('Bar details', $information->safeDetails());
+        $this->assertSame('Bar message', $information->safeDetails());
     }
     
     /** @test */
@@ -178,7 +178,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('foo_id', $information->identifier());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('transformed_user_facing_title', $information->title());
-        $this->assertSame('transformed_user_facing_details', $information->safeDetails());
+        $this->assertSame('transformed_user_facing_message', $information->safeDetails());
     }
     
     private function newProvider(array $data = [], ExceptionIdentifier $identifier = null, ExceptionTransformer ...$transformer) :TransformableInformationProvider
@@ -186,7 +186,7 @@ final class HttpInformationProviderTest extends TestCase
         if ( ! isset($data[500])) {
             $data[500] = [
                 'title' => 'Internal Server Error',
-                'details' => 'An error has occurred and this resource cannot be displayed.',
+                'message' => 'An error has occurred and this resource cannot be displayed.',
             ];
         }
         return new TransformableInformationProvider(
@@ -244,9 +244,9 @@ class UserFacingException extends RuntimeException implements UserFacing
         return 'Foo title';
     }
     
-    public function safeDetails() :string
+    public function safeMessage() :string
     {
-        return 'Bar details';
+        return 'Bar message';
     }
     
 }
@@ -282,9 +282,9 @@ class TransformedUserFacingException extends RuntimeException implements UserFac
         return 'transformed_user_facing_title';
     }
     
-    public function safeDetails() :string
+    public function safeMessage() :string
     {
-        return 'transformed_user_facing_details';
+        return 'transformed_user_facing_message';
     }
     
 }
