@@ -12,8 +12,8 @@ use Snicco\Component\HttpRouting\Http\ErrorHandler\Log\RequestAwareLogger;
 
 use function sprintf;
 use function strtolower;
-use function htmlentities;
 use function array_values;
+use function htmlentities;
 
 use const ENT_QUOTES;
 
@@ -67,10 +67,11 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $this->logger->log($e, $request, $id);
         
         $transformed = $this->transform($e);
-        $displayer = $this->findPreferredDisplayer($request, $transformed);
+        
+        $displayer = $this->findBestDisplayer($request, $transformed);
         
         if ( ! $displayer) {
-            $response = $this->fallbackResponse($transformed);
+            $response = $this->fallbackResponse($transformed, $id);
         }
         else {
             $response = $this->response_factory->createResponse($transformed->statusCode());
@@ -92,7 +93,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $this->displayers[] = $displayer;
     }
     
-    private function findPreferredDisplayer(RequestInterface $request, HttpException $e) :?Displayer
+    private function findBestDisplayer(RequestInterface $request, HttpException $e) :?Displayer
     {
         $displayers = array_values(
             $this->filter->filter($this->displayers, $request, $e)
@@ -125,14 +126,23 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $e;
     }
     
-    private function fallbackResponse(HttpException $transformed) :ResponseInterface
+    private function fallbackResponse(HttpException $transformed, string $id) :ResponseInterface
     {
         $response = $this->response_factory->createResponse($transformed->statusCode());
+        
+        $code = sprintf(
+            "This error can be identified by the code <b>[%s]</b>",
+            htmlentities($id, ENT_QUOTES, 'UTF-8')
+        );
+        
         $response->getBody()->write(
             sprintf(
-                '<h1>%s</h1>',
-                htmlentities($transformed->getMessage(), ENT_QUOTES, 'UTF-8')
-            ),
+                '<h1>%s</h1><p>%s</p><p>%s</p><p>%s</p>',
+                'Oops! An Error Occurred',
+                'Something went wrong on our servers while we were processing your request.',
+                $code,
+                'Sorry for any inconvenience caused'
+            )
         );
         
         return $response->withHeader('content-type', 'text/html; charset=UTF-8');
