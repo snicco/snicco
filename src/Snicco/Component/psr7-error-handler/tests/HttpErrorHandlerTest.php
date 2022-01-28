@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Tests;
 
 use Exception;
+use TypeError;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\Test\TestLogger;
@@ -15,6 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
+use Snicco\Component\Psr7ErrorHandler\Log\RequestContext;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\SlowDown;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
@@ -278,6 +280,67 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertSame('custom_fallback_displayer', json_decode((string) $response->getBody()));
     }
     
+    /** @test */
+    public function an_exception_during_logging_will_be_logged()
+    {
+        $logger = new RequestAwareLogger(
+            $test_logger = new TestLogger(),
+            [],
+            new RequestContextWithException()
+        );
+        
+        $handler = new HttpErrorHandler(
+            $this->response_factory,
+            $logger,
+            new TransformableInformationProvider($this->error_data, $this->identifier),
+            new FallbackDisplayer(),
+            new CanDisplay(),
+        );
+        
+        $e = new Exception('secret stuff');
+        
+        $response = $handler->handle($e, $this->base_request);
+        
+        $this->assertTrue($test_logger->hasCriticalRecords());
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
+        $this->assertStringStartsWith(
+            '<h1>Oops! An Error Occurred</h1>',
+            (string) $response->getBody()
+        );
+    }
+    
+    /** @test */
+    public function an_exception_during_displaying_will_be_converted_into_a_minimal_500_error()
+    {
+        $logger = new RequestAwareLogger(
+            $test_logger = new TestLogger(),
+        );
+        
+        $handler = new HttpErrorHandler(
+            $this->response_factory,
+            $logger,
+            new TransformableInformationProvider($this->error_data, $this->identifier),
+            new DisplayerWithException(),
+            new CanDisplay(),
+        );
+        
+        $e = new Exception('secret stuff');
+        
+        $response = $handler->handle($e, $this->base_request);
+        
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('text/plain', $response->getHeaderLine('content-type'));
+        $this->assertSame(
+            'Internal Server Error',
+            (string) $response->getBody()
+        );
+        
+        $this->assertTrue(
+            $test_logger->hasCriticalThatMatches('/display type error/')
+        );
+    }
+    
     private function createErrorHandler(
         array $displayers = [],
         array $transformers = [],
@@ -300,12 +363,29 @@ final class HttpErrorHandlerTest extends TestCase
         
         return new HttpErrorHandler(
             $this->response_factory,
-            $filters,
             $logger,
             $information_provider,
             $fallback ? : new FallbackDisplayer(),
+            $filters,
             $displayers
         );
+    }
+    
+}
+
+class RequestContextWithException implements RequestContext
+{
+    
+    private int $count = 0;
+    
+    public function add(array $context, RequestInterface $request) :array
+    {
+        if ($this->count === 0) {
+            $e = new TypeError('bad bad type error.');
+            $this->count++;
+            throw $e;
+        }
+        return $context;
     }
     
 }
@@ -335,3 +415,27 @@ class JsonFallbackExceptionDisplayer implements ExceptionDisplayer
     
 }
 
+class DisplayerWithException implements ExceptionDisplayer
+{
+    
+    public function display(ExceptionInformation $exception_information) :string
+    {
+        throw new TypeError("display type error.");
+    }
+    
+    public function supportedContentType() :string
+    {
+        return 'text/html';
+    }
+    
+    public function isVerbose() :bool
+    {
+        return false;
+    }
+    
+    public function canDisplay(ExceptionInformation $exception_information) :bool
+    {
+        return true;
+    }
+    
+}

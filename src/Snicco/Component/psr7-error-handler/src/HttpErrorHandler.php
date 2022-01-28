@@ -11,8 +11,8 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Filter;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
-use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function strtolower;
 use function array_values;
@@ -39,10 +39,10 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
      */
     public function __construct(
         ResponseFactoryInterface $response_factory,
-        Filter $filter,
         RequestAwareLogger $logger,
         InformationProvider $information_provider,
         ExceptionDisplayer $default_displayer,
+        Filter $filter,
         array $displayers = []
     ) {
         $this->response_factory = $response_factory;
@@ -60,12 +60,20 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
     {
         $info = $this->information_provider->createFor($e);
         
-        $this->logException($info, $request);
+        try {
+            $this->logException($info, $request);
+        } catch (Throwable $logging_error) {
+            $this->logException($this->information_provider->createFor($logging_error), $request);
+        }
         
-        $response = $this->createResponse(
-            $info,
-            $this->findBestDisplayer($request, $info)
-        );
+        try {
+            $response = $this->createResponse(
+                $info,
+                $this->findBestDisplayer($request, $info)
+            );
+        } catch (Throwable $display_error) {
+            return $this->handleDisplayError($display_error, $request);
+        }
         
         return $this->withHttpHeaders($info->transformedException(), $response);
     }
@@ -114,6 +122,15 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
             }
         }
         return $response;
+    }
+    
+    private function handleDisplayError($display_error, RequestInterface $request) :ResponseInterface
+    {
+        $info = $this->information_provider->createFor($display_error);
+        $this->logException($info, $request);
+        $res = $this->response_factory->createResponse(500);
+        $res->getBody()->write('Internal Server Error');
+        return $res->withHeader('content-type', 'text/plain');
     }
     
 }
