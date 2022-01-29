@@ -6,25 +6,33 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
 
+use function dirname;
+
 class ViewRoutesTest extends RoutingTestCase
 {
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->view = dirname(__DIR__).'/fixtures/templates/greeting.php';
+    }
     
     /** @test */
     public function view_routes_work()
     {
         $this->routeConfigurator()->view(
             '/foo',
-            SHARED_FIXTURES_DIR.'/views/welcome.wordpress.php'
+            $this->view
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
-        $response->assertSee('Welcome to Wordpress');
-        $response->assertIsHtml();
         $response->assertOk();
+        $response->assertSeeHtml('Hello World');
+        $response->assertIsHtml();
         
-        $this->assertSame('/foo', $this->generator->toRoute('view:welcome.wordpress.php'));
+        $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
     }
     
     /** @test */
@@ -32,23 +40,21 @@ class ViewRoutesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->view(
             '/foo',
-            SHARED_FIXTURES_DIR.'/views/view-with-context.php',
-            [
-                'world' => 'WORLD',
-            ],
-            201,
-            ['Referer' => 'foobar']
+            $this->view,
+            ['greet' => 'Calvin'],
+            200,
+            ['X-FOO' => 'BAR']
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
-        $response->assertSee('Hello WORLD');
+        $response->assertOk();
+        $response->assertSeeHtml('Hello Calvin');
         $response->assertIsHtml();
-        $response->assertStatus(201);
-        $response->assertHeader('referer', 'foobar');
+        $response->assertHeader('X-FOO', 'BAR');
         
-        $this->assertSame('/foo', $this->generator->toRoute('view:view-with-context.php'));
+        $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
     }
     
 }

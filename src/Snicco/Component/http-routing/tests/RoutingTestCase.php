@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Testing\TestResponse;
-use Psr\Container\ContainerInterface;
 use Snicco\Component\Core\DIContainer;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Component\Core\Utils\PHPCacheFile;
@@ -15,6 +13,7 @@ use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\HttpKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Testing\TestResponse;
 use Snicco\Component\HttpRouting\Middleware\ShareCookies;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
@@ -27,8 +26,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Snicco\Component\HttpRouting\Middleware\Internal\RouteRunner;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -37,6 +38,7 @@ use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareStack;
 use Snicco\Component\HttpRouting\Middleware\Internal\PrepareResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\Component\HttpRouting\Middleware\Internal\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
@@ -61,13 +63,14 @@ class RoutingTestCase extends TestCase
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
     use CreateTestPsrContainer;
+    use CreateHttpErrorHandler;
     
     const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
     
     protected string                  $app_domain = 'foobar.com';
     protected string                  $routes_dir;
     protected ResponseFactory         $response_factory;
-    protected ContainerInterface      $container;
+    protected DIContainer             $container;
     protected TestableEventDispatcher $event_dispatcher;
     protected UrlGenerator            $generator;
     
@@ -247,8 +250,9 @@ class RoutingTestCase extends TestCase
         $this->container->instance(Redirector::class, $this->response_factory);
         $this->container->instance(StreamFactoryInterface::class, $this->response_factory);
         
-        $error_handler = new NullExceptionHandler();
-        $this->container->instance(ExceptionHandler::class, $error_handler);
+        //$error_handler = $this->createHttpErrorHandler($this->response_factory);
+        $error_handler = new NullErrorHandler();
+        $this->container->instance(HttpErrorHandlerInterface::class, $error_handler);
         
         $this->kernel = new HttpKernel(
             $this->pipeline = new MiddlewarePipeline(
@@ -270,7 +274,6 @@ class RoutingTestCase extends TestCase
         );
         
         $this->container->instance(MethodOverride::class, new MethodOverride());
-        
         $this->container->singleton(RoutingMiddleware::class, function () {
             return new RoutingMiddleware(
                 $this->router,
@@ -293,6 +296,7 @@ class RoutingTestCase extends TestCase
             MustMatchRoute::class,
             new MustMatchRoute()
         );
+        
         $this->container->instance(ShareCookies::class, new ShareCookies());
         
         // internal controllers

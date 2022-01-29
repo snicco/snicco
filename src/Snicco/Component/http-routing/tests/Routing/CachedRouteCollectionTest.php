@@ -7,12 +7,12 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 use stdClass;
 use LogicException;
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
-final class CachedRouteCollectionTest extends UnitTest
+final class CachedRouteCollectionTest extends TestCase
 {
     
     /** @test */

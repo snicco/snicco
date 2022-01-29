@@ -9,6 +9,8 @@ use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 
+use function ltrim;
+use function strpos;
 use function parse_str;
 use function array_merge;
 
@@ -29,6 +31,10 @@ trait CreatesPsrRequests
     
     final protected function frontendRequest(string $path, array $server = [], string $method = 'GET') :Request
     {
+        if (false === strpos($path, 'http')) {
+            $path = '/'.ltrim($path, '/');
+        }
+        
         $method = strtoupper($method);
         $uri = $this->createUri($path);
         

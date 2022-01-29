@@ -15,9 +15,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 class RouteAttributesTest extends RoutingTestCase
 {
     
-    /**
-     * @test
-     */
+    /** @test */
     public function exceptions_are_thrown_for_static_routes_that_shadow_each_other()
     {
         $this->expectException(BadRouteConfiguration::class);
@@ -39,12 +37,12 @@ class RouteAttributesTest extends RoutingTestCase
     }
     
     /** @test */
-    public function non_allowed_methods_are_transformed_to_a_405_response()
+    public function non_allowed_methods_throw_a_405_exception()
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         $this->routeConfigurator()->get('route2', '/foo/{bar}', RoutingTestController::class);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         try {
             $this->runKernel($request);
             $this->fail("Expected exception.");
@@ -52,7 +50,7 @@ class RouteAttributesTest extends RoutingTestCase
             $this->assertStringContainsString('/foo', $e->getMessage());
         }
         
-        $request = $this->frontendRequest('POST', '/foo/bar');
+        $request = $this->frontendRequest('/foo/bar', [], 'POST');
         try {
             $this->runKernel($request);
             $this->fail("Expected exception.");
@@ -66,10 +64,10 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('HEAD', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'HEAD');
         
         $response = $this->runKernel($request);
-        $response->assertOk()->assertSee('');
+        $response->assertOk()->assertBodyExact('');
     }
     
     /** @test */
@@ -77,7 +75,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->post('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -85,7 +83,7 @@ class RouteAttributesTest extends RoutingTestCase
     public function basic_put_routing_works()
     {
         $this->routeConfigurator()->put('foo', '/foo', RoutingTestController::class);
-        $request = $this->frontendRequest('PUT', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'PUT');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -94,7 +92,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->patch('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('PATCH', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'PATCH');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -103,7 +101,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->delete('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('DELETE', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'DELETE');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -112,7 +110,7 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->options('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('OPTIONS', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'OPTIONS');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -121,22 +119,22 @@ class RouteAttributesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->any('foo', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'GET');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('PUT', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'PUT');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('PATCH', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'PATCH');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('DELETE', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'DELETE');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('OPTIONS', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'OPTIONS');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -150,13 +148,13 @@ class RouteAttributesTest extends RoutingTestCase
             RoutingTestController::class
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'GET');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('PUT', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'PUT');
         $this->expectException(MethodNotAllowed::class);
         $this->runKernel($request);
     }
@@ -164,22 +162,22 @@ class RouteAttributesTest extends RoutingTestCase
     /** @test */
     public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence()
     {
-        $this->routeConfigurator()->post(
+        $this->routeConfigurator()->get(
             'static',
             '/foo/baz',
             [RoutingTestController::class, 'static']
         );
         
-        $this->routeConfigurator()->post(
+        $this->routeConfigurator()->get(
             'dynamic',
             '/foo/{dynamic}',
             [RoutingTestController::class, 'dynamic']
         );
         
-        $request = $this->frontendRequest('POST', '/foo/baz');
+        $request = $this->frontendRequest('/foo/baz');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('POST', '/foo/biz');
+        $request = $this->frontendRequest('/foo/biz');
         $this->assertResponseBody(RoutingTestController::dynamic.':biz', $request);
     }
     
@@ -190,7 +188,7 @@ class RouteAttributesTest extends RoutingTestCase
              ->get('foo', '/foo', RoutingTestController::class)
              ->middleware('foo');
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':foo_middleware', $request);
     }
     
@@ -201,7 +199,7 @@ class RouteAttributesTest extends RoutingTestCase
              ->get('foo', '/foo', RoutingTestController::class)
              ->middleware(['foo', 'bar']);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static.':bar_middleware:foo_middleware',
             $request
@@ -215,7 +213,7 @@ class RouteAttributesTest extends RoutingTestCase
              ->get('foo', '/foo', RoutingTestController::class)
              ->middleware(['foo:FOO', 'bar:BAR']);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':BAR:FOO', $request);
     }
     
@@ -227,7 +225,7 @@ class RouteAttributesTest extends RoutingTestCase
         $this->routeConfigurator()->get('foo', '/foo')
              ->middleware(GlobalMiddleware::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('', $request);
         
         $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
@@ -241,7 +239,7 @@ class RouteAttributesTest extends RoutingTestCase
         $this->routeConfigurator()->get('route1', '/foo', RoutingTestController::class);
         $this->routeConfigurator()->get('route2', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('foo1', $request);
     }
     
@@ -251,10 +249,10 @@ class RouteAttributesTest extends RoutingTestCase
         $this->routeConfigurator()->get('route1', '/foo', RoutingTestController::class);
         $this->routeConfigurator()->get('route1', '/bar', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/bar');
+        $request = $this->frontendRequest('/bar');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -273,7 +271,7 @@ class RouteAttributesTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', '/foo')
+            $this->frontendRequest('/foo')
         );
     }
     

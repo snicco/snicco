@@ -6,9 +6,9 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
 class UrlGeneratorTest extends RoutingTestCase
@@ -131,7 +131,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function the_current_scheme_is_used_if_no_explicit_scheme_is_provided()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'https://foo.com'),
+            $this->frontendRequest('https://foo.com'),
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -139,7 +139,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $this->assertSame('https://foo.com/foo', $url);
         
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com'),
+            $this->frontendRequest('http://foo.com'),
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -151,7 +151,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function the_current_scheme_can_be_overwritten()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'https://foo.com')
+            $this->frontendRequest('https://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -159,7 +159,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $this->assertSame('http://foo.com/foo', $url);
         
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com')
+            $this->frontendRequest('http://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -171,7 +171,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function a_scheme_can_be_forced_for_all_generated_urls()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com'),
+            $this->frontendRequest('http://foo.com'),
             true
         );
         
@@ -185,7 +185,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function a_forced_scheme_can_be_explicitly_overwritten()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com'),
+            $this->frontendRequest('http://foo.com'),
             true
         );
         
@@ -199,7 +199,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function a_relative_link_with_a_forced_secure_schema_will_be_absolute_if_the_current_scheme_is_not_secure()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com')
+            $this->frontendRequest('http://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -207,7 +207,7 @@ class UrlGeneratorTest extends RoutingTestCase
         $this->assertSame('https://foo.com/foo', $url);
         
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com'),
+            $this->frontendRequest('http://foo.com'),
             true
         );
         
@@ -220,7 +220,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function a_relative_link_will_not_be_upgraded_to_a_full_url_if_the_request_is_secure()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'https://foo.com')
+            $this->frontendRequest('https://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -233,7 +233,7 @@ class UrlGeneratorTest extends RoutingTestCase
     {
         $generator = $this->refreshUrlGenerator(
             UrlGenerationContext::fromRequest(
-                $this->frontendRequest('GET', 'https://foo.com')
+                $this->frontendRequest('https://foo.com')
             ),
         );
         
@@ -286,14 +286,14 @@ class UrlGeneratorTest extends RoutingTestCase
     public function test_secure()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'https://foo.com')
+            $this->frontendRequest('https://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
         $this->assertSame('https://foo.com/foo', $generator->secure('foo'));
         
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com')
+            $this->frontendRequest('http://foo.com')
         );
         $generator = $this->refreshUrlGenerator($context);
         
@@ -307,7 +307,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function test_absolute_url_with_non_standard_https_port()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'https://foo.com:4000')
+            $this->frontendRequest('https://foo.com:4000')
         );
         $g = $this->refreshUrlGenerator($context);
         
@@ -322,7 +322,7 @@ class UrlGeneratorTest extends RoutingTestCase
     public function test_absolute_url_with_non_standard_http_port()
     {
         $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('GET', 'http://foo.com:8080')
+            $this->frontendRequest('http://foo.com:8080')
         );
         $g = $this->refreshUrlGenerator($context);
         
@@ -336,7 +336,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function the_previous_url_is_returned_as_is()
     {
-        $request = $this->frontendRequest();
+        $request = $this->frontendRequest('/foo');
         $r1 = $request->withAddedHeader('referer', 'https://other-site.com');
         $r2 = $request->withAddedHeader('referer', '/foo');
         
@@ -360,7 +360,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_canonical()
     {
-        $r = $this->frontendRequest('GET', 'https://foobar.com/foo/bar');
+        $r = $this->frontendRequest('https://foobar.com/foo/bar');
         
         $g = $this->refreshUrlGenerator(
             UrlGenerationContext::fromRequest($r)
@@ -372,7 +372,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function the_canonical_stays_url_encoded_and_is_not_double_url_encoded()
     {
-        $r = $this->frontendRequest('GET', 'https://foobar.com/münchen');
+        $r = $this->frontendRequest('https://foobar.com/münchen');
         $g = $this->refreshUrlGenerator(
             UrlGenerationContext::fromRequest($r)
         );
@@ -382,7 +382,7 @@ class UrlGeneratorTest extends RoutingTestCase
     /** @test */
     public function test_full()
     {
-        $r = $this->frontendRequest('GET', 'http://foobar.com:8080/foo/bar?city=münchen#section1');
+        $r = $this->frontendRequest('http://foobar.com:8080/foo/bar?city=münchen#section1');
         
         $g = $this->refreshUrlGenerator(
             UrlGenerationContext::fromRequest($r)
@@ -437,14 +437,13 @@ class UrlGeneratorTest extends RoutingTestCase
                  $this->routeConfigurator()->name('bar')->group(function () {
                      $this->routeConfigurator()->get('baz', '/baz');
                  });
-            
                  $this->routeConfigurator()->get('biz', '/biz');
              });
         
         $this->assertSame('/baz', $this->generator->toRoute('foo.bar.baz'));
         $this->assertSame('/biz', $this->generator->toRoute('foo.biz'));
         
-        $this->expectExceptionMessage('no named route');
+        $this->expectExceptionMessage('no route with name [foo.bar.biz]');
         
         $this->assertSame('/baz', $this->generator->toRoute('foo.bar.biz'));
     }

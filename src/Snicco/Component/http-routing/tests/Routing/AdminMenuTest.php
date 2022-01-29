@@ -232,9 +232,9 @@ final class AdminMenuTest extends RoutingTestCase
             $router->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
         });
         
-        $this->runKernel($this->adminRequest('GET', 'sub1'))
+        $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=sub1'))
              ->assertOk()
-             ->assertSee(RoutingTestController::static);
+             ->assertSeeText(RoutingTestController::static);
     }
     
     /** @test */
@@ -251,9 +251,9 @@ final class AdminMenuTest extends RoutingTestCase
             $router->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
         });
         
-        $this->runKernel($this->adminRequest('GET', 'sub1'))
+        $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=sub1'))
              ->assertOk()
-             ->assertSee(RoutingTestController::static.':foo_middleware');
+             ->assertSeeText(RoutingTestController::static.':foo_middleware');
     }
     
     /** @test */
@@ -273,9 +273,9 @@ final class AdminMenuTest extends RoutingTestCase
             });
         }, [RoutingConfigurator::MIDDLEWARE_KEY => [RoutingConfigurator::ADMIN_MIDDLEWARE]]);
         
-        $this->runKernel($this->adminRequest('GET', 'sub1'))
+        $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=sub1'))
              ->assertOk()
-             ->assertSee(RoutingTestController::static.':bar_middleware:foo_middleware');
+             ->assertSeeText(RoutingTestController::static.':bar_middleware:foo_middleware');
     }
     
     /** @test */

@@ -16,10 +16,10 @@ class FallbackRouteTest extends RoutingTestCase
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
         
-        $request = $this->frontendRequest('GET', '/bar');
+        $request = $this->frontendRequest('/bar');
         $this->assertResponseBody('fallback:bar', $request);
         
-        $request = $this->frontendRequest('GET', '/bar/baz');
+        $request = $this->frontendRequest('/bar/baz');
         $this->assertResponseBody('fallback:bar/baz', $request);
     }
     
@@ -40,7 +40,7 @@ class FallbackRouteTest extends RoutingTestCase
     {
         $this->routeConfigurator()->fallback(RoutingTestController::class);
         
-        $response = $this->runKernel($this->adminRequest('GET', 'foo'));
+        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
         $response->assertDelegated();
     }
     
@@ -51,13 +51,13 @@ class FallbackRouteTest extends RoutingTestCase
         
         $this->assertResponseBody(
             'fallback:foo.bar',
-            $this->frontendRequest('GET', '/foo.bar')
+            $this->frontendRequest('/foo.bar')
         );
         
         // These are excluded by default
-        $this->assertEmptyBody($this->frontendRequest('GET', '/favicon.ico'));
-        $this->assertEmptyBody($this->frontendRequest('GET', '/robots.txt'));
-        $this->assertEmptyBody($this->frontendRequest('GET', '/sitemap.xml'));
+        $this->assertEmptyBody($this->frontendRequest('/favicon.ico'));
+        $this->assertEmptyBody($this->frontendRequest('/robots.txt'));
+        $this->assertEmptyBody($this->frontendRequest('/sitemap.xml'));
     }
     
     /** @test */
@@ -68,21 +68,21 @@ class FallbackRouteTest extends RoutingTestCase
         
         $this->assertResponseBody(
             '',
-            $this->frontendRequest('GET', '/foobar')
+            $this->frontendRequest('/foobar')
         );
         $this->assertResponseBody(
             '',
-            $this->frontendRequest('GET', '/foo')
+            $this->frontendRequest('/foo')
         );
         $this->assertResponseBody(
             '',
-            $this->frontendRequest('GET', '/bar')
+            $this->frontendRequest('/bar')
         );
         
-        $this->assertResponseBody('fallback:baz', $this->frontendRequest('GET', '/baz'));
+        $this->assertResponseBody('fallback:baz', $this->frontendRequest('/baz'));
         $this->assertResponseBody(
             'fallback:robots.txt',
-            $this->frontendRequest('GET', '/robots.txt')
+            $this->frontendRequest('/robots.txt')
         );
     }
     
@@ -103,18 +103,18 @@ class FallbackRouteTest extends RoutingTestCase
         
         $this->assertResponseBody(
             '',
-            $this->frontendRequest('GET', '/foo')
+            $this->frontendRequest('/foo')
         );
         $this->assertResponseBody(
             '',
-            $this->frontendRequest('GET', '/bar')
+            $this->frontendRequest('/bar')
         );
         $this->assertResponseBody(
             '',
-            $this->frontendRequest('GET', '/baz')
+            $this->frontendRequest('/baz')
         );
         
-        $this->assertResponseBody('fallback:biz', $this->frontendRequest('GET', '/biz'));
+        $this->assertResponseBody('fallback:biz', $this->frontendRequest('/biz'));
     }
     
     /** @test */
@@ -122,7 +122,7 @@ class FallbackRouteTest extends RoutingTestCase
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
         
-        $this->runKernel($this->frontendRequest('GET', '/wp-admin/foo'))->assertDelegated();
+        $this->runKernel($this->frontendRequest('/wp-admin/foo'))->assertDelegated();
     }
     
     /** @test */
@@ -130,10 +130,10 @@ class FallbackRouteTest extends RoutingTestCase
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
         
-        $request = $this->frontendRequest('GET', '/bar/');
+        $request = $this->frontendRequest('/bar/');
         $this->assertResponseBody('fallback:bar/', $request);
         
-        $request = $this->frontendRequest('GET', '/bar/baz/');
+        $request = $this->frontendRequest('/bar/baz/');
         $this->assertResponseBody('fallback:bar/baz/', $request);
     }
     

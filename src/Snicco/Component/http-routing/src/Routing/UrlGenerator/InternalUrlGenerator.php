@@ -7,9 +7,9 @@ namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 use Webmozart\Assert\Assert;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 use function trim;
 use function ltrim;

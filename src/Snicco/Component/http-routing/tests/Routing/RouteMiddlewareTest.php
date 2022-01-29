@@ -30,7 +30,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             'foobar'
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         // Foo middleware is run first, so it appends last to the response body
         $this->assertResponseBody(
@@ -44,7 +44,7 @@ class RouteMiddlewareTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $this->withMiddlewareGroups([
             'global' => [
@@ -80,7 +80,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             ]
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         // The middleware is not run twice.
         $this->assertResponseBody(
@@ -104,7 +104,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             }
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
         $response->assertOk()->assertBodyExact(
@@ -126,7 +126,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             ],
         ]);
         
-        $request = $this->frontendRequest('GET', 'foo');
+        $request = $this->frontendRequest('foo');
         $this->assertResponseBody(
             RoutingTestController::static.':bar_middleware:FOO',
             $request
@@ -147,7 +147,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             ],
         ]);
         
-        $request = $this->frontendRequest('GET', 'foo');
+        $request = $this->frontendRequest('foo');
         
         // The middleware on the route is run last which is why is output is appended first to the response body.
         $this->assertResponseBody(
@@ -171,7 +171,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             ],
         ]);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $this->assertResponseBody(
             RoutingTestController::static.':bar_middleware:foo_middleware',
@@ -181,7 +181,6 @@ class RouteMiddlewareTest extends RoutingTestCase
     
     /**
      * @test
-     * @todo Bad middleware is currently only detected at runtime when running the route.
      */
     public function unknown_middleware_throws_an_exception()
     {
@@ -190,7 +189,7 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
              ->middleware('abc');
         
-        $this->runKernel($this->frontendRequest('GET', 'foo'));
+        $this->runKernel($this->frontendRequest('foo'));
     }
     
     /** @test */
@@ -205,13 +204,13 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->routeConfigurator()->patch('r3', '/foo', RoutingTestController::class)
              ->middleware('foobar:FOO,BAR');
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':foobar_middleware', $request);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertResponseBody(RoutingTestController::static.':FOO_foobar_middleware', $request);
         
-        $request = $this->frontendRequest('PATCH', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'PATCH');
         $this->assertResponseBody(RoutingTestController::static.':FOO_BAR', $request);
     }
     
@@ -224,10 +223,10 @@ class RouteMiddlewareTest extends RoutingTestCase
         $this->routeConfigurator()->post('r2', '/foo', RoutingTestController::class)
              ->middleware(BooleanMiddleware::class.':false');
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':boolean_true', $request);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertResponseBody(RoutingTestController::static.':boolean_false', $request);
     }
     
@@ -246,7 +245,7 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         ]);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':foo_middleware', $request);
     }
     
@@ -264,7 +263,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             ],
         ]);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static.':bar_middleware:foo_middleware:baz_middleware',
             $request
@@ -294,7 +293,7 @@ class RouteMiddlewareTest extends RoutingTestCase
         
         ]);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static.':foo_middleware:bar_middleware:baz_middleware',
             $request
@@ -308,7 +307,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             FooMiddleware::class.':FOO'
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static.':FOO',
             $request
@@ -337,7 +336,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             BazMiddleware::class,
         ]);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static
             .':baz_middleware:bar_middleware:foo_middleware:foobar_middleware',
@@ -366,7 +365,7 @@ class RouteMiddlewareTest extends RoutingTestCase
             BarMiddleware::class,
         ]);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static
             .':baz_middleware:foobar_middleware:bar_middleware:foo_middleware',

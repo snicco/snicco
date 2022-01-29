@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
-final class UrlGenerationContextTest extends UnitTest
+final class UrlGenerationContextTest extends TestCase
 {
     
     use CreateTestPsr17Factories;
@@ -29,7 +29,7 @@ final class UrlGenerationContextTest extends UnitTest
     /** @test */
     public function test_properties()
     {
-        $request = $this->frontendRequest('GET', 'https://foobar.com:4000/foo?bar=baz#fragment');
+        $request = $this->frontendRequest('https://foobar.com:4000/foo?bar=baz#fragment');
         
         $context = UrlGenerationContext::fromRequest($request);
         

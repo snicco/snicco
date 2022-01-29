@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Exception;
 
-use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 /**
  * @api

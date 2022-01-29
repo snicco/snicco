@@ -42,7 +42,7 @@ use function array_reverse;
 use function file_put_contents;
 
 /**
- * @interal
+ * @api
  * The Router implements and partially delegates all core parts of the Routing system.
  * This is preferred over passing around one (global) instance of {@see Routes} between different
  * objects in the service container.
@@ -72,6 +72,9 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
      */
     private array $_routes = [];
     
+    /**
+     * @api
+     */
     public function __construct(
         RouteConditionFactory $condition_factory,
         UrlGeneratorFactory $generator_factory,
@@ -127,10 +130,6 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         return $this->createRoute($name, $path, $methods, $controller);
     }
     
-    /**
-     * @todo bad routes are only found when dispatching. We might need a validate method on the
-     *       UrlMatcher interface.
-     */
     public function dispatch(Request $request) :RoutingResult
     {
         $data = $this->getFastRouteData();

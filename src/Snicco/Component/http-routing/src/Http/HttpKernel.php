@@ -23,7 +23,7 @@ final class HttpKernel
     
     private const CORE_MIDDLEWARE = [
         PrepareResponse::class,
-        // MethodOverride needs to be in the kernel. It can be used as a route middleware.
+        // MethodOverride needs to be in the kernel. It can't be used as a route middleware.
         // As the route would never match to retrieve the middleware in the first place.
         MethodOverride::class,
         RoutingMiddleware::class,

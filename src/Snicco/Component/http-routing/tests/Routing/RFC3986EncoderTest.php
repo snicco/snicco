@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 
-final class RFC3986EncoderTest extends UnitTest
+use function implode;
+use function array_keys;
+use function rawurlencode;
+
+final class RFC3986EncoderTest extends TestCase
 {
     
     private const QUERY_FRAGMENT_EXTRA = [

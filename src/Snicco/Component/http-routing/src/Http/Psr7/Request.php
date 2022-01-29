@@ -128,7 +128,7 @@ final class Request implements ServerRequestInterface
     }
     
     /**
-     * @note The path is not urldecoded here.
+     * @note The full url is not urldecoded here.
      */
     final function fullUrlIs(...$patterns) :bool
     {

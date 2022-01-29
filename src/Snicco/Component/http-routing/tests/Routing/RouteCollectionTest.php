@@ -6,18 +6,19 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use stdClass;
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
-final class RouteCollectionTest extends UnitTest
+final class RouteCollectionTest extends TestCase
 {
     
     /** @test */
     public function test_exception_if_constructed_with_bad_route()
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @noinspection PhpParamsInspection */
         $routes = new RouteCollection([new stdClass()]);
     }
     

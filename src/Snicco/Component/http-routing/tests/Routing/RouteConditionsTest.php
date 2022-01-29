@@ -26,10 +26,10 @@ class RouteConditionsTest extends RoutingTestCase
              ->get('r2', '/bar', RoutingTestController::class)
              ->condition(MaybeRouteCondition::class, false);
         
-        $request = $this->frontendRequest('GET', '/foo');
-        $this->runKernel($request)->assertOk()->assertSee(RoutingTestController::static);
+        $request = $this->frontendRequest('/foo');
+        $this->runKernel($request)->assertOk()->assertSeeText(RoutingTestController::static);
         
-        $request = $this->frontendRequest('GET', '/bar');
+        $request = $this->frontendRequest('/bar');
         $this->runKernel($request)->assertDelegated();
     }
     
@@ -44,10 +44,10 @@ class RouteConditionsTest extends RoutingTestCase
              ->get('r2', '/foo/{param}', [RoutingTestController::class, 'dynamic'])
              ->condition(MaybeRouteCondition::class, true);
         
-        $request = $this->frontendRequest('GET', '/foo/bar');
+        $request = $this->frontendRequest('/foo/bar');
         
         // The static route does not match due to the failing condition.
-        $this->runKernel($request)->assertSee('dynamic:bar');
+        $this->runKernel($request)->assertSeeText('dynamic:bar');
     }
     
     /** @test */
@@ -65,12 +65,12 @@ class RouteConditionsTest extends RoutingTestCase
              ->condition(MaybeRouteCondition::class, true)
              ->condition(TrueRouteCondition::class);
         
-        $request = $this->frontendRequest('POST', '/foo');
+        $request = $this->frontendRequest('/foo', [], 'POST');
         $this->runKernel($request)->assertDelegated();
         
         $this->assertSame(1, $GLOBALS['test']['maybe_condition_run']);
         
-        $request = $this->frontendRequest('POST', '/bar');
+        $request = $this->frontendRequest('/bar', [], 'POST');
         $this->runKernel($request)->assertOk();
         
         $this->assertSame(2, $GLOBALS['test']['maybe_condition_run']);
@@ -111,11 +111,11 @@ class RouteConditionsTest extends RoutingTestCase
                  false
              );
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/foo/bar'));
+        $response = $this->runKernel($this->frontendRequest('/foo/bar'));
         $response->assertDelegated();
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/bar/baz'));
-        $response->assertOk()->assertSee('baz:FOO_CONFIG');
+        $response = $this->runKernel($this->frontendRequest('/bar/baz'));
+        $response->assertOk()->assertSeeText('baz:FOO_CONFIG');
     }
     
 }
