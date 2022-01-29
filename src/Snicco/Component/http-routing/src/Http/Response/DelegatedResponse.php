@@ -1,6 +1,6 @@
 <?php
 
-namespace Snicco\Component\HttpRouting\Http\Responses;
+namespace Snicco\Component\HttpRouting\Http\Response;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;

@@ -12,7 +12,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Middleware\Internal\RouteRunner;
-use Snicco\Component\HttpRouting\Http\Exceptions\RequestHasNoType;
+use Snicco\Component\HttpRouting\Http\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Middleware\Internal\PrepareResponse;
 use Snicco\Component\HttpRouting\Middleware\Internal\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;

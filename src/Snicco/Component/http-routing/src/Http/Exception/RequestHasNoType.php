@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\Exceptions;
+namespace Snicco\Component\HttpRouting\Http\Exception;
 
 use LogicException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
