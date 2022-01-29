@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
+use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\HttpRouting\Middleware\MustMatchRoute;
 use Snicco\Component\HttpRouting\Tests\InternalMiddlewareTestCase;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\NotFoundException;
 
 final class MustMatchRouteTest extends InternalMiddlewareTestCase
 {
@@ -20,9 +20,12 @@ final class MustMatchRouteTest extends InternalMiddlewareTestCase
         
         $middleware = new MustMatchRoute();
         
-        $this->expectException(NotFoundException::class);
-        
-        $response = $this->runMiddleware($middleware, $this->frontendRequest());
+        try {
+            $response = $this->runMiddleware($middleware, $this->frontendRequest());
+            $this->fail("Exception should have been thrown");
+        } catch (HttpException $e) {
+            $this->assertSame(404, $e->statusCode());
+        }
     }
     
     /** @test */

@@ -11,7 +11,6 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 /**
  * @api
@@ -39,15 +38,8 @@ abstract class Payload extends AbstractMiddleware
             return $next($request);
         }
         
-        try {
-            $request = $request->withParsedBody($this->parse($request->getBody()));
-            
-            return $next($request);
-        } catch (RuntimeException $exception) {
-            throw new HttpException(
-                500, $exception->getMessage()
-            );
-        }
+        $request = $request->withParsedBody($this->parse($request->getBody()));
+        return $next($request);
     }
     
     /**

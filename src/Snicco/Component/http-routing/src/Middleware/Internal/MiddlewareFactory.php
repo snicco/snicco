@@ -13,6 +13,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 
+use function sprintf;
 use function Snicco\Component\Core\Utils\isInterface;
 
 /**
@@ -36,9 +37,11 @@ final class MiddlewareFactory
     {
         if ( ! isInterface($middleware_class, MiddlewareInterface::class)) {
             throw new InvalidArgumentException(
-                "Middleware [$middleware_class] has to be an instance of ["
-                .MiddlewareInterface::class
-                ."]."
+                sprintf(
+                    "Middleware [%s] has to be an instance of [%s].",
+                    $middleware_class,
+                    MiddlewareInterface::class
+                )
             );
         }
         

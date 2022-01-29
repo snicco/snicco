@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
-use Snicco\Testing\TestResponse;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Testing\TestResponse;
 use Snicco\Component\HttpRouting\Tests\InternalMiddlewareTestCase;
 use Snicco\Component\HttpRouting\Middleware\OpenRedirectProtection;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
@@ -45,7 +45,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getRedirector()->to('foo');
         });
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
@@ -60,7 +60,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect('https://foo.com/bar');
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
@@ -75,7 +75,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect('https://bar.com/foo');
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
@@ -89,7 +89,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect('//bar.com:80/path/info');
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
@@ -103,7 +103,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect('https://stripe.com/foo');
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
@@ -117,7 +117,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect('https://paypal.com/pay');
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
         
@@ -134,7 +134,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             );
         });
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $response = $this->runMiddleware($this->newMiddleware(['*.stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
@@ -146,7 +146,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             );
         });
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $response = $this->runMiddleware($this->newMiddleware(['*.stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
@@ -162,7 +162,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect($target);
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
@@ -179,7 +179,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getRedirector()->away($target);
         });
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
@@ -195,7 +195,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
             return $this->getResponseFactory()->redirect('https://paypal.com/pay');
         });
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo');
+        $request = $this->frontendRequest('https://foo.com/foo');
         
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
         
@@ -210,10 +210,13 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
     
     private function assertForbiddenRedirect(TestResponse $response, string $intended)
     {
-        $this->assertStringStartsWith('/redirect/exit', $response->getHeaderLine('Location'));
+        $this->assertStringStartsWith(
+            '/redirect/exit',
+            $response->getPsrResponse()->getHeaderLine('Location')
+        );
         $this->assertStringContainsString(
             '?intended_redirect='.$intended,
-            $response->getHeaderLine('Location')
+            $response->getPsrResponse()->getHeaderLine('Location')
         );
     }
     

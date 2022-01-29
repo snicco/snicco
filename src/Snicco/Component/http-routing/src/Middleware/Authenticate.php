@@ -8,7 +8,10 @@ use Closure;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+
+use function sprintf;
 
 /**
  * @api
@@ -29,13 +32,13 @@ final class Authenticate extends AbstractMiddleware
             return $next($request);
         }
         
-        if ($request->isExpectingJson()) {
-            return $this->respond()
-                        ->json('Authentication Required', 401);
-        }
-        
-        $login = $this->url()->toLogin();
-        return $this->redirect()->deny($login);
+        throw new HttpException(
+            401,
+            sprintf(
+                "Missing authentication for request path [%s].",
+                $request->path()
+            )
+        );
     }
     
     private function getCurrentUserId() :int

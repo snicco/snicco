@@ -6,9 +6,9 @@ namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use Closure;
 use Webmozart\Assert\Assert;
+use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\HttpRouting\Middleware\Authorize;
 use Snicco\Component\HttpRouting\Tests\InternalMiddlewareTestCase;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AuthorizeTest extends InternalMiddlewareTestCase
 {
@@ -16,7 +16,7 @@ class AuthorizeTest extends InternalMiddlewareTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->request = $this->frontendRequest('GET', '/foo');
+        $this->request = $this->frontendRequest('/foo');
     }
     
     /** @test */
@@ -42,12 +42,16 @@ class AuthorizeTest extends InternalMiddlewareTestCase
         
         $m = $this->newMiddleware($grant_access, 'manage_options');
         
-        $this->expectException(AuthorizationException::class);
-        $this->expectExceptionMessage(
-            "Authorization failed for path [/foo] with required capability [manage_options]."
-        );
-        $response = $this->runMiddleware($m, $this->request);
-        $response->assertNextMiddlewareNotCalled();
+        try {
+            $response = $this->runMiddleware($m, $this->request);
+            $this->fail("An Exception should have been thrown.");
+        } catch (HttpException $e) {
+            $this->assertSame(403, $e->statusCode());
+            $this->assertSame(
+                "Authorization failed for path [/foo] with required capability [manage_options].",
+                $e->getMessage()
+            );
+        }
     }
     
     /** @test */
@@ -70,9 +74,16 @@ class AuthorizeTest extends InternalMiddlewareTestCase
         
         $m = $this->newMiddleware($grant_access, 'manage_options', 10);
         
-        $this->expectException(AuthorizationException::class);
-        $response = $this->runMiddleware($m, $this->request);
-        $response->assertNextMiddlewareCalled();
+        try {
+            $response = $this->runMiddleware($m, $this->request);
+            $this->fail('An Exception should have been thrown.');
+        } catch (HttpException $e) {
+            $this->assertSame(403, $e->statusCode());
+            $this->assertSame(
+                'Authorization failed for path [/foo] with required capability [manage_options].',
+                $e->getMessage()
+            );
+        }
     }
     
     private function newMiddleware(Closure $grant_access, string $capability, int $object_id = null) :Authorize

@@ -10,6 +10,8 @@ use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 
+use function headers_list;
+
 /**
  * @internal
  */
@@ -29,6 +31,7 @@ final class PrepareResponse extends AbstractMiddleware
         return $this->response_preparation->prepare(
             $response,
             $request,
+            headers_list()
         );
     }
     

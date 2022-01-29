@@ -15,8 +15,8 @@ use function urlencode;
 use function array_merge;
 
 /**
- * @api This class represent a cookie that is meant to be sent to the client. Not an incoming
- *     request cookie.
+ * @api This class represent a cookie that is meant to be sent to the client.
+ *      Not an incoming request cookie.
  */
 final class Cookie
 {

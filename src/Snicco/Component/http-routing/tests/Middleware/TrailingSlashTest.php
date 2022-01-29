@@ -12,7 +12,7 @@ class TrailingSlashTest extends InternalMiddlewareTestCase
     
     public function testRedirectNoSlashToTrailingSlash()
     {
-        $request = $this->frontendRequest('GET', 'https://foo.com/bar');
+        $request = $this->frontendRequest('https://foo.com/bar');
         
         $response = $this->runMiddleware(new TrailingSlash(true), $request);
         
@@ -26,7 +26,7 @@ class TrailingSlashTest extends InternalMiddlewareTestCase
     /** @test */
     public function testRedirectSlashToNoSlash()
     {
-        $request = $this->frontendRequest('GET', 'https://foo.com/bar/');
+        $request = $this->frontendRequest('https://foo.com/bar/');
         
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
         
@@ -36,7 +36,7 @@ class TrailingSlashTest extends InternalMiddlewareTestCase
     
     public function testNoRedirectIfSlashesAreCorrect()
     {
-        $request = $this->frontendRequest('GET', 'https://foo.com/bar');
+        $request = $this->frontendRequest('https://foo.com/bar');
         
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
         

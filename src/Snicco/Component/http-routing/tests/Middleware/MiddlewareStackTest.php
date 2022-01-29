@@ -25,7 +25,7 @@ final class MiddlewareStackTest extends RoutingTestCase
         
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/foo'));
+        $response = $this->runKernel($this->frontendRequest('/foo'));
         
         $this->assertSame(
             RoutingTestController::static.':bar_middleware:foo_middleware',
@@ -40,7 +40,7 @@ final class MiddlewareStackTest extends RoutingTestCase
         
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/bar'));
+        $response = $this->runKernel($this->frontendRequest('/bar'));
         
         $this->assertSame(
             '',
@@ -60,7 +60,7 @@ final class MiddlewareStackTest extends RoutingTestCase
         
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/bar'));
+        $response = $this->runKernel($this->frontendRequest('/bar'));
         
         $this->assertSame(
             ':bar_middleware:foo_middleware',
@@ -87,7 +87,7 @@ final class MiddlewareStackTest extends RoutingTestCase
         
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/bar'));
+        $response = $this->runKernel($this->frontendRequest('/bar'));
         
         $this->assertSame(
             ':bar_middleware:foo_middleware',
@@ -120,10 +120,10 @@ final class MiddlewareStackTest extends RoutingTestCase
             null
         );
         
-        $response = $this->runKernel($this->adminRequest('GET', '/foo'));
+        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
         $this->assertSame(RoutingTestController::static, $response->body());
         
-        $response = $this->runKernel($this->adminRequest('GET', '/bar'));
+        $response = $this->runKernel($this->adminRequest('/bar'));
         $this->assertSame('', $response->body());
     }
     
@@ -147,14 +147,14 @@ final class MiddlewareStackTest extends RoutingTestCase
             null
         );
         
-        $response = $this->runKernel($this->adminRequest('GET', '/bar'));
+        $response = $this->runKernel($this->adminRequest('/bar'));
         
         $this->assertSame(
             ':bar_middleware:foo_middleware',
             $response->body()
         );
         
-        $response = $this->runKernel($this->adminRequest('GET', '/foo'));
+        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
         
         // The matching admin route does not run the global admin middleware.
         // In the RouteLoader we add the admin middleware by default to all admin requests
@@ -183,7 +183,7 @@ final class MiddlewareStackTest extends RoutingTestCase
             RoutingTestController::class
         );
         
-        $response = $this->runKernel($this->frontendRequest('GET', '/bar'));
+        $response = $this->runKernel($this->frontendRequest('/bar'));
         $this->assertSame('', $response->body());
     }
     
@@ -219,14 +219,14 @@ final class MiddlewareStackTest extends RoutingTestCase
         $this->routeConfigurator()->get('bar', '/bar', RoutingTestController::class);
         
         // matching request, Foobar and Baz(global) is run. Web is not run because we are not using the route loader.
-        $response = $this->runKernel($this->frontendRequest('GET', '/foo'));
+        $response = $this->runKernel($this->frontendRequest('/foo'));
         $this->assertSame(
             RoutingTestController::static.':foobar_middleware:baz_middleware',
             $response->body()
         );
         
         // non-matching request: Foo(web) and Baz(global) are run
-        $response = $this->runKernel($this->frontendRequest('GET', '/bogus'));
+        $response = $this->runKernel($this->frontendRequest('/bogus'));
         $this->assertSame(
             ':foo_middleware:baz_middleware',
             $response->body()
@@ -238,11 +238,11 @@ final class MiddlewareStackTest extends RoutingTestCase
         // only controller run for matching route.
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', '/foo')
+            $this->frontendRequest('/foo')
         );
         
         // nothing run for non-matching route.
-        $this->assertResponseBody('', $this->frontendRequest('GET', '/bogus'));
+        $this->assertResponseBody('', $this->frontendRequest('/bogus'));
     }
     
 }

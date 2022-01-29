@@ -29,7 +29,7 @@ trait CreatesPsrRequests
         return '127.0.0.1';
     }
     
-    final protected function frontendRequest(string $path, array $server = [], string $method = 'GET') :Request
+    final protected function frontendRequest(string $path = '/', array $server = [], string $method = 'GET') :Request
     {
         if (false === strpos($path, 'http')) {
             $path = '/'.ltrim($path, '/');

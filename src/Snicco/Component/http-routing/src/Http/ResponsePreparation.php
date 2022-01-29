@@ -42,10 +42,14 @@ final class ResponsePreparation
         $this->charset = $charset;
     }
     
-    public function prepare(Psr7\Response $response, Psr7\Request $request) :Psr7\Response
+    /**
+     * @param  string[]  $sent_headers_with_php  A list of headers sent directly with
+     *                                           {@see header()}. Use {@see headers_list()}
+     */
+    public function prepare(Psr7\Response $response, Psr7\Request $request, array $sent_headers_with_php) :Psr7\Response
     {
         $response = $this->fixDate($response);
-        $response = $this->fixCacheControl($response);
+        $response = $this->fixCacheControl($response, $sent_headers_with_php);
         $response = $this->fixContent($response, $request);
         return $this->fixProtocol($response, $request);
     }
@@ -61,9 +65,9 @@ final class ResponsePreparation
     
     // There is no need to remove a header possibly added by a call to header() in WordPress
     // since our ResponseEmitter will take of this anyway.
-    private function fixCacheControl(Response $response) :Response
+    private function fixCacheControl(Response $response, array $headers_sent_with_php) :Response
     {
-        $header = $this->getCacheControlHeader($response);
+        $header = $this->getCacheControlHeader($response, $headers_sent_with_php);
         
         if ($header === '') {
             if ($response->hasHeader('Last-Modified') || $response->hasHeader('Expires')) {
@@ -87,13 +91,13 @@ final class ResponsePreparation
         return $response;
     }
     
-    private function getCacheControlHeader(Response $response)
+    private function getCacheControlHeader(Response $response, array $headers_sent_with_php)
     {
         if ($response->hasHeader('cache-control')) {
             return strtolower($response->getHeaderLine('cache-control'));
         }
         
-        $header = Arr::first(headers_list(), function ($header) {
+        $header = Arr::first($headers_sent_with_php, function ($header) {
             return Str::startsWith(strtolower($header), 'cache-control');
         }, '');
         
