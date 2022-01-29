@@ -24,6 +24,7 @@ use function wp_cache_delete;
 use function current_user_can;
 use function is_user_logged_in;
 use function wp_get_current_user;
+use function get_current_user_id;
 use function call_user_func_array;
 
 use const E_USER_NOTICE;
@@ -110,6 +111,12 @@ class ScopableWP
     public function getCurrentUser() :WP_User
     {
         return wp_get_current_user();
+    }
+    
+    /** @final */
+    public function getCurrentUserId() :int
+    {
+        return get_current_user_id();
     }
     
     /** @final */

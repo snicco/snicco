@@ -205,7 +205,7 @@ final class ScopableWPTest extends WPTestCase
     }
     
     /** @test */
-    public function test_getCurrentUser()
+    public function test_getCurrentUser_getCurrentUserId()
     {
         $user = $this->factory()->user->create_and_get();
         
@@ -215,6 +215,7 @@ final class ScopableWPTest extends WPTestCase
         wp_set_current_user($user->ID);
         
         $this->assertEquals($user, $wp->getCurrentUser());
+        $this->assertEquals($user->ID, $wp->getCurrentUserId());
     }
     
     /** @test */
