@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\ExpectationFailedException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Testing\TestResponse;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestResponse;
@@ -37,9 +36,8 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         
-        $this->assertInstanceOf(TestResponse::class, $response);
         $this->assertInstanceOf(MiddlewareTestResponse::class, $response);
-        $response->assertSeeText('foo');
+        $response->psr()->assertSeeText('foo');
     }
     
     /** @test */
@@ -190,7 +188,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $this->assertInstanceOf(MiddlewareTestResponse::class, $response);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertHeader('foo', 'bar');
+        $response->psr()->assertHeader('foo', 'bar');
     }
     
     /** @test */
@@ -212,7 +210,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         
-        $response->assertSeeText('foo');
+        $response->psr()->assertSeeText('foo');
     }
     
     /** @test */
@@ -235,7 +233,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         
         $response->assertNextMiddlewareCalled();
-        $response->assertSeeText('foo');
+        $response->psr()->assertSeeText('foo');
     }
     
     /** @test */
@@ -256,7 +254,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         
         $response->assertNextMiddlewareCalled();
-        $response->assertSeeText('foo');
+        $response->psr()->assertSeeText('foo');
     }
     
     /** @test */
@@ -278,11 +276,11 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         
         $response->assertNextMiddlewareCalled();
-        $response->assertSeeText('foo');
+        $response->psr()->assertSeeText('foo');
         
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo', [], 'POST'));
         $response->assertNextMiddlewareNotCalled();
-        $response->assertSeeText('foo');
+        $response->psr()->assertSeeText('foo');
     }
     
 }

@@ -13,13 +13,13 @@ use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\HttpKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\ResponseFactory;
-use Snicco\Component\HttpRouting\Testing\TestResponse;
 use Snicco\Component\HttpRouting\Middleware\ShareCookies;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Middleware\MustMatchRoute;
+use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\EventDispatcher\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
@@ -141,12 +141,12 @@ class RoutingTestCase extends TestCase
         $this->middleware_stack->middlewarePriority($array);
     }
     
-    final protected function runKernel(Request $request) :TestResponse
+    final protected function runKernel(Request $request) :AssertableResponse
     {
         $this->withMiddlewareAlias($this->defaultMiddlewareAliases());
         
         $response = $this->kernel->handle($request);
-        return new TestResponse($response);
+        return new AssertableResponse($response);
     }
     
     final protected function routeConfigurator() :WebRoutingConfigurator

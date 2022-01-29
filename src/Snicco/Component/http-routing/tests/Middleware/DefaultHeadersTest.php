@@ -21,8 +21,8 @@ class DefaultHeadersTest extends InternalMiddlewareTestCase
         
         $response->assertNextMiddlewareCalled();
         
-        $response->assertHeader('foo', 'bar');
-        $response->assertHeader('baz', 'biz');
+        $response->psr()->assertHeader('foo', 'bar');
+        $response->psr()->assertHeader('baz', 'biz');
     }
     
     /** @test */
@@ -34,7 +34,7 @@ class DefaultHeadersTest extends InternalMiddlewareTestCase
         );
         
         $response->assertNextMiddlewareCalled();
-        $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
+        $response->psr()->assertHeader('X-Frame-Options', 'SAMEORIGIN');
     }
     
     /** @test */
@@ -48,7 +48,7 @@ class DefaultHeadersTest extends InternalMiddlewareTestCase
             $this->runMiddleware(new DefaultHeaders(['foo' => 'baz']), $this->frontendRequest());
         $response->assertNextMiddlewareCalled();
         
-        $response->assertHeader('foo', 'bar');
+        $response->psr()->assertHeader('foo', 'bar');
     }
     
 }
