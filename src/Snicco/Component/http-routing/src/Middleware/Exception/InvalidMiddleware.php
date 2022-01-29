@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Exceptions;
+namespace Snicco\Component\HttpRouting\Middleware\Exception;
 
 use LogicException;
 use Psr\Http\Server\MiddlewareInterface;
 
-final class FoundInvalidMiddleware extends LogicException
+final class InvalidMiddleware extends LogicException
 {
     
-    public static function incorrectInterface(string $name) :FoundInvalidMiddleware
+    public static function incorrectInterface(string $name) :InvalidMiddleware
     {
         return new self(
             sprintf(
@@ -21,7 +21,7 @@ final class FoundInvalidMiddleware extends LogicException
         );
     }
     
-    public static function becauseTheAliasDoesNotExist(string $alias) :FoundInvalidMiddleware
+    public static function becauseTheAliasDoesNotExist(string $alias) :InvalidMiddleware
     {
         return new self(
             sprintf(

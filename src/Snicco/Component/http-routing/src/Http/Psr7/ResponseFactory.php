@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http;
+namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use stdClass;
 use JsonSerializable;
-use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Responsable;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;

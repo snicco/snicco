@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http;
+namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use stdClass;
 use JsonSerializable;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
+use Snicco\Component\HttpRouting\Http\Redirector;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
-use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Responsable;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
@@ -24,7 +25,7 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @interal You should never depend on this concrete response factory implementation.
- * Always depend on the @see ResponseFactory interface
+ *          Always depend on the {@see ResponseFactory} interface
  */
 final class DefaultResponseFactory implements ResponseFactory, Redirector
 {

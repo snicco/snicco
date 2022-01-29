@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
