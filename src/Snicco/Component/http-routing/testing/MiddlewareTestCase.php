@@ -7,12 +7,14 @@ namespace Snicco\Component\HttpRouting\Testing;
 use Closure;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\Component\Core\DIContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -55,15 +57,30 @@ abstract class MiddlewareTestCase extends TestCase
         parent::tearDown();
     }
     
-    abstract protected function psrResponseFactory() :ResponseFactoryInterface;
+    protected function psrResponseFactory() :ResponseFactoryInterface
+    {
+        return new Psr17Factory();
+    }
     
-    abstract protected function psrServerRequestFactory() :ServerRequestFactoryInterface;
+    protected function psrServerRequestFactory() :ServerRequestFactoryInterface
+    {
+        return new Psr17Factory();
+    }
     
-    abstract protected function psrUriFactory() :UriFactoryInterface;
+    protected function psrUriFactory() :UriFactoryInterface
+    {
+        return new Psr17Factory();
+    }
     
-    abstract protected function psrStreamFactory() :StreamFactoryInterface;
+    protected function psrStreamFactory() :StreamFactoryInterface
+    {
+        return new Psr17Factory();
+    }
     
-    abstract protected function createContainer() :DIContainer;
+    protected function createContainer() :DIContainer
+    {
+        return new PimpleContainerAdapter();
+    }
     
     final protected function withRoutes(array $routes)
     {

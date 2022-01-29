@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\ScopableWP\Tests\wordpress;
 
 use Mockery;
+use WP_User;
+use WP_Post;
 use Exception;
 use BadMethodCallException;
 use Codeception\TestCase\WPTestCase;
@@ -19,6 +21,7 @@ use function wp_cache_set;
 use function wp_cache_get;
 use function apply_filters;
 use function error_reporting;
+use function current_user_can;
 use function wp_set_current_user;
 use function get_current_user_id;
 
@@ -237,6 +240,65 @@ final class ScopableWPTest extends WPTestCase
         
         $wp->cacheDelete('foo', 'foo_group');
         $this->assertSame(false, $wp->cacheGet('foo', 'foo_group'));
+    }
+    
+    /** @test */
+    public function test_currentUserCan()
+    {
+        /** @var WP_User $user1 */
+        $user1 = $this->factory()->user->create_and_get();
+        $user1->add_cap('foo_cap');
+        
+        /** @var WP_User $user2 */
+        $user2 = $this->factory()->user->create_and_get();
+        $user2->add_cap('bar_cap');
+        
+        $wp = new ScopableWP();
+        
+        wp_set_current_user($user1);
+        $this->assertTrue($wp->currentUserCan('foo_cap'));
+        $this->assertFalse($wp->currentUserCan('bar_cap'));
+        
+        wp_set_current_user($user2);
+        
+        $this->assertTrue($wp->currentUserCan('bar_cap'));
+        $this->assertFalse($wp->currentUserCan('foo_cap'));
+    }
+    
+    /** @test */
+    public function test_currentUserCanWithArgs()
+    {
+        /** @var WP_User $user1 */
+        $user1 = $this->factory()->user->create_and_get(['role' => 'author']);
+        /** @var WP_Post $post1 */
+        $post1 = $this->factory()->post->create_and_get([
+            'post_author' => $user1->ID,
+        ]);
+        
+        /** @var WP_User $user2 */
+        $user2 = $this->factory()->user->create_and_get(['role' => 'author']);
+        
+        /** @var WP_Post $post2 */
+        $post2 = $this->factory()->post->create_and_get([
+            'post_author' => $user2->ID,
+        ]);
+        
+        wp_set_current_user($user1);
+        
+        $wp = new ScopableWP();
+        
+        $this->assertTrue(current_user_can('edit_post', $post1->ID));
+        $this->assertTrue($wp->currentUserCan('edit_post', $post1->ID));
+        $this->assertFalse(current_user_can('edit_post', $post2->ID));
+        $this->assertFalse($wp->currentUserCan('edit_post', $post2->ID));
+        
+        wp_set_current_user($user2);
+        
+        $this->assertTrue(current_user_can('edit_post', $post2->ID));
+        $this->assertTrue($wp->currentUserCan('edit_post', $post2->ID));
+        
+        $this->assertFalse(current_user_can('edit_post', $post1->ID));
+        $this->assertFalse($wp->currentUserCan('edit_post', $post1->ID));
     }
     
 }

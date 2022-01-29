@@ -10,7 +10,6 @@ use RuntimeException;
 use Webmozart\Assert\Assert;
 use FastRoute\RouteCollector;
 use FastRoute\BadRouteException;
-use Snicco\Component\Core\Utils\UrlPath;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
