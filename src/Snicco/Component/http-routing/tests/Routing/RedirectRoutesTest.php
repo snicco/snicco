@@ -25,7 +25,7 @@ class RedirectRoutesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->redirect('/foo', '/bar', 307, ['baz' => 'biz']);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
         
@@ -38,7 +38,7 @@ class RedirectRoutesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->permanentRedirect('/foo', '/bar', ['baz' => 'biz']);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
         
@@ -50,7 +50,7 @@ class RedirectRoutesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->temporaryRedirect('/foo', '/bar', ['baz' => 'biz']);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
         
@@ -62,7 +62,7 @@ class RedirectRoutesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->redirectAway('/foo', 'https://foobar.com', 301);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('', $request);
         
         $response = $this->runKernel($request);
@@ -76,7 +76,7 @@ class RedirectRoutesTest extends RoutingTestCase
         $this->routeConfigurator()->get('route1', '/base/{param}');
         $this->routeConfigurator()->redirectToRoute('/foo', 'route1', ['param' => 'baz'], 303);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         
         $response = $this->runKernel($request);
         
@@ -92,17 +92,17 @@ class RedirectRoutesTest extends RoutingTestCase
         
         $this->routeConfigurator()->get('r1', 'base/biz', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', 'base/foo');
+        $request = $this->frontendRequest('base/foo');
         $response = $this->runKernel($request);
         $response->assertRedirect('/base/new');
         
-        $request = $this->frontendRequest('GET', 'base/bar');
+        $request = $this->frontendRequest('base/bar');
         $response = $this->runKernel($request);
         $response->assertRedirect('/base/new');
         
-        $request = $this->frontendRequest('GET', 'base/biz');
+        $request = $this->frontendRequest('base/biz');
         $response = $this->runKernel($request);
-        $response->assertOk()->assertSee(RoutingTestController::static);
+        $response->assertOk()->assertSeeText(RoutingTestController::static);
     }
     
 }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Routing\Condition\QueryStringCondition;
 
-final class QueryStringConditionTest extends UnitTest
+final class QueryStringConditionTest extends TestCase
 {
     
     use CreateTestPsr17Factories;
@@ -20,7 +20,7 @@ final class QueryStringConditionTest extends UnitTest
     /** @test */
     public function test_is_satisfied_can_pass()
     {
-        $request = $this->frontendRequest('GET', '/foo?bar=baz');
+        $request = $this->frontendRequest('/foo?bar=baz');
         
         $condition = new QueryStringCondition(['bar' => 'baz']);
         
@@ -30,7 +30,7 @@ final class QueryStringConditionTest extends UnitTest
     /** @test */
     public function test_is_satisfied_can_fail()
     {
-        $request = $this->frontendRequest('GET', '/static?foo=bar&baz=biz');
+        $request = $this->frontendRequest('/static?foo=bar&baz=biz');
         
         $condition = new QueryStringCondition(['foo' => 'bar', 'baz' => 'boo']);
         
@@ -40,7 +40,7 @@ final class QueryStringConditionTest extends UnitTest
     /** @test */
     public function test_get_arguments()
     {
-        $request = $this->frontendRequest('GET', '/static?foo=bar&baz=biz&bang=boo');
+        $request = $this->frontendRequest('/static?foo=bar&baz=biz&bang=boo');
         
         $condition = new QueryStringCondition(['foo' => 'bar', 'baz' => 'biz']);
         

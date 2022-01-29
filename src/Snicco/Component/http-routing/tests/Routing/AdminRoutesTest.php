@@ -91,7 +91,7 @@ class AdminRoutesTest extends RoutingTestCase
             null
         );
         
-        $request = $this->adminRequest('GET', 'foo');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -106,7 +106,7 @@ class AdminRoutesTest extends RoutingTestCase
             null
         );
         
-        $request = $this->adminRequest('GET', 'bar');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=bar');
         $this->assertResponseBody('', $request);
     }
     
@@ -116,7 +116,7 @@ class AdminRoutesTest extends RoutingTestCase
         $router = $this->admin_configurator;
         $router->page('r1', 'admin.php/foo', RoutingTestController::class, [], null);
         
-        $request = $this->adminRequest('POST', 'foo');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=foo')->withMethod('POST');
         
         $response = $this->runKernel($request);
         $response->assertDelegated();
@@ -140,13 +140,13 @@ class AdminRoutesTest extends RoutingTestCase
             null
         );
         
-        $request = $this->adminRequest('GET', 'foo');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->adminRequest('GET', 'bar');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=bar');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->adminRequest('GET', 'baz');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=baz');
         $this->assertResponseBody('', $request);
     }
     
@@ -176,10 +176,10 @@ class AdminRoutesTest extends RoutingTestCase
             null
         );
         
-        $request = $this->adminRequest('GET', 'foo');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->adminRequest('GET', 'foo', 'tools.php');
+        $request = $this->adminRequest('/wp-admin/tools.php?page=foo');
         $this->assertResponseBody('', $request);
     }
     
@@ -194,10 +194,10 @@ class AdminRoutesTest extends RoutingTestCase
             null
         );
         
-        $request = $this->frontendRequest('GET', '/wp-admin/admin.php/foo');
+        $request = $this->frontendRequest('/wp-admin/options.php/foo');
         $this->runKernel($request)->assertDelegated();
         
-        $request = $this->adminRequest('GET', 'foo', 'options.php');
+        $request = $this->adminRequest('/wp-admin/options.php?page=foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -212,7 +212,7 @@ class AdminRoutesTest extends RoutingTestCase
             null
         );
         
-        $request = $this->adminRequest('GET', 'foo');
+        $request = $this->adminRequest('/wp-admin/admin.php?page=foo');
         $as_string = (string) $request->getUri();
         $this->assertStringContainsString('page=foo', $as_string);
         $this->assertResponseBody($as_string, $request);
@@ -226,7 +226,7 @@ class AdminRoutesTest extends RoutingTestCase
                  $router->redirect('options.php/foo', '/foobar');
              });
         
-        $request = $this->adminRequest('GET', 'foo', 'options.php');
+        $request = $this->adminRequest('/wp-admin/options.php?page=foo');
         
         $response = $this->runKernel($request);
         

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\fixtures;
 
 use Psr\Http\Message\ResponseInterface;
-use Tests\Codeception\shared\TestDependencies\Bar;
-use Tests\Codeception\shared\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 
 class MiddlewareWithDependencies extends AbstractMiddleware
 {
@@ -27,7 +27,7 @@ class MiddlewareWithDependencies extends AbstractMiddleware
     {
         $response = $next($request);
         
-        $response->getBody()->write(':'.$this->foo->foo.$this->bar->bar);
+        $response->getBody()->write(':'.$this->foo->value.$this->bar->value);
         return $response;
     }
     

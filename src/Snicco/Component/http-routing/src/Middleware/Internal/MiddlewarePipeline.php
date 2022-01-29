@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
 use function is_string;
 use function array_map;
@@ -25,8 +25,8 @@ use function strtolower;
 final class MiddlewarePipeline
 {
     
-    private ExceptionHandler  $error_handler;
-    private MiddlewareFactory $middleware_factory;
+    private HttpErrorHandlerInterface $error_handler;
+    private MiddlewareFactory         $middleware_factory;
     
     /**
      * @var MiddlewareBlueprint[]
@@ -36,7 +36,7 @@ final class MiddlewarePipeline
     private Closure $request_handler;
     private bool    $exhausted  = false;
     
-    public function __construct(MiddlewareFactory $middleware_factory, $error_handler)
+    public function __construct(MiddlewareFactory $middleware_factory, HttpErrorHandlerInterface $error_handler)
     {
         $this->middleware_factory = $middleware_factory;
         $this->error_handler = $error_handler;
@@ -152,9 +152,10 @@ final class MiddlewarePipeline
     
     private function exceptionToHttpResponse(Throwable $e, Request $request) :Response
     {
-        $this->error_handler->report($e, $request);
-        
-        return $this->error_handler->toHttpResponse($e, $request);
+        $psr_7_response = $this->error_handler->handle($e, $request);
+        return $psr_7_response instanceof Response
+            ? $psr_7_response
+            : new Response($psr_7_response);
     }
     
 }

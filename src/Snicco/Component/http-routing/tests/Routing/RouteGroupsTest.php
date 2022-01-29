@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use LogicException;
-use LogicExceptions;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
@@ -37,10 +36,10 @@ class RouteGroupsTest extends RoutingTestCase
                      ->post('r2', '/foo', RoutingTestController::class);
              });
         
-        $get_request = $this->frontendRequest('GET', '/foo');
+        $get_request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':BAR:FOO', $get_request);
         
-        $post_request = $this->frontendRequest('POST', '/foo');
+        $post_request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertResponseBody(RoutingTestController::static.':FOO', $post_request);
     }
     
@@ -53,7 +52,7 @@ class RouteGroupsTest extends RoutingTestCase
                  $router->get('r1', '/foo', 'RoutingTestController');
              });
         
-        $get_request = $this->frontendRequest('GET', '/foo');
+        $get_request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $get_request);
     }
     
@@ -69,13 +68,13 @@ class RouteGroupsTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', '/foo/bar')
+            $this->frontendRequest('/foo/bar')
         );
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', '/foo/baz')
+            $this->frontendRequest('/foo/baz')
         );
-        $this->assertEmptyBody($this->frontendRequest('GET', '/foo'));
+        $this->assertEmptyBody($this->frontendRequest('/foo'));
         
         $this->assertSame('/foo/bar', $this->generator->toRoute('r1'));
     }
@@ -111,7 +110,7 @@ class RouteGroupsTest extends RoutingTestCase
                      );
              });
         
-        $get_request = $this->frontendRequest('GET', '/foo');
+        $get_request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $get_request);
     }
     
@@ -129,18 +128,18 @@ class RouteGroupsTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', '/foo/bar/baz')
+            $this->frontendRequest('/foo/bar/baz')
         );
         
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', '/foo/bar/biz')
+            $this->frontendRequest('/foo/bar/biz')
         );
         
-        $this->assertEmptyBody($this->frontendRequest('GET', '/baz'));
-        $this->assertEmptyBody($this->frontendRequest('GET', '/biz'));
-        $this->assertEmptyBody($this->frontendRequest('GET', '/bar/baz'));
-        $this->assertEmptyBody($this->frontendRequest('GET', '/bar/biz'));
+        $this->assertEmptyBody($this->frontendRequest('/baz'));
+        $this->assertEmptyBody($this->frontendRequest('/biz'));
+        $this->assertEmptyBody($this->frontendRequest('/bar/baz'));
+        $this->assertEmptyBody($this->frontendRequest('/bar/biz'));
     }
     
     /** @test */
@@ -178,7 +177,7 @@ class RouteGroupsTest extends RoutingTestCase
                  });
              });
         
-        $get_request = $this->frontendRequest('GET', '/foo');
+        $get_request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
             RoutingTestController::static.':baz_middleware:BAR:FOO',
             $get_request

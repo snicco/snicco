@@ -15,7 +15,7 @@ class TrailingSlashesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo_route', 'foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('static', $request);
     }
     
@@ -24,7 +24,7 @@ class TrailingSlashesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo_route', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('static', $request);
     }
     
@@ -33,10 +33,10 @@ class TrailingSlashesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo_route', '/foo/', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/foo/');
+        $request = $this->frontendRequest('/foo/');
         $this->assertResponseBody('static', $request);
     }
     
@@ -45,10 +45,10 @@ class TrailingSlashesTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo_route', '/foo', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo/');
+        $request = $this->frontendRequest('/foo/');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('static', $request);
     }
     
@@ -66,16 +66,16 @@ class TrailingSlashesTest extends RoutingTestCase
             [RoutingTestController::class, 'twoParams']
         );
         
-        $request = $this->frontendRequest('GET', '/route1/foo/bar/');
+        $request = $this->frontendRequest('/route1/foo/bar/');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/foo/bar');
+        $request = $this->frontendRequest('/route1/foo/bar');
         $this->assertResponseBody('foo:bar', $request);
         
-        $request = $this->frontendRequest('GET', '/route2/foo/bar');
+        $request = $this->frontendRequest('/route2/foo/bar');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/route2/foo/bar/');
+        $request = $this->frontendRequest('/route2/foo/bar/');
         $this->assertResponseBody('foo:bar', $request);
     }
     
@@ -94,28 +94,28 @@ class TrailingSlashesTest extends RoutingTestCase
         );
         
         // Only with trailing
-        $request = $this->frontendRequest('GET', '/trailing/foo');
+        $request = $this->frontendRequest('/trailing/foo');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/trailing/foo/');
+        $request = $this->frontendRequest('/trailing/foo/');
         $this->assertResponseBody('foo:default2', $request);
         
-        $request = $this->frontendRequest('GET', '/trailing/foo/bar');
+        $request = $this->frontendRequest('/trailing/foo/bar');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/trailing/foo/bar/');
+        $request = $this->frontendRequest('/trailing/foo/bar/');
         $this->assertResponseBody('foo:bar', $request);
         
-        $request = $this->frontendRequest('GET', '/notrailing/foo');
+        $request = $this->frontendRequest('/notrailing/foo');
         $this->assertResponseBody('foo:default2', $request);
         
-        $request = $this->frontendRequest('GET', '/notrailing/foo/');
+        $request = $this->frontendRequest('/notrailing/foo/');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/notrailing/foo/bar');
+        $request = $this->frontendRequest('/notrailing/foo/bar');
         $this->assertResponseBody('foo:bar', $request);
         
-        $request = $this->frontendRequest('GET', '/notrailing/foo/bar/');
+        $request = $this->frontendRequest('/notrailing/foo/bar/');
         $this->assertResponseBody('', $request);
     }
     

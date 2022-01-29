@@ -9,10 +9,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 final class RedirectResponse extends Response
 {
     
-    /**
-     * @var bool
-     */
-    private $bypass_validation = false;
+    private bool $bypass_validation = false;
     
     /**
      * @api

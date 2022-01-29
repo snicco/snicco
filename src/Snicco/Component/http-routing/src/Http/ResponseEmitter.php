@@ -15,7 +15,9 @@ use function headers_sent;
 use function connection_status;
 
 /**
- * Modified Version of Slims Response Emitter.
+ * Modified Version of Slims Response Emitter. We expose methods to send some parts of a psr
+ * response separately because we need this for legacy CMSs where we don't have full control over
+ * the request-response cycle.
  *
  * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
  */

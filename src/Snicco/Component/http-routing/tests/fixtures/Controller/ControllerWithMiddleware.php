@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\fixtures\Controller;
 
-use Tests\Codeception\shared\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 
 class ControllerWithMiddleware extends AbstractController
@@ -28,7 +28,7 @@ class ControllerWithMiddleware extends AbstractController
     
     public function handle(Request $request) :string
     {
-        return $this->baz->baz.':controller_with_middleware';
+        return $this->baz->value.':controller_with_middleware';
     }
     
 }

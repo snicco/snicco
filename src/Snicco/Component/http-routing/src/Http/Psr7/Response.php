@@ -26,8 +26,9 @@ class Response implements ResponseInterface
     public function __construct(ResponseInterface $psr7_response)
     {
         $this->psr7_response = $psr7_response;
-        $this->cookies =
-            ($psr7_response instanceof Response) ? $psr7_response->cookies() : new Cookies();
+        $this->cookies = ($psr7_response instanceof Response)
+            ? $psr7_response->cookies()
+            : new Cookies();
     }
     
     final public function withNoIndex(?string $bot = null) :self
@@ -153,10 +154,6 @@ class Response implements ResponseInterface
     
     final public function cookies() :Cookies
     {
-        if ( ! $this->cookies) {
-            $this->cookies = new Cookies();
-        }
-        
         return $this->cookies;
     }
     

@@ -4,41 +4,56 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Throwable;
-use Exception;
-use Psr\Log\LogLevel;
-use Nyholm\Psr7\Stream;
-use Nyholm\Psr7\Response;
+use RuntimeException;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
-use Snicco\Component\Core\ExceptionHandling\ExceptionHandler;
+use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Http\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
-use Snicco\Component\HttpRouting\Http\Psr7\Response as AppResponse;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareBlueprint;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\NotFoundException;
+use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 
-class MiddlewarePipelineTest extends RoutingTestCase
+class MiddlewarePipelineTest extends TestCase
 {
     
+    use CreateTestPsrContainer;
+    use CreateTestPsr17Factories;
+    use CreateHttpErrorHandler;
+    use CreateUrlGenerator;
+    
     private MiddlewarePipeline $pipeline;
-    private Request            $request;
+    private Request $request;
+    private ResponseFactoryInterface $response_factory;
     
     protected function setUp() :void
     {
         parent::setUp();
         
+        $this->container = $this->createContainer();
+        $this->container[HttpErrorHandlerInterface::class] = $this->createHttpErrorHandler(
+            $this->response_factory = $this->createResponseFactory($this->createUrlGenerator())
+        );
+        $this->container[ResponseFactory::class] = $this->response_factory;
+        
         $this->pipeline = new MiddlewarePipeline(
             new MiddlewareFactory($this->container),
-            new PipelineTestExceptionHandler(),
+            new NullErrorHandler(),
         );
         $this->request = new Request(
             $this->psrServerRequestFactory()->createServerRequest('GET', 'https://foobar.com')
@@ -62,15 +77,15 @@ class MiddlewarePipelineTest extends RoutingTestCase
     {
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::create(Foo::class))
+            ->through(MiddlewareBlueprint::create(PipelineTestMiddleware1::class))
             ->then(function (ServerRequestInterface $request) {
-                $foo = $request->getAttribute('test');
-                $foo .= 'biz';
-                return $this->response_factory->html($foo);
+                return $this->response_factory->html(
+                    $request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE)
+                );
             });
         
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame('foobiz', $response->getBody()->__toString());
+        $this->assertSame('foo:pm1', $response->getBody()->__toString());
     }
     
     /** @test */
@@ -79,17 +94,20 @@ class MiddlewarePipelineTest extends RoutingTestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through(
-                array_map([MiddlewareBlueprint::class, 'create'], [Foo::class, Bar::class])
+                array_map(
+                    [MiddlewareBlueprint::class, 'create'],
+                    [PipelineTestMiddleware1::class, PipelineTestMiddleware2::class]
+                )
             )
             ->then(function (ServerRequestInterface $request) {
-                $foo = $request->getAttribute('test');
-                $foo .= 'biz';
-                
-                return $this->response_factory->html($foo);
+                return $this->response_factory->html(
+                    $request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE).
+                    $request->getAttribute(PipelineTestMiddleware2::ATTRIBUTE)
+                );
             });
         
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame('foobarbiz', $response->getBody()->__toString());
+        $this->assertSame('foobar:pm2:pm1', $response->getBody()->__toString());
     }
     
     /** @test */
@@ -97,7 +115,7 @@ class MiddlewarePipelineTest extends RoutingTestCase
     {
         $middleware = array_map(
             [MiddlewareBlueprint::class, 'create'],
-            [Foo::class, StopMiddleware::class, Bar::class]
+            [PipelineTestMiddleware1::class, StopMiddleware::class, PipelineTestMiddleware2::class]
         );
         
         $response = $this->pipeline
@@ -108,50 +126,26 @@ class MiddlewarePipelineTest extends RoutingTestCase
             });
         
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame('fooSTOP', $response->getBody()->__toString());
-    }
-    
-    /** @test */
-    public function middleware_responses_can_be_manipulated_by_middleware_higher_in_the_stack()
-    {
-        $middleware = array_map(
-            [MiddlewareBlueprint::class, 'create'],
-            [
-                ChangeLastMiddleware::class,
-                Foo::class,
-                StopMiddleware::class,
-                Bar::class,
-            ]
-        );
-        
-        $response = $this->pipeline
-            ->send($this->request)
-            ->through($middleware)
-            ->then(function (ServerRequestInterface $request) {
-                $this->fail('This should not be called.');
-            });
-        
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame('CHANGEDfooSTOP', $response->getBody()->__toString());
+        $this->assertSame('stopped:pm1', $response->getBody()->__toString());
     }
     
     /** @test */
     public function middleware_can_be_resolved_from_the_container()
     {
         $this->container->instance(
-            MiddlewareDependency::class,
-            new MiddlewareDependency(new \Tests\Codeception\shared\TestDependencies\Bar())
+            MiddlewareWithDependencies::class,
+            new MiddlewareWithDependencies(new Foo('FOO'), new Bar('BAR'))
         );
         
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::create(MiddlewareDependency::class))
+            ->through(MiddlewareBlueprint::create(MiddlewareWithDependencies::class))
             ->then(function (ServerRequestInterface $request) {
-                $this->fail('This should not be called.');
+                return $this->response_factory->html('handler');
             });
         
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame('BAR', $response->getBody()->__toString());
+        $this->assertSame('handler:FOOBAR', $response->getBody()->__toString());
     }
     
     /** @test */
@@ -159,67 +153,76 @@ class MiddlewarePipelineTest extends RoutingTestCase
     {
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::create(MiddlewareWithConfig::class, [false]))
+            ->through(MiddlewareBlueprint::create(FooMiddleware::class, ['FOO_M']))
             ->then(function (ServerRequestInterface $request) {
-                $this->fail('This should not be called');
+                return $this->response_factory->html('foo_handler');
             });
         
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('foo_handler:FOO_M', (string) $response->getBody());
         
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::create(MiddlewareWithConfig::class, [true]))
+            ->through(MiddlewareBlueprint::create(FooMiddleware::class, ['FOO_M_DIFFERENT']))
             ->then(function (ServerRequestInterface $request) {
-                return $this->response_factory->make();
+                return $this->response_factory->html('foo_handler');
             });
         
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('foo_handler:FOO_M_DIFFERENT', (string) $response->getBody());
     }
     
     /** @test */
     public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline()
     {
+        $pipeline = new MiddlewarePipeline(
+            new MiddlewareFactory($this->container),
+            new LazyHttpErrorHandler($this->container)
+        );
+        
         $middleware = array_map([MiddlewareBlueprint::class, 'create'], [
             FooMiddleware::class,
-            ThrowsExceptionMiddleware::class,
+            ThrowExceptionMiddleware::class,
             BarMiddleware::class,
         ]);
         
-        $response = $this->pipeline
+        $response = $pipeline
             ->send($this->request)
             ->through($middleware)
             ->then(function (ServerRequestInterface $request) {
                 $this->fail(
-                    'The route driver should have never be called if we have an exception.'
+                    'This should not have been called.'
                 );
             });
         
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame(404, $response->getStatusCode());
-        // bar middleware not called
-        $this->assertSame('Error Message:foo_middleware', (string) $response->getBody());
+        $body = (string) $response->getBody();
+        
+        $this->assertStringStartsWith('<h1>Oops! An Error Occurred</h1>', $body);
+        $this->assertStringEndsWith('foo_middleware', $body);
     }
     
     /** @test */
     public function exceptions_in_the_request_handler_get_handled_without_breaking_other_middleware()
     {
+        $pipeline = new MiddlewarePipeline(
+            new MiddlewareFactory($this->container),
+            new LazyHttpErrorHandler($this->container)
+        );
+        
         $middleware = array_map([MiddlewareBlueprint::class, 'create'], [
             FooMiddleware::class,
             BarMiddleware::class,
         ]);
         
-        $response = $this->pipeline
+        $response = $pipeline
             ->send($this->request)
             ->through($middleware)
             ->then(function (ServerRequestInterface $request) {
-                throw new NotFoundException("error");
+                throw new RuntimeException("error");
             });
         
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame('error:bar_middleware:foo_middleware', (string) $response->getBody());
+        $body = (string) $response->getBody();
+        
+        $this->assertStringStartsWith('<h1>Oops! An Error Occurred</h1>', $body);
+        $this->assertStringEndsWith(':bar_middleware:foo_middleware', $body);
     }
     
     /** @test */
@@ -255,170 +258,83 @@ class MiddlewarePipelineTest extends RoutingTestCase
     {
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::create(Foo::class))
+            ->through(MiddlewareBlueprint::create(FooMiddleware::class))
             ->then(function (ServerRequestInterface $request) {
-                $foo = $request->getAttribute('test');
-                $foo .= 'biz';
-                
-                return $this->response_factory->html($foo);
+                return $this->response_factory->html('foo');
             });
         
-        $this->assertSame('foobiz', $response->getBody()->__toString());
+        $this->assertSame('foo:foo_middleware', $response->getBody()->__toString());
         
         $response = $this->pipeline
-            ->send($this->request->withHeader('X-Test', 'foo'))
-            ->through(MiddlewareBlueprint::create(Bar::class))
+            ->send($this->request)
+            ->through(MiddlewareBlueprint::create(BarMiddleware::class))
             ->then(function (ServerRequestInterface $request) {
-                $foo = $request->getAttribute('test');
-                $foo .= 'biz';
-                
-                return $this->response_factory->html($foo);
+                return $this->response_factory->html('foo');
             });
         
-        $this->assertSame('barbiz', $response->getBody()->__toString());
+        $this->assertSame('foo:bar_middleware', $response->getBody()->__toString());
     }
     
 }
 
-class PipelineTestExceptionHandler
+class ThrowExceptionMiddleware extends AbstractMiddleware
 {
     
-    use CreateTestPsr17Factories;
-    
-    public function toHttpResponse(Throwable $e, Request $request) :AppResponse
+    public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $code = $e instanceof HttpException ? $e->httpStatusCode() : 500;
-        $body = $e instanceof HttpException ? $e->getMessage() : 'Internal Server Error';
-        $body = $this->psrStreamFactory()->createStream($body);
-        
-        return new AppResponse(
-            $this->psrResponseFactory()->createResponse((int) $code)
-                 ->withBody($body)
-        );
-    }
-    
-    public function report(Throwable $e, Request $request, string $psr3_log_level = LogLevel::ERROR)
-    {
+        throw new RuntimeException("Error in middleware");
     }
     
 }
 
-class Foo implements MiddlewareInterface
+class StopMiddleware extends AbstractMiddleware
 {
     
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
+    const ATTR = 'stop_middleware';
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        $test = $request->getAttribute('test', '');
-        
-        $response = $handler->handle($request->withAttribute('test', $test .= 'foo'));
-        
+        return $this->respond()->html('stopped');
+    }
+    
+}
+
+class PipelineTestMiddleware1 extends AbstractMiddleware
+{
+    
+    const ATTRIBUTE = 'pipeline1';
+    private string $value_to_add;
+    
+    public function __construct(string $value_to_add = 'foo')
+    {
+        $this->value_to_add = $value_to_add;
+    }
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
+    {
+        $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
+        $response->getBody()->write(':pm1');
         return $response;
     }
     
 }
 
-class Bar implements MiddlewareInterface
+class PipelineTestMiddleware2 extends AbstractMiddleware
 {
     
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
+    const ATTRIBUTE = 'pipeline2';
+    private string $value_to_add;
+    
+    public function __construct(string $value_to_add = 'bar')
     {
-        $test = $request->getAttribute('test', '');
-        
-        $response = $handler->handle($request->withAttribute('test', $test .= 'bar'));
-        
+        $this->value_to_add = $value_to_add;
+    }
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
+    {
+        $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
+        $response->getBody()->write(':pm2');
         return $response;
-    }
-    
-}
-
-class ThrowsExceptionMiddleware implements MiddlewareInterface
-{
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
-    {
-        throw new Exception(404, 'Error Message');
-    }
-    
-}
-
-class StopMiddleware implements MiddlewareInterface
-{
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
-    {
-        $test = $request->getAttribute('test', '');
-        
-        return new AppResponse(new Response(200, [], $test.'STOP'));
-    }
-    
-}
-
-class ChangeLastMiddleware implements MiddlewareInterface
-{
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
-    {
-        $response = $handler->handle($request);
-        
-        $value = $response->getBody()->__toString();
-        
-        return $response->withBody(Stream::create('CHANGED'.$value));
-    }
-    
-}
-
-class MiddlewareDependency implements MiddlewareInterface
-{
-    
-    /**
-     * @var Bar
-     */
-    public $bar;
-    
-    public function __construct(\Tests\Codeception\shared\TestDependencies\Bar $bar)
-    {
-        $this->bar = $bar;
-    }
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
-    {
-        return (new AppResponse(new Response ()))->withBody(
-            Stream::create(strtoupper($this->bar->bar))
-        );
-    }
-    
-}
-
-class MiddlewareWithConfig implements MiddlewareInterface
-{
-    
-    /**
-     * @var bool
-     */
-    private $delegate = false;
-    
-    public function __construct(bool $delegate)
-    {
-        $this->delegate = $delegate;
-    }
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
-    {
-        if ( ! $this->delegate) {
-            return new AppResponse(new Response(404));
-        }
-        
-        return $handler->handle($request);
-    }
-    
-}
-
-class WrongMiddleware
-{
-    
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
-    {
-        return new AppResponse(new Response());
     }
     
 }

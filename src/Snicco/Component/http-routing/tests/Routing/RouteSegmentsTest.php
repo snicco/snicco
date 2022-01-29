@@ -20,7 +20,7 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'dynamic']
         );
         
-        $request = $this->frontendRequest('GET', "/german-city/münchen");
+        $request = $this->frontendRequest("/german-city/münchen");
         $this->assertResponseBody('dynamic:münchen', $request);
     }
     
@@ -36,10 +36,10 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'dynamic']
         );
         
-        $request = $this->frontendRequest('GET', rawurlencode('новости'));
+        $request = $this->frontendRequest(rawurlencode('новости'));
         $this->assertResponseBody('static', $request);
         
-        $request = $this->frontendRequest('GET', '/foo/'.rawurlencode('новости'));
+        $request = $this->frontendRequest('/foo/'.rawurlencode('новости'));
         $this->assertResponseBody('dynamic:новости', $request);
     }
     
@@ -48,8 +48,8 @@ class RouteSegmentsTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         
-        $this->assertResponseBody('static', $this->frontendRequest('GET', '/foo'));
-        $this->assertResponseBody('', $this->frontendRequest('GET', '/FOO'));
+        $this->assertResponseBody('static', $this->frontendRequest('/foo'));
+        $this->assertResponseBody('', $this->frontendRequest('/FOO'));
     }
     
     /** @test */
@@ -59,7 +59,7 @@ class RouteSegmentsTest extends RoutingTestCase
              ->condition(QueryStringCondition::class, ['page' => 'bayern münchen']
              );
         
-        $request = $this->frontendRequest('GET', "/foo?page=bayern münchen");
+        $request = $this->frontendRequest("/foo?page=bayern münchen");
         $this->assertResponseBody('dynamic:bayern münchen', $request);
     }
     
@@ -72,13 +72,13 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'bandSong']
         );
         
-        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2FDC/foo_song');
+        $request = $this->frontendRequest('https://music.com/bands/AC%2FDC/foo_song');
         $this->assertResponseBody(
             'Show song [foo_song] of band [AC/DC].',
             $request
         );
         
-        $request = $this->frontendRequest('GET', 'https://music.com/bands/AC%2FDC');
+        $request = $this->frontendRequest('https://music.com/bands/AC%2FDC');
         $this->assertResponseBody(
             'Show all songs of band [AC/DC].',
             $request
@@ -90,7 +90,7 @@ class RouteSegmentsTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('r1', 'münchen', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', 'münchen');
+        $request = $this->frontendRequest('münchen');
         
         $this->assertResponseBody('static', $request);
     }
@@ -100,7 +100,7 @@ class RouteSegmentsTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('r1', 'foo+bar', RoutingTestController::class);
         
-        $request = $this->frontendRequest('GET', '/foo+bar');
+        $request = $this->frontendRequest('/foo+bar');
         $this->assertResponseBody('static', $request);
     }
     
@@ -114,10 +114,10 @@ class RouteSegmentsTest extends RoutingTestCase
         )
              ->requirements(['user' => '[a]+']);
         
-        $request = $this->frontendRequest('GET', '/users/a');
+        $request = $this->frontendRequest('/users/a');
         $this->assertResponseBody('dynamic:a', $request);
         
-        $request = $this->frontendRequest('GET', '/users/b');
+        $request = $this->frontendRequest('/users/b');
         $this->assertEmptyBody($request);
     }
     
@@ -130,13 +130,13 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'twoParams']
         )->requirements(['id' => '[a]+', 'name' => '[a-z]+']);
         
-        $request = $this->frontendRequest('GET', '/user/a/calvin');
+        $request = $this->frontendRequest('/user/a/calvin');
         $this->assertResponseBody('a:calvin', $request);
         
-        $request = $this->frontendRequest('GET', '/users/b/calvin');
+        $request = $this->frontendRequest('/users/b/calvin');
         $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/users/calvin/calvin');
+        $request = $this->frontendRequest('/users/calvin/calvin');
         $this->assertEmptyBody($request);
     }
     
@@ -148,10 +148,10 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'users']
         );
         
-        $request = $this->frontendRequest('GET', '/users/1/calvin');
+        $request = $this->frontendRequest('/users/1/calvin');
         $this->assertResponseBody('dynamic:1:calvin', $request);
         
-        $request = $this->frontendRequest('GET', 'users/1');
+        $request = $this->frontendRequest('users/1');
         $this->assertResponseBody('dynamic:1:default_user', $request);
     }
     
@@ -164,13 +164,13 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'twoOptional']
         );
         
-        $response = $this->frontendRequest('post', '/team');
+        $response = $this->frontendRequest('/team', [], 'POST');
         $this->assertResponseBody('default1:default2', $response);
         
-        $response = $this->frontendRequest('post', '/team/dortmund');
+        $response = $this->frontendRequest('/team/dortmund', [], 'POST');
         $this->assertResponseBody('dortmund:default2', $response);
         
-        $response = $this->frontendRequest('post', '/team/dortmund/calvin');
+        $response = $this->frontendRequest('/team/dortmund/calvin', [], 'POST');
         $this->assertResponseBody('dortmund:calvin', $response);
     }
     
@@ -178,22 +178,22 @@ class RouteSegmentsTest extends RoutingTestCase
     public function multiple_parameters_can_be_optional_with_a_preceding_required_segment()
     {
         // Preceding group is required but not capturing
-        $this->routeConfigurator()->post(
+        $this->routeConfigurator()->get(
             'r1',
             '/static/{name}/{gender?}/{age?}',
             [RoutingTestController::class, 'requiredAndOptional']
         );
         
-        $response = $this->frontendRequest('post', '/static/foo');
+        $response = $this->frontendRequest('/static/foo');
         $this->assertResponseBody('foo:default1:default2', $response);
         
-        $response = $this->frontendRequest('post', '/static/foo/bar');
+        $response = $this->frontendRequest('/static/foo/bar');
         $this->assertResponseBody('foo:bar:default2', $response);
         
-        $response = $this->frontendRequest('post', '/static/foo/bar/baz');
+        $response = $this->frontendRequest('/static/foo/bar/baz');
         $this->assertResponseBody('foo:bar:baz', $response);
         
-        $response = $this->frontendRequest('post', '/static');
+        $response = $this->frontendRequest('POST', [], '/static');
         $this->assertResponseBody('', $response);
     }
     
@@ -206,21 +206,21 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'twoOptional']
         )->requirements(['name' => '[a-z]+', 'id' => '\d+']);
         
-        $response = $this->frontendRequest('post', '/team');
+        $response = $this->frontendRequest('/team', [], 'POST');
         $this->assertResponseBody('default1:default2', $response);
         
-        $response = $this->frontendRequest('post', '/team/1');
+        $response = $this->frontendRequest('/team/1', [], 'POST');
         $this->assertResponseBody('1:default2', $response);
         
-        $response = $this->frontendRequest('post', '/team/1/dortmund');
+        $response = $this->frontendRequest('/team/1/dortmund', [], 'POST');
         $this->assertResponseBody('1:dortmund', $response);
         
         // Needs to be a number
-        $response = $this->frontendRequest('post', '/team/fail');
+        $response = $this->frontendRequest('/team/fail', [], 'POST');
         $this->assertEmptyBody($response);
         
         // seconds param can't be a number
-        $response = $this->frontendRequest('post', '/team/1/12');
+        $response = $this->frontendRequest('/team/1/12', [], 'POST');
         $this->assertEmptyBody($response);
     }
     
@@ -235,13 +235,13 @@ class RouteSegmentsTest extends RoutingTestCase
              ->requirements(['user_id' => '[a]+'])
              ->requirements(['name' => 'calvin']);
         
-        $request = $this->frontendRequest('GET', '/users/a/calvin');
+        $request = $this->frontendRequest('/users/a/calvin');
         $this->assertResponseBody('a:calvin', $request);
         
-        $request = $this->frontendRequest('GET', '/users/a/john');
+        $request = $this->frontendRequest('/users/a/john');
         $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/users/b/calvin');
+        $request = $this->frontendRequest('/users/b/calvin');
         $this->assertEmptyBody($request);
     }
     
@@ -266,27 +266,27 @@ class RouteSegmentsTest extends RoutingTestCase
             [RoutingTestController::class, 'twoParams']
         )->requireAlpha('param1', true);
         
-        $request = $this->frontendRequest('GET', '/route1/foo/a');
+        $request = $this->frontendRequest('/route1/foo/a');
         $this->assertResponseBody('foo:a', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/foo111');
+        $request = $this->frontendRequest('/route1/foo111');
         $this->assertEmptyBody($request);
         
         // uppercase not allowed by default
-        $request = $this->frontendRequest('GET', '/route1/FOO/a');
+        $request = $this->frontendRequest('/route1/FOO/a');
         $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/route2/foo/bar');
+        $request = $this->frontendRequest('/route2/foo/bar');
         $this->assertResponseBody('foo:bar', $request);
         
-        $request = $this->frontendRequest('GET', '/route2/foo/+');
+        $request = $this->frontendRequest('/route2/foo/+');
         $this->assertEmptyBody($request);
         
-        $request = $this->frontendRequest('GET', '/route2/1/foo');
+        $request = $this->frontendRequest('/route2/1/foo');
         $this->assertEmptyBody($request);
         
         // uppercase allowed explicitly
-        $request = $this->frontendRequest('GET', '/route3/FOO/a');
+        $request = $this->frontendRequest('/route3/FOO/a');
         $this->assertResponseBody('FOO:a', $request);
     }
     
@@ -307,19 +307,19 @@ class RouteSegmentsTest extends RoutingTestCase
         )
              ->requireAlphaNum('name', true);
         
-        $request = $this->frontendRequest('GET', '/route1/foo');
+        $request = $this->frontendRequest('/route1/foo');
         $this->assertResponseBody('dynamic:foo', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/foo123');
+        $request = $this->frontendRequest('/route1/foo123');
         $this->assertResponseBody('dynamic:foo123', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/foo+');
+        $request = $this->frontendRequest('/route1/foo+');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/FOO');
+        $request = $this->frontendRequest('/route1/FOO');
         $this->assertResponseBody('', $request);
         
-        $request = $this->frontendRequest('GET', '/route2/FOO');
+        $request = $this->frontendRequest('/route2/FOO');
         $this->assertResponseBody('dynamic:FOO', $request);
     }
     
@@ -333,10 +333,10 @@ class RouteSegmentsTest extends RoutingTestCase
         )
              ->requireNum('name');
         
-        $request = $this->frontendRequest('GET', '/route1/1');
+        $request = $this->frontendRequest('/route1/1');
         $this->assertResponseBody('dynamic:1', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/calvin');
+        $request = $this->frontendRequest('/route1/calvin');
         $this->assertEmptyBody($request);
     }
     
@@ -350,16 +350,16 @@ class RouteSegmentsTest extends RoutingTestCase
         )
              ->requireOneOf('name', [1, 2, 3]);
         
-        $request = $this->frontendRequest('GET', '/route1/1');
+        $request = $this->frontendRequest('/route1/1');
         $this->assertResponseBody('dynamic:1', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/2');
+        $request = $this->frontendRequest('/route1/2');
         $this->assertResponseBody('dynamic:2', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/3');
+        $request = $this->frontendRequest('/route1/3');
         $this->assertResponseBody('dynamic:3', $request);
         
-        $request = $this->frontendRequest('GET', '/route1/4');
+        $request = $this->frontendRequest('/route1/4');
         $this->assertResponseBody('', $request);
     }
     

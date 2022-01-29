@@ -210,6 +210,8 @@ final class Route implements Serializable
     
     /**
      * @param  string|array<string>  $middleware
+     *
+     * @todo Bad Middleware is currently only detected at runtime.
      */
     public function middleware($middleware) :Route
     {

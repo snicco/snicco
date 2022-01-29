@@ -10,6 +10,12 @@ use Snicco\Component\Psr7ErrorHandler\UserFacing;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
 
+use function dirname;
+use function json_decode;
+use function file_get_contents;
+
+use const JSON_THROW_ON_ERROR;
+
 /**
  * @api
  */
@@ -40,6 +46,19 @@ final class TransformableInformationProvider implements InformationProvider
         }
         $this->transformer = $transformer;
         $this->identifier = $identifier;
+    }
+    
+    public static function withDefaultData(ExceptionIdentifier $identifier, ExceptionIdentifier ...$transformer) :self
+    {
+        $data = file_get_contents(dirname(__DIR__, 2).'/resources/en_US.error.json');
+        
+        $data = json_decode($data, true, JSON_THROW_ON_ERROR);
+        
+        return new self(
+            $data,
+            $identifier,
+            ...$transformer
+        );
     }
     
     public function createFor(Throwable $e) :ExceptionInformation

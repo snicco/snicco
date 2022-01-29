@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 use stdClass;
 use TypeError;
 use InvalidArgumentException;
-use Tests\Codeception\shared\UnitTest;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
@@ -17,7 +17,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-final class RouteTest extends UnitTest
+final class RouteTest extends TestCase
 {
     
     /** @test */

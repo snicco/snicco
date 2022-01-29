@@ -6,13 +6,13 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
-use Tests\Codeception\shared\TestDependencies\Foo;
-use Tests\Codeception\shared\TestDependencies\Bar;
-use Tests\Codeception\shared\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithMiddleware;
@@ -38,10 +38,10 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     public function middleware_is_resolved_from_the_service_container()
     {
         $foo = new Foo();
-        $foo->foo = 'FOO';
+        $foo->value = 'FOO';
         
         $bar = new Bar();
-        $bar->bar = 'BAR';
+        $bar->value = 'BAR';
         
         $this->container->instance(
             MiddlewareWithDependencies::class,
@@ -52,7 +52,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
             MiddlewareWithDependencies::class
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':FOOBAR', $request);
     }
     
@@ -61,13 +61,13 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
     {
         $this->container->singleton(ControllerWithMiddleware::class, function () {
             $baz = new Baz();
-            $baz->baz = 'BAZ';
+            $baz->value = 'BAZ';
             return new ControllerWithMiddleware($baz);
         });
         
         $this->routeConfigurator()->get('r1', '/foo', ControllerWithMiddleware::class.'@handle');
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('BAZ:controller_with_middleware:foobar', $request);
     }
     
@@ -78,7 +78,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
         
         $this->routeConfigurator()->get('r1', '/foo', ControllerWithMiddleware::class.'@handle');
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('baz:controller_with_middleware:foobar', $request);
         
         $this->assertSame(1, $GLOBALS['test'][ControllerWithMiddleware::CONSTRUCTED_KEY] ?? 0);
@@ -116,7 +116,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
             'm:BAZ,BIZ'
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static.':FOOBARBAZBIZ', $request);
     }
     
@@ -131,7 +131,7 @@ class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
             'm'
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     

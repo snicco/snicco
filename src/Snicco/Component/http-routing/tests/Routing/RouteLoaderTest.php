@@ -10,13 +10,15 @@ use Snicco\Component\HttpRouting\Routing\RouteLoader;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
+
+use function dirname;
 
 final class RouteLoaderTest extends RoutingTestCase
 {
@@ -42,7 +44,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $this->withMiddlewareGroups(['frontend' => [FooMiddleware::class]]);
         $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
         self::$web_include_partial = false;
-        $this->bad_routes = dirname(__DIR__, 2).'/fixtures/bad-routes';
+        $this->bad_routes = dirname(__DIR__).'/fixtures/bad-routes';
     }
     
     protected function tearDown() :void
@@ -74,7 +76,7 @@ final class RouteLoaderTest extends RoutingTestCase
     {
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
         
-        $response = $this->runKernel($this->frontendRequest('GET', self::WEB_PATH));
+        $response = $this->runKernel($this->frontendRequest(self::WEB_PATH));
         $response->assertOk()->assertNotDelegated();
     }
     
@@ -85,7 +87,7 @@ final class RouteLoaderTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static.':foo_middleware',
-            $this->frontendRequest('GET', self::WEB_PATH)
+            $this->frontendRequest(self::WEB_PATH)
         );
     }
     
@@ -105,7 +107,7 @@ final class RouteLoaderTest extends RoutingTestCase
     {
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
         
-        $response = $this->runKernel($this->frontendRequest('GET', self::PARTIAL_PATH));
+        $response = $this->runKernel($this->frontendRequest(self::PARTIAL_PATH));
         
         // Not the partial route but the fallback route in web.php
         $this->assertSame('fallback:partial:foo_middleware', $response->body());
@@ -118,10 +120,10 @@ final class RouteLoaderTest extends RoutingTestCase
         
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
         
-        $response = $this->runKernel($this->frontendRequest('GET', self::WEB_PATH));
+        $response = $this->runKernel($this->frontendRequest(self::WEB_PATH));
         $response->assertOk()->assertNotDelegated();
         
-        $response = $this->runKernel($this->frontendRequest('GET', self::PARTIAL_PATH));
+        $response = $this->runKernel($this->frontendRequest(self::PARTIAL_PATH));
         $response->assertOk()->assertNotDelegated();
     }
     
@@ -135,13 +137,13 @@ final class RouteLoaderTest extends RoutingTestCase
         // Partial has no attributes from partial
         $this->assertResponseBody(
             RoutingTestController::static.':foo_middleware',
-            $this->frontendRequest('GET', self::WEB_PATH)
+            $this->frontendRequest(self::WEB_PATH)
         );
         
         // Partial has middleware config from parent.
         $this->assertResponseBody(
             RoutingTestController::static.':bar_middleware:foo_middleware',
-            $this->frontendRequest('GET', self::PARTIAL_PATH)
+            $this->frontendRequest(self::PARTIAL_PATH)
         );
     }
     
@@ -158,7 +160,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
         
         $response = $this->runKernel(
-            $this->frontendRequest('GET', $this->base_prefix.'/partials/cart')
+            $this->frontendRequest($this->base_prefix.'/partials/cart')
         );
         
         $response->assertOk()->assertNotDelegated();
@@ -204,7 +206,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
         
         $response = $this->runKernel(
-            $this->frontendRequest('GET', $this->base_prefix.'/partials/cart')
+            $this->frontendRequest($this->base_prefix.'/partials/cart')
         );
         
         // Bar middleware is not included by default
@@ -232,7 +234,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
         
         $response = $this->runKernel(
-            $this->frontendRequest('GET', $this->base_prefix.'/partials/cart')
+            $this->frontendRequest($this->base_prefix.'/partials/cart')
         );
         
         // Bar middleware is not included by default
@@ -256,7 +258,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
         
         $response = $this->runKernel(
-            $this->frontendRequest('GET', $this->base_prefix.'/rest/v1/posts')
+            $this->frontendRequest($this->base_prefix.'/rest/v1/posts')
         );
         
         $response->assertOk()->assertNotDelegated();
@@ -280,7 +282,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $loader->loadApiRoutesIn([$this->routes_dir.'/api']);
         
         $response = $this->runKernel(
-            $this->frontendRequest('GET', '/rest/posts')
+            $this->frontendRequest('/rest/posts')
         );
         $response->assertOk()->assertNotDelegated();
         
@@ -290,7 +292,7 @@ final class RouteLoaderTest extends RoutingTestCase
         );
         
         $response = $this->runKernel(
-            $this->frontendRequest('GET', '/partials/cart')
+            $this->frontendRequest('/partials/cart')
         );
         $response->assertOk()->assertNotDelegated();
         
@@ -416,7 +418,7 @@ final class RouteLoaderTest extends RoutingTestCase
         $this->withMiddlewareGroups(['admin' => [FooMiddleware::class]]);
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
         
-        $response = $this->runKernel($this->adminRequest('GET', '/foo'));
+        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
         $response->assertOk()->assertNotDelegated();
         $this->assertSame(RoutingTestController::static.':foo_middleware', $response->body());
         
@@ -486,7 +488,7 @@ final class RouteLoaderTest extends RoutingTestCase
     {
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
         
-        $this->runKernel($this->frontendRequest('GET', '/first'))->assertOk();
+        $this->runKernel($this->frontendRequest('/first'))->assertOk();
     }
     
     /** @test */

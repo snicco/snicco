@@ -7,7 +7,6 @@ namespace Snicco\Component\HttpRouting\Routing\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\AbstractController;
 use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 
 /**
  * @interal

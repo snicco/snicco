@@ -7,7 +7,7 @@ namespace Snicco\Component\Core\Utils;
 use Webmozart\Assert\Assert;
 
 /**
- * @framework-only
+ * @api
  */
 final class PHPCacheFile
 {

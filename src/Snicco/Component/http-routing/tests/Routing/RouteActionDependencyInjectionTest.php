@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Tests\Codeception\shared\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
 use Snicco\Component\Core\Configuration\WritableConfig;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
@@ -26,7 +26,7 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
             [RoutingTestController::class, 'onlyRequest']
         );
         
-        $request = $this->frontendRequest('GET', '/foo');
+        $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
     
@@ -39,7 +39,7 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
             [RoutingTestController::class, 'twoParams']
         );
         
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
+        $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin', $request);
     }
     
@@ -52,7 +52,7 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
             [RoutingTestController::class, 'twoParamsWithRequest']
         );
         
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
+        $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin', $request);
     }
     
@@ -61,13 +61,13 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
     {
         $foo = new Foo();
         $this->container[Foo::class] = $foo;
-        $foo->foo = 'FOO';
+        $foo->value = 'FOO';
         
         $this->container[ControllerWithDependencies::class] = new ControllerWithDependencies($foo);
         
         $this->routeConfigurator()->get('r1', '/foo', ControllerWithDependencies::class);
         
-        $request = $this->frontendRequest('GET', 'foo');
+        $request = $this->frontendRequest('foo');
         $this->assertResponseBody('FOO_controller', $request);
     }
     
@@ -91,7 +91,7 @@ class RouteActionDependencyInjectionTest extends RoutingTestCase
             [RoutingTestController::class, 'requestParamsConditionArgs']
         )->condition(RouteConditionWithDependency::class, true);
         
-        $request = $this->frontendRequest('GET', '/teams/dortmund/calvin');
+        $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin:FOO_CONFIG', $request);
     }
     

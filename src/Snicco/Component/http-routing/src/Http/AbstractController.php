@@ -27,12 +27,12 @@ abstract class AbstractController
      * @interal
      * @return string[]
      */
-    public function getMiddleware(string $method = null) :array
+    public function getMiddleware(string $controller_method = null) :array
     {
         $middleware = array_filter(
             $this->middleware,
-            function (ControllerMiddleware $controller_middleware) use ($method) {
-                return $controller_middleware->appliesTo($method);
+            function (ControllerMiddleware $controller_middleware) use ($controller_method) {
+                return $controller_middleware->appliesTo($controller_method);
             }
         );
         

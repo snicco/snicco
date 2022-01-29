@@ -41,7 +41,7 @@ class RouteCachingTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', 'foo')
+            $this->frontendRequest('foo')
         );
     }
     
@@ -54,7 +54,7 @@ class RouteCachingTest extends RoutingTestCase
         
         $this->assertResponseBody(
             RoutingTestController::static,
-            $this->frontendRequest('GET', 'foo')
+            $this->frontendRequest('foo')
         );
         
         $this->assertTrue($this->route_cache_file->isCreated());
@@ -79,28 +79,28 @@ class RouteCachingTest extends RoutingTestCase
         );
         
         // Creates the cache file
-        $this->runKernel($this->frontendRequest('GET', 'whatever'));
+        $this->runKernel($this->frontendRequest('whatever'));
         
         $this->assertTrue($this->route_cache_file->isCreated());
         
         $this->refreshRouter($this->route_cache_file);
         
-        $request = $this->frontendRequest('GET', 'foo');
+        $request = $this->frontendRequest('foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('GET', 'bar');
+        $request = $this->frontendRequest('bar');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('GET', 'biz');
+        $request = $this->frontendRequest('biz');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('GET', 'baz');
+        $request = $this->frontendRequest('baz');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('GET', 'boom');
+        $request = $this->frontendRequest('boom');
         $this->assertResponseBody(RoutingTestController::static, $request);
         
-        $request = $this->frontendRequest('GET', 'bang');
+        $request = $this->frontendRequest('bang');
         $this->assertResponseBody('', $request);
     }
     
@@ -116,7 +116,7 @@ class RouteCachingTest extends RoutingTestCase
         $this->assertSame('/bar', $this->generator->toRoute('bar'));
         
         // Creates the cache file
-        $this->runKernel($this->frontendRequest('GET', 'whatever'));
+        $this->runKernel($this->frontendRequest('whatever'));
         
         $this->assertTrue($this->route_cache_file->isCreated());
         
@@ -136,7 +136,7 @@ class RouteCachingTest extends RoutingTestCase
         $this->assertSame('/bar', $this->generator->toRoute('bar'));
         
         // Creates the cache file
-        $this->runKernel($this->frontendRequest('GET', 'whatever'));
+        $this->runKernel($this->frontendRequest('whatever'));
         
         $this->assertTrue($this->route_cache_file->isCreated());
         

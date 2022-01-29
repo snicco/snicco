@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Middleware\Internal;
 
-use Snicco\Component\Core\DIContainer;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -20,9 +20,9 @@ final class RouteRunner extends AbstractMiddleware
     
     private MiddlewarePipeline $pipeline;
     private MiddlewareStack    $middleware_stack;
-    private DIContainer        $container;
+    private ContainerInterface $container;
     
-    public function __construct(MiddlewarePipeline $pipeline, MiddlewareStack $middleware_stack, DIContainer $container)
+    public function __construct(MiddlewarePipeline $pipeline, MiddlewareStack $middleware_stack, ContainerInterface $container)
     {
         $this->pipeline = $pipeline;
         $this->middleware_stack = $middleware_stack;
