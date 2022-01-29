@@ -363,4 +363,17 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $request);
     }
     
+    /** @test */
+    public function segments_can_be_added_before_path_segments()
+    {
+        $this->routeConfigurator()->get(
+            'city',
+            '{language}/foo/{page}',
+            [RoutingTestController::class, 'twoParams']
+        );
+        
+        $request = $this->frontendRequest('/en/foo/bar');
+        $this->assertResponseBody('en:bar', $request);
+    }
+    
 }
