@@ -17,10 +17,10 @@ class TrailingSlashTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(true), $request);
         
         $response->assertNextMiddlewareNotCalled();
-        $response->assertRedirect();
-        $response->assertStatus(301);
+        $response->psr()->assertRedirect();
+        $response->psr()->assertStatus(301);
         
-        $response->assertRedirectPath('/bar/');
+        $response->psr()->assertRedirectPath('/bar/');
     }
     
     /** @test */
@@ -31,7 +31,7 @@ class TrailingSlashTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
         
         $response->assertNextMiddlewareNotCalled();
-        $response->assertRedirect('/bar', 301);
+        $response->psr()->assertRedirect('/bar', 301);
     }
     
     public function testNoRedirectIfSlashesAreCorrect()
@@ -41,7 +41,7 @@ class TrailingSlashTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertOk();
+        $response->psr()->assertOk();
     }
     
 }

@@ -31,7 +31,7 @@ class RedirectIfAuthenticatedTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
         
-        $response->assertRedirect('/dashboard');
+        $response->psr()->assertRedirect('/dashboard');
         $response->assertNextMiddlewareNotCalled();
     }
     
@@ -45,7 +45,7 @@ class RedirectIfAuthenticatedTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
         
-        $response->assertRedirect('/home');
+        $response->psr()->assertRedirect('/home');
         $response->assertNextMiddlewareNotCalled();
     }
     
@@ -56,7 +56,7 @@ class RedirectIfAuthenticatedTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($this->newMiddleware($provider), $this->frontendRequest());
         
-        $response->assertRedirect('/');
+        $response->psr()->assertRedirect('/');
         $response->assertNextMiddlewareNotCalled();
     }
     
@@ -70,7 +70,7 @@ class RedirectIfAuthenticatedTest extends InternalMiddlewareTestCase
             $this->frontendRequest()
         );
         
-        $response->assertRedirect('/custom-home-page');
+        $response->psr()->assertRedirect('/custom-home-page');
         $response->assertNextMiddlewareNotCalled();
     }
     

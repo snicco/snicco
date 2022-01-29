@@ -11,15 +11,16 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 /**
  * @api
  */
-final class MiddlewareTestResponse extends TestResponse
+final class MiddlewareTestResponse
 {
     
-    private bool $next_middleware_called;
+    private bool               $next_middleware_called;
+    private AssertableResponse $response;
     
     public function __construct(ResponseInterface $response, bool $next_called = false)
     {
         $this->next_middleware_called = $next_called;
-        parent::__construct(new Response($response));
+        $this->response = new AssertableResponse(new Response($response));
     }
     
     public function assertNextMiddlewareCalled() :MiddlewareTestResponse
@@ -32,6 +33,11 @@ final class MiddlewareTestResponse extends TestResponse
     {
         PHPUnit::assertFalse($this->next_middleware_called, 'The next middleware was called.');
         return $this;
+    }
+    
+    public function psr() :AssertableResponse
+    {
+        return $this->response;
     }
     
 }

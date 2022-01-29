@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Testing\TestResponse;
+use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Tests\InternalMiddlewareTestCase;
 use Snicco\Component\HttpRouting\Middleware\OpenRedirectProtection;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
@@ -35,7 +35,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertOk();
+        $response->psr()->assertOk();
     }
     
     /** @test */
@@ -50,7 +50,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('/foo', 302);
+        $response->psr()->assertRedirect('/foo', 302);
     }
     
     /** @test */
@@ -65,7 +65,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('https://foo.com/bar', 302);
+        $response->psr()->assertRedirect('https://foo.com/bar', 302);
     }
     
     /** @test */
@@ -79,7 +79,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertForbiddenRedirect($response, 'https://bar.com/foo');
+        $this->assertForbiddenRedirect($response->psr(), 'https://bar.com/foo');
     }
     
     /** @test */
@@ -93,7 +93,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertForbiddenRedirect($response, '//bar.com:80/path/info');
+        $this->assertForbiddenRedirect($response->psr(), '//bar.com:80/path/info');
     }
     
     /** @test */
@@ -107,7 +107,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('https://stripe.com/foo');
+        $response->psr()->assertRedirect('https://stripe.com/foo');
     }
     
     /** @test */
@@ -122,7 +122,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
-        $this->assertForbiddenRedirect($response, 'https://paypal.com/pay');
+        $this->assertForbiddenRedirect($response->psr(), 'https://paypal.com/pay');
     }
     
     /** @test */
@@ -138,7 +138,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['*.stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('https://payments.stripe.com/foo');
+        $response->psr()->assertRedirect('https://payments.stripe.com/foo');
         
         $this->withNextMiddlewareResponse(function () {
             return $this->getResponseFactory()->redirect(
@@ -150,7 +150,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['*.stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('https://accounts.stripe.com/foo');
+        $response->psr()->assertRedirect('https://accounts.stripe.com/foo');
     }
     
     /** @test */
@@ -167,7 +167,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('https://accounts.foo.com/foo');
+        $response->psr()->assertRedirect('https://accounts.foo.com/foo');
     }
     
     /** @test */
@@ -183,7 +183,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($this->newMiddleware(), $request);
         
-        $response->assertRedirect('https://external-site.com');
+        $response->psr()->assertRedirect('https://external-site.com');
     }
     
     /** @test */
@@ -200,7 +200,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
         
         $response->assertNextMiddlewareCalled();
-        $response->assertRedirect('/?intended_redirect=https://paypal.com/pay');
+        $response->psr()->assertRedirect('/?intended_redirect=https://paypal.com/pay');
     }
     
     private function newMiddleware($whitelist = []) :OpenRedirectProtection
@@ -208,7 +208,7 @@ class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
         return new OpenRedirectProtection('https://foo.com', $whitelist);
     }
     
-    private function assertForbiddenRedirect(TestResponse $response, string $intended)
+    private function assertForbiddenRedirect(AssertableResponse $response, string $intended)
     {
         $this->assertStringStartsWith(
             '/redirect/exit',

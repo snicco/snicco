@@ -8,9 +8,9 @@ use Closure;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\ExpectationFailedException;
-use Snicco\Component\HttpRouting\Testing\TestResponse;
 use Snicco\Component\HttpRouting\Http\ResponseFactory;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
+use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
@@ -35,15 +35,15 @@ final class TestResponseTest extends TestCase
     {
         $response = $this->response_factory->html('foo');
         
-        $test_response = new TestResponse($response);
-        $this->assertInstanceOf(TestResponse::class, $test_response);
+        $test_response = new AssertableResponse($response);
+        $this->assertInstanceOf(AssertableResponse::class, $test_response);
         $this->assertNotInstanceOf(ResponseInterface::class, $test_response);
     }
     
     /** @test */
     public function test_body()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $this->assertSame('foo', $response->body());
     }
@@ -51,7 +51,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_body_with_empty_body()
     {
-        $response = new TestResponse($this->response_factory->make());
+        $response = new AssertableResponse($this->response_factory->make());
         
         $this->assertSame('', $response->body());
     }
@@ -59,7 +59,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assert_delegated_can_pass()
     {
-        $response = new TestResponse($this->response_factory->delegate());
+        $response = new AssertableResponse($this->response_factory->delegate());
         
         $response->assertDelegated();
     }
@@ -67,7 +67,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assert_delegated_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to be instance of',
@@ -78,7 +78,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assert_not_delegated_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $response->assertNotDelegated();
     }
@@ -86,7 +86,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assert_not_delegated_can_fail()
     {
-        $response = new TestResponse($this->response_factory->delegate());
+        $response = new AssertableResponse($this->response_factory->delegate());
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated',
@@ -97,7 +97,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSuccessful_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 204));
+        $response = new AssertableResponse($this->response_factory->html('foo', 204));
         
         $response->assertSuccessful();
     }
@@ -105,7 +105,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSuccessful_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 400));
+        $response = new AssertableResponse($this->response_factory->html('foo', 400));
         
         $this->expectFailureWithMessageContaining(
             "Response status code [400] is not a success status code.",
@@ -116,7 +116,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSuccessful_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(204));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(204));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -127,7 +127,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertOk_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 200));
+        $response = new AssertableResponse($this->response_factory->html('foo', 200));
         
         $response->assertOk();
     }
@@ -135,7 +135,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertOk_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 201));
+        $response = new AssertableResponse($this->response_factory->html('foo', 201));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [200].\nGot [201].",
@@ -146,7 +146,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertOK_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(200));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(200));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -157,7 +157,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertCreated_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 201));
+        $response = new AssertableResponse($this->response_factory->html('foo', 201));
         
         $response->assertCreated();
     }
@@ -165,7 +165,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertCreated_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 204));
+        $response = new AssertableResponse($this->response_factory->html('foo', 204));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [201].\nGot [204].",
@@ -176,7 +176,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertCreated_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(201));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(201));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -187,7 +187,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNotContent_can_pass()
     {
-        $response = new TestResponse($this->response_factory->noContent());
+        $response = new AssertableResponse($this->response_factory->noContent());
         
         $response->assertNoContent();
     }
@@ -195,7 +195,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNoContent_can_fail()
     {
-        $response = new TestResponse($this->response_factory->noContent()->withStatus(200));
+        $response = new AssertableResponse($this->response_factory->noContent()->withStatus(200));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [204].\nGot [200].",
@@ -206,7 +206,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNoContent_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(204));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(204));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -217,7 +217,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNoContent_fails_204_status_but_non_empty_body()
     {
-        $response = new TestResponse($this->response_factory->html('foo')->withStatus(204));
+        $response = new AssertableResponse($this->response_factory->html('foo')->withStatus(204));
         
         $this->expectFailureWithMessageContaining(
             'Response code matches expected [204] but the response body is not empty.',
@@ -228,7 +228,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertStatus_can_pass()
     {
-        $response = new TestResponse($this->response_factory->make(201));
+        $response = new AssertableResponse($this->response_factory->make(201));
         
         $response->assertStatus(201);
     }
@@ -236,7 +236,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertStatus_can_fail()
     {
-        $response = new TestResponse($this->response_factory->make(201));
+        $response = new AssertableResponse($this->response_factory->make(201));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [301].\nGot [201].",
@@ -247,7 +247,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertStatus_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(301));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(301));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -258,7 +258,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNotFound_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 404));
+        $response = new AssertableResponse($this->response_factory->html('foo', 404));
         
         $response->assertNotFound();
     }
@@ -266,7 +266,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNotFound_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 401));
+        $response = new AssertableResponse($this->response_factory->html('foo', 401));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [404].\nGot [401].",
@@ -277,7 +277,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertNotFound_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(404));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(404));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -288,7 +288,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertForbidden_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 403));
+        $response = new AssertableResponse($this->response_factory->html('foo', 403));
         
         $response->assertForbidden();
     }
@@ -296,7 +296,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertForbidden_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 401));
+        $response = new AssertableResponse($this->response_factory->html('foo', 401));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [403].\nGot [401].",
@@ -307,7 +307,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertForbidden_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(403));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(403));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -318,7 +318,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertUnauthorized_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 401));
+        $response = new AssertableResponse($this->response_factory->html('foo', 401));
         
         $response->assertUnauthorized();
     }
@@ -326,7 +326,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertUnauthorized_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo', 403));
+        $response = new AssertableResponse($this->response_factory->html('foo', 403));
         
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [401].\nGot [403].",
@@ -337,7 +337,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertUnauthorized_fails_for_delegated_responses()
     {
-        $response = new TestResponse($this->response_factory->delegate()->withStatus(401));
+        $response = new AssertableResponse($this->response_factory->delegate()->withStatus(401));
         
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
@@ -348,13 +348,15 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertHeader_can_pass()
     {
-        $response = new TestResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+        $response =
+            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
         
         $response->assertHeader('X-FOO');
         $response->assertHeader('X-FOO', 'BAR');
         $response->assertHeader('x-foo', 'BAR');
         
-        $response = new TestResponse($this->response_factory->make()->withHeader('x-foo', 'BAR'));
+        $response =
+            new AssertableResponse($this->response_factory->make()->withHeader('x-foo', 'BAR'));
         
         $response->assertHeader('X-FOO');
         $response->assertHeader('X-FOO', 'BAR');
@@ -364,7 +366,8 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assert_header_can_fail()
     {
-        $response = new TestResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+        $response =
+            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
         
         $this->expectFailureWithMessageContaining(
             'Response does not have header [X-BAR].',
@@ -380,7 +383,8 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertHeaderMissing_can_pass()
     {
-        $response = new TestResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+        $response =
+            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
         
         $response->assertHeaderMissing('X-BAR');
     }
@@ -388,7 +392,8 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertHeaderMissing_can_fail()
     {
-        $response = new TestResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+        $response =
+            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
         
         $this->expectFailureWithMessageContaining(
             "Header [X-FOO] was not expected to be in the response.",
@@ -404,7 +409,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertLocation_can_pass()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->make()->withHeader('location', '/foo/bar?baz=biz')
         );
         
@@ -414,7 +419,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertLocation_can_fail()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->make()->withHeader('location', '/foo/bar?baz=biz')
         );
         
@@ -427,7 +432,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_getAssertableCookie_fails_if_set_cookie_header_is_not_present()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->make()
         );
         
@@ -440,7 +445,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_getAssertableCookie_fails_if_the_cookie_is_not_present()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->make()->withAddedHeader('set-cookie', 'foo=bar')
         );
         
@@ -453,7 +458,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_getAssertableCookie_fails_if_the_cookie_present_multiple_times()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->make()
                                    ->withAddedHeader('set-cookie', 'foo=bar')
                                    ->withAddedHeader('set-cookie', 'foo=baz')
@@ -468,7 +473,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_getAssertableCookie_can_pass_and_returns_assertable_cookie()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->make()
                                    ->withAddedHeader('set-cookie', 'foo=bar')
         );
@@ -481,7 +486,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertRedirect_can_pass()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar', 301)
         );
         
@@ -493,7 +498,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertRedirect_can_fail()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->html('foo')
         );
         
@@ -502,7 +507,7 @@ final class TestResponseTest extends TestCase
             fn() => $response->assertRedirect()
         );
         
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar', 301)
         );
         
@@ -520,7 +525,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertRedirectPath_can_pass()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar?baz=biz', 301)
         );
         
@@ -531,7 +536,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertRedirectPath_can_fail()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar?baz=biz', 301)
         );
         
@@ -549,7 +554,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertContentType_can_pass()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->html('foo')
         );
         
@@ -560,7 +565,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertContentType_can_fail()
     {
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->json(['foo' => 'bar'])
         );
         
@@ -569,7 +574,7 @@ final class TestResponseTest extends TestCase
             fn() => $response->assertContentType('text/html')
         );
         
-        $response = new TestResponse(
+        $response = new AssertableResponse(
             $this->response_factory->html('foo')
         );
         
@@ -582,7 +587,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSeeHtml_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo</h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
         
         $response->assertSeeHtml('foo');
         $response->assertSeeHtml('<h1>foo</h1>');
@@ -591,7 +596,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSeeHtml_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo</h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
         
         $this->expectFailureWithMessageContaining(
             'Response body does not contain [bar]',
@@ -607,7 +612,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertDontSeeHtml_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo</h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
         
         $response->assertDontSeeHtml('bar');
         $response->assertDontSeeHtml('<h2>foo</h2>');
@@ -616,7 +621,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertDontSeeHtml_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo</h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
         
         $this->expectFailureWithMessageContaining(
             'Response body contains [foo]',
@@ -632,7 +637,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSeeText_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
         
         $response->assertSeeText('foobar');
     }
@@ -640,7 +645,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertSeeText_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
         
         $this->expectFailureWithMessageContaining(
             'Response body does not contain [foobaz].',
@@ -651,7 +656,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertDontSeeText_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
         
         $response->assertDontSeeText('foobaz');
     }
@@ -659,7 +664,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertDontSeeText_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
+        $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
         
         $this->expectFailureWithMessageContaining(
             'Response body contains [foobar]',
@@ -670,7 +675,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertIsHtml_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $response->assertIsHtml();
     }
@@ -678,7 +683,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertIsHtml_can_fail()
     {
-        $response = new TestResponse($this->response_factory->json('foo'));
+        $response = new AssertableResponse($this->response_factory->json('foo'));
         
         $this->expectFailureWithMessageContaining(
             'Expected content-type [text/html; charset=UTF-8]',
@@ -689,7 +694,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertIsJson_can_pass()
     {
-        $response = new TestResponse($this->response_factory->json('foo'));
+        $response = new AssertableResponse($this->response_factory->json('foo'));
         
         $response->assertIsJson();
     }
@@ -697,7 +702,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertIsJson_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $this->expectFailureWithMessageContaining(
             'Expected content-type [application/json]',
@@ -708,7 +713,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertBodyExact_can_pass()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $response->assertBodyExact('foo');
     }
@@ -716,7 +721,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertBodyExact_can_fail()
     {
-        $response = new TestResponse($this->response_factory->html('foo'));
+        $response = new AssertableResponse($this->response_factory->html('foo'));
         
         $this->expectFailureWithMessageContaining(
             'Response body does not match expected [fooo]',
@@ -727,7 +732,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertJsonExact_can_pass()
     {
-        $response = new TestResponse($this->response_factory->json(['foo' => 'bar']));
+        $response = new AssertableResponse($this->response_factory->json(['foo' => 'bar']));
         
         $response->assertExactJson(['foo' => 'bar']);
     }
@@ -735,7 +740,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_assertJsonExact_can_fail()
     {
-        $response = new TestResponse($this->response_factory->json(['foo' => 'bar']));
+        $response = new AssertableResponse($this->response_factory->json(['foo' => 'bar']));
         
         $this->expectFailureWithMessageContaining(
             'Response json body does not match expected ['.json_encode(['foo' => 'baz']).'].',
@@ -746,7 +751,7 @@ final class TestResponseTest extends TestCase
     /** @test */
     public function test_getPsrResponse()
     {
-        $response = new TestResponse($real = $this->response_factory->html('foo'));
+        $response = new AssertableResponse($real = $this->response_factory->html('foo'));
         
         $this->assertSame($real, $response->getPsrResponse());
     }

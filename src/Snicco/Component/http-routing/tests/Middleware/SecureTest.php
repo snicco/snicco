@@ -19,7 +19,8 @@ final class SecureTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($middleware, $request);
         
-        $response->assertOk()->assertNextMiddlewareCalled();
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
     }
     
     /** @test */
@@ -31,8 +32,8 @@ final class SecureTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($middleware, $request);
         
-        $response->assertRedirect('https://foobar.com/foo/bar', 301)
-                 ->assertNextMiddlewareNotCalled();
+        $response->assertNextMiddlewareNotCalled();
+        $response->psr()->assertRedirect('https://foobar.com/foo/bar', 301);
     }
     
     /** @test */
@@ -44,8 +45,8 @@ final class SecureTest extends InternalMiddlewareTestCase
         
         $response = $this->runMiddleware($middleware, $request);
         
-        $response->assertOk()
-                 ->assertNextMiddlewareCalled();
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
     }
     
 }
