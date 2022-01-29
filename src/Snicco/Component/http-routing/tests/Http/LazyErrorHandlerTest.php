@@ -28,8 +28,9 @@ final class LazyErrorHandlerTest extends TestCase
     /** @test */
     public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to()
     {
+        $c = $this->createContainer();
         $c[HttpErrorHandlerInterface::class] = Mockery::mock(HttpErrorHandlerInterface::class);
-        $lazy_handler = new LazyHttpErrorHandler($c = $this->createContainer());
+        $lazy_handler = new LazyHttpErrorHandler($c);
         
         $this->assertInstanceOf(HttpErrorHandlerInterface::class, $lazy_handler);
     }

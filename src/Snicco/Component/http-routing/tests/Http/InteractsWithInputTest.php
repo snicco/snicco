@@ -21,12 +21,12 @@ class InteractsWithInputTest extends TestCase
     {
         parent::setUp();
         
-        $this->request = $this->frontendRequest('GET', '/foo');
+        $this->request = $this->frontendRequest('/foo');
     }
     
     public function testGetFromServer()
     {
-        $request = $this->frontendRequest('GET', '/foo', ['foo' => 'bar']);
+        $request = $this->frontendRequest('/foo', ['foo' => 'bar']);
         
         $this->assertSame('bar', $request->server('foo'));
         
@@ -38,7 +38,7 @@ class InteractsWithInputTest extends TestCase
         $request = $this->request->withQueryParams(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
         
-        $request = $this->frontendRequest('POST', '/foo')->withParsedBody(['foo' => 'bar']);
+        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
     }
     
@@ -109,13 +109,13 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame('bar', $request->query('foo'));
         $this->assertSame('default', $request->query('bogus', 'default'));
         
-        $request = $this->frontendRequest('POST', '/foo')->withParsedBody(['foo' => 'bar']);
+        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody(['foo' => 'bar']);
         $this->assertSame(null, $request->query('foo'));
     }
     
     public function testQueryString()
     {
-        $request = $this->frontendRequest('GET', 'https://foobar.com?foo=bar&baz=biz&=');
+        $request = $this->frontendRequest('https://foobar.com?foo=bar&baz=biz&=');
         
         $this->assertSame('foo=bar&baz=biz', $request->queryString());
     }
