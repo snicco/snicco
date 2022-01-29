@@ -29,6 +29,10 @@ use function strtolower;
 use function array_replace;
 use function array_key_exists;
 
+/**
+ * @interal
+ * @todo make immutable
+ */
 final class Cookies
 {
     

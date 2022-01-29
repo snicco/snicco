@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 /**
  * @todo Its currently possible to redirect to a whitelisted host from an external referer.

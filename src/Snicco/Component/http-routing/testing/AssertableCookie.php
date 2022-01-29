@@ -8,6 +8,7 @@ use Snicco\Component\StrArr\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 
 /**
+ * @api
  * @todo More test assertions.
  */
 final class AssertableCookie

@@ -15,7 +15,6 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
-        "defuse/php-encryption": "^2.0.0",
         "illuminate/container": "^8.0.0",
         "illuminate/database": "^v8.0.0",
         "illuminate/view": "^v8.0.0",
@@ -24,10 +23,12 @@
         "pimple/pimple": "^3.0.0",
         "psr/container": "^1.0.0",
         "psr/event-dispatcher": "^1.0",
+        "psr/http-factory": "^1.0.0",
         "psr/http-message": "^1.0.0",
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.0.0",
         "psr/simple-cache": "^1.0.0",
+        "sniccowp/psr7-error-handler": "dev-master",
         "symfony/finder": "^5.0-stable",
         "webmozart/assert": "^1.10"
     },
@@ -42,17 +43,15 @@
         "nyholm/psr7-server": "^1.0-stable",
         "phpunit/phpunit": "^9.5",
         "sniccowp/pimple-bridge": "dev-master",
+        "sniccowp/testing-bundle": "dev-master",
         "symplify/monorepo-builder": "^9.4"
     },
     "autoload": {
         "files": [
-            "src/Snicco/Bundle/session-bundle/src/functions.php",
             "src/Snicco/Component/core/src/Utils/functions.php",
             "src/Snicco/Component/event-dispatcher/src/functions.php"
         ],
         "psr-4": {
-            "Snicco\\BladeBundle\\": "src/Snicco/Bundle/blade-bundle/src",
-            "Snicco\\BladeBundle\\Eloquent\\": "src/Snicco/Bundle/eloquent-bundle/src",
             "Snicco\\Bridge\\Blade\\": "src/Snicco/Bridge/blade/src",
             "Snicco\\Bridge\\IlluminateContainer\\": "src/Snicco/Bridge/illuminate-container/src",
             "Snicco\\Bridge\\Pimple\\": "src/Snicco/Bridge/pimple/src",
@@ -62,12 +61,6 @@
             "Snicco\\Bridge\\SignedUrlPsr16\\": "src/Snicco/Bridge/signed-url-psr16/src",
             "Snicco\\Bridge\\SingedUrlMysqli\\": "src/Snicco/Bridge/signed-url-mysqli/src",
             "Snicco\\Bridge\\SingedUrlPDO\\": "src/Snicco/Bridge/signed-url-pdo/src",
-            "Snicco\\Bundle\\BetterWPMail\\": "src/Snicco/Bundle/better-wp-mail-bundle/src",
-            "Snicco\\Bundle\\Encryption\\": "src/Snicco/Bundle/encryption-bundle/src",
-            "Snicco\\Bundle\\Session\\": "src/Snicco/Bundle/session-bundle/src",
-            "Snicco\\Bundle\\SignedUrl\\": "src/Snicco/Bundle/signed-url-bundle/src",
-            "Snicco\\Bundle\\Templating\\": "src/Snicco/Bundle/templating-bundle/src",
-            "Snicco\\Bundle\\Testing\\": "src/Snicco/Bundle/testing/src",
             "Snicco\\Component\\BetterWPHooks\\": "src/Snicco/Component/better-wp-hooks/src",
             "Snicco\\Component\\BetterWPMail\\": "src/Snicco/Component/better-wp-mail/src",
             "Snicco\\Component\\Core\\": "src/Snicco/Component/core/src",
@@ -88,7 +81,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Snicco\\BladeBundle\\Eloquent\\Tests\\": "src/Snicco/Bundle/eloquent-bundle/tests",
             "Snicco\\Bridge\\Blade\\Tests\\": "src/Snicco/Bridge/blade/tests",
             "Snicco\\Bridge\\IlluminateContainer\\Tests\\": "src/Snicco/Bridge/illuminate-container/tests",
             "Snicco\\Bridge\\Pimple\\Tests\\": "src/Snicco/Bridge/pimple/tests",
@@ -98,17 +90,8 @@
             "Snicco\\Bridge\\SignedUrlPsr16\\Tests\\": "src/Snicco/Bridge/signed-url-psr16/tests",
             "Snicco\\Bridge\\SingedUrlMysqli\\Tests\\": "src/Snicco/Bridge/signed-url-mysqli/tests",
             "Snicco\\Bridge\\SingedUrlPDO\\Tests\\": "src/Snicco/Bridge/signed-url-pdo/tests",
-            "Snicco\\Bundle\\BetterWPMail\\Tests\\": "src/Snicco/Bundle/better-wp-mail-bundle/tests",
-            "Snicco\\Bundle\\Encryption\\Tests\\": "src/Snicco/Bundle/encryption-bundle/tests",
-            "Snicco\\Bundle\\Session\\Tests\\": "src/Snicco/Bundle/session-bundle/tests",
-            "Snicco\\Bundle\\SignedUrl\\Tests\\": "src/Snicco/Bundle/signed-url-bundle/tests",
-            "Snicco\\Bundle\\Templating\\Tests\\": "src/Snicco/Bundle/templating-bundle/tests",
-            "Snicco\\Bundle\\Testing\\Tests\\": "src/Snicco/Bundle/testing/tests",
             "Snicco\\Component\\BetterWPHooks\\Tests\\": "src/Snicco/Component/better-wp-hooks/tests",
-            "Snicco\\Component\\BetterWPMail\\Testing\\": [
-                "src/Snicco/Component/better-wp-mail/testing",
-                "src/Snicco/Component/better-wp-mail/tests"
-            ],
+            "Snicco\\Component\\BetterWPMail\\Testing\\": "src/Snicco/Component/better-wp-mail/testing",
             "Snicco\\Component\\BetterWPMail\\Tests\\": "src/Snicco/Component/better-wp-mail/tests",
             "Snicco\\Component\\Core\\Testing\\": "src/Snicco/Component/core/testing",
             "Snicco\\Component\\Core\\Tests\\": "src/Snicco/Component/core/tests",
@@ -127,8 +110,7 @@
             "Snicco\\Component\\StrArr\\Tests\\": "src/Snicco/Component/str-arr/tests",
             "Snicco\\Component\\Templating\\Tests\\": "src/Snicco/Component/templating/tests",
             "Snicco\\Component\\TestableClock\\Tests\\": "src/Snicco/Component/testable-clock/tests",
-            "Snicco\\Component\\WPObjectCachePsr16\\Tests\\": "src/Snicco/Component/wp-object-cache-psr16/tests",
-            "Tests\\BladeBundle\\": "src/Snicco/Bundle/blade-bundle/tests"
+            "Snicco\\Component\\WPObjectCachePsr16\\Tests\\": "src/Snicco/Component/wp-object-cache-psr16/tests"
         }
     },
     "config": {

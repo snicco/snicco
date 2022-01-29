@@ -7,8 +7,10 @@ namespace Snicco\Component\HttpRouting\Middleware;
 use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\AuthorizationException;
+
+use function sprintf;
 
 /**
  * @api
@@ -28,7 +30,7 @@ final class Authorize extends AbstractMiddleware
     }
     
     /**
-     * @throws AuthorizationException
+     * @throws HttpException
      */
     public function handle(Request $request, $next) :ResponseInterface
     {
@@ -41,8 +43,13 @@ final class Authorize extends AbstractMiddleware
             return $next($request);
         }
         
-        throw new AuthorizationException(
-            "Authorization failed for path [{$request->path()}] with required capability [$this->capability]."
+        throw new HttpException(
+            403,
+            sprintf(
+                "Authorization failed for path [%s] with required capability [%s].",
+                $request->path(),
+                $this->capability
+            )
         );
     }
     

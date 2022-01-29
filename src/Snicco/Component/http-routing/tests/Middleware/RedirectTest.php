@@ -28,7 +28,7 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ]);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         
         $response->assertNextMiddlewareNotCalled();
         $response->assertRedirect('/bar')->assertStatus(301);
@@ -43,7 +43,7 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ]);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/bogus'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/bogus'));
         
         $response->assertNextMiddlewareCalled();
         $response->assertOk();
@@ -65,13 +65,13 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ]);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertRedirect('/bar', 301);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/baz'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/baz'));
         $response->assertRedirect('/biz', 302);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/boo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/boo'));
         $response->assertRedirect('/bam', 307);
     }
     
@@ -94,7 +94,7 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ], $file);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertRedirect('/bar', 301);
         
         $this->assertTrue(is_file($file), 'Redirect map not cached.');
@@ -111,7 +111,7 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ], $file);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertRedirect('/bar', 301);
         
         $this->assertTrue(is_file($file), 'Redirect map not cached.');
@@ -122,7 +122,7 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ]);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertRedirect('/other', 301);
     }
     
@@ -136,7 +136,7 @@ class RedirectTest extends InternalMiddlewareTestCase
         ]);
         
         $response =
-            $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo?page=60'));
+            $this->runMiddleware($middleware, $this->frontendRequest('/foo?page=60'));
         
         $response->assertRedirect('/bar')->assertStatus(301);
     }
@@ -151,10 +151,10 @@ class RedirectTest extends InternalMiddlewareTestCase
             ],
         ]);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/foo'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertRedirect('/bar', 301);
         
-        $response = $this->runMiddleware($middleware, $this->frontendRequest('GET', '/baz'));
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/baz'));
         $response->assertRedirect('/bar', 301);
     }
     

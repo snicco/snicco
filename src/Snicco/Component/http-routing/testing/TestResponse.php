@@ -20,7 +20,10 @@ use function array_filter;
 
 use const JSON_THROW_ON_ERROR;
 
-final class TestResponse
+/**
+ * @api
+ */
+class TestResponse
 {
     
     private Response $psr_response;
@@ -34,12 +37,12 @@ final class TestResponse
         $this->status_code = $this->psr_response->getStatusCode();
     }
     
-    public function body() :string
+    final public function body() :string
     {
         return $this->streamed_content;
     }
     
-    public function assertDelegated() :self
+    final public function assertDelegated() :self
     {
         PHPUnit::assertInstanceOf(
             DelegatedResponse::class,
@@ -53,7 +56,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertNotDelegated() :TestResponse
+    final public function assertNotDelegated() :TestResponse
     {
         PHPUnit::assertNotInstanceOf(
             DelegatedResponse::class,
@@ -63,7 +66,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertSuccessful() :TestResponse
+    final public function assertSuccessful() :TestResponse
     {
         $this->assertNotDelegated();
         
@@ -75,20 +78,20 @@ final class TestResponse
         return $this;
     }
     
-    public function assertOk() :TestResponse
+    final public function assertOk() :TestResponse
     {
         $this->assertStatus(200);
         
         return $this;
     }
     
-    public function assertCreated() :TestResponse
+    final public function assertCreated() :TestResponse
     {
         $this->assertStatus(201);
         return $this;
     }
     
-    public function assertNoContent() :TestResponse
+    final public function assertNoContent() :TestResponse
     {
         $this->assertStatus(204);
         
@@ -101,7 +104,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertStatus(int $status) :TestResponse
+    final public function assertStatus(int $status) :TestResponse
     {
         $this->assertNotDelegated();
         
@@ -114,26 +117,26 @@ final class TestResponse
         return $this;
     }
     
-    public function assertNotFound() :TestResponse
+    final public function assertNotFound() :TestResponse
     {
         $this->assertStatus(404);
         return $this;
     }
     
-    public function assertForbidden() :TestResponse
+    final public function assertForbidden() :TestResponse
     {
         $this->assertStatus(403);
         
         return $this;
     }
     
-    public function assertUnauthorized() :TestResponse
+    final public function assertUnauthorized() :TestResponse
     {
         $this->assertStatus(401);
         return $this;
     }
     
-    public function assertHeader(string $header_name, $value = null) :TestResponse
+    final public function assertHeader(string $header_name, $value = null) :TestResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->hasHeader($header_name),
@@ -155,7 +158,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertHeaderMissing(string $header_name) :TestResponse
+    final public function assertHeaderMissing(string $header_name) :TestResponse
     {
         PHPUnit::assertFalse(
             $this->psr_response->hasHeader($header_name),
@@ -165,7 +168,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertLocation(string $location) :TestResponse
+    final public function assertLocation(string $location) :TestResponse
     {
         $this->assertHeader('location');
         
@@ -178,7 +181,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertRedirect(string $location = null, int $status = null) :TestResponse
+    final public function assertRedirect(string $location = null, int $status = null) :TestResponse
     {
         $this->assertIsRedirectStatus();
         
@@ -197,7 +200,7 @@ final class TestResponse
         return $this;
     }
     
-    public function getAssertableCookie(string $cookie_name) :AssertableCookie
+    final public function getAssertableCookie(string $cookie_name) :AssertableCookie
     {
         $this->assertHeader('set-cookie');
         
@@ -220,7 +223,7 @@ final class TestResponse
         return new AssertableCookie($headers[0]);
     }
     
-    public function assertRedirectPath(string $path, int $status = null) :TestResponse
+    final public function assertRedirectPath(string $path, int $status = null) :TestResponse
     {
         $this->assertIsRedirectStatus();
         
@@ -240,7 +243,7 @@ final class TestResponse
         return $this;
     }
     
-    public function assertContentType(string $expected, string $charset = 'UTF-8')
+    final public function assertContentType(string $expected, string $charset = 'UTF-8')
     {
         if (Str::startsWith($expected, 'text')) {
             $expected = trim($expected, ';').'; charset='.$charset;
@@ -253,31 +256,31 @@ final class TestResponse
         );
     }
     
-    public function assertSeeHtml(string $value) :TestResponse
+    final public function assertSeeHtml(string $value) :TestResponse
     {
         return $this->assertSee($value, false);
     }
     
-    public function assertDontSeeHtml(string $value) :TestResponse
+    final public function assertDontSeeHtml(string $value) :TestResponse
     {
         return $this->assertDontSee($value, false);
     }
     
-    public function assertSeeText(string $value) :TestResponse
+    final public function assertSeeText(string $value) :TestResponse
     {
         $this->assertSee($value);
         
         return $this;
     }
     
-    public function assertDontSeeText(string $value) :TestResponse
+    final public function assertDontSeeText(string $value) :TestResponse
     {
         $this->assertDontSee($value);
         
         return $this;
     }
     
-    public function assertBodyExact(string $expected) :TestResponse
+    final public function assertBodyExact(string $expected) :TestResponse
     {
         PHPUnit::assertSame(
             $expected,
@@ -287,14 +290,14 @@ final class TestResponse
         return $this;
     }
     
-    public function assertIsHtml() :TestResponse
+    final public function assertIsHtml() :TestResponse
     {
         $this->assertContentType('text/html');
         
         return $this;
     }
     
-    public function assertExactJson(array $data) :TestResponse
+    final public function assertExactJson(array $data) :TestResponse
     {
         $this->assertIsJson();
         $expected = json_encode($data, JSON_THROW_ON_ERROR);
@@ -308,13 +311,13 @@ final class TestResponse
         return $this;
     }
     
-    public function assertIsJson() :TestResponse
+    final public function assertIsJson() :TestResponse
     {
         $this->assertContentType('application/json');
         return $this;
     }
     
-    public function getPsrResponse() :Response
+    final public function getPsrResponse() :Response
     {
         return $this->psr_response;
     }

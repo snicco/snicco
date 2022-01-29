@@ -35,8 +35,7 @@ interface Redirector
     
     /**
      * Redirects the user to the provided path and appends an "intended" query param with a value
-     * of the current full url. Meant to be used in combination with
-     * {@see Redirector::intended()}
+     * of the current full url. Meant to be used in combination with {@see Redirector::intended()}
      */
     public function deny(string $path, int $status_code = 302, array $query = []) :RedirectResponse;
     

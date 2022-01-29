@@ -15,7 +15,7 @@ final class SecureTest extends InternalMiddlewareTestCase
     {
         $middleware = new Secure(true);
         
-        $request = $this->frontendRequest('GET', 'http://foobar.com');
+        $request = $this->frontendRequest('http://foobar.com');
         
         $response = $this->runMiddleware($middleware, $request);
         
@@ -27,7 +27,7 @@ final class SecureTest extends InternalMiddlewareTestCase
     {
         $middleware = new Secure();
         
-        $request = $this->frontendRequest('GET', 'http://foobar.com/foo/bar');
+        $request = $this->frontendRequest('http://foobar.com/foo/bar');
         
         $response = $this->runMiddleware($middleware, $request);
         
@@ -40,7 +40,7 @@ final class SecureTest extends InternalMiddlewareTestCase
     {
         $middleware = new Secure();
         
-        $request = $this->frontendRequest('GET', 'https://foobar.com/foo/bar');
+        $request = $this->frontendRequest('https://foobar.com/foo/bar');
         
         $response = $this->runMiddleware($middleware, $request);
         

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
+use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\JsonPayload;
 use Snicco\Component\HttpRouting\Tests\InternalMiddlewareTestCase;
-use Snicco\Component\Core\ExceptionHandling\Exceptions\HttpException;
 
 class JsonPayloadTest extends InternalMiddlewareTestCase
 {
@@ -66,8 +66,7 @@ class JsonPayloadTest extends InternalMiddlewareTestCase
         try {
             $this->runMiddleware(new JsonPayload(), $request);
             $this->fail('Invalid Json did not throw exception');
-        } catch (HttpException $e) {
-            $this->assertSame(500, $e->httpStatusCode());
+        } catch (RuntimeException $e) {
             $this->assertSame(
                 'JSON: Syntax error. Payload: {"bar":"foo",}.',
                 $e->getMessage()
@@ -77,7 +76,7 @@ class JsonPayloadTest extends InternalMiddlewareTestCase
     
     private function jsonRequest(string $method = 'GET') :Request
     {
-        return $this->frontendRequest($method, 'foo')
+        return $this->frontendRequest('/foo', [], $method)
                     ->withAddedHeader('Content-Type', 'application/json');
     }
     

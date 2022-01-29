@@ -18,6 +18,7 @@ final class MethodOverride extends AbstractMiddleware
 {
     
     const HEADER = 'X-HTTP-Method-Override';
+    
     private bool $enabled;
     
     public function __construct(bool $enabled = true)
