@@ -5,24 +5,24 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use LogicException;
-use Test\Helpers\CreateContainer;
+use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\DIContainer;
-use Tests\Codeception\shared\UnitTest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Tests\Codeception\shared\TestDependencies\Bar;
-use Tests\Codeception\shared\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 
-final class MiddlewareFactoryTest extends UnitTest
+final class MiddlewareFactoryTest extends TestCase
 {
     
-    use CreateContainer;
+    use CreateTestPsrContainer;
     
     private MiddlewareFactory $factory;
     private DIContainer       $container;
@@ -37,9 +37,9 @@ final class MiddlewareFactoryTest extends UnitTest
     public function if_middleware_is_defined_in_the_service_container_it_is_resolved()
     {
         $foo = new Foo();
-        $foo->foo = 'FOO_CHANGED';
+        $foo->value = 'FOO_CHANGED';
         $bar = new Bar();
-        $bar->bar = 'BAR_CHANGED';
+        $bar->value = 'BAR_CHANGED';
         $this->container->instance(
             MiddlewareWithDependencies::class,
             new MiddlewareWithDependencies($foo, $bar)
@@ -47,8 +47,8 @@ final class MiddlewareFactoryTest extends UnitTest
         
         $m = $this->factory->create(MiddlewareWithDependencies::class);
         $this->assertInstanceOf(MiddlewareWithDependencies::class, $m);
-        $this->assertSame('FOO_CHANGED', $m->foo->foo);
-        $this->assertSame('BAR_CHANGED', $m->bar->bar);
+        $this->assertSame('FOO_CHANGED', $m->foo->value);
+        $this->assertSame('BAR_CHANGED', $m->bar->value);
     }
     
     /** @test */
@@ -150,6 +150,7 @@ class MiddlewareWithContextualAndRuntimeArgs extends AbstractMiddleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
+        return $next($request);
     }
     
 }

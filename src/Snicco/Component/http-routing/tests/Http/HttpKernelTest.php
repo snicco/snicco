@@ -33,9 +33,9 @@ class HttpKernelTest extends RoutingTestCase
     public function a_delegate_response_is_returned_by_default_if_no_route_matches()
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
-        $test_response = $this->runKernel($this->frontendRequest('GET', '/bar'));
+        $test_response = $this->runKernel($this->frontendRequest('/bar'));
         
-        $this->assertInstanceOf(DelegatedResponse::class, $test_response->psr_response);
+        $this->assertInstanceOf(DelegatedResponse::class, $test_response->getPsrResponse());
     }
     
     /** @test */
@@ -43,10 +43,10 @@ class HttpKernelTest extends RoutingTestCase
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         
-        $test_response = $this->runKernel($this->frontendRequest('GET', '/foo'));
+        $test_response = $this->runKernel($this->frontendRequest('/foo'));
         
-        $this->assertNotInstanceOf(DelegatedResponse::class, $test_response->psr_response);
-        $this->assertInstanceOf(Response::class, $test_response->psr_response);
+        $this->assertNotInstanceOf(DelegatedResponse::class, $test_response->getPsrResponse());
+        $this->assertInstanceOf(Response::class, $test_response->getPsrResponse());
         
         $this->assertSame(RoutingTestController::static, $test_response->body());
     }
@@ -57,7 +57,7 @@ class HttpKernelTest extends RoutingTestCase
         $this->routeConfigurator()->put('r1', '/foo', RoutingTestController::class);
         
         $test_response = $this->runKernel(
-            $this->frontendRequest('POST', '/foo')->withHeader(MethodOverride::HEADER, 'PUT')
+            $this->frontendRequest('/foo', [], 'POST')->withHeader(MethodOverride::HEADER, 'PUT')
         );
         
         $this->assertSame(RoutingTestController::static, $test_response->body());
@@ -68,7 +68,7 @@ class HttpKernelTest extends RoutingTestCase
     {
         // We only verify that the corresponding middleware gets called
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
-        $test_response = $this->runKernel($this->frontendRequest('GET', '/foo'));
+        $test_response = $this->runKernel($this->frontendRequest('/foo'));
         
         $test_response->assertHeader('content-length', strlen(RoutingTestController::static));
     }

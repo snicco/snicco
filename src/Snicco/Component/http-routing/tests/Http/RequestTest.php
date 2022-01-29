@@ -26,13 +26,13 @@ class RequestTest extends TestCase
     {
         parent::setUp();
         
-        $this->request = $this->frontendRequest('GET', '/foo');
+        $this->request = $this->frontendRequest('/foo');
         $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
     }
     
     public function testIsImmutable()
     {
-        $request = $this->frontendRequest('GET', 'foo');
+        $request = $this->frontendRequest('foo');
         
         $next = $request->withMethod('POST');
         
@@ -47,73 +47,73 @@ class RequestTest extends TestCase
     
     public function testGetPath()
     {
-        $request = $this->frontendRequest('GET', '/foo/bar');
+        $request = $this->frontendRequest('/foo/bar');
         $this->assertSame('/foo/bar', $request->path());
         
-        $request = $this->frontendRequest('GET', '/foo/bar/');
+        $request = $this->frontendRequest('/foo/bar/');
         $this->assertSame('/foo/bar/', $request->path());
         
-        $request = $this->frontendRequest('GET', '/');
+        $request = $this->frontendRequest('/');
         $this->assertSame('/', $request->path());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
         $this->assertSame('/foo/bar', $request->path());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/', $request->path());
     }
     
     public function testGetFullPath()
     {
-        $request = $this->frontendRequest('GET', '/foo/bar');
+        $request = $this->frontendRequest('/foo/bar');
         $this->assertSame('/foo/bar', $request->fullRequestTarget());
         
-        $request = $this->frontendRequest('GET', '/foo/bar/');
+        $request = $this->frontendRequest('/foo/bar/');
         $this->assertSame('/foo/bar/', $request->fullRequestTarget());
         
-        $request = $this->frontendRequest('GET', '/');
+        $request = $this->frontendRequest('/');
         $this->assertSame('/', $request->fullRequestTarget());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
         $this->assertSame('/foo/bar?baz=biz', $request->fullRequestTarget());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/?baz=biz', $request->fullRequestTarget());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz#section');
+        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('/foo/bar?baz=biz#section', $request->fullRequestTarget());
     }
     
     public function testGetUrl()
     {
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar');
+        $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/');
+        $request = $this->frontendRequest('https://foo.com/foo/bar/');
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
     }
     
     public function testGetFullUrl()
     {
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar');
+        $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/');
+        $request = $this->frontendRequest('https://foo.com/foo/bar/');
         $this->assertSame('https://foo.com/foo/bar/', $request->fullUrl());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
         $this->assertSame('https://foo.com/foo/bar?baz=biz', $request->fullUrl());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar/?baz=biz');
+        $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('https://foo.com/foo/bar/?baz=biz', $request->fullUrl());
         
-        $request = $this->frontendRequest('GET', 'https://foo.com/foo/bar?baz=biz#section');
+        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
     }
     
@@ -144,7 +144,7 @@ class RequestTest extends TestCase
     
     public function testFullUrlIs()
     {
-        $request = $this->frontendRequest('GET', 'https://example.com/foo/bar');
+        $request = $this->frontendRequest('https://example.com/foo/bar');
         
         $this->assertFalse($request->fullUrlIs('https://example.com/foo/'));
         $this->assertFalse($request->fullUrlIs('https://example.com/foo/bar/'));
@@ -154,7 +154,7 @@ class RequestTest extends TestCase
     
     public function testPathIs()
     {
-        $request = $this->frontendRequest('GET', 'https://example.com/foo/bar');
+        $request = $this->frontendRequest('https://example.com/foo/bar');
         
         $this->assertFalse($request->pathIs('/foo'));
         $this->assertFalse($request->pathIs('foo'));
@@ -169,18 +169,18 @@ class RequestTest extends TestCase
         $this->assertFalse($request->pathIs('/foo/baz', '/foo/biz'));
         $this->assertTrue($request->pathIs('/foo/baz', '/foo/biz', '/foo/bar'));
         
-        $request = $this->frontendRequest('GET', '/münchen/foo');
+        $request = $this->frontendRequest('/münchen/foo');
         
         $this->assertTrue($request->pathIs('/münchen/*'));
     }
     
     public function testDecodedPath()
     {
-        $request = $this->frontendRequest('GET', '/münchen/düsseldorf');
+        $request = $this->frontendRequest('/münchen/düsseldorf');
         
         $this->assertSame('/münchen/düsseldorf', $request->decodedPath());
         
-        $request = $this->frontendRequest('GET', '/AC%2FDC');
+        $request = $this->frontendRequest('/AC%2FDC');
         
         $this->assertSame('/AC%2FDC', $request->decodedPath());
     }
@@ -188,10 +188,10 @@ class RequestTest extends TestCase
     /** @test */
     public function test_IsSecure()
     {
-        $request = $this->frontendRequest('GET', 'http://foobar.com');
+        $request = $this->frontendRequest('http://foobar.com');
         $this->assertFalse($request->isSecure());
         
-        $request = $this->frontendRequest('GET', 'https://foobar.com');
+        $request = $this->frontendRequest('https://foobar.com');
         $this->assertTrue($request->isSecure());
     }
     
@@ -322,7 +322,7 @@ class RequestTest extends TestCase
         
         $this->assertSame('12345567', $request->ip());
         
-        $this->assertSame(null, $this->frontendRequest('GET', '/foo')->ip());
+        $this->assertSame(null, $this->frontendRequest('/foo')->ip());
     }
     
     /** @test */

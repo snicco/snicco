@@ -13,6 +13,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
+use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Http\Responses\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
