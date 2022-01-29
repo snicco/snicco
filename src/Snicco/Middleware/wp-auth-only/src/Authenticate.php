@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 
 use function sprintf;
 

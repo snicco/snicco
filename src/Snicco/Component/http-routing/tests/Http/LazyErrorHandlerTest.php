@@ -8,7 +8,7 @@ use Mockery;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Http\LazyHttpErrorHandler;
+use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;

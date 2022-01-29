@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Controller;
 
-use Snicco\Component\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\AbstractController;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 
 /**

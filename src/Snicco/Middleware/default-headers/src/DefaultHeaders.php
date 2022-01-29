@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Middleware\DefaultHeaders;
 
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 
 /**
  * @api
@@ -24,7 +24,7 @@ final class DefaultHeaders extends AbstractMiddleware
         }
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $response = $next($request);
         

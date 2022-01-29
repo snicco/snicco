@@ -15,13 +15,13 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
@@ -186,9 +186,9 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
     
-    private function getNext() :Delegate
+    private function getNext() :NextMiddleware
     {
-        return new Delegate(
+        return new NextMiddleware(
             new TestDelegate($this->response_factory, $this->next_middleware_response)
         );
     }

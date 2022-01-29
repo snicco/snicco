@@ -7,7 +7,7 @@ namespace Snicco\Middleware\GuestsOnly;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 /**

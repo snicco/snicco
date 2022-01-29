@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Middleware\MethodOverride;
 
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 
 use function in_array;
 use function strtoupper;
@@ -20,7 +20,7 @@ final class MethodOverride extends AbstractMiddleware
     
     const HEADER = 'X-HTTP-Method-Override';
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         if ('POST' !== ($method = $request->realMethod())) {
             return $next($request);

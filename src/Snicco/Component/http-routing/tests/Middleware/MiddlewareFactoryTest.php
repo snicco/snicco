@@ -9,14 +9,14 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\DIContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\MiddlewareFactory;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 
 final class MiddlewareFactoryTest extends TestCase
@@ -148,7 +148,7 @@ class MiddlewareWithContextualAndRuntimeArgs extends AbstractMiddleware
         $this->baz = $baz;
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         return $next($request);
     }

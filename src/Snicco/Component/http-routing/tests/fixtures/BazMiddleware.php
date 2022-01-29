@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 
 class BazMiddleware extends AbstractMiddleware
 {

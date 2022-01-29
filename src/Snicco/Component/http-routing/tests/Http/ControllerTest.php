@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Http\AbstractController;
+use Snicco\Component\HttpRouting\AbstractController;
 
 class ControllerTest extends TestCase
 {

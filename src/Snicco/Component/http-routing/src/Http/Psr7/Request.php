@@ -13,7 +13,7 @@ use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\Http\Cookies;
 use Snicco\Component\ParameterBag\ParameterPag;
-use Snicco\Component\HttpRouting\Http\Exception\RequestHasNoType;
+use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 
 use function trim;

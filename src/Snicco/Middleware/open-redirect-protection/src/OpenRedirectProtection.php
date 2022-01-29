@@ -6,9 +6,9 @@ namespace Snicco\Middleware\OpenRedirectProtection;
 
 use Snicco\Component\StrArr\Str;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
@@ -35,7 +35,7 @@ final class OpenRedirectProtection extends AbstractMiddleware
         $this->whitelist[] = $this->allSubdomainsOfApplication();
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $response = $next($request);
         

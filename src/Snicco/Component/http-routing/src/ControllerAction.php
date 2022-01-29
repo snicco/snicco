@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Internal;
+namespace Snicco\Component\HttpRouting;
 
 use ReflectionException;
 use Psr\Container\ContainerInterface;
@@ -10,7 +10,6 @@ use Snicco\Component\Core\Utils\Reflection;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Http\AbstractController;
 
 use function array_unshift;
 use function call_user_func_array;

@@ -54,7 +54,7 @@ final class ResponsePreparation
         return $this->fixProtocol($response, $request);
     }
     
-    private function fixDate(Response $response)
+    private function fixDate(Response $response) :Response
     {
         if ( ! $response->hasHeader('date')) {
             $response = $response->withHeader('date', gmdate('D, d M Y H:i:s').' GMT');

@@ -9,7 +9,7 @@ use RuntimeException;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Snicco\Component\StrArr\Str;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareStack;
+use Snicco\Component\HttpRouting\MiddlewareStack;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 

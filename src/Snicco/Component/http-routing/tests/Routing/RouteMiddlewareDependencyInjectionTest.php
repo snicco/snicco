@@ -6,10 +6,10 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
@@ -155,7 +155,7 @@ class MiddlewareWithClassAndParamDependencies extends AbstractMiddleware
         $this->biz = $biz;
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $response = $next($request);
         
@@ -175,7 +175,7 @@ class MiddlewareWithTypedDefault extends AbstractMiddleware
         $this->foo = $foo;
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         if ( ! is_null($this->foo)) {
             throw new RuntimeException('Foo is not null');
