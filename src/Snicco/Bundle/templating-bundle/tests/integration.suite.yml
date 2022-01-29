@@ -1,3 +1,0 @@
-namespace: Tests\ViewBundle\integration
-extends: "%CODECEPTION_INTEGRATION_YML%"
-
