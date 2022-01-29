@@ -9,26 +9,19 @@ use LogicException;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Middleware\MethodOverride\MethodOverride;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 
 final class HttpKernel
 {
     
-    private const CORE_MIDDLEWARE = [
-        PrepareResponse::class,
-        MethodOverride::class,
-        RoutingMiddleware::class,
-        RouteRunner::class,
-    ];
-    
     private MiddlewarePipeline $pipeline;
+    private KernelMiddleware   $kernel_middleware;
     private EventDispatcher    $event_dispatcher;
     
-    // @todo Use the dispatcher to send some events related to handling the request.
-    public function __construct(MiddlewarePipeline $pipeline, EventDispatcher $event_dispatcher)
+    public function __construct(KernelMiddleware $kernel_middleware, MiddlewarePipeline $pipeline, EventDispatcher $event_dispatcher)
     {
+        $this->kernel_middleware = $kernel_middleware;
         $this->pipeline = $pipeline;
         $this->event_dispatcher = $event_dispatcher;
     }
@@ -37,18 +30,13 @@ final class HttpKernel
     {
         $this->validateRequest($request);
         
-        $middleware = array_map(
-            fn($middleware) => new MiddlewareBlueprint($middleware),
-            self::CORE_MIDDLEWARE
-        );
-        
         return $this->pipeline->send($request)
-                              ->through($middleware)
-                              ->then($this->handleExhaustedMiddlewareStack());
+                              ->through($this->kernel_middleware->asArray())
+                              ->then($this->handleExhaustedPipeline());
     }
     
     // This should never happen.
-    private function handleExhaustedMiddlewareStack() :Closure
+    private function handleExhaustedPipeline() :Closure
     {
         return function (Request $request) {
             throw new RuntimeException(

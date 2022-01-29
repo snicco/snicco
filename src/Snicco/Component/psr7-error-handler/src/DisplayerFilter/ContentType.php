@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
 
 use Psr\Http\Message\RequestInterface;
-use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
+use function strstr;
 use function array_filter;
 
 /**
@@ -21,15 +21,22 @@ final class ContentType implements Filter
     
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array
     {
-        return array_filter($displayers, function (ExceptionDisplayer $displayer) use ($request) {
-            return $this->matchingContentTypes($request, $displayer);
-        });
+        $accept_header = $this->parse($request->getHeaderLine('accept'));
+        
+        return array_filter($displayers,
+            fn($displayer) => $displayer->supportedContentType() === $accept_header
+        );
     }
     
-    private function matchingContentTypes(RequestInterface $request, ExceptionDisplayer $displayer) :bool
+    private function parse(string $accept) :string
     {
-        $accept = $request->getHeaderLine('Accept');
-        return $accept === $displayer->supportedContentType();
+        $result = strstr($accept, ',', true);
+        
+        $first = $result === false ? $accept : $result;
+        
+        $result = strstr($first, ';', true);
+        
+        return $result === false ? $first : $result;
     }
     
 }

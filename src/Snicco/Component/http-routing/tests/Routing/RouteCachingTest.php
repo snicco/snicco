@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Snicco\Component\Core\Utils\PHPCacheFile;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-class RouteCachingTest extends RoutingTestCase
+class RouteCachingTest extends HttpRunnerTestCase
 {
     
     private PHPCacheFile $route_cache_file;

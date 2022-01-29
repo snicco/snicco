@@ -6,12 +6,12 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use LogicException;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
-class AdminRoutesTest extends RoutingTestCase
+class AdminRoutesTest extends HttpRunnerTestCase
 {
     
     private AdminRoutingConfigurator $admin_configurator;

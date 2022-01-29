@@ -479,7 +479,7 @@ final class Request implements ServerRequestInterface
     
     public function new(ServerRequestInterface $new_psr_request) :Request
     {
-        return new static($new_psr_request);
+        return new self($new_psr_request);
     }
     
     public function withHeader($name, $value) :Request

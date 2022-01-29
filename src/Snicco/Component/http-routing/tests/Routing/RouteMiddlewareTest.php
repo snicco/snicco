@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
@@ -13,7 +13,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\BooleanMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
-class RouteMiddlewareTest extends RoutingTestCase
+class RouteMiddlewareTest extends HttpRunnerTestCase
 {
     
     /** @test */

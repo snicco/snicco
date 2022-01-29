@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-final class IncludingRoutesTest extends RoutingTestCase
+final class IncludingRoutesTest extends HttpRunnerTestCase
 {
     
     /** @test */

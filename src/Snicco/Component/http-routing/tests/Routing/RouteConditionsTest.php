@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
@@ -12,7 +12,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\FalseRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
 
-class RouteConditionsTest extends RoutingTestCase
+class RouteConditionsTest extends HttpRunnerTestCase
 {
     
     /** @test */

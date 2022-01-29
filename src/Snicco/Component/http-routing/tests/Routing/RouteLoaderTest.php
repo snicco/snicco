@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 use LogicException;
 use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Routing\RouteLoader;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
@@ -20,7 +20,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigu
 
 use function dirname;
 
-final class RouteLoaderTest extends RoutingTestCase
+final class RouteLoaderTest extends HttpRunnerTestCase
 {
     
     const WEB_PATH = '/web';
