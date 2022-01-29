@@ -28,6 +28,7 @@
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.0.0",
         "psr/simple-cache": "^1.0.0",
+        "sniccowp/http-runner": "dev-master",
         "sniccowp/psr7-error-handler": "dev-master",
         "symfony/finder": "^5.0-stable",
         "webmozart/assert": "^1.10"
@@ -76,7 +77,32 @@
             "Snicco\\Component\\StrArr\\": "src/Snicco/Component/str-arr/src",
             "Snicco\\Component\\Templating\\": "src/Snicco/Component/templating/src",
             "Snicco\\Component\\TestableClock\\": "src/Snicco/Component/testable-clock/src",
-            "Snicco\\Component\\WPObjectCachePsr16\\": "src/Snicco/Component/wp-object-cache-psr16/src"
+            "Snicco\\Component\\WPObjectCachePsr16\\": "src/Snicco/Component/wp-object-cache-psr16/src",
+            "Snicco\\Middleware\\DefaultHeaders\\": "src/Snicco/Middleware/default-headers/src",
+            "Snicco\\Middleware\\GuestsOnly\\": [
+                "src/Snicco/Middleware/guests-only/src",
+                "src/Snicco/Middleware/wp-guests-only/src"
+            ],
+            "Snicco\\Middleware\\HttpsOnly\\": "src/Snicco/Middleware/https-only/src",
+            "Snicco\\Middleware\\MethodOverride\\": "src/Snicco/Middleware/method-override/src",
+            "Snicco\\Middleware\\MustMatchRoute\\": "src/Snicco/Middleware/must-match-route/src",
+            "Snicco\\Middleware\\NoRobots\\": "src/Snicco/Middleware/no-robots/src",
+            "Snicco\\Middleware\\OpenRedirectProtection\\": "src/Snicco/Middleware/open-redirect-protection/src",
+            "Snicco\\Middleware\\Payload\\": "src/Snicco/Middleware/payload/src",
+            "Snicco\\Middleware\\Redirect\\": [
+                "src/Snicco/Middleware/redirect-middleware/src",
+                "src/Snicco/Middleware/redirect/src"
+            ],
+            "Snicco\\Middleware\\ShareCookies\\": "src/Snicco/Middleware/share-cookies/src",
+            "Snicco\\Middleware\\TrailingSlash\\": "src/Snicco/Middleware/trailing-slash/src",
+            "Snicco\\Middleware\\WPAuth\\": [
+                "src/Snicco/Middleware/wp-auth-middleware/src",
+                "src/Snicco/Middleware/wp-auth-only/src"
+            ],
+            "Snicco\\Middleware\\WPCap\\": [
+                "src/Snicco/Middleware/wp-cap-middleware/src",
+                "src/Snicco/Middleware/wp-capability/src"
+            ]
         }
     },
     "autoload-dev": {
@@ -110,7 +136,32 @@
             "Snicco\\Component\\StrArr\\Tests\\": "src/Snicco/Component/str-arr/tests",
             "Snicco\\Component\\Templating\\Tests\\": "src/Snicco/Component/templating/tests",
             "Snicco\\Component\\TestableClock\\Tests\\": "src/Snicco/Component/testable-clock/tests",
-            "Snicco\\Component\\WPObjectCachePsr16\\Tests\\": "src/Snicco/Component/wp-object-cache-psr16/tests"
+            "Snicco\\Component\\WPObjectCachePsr16\\Tests\\": "src/Snicco/Component/wp-object-cache-psr16/tests",
+            "Snicco\\Middleware\\DefaultHeaders\\Tests\\": "src/Snicco/Middleware/default-headers/tests",
+            "Snicco\\Middleware\\GuestsOnly\\Tests\\": [
+                "src/Snicco/Middleware/guests-only/tests",
+                "src/Snicco/Middleware/wp-guests-only/tests"
+            ],
+            "Snicco\\Middleware\\HttpsOnly\\Tests\\": "src/Snicco/Middleware/https-only/tests",
+            "Snicco\\Middleware\\MethodOverride\\Tests\\": "src/Snicco/Middleware/method-override/tests",
+            "Snicco\\Middleware\\MustMatchRoute\\Tests\\": "src/Snicco/Middleware/must-match-route/tests",
+            "Snicco\\Middleware\\NoRobots\\Tests\\": "src/Snicco/Middleware/no-robots/tests",
+            "Snicco\\Middleware\\OpenRedirectProtection\\Tests\\": "src/Snicco/Middleware/open-redirect-protection/tests",
+            "Snicco\\Middleware\\Payload\\Tests\\": "src/Snicco/Middleware/payload/tests",
+            "Snicco\\Middleware\\Redirect\\Tests\\": [
+                "src/Snicco/Middleware/redirect-middleware/tests",
+                "src/Snicco/Middleware/redirect/tests"
+            ],
+            "Snicco\\Middleware\\ShareCookies\\Tests\\": "src/Snicco/Middleware/share-cookies/tests",
+            "Snicco\\Middleware\\TrailingSlash\\Tests\\": "src/Snicco/Middleware/trailing-slash/tests",
+            "Snicco\\Middleware\\WPAuth\\Tests\\": [
+                "src/Snicco/Middleware/wp-auth-middleware/tests",
+                "src/Snicco/Middleware/wp-auth-only/tests"
+            ],
+            "Snicco\\Middleware\\WPCap\\Tests\\": [
+                "src/Snicco/Middleware/wp-cap-middleware/tests",
+                "src/Snicco/Middleware/wp-capability/tests"
+            ]
         }
     },
     "config": {
@@ -138,21 +189,32 @@
         "sniccowp/blade-bridge": "self.version",
         "sniccowp/blade-bundle": "self.version",
         "sniccowp/core": "self.version",
+        "sniccowp/default-headers": "self.version",
+        "sniccowp/default-headers-middleware": "self.version",
         "sniccowp/eloquent": "self.version",
         "sniccowp/eloquent-bundle": "self.version",
         "sniccowp/encryption-bundle": "self.version",
         "sniccowp/event-dispatcher": "self.version",
+        "sniccowp/guests-only-middleware": "self.version",
         "sniccowp/http-routing": "self.version",
+        "sniccowp/https-only-middleware": "self.version",
         "sniccowp/illuminate-container-brige": "self.version",
+        "sniccowp/method-override-middleware": "self.version",
         "sniccowp/middleware-testcase": "self.version",
+        "sniccowp/must-match-route-middleware": "self.version",
+        "sniccowp/no-robots-middleware": "self.version",
+        "sniccowp/open-redirect-protection-middleware": "self.version",
         "sniccowp/paramter-bag": "self.version",
+        "sniccowp/payload-middleware": "self.version",
         "sniccowp/pimple-brige": "self.version",
         "sniccowp/psr-7-error-handler": "self.version",
+        "sniccowp/redirect-middleware": "self.version",
         "sniccowp/scopable-wordpress": "self.version",
         "sniccowp/scopable-wp": "self.version",
         "sniccowp/session": "self.version",
         "sniccowp/session-bundle": "self.version",
         "sniccowp/session-wp": "self.version",
+        "sniccowp/share-cookies-middleware": "self.version",
         "sniccowp/signed-url": "self.version",
         "sniccowp/signed-url-bundle": "self.version",
         "sniccowp/signed-url-middleware": "self.version",
@@ -164,7 +226,12 @@
         "sniccowp/templating-bundle": "self.version",
         "sniccowp/testable-clock": "self.version",
         "sniccowp/testing-bundle": "self.version",
+        "sniccowp/trailing-slash-middleware": "self.version",
         "sniccowp/view": "self.version",
+        "sniccowp/wp-auth-middleware": "self.version",
+        "sniccowp/wp-auth-only-middleware": "self.version",
+        "sniccowp/wp-cap-middleware": "self.version",
+        "sniccowp/wp-capapility-middleware": "self.version",
         "sniccowp/wp-object-cache-psr16": "self.version"
     },
     "minimum-stability": "dev",

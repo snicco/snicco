@@ -12,6 +12,7 @@ return static function (ContainerConfigurator $containerConfigurator) :void {
     $parameters->set(Option::PACKAGE_DIRECTORIES, [
         __DIR__.'/src/Snicco/Component',
         __DIR__.'/src/Snicco/Bridge',
+        __DIR__.'/src/Snicco/Middleware',
         //__DIR__.'/src/Snicco/Bundle',
     ]);
     

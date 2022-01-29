@@ -21,6 +21,7 @@ use function trigger_error;
 use function apply_filters;
 use function function_exists;
 use function wp_cache_delete;
+use function current_user_can;
 use function is_user_logged_in;
 use function wp_get_current_user;
 use function call_user_func_array;
@@ -75,76 +76,64 @@ class ScopableWP
         return call_user_func_array($proxy_to, $arguments);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function addFilter(string $hook_name, callable $callback, int $priority = 10, int $accepted_args = 1)
     {
         return add_filter($hook_name, $callback, $priority, $accepted_args);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function addAction(string $hook_name, callable $callback, int $priority = 10, int $accepted_args = 1)
     {
         return add_action($hook_name, $callback, $priority, $accepted_args);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function doAction(string $hook_name, ...$args) :void
     {
         do_action($hook_name, ...$args);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function applyFilters(string $hook_name, $value, ...$args)
     {
         return apply_filters($hook_name, $value, ...$args);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function isUserLoggedIn() :bool
     {
         return is_user_logged_in();
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function getCurrentUser() :WP_User
     {
         return wp_get_current_user();
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function cacheGet($key, string $group = '', $force = false, &$found = null)
     {
         return wp_cache_get($key, $group, $force, $found);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function cacheSet($key, $data, string $group = '', int $expire = 0) :bool
     {
         return wp_cache_set($key, $data, $group, $expire);
     }
     
-    /**
-     * @final
-     */
+    /** @final */
     public function cacheDelete($key, string $group = '') :bool
     {
         return wp_cache_delete($key, $group);
+    }
+    
+    /** @final */
+    public function currentUserCan(string $capability, ...$args) :bool
+    {
+        return current_user_can($capability, ...$args);
     }
     
     private function methodNameToSnakeCase(string $method_name)

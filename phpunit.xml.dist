@@ -17,12 +17,14 @@
         <testsuite name="unit">
             <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
             <directory suffix="Test.php">src/Snicco/Component/*/tests/</directory>
+            <directory suffix="Test.php">src/Snicco/Middleware/*/tests/</directory>
             <exclude>src/Snicco/*/*/tests/integration</exclude>
             <exclude>src/Snicco/*/*/tests/wordpress</exclude>
         </testsuite>
         <testsuite name="integration">
             <directory suffix="Test.php">src/Snicco/Bridge/*/tests/integration</directory>
             <directory suffix="Test.php">src/Snicco/Component/*/tests/integration</directory>
+            <directory suffix="Test.php">src/Snicco/Middleware/*/tests/integration</directory>
         </testsuite>
     </testsuites>
 

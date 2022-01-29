@@ -14,7 +14,7 @@ final class RedirectResponse extends Response
     /**
      * @api
      */
-    public function to(string $url)
+    public function to(string $url) :self
     {
         return $this->withHeader('Location', $url);
     }

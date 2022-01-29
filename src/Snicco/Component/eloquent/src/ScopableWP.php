@@ -18,7 +18,7 @@ use const DB_PASSWORD;
 /**
  * @interal
  */
-final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
+class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
     
     public function dbHost() :string

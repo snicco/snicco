@@ -22,9 +22,7 @@
     "webmozart/assert": "^1.10"
   },
   "require-dev": {
-    "nyholm/psr7-server": "^1.0-stable",
     "nyholm/psr7": "^1.0.0",
-    "adriansuter/php-autoload-override": "^1.2",
     "sniccowp/pimple-bridge": "dev-master"
   },
   "autoload": {

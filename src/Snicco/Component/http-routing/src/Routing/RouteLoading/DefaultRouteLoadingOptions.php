@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
 
 use Snicco\Component\StrArr\Str;
-use Snicco\Component\Core\Utils\UrlPath;
+use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Routing\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 
