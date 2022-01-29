@@ -15,6 +15,7 @@ use function sprintf;
 final class Authenticate extends AbstractMiddleware
 {
     
+    const KEY = '_user_id';
     private ScopableWP $wp;
     
     public function __construct(ScopableWP $wp = null)
@@ -25,7 +26,12 @@ final class Authenticate extends AbstractMiddleware
     public function handle(Request $request, $next) :ResponseInterface
     {
         if ($this->wp->isUserLoggedIn()) {
-            return $next($request);
+            return $next(
+                $request->withAttribute(
+                    self::KEY,
+                    $this->wp->getCurrentUserId()
+                )
+            );
         }
         
         throw new HttpException(

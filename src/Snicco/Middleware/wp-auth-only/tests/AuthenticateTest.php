@@ -23,6 +23,16 @@ class AuthenticateTest extends MiddlewareTestCase
     }
     
     /** @test */
+    public function the_user_id_is_added_to_the_request()
+    {
+        $middleware = new Authenticate(new WPTestDouble(true));
+        
+        $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
+        
+        $this->assertSame(1, $this->getReceivedRequest()->getAttribute('_user_id'));
+    }
+    
+    /** @test */
     public function logged_out_users_cant_access_the_route()
     {
         $request = $this->frontendRequest('https://mysite.com/foo');
@@ -56,6 +66,11 @@ class WPTestDouble extends ScopableWP
     public function isUserLoggedIn() :bool
     {
         return $this->is_logged_in;
+    }
+    
+    public function getCurrentUserId() :int
+    {
+        return $this->is_logged_in ? 1 : 0;
     }
     
 }
