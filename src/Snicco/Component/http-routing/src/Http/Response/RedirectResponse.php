@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http\Responses;
+namespace Snicco\Component\HttpRouting\Http\Response;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 

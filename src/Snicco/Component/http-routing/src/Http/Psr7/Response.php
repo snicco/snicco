@@ -13,15 +13,12 @@ use Snicco\Component\HttpRouting\Http\Cookies;
 class Response implements ResponseInterface
 {
     
-    use ImplementsPsr7Response;
-    
-    private Cookies $cookies;
+    private ResponseInterface $psr7_response;
+    private Cookies           $cookies;
     
     private array $flash_messages = [];
-    
-    private array $old_input = [];
-    
-    private array $errors = [];
+    private array $old_input      = [];
+    private array $errors         = [];
     
     public function __construct(ResponseInterface $psr7_response)
     {
@@ -243,16 +240,81 @@ class Response implements ResponseInterface
         return $this->errors;
     }
     
-    public function __clone()
+    final public function withProtocolVersion($version) :self
+    {
+        return $this->new($this->psr7_response->withProtocolVersion($version));
+    }
+    
+    final public function withHeader($name, $value) :self
+    {
+        return $this->new($this->psr7_response->withHeader($name, $value));
+    }
+    
+    final public function withAddedHeader($name, $value) :self
+    {
+        return $this->new($this->psr7_response->withAddedHeader($name, $value));
+    }
+    
+    final public function withoutHeader($name) :self
+    {
+        return $this->new($this->psr7_response->withoutHeader($name));
+    }
+    
+    final public function withBody(StreamInterface $body) :self
+    {
+        return $this->new($this->psr7_response->withBody($body));
+    }
+    
+    final public function withStatus($code, $reasonPhrase = '') :self
+    {
+        return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
+    }
+    
+    final public function getProtocolVersion() :string
+    {
+        return $this->psr7_response->getProtocolVersion();
+    }
+    
+    final public function getHeaders() :array
+    {
+        return $this->psr7_response->getHeaders();
+    }
+    
+    final public function hasHeader($name) :bool
+    {
+        return $this->psr7_response->hasHeader($name);
+    }
+    
+    final public function getHeader($name) :array
+    {
+        return $this->psr7_response->getHeader($name);
+    }
+    
+    final public function getHeaderLine($name) :string
+    {
+        return $this->psr7_response->getHeaderLine($name);
+    }
+    
+    final public function getBody() :StreamInterface
+    {
+        return $this->psr7_response->getBody();
+    }
+    
+    final public function getStatusCode() :int
+    {
+        return $this->psr7_response->getStatusCode();
+    }
+    
+    final public function getReasonPhrase() :string
+    {
+        return $this->psr7_response->getReasonPhrase();
+    }
+    
+    final public function __clone()
     {
         $this->cookies = clone $this->cookies;
     }
     
-    /**
-     * @param  ResponseInterface  $new_psr_response
-     *
-     * @return static
-     */
     final protected function new(ResponseInterface $new_psr_response) :self
     {
         $new = clone $this;

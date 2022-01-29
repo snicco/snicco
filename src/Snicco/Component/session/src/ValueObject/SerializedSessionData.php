@@ -13,6 +13,8 @@ use function unserialize;
 
 /**
  * @api
+ * @todo revisit this. This should be configurable to allow for exception json enconding instead of
+ *       serializing
  */
 final class SerializedSessionData
 {

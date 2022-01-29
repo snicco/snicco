@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http;
 
-use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
+use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Core\ExceptionHandling\Exceptions\RouteNotFound;
 

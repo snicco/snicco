@@ -9,7 +9,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
 use Snicco\Component\HttpRouting\Middleware\MethodOverride;
-use Snicco\Component\HttpRouting\Http\Responses\DelegatedResponse;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
 class HttpKernelTest extends RoutingTestCase

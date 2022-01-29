@@ -10,7 +10,7 @@ use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
-use Snicco\Component\HttpRouting\Http\Exceptions\RequestHasNoType;
+use Snicco\Component\HttpRouting\Http\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 

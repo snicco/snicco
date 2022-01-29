@@ -18,7 +18,7 @@ use function ob_get_length;
 
 /*
  *
- * This class represents Symfonys Response::prepare() method ported to psr7.
+ * This class represents Symfony's Response::prepare() method ported to psr7.
  *
  * @link https://github.com/symfony/http-foundation/blob/5.3/ResponseHeaderBag.php
  * @link https://github.com/symfony/http-foundation/blob/5.3/Response.php

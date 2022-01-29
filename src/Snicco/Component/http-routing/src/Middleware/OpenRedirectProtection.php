@@ -8,7 +8,7 @@ use Snicco\Component\StrArr\Str;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
+use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 /**

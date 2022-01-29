@@ -8,7 +8,7 @@ use Snicco\Component\StrArr\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Core\Utils\UrlPath;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Http\Responses\DelegatedResponse;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 
 use function trim;
 use function count;

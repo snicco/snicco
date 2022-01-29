@@ -8,9 +8,9 @@ use stdClass;
 use JsonSerializable;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
-use Snicco\Component\HttpRouting\Http\Responses\RedirectResponse;
+use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
-use Snicco\Component\HttpRouting\Http\Responses\DelegatedResponse;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 interface ResponseFactory extends Psr17ResponseFactory, Psr17StreamFactory
