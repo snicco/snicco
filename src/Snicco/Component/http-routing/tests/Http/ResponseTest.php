@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Http\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 

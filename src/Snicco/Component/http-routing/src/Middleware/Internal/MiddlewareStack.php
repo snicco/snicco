@@ -9,7 +9,7 @@ use Webmozart\Assert\Assert;
 use Snicco\Component\StrArr\Arr;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Exceptions\FoundInvalidMiddleware;
+use Snicco\Component\HttpRouting\Middleware\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 
 use function Snicco\Component\Core\Utils\isInterface;
@@ -212,7 +212,7 @@ final class MiddlewareStack
      * @param  string[]  $middleware
      *
      * @return MiddlewareBlueprint[]
-     * @throws FoundInvalidMiddleware
+     * @throws InvalidMiddleware
      */
     private function parseAliasesAndArguments(array $middleware) :array
     {
@@ -305,10 +305,10 @@ final class MiddlewareStack
             if (isInterface($middleware, MiddlewareInterface::class)) {
                 return $middleware;
             }
-            throw FoundInvalidMiddleware::incorrectInterface($middleware);
+            throw InvalidMiddleware::incorrectInterface($middleware);
         }
         
-        throw FoundInvalidMiddleware::becauseTheAliasDoesNotExist($middleware);
+        throw InvalidMiddleware::becauseTheAliasDoesNotExist($middleware);
     }
     
     private function isMiddlewareGroup(string $alias_or_class) :bool

@@ -8,6 +8,7 @@ use Webmozart\Assert\Assert;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Core\Configuration\ReadOnlyConfig;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 /**

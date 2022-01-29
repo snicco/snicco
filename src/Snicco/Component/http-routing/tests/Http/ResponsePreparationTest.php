@@ -6,7 +6,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
-use Snicco\Component\HttpRouting\Http\DefaultResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 

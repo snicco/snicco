@@ -14,6 +14,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\Core\Configuration\ReadOnlyConfig;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 abstract class AbstractMiddleware implements MiddlewareInterface

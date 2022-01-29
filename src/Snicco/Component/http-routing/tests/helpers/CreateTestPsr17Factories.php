@@ -10,8 +10,8 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
-use Snicco\Component\HttpRouting\Http\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\DefaultResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 /**
