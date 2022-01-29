@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Routing\Condition\QueryStringCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-class RouteSegmentsTest extends RoutingTestCase
+class RouteSegmentsTest extends HttpRunnerTestCase
 {
     
     /** @test */

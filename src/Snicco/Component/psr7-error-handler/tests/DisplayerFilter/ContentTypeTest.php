@@ -49,6 +49,37 @@ final class ContentTypeTest extends TestCase
         $this->assertSame([$d3, $d4], array_values($filtered));
     }
     
+    /** @test */
+    public function the_content_type_is_only_parsed_for_the_first_mime_type()
+    {
+        $filter = new ContentType();
+        $displayers = [
+            $d1 = new PlaintTextExceptionDisplayer1(),
+            $d2 = new JsonExceptionDisplayer1(),
+        ];
+        
+        $e = new RuntimeException();
+        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e);
+        $request = new ServerRequest('GET', '/foo');
+        
+        // No content negotiation is performed
+        $filtered = $filter->filter(
+            $displayers,
+            $request->withHeader('Accept', 'text/plain;q=0.1, application/json:q=0.9'),
+            $info,
+        );
+        
+        $this->assertSame([$d1], array_values($filtered));
+        
+        $filtered = $filter->filter(
+            $displayers,
+            $request->withHeader('Accept', 'application/json;q=0.1, text/plain:q=0.9'),
+            $info,
+        );
+        
+        $this->assertSame([$d2], array_values($filtered));
+    }
+    
 }
 
 class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer

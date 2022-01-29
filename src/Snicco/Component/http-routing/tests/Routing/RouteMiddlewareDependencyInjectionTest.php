@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
@@ -17,7 +17,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithMiddleware;
 
-class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
+class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 {
     
     protected function setUp() :void

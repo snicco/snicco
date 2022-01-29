@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 use function dirname;
 
-class ViewRoutesTest extends RoutingTestCase
+class ViewRoutesTest extends HttpRunnerTestCase
 {
     
     protected function setUp() :void

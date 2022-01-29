@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use LogicException;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-class FallbackRouteTest extends RoutingTestCase
+class FallbackRouteTest extends HttpRunnerTestCase
 {
     
     /** @test */

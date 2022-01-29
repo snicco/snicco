@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
-class UrlGeneratorTest extends RoutingTestCase
+class UrlGeneratorTest extends HttpRunnerTestCase
 {
     
     protected string $app_domain = 'foobar.com';

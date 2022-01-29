@@ -7,11 +7,11 @@ namespace Snicco\Middleware\OpenRedirectProtection\Tests;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
-use Snicco\Component\HttpRouting\Tests\InternalMiddlewareTestCase;
+use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 
-class OpenRedirectProtectionTest extends InternalMiddlewareTestCase
+class OpenRedirectProtectionTest extends MiddlewareTestCase
 {
     
     protected function setUp() :void

@@ -8,12 +8,16 @@ use Closure;
 use Throwable;
 use LogicException;
 use Webmozart\Assert\Assert;
+use InvalidArgumentException;
 use Snicco\Component\StrArr\Arr;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
+use function gettype;
 use function is_string;
 use function array_map;
 use function strtolower;
@@ -26,18 +30,20 @@ final class MiddlewarePipeline
     
     private HttpErrorHandlerInterface $error_handler;
     private MiddlewareFactory         $middleware_factory;
+    private ContainerInterface        $container;
     
     /**
-     * @var MiddlewareBlueprint[]
+     * @var array<MiddlewareInterface|MiddlewareBlueprint>
      */
     private array   $middleware = [];
     private Request $current_request;
     private Closure $request_handler;
     private bool    $exhausted  = false;
     
-    public function __construct(MiddlewareFactory $middleware_factory, HttpErrorHandlerInterface $error_handler)
+    public function __construct(ContainerInterface $container, HttpErrorHandlerInterface $error_handler)
     {
-        $this->middleware_factory = $middleware_factory;
+        $this->container = $container;
+        $this->middleware_factory = new MiddlewareFactory($this->container);
         $this->error_handler = $error_handler;
     }
     
@@ -49,13 +55,19 @@ final class MiddlewarePipeline
     }
     
     /**
-     * @param  MiddlewareBlueprint|MiddlewareBlueprint[]  $middleware
+     * @param  MiddlewareBlueprint|MiddlewareBlueprint[]|MiddlewareInterface|MiddlewareInterface[]  $middleware
      */
     public function through($middleware) :MiddlewarePipeline
     {
         $new = clone $this;
         $middleware = Arr::toArray($middleware);
-        Assert::allIsInstanceOf($middleware, MiddlewareBlueprint::class);
+        
+        foreach ($middleware as $m) {
+            if ($m instanceof MiddlewareInterface) {
+                continue;
+            }
+            Assert::isInstanceOf($m, MiddlewareBlueprint::class);
+        }
         $new->middleware = $middleware;
         return $new;
     }
@@ -116,15 +128,28 @@ final class MiddlewarePipeline
     
     private function runNextMiddleware(Request $request) :ResponseInterface
     {
-        /** @var MiddlewareBlueprint $middleware_blueprint */
-        $middleware_blueprint = array_shift($this->middleware);
+        $middleware = array_shift($this->middleware);
         
-        $middleware_instance = $this->middleware_factory->create(
-            $middleware_blueprint->class(),
-            $this->convertStrings($middleware_blueprint->arguments())
-        );
+        if ($middleware instanceof MiddlewareInterface) {
+            if ($middleware instanceof AbstractMiddleware) {
+                $middleware->setContainer($this->container);
+            }
+            $instance = $middleware;
+        }
+        elseif ($middleware instanceof MiddlewareBlueprint) {
+            $instance = $this->middleware_factory->create(
+                $middleware->class(),
+                $this->convertStrings($middleware->arguments())
+            );
+        }
+        else {
+            throw new InvalidArgumentException(
+                '$middleware must be of type MiddlewareInterface or MiddlewareBlueprint. Got: '
+                .gettype($middleware)
+            );
+        }
         
-        return $middleware_instance->process($request, $this->nextMiddleware());
+        return $instance->process($request, $this->nextMiddleware());
     }
     
     private function convertStrings(array $constructor_args) :array

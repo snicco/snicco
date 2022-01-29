@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use InvalidArgumentException;
 use Snicco\Component\HttpRouting\MiddlewareStack;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
@@ -14,7 +14,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-final class MiddlewareStackTest extends RoutingTestCase
+final class MiddlewareStackTest extends HttpRunnerTestCase
 {
     
     /** @test */

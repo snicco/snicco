@@ -9,7 +9,7 @@ use TypeError;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
@@ -96,7 +96,7 @@ final class RouteTest extends TestCase
             'RoutingTestController@static',
             null,
             ['GET'],
-            RoutingTestCase::CONTROLLER_NAMESPACE
+            HttpRunnerTestCase::CONTROLLER_NAMESPACE
         );
         
         $this->assertSame([RoutingTestController::class, 'static'], $route->getController());
@@ -106,7 +106,7 @@ final class RouteTest extends TestCase
             'RoutingTestController@static',
             null,
             ['GET'],
-            RoutingTestCase::CONTROLLER_NAMESPACE.'\\'
+            HttpRunnerTestCase::CONTROLLER_NAMESPACE.'\\'
         );
         
         $this->assertSame([RoutingTestController::class, 'static'], $route->getController());
@@ -132,7 +132,7 @@ final class RouteTest extends TestCase
             'RoutingTestController@bogus',
             null,
             ['GET'],
-            RoutingTestCase::CONTROLLER_NAMESPACE
+            HttpRunnerTestCase::CONTROLLER_NAMESPACE
         );
     }
     

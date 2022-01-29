@@ -13,7 +13,7 @@ class FooMiddleware extends AbstractMiddleware
     
     public string $foo;
     
-    public function __construct($foo = 'foo_middleware')
+    public function __construct(string $foo = 'foo_middleware')
     {
         $this->foo = $foo;
     }

@@ -8,11 +8,11 @@ use LogicException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Middleware\MethodOverride\MethodOverride;
-use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
-class HttpKernelTest extends RoutingTestCase
+class HttpKernelTest extends HttpRunnerTestCase
 {
     
     /** @test */
@@ -71,6 +71,23 @@ class HttpKernelTest extends RoutingTestCase
         $test_response = $this->runKernel($this->frontendRequest('/foo'));
         
         $test_response->assertHeader('content-length', strlen(RoutingTestController::static));
+    }
+    
+    /** @test */
+    public function content_negotiation_will_be_performed()
+    {
+        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+        
+        $test_response = $this->runKernel(
+            $this->frontendRequest('/foo')->withHeader(
+                'Accept',
+                'application/json, text/html;q=0.9'
+            )
+        );
+        
+        $this->assertSame(RoutingTestController::static, $test_response->body());
+        $test_response->assertHeader('content-language', 'en');
+        $test_response->assertHeader('X-Content-Type-Options', 'nosniff');
     }
     
 }

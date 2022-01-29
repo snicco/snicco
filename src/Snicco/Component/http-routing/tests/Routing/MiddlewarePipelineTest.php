@@ -11,7 +11,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\MiddlewareFactory;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\MiddlewareBlueprint;
@@ -28,6 +27,8 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
+
+use function array_map;
 
 class MiddlewarePipelineTest extends TestCase
 {
@@ -52,7 +53,7 @@ class MiddlewarePipelineTest extends TestCase
         $this->container[ResponseFactory::class] = $this->response_factory;
         
         $this->pipeline = new MiddlewarePipeline(
-            new MiddlewareFactory($this->container),
+            $this->container,
             new NullErrorHandler(),
         );
         $this->request = new Request(
@@ -86,6 +87,26 @@ class MiddlewarePipelineTest extends TestCase
         
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame('foo:pm1', $response->getBody()->__toString());
+    }
+    
+    /** @test */
+    public function instantiated_middleware_can_be_used()
+    {
+        $foo = new FooMiddleware('FOO');
+        
+        $response = $this->pipeline
+            ->send($this->request)
+            ->through([
+                    $foo,
+                    MiddlewareBlueprint::create(BarMiddleware::class, ['BAR']),
+                ]
+            )
+            ->then(function (ServerRequestInterface $request) {
+                return $this->response_factory->html('handler');
+            });
+        
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame('handler:BAR:FOO', $response->getBody()->__toString());
     }
     
     /** @test */
@@ -174,7 +195,7 @@ class MiddlewarePipelineTest extends TestCase
     public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline()
     {
         $pipeline = new MiddlewarePipeline(
-            new MiddlewareFactory($this->container),
+            $this->container,
             new LazyHttpErrorHandler($this->container)
         );
         
@@ -203,7 +224,7 @@ class MiddlewarePipelineTest extends TestCase
     public function exceptions_in_the_request_handler_get_handled_without_breaking_other_middleware()
     {
         $pipeline = new MiddlewarePipeline(
-            new MiddlewareFactory($this->container),
+            $this->container,
             new LazyHttpErrorHandler($this->container)
         );
         
