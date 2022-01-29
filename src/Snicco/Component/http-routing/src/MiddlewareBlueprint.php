@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Internal;
+namespace Snicco\Component\HttpRouting;
 
 use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;

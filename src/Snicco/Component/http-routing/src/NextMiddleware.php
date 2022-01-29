@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware;
+namespace Snicco\Component\HttpRouting;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,7 +14,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 /**
  * @api
  */
-final class Delegate implements RequestHandlerInterface, MiddlewareInterface
+final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterface
 {
     
     /**

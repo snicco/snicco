@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Internal;
+namespace Snicco\Component\HttpRouting;
 
 use Closure;
 use LogicException;
@@ -11,7 +11,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 
 use function sprintf;
 use function Snicco\Component\Core\Utils\isInterface;

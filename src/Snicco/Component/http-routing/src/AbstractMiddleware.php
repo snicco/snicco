@@ -2,54 +2,54 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http;
+namespace Snicco\Component\HttpRouting;
 
 use Webmozart\Assert\Assert;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Snicco\Component\HttpRouting\Http\Redirector;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Core\Configuration\ReadOnlyConfig;
+use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
-/**
- * @api
- */
-abstract class AbstractController
+abstract class AbstractMiddleware implements MiddlewareInterface
 {
-    
-    /**
-     * @var ControllerMiddleware[]
-     */
-    private array $middleware = [];
     
     private ContainerInterface $container;
     
-    /**
-     * @interal
-     * @return string[]
-     */
-    public function getMiddleware(string $controller_method = null) :array
-    {
-        $middleware = array_filter(
-            $this->middleware,
-            function (ControllerMiddleware $controller_middleware) use ($controller_method) {
-                return $controller_middleware->appliesTo($controller_method);
-            }
-        );
-        
-        return array_values(
-            array_map(function (ControllerMiddleware $middleware) {
-                return $middleware->name();
-            }, $middleware)
-        );
-    }
-    
-    /**
-     * @interal
-     */
     public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
+    }
+    
+    /**
+     * @param  Request  $request
+     * @param  RequestHandlerInterface  $handler
+     *
+     * @return ResponseInterface
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
+    {
+        return $this->handle($request, $handler);
+    }
+    
+    /**
+     * @param  Request  $request
+     * @param  NextMiddleware  $next  This class can be called as a closure. $next($request)
+     *
+     * @return ResponseInterface
+     */
+    abstract public function handle(Request $request, NextMiddleware $next) :ResponseInterface;
+    
+    final protected function respond() :ResponseFactory
+    {
+        return $this->container[ResponseFactory::class];
     }
     
     final protected function redirect() :Redirector
@@ -60,11 +60,6 @@ abstract class AbstractController
     final protected function url() :UrlGenerator
     {
         return $this->container[UrlGenerator::class];
-    }
-    
-    final protected function respond() :ResponseFactory
-    {
-        return $this->container[ResponseFactory::class];
     }
     
     final protected function config() :ReadOnlyConfig
@@ -81,11 +76,6 @@ abstract class AbstractController
         $renderer = $this->container[TemplateRenderer::class];
         Assert::isInstanceOf(TemplateRenderer::class, $renderer);
         return $this->respond()->html($renderer->render($template_identifier, $data));
-    }
-    
-    final protected function middleware(string $middleware_name) :ControllerMiddleware
-    {
-        return $this->middleware[] = new ControllerMiddleware($middleware_name);
     }
     
 }

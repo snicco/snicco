@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Internal;
+namespace Snicco\Component\HttpRouting;
 
 use Closure;
 use Throwable;
@@ -12,7 +12,6 @@ use Snicco\Component\StrArr\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
 use function is_string;
@@ -83,12 +82,12 @@ final class MiddlewarePipeline
         return $response;
     }
     
-    private function buildMiddlewareStack() :Delegate
+    private function buildMiddlewareStack() :NextMiddleware
     {
         return $this->nextMiddleware();
     }
     
-    private function nextMiddleware() :Delegate
+    private function nextMiddleware() :NextMiddleware
     {
         if ($this->exhausted) {
             throw new LogicException("The middleware pipeline is exhausted.");
@@ -97,7 +96,7 @@ final class MiddlewarePipeline
         if ($this->middleware === []) {
             $this->exhausted = true;
             
-            return new Delegate(function (Request $request) {
+            return new NextMiddleware(function (Request $request) {
                 try {
                     return call_user_func($this->request_handler, $request);
                 } catch (Throwable $e) {
@@ -106,7 +105,7 @@ final class MiddlewarePipeline
             });
         }
         
-        return new Delegate(function (Request $request) {
+        return new NextMiddleware(function (Request $request) {
             try {
                 return $this->runNextMiddleware($request);
             } catch (Throwable $e) {

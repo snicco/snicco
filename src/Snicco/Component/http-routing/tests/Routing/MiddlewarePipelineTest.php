@@ -9,11 +9,14 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\MiddlewareFactory;
+use Snicco\Component\HttpRouting\MiddlewarePipeline;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\MiddlewareBlueprint;
+use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
@@ -23,10 +26,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareBlueprint;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 
 class MiddlewarePipelineTest extends TestCase
@@ -280,7 +280,7 @@ class MiddlewarePipelineTest extends TestCase
 class ThrowExceptionMiddleware extends AbstractMiddleware
 {
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         throw new RuntimeException("Error in middleware");
     }
@@ -292,7 +292,7 @@ class StopMiddleware extends AbstractMiddleware
     
     const ATTR = 'stop_middleware';
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         return $this->respond()->html('stopped');
     }
@@ -310,7 +310,7 @@ class PipelineTestMiddleware1 extends AbstractMiddleware
         $this->value_to_add = $value_to_add;
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
         $response->getBody()->write(':pm1');
@@ -330,7 +330,7 @@ class PipelineTestMiddleware2 extends AbstractMiddleware
         $this->value_to_add = $value_to_add;
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
         $response->getBody()->write(':pm2');

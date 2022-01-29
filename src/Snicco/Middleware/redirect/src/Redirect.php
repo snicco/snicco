@@ -7,9 +7,9 @@ namespace Snicco\Middleware\Redirect;
 use InvalidArgumentException;
 use Snicco\Component\StrArr\Arr;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 
 use function trim;
 use function ltrim;
@@ -34,7 +34,7 @@ final class Redirect extends AbstractMiddleware
         $this->normalize($redirects);
     }
     
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $path_redirect = Arr::get($this->redirects, $request->path());
         

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http;
+namespace Snicco\Component\HttpRouting;
 
 use Closure;
 use LogicException;
@@ -11,28 +11,20 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Middleware\MethodOverride\MethodOverride;
 use Snicco\Component\EventDispatcher\EventDispatcher;
-use Snicco\Component\HttpRouting\Middleware\Internal\RouteRunner;
-use Snicco\Component\HttpRouting\Http\Exception\RequestHasNoType;
-use Snicco\Component\HttpRouting\Middleware\Internal\PrepareResponse;
-use Snicco\Component\HttpRouting\Middleware\Internal\RoutingMiddleware;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewarePipeline;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareBlueprint;
+use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 
 final class HttpKernel
 {
     
     private const CORE_MIDDLEWARE = [
         PrepareResponse::class,
-        // MethodOverride needs to be in the kernel. It can't be used as a route middleware.
-        // As the route would never match to retrieve the middleware in the first place.
         MethodOverride::class,
         RoutingMiddleware::class,
         RouteRunner::class,
     ];
     
     private MiddlewarePipeline $pipeline;
-    
-    private EventDispatcher $event_dispatcher;
+    private EventDispatcher    $event_dispatcher;
     
     // @todo Use the dispatcher to send some events related to handling the request.
     public function __construct(MiddlewarePipeline $pipeline, EventDispatcher $event_dispatcher)

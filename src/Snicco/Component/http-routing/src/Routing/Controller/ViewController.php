@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Controller;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\AbstractController;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
-use Snicco\Component\HttpRouting\Http\AbstractController;
 
 /**
  * @interal

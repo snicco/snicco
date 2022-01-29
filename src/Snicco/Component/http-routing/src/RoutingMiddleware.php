@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Internal;
+namespace Snicco\Component\HttpRouting;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 
@@ -27,7 +25,7 @@ final class RoutingMiddleware extends AbstractMiddleware
     /**
      * @throws MethodNotAllowed
      */
-    public function handle(Request $request, Delegate $next) :ResponseInterface
+    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         $result = $this->url_matcher->dispatch($request);
         

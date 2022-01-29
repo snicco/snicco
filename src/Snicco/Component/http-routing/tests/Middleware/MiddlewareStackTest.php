@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use InvalidArgumentException;
+use Snicco\Component\HttpRouting\MiddlewareStack;
 use Snicco\Component\HttpRouting\Tests\RoutingTestCase;
-use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
-use Snicco\Component\HttpRouting\Middleware\Internal\MiddlewareStack;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 

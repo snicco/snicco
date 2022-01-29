@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Middleware\Internal;
+namespace Snicco\Component\HttpRouting;
 
 use RuntimeException;
 use Webmozart\Assert\Assert;
 use Snicco\Component\StrArr\Arr;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Exception\InvalidMiddleware;
+use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 
 use function Snicco\Component\Core\Utils\isInterface;

@@ -6,10 +6,10 @@ namespace Snicco\Component\HttpRouting\Tests\Testing;
 
 use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use PHPUnit\Framework\ExpectationFailedException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
@@ -27,7 +27,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $this->respond()->html('foo');
             }
@@ -46,7 +46,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $next($request);
             }
@@ -66,7 +66,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $this->respond()->html('foo');
             }
@@ -91,7 +91,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $this->respond()->html('foo');
             }
@@ -111,7 +111,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $next($request);
             }
@@ -134,7 +134,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $next($request->withAttribute('foo', 'bar'));
             }
@@ -152,7 +152,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $this->respond()->html('foo');
             }
@@ -175,7 +175,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 $response = $next($request);
                 return $response->withHeader('foo', 'bar');
@@ -201,7 +201,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $next($request);
             }
@@ -223,7 +223,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 return $next($request);
             }
@@ -242,7 +242,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 $response1 = $next($request);
                 
@@ -263,7 +263,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $middleware = new class extends AbstractMiddleware
         {
             
-            public function handle(Request $request, Delegate $next) :ResponseInterface
+            public function handle(Request $request, NextMiddleware $next) :ResponseInterface
             {
                 if ($request->isGet()) {
                     $response1 = $next($request);

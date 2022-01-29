@@ -7,9 +7,9 @@ namespace Snicco\Middleware\Payload;
 use Webmozart\Assert\Assert;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Middleware\Delegate;
-use Snicco\Component\HttpRouting\Http\AbstractMiddleware;
+use Snicco\Component\HttpRouting\AbstractMiddleware;
 
 use function strpos;
 
@@ -33,7 +33,7 @@ abstract class Payload extends AbstractMiddleware
         $this->methods = $methods;
     }
     
-    final public function handle(Request $request, Delegate $next) :ResponseInterface
+    final public function handle(Request $request, NextMiddleware $next) :ResponseInterface
     {
         if ( ! $this->shouldParseRequest($request)) {
             return $next($request);
