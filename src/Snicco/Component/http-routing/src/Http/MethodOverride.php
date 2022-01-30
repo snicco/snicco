@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\MethodOverride;
+namespace Snicco\Component\HttpRouting\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\NextMiddleware;
