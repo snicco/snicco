@@ -24,7 +24,6 @@ final class MysqliConnectionQueriesTest extends WPTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->withDatabaseExceptions();
         
         Container::setInstance();
         Facade::clearResolvedInstances();
@@ -34,7 +33,6 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         
         $wp_eloquent = new WPEloquentStandalone();
         $wp_eloquent->bootstrap();
-        $this->withDatabaseExceptions();
         $this->withNewTables();
         DB::beginTransaction();
     }

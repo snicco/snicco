@@ -15,7 +15,7 @@
     "psr/http-factory": "^1.0.0",
     "sniccowp/str-arr": "dev-master",
     "sniccowp/psr7-error-handler": "dev-master",
-    "sniccowp/method-override-middleware": "dev-master",
+    "middlewares/negotiation": "^2.1.0",
     "nikic/fast-route": "1.3.0",
     "symfony/finder": "^5.0-stable",
     "webmozart/assert": "^1.10"

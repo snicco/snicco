@@ -46,8 +46,6 @@ class SchemaBuilderTest extends WPTestCase
         Model::unsetEventDispatcher();
         Model::unsetConnectionResolver();
         
-        $this->withDatabaseExceptions();
-        
         (new WPEloquentStandalone())->bootstrap();
         
         $this->builder = Schema::connection('wp_mysqli_connection');
@@ -1180,15 +1178,17 @@ class SchemaBuilderTest extends WPTestCase
             $table->string('email')->nullable(false);
         });
         
-        try {
-            $this->wpdbInsert('wp_books', ['id' => 1]);
-            $this->fail('Non-nullable column was created without default value');
-        } catch (mysqli_sql_exception $e) {
-            $this->assertSame(
-                "Field 'email' doesn't have a default value",
-                $e->getMessage()
-            );
-        }
+        $this->withDatabaseExceptions(function () {
+            try {
+                $this->wpdbInsert('wp_books', ['id' => 1]);
+                $this->fail('Non-nullable column was created without default value');
+            } catch (mysqli_sql_exception $e) {
+                $this->assertSame(
+                    "Field 'email' doesn't have a default value",
+                    $e->getMessage()
+                );
+            }
+        });
         
         $builder->dropColumns('books', 'email');
         
@@ -1196,7 +1196,9 @@ class SchemaBuilderTest extends WPTestCase
             $table->string('email')->nullable(true);
         });
         
-        $this->wpdbInsert('wp_books', ['id' => 1]);
+        $this->withDatabaseExceptions(function () {
+            $this->wpdbInsert('wp_books', ['id' => 1]);
+        });
         
         $this->assertTrue(true);
     }
@@ -1298,18 +1300,20 @@ class SchemaBuilderTest extends WPTestCase
         
         $this->assertDbTable()->assertRecordEquals(['id' => 1, 'price' => 10], $expected);
         
-        try {
-            global $wpdb;
-            
-            $wpdb->query("INSERT INTO `wp_books` (`id`, `price`) VALUES (2, -100)");
-            
-            $this->fail('[TEST FAILED] Negative value inserted for unsigned integer.');
-        } catch (mysqli_sql_exception $e) {
-            $this->assertSame(
-                "Out of range value for column 'price' at row 1",
-                $e->getMessage()
-            );
-        }
+        $this->withDatabaseExceptions(function () {
+            try {
+                global $wpdb;
+                
+                $wpdb->query('INSERT INTO `wp_books` (`id`, `price`) VALUES (2, -100)');
+                
+                $this->fail('[TEST FAILED] Negative value inserted for unsigned integer.');
+            } catch (mysqli_sql_exception $e) {
+                $this->assertSame(
+                    "Out of range value for column 'price' at row 1",
+                    $e->getMessage()
+                );
+            }
+        });
     }
     
     /** @test */

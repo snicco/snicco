@@ -61,8 +61,10 @@ final class BladeStandalone
     /**
      * @api
      */
-    public function bindWordPressDirectives(ScopableWP $wp) :void
+    public function bindWordPressDirectives(ScopableWP $wp = null) :void
     {
+        $wp = $wp ? : new ScopableWP();
+        
         Blade::if('auth', fn() => $wp->isUserLoggedIn());
         
         Blade::if('guest', fn() => ! $wp->isUserLoggedIn());
