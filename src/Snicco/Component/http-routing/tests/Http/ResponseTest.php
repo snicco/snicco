@@ -196,7 +196,7 @@ class ResponseTest extends TestCase
     }
     
     /** @test */
-    public function testCookiesAreNotResetInNestedResponses()
+    public function cookies_are_not_reset_in_nested_responses()
     {
         $redirect_response = $this->factory->make()->withCookie(new Cookie('foo', 'bar'));
         

@@ -14,19 +14,18 @@ use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\MiddlewareStack;
 use Snicco\Component\HttpRouting\PrepareResponse;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Snicco\Component\HttpRouting\KernelMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\RoutingMiddleware;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
 use Snicco\Middleware\MethodOverride\MethodOverride;
 use Snicco\Component\HttpRouting\Http\NegotiateContent;
-use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
-use Snicco\Component\EventDispatcher\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
@@ -65,11 +64,10 @@ class HttpRunnerTestCase extends TestCase
     
     const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
     
-    protected string                  $app_domain = 'foobar.com';
-    protected string                  $routes_dir;
-    protected DIContainer             $container;
-    protected TestableEventDispatcher $event_dispatcher;
-    protected UrlGenerator            $generator;
+    protected string       $app_domain = 'foobar.com';
+    protected string       $routes_dir;
+    protected DIContainer  $container;
+    protected UrlGenerator $generator;
     
     private Router                    $router;
     private HttpKernel                $kernel;
@@ -275,9 +273,15 @@ class HttpRunnerTestCase extends TestCase
                 $this->container,
                 $this->error_handler,
             ),
-            $this->event_dispatcher = new TestableEventDispatcher(
-                new BaseEventDispatcher()
-            )
+            new class implements EventDispatcherInterface
+            {
+                
+                public function dispatch(object $event)
+                {
+                    //
+                }
+                
+            }
         );
     }
     
