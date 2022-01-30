@@ -10,7 +10,8 @@
   ],
   "require": {
     "php": "^7.4",
-    "sniccowp/str-arr": "dev-master"
+    "sniccowp/str-arr": "dev-master",
+    "sniccowp/parameter-bag": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5"

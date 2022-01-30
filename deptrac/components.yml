@@ -1,0 +1,118 @@
+parameters:
+  paths:
+    - ./src/Snicco/Component
+
+  layers:
+    - name: better_wp_hooks
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\BetterWPHooks\\.*
+
+    - name: better_wp_mail
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\BetterWPMail\\.*
+
+    - name: core
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Core\\.*
+
+    - name: eloquent
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Eloquent\\.*
+
+    - name: event_dispatcher
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\EventDispatcher\\.*
+
+    - name: http_routing
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\HttpRouting\\.*
+
+    - name: parameter_bag
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\ParameterBag\\.*
+
+    - name: psr7_error_handler
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Psr7ErrorHandler\\.*
+
+    - name: scopable_wp
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\ScopableWP\\.*
+
+    - name: session
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Session\\.*
+
+    - name: signed_url
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\SignedUrl\\.*
+
+    - name: str_arr
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\StrArr\\.*
+
+    - name: templating
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\Templating\\.*
+
+    - name: testable_clock
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\TestableClock\\.*
+
+    - name: wp_object_cache_psr16
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\WPObjectCachePsr16\\.*
+
+  ruleset:
+
+    better_wp_mail:
+      - scopable_wp
+
+    better_wp_hooks:
+      - event_dispatcher
+      - scopable_wp
+
+    core:
+      - parameter_bag
+      - str_arr
+
+    eloquent:
+      - scopable_wp
+      - str_arr # only in tests
+
+    http_routing:
+      - psr7_error_handler
+      - core # only in tests for the DI_container interface
+      - str_arr
+
+    session:
+      - str_arr
+      - testable_clock
+
+    signed_url:
+      - testable_clock
+
+    parameter_bag:
+      - str_arr
+
+    templating:
+      - str_arr
+      - parameter_bag
+
+    wp_object_cache_psr16:
+      - scopable_wp
