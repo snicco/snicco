@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 
+use WP_User;
 use WP_Error;
 use MockPHPMailer;
 use LogicException;
@@ -14,7 +15,6 @@ use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
-use Snicco\Bundle\Testing\Concerns\InteractsWithWordpressUsers;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
 use Snicco\Component\BetterWPMail\Tests\fixtures\NamedViewRenderer;
@@ -22,12 +22,11 @@ use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
 
 use function dirname;
 use function str_replace;
+use function array_merge;
 use function file_get_contents;
 
 final class MailerTest extends WPTestCase
 {
-    
-    use InteractsWithWordpressUsers;
     
     private string $fixtures_dir;
     
@@ -837,6 +836,13 @@ final class MailerTest extends WPTestCase
     {
         global $phpmailer;
         return $phpmailer->mock_sent;
+    }
+    
+    private function createAdmin(array $data) :WP_User
+    {
+        return $this->factory()->user->create_and_get(
+            array_merge($data, ['role' => 'administrator'])
+        );
     }
     
 }

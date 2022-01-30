@@ -11,7 +11,7 @@
          failOnWarning="true"
          verbose="true"
          colors="true"
-         bootstrap="tests/bootstrap-phpunit.php"
+         bootstrap="tests/bootstrap.php"
 >
     <testsuites>
         <testsuite name="unit">
@@ -21,6 +21,19 @@
             <exclude>src/Snicco/*/*/tests/integration</exclude>
             <exclude>src/Snicco/*/*/tests/wordpress</exclude>
         </testsuite>
+
+        <testsuite name="component">
+            <directory suffix="Test.php">src/Snicco/Component/*/tests/</directory>
+            <exclude>src/Snicco/Component/*/tests/integration</exclude>
+            <exclude>src/Snicco/Component/*/tests/wordpress</exclude>
+        </testsuite>
+
+        <testsuite name="bridge">
+            <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
+            <exclude>src/Snicco/Bridge/*/tests/integration</exclude>
+            <exclude>src/Snicco/Bridge/*/tests/wordpress</exclude>
+        </testsuite>
+
         <testsuite name="integration">
             <directory suffix="Test.php">src/Snicco/Bridge/*/tests/integration</directory>
             <directory suffix="Test.php">src/Snicco/Component/*/tests/integration</directory>

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
+use WP_User;
 use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
-use Snicco\Bundle\Testing\Concerns\InteractsWithWordpressUsers;
+
+use function array_merge;
 
 final class AddressTest extends WPTestCase
 {
-    
-    use InteractsWithWordpressUsers;
     
     /** @test */
     public function test_from_string()
@@ -127,6 +127,13 @@ final class AddressTest extends WPTestCase
         );
         
         $address = Mailbox::create(1);
+    }
+    
+    private function createAdmin(array $data) :WP_User
+    {
+        return $this->factory()->user->create_and_get(
+            array_merge($data, ['role' => 'administrator'])
+        );
     }
     
 }
