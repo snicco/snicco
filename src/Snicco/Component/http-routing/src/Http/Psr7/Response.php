@@ -10,6 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Cookies;
 
+/**
+ * @final
+ */
 class Response implements ResponseInterface
 {
     
@@ -64,18 +67,19 @@ class Response implements ResponseInterface
     final public function withCookie(Cookie $cookie) :self
     {
         $response = clone $this;
-        $response->cookies->add($cookie);
+        $response->cookies = $this->cookies->withCookie($cookie);
         
         return $response;
     }
     
     final public function withoutCookie(string $name, string $path = '/') :self
     {
-        $cookie = new Cookie($name, 'deleted');
-        $cookie = $cookie->withExpiryTimestamp(1)->withPath($path);
+        $cookie = (new Cookie($name, 'deleted'))
+            ->withExpiryTimestamp(1)
+            ->withPath($path);
         
         $response = clone $this;
-        $response->cookies->add($cookie);
+        $response->cookies = $this->cookies->withCookie($cookie);
         
         return $response;
     }
@@ -308,11 +312,6 @@ class Response implements ResponseInterface
     final public function getReasonPhrase() :string
     {
         return $this->psr7_response->getReasonPhrase();
-    }
-    
-    final public function __clone()
-    {
-        $this->cookies = clone $this->cookies;
     }
     
     /**

@@ -126,7 +126,9 @@ final class Cookie
     public function withExpiryTimestamp($timestamp) :Cookie
     {
         if ( ! is_int($timestamp) && ! $timestamp instanceof DateTimeInterface) {
-            throw new InvalidArgumentException('timestamp must be an integer or DataTimeInterface');
+            throw new InvalidArgumentException(
+                '$timestamp must be an integer or DataTimeInterface'
+            );
         }
         
         $timestamp = $timestamp instanceof DateTimeInterface

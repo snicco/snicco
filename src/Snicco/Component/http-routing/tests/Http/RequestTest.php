@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
@@ -117,16 +116,16 @@ class RequestTest extends TestCase
         $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
     }
     
-    public function testCookies()
+    public function test_cookie()
     {
-        $cookies = $this->request->cookies();
-        $this->assertInstanceOf(ParameterPag::class, $cookies);
-        $this->assertSame([], $cookies->toArray());
+        $this->assertSame(null, $this->request->cookie('foo'));
         
-        $request = $this->request->withCookies(['foo' => 'bar']);
-        $cookies = $request->cookies();
-        $this->assertInstanceOf(ParameterPag::class, $cookies);
-        $this->assertSame(['foo' => 'bar'], $cookies->toArray());
+        $request = $this->request->withCookieParams(['foo' => 'bar']);
+        
+        $this->assertSame(null, $this->request->cookie('foo'));
+        $this->assertSame('bar', $request->cookie('foo'));
+        
+        $this->assertSame('default', $request->cookie('baz', 'default'));
     }
     
     public function testRouteIs()

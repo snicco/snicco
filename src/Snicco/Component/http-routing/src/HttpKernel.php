@@ -7,20 +7,23 @@ namespace Snicco\Component\HttpRouting;
 use Closure;
 use LogicException;
 use RuntimeException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 
 final class HttpKernel
 {
     
-    private MiddlewarePipeline $pipeline;
-    private KernelMiddleware   $kernel_middleware;
-    private EventDispatcher    $event_dispatcher;
+    private MiddlewarePipeline       $pipeline;
+    private KernelMiddleware         $kernel_middleware;
+    private EventDispatcherInterface $event_dispatcher;
     
-    public function __construct(KernelMiddleware $kernel_middleware, MiddlewarePipeline $pipeline, EventDispatcher $event_dispatcher)
-    {
+    public function __construct(
+        KernelMiddleware $kernel_middleware,
+        MiddlewarePipeline $pipeline,
+        EventDispatcherInterface $event_dispatcher
+    ) {
         $this->kernel_middleware = $kernel_middleware;
         $this->pipeline = $pipeline;
         $this->event_dispatcher = $event_dispatcher;

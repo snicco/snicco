@@ -11,8 +11,6 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Component\HttpRouting\Http\Cookies;
-use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 
@@ -67,11 +65,6 @@ final class Request implements ServerRequestInterface
         return $this->withAttribute('_routing_result', $route);
     }
     
-    final public function withCookies(array $cookies) :Request
-    {
-        return $this->withAttribute('cookies', new ParameterPag($cookies));
-    }
-    
     final public function userAgent()
     {
         return substr($this->getHeaderLine('User-Agent'), 0, 500);
@@ -99,18 +92,9 @@ final class Request implements ServerRequestInterface
         return $this->getUri()->__toString();
     }
     
-    final public function cookies() :ParameterPag
+    final public function cookie(string $name, $default = null)
     {
-        /** @var ParameterPag $bag */
-        $bag = $this->getAttribute('cookies', new ParameterPag());
-        
-        if ($bag->toArray() === []) {
-            $cookies = Cookies::parseHeader($this->getHeader('Cookie'));
-            
-            $bag->add($cookies);
-        }
-        
-        return $bag;
+        return Arr::get($this->getCookieParams(), $name, $default);
     }
     
     final function path() :string
