@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use Mockery;
+use Closure;
 use Exception;
+use Throwable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
@@ -19,17 +23,11 @@ final class LazyErrorHandlerTest extends TestCase
     use CreateTestPsrContainer;
     use CreateTestPsr17Factories;
     
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
-    }
-    
     /** @test */
     public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to()
     {
         $c = $this->createContainer();
-        $c[HttpErrorHandlerInterface::class] = Mockery::mock(HttpErrorHandlerInterface::class);
+        $c[HttpErrorHandlerInterface::class] = new TestableErrorHandler(function () { });
         $lazy_handler = new LazyHttpErrorHandler($c);
         
         $this->assertInstanceOf(HttpErrorHandlerInterface::class, $lazy_handler);
@@ -52,20 +50,19 @@ final class LazyErrorHandlerTest extends TestCase
         $count = 0;
         $c = $this->createContainer();
         
-        $mock = Mockery::mock(HttpErrorHandlerInterface::class);
+        $real_handler =
+            new TestableErrorHandler(function (Throwable $e, ServerRequestInterface $request) {
+                $response = $this->psrResponseFactory()->createResponse(500);
+                $response->getBody()->write('foo error');
+                return $response;
+            });
         
-        $c->singleton(HttpErrorHandlerInterface::class, function () use (&$count, $mock) {
+        $c->singleton(HttpErrorHandlerInterface::class, function () use (&$count, $real_handler) {
             $count++;
-            return $mock;
+            return $real_handler;
         });
         
         $lazy_handler = new LazyHttpErrorHandler($c);
-        
-        $mock->shouldReceive('handle')->once()->andReturnUsing(function () {
-            $response = $this->psrResponseFactory()->createResponse(500);
-            $response->getBody()->write('foo error');
-            return $response;
-        });
         
         $response = $lazy_handler->handle(
             new Exception('secret stuff'),
@@ -74,6 +71,23 @@ final class LazyErrorHandlerTest extends TestCase
         
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('foo error', (string) $response->getBody());
+    }
+    
+}
+
+class TestableErrorHandler implements HttpErrorHandlerInterface
+{
+    
+    private Closure $return;
+    
+    public function __construct(Closure $return)
+    {
+        $this->return = $return;
+    }
+    
+    public function handle(Throwable $e, RequestInterface $request) :ResponseInterface
+    {
+        return call_user_func($this->return, $e, $request);
     }
     
 }

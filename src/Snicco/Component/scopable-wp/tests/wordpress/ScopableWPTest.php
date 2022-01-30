@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\ScopableWP\Tests\wordpress;
 
-use Mockery;
 use WP_User;
 use WP_Post;
 use Exception;
@@ -12,7 +11,6 @@ use BadMethodCallException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\ScopableWP\Tests\fixtures\TestWPApi;
-use Snicco\Component\ScopableWP\Tests\fixtures\ClientClass;
 
 use function do_action;
 use function add_action;
@@ -33,12 +31,6 @@ use const E_USER_NOTICE;
  */
 final class ScopableWPTest extends WPTestCase
 {
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
-    }
     
     /** @test */
     public function methods_that_exists_will_be_called_on_the_subject()
@@ -114,17 +106,19 @@ final class ScopableWPTest extends WPTestCase
     }
     
     /** @test */
-    public function mockery_can_scope_the_class()
+    public function test_class_can_be_extended()
     {
-        $mock = Mockery::mock(TestWPApi::class);
-        $mock->shouldReceive('cacheGet')
-             ->with('foo')->andReturn(1);
+        $class = new class extends ScopableWP
+        {
+            
+            public function getCurrentUserId() :int
+            {
+                return 1000;
+            }
+            
+        };
         
-        $subject = new ClientClass($mock);
-        
-        $res = $subject->getSomething('foo');
-        
-        $this->assertSame(1, $res);
+        $this->assertSame(1000, $class->getCurrentUserId());
     }
     
     /** @test */

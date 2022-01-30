@@ -32,7 +32,6 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         $wp_eloquent = new WPEloquentStandalone();
         $wp_eloquent->bootstrap();
         
-        $this->withDatabaseExceptions();
         $this->withNewTables();
         DB::beginTransaction();
     }

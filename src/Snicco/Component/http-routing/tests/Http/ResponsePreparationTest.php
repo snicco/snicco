@@ -2,7 +2,6 @@
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use Mockery;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
@@ -28,12 +27,6 @@ class ResponsePreparationTest extends TestCase
         $this->request = new Request(
             $this->psrServerRequestFactory()->createServerRequest('GET', ' /foo')
         );
-    }
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
     }
     
     /** @test */

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Tests;
 
-use Mockery;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\ReadWriteSession;
@@ -13,15 +12,12 @@ use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Exception\SessionIsLocked;
+use Snicco\Component\Session\ValueObject\SerializedSessionData;
+
+use function count;
 
 class ReadWriteSessionTest extends TestCase
 {
-    
-    protected function tearDown() :void
-    {
-        parent::tearDown();
-        Mockery::close();
-    }
     
     /** @test */
     public function the_session_is_locked_after_saving()
@@ -537,31 +533,33 @@ class ReadWriteSessionTest extends TestCase
     /** @test */
     public function a_dirty_session_is_saved_to_the_driver()
     {
-        $spy_driver = Mockery::spy(SessionDriver::class);
+        $spy_driver = new SpyDriver();
         $session = $this->newPersistedSession();
         
         $session->put('foo', 'bar');
         
         $session->saveUsing($spy_driver, new DateTimeImmutable());
         
-        $spy_driver->shouldHaveReceived('write')->once();
-        $spy_driver->shouldNotHaveReceived('touch');
+        $calls = $spy_driver->written;
+        $this->assertSame(1, count($calls));
         
-        $this->assertTrue(true);
+        $calls = $spy_driver->touched;
+        $this->assertSame(0, count($calls));
     }
     
     /** @test */
-    public function a_clean_session_is_saved_to_the_driver()
+    public function a_clean_session_is_only_touched()
     {
-        $spy_driver = Mockery::spy(SessionDriver::class);
+        $spy_driver = new SpyDriver();
         $session = $this->newPersistedSession();
         
         $session->saveUsing($spy_driver, new DateTimeImmutable());
         
-        $spy_driver->shouldHaveReceived('touch')->once();
-        $spy_driver->shouldNotHaveReceived('write');
+        $calls = $spy_driver->written;
+        $this->assertSame(0, count($calls));
         
-        $this->assertTrue(true);
+        $calls = $spy_driver->touched;
+        $this->assertSame(1, count($calls));
     }
     
     /** @test */
@@ -826,6 +824,39 @@ class ReadWriteSessionTest extends TestCase
         $driver = $driver ?? new InMemoryDriver();
         $session->saveUsing($driver, new DateTimeImmutable());
         return $this->reloadSession($session, $driver);
+    }
+    
+}
+
+class SpyDriver implements SessionDriver
+{
+    
+    public array $written = [];
+    public array $touched = [];
+    
+    public function read(string $session_id) :SerializedSessionData
+    {
+        //
+    }
+    
+    public function write(string $session_id, SerializedSessionData $data) :void
+    {
+        $this->written[$session_id] = $data;
+    }
+    
+    public function destroy(array $session_ids) :void
+    {
+        //
+    }
+    
+    public function gc(int $seconds_without_activity) :void
+    {
+        //
+    }
+    
+    public function touch(string $session_id, DateTimeImmutable $now) :void
+    {
+        $this->touched[$session_id] = $now;
     }
     
 }

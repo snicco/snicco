@@ -5,20 +5,35 @@ declare(strict_types=1);
 namespace Snicco\Component\Eloquent\Tests\fixtures\Helper;
 
 use mysqli;
+use Closure;
+
+use function mysqli_report;
+
+use const MYSQLI_REPORT_ALL;
+use const MYSQLI_REPORT_OFF;
 
 trait WPDBTestHelpers
 {
     
-    protected function withDatabaseExceptions()
+    protected function withDatabaseExceptions(Closure $test)
     {
         global $wpdb;
-        
         /** @var mysqli $mysqli */
         $mysqli = $wpdb->dbh;
         
-        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        $mode = $mysqli->query('SELECT @@SESSION.sql_mode');
+        $current_default = $mode->fetch_row()[0];
         
         $mysqli->query("SET SESSION sql_mode='TRADITIONAL'");
+        
+        mysqli_report(MYSQLI_REPORT_ALL);
+        try {
+            $test();
+        }
+        finally {
+            mysqli_report(MYSQLI_REPORT_OFF);
+            $mysqli->query("SET SESSION sql_mode='$current_default'");
+        }
     }
     
     protected function assertDbTable(string $table_name) :AssertableWpDB

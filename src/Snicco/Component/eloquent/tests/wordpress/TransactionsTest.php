@@ -28,10 +28,8 @@ class TransactionsTest extends WPTestCase
      * We use a separate mysqli connection to verify that our transactions indeed work as
      * expected since the same mysqli instance will always have access to the data inside the
      * transaction.
-     *
-     * @var mysqli
      */
-    private $verification_connection;
+    private mysqli $verification_connection;
     
     protected function setUp() :void
     {
@@ -87,10 +85,14 @@ class TransactionsTest extends WPTestCase
                 ['name' => 'Liverpool', 'country' => 'england'],
             ]);
             
-            // will throw non-unique error
-            DB::table('football_teams')->insert([
-                ['name' => 'Real Madrid', 'country' => 'spain'],
-            ]);
+            $this->withDatabaseExceptions(function () {
+                // will throw non-unique error
+                DB::table('football_teams')->insert([
+                    ['name' => 'Real Madrid', 'country' => 'spain'],
+                ]);
+            });
+            
+            $this->fail("no exception thrown");
         } catch (QueryException $e) {
             DB::rollback();
             $db = $this->assertDbTable('wp_football_teams');
@@ -109,6 +111,7 @@ class TransactionsTest extends WPTestCase
                 });
                 throw new RuntimeException("test exception");
             });
+            $this->fail("no exception thrown");
         } catch (RuntimeException $e) {
             $this->assertSame('test exception', $e->getMessage());
         }
