@@ -6,19 +6,15 @@ namespace Snicco\Bridge\SignedUrlMiddleware\Tests;
 
 use Psr\Log\Test\TestLogger;
 use Snicco\Component\SignedUrl\Secret;
-use Snicco\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\UrlSigner;
+use Snicco\Component\TestableClock\TestClock;
 use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
 use Snicco\Bridge\SignedUrlMiddleware\CollectGarbage;
 use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
-use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
+use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
-final class CollectGarbageTestInternal extends MiddlewareTestCase
+final class CollectGarbageTest extends MiddlewareTestCase
 {
-    
-    use CreatesPsrRequests;
-    use CreateTestPsr17Factories;
     
     /** @test */
     public function test_next_is_called()

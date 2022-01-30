@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\SignedUrlMiddleware;
 
-use RuntimeException;
 use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -12,22 +11,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\SignedUrl\GarbageCollector;
 use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
+use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
 
 final class CollectGarbage implements MiddlewareInterface
 {
     
-    /**
-     * @var int
-     */
-    private $percentage;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-    /**
-     * @var SignedUrlStorage
-     */
-    private $storage;
+    private int              $percentage;
+    private LoggerInterface  $logger;
+    private SignedUrlStorage $storage;
     
     public function __construct(int $percentage, SignedUrlStorage $storage, LoggerInterface $logger)
     {
@@ -40,7 +31,7 @@ final class CollectGarbage implements MiddlewareInterface
     {
         try {
             GarbageCollector::clean($this->storage, $this->percentage);
-        } catch (RuntimeException $e) {
+        } catch (UnavailableStorage $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
         }
         
