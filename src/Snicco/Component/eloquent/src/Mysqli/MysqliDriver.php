@@ -10,7 +10,7 @@ use mysqli_result;
 use mysqli_sql_exception;
 use Illuminate\Database\QueryException;
 
-use function implode;
+use function sprintf;
 
 /**
  * This class needs to double-check every method call to mysqli for errors because by default
@@ -272,7 +272,19 @@ final class MysqliDriver implements MysqliDriverInterface
     
     private function lastException() :mysqli_sql_exception
     {
-        return new mysqli_sql_exception(implode(',', $this->mysqli->error_list));
+        $errors = $this->mysqli->error_list;
+        $msg = '';
+        
+        if (isset($errors[0])) {
+            $msg = sprintf(
+                "error: %s\nerrno: [%s]\nsqlstate: [%s]",
+                $errors[0]['error'] ?? '',
+                $errors[0]['errno'] ?? '',
+                $errors[0]['sqlstate'] ?? '',
+            );
+        }
+        
+        return new mysqli_sql_exception($msg);
     }
     
 }
