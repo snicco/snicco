@@ -60,6 +60,7 @@ parameters:
     signed_url_middleware:
       - signed_url
       - http_routing # tests only
+      - testable_clock # tests only
     signed_url_psr16:
       - signed_url
       - testable_clock # tests only
