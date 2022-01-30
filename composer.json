@@ -146,7 +146,8 @@
     "merge": [
       "vendor/bin/monorepo-builder merge",
       "composer dump-autoload"
-    ]
+    ],
+    "deptrac": "deptrac --config-file=deptrac/deptrac.yaml"
   },
   "replace": {
     "sniccowp/better-wp-hooks": "self.version",
