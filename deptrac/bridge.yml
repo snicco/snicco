@@ -1,6 +1,6 @@
 parameters:
   paths:
-    - ./src/Snicco/Bridge
+    - ./../src/Snicco/Bridge
 
   layers:
     - name: blade
