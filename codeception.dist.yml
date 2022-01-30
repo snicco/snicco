@@ -7,4 +7,4 @@ paths:
   support: tests/_support
 settings:
   colors: true
-bootstrap: bootstrap-codeception.php
+bootstrap: bootstrap.php

@@ -11,7 +11,6 @@ use Snicco\Component\BetterWPMail\ValueObjects\Email;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
 use Snicco\Component\BetterWPMail\Tests\fixtures\AssertFails;
-use Snicco\Bundle\Testing\Concerns\InteractsWithWordpressUsers;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail2;
 
@@ -23,7 +22,6 @@ use const PHP_INT_MAX;
 final class FakeMailerTest extends WPTestCase
 {
     
-    use InteractsWithWordpressUsers;
     use AssertFails;
     
     private array $mail_data = [];

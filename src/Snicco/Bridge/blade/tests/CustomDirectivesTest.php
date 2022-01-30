@@ -15,6 +15,7 @@ class CustomDirectivesTest extends BladeTestCase
     protected function tearDown() :void
     {
         parent::tearDown();
+        Mockery::getConfiguration()->allowMockingNonExistentMethods(false);
         Mockery::close();
     }
     
@@ -57,6 +58,7 @@ class CustomDirectivesTest extends BladeTestCase
     /** @test */
     public function custom_wp_role_directives_work()
     {
+        Mockery::getConfiguration()->allowMockingNonExistentMethods(true);
         $wp = Mockery::mock(ScopableWP::class);
         $this->blade->bindWordPressDirectives($wp);
         
