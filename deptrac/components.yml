@@ -90,15 +90,17 @@ parameters:
     core:
       - parameter_bag
       - str_arr
+      - pimple # tests only
 
     eloquent:
       - scopable_wp
-      - str_arr # only in tests
+      - str_arr # tests only
 
     http_routing:
       - psr7_error_handler
       - core # only in tests for the DI_container interface
       - str_arr
+      - pimple # test only
 
     session:
       - str_arr

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\SignedUrlWP\Storage;
+namespace Snicco\Bridge\SignedUrlWP\Storage;
 
 use wpdb;
 use RuntimeException;
