@@ -9,10 +9,9 @@
   ],
   "require": {
     "php": "^7.4",
-    "ext-json": "*",
-    "ext-mbstring": "*",
     "webmozart/assert": "^1.10",
     "sniccowp/str-arr": "dev-master",
+    "sniccowp/parameter-bag": "dev-master",
     "symfony/finder": "^5.0-stable",
     "psr/container": "^1.0.0"
   },

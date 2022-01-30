@@ -1,6 +1,6 @@
 {
   "name": "sniccowp/eloquent",
-  "description": "Use the Laravels Eloquent ORM in WordPress. Fully tested with Eloquent 8.x.",
+  "description": "Use Laravel's Eloquent ORM in WordPress. Fully tested with Eloquent 8.x.",
   "minimum-stability": "stable",
   "authors": [
     {
@@ -18,7 +18,8 @@
     "fakerphp/faker": "^1.0.0-stable",
     "phpunit/phpunit": "^9.5",
     "lucatume/wp-browser": "3.0.22",
-    "mockery/mockery": "^1.4.0"
+    "mockery/mockery": "^1.4.0",
+    "sniccowp/str-arr": "dev-master"
   },
   "autoload": {
     "psr-4": {
