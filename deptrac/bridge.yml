@@ -1,0 +1,67 @@
+parameters:
+  paths:
+    - ./src/Snicco/Bridge
+
+  layers:
+    - name: blade
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\Blade\\.*
+
+    - name: illuminate_container
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\IlluminateContainer\\.*
+
+    - name: pimple
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\Pimple\\.*
+
+    - name: session_psr16
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\SessionPsr16\\.*
+
+    - name: session_wp
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\SessionWP\\.*
+
+    - name: signed_url_middleware
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\SignedUrlMiddleware\\.*
+
+    - name: signed_url_psr16
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\SignedUrlPsr16\\.*
+
+    - name: signed_url_wp
+      collectors:
+        - type: className
+          regex: Snicco\\Bridge\\SignedUrlWP\\.*
+
+  ruleset:
+    blade:
+      - templating
+      - scopable_wp
+    illuminate_container:
+      - core
+    pimple:
+      - core
+    session_psr16:
+      - session
+      - testable_clock #tests only
+    session_wp:
+      - session
+      - testable_clock #tests only
+    signed_url_middleware:
+      - signed_url
+      - http_routing # tests only
+    signed_url_psr16:
+      - signed_url
+      - testable_clock # tests only
+    signed_url_wp:
+      - signed_url

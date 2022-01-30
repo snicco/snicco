@@ -15,12 +15,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Component\\SignedUrlWP\\": "src"
+      "Snicco\\Bridge\\SignedUrlWP\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\SignedUrlWP\\Tests\\": "tests"
+      "Snicco\\Bridge\\SignedUrlWP\\Tests\\": "tests"
     }
   }
 }

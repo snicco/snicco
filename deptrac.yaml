@@ -1,3 +1,4 @@
 imports:
   - deptrac/components.yml
   - deptrac/middleware.yml
+  - deptrac/bridge.yml
