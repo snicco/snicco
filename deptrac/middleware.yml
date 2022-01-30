@@ -1,0 +1,112 @@
+parameters:
+  paths:
+    - ./src/Snicco/Middleware
+
+  layers:
+    - name: default_headers
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\DefaultHeaders\\.*
+
+    - name: https_only
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\HttpsOnly\\.*
+
+    - name: must_match_route
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\MustMatchRoute\\.*
+
+    - name: no_robots
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\NoRobots\\.*
+
+    - name: open_redirect_protection
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\OpenRedirectProtection\\.*
+
+    - name: payload
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\Payload\\.*
+
+    - name: redirect
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\Redirect\\.*
+
+    - name: share_cookies
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\ShareCookies\\.*
+
+    - name: trailing_slash
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\TrailingSlash\\.*
+
+    - name: wp_auth_only
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\WPAuth\\.*
+
+    - name: wp_cap_only
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\WPCap\\.*
+
+    - name: wp_guests_only
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\GuestsOnly\\.*
+
+
+  ruleset:
+    default_headers:
+      - http_routing
+
+    https_only:
+      - http_routing
+
+    must_match_route:
+      - http_routing
+      - psr7_error_handler
+
+    no_robots:
+      - http_routing
+
+    open_redirect_protection:
+      - http_routing
+      - str_arr
+
+    payload:
+      - http_routing
+      - psr7_error_handler
+
+    redirect:
+      - http_routing
+      - str_arr
+
+    share_cookies:
+      - http_routing
+
+    trailing_slash:
+      - http_routing
+      - str_arr
+
+    wp_auth_only:
+      - http_routing
+      - psr7_error_handler
+      - scopable_wp
+
+    wp_cap_only:
+      - http_routing
+      - psr7_error_handler
+      - scopable_wp
+
+    wp_guests_only:
+      - http_routing
+      - scopable_wp

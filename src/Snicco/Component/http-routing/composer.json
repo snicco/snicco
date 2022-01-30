@@ -22,7 +22,8 @@
   },
   "require-dev": {
     "nyholm/psr7": "^1.0.0",
-    "sniccowp/pimple-bridge": "dev-master"
+    "sniccowp/pimple-bridge": "dev-master",
+    "pimple/pimple": "^3.0.0"
   },
   "autoload": {
     "psr-4": {
