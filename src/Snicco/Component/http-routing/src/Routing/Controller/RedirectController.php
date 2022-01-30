@@ -36,7 +36,7 @@ final class RedirectController extends AbstractController
         return $this->redirect()->toRoute($route, $arguments, $status_code);
     }
     
-    /** @todo tests */
+    /** @todo remove this method here and add a template to the open redirect protection middleware. */
     public function exit(Request $request)
     {
         $home_url = '/';
