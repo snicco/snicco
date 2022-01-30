@@ -38,10 +38,10 @@ abstract class MiddlewareTestCase extends TestCase
     
     use CreatesPsrRequests;
     
-    private Routes          $routes;
-    private ResponseFactory $response_factory;
-    private Request         $request;
-    private Closure         $next_middleware_response;
+    private Routes                   $routes;
+    private ResponseFactoryInterface $response_factory;
+    private Request                  $request;
+    private Closure                  $next_middleware_response;
     
     protected function setUp() :void
     {
@@ -96,15 +96,15 @@ abstract class MiddlewareTestCase extends TestCase
             unset($this->request);
         }
         
+        $pimple = new Container();
+        $url = $this->newUrlGenerator(
+            $this->routes ?? new RouteCollection([]),
+            UrlGenerationContext::fromRequest($request)
+        );
+        $response_factory = $this->newResponseFactory($url);
+        $this->response_factory = $response_factory;
+        
         if ($middleware instanceof AbstractMiddleware) {
-            $pimple = new Container();
-            $url = $this->newUrlGenerator(
-                $this->routes ?? new RouteCollection([]),
-                UrlGenerationContext::fromRequest($request)
-            );
-            $response_factory = $this->newResponseFactory($url);
-            $this->response_factory = $response_factory;
-            
             if ( ! $pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $response_factory;
             }
