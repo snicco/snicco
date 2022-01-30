@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\SignedUrl\Exception;
 
 use Throwable;
-use RuntimeException;
 
 /**
  * @api
  */
-final class BadIdentifier extends RuntimeException
+final class BadIdentifier extends SignedUrlException
 {
     
     public static function for(string $id, Throwable $previous = null) :BadIdentifier
