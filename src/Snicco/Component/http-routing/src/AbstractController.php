@@ -55,23 +55,23 @@ abstract class AbstractController
     
     final protected function redirect() :Redirector
     {
-        return $this->container[Redirector::class];
+        return $this->container->get(Redirector::class);
     }
     
     final protected function url() :UrlGenerator
     {
-        return $this->container[UrlGenerator::class];
+        return $this->container->get(UrlGenerator::class);
     }
     
     final protected function respond() :ResponseFactory
     {
-        return $this->container[ResponseFactory::class];
+        return $this->container->get(ResponseFactory::class);
     }
     
     final protected function render(string $template_identifier, array $data = []) :Response
     {
         /** @var TemplateRenderer $renderer */
-        $renderer = $this->container[TemplateRenderer::class];
+        $renderer = $this->container->get(TemplateRenderer::class);
         Assert::isInstanceOf(TemplateRenderer::class, $renderer);
         return $this->respond()->html($renderer->render($template_identifier, $data));
     }

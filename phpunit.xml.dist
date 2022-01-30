@@ -28,6 +28,12 @@
             <exclude>src/Snicco/Component/*/tests/wordpress</exclude>
         </testsuite>
 
+        <testsuite name="middleware">
+            <directory suffix="Test.php">src/Snicco/Middleware/*/tests/</directory>
+            <exclude>src/Snicco/Middleware/*/tests/integration</exclude>
+            <exclude>src/Snicco/Middleware/*/tests/wordpress</exclude>
+        </testsuite>
+
         <testsuite name="bridge">
             <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
             <exclude>src/Snicco/Bridge/*/tests/integration</exclude>
@@ -51,11 +57,4 @@
             <directory>./src/Symfony/Component/*/Tests</directory>
         </exclude>
     </coverage>
-    <php>
-        <env name="DB_USER" value=""/>
-        <env name="DB_PASSWORD" value=""/>
-        <env name="DB_NAME" value=""/>
-        <env name="DB_HOST" value=""/>
-    </php>
-
 </phpunit>

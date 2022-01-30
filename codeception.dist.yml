@@ -1,5 +1,7 @@
 include:
   - src/Snicco/Component/*
+  - src/Snicco/Middleware/*
+  - src/Snicco/Bridge/*
 paths:
   output: _output
   tests: tests
