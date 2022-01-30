@@ -1,6 +1,6 @@
 parameters:
   paths:
-    - ./src/Snicco/Component
+    - ./../src/Snicco/Component
 
   layers:
     - name: better_wp_hooks
