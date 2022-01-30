@@ -13,18 +13,6 @@ class ShareCookiesTest extends MiddlewareTestCase
 {
     
     /** @test */
-    public function cookies_sent_by_the_browser_are_shared()
-    {
-        $response = $this->runMiddleware(
-            new ShareCookies(),
-            $this->frontendRequest()->withAddedHeader('Cookie', 'foo=bar')
-        );
-        
-        $response->assertNextMiddlewareCalled();
-        $this->assertSame('bar', $this->getReceivedRequest()->cookies()->get('foo'));
-    }
-    
-    /** @test */
     public function response_cookies_can_be_added()
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
