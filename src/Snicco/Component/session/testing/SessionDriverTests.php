@@ -12,6 +12,11 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\Session\ValueObject\SerializedSessionData;
 
+/**
+ * @todo This should be tested with the real time() function since the psr cache interfaces
+ *       don't use our clock interface. This should be refactored once we use the phpunit
+ *       test runner to the symfony/phpunit-bridge
+ */
 trait SessionDriverTests
 {
     
