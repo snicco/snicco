@@ -1,21 +1,12 @@
+#root
 /vendor/*
-/.env.testing
-/.phpunit.cache/
-/.phpunit.result.cache
-phpunit.xml
-/tests/integration/Blade/cache/*
-!/tests/integration/Blade/cache/.gitkeep
-composer.lock
-codeception.ymll
-/.deptrac.cache
-packages/blade/tests/fixtures/cache/*
-/codeception/shared/TestApp/storage/framework/routes/
-/codeception/shared/TestApp/storage/framework/views/
-/packages/*/tests/_output/failed
-/codeception/.env.testing
-/vendor/composer/
-_output
 /tests/.env.testing
+/.phpunit.cache/
+phpunit.xml
+composer.lock
+codeception.yml
+/.deptrac.cache
+_output
 
 # repos
 /src/Snicco/*/*/codeception.yml
