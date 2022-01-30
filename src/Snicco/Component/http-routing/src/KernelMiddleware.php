@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting;
 
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Middleware\MethodOverride\MethodOverride;
+use Snicco\Component\HttpRouting\Http\MethodOverride;
 use Snicco\Component\HttpRouting\Http\NegotiateContent;
 
 final class KernelMiddleware

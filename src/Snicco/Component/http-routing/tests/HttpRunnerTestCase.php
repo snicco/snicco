@@ -19,7 +19,7 @@ use Snicco\Component\HttpRouting\KernelMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\RoutingMiddleware;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
-use Snicco\Middleware\MethodOverride\MethodOverride;
+use Snicco\Component\HttpRouting\Http\MethodOverride;
 use Snicco\Component\HttpRouting\Http\NegotiateContent;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;

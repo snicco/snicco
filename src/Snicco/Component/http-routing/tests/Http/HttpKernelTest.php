@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\Http;
 use LogicException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Middleware\MethodOverride\MethodOverride;
+use Snicco\Component\HttpRouting\Http\MethodOverride;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
