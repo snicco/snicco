@@ -6,15 +6,14 @@ namespace Snicco\Component\HttpRouting\Testing;
 
 use Closure;
 use RuntimeException;
+use Pimple\Container;
 use PHPUnit\Framework\TestCase;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Snicco\Component\Core\DIContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -77,11 +76,6 @@ abstract class MiddlewareTestCase extends TestCase
         return new Psr17Factory();
     }
     
-    protected function createContainer() :DIContainer
-    {
-        return new PimpleContainerAdapter();
-    }
-    
     final protected function withRoutes(array $routes)
     {
         $this->routes = new RouteCollection($routes);
@@ -103,7 +97,7 @@ abstract class MiddlewareTestCase extends TestCase
         }
         
         if ($middleware instanceof AbstractMiddleware) {
-            $container = $this->createContainer();
+            $pimple = new Container();
             $url = $this->newUrlGenerator(
                 $this->routes ?? new RouteCollection([]),
                 UrlGenerationContext::fromRequest($request)
@@ -111,16 +105,16 @@ abstract class MiddlewareTestCase extends TestCase
             $response_factory = $this->newResponseFactory($url);
             $this->response_factory = $response_factory;
             
-            if ( ! $container->has(ResponseFactory::class)) {
-                $container[ResponseFactory::class] = $response_factory;
+            if ( ! $pimple->offsetExists(ResponseFactory::class)) {
+                $pimple[ResponseFactory::class] = $response_factory;
             }
-            if ( ! $container->has(Redirector::class)) {
-                $container[Redirector::class] = $response_factory;
+            if ( ! $pimple->offsetExists(Redirector::class)) {
+                $pimple[Redirector::class] = $response_factory;
             }
-            if ( ! $container->has(UrlGenerator::class)) {
-                $container[UrlGenerator::class] = $url;
+            if ( ! $pimple->offsetExists(UrlGenerator::class)) {
+                $pimple[UrlGenerator::class] = $url;
             }
-            $middleware->setContainer($container);
+            $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
         
         /** @var Response $response */
