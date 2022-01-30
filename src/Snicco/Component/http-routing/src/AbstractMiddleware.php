@@ -13,7 +13,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -60,14 +59,6 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     final protected function url() :UrlGenerator
     {
         return $this->container[UrlGenerator::class];
-    }
-    
-    final protected function config() :ReadOnlyConfig
-    {
-        /** @var ReadOnlyConfig $config */
-        $config = $this->container[ReadOnlyConfig::class];
-        Assert::isInstanceOf(ReadOnlyConfig::class, $config);
-        return $config;
     }
     
     final protected function render(string $template_identifier, array $data = []) :Response

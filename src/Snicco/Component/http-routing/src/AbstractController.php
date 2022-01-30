@@ -8,7 +8,6 @@ use Webmozart\Assert\Assert;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\Core\Configuration\ReadOnlyConfig;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -67,14 +66,6 @@ abstract class AbstractController
     final protected function respond() :ResponseFactory
     {
         return $this->container[ResponseFactory::class];
-    }
-    
-    final protected function config() :ReadOnlyConfig
-    {
-        /** @var ReadOnlyConfig $config */
-        $config = $this->container[ReadOnlyConfig::class];
-        Assert::isInstanceOf(ReadOnlyConfig::class, $config);
-        return $config;
     }
     
     final protected function render(string $template_identifier, array $data = []) :Response
