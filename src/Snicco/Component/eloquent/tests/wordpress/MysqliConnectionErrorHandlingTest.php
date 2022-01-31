@@ -10,6 +10,10 @@ use Illuminate\Database\QueryException;
 use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 
+use function mysqli_report;
+
+use const MYSQLI_REPORT_OFF;
+
 final class MysqliConnectionErrorHandlingTest extends WPTestCase
 {
     
@@ -19,6 +23,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
     {
         parent::setUp();
         $this->connection = (new MysqliFactory())->create();
+        // This is the default behaviour in WordPress whether we like it or not.
+        // need to set this explicitly because in PHP8.1 is enabled by default
+        mysqli_report(MYSQLI_REPORT_OFF);
     }
     
     /** @test */
