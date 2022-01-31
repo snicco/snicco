@@ -6,6 +6,7 @@ namespace Snicco\Component\Core\Configuration;
 
 use ArrayAccess;
 use LogicException;
+use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\Core\Exception\BadConfigType;
 use Snicco\Component\Core\Exception\MissingConfigKey;
@@ -111,16 +112,19 @@ final class ReadOnlyConfig implements ArrayAccess
      * @return mixed
      * @throws MissingConfigKey
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
     
+    #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new LogicException("The configuration is read-only and cannot be changed.");
     }
     
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new LogicException('The configuration is read-only and cannot be changed.');

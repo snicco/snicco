@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing;
 
 use Closure;
+use Traversable;
 use LogicException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
@@ -179,7 +180,7 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         return $this->getGenerator()->toLogin($arguments, $type);
     }
     
-    public function getIterator()
+    public function getIterator() :Traversable
     {
         return $this->getRoutes()->getIterator();
     }
