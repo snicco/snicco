@@ -6,6 +6,7 @@ namespace Snicco\Component\Core;
 
 use Closure;
 use ArrayAccess;
+use ReturnTypeWillChange;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\Component\Core\Exception\FrozenService;
@@ -79,6 +80,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
+    #[ReturnTypeWillChange]
     final public function offsetGet($offset)
     {
         return $this->get($offset);

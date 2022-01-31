@@ -122,7 +122,7 @@ final class ApplicationBundlesTest extends TestCase
         ]);
         
         $this->expectError();
-        $this->expectErrorMessage("must implement interface Snicco\\Component\\Core\\Bundle");
+        $this->expectErrorMessage("Snicco\\Component\\Core\\Bundle");
         
         $app->boot();
     }

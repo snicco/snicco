@@ -11,6 +11,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
+use function array_values;
 use function array_unshift;
 use function call_user_func_array;
 
@@ -49,7 +50,7 @@ final class ControllerAction
         
         return call_user_func_array(
             [$controller, $this->class_callable[1]],
-            $captured_args_decoded
+            array_values($captured_args_decoded)
         );
     }
     

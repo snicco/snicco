@@ -10,7 +10,7 @@ use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 trait CreateTestContainer
 {
     
-    final private function createContainer() :DIContainer
+    private function createContainer() :DIContainer
     {
         return new PimpleContainerAdapter();
     }
