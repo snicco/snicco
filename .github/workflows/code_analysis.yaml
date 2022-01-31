@@ -23,6 +23,13 @@ jobs:
               sudo mv deptrac.phar /usr/local/bin/deptrac
               composer deptrac -- --formatter=github-actions
 
+          - name: 'Composer require checker'
+            run: |
+              curl -LS https://github.com/maglnet/ComposerRequireChecker/releases/download/3.8.0/composer-require-checker.phar -o require-checker.phar
+              sudo chmod +x require-checker.phar
+              sudo mv require-checker.phar /usr/local/bin/require-checker
+              require-checker check composer.json --config-file=$GITHUB_WORKSPACE/tools/composer-require-checker.json
+
           - name: 'Composer Validate'
             run: composer validate
 

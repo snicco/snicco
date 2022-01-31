@@ -1,33 +1,34 @@
 {
-    "name": "sniccowp/signed-url-middleware",
-    "description": "Psr15 middleware integration for sniccowp/signed-url.",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Calvin Alkan",
-            "email": "calvin@snicco.de"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0",
-        "psr/log": "^1.1.1",
-        "psr/http-message": "^1.0.0",
-        "psr/http-server-middleware": "^1.0.0",
-        "sniccowp/signed-url": "dev-master"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "9.5.13",
-        "sniccowp/http-routing": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "Snicco\\Bridge\\SignedUrlMiddleware\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Snicco\\Bridge\\SignedUrlMiddleware\\Tests\\": "tests"
-        }
-    },
-    "minimum-stability": "stable"
+  "name": "sniccowp/signed-url-middleware",
+  "description": "Psr15 middleware integration for sniccowp/signed-url.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "psr/log": "^1.1.1",
+    "psr/http-message": "^1.0.0",
+    "psr/http-server-middleware": "^1.0.0",
+    "psr/http-server-handler": "^1.0.0",
+    "sniccowp/signed-url": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13",
+    "sniccowp/http-routing": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bridge\\SignedUrlMiddleware\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bridge\\SignedUrlMiddleware\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "stable"
 }
