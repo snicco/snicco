@@ -1,35 +1,35 @@
 {
-  "name": "sniccowp/signed-url",
-  "description": "A small, framework agnostic library to create and validate signed-urls.",
-  "minimum-stability": "stable",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
-    }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "webmozart/assert": "^1.10",
-    "paragonie/constant_time_encoding": "^2.4",
-    "sniccowp/testable-clock": "dev-master"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.5"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\SignedUrl\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\SignedUrl\\Tests\\": "tests",
-      "Snicco\\Component\\SignedUrl\\Testing\\": "testing"
-    }
-  },
-  "bin": [
-    "bin/generate-signed-url-secret"
-  ]
+    "name": "sniccowp/signed-url",
+    "description": "A small, framework agnostic library to create and validate signed-urls.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "webmozart/assert": "^1.10",
+        "paragonie/constant_time_encoding": "^2.4",
+        "sniccowp/testable-clock": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\SignedUrl\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\SignedUrl\\Tests\\": "tests",
+            "Snicco\\Component\\SignedUrl\\Testing\\": "testing"
+        }
+    },
+    "bin": [
+        "bin/generate-signed-url-secret"
+    ],
+    "minimum-stability": "stable"
 }

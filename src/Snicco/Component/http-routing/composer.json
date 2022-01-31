@@ -9,7 +9,7 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "psr/container": "^1.0.0",
+    "psr/container": "^1.1",
     "psr/http-message": "^1.0.0",
     "psr/http-server-middleware": "^1.0.0",
     "psr/http-factory": "^1.0.0",
@@ -23,7 +23,7 @@
   "require-dev": {
     "nyholm/psr7": "^1.0.0",
     "sniccowp/pimple-bridge": "dev-master",
-    "pimple/pimple": "^3.0.0"
+    "pimple/pimple": "^3.4"
   },
   "autoload": {
     "psr-4": {

@@ -1,29 +1,29 @@
 {
-  "name": "sniccowp/templating",
-  "description": "Provides a unified API for various templating engines.",
-  "minimum-stability": "stable",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
-    }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "sniccowp/str-arr": "dev-master",
-    "sniccowp/parameter-bag": "dev-master"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.5"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\Templating\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\Templating\\Tests\\": "tests"
-    }
-  }
+    "name": "sniccowp/templating",
+    "description": "Provides a unified API for various templating engines.",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "sniccowp/str-arr": "dev-master",
+        "sniccowp/parameter-bag": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\Templating\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\Templating\\Tests\\": "tests"
+        }
+    },
+    "minimum-stability": "stable"
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Bridge\Blade;
 
 use Closure;
-use ReturnTypeWillChange;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
@@ -205,7 +204,6 @@ class DummyApplication implements Application
     {
     }
     
-    #[ReturnTypeWillChange]
     public function get(string $id)
     {
     }
