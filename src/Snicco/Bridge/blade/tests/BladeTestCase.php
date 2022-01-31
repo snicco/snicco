@@ -54,14 +54,13 @@ class BladeTestCase extends TestCase
         $this->blade = $blade;
         $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
         $this->global_view_context = $global_view_context;
-        
-        $this->clearCache();
+        //$this->clearCache();
     }
     
     protected function tearDown() :void
     {
         parent::tearDown();
-        $this->clearCache();
+        //$this->clearCache();
     }
     
     protected function assertViewContent(string $expected, $actual)

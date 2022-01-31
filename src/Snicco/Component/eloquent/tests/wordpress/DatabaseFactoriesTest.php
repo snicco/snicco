@@ -39,6 +39,7 @@ class DatabaseFactoriesTest extends WPTestCase
             'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Model',
             'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Factory',
         );
+        $this->withNewTables();
         DB::table('countries')->delete();
         DB::beginTransaction();
     }

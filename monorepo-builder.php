@@ -20,10 +20,10 @@ return static function (ContainerConfigurator $containerConfigurator) :void {
             'php' => '^7.4|^8.0',
         ],
         ComposerJsonSection::REQUIRE_DEV => [
-            'phpunit/phpunit' => '^9.5',
-            'codeception/codeception' => '^4.1',
-            'symplify/monorepo-builder' => '^9.4',
-            'vlucas/phpdotenv' => '^5.4',
+            'phpunit/phpunit' => '9.5.13',
+            'codeception/codeception' => '4.1.29',
+            'symplify/monorepo-builder' => '9.4.70',
+            'vlucas/phpdotenv' => '5.4.1',
         ],
         ComposerJsonSection::AUTHORS => [
             [

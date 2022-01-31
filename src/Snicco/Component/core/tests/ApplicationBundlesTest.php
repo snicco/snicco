@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Core\Tests;
 
 use stdClass;
+use Throwable;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Core\Bundle;
@@ -121,10 +122,13 @@ final class ApplicationBundlesTest extends TestCase
             ],
         ]);
         
-        $this->expectError();
-        $this->expectErrorMessage("Snicco\\Component\\Core\\Bundle");
-        
-        $app->boot();
+        try {
+            $app->boot();
+            $this->fail("no exception thrown");
+        } catch (Throwable $e) {
+            $this->assertStringContainsString("Snicco\\Component\\Core\\Bundle", $e->getMessage());
+            $this->assertStringContainsString("stdClass", $e->getMessage());
+        }
     }
     
     /** @test */

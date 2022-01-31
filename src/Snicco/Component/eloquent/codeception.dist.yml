@@ -5,8 +5,6 @@ paths:
   data: tests/_data
   support: tests/_support
 
-bootstrap: bootstrap.php
-
 params:
   - env
 
