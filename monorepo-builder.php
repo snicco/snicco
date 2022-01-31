@@ -8,19 +8,45 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator) :void {
     $parameters = $containerConfigurator->parameters();
+    
+    $parameters->set(Option::PACKAGE_DIRECTORIES, [
+        __DIR__.'/src/Snicco/Component',
+        __DIR__.'/src/Snicco/Bridge',
+        __DIR__.'/src/Snicco/Middleware',
+    ]);
+    
     //for "merge" command
     $parameters->set(Option::DATA_TO_APPEND, [
         ComposerJsonSection::REQUIRE_DEV => [
-            'lucatume/wp-browser' => '^3.0.0',
             'phpunit/phpunit' => '^9.5',
-            'mockery/mockery' => '^1.4.2',
             'symplify/monorepo-builder' => '^9.4',
-            "codeception/codeception" => "4.1.24",
+            'vlucas/phpdotenv' => '^5.4',
         ],
-        ComposerJsonSection::AUTOLOAD_DEV => [
-            'psr-4' => [
-                "Tests\\Codeception\\" => 'codeception',
+        ComposerJsonSection::AUTHORS => [
+            [
+                'name' => 'Calvin Alkan',
+                'email' => 'calvin@snicco.de',
             ],
+        ],
+        ComposerJsonSection::CONFIG => [
+            'optimize-autoloader' => true,
+            'preferred-install' => 'dist',
+            'sort-packages' => true,
+        ],
+        ComposerJsonSection::SCRIPTS => [
+            'merge' => [
+                'vendor/bin/monorepo-builder merge',
+                'composer dump-autoload',
+            ],
+        ],
+        ComposerJsonSection::MINIMUM_STABILITY => 'dev',
+    ]);
+    
+    $parameters->set(Option::DATA_TO_REMOVE, [
+        ComposerJsonSection::REQUIRE => [
+            'phpunit/phpunit' => '*',
+            'codeception/codeception' => '*',
+            'lucatume/wp-browser' => '*',
         ],
     ]);
 };

@@ -1,3 +1,0 @@
-namespace: Tests\SignedUrl\integration
-extends: "%CODECEPTION_INTEGRATION_YML%"
-

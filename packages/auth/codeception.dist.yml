@@ -1,7 +1,0 @@
-namespace: Tests\Auth
-extends: "%CODECEPTION_PACKAGE_YML%"
-
-params:
-  - ../../codeception/.env.testing
-
-bootstrap: _bootstrap.php

@@ -1,0 +1,33 @@
+{
+  "name": "sniccowp/guests-only-middleware",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/http-runner": "dev-master",
+    "sniccowp/scopable-wp": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Middleware\\GuestsOnly\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Middleware\\GuestsOnly\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "sniccowp/better-wp-mail",
+  "description": "Keep your sanity when working with mails in WordPress",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/scopable-wp": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPMail\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPMail\\Tests\\": "tests",
+      "Snicco\\Component\\BetterWPMail\\Testing\\": "testing"
+    }
+  }
+}

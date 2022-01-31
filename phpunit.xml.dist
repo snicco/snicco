@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         cacheResultFile=".phpunit.cache/test-results"
+         executionOrder="depends,defects"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutChangesToGlobalState="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         verbose="true"
+         colors="true"
+         bootstrap="tests/bootstrap.php"
+>
+    <testsuites>
+        <testsuite name="unit">
+            <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
+            <directory suffix="Test.php">src/Snicco/Component/*/tests/</directory>
+            <directory suffix="Test.php">src/Snicco/Middleware/*/tests/</directory>
+            <exclude>src/Snicco/*/*/tests/integration</exclude>
+            <exclude>src/Snicco/*/*/tests/wordpress</exclude>
+        </testsuite>
+
+        <testsuite name="component">
+            <directory suffix="Test.php">src/Snicco/Component/*/tests/</directory>
+            <exclude>src/Snicco/Component/*/tests/integration</exclude>
+            <exclude>src/Snicco/Component/*/tests/wordpress</exclude>
+        </testsuite>
+
+        <testsuite name="middleware">
+            <directory suffix="Test.php">src/Snicco/Middleware/*/tests/</directory>
+            <exclude>src/Snicco/Middleware/*/tests/integration</exclude>
+            <exclude>src/Snicco/Middleware/*/tests/wordpress</exclude>
+        </testsuite>
+
+        <testsuite name="bridge">
+            <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
+            <exclude>src/Snicco/Bridge/*/tests/integration</exclude>
+            <exclude>src/Snicco/Bridge/*/tests/wordpress</exclude>
+        </testsuite>
+
+        <testsuite name="integration">
+            <directory suffix="Test.php">src/Snicco/Bridge/*/tests/integration</directory>
+            <directory suffix="Test.php">src/Snicco/Component/*/tests/integration</directory>
+            <directory suffix="Test.php">src/Snicco/Middleware/*/tests/integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory>./src/Snicco/Bridge/*</directory>
+            <directory>./src/Snicco/Component/*</directory>
+        </include>
+        <exclude>
+            <directory>./src/Symfony/Bridge/*/Tests</directory>
+            <directory>./src/Symfony/Component/*/Tests</directory>
+        </exclude>
+    </coverage>
+</phpunit>
