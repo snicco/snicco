@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
-use Serializable;
-use RuntimeException;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Snicco\Component\StrArr\Str;
@@ -20,10 +18,8 @@ use function sprintf;
 use function explode;
 use function is_array;
 use function is_object;
-use function serialize;
 use function array_walk;
 use function is_resource;
-use function unserialize;
 use function class_exists;
 use function method_exists;
 use function preg_match_all;
@@ -32,7 +28,7 @@ use function get_object_vars;
 /**
  * @api
  */
-final class Route implements Serializable
+final class Route
 {
     
     /** @interal */
@@ -222,31 +218,6 @@ final class Route implements Serializable
         return $this;
     }
     
-    /** @interal */
-    public function serialize() :string
-    {
-        return serialize(get_object_vars($this));
-    }
-    
-    /** @interal */
-    public function unserialize($data) :void
-    {
-        $data = unserialize($data);
-        
-        if ( ! is_array($data)) {
-            throw new RuntimeException(
-                sprintf(
-                    "Route could not be deserialized with data: [%s]",
-                    var_export($data, true)
-                )
-            );
-        }
-        
-        foreach ($data as $property_name => $value) {
-            $this->{$property_name} = $value;
-        }
-    }
-    
     public function matchesOnlyWithTrailingSlash() :bool
     {
         return Str::endsWith($this->pattern, '/');
@@ -309,6 +280,18 @@ final class Route implements Serializable
         $this->addRequirements($arr);
         
         return $this;
+    }
+    
+    public function __serialize() :array
+    {
+        return get_object_vars($this);
+    }
+    
+    public function __unserialize(array $data) :void
+    {
+        foreach ($data as $property_name => $value) {
+            $this->{$property_name} = $value;
+        }
     }
     
     /**
