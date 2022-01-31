@@ -30,6 +30,13 @@ jobs:
               sudo mv require-checker.phar /usr/local/bin/require-checker
               require-checker check composer.json --config-file=$GITHUB_WORKSPACE/tools/composer-require-checker.json
 
+          - name: 'Composer unused'
+            run: |
+              curl -LS https://github.com/composer-unused/composer-unused/releases/download/0.7.12/composer-unused.phar -o composer-unused.phar
+              sudo chmod +x composer-unused.phar
+              sudo mv composer-unused.phar /usr/local/bin/composer-unused
+              composer-unused
+
           - name: 'Composer Validate'
             run: composer validate
 
