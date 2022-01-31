@@ -11,37 +11,42 @@ use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
  */
 final class AggregateRenderer implements MailRenderer
 {
-    
+
     /**
      * @var MailRenderer[]
      */
     private array $renderers;
-    
+
     /**
      * @var array<string,MailRenderer>
      */
     private $renderer_cache;
-    
+
     public function __construct(MailRenderer ...$renderers)
     {
         foreach ($renderers as $renderer) {
             $this->addRenderer($renderer);
         }
     }
-    
+
+    private function addRenderer(MailRenderer $renderer): void
+    {
+        $this->renderers[] = $renderer;
+    }
+
     /**
-     * @param  string  $template_name
-     * @param  array  $context
+     * @param string $template_name
+     * @param array $context
      *
      * @return string|resource
      * @throws CantRenderMailContent
      */
-    public function getMailContent(string $template_name, array $context = []) :string
+    public function getMailContent(string $template_name, array $context = []): string
     {
         if (isset($this->renderer_cache[$template_name])) {
             return $this->renderer_cache[$template_name]->getMailContent($template_name, $context);
         }
-        
+
         $renderer = null;
         $extension = pathinfo($template_name, PATHINFO_EXTENSION);
         $extension = empty($extension) ? null : $extension;
@@ -52,24 +57,19 @@ final class AggregateRenderer implements MailRenderer
                 break;
             }
         }
-        
-        if ( ! $renderer) {
+
+        if (!$renderer) {
             throw new CantRenderMailContent(
                 "None of the given renderers supports the current the template [$template_name]."
             );
         }
-        
+
         return $renderer->getMailContent($template_name, $context);
     }
-    
-    public function supports(string $template_name, ?string $extension = null) :bool
+
+    public function supports(string $template_name, ?string $extension = null): bool
     {
         return true;
     }
-    
-    private function addRenderer(MailRenderer $renderer) :void
-    {
-        $this->renderers[] = $renderer;
-    }
-    
+
 }

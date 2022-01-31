@@ -40,7 +40,6 @@ jobs:
           - name: 'Composer Validate'
             run: composer validate
 
-
     steps:
       - name: 'Checkout repo'
         uses: actions/checkout@v2

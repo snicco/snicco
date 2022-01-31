@@ -10,13 +10,7 @@ use function dirname;
 
 class ViewRoutesTest extends HttpRunnerTestCase
 {
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->view = dirname(__DIR__).'/fixtures/templates/greeting.php';
-    }
-    
+
     /** @test */
     public function view_routes_work()
     {
@@ -24,17 +18,17 @@ class ViewRoutesTest extends HttpRunnerTestCase
             '/foo',
             $this->view
         );
-        
+
         $request = $this->frontendRequest('/foo');
-        
+
         $response = $this->runKernel($request);
         $response->assertOk();
         $response->assertSeeHtml('Hello World');
         $response->assertIsHtml();
-        
+
         $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
     }
-    
+
     /** @test */
     public function the_default_values_can_be_customized_for_view_routes()
     {
@@ -45,17 +39,23 @@ class ViewRoutesTest extends HttpRunnerTestCase
             200,
             ['X-FOO' => 'BAR']
         );
-        
+
         $request = $this->frontendRequest('/foo');
-        
+
         $response = $this->runKernel($request);
         $response->assertOk();
         $response->assertSeeHtml('Hello Calvin');
         $response->assertIsHtml();
         $response->assertHeader('X-FOO', 'BAR');
-        
+
         $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
     }
-    
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->view = dirname(__DIR__) . '/fixtures/templates/greeting.php';
+    }
+
 }
 

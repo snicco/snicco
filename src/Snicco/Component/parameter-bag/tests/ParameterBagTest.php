@@ -9,7 +9,7 @@ use Snicco\Component\ParameterBag\ParameterPag;
 
 final class ParameterBagTest extends TestCase
 {
-    
+
     /** @test */
     public function testHas()
     {
@@ -19,7 +19,7 @@ final class ParameterBagTest extends TestCase
                 'boo' => 'bam',
             ],
         ]);
-        
+
         $this->assertFalse($bag->has('bar'));
         $this->assertTrue($bag->has('foo'));
         $this->assertTrue($bag->has('foo.bar'));
@@ -27,7 +27,7 @@ final class ParameterBagTest extends TestCase
         $this->assertTrue($bag->has('foo.boo'));
         $this->assertFalse($bag->has('foo.baz'));
     }
-    
+
     /** @test */
     public function testGet()
     {
@@ -37,19 +37,19 @@ final class ParameterBagTest extends TestCase
                 'boo' => 'bam',
             ],
         ]);
-        
+
         $this->assertEquals([
             'bar' => ['baz' => 'biz'],
             'boo' => 'bam',
         ], $bag->get('foo'));
-        
+
         $this->assertEquals(['baz' => 'biz'], $bag->get('foo.bar'));
         $this->assertEquals('biz', $bag->get('foo.bar.baz'));
         $this->assertEquals('bam', $bag->get('foo.boo'));
         $this->assertEquals(null, $bag->get('foo.bogus'));
         $this->assertEquals('default', $bag->get('foo.bogus', 'default'));
     }
-    
+
     /** @test */
     public function testAdd()
     {
@@ -59,13 +59,13 @@ final class ParameterBagTest extends TestCase
                 'boo' => 'bam',
             ],
         ]);
-        
+
         $bag->add(['foo.boo' => 'bang', 'bar' => 'baz']);
-        
+
         $this->assertEquals('bang', $bag->get('foo.boo'));
         $this->assertEquals('baz', $bag->get('bar'));
     }
-    
+
     /** @test */
     public function testSet()
     {
@@ -75,12 +75,12 @@ final class ParameterBagTest extends TestCase
                 'boo' => 'bam',
             ],
         ]);
-        
+
         $bag->set('foo.bar.baz', 'foobar');
-        
+
         $this->assertEquals('foobar', $bag->get('foo.bar.baz'));
     }
-    
+
     /** @test */
     public function testPrepend()
     {
@@ -92,16 +92,16 @@ final class ParameterBagTest extends TestCase
                 ],
             ],
         ]);
-        
+
         $bag->prepend('users.names', 'jon');
-        
+
         $this->assertEquals([
             'jon',
             'calvin',
             'marlon',
         ], $bag->get('users.names'));
     }
-    
+
     /** @test */
     public function testAppend()
     {
@@ -113,16 +113,16 @@ final class ParameterBagTest extends TestCase
                 ],
             ],
         ]);
-        
+
         $bag->append('users.names', 'jon');
-        
+
         $this->assertEquals([
             'calvin',
             'marlon',
             'jon',
         ], $bag->get('users.names'));
     }
-    
+
     /** @test */
     public function testRemove()
     {
@@ -132,15 +132,15 @@ final class ParameterBagTest extends TestCase
                 'boo' => 'bam',
             ],
         ]);
-        
+
         $bag->remove('foo.bar.baz');
-        
+
         $this->assertSame([
             'bar' => [],
             'boo' => 'bam',
         ], $bag->get('foo'));
     }
-    
+
     /** @test */
     public function testToArray()
     {
@@ -152,10 +152,10 @@ final class ParameterBagTest extends TestCase
                 ],
             ]
         );
-        
+
         $this->assertEquals($arr, $bag->toArray());
     }
-    
+
     /** @test */
     public function test_arrayAccess()
     {
@@ -165,18 +165,18 @@ final class ParameterBagTest extends TestCase
                 'boo' => 'bam',
             ],
         ]);
-        
+
         $this->assertEquals('biz', $bag['foo.bar.baz']);
-        
+
         $this->assertTrue(isset($bag['foo.boo']));
         $this->assertFalse(isset($bag['foo.baz']));
-        
+
         $bag['foo.bar.baz'] = 'foobar';
         $this->assertEquals('foobar', $bag['foo.bar.baz']);
-        
+
         unset($bag['foo.bar.baz']);
-        
+
         $this->assertEquals([], $bag->get('foo.bar'));
     }
-    
+
 }

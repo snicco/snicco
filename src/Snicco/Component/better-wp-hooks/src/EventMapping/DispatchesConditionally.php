@@ -9,7 +9,7 @@ namespace Snicco\Component\BetterWPHooks\EventMapping;
  */
 interface DispatchesConditionally
 {
-    
-    public function shouldDispatch() :bool;
-    
+
+    public function shouldDispatch(): bool;
+
 }

@@ -9,9 +9,9 @@ namespace Snicco\Component\Session;
  */
 interface SessionEncryptor
 {
-    
-    public function encrypt(string $data) :string;
-    
-    public function decrypt(string $data) :string;
-    
+
+    public function encrypt(string $data): string;
+
+    public function decrypt(string $data): string;
+
 }

@@ -1,34 +1,34 @@
 {
-    "name": "sniccowp/payload-middleware",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Calvin Alkan",
-            "email": "calvin@snicco.de"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0",
-        "sniccowp/http-runner": "dev-master",
-        "sniccowp/psr7-error-handler": "dev-master",
-        "webmozart/assert": "^1.10"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "9.5.13"
-    },
-    "autoload": {
-        "psr-4": {
-            "Snicco\\Middleware\\Payload\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Snicco\\Middleware\\Payload\\Tests\\": "tests"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
+  "name": "sniccowp/payload-middleware",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
     }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/http-runner": "dev-master",
+    "sniccowp/psr7-error-handler": "dev-master",
+    "webmozart/assert": "^1.10"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Middleware\\Payload\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Middleware\\Payload\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
 }

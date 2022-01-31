@@ -1,3 +1,3 @@
 <x-inline :content="$content">
-	CALVIN
+    CALVIN
 </x-inline>

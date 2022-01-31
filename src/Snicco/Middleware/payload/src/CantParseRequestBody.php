@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\Payload;
 
-use Throwable;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
+use Throwable;
 
 final class CantParseRequestBody extends HttpException
 {
-    
+
     public function __construct(string $message, Throwable $previous = null)
     {
         parent::__construct(
@@ -20,5 +20,5 @@ final class CantParseRequestBody extends HttpException
             $previous
         );
     }
-    
+
 }

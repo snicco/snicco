@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler;
 
-use Throwable;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
-use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Filter;
+use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
-use Snicco\Component\Psr7ErrorHandler\Information\InformationProvider;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Filter;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
+use Throwable;
 
-use function strtolower;
 use function array_values;
+use function strtolower;
 
 /**
  * @api
  */
 final class HttpErrorHandler implements HttpErrorHandlerInterface
 {
-    
+
     private ResponseFactoryInterface $response_factory;
-    private Filter                   $filter;
-    private RequestAwareLogger       $logger;
-    private InformationProvider      $information_provider;
-    private ExceptionDisplayer       $fallback_displayer;
-    
+    private Filter $filter;
+    private RequestAwareLogger $logger;
+    private InformationProvider $information_provider;
+    private ExceptionDisplayer $fallback_displayer;
+
     /**
      * @var ExceptionDisplayer[]
      */
     private array $displayers = [];
-    
+
     /**
-     * @param  ExceptionDisplayer[]  $displayers
+     * @param ExceptionDisplayer[] $displayers
      */
     public function __construct(
         ResponseFactoryInterface $response_factory,
@@ -49,23 +49,23 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $this->filter = $filter;
         $this->information_provider = $information_provider;
         $this->logger = $logger;
-        
+
         foreach ($displayers as $displayer) {
             $this->addDisplayer($displayer);
         }
         $this->fallback_displayer = $default_displayer;
     }
-    
-    public function handle(Throwable $e, RequestInterface $request) :ResponseInterface
+
+    public function handle(Throwable $e, RequestInterface $request): ResponseInterface
     {
         $info = $this->information_provider->createFor($e);
-        
+
         try {
             $this->logException($info, $request);
         } catch (Throwable $logging_error) {
             $this->logException($this->information_provider->createFor($logging_error), $request);
         }
-        
+
         try {
             $response = $this->createResponse(
                 $info,
@@ -74,57 +74,43 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         } catch (Throwable $display_error) {
             return $this->handleDisplayError($display_error, $request);
         }
-        
+
         return $this->withHttpHeaders($info->transformedException(), $response);
     }
-    
-    private function addDisplayer(ExceptionDisplayer $displayer) :void
+
+    private function addDisplayer(ExceptionDisplayer $displayer): void
     {
         $this->displayers[] = $displayer;
     }
-    
-    private function findBestDisplayer(RequestInterface $request, ExceptionInformation $info) :ExceptionDisplayer
-    {
-        $displayers = array_values(
-            $this->filter->filter($this->displayers, $request, $info)
-        );
-        
-        return $displayers[0] ?? $this->fallback_displayer;
-    }
-    
-    private function logException(ExceptionInformation $info, RequestInterface $request) :void
+
+    private function logException(ExceptionInformation $info, RequestInterface $request): void
     {
         $this->logger->log($info, $request);
     }
-    
-    private function createResponse(ExceptionInformation $info, ExceptionDisplayer $displayer) :ResponseInterface
+
+    private function createResponse(ExceptionInformation $info, ExceptionDisplayer $displayer): ResponseInterface
     {
         $response = $this->response_factory->createResponse(
             $info->statusCode()
         );
-        
+
         $response->getBody()->write(
             $displayer->display($info)
         );
-        
+
         return $response->withHeader('content-type', $displayer->supportedContentType());
     }
-    
-    private function withHttpHeaders($transformed, $response) :ResponseInterface
+
+    private function findBestDisplayer(RequestInterface $request, ExceptionInformation $info): ExceptionDisplayer
     {
-        if ( ! $transformed instanceof HttpException) {
-            return $response;
-        }
-        
-        foreach ($transformed->headers() as $name => $value) {
-            if ('content-type' !== strtolower($name)) {
-                $response = $response->withHeader($name, $value);
-            }
-        }
-        return $response;
+        $displayers = array_values(
+            $this->filter->filter($this->displayers, $request, $info)
+        );
+
+        return $displayers[0] ?? $this->fallback_displayer;
     }
-    
-    private function handleDisplayError($display_error, RequestInterface $request) :ResponseInterface
+
+    private function handleDisplayError($display_error, RequestInterface $request): ResponseInterface
     {
         $info = $this->information_provider->createFor($display_error);
         $this->logException($info, $request);
@@ -132,5 +118,19 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $res->getBody()->write('Internal Server Error');
         return $res->withHeader('content-type', 'text/plain');
     }
-    
+
+    private function withHttpHeaders($transformed, $response): ResponseInterface
+    {
+        if (!$transformed instanceof HttpException) {
+            return $response;
+        }
+
+        foreach ($transformed->headers() as $name => $value) {
+            if ('content-type' !== strtolower($name)) {
+                $response = $response->withHeader($name, $value);
+            }
+        }
+        return $response;
+    }
+
 }

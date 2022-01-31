@@ -8,10 +8,10 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class HelloWorld extends BladeComponent
 {
-    
+
     public function render()
     {
         return $this->view('components.hello-world');
     }
-    
+
 }

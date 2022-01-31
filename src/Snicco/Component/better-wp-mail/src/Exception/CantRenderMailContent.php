@@ -11,5 +11,5 @@ use RuntimeException;
  */
 final class CantRenderMailContent extends RuntimeException
 {
-    
+
 }

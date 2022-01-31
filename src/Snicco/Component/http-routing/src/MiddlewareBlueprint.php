@@ -14,13 +14,13 @@ use function Snicco\Component\Core\Utils\isInterface;
  */
 final class MiddlewareBlueprint
 {
-    
+
     private string $class;
-    private array  $arguments;
-    
+    private array $arguments;
+
     public function __construct(string $class, array $arguments = [])
     {
-        if ( ! isInterface($class, MiddlewareInterface::class)) {
+        if (!isInterface($class, MiddlewareInterface::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected $class to implement interface [%s]. Got: [%s]',
@@ -32,20 +32,20 @@ final class MiddlewareBlueprint
         $this->class = $class;
         $this->arguments = $arguments;
     }
-    
-    public static function create(string $class, array $arguments = []) :MiddlewareBlueprint
+
+    public static function create(string $class, array $arguments = []): MiddlewareBlueprint
     {
         return new self($class, $arguments);
     }
-    
-    public function class() :string
+
+    public function class(): string
     {
         return $this->class;
     }
-    
-    public function arguments() :array
+
+    public function arguments(): array
     {
         return $this->arguments;
     }
-    
+
 }

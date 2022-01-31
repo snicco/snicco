@@ -12,25 +12,25 @@ use Snicco\Component\ParameterBag\ParameterPag;
  */
 final class GlobalViewContext
 {
-    
+
     /**
      * @var array<string,mixed>
      */
     private array $context = [];
-    
+
     public function add(string $name, $context)
     {
         if (is_array($context)) {
             $context = new ParameterPag($context);
         }
-        
+
         $this->context[$name] = $context;
     }
-    
+
     /**
      * @interal
      */
-    public function get() :array
+    public function get(): array
     {
         return array_map(function ($context) {
             return ($context instanceof Closure)
@@ -38,5 +38,5 @@ final class GlobalViewContext
                 : $context;
         }, $this->context);
     }
-    
+
 }

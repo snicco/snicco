@@ -9,17 +9,17 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
 class ControllerWithDependencies
 {
-    
+
     private Foo $foo;
-    
+
     public function __construct(Foo $foo)
     {
         $this->foo = $foo;
     }
-    
-    public function __invoke(Request $request) :string
+
+    public function __invoke(Request $request): string
     {
-        return $this->foo->value.'_controller';
+        return $this->foo->value . '_controller';
     }
-    
+
 }

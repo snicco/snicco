@@ -11,29 +11,29 @@ use function get_class;
  */
 final class GenericEvent implements Event
 {
-    
-    private array  $arguments;
+
+    private array $arguments;
     private string $name;
-    
+
     public function __construct(string $name, array $arguments = [])
     {
         $this->arguments = $arguments;
         $this->name = $name;
     }
-    
-    public static function fromObject(object $event) :GenericEvent
+
+    public static function fromObject(object $event): GenericEvent
     {
         return new self(get_class($event), [$event]);
     }
-    
-    public function payload() :array
+
+    public function payload(): array
     {
         return $this->arguments;
     }
-    
-    public function name() :string
+
+    public function name(): string
     {
         return $this->name;
     }
-    
+
 }

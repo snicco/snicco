@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-use Symplify\MonorepoBuilder\ValueObject\Option;
-use Symplify\ComposerJsonManipulator\ValueObject\ComposerJsonSection;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symplify\ComposerJsonManipulator\ValueObject\ComposerJsonSection;
+use Symplify\MonorepoBuilder\ValueObject\Option;
 
-return static function (ContainerConfigurator $containerConfigurator) :void {
+return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters = $containerConfigurator->parameters();
-    
+
     $parameters->set(Option::PACKAGE_DIRECTORIES, [
-        __DIR__.'/src/Snicco/Component',
-        __DIR__.'/src/Snicco/Bridge',
-        __DIR__.'/src/Snicco/Middleware',
+        __DIR__ . '/src/Snicco/Component',
+        __DIR__ . '/src/Snicco/Bridge',
+        __DIR__ . '/src/Snicco/Middleware',
     ]);
-    
+
     $parameters->set(Option::DATA_TO_APPEND, [
         ComposerJsonSection::REQUIRE => [
             'php' => '^7.4|^8.0',
@@ -45,7 +45,7 @@ return static function (ContainerConfigurator $containerConfigurator) :void {
         ],
         ComposerJsonSection::MINIMUM_STABILITY => 'dev',
     ]);
-    
+
     $parameters->set(Option::DATA_TO_REMOVE, [
         ComposerJsonSection::REQUIRE => [
             'sniccowp/http-runner' => '*',

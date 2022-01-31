@@ -8,5 +8,5 @@ use RuntimeException;
 
 final class SlowDown extends RuntimeException
 {
-    
+
 }

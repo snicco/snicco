@@ -6,11 +6,11 @@ use Snicco\Component\SignedUrl\Secret;
 
 $possible_autoloader = [
     // monorepo
-    dirname(__DIR__, 5).'/vendor/autoload.php',
+    dirname(__DIR__, 5) . '/vendor/autoload.php',
     // after split package
-    dirname(__DIR__, 2).'/vendor/autoload.php',
+    dirname(__DIR__, 2) . '/vendor/autoload.php',
     // dependency
-    dirname(__DIR__, 3).'/vendor/autoload.php',
+    dirname(__DIR__, 3) . '/vendor/autoload.php',
 ];
 
 foreach ($possible_autoloader as $file) {
@@ -22,4 +22,4 @@ foreach ($possible_autoloader as $file) {
 
 echo "Store the following secret securely outside your webroot.\n";
 echo "You should NEVER commit is secret into VCS.\n";
-echo Secret::generate()->asString()."\n";
+echo Secret::generate()->asString() . "\n";

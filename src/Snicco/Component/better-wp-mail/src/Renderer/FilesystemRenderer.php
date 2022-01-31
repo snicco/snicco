@@ -9,8 +9,8 @@ namespace Snicco\Component\BetterWPMail\Renderer;
  */
 final class FilesystemRenderer implements MailRenderer
 {
-    
-    public function getMailContent(string $template_name, array $context = []) :string
+
+    public function getMailContent(string $template_name, array $context = []): string
     {
         ob_start();
         (static function () use ($template_name, $context) {
@@ -19,8 +19,8 @@ final class FilesystemRenderer implements MailRenderer
         })();
         return ob_get_clean();
     }
-    
-    public function supports(string $template_name, ?string $extension = null) :bool
+
+    public function supports(string $template_name, ?string $extension = null): bool
     {
         if (empty($extension)) {
             return false;
@@ -28,5 +28,5 @@ final class FilesystemRenderer implements MailRenderer
         $intersect = array_intersect([$extension], ['txt', 'php', 'html']);
         return count($intersect) > 0;
     }
-    
+
 }

@@ -9,15 +9,15 @@ use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 
 class TrueRouteCondition extends AbstractRouteCondition
 {
-    
-    public function isSatisfied(Request $request) :bool
+
+    public function isSatisfied(Request $request): bool
     {
         return true;
     }
-    
-    public function getArguments(Request $request) :array
+
+    public function getArguments(Request $request): array
     {
         return [];
     }
-    
+
 }

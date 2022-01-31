@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  */
 class WPModel extends IlluminateModel
 {
-    
+
     public static string $factory_namespace;
-    
+
 }

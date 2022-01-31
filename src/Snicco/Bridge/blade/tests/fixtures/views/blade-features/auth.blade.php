@@ -1,4 +1,4 @@
 @auth
-	AUTHENTICATED
+    AUTHENTICATED
 @endauth
 

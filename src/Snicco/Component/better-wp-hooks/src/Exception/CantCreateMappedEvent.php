@@ -4,33 +4,36 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPHooks\Exception;
 
-use Throwable;
 use RuntimeException;
+use Throwable;
 
 /**
  * @api
  */
 final class CantCreateMappedEvent extends RuntimeException
 {
-    
+
     /**
-     * @param  array  $wordpress_hook_arguments
-     * @param  string  $event_class
-     * @param  Throwable  $previous
+     * @param array $wordpress_hook_arguments
+     * @param string $event_class
+     * @param Throwable $previous
      *
      * @return static
      */
-    public static function becauseTheEventCouldNotBeConstructorWithArgs(array $wordpress_hook_arguments, string $event_class, Throwable $previous) :self
-    {
+    public static function becauseTheEventCouldNotBeConstructorWithArgs(
+        array $wordpress_hook_arguments,
+        string $event_class,
+        Throwable $previous
+    ): self {
         $args = json_encode($wordpress_hook_arguments);
-        
+
         $message =
             "The mapped event [$event_class] could not be instantiated with the passed received arguments from WordPress.";
         if ($args !== false) {
             $message .= " Received [$args]";
         }
-        
+
         return new CantCreateMappedEvent($message, $previous->getCode(), $previous);
     }
-    
+
 }
