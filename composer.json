@@ -42,7 +42,7 @@
         "cache/integration-tests": "0.17.0",
         "codeception/codeception": "4.1.29",
         "fakerphp/faker": "^1.0.0-stable",
-        "lucatume/wp-browser": "3.1.3",
+        "lucatume/wp-browser": "~3.1.3",
         "nyholm/psr7": "^1.0.0",
         "phpunit/phpunit": "9.5.13",
         "symplify/monorepo-builder": "9.4.70",
@@ -150,7 +150,7 @@
             "vendor/bin/monorepo-builder merge",
             "composer dump-autoload"
         ],
-        "deptrac": "deptrac --config-file=deptrac/deptrac.yaml"
+        "deptrac": "/usr/local/bin/deptrac --config-file=deptrac/deptrac.yaml"
     },
     "replace": {
         "sniccowp/better-wp-hooks": "self.version",

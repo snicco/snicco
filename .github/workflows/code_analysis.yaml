@@ -13,11 +13,18 @@ jobs:
     runs-on: ubuntu-20.04
     name: ${{ matrix.actions.name }}
     strategy:
+      fail-fast: false
       matrix:
         actions:
+          - name: 'Deptrac'
+            run: |
+              curl -LS https://github.com/qossmic/deptrac/releases/download/0.19.3/deptrac.phar -o deptrac.phar
+              sudo chmod +x deptrac.phar
+              sudo mv deptrac.phar /usr/local/bin/deptrac
+              composer deptrac -- --formatter=github-actions
+
           - name: 'Composer Validate'
             run: composer validate
-      fail-fast: false
 
 
     steps:
