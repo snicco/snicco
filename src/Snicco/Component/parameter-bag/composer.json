@@ -1,0 +1,29 @@
+{
+  "name": "sniccowp/paramter-bag",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "sniccowp/str-arr": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\ParameterBag\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\ParameterBag\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

@@ -1,3 +1,0 @@
-namespace: Tests\BetterWPHooks\integration
-extends: "%CODECEPTION_INTEGRATION_YML%"
-

@@ -1,0 +1,15 @@
+namespace: Snicco\Component\WPObjectCachePsr16\Tests\wordpress
+modules:
+  enabled:
+    - WPLoader
+  config:
+    WPLoader:
+      isolatedInstall: false
+      loadOnly: false
+      wpRootFolder: "%WP_ROOT_FOLDER%"
+      dbName: "%DB_NAME%"
+      dbHost: "%DB_HOST%"
+      dbUser: "%DB_USER%"
+      dbPassword: "%DB_PASSWORD%"
+      tablePrefix: "%DB_PREFIX%"
+      plugins: [ redis-cache/redis-cache.php ]

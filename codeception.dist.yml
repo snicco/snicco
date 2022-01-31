@@ -1,12 +1,12 @@
 include:
-  - packages/*
-
+  - src/Snicco/Component/*
+  - src/Snicco/Middleware/*
+  - src/Snicco/Bridge/*
 paths:
-  output: codeception/_output
-
+  output: _output
+  tests: tests
+  data: tests/_data
+  support: tests/_support
 settings:
   colors: true
-
-extensions:
-  enabled:
-    - Codeception\Extension\RunFailed
+bootstrap: bootstrap.php
