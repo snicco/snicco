@@ -11,5 +11,5 @@ use RuntimeException;
  */
 final class BadViewComposer extends RuntimeException
 {
-    
+
 }

@@ -11,19 +11,19 @@ use Illuminate\View\Component as IlluminateComponent;
  */
 abstract class BladeComponent extends IlluminateComponent
 {
-    
+
     private BladeViewFactory $engine;
-    
+
     public function setEngine(BladeViewFactory $engine)
     {
         $this->engine = $engine;
     }
-    
+
     protected function view(string $view)
     {
         $view = str_replace('components.', '', $view);
-        
-        return $this->engine->make('components.'.$view);
+
+        return $this->engine->make('components.' . $view);
     }
-    
+
 }

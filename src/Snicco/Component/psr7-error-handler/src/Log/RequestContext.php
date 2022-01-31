@@ -11,7 +11,7 @@ use Psr\Http\Message\RequestInterface;
  */
 interface RequestContext
 {
-    
-    public function add(array $context, RequestInterface $request) :array;
-    
+
+    public function add(array $context, RequestInterface $request): array;
+
 }

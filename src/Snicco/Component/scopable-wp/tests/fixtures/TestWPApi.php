@@ -8,10 +8,10 @@ use Snicco\Component\ScopableWP\ScopableWP;
 
 class TestWPApi extends ScopableWP
 {
-    
-    public function method1() :string
+
+    public function method1(): string
     {
         return 'method1';
     }
-    
+
 }

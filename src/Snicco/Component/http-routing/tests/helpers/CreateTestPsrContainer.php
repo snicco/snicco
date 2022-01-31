@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\helpers;
 
-use Snicco\Component\Core\DIContainer;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
+use Snicco\Component\Core\DIContainer;
 
 trait CreateTestPsrContainer
 {
-    
-    public function createContainer() :DIContainer
+
+    public function createContainer(): DIContainer
     {
         return new PimpleContainerAdapter();
     }
-    
+
 }

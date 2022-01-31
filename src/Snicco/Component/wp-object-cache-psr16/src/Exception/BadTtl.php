@@ -9,5 +9,5 @@ use Psr\SimpleCache\InvalidArgumentException as PsrCacheInvalidArgument;
 
 final class BadTtl extends InvalidArgumentException implements PsrCacheInvalidArgument
 {
-    
+
 }

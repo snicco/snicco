@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Exception;
 
 use InvalidArgumentException;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 
 /**
  * @api
  */
 final class InvalidRouteClosureReturned extends InvalidArgumentException
 {
-    
-    public static function adminRoutesAreUsingWebRouting(string $filepath) :InvalidRouteClosureReturned
+
+    public static function adminRoutesAreUsingWebRouting(string $filepath): InvalidRouteClosureReturned
     {
         return new self(
             sprintf(
@@ -26,8 +26,8 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-    
-    public static function webRoutesAreUsingAdminRouting(string $filepath) :InvalidRouteClosureReturned
+
+    public static function webRoutesAreUsingAdminRouting(string $filepath): InvalidRouteClosureReturned
     {
         return new self(
             sprintf(
@@ -38,8 +38,8 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-    
-    public static function becauseTheFirstParameterIsNotTypeHinted(string $filepath) :InvalidRouteClosureReturned
+
+    public static function becauseTheFirstParameterIsNotTypeHinted(string $filepath): InvalidRouteClosureReturned
     {
         return new self(
             sprintf(
@@ -49,8 +49,8 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-    
-    public static function becauseTheRouteClosureAcceptsNoArguments(string $path) :InvalidRouteClosureReturned
+
+    public static function becauseTheRouteClosureAcceptsNoArguments(string $path): InvalidRouteClosureReturned
     {
         return new self(
             sprintf(
@@ -60,9 +60,11 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-    
-    public static function becauseTheRouteClosureAcceptsMoreThanOneArguments(string $path, int $count) :InvalidRouteClosureReturned
-    {
+
+    public static function becauseTheRouteClosureAcceptsMoreThanOneArguments(
+        string $path,
+        int $count
+    ): InvalidRouteClosureReturned {
         return new self(
             sprintf(
                 "The returned closure from the route file\n[%s]\nwill only receive an instance of [%s] but required [%s] parameters.",
@@ -72,5 +74,5 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-    
+
 }

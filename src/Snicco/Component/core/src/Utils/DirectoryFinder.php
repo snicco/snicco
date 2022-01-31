@@ -9,23 +9,25 @@ use Symfony\Component\Finder\Finder;
  */
 final class DirectoryFinder
 {
-    
+
     /**
      * @return string[]
      */
-    public function allDirsInDir(string $directory) :array
+    public function allDirsInDir(string $directory): array
     {
         $directories = [];
-        
-        foreach (Finder::create()
-                       ->in($directory)
-                       ->directories()
-                       ->depth(0)
-                       ->sortByName() as $dir) {
+
+        foreach (
+            Finder::create()
+                ->in($directory)
+                ->directories()
+                ->depth(0)
+                ->sortByName() as $dir
+        ) {
             $directories[] = $dir->getPathname();
         }
-        
+
         return $directories;
     }
-    
+
 }

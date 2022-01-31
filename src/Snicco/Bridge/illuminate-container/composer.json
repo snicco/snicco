@@ -1,36 +1,36 @@
 {
-    "name": "sniccowp/illuminate-container-brige",
-    "description": "Provides an adapter for the Laravel DI container for sniccowp/core",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Calvin Alkan",
-            "email": "calvin@snicco.de"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0",
-        "illuminate/container": "^8.81",
-        "illuminate/contracts": "^8.81",
-        "sniccowp/core": "dev-master"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "9.5.13"
-    },
-    "autoload": {
-        "psr-4": {
-            "Snicco\\Bridge\\IlluminateContainer\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Snicco\\Bridge\\IlluminateContainer\\Tests\\": "tests"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
-    "minimum-stability": "stable"
+  "name": "sniccowp/illuminate-container-brige",
+  "description": "Provides an adapter for the Laravel DI container for sniccowp/core",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "illuminate/container": "^8.81",
+    "illuminate/contracts": "^8.81",
+    "sniccowp/core": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bridge\\IlluminateContainer\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bridge\\IlluminateContainer\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "stable"
 }

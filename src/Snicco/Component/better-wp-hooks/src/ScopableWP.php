@@ -10,7 +10,7 @@ use function current_filter;
 
 final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
-    
+
     /**
      * @return string|false
      */
@@ -18,10 +18,10 @@ final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
     {
         return current_filter();
     }
-    
-    public function getHook(string $hook_name) :?WP_Hook
+
+    public function getHook(string $hook_name): ?WP_Hook
     {
         return $GLOBALS['wp_filter'][$hook_name] ?? null;
     }
-    
+
 }

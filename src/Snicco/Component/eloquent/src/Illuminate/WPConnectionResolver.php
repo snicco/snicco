@@ -3,8 +3,8 @@
 namespace Snicco\Component\Eloquent\Illuminate;
 
 use Illuminate\Database\ConnectionInterface;
-use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
 use Illuminate\Database\ConnectionResolverInterface as IlluminateConnectionResolver;
+use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
 
 /**
  * This class is an adapter around to illuminate-connection-resolver.
@@ -18,19 +18,19 @@ use Illuminate\Database\ConnectionResolverInterface as IlluminateConnectionResol
  */
 final class WPConnectionResolver implements IlluminateConnectionResolver
 {
-    
-    private string                       $default_connection;
-    private ConnectionInterface          $mysqli_connection;
+
+    private string $default_connection;
+    private ConnectionInterface $mysqli_connection;
     private IlluminateConnectionResolver $connection_resolver;
-    private MysqliFactory                $mysqli_connection_factory;
-    
+    private MysqliFactory $mysqli_connection_factory;
+
     public function __construct(IlluminateConnectionResolver $connection_resolver, MysqliFactory $mysqli_factory)
     {
         $this->connection_resolver = $connection_resolver;
         $this->mysqli_connection_factory = $mysqli_factory;
         $this->default_connection = MysqliConnection::CONNECTION_NAME;
     }
-    
+
     /**
      * Handle calls from the DB Facade and proxy them to the default connection
      * if the user did not request a specific connection via the DB::connection() method;
@@ -39,55 +39,54 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
     {
         return $this->connection()->$method(...$parameters);
     }
-    
+
     /**
-     * @param  string  $name
+     * @param string $name
      *
      * @return ConnectionInterface
      */
-    public function connection($name = null) :ConnectionInterface
+    public function connection($name = null): ConnectionInterface
     {
         if (is_null($name)) {
             $name = $this->getDefaultConnection();
         }
-        
+
         return $this->resolveConnection($name);
     }
-    
+
     /**
      * Get the default connection name.
      *
      * @return string
      */
-    public function getDefaultConnection() :string
+    public function getDefaultConnection(): string
     {
         return $this->default_connection;
     }
-    
+
     /**
      * Set the default connection name.
      *
-     * @param  string  $name
+     * @param string $name
      */
-    public function setDefaultConnection($name) :void
+    public function setDefaultConnection($name): void
     {
         $this->default_connection = $name;
     }
-    
-    private function resolveConnection(string $name) :ConnectionInterface
+
+    private function resolveConnection(string $name): ConnectionInterface
     {
         if ($name !== $this->getDefaultConnection()) {
             return $this->connection_resolver->connection($name);
         }
-        
+
         if (isset($this->mysqli_connection)) {
             return $this->mysqli_connection;
-        }
-        else {
+        } else {
             $this->mysqli_connection = $this->mysqli_connection_factory->create();
         }
-        
+
         return $this->mysqli_connection;
     }
-    
+
 }

@@ -9,5 +9,5 @@ namespace Snicco\Component\SignedUrl\Exception;
  */
 final class SignedUrlExpired extends SignedUrlException
 {
-    
+
 }

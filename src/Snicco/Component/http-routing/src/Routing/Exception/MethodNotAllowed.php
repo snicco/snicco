@@ -11,17 +11,17 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
  */
 final class MethodNotAllowed extends HttpException
 {
-    
-    public static function currentMethod(string $method, array $allowed_methods, string $path) :MethodNotAllowed
+
+    public static function currentMethod(string $method, array $allowed_methods, string $path): MethodNotAllowed
     {
         return new self(
             405, sprintf(
-                "[%s] requests are not allowed for endpoint [%s]. Request method must be one of [%s].",
+                '[%s] requests are not allowed for endpoint [%s]. Request method must be one of [%s].',
                 $method,
                 $path,
                 implode(',', $allowed_methods)
             )
         );
     }
-    
+
 }

@@ -11,7 +11,7 @@ use Throwable;
  */
 interface ExceptionTransformer
 {
-    
-    public function transform(Throwable $e) :Throwable;
-    
+
+    public function transform(Throwable $e): Throwable;
+
 }

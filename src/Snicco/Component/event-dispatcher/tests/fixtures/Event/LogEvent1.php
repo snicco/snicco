@@ -10,20 +10,20 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\Event;
 
 class LogEvent1 implements Event\LoggableEvent
 {
-    
+
     use ClassAsName;
     use ClassAsPayload;
-    
+
     private $message;
-    
+
     public function __construct($message)
     {
         $this->message = $message;
     }
-    
+
     public function message()
     {
         return $this->message;
     }
-    
+
 }

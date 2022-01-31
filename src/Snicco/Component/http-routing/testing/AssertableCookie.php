@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Testing;
 
-use Snicco\Component\StrArr\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Snicco\Component\StrArr\Str;
 
 /**
  * @api
@@ -13,36 +13,26 @@ use PHPUnit\Framework\Assert as PHPUnit;
  */
 final class AssertableCookie
 {
-    
+
     private string $value;
-    
+
     private string $path;
-    
+
     private string $expires;
-    
+
     private bool $secure;
-    
+
     private bool $http_only;
-    
+
     private string $same_site;
-    
+
     private string $name;
-    
+
     public function __construct(string $set_cookie_header)
     {
         $this->parseHeader($set_cookie_header);
     }
-    
-    public function assertValue(string $value) :AssertableCookie
-    {
-        PHPUnit::assertSame(
-            $value,
-            $this->value,
-            "Wrong value for cookie [$this->name]."
-        );
-        return $this;
-    }
-    
+
     private function parseHeader(string $set_cookie_header)
     {
         $this->name = Str::beforeFirst($set_cookie_header, '=');
@@ -53,5 +43,15 @@ final class AssertableCookie
         $this->http_only = Str::contains($set_cookie_header, 'HttpOnly');
         $this->same_site = Str::betweenFirst($set_cookie_header, 'SameSite=', ';');
     }
-    
+
+    public function assertValue(string $value): AssertableCookie
+    {
+        PHPUnit::assertSame(
+            $value,
+            $this->value,
+            "Wrong value for cookie [$this->name]."
+        );
+        return $this;
+    }
+
 }

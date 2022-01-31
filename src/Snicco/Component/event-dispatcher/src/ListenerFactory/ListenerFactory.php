@@ -11,10 +11,10 @@ use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
  */
 interface ListenerFactory
 {
-    
+
     /**
      * @throws CantCreateListener
      */
-    public function create(string $listener_class, string $event_name) :object;
-    
+    public function create(string $listener_class, string $event_name): object;
+
 }
