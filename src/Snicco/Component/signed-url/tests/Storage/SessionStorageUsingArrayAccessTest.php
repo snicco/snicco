@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\SignedUrl\Tests\Storage;
 
 use ArrayAccess;
+use ReturnTypeWillChange;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\UrlSigner;
@@ -53,21 +54,25 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
             
             private $container = [];
             
+            #[ReturnTypeWillChange]
             public function offsetSet($offset, $value)
             {
                 $this->container[$offset] = $value;
             }
             
+            #[ReturnTypeWillChange]
             public function offsetExists($offset)
             {
                 return isset($this->container[$offset]);
             }
             
+            #[ReturnTypeWillChange]
             public function offsetUnset($offset)
             {
                 unset($this->container[$offset]);
             }
             
+            #[ReturnTypeWillChange]
             public function offsetGet($offset)
             {
                 return $this->container[$offset];

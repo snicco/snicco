@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Bridge\IlluminateContainer;
 
 use Closure;
+use ReturnTypeWillChange;
 use Illuminate\Container\Container;
 use Snicco\Component\Core\DIContainer;
 use Snicco\Component\Core\Exception\FrozenService;
@@ -56,6 +57,7 @@ final class IlluminateContainerAdapter extends DIContainer
         return $this->illuminate_container->offsetExists($offset);
     }
     
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if (true === $this->locked) {

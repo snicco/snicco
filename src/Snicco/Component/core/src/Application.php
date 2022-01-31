@@ -7,6 +7,7 @@ namespace Snicco\Component\Core;
 use ArrayAccess;
 use LogicException;
 use RuntimeException;
+use ReturnTypeWillChange;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\Core\Configuration\ConfigFactory;
@@ -97,6 +98,7 @@ final class Application implements ArrayAccess
         return $this->container->offsetExists($offset);
     }
     
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->container->offsetGet($offset);

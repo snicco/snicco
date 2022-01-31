@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\ParameterBag;
 
 use ArrayAccess;
+use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 
 /**
@@ -83,20 +84,21 @@ final class ParameterPag implements ArrayAccess
     
     /**
      * @param  string  $offset
+     *
+     * @return mixed
      */
-    public function offsetExists($offset) :bool
+    #[ReturnTypeWillChange]
+    public function offsetGet($offset)
     {
-        return $this->has($offset);
+        return $this->get($offset);
     }
     
     /**
      * @param  string  $offset
-     *
-     * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetExists($offset) :bool
     {
-        return $this->get($offset);
+        return $this->has($offset);
     }
     
     /**
