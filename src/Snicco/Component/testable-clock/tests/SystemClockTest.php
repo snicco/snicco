@@ -19,11 +19,12 @@ final class SystemClockTest extends TestCase
         $clock = new SystemClock();
         
         $this->assertEqualsWithDelta(
-            $d = new DateTimeImmutable('now'),
+            $d = new DateTimeImmutable(),
             $clock->currentTime(),
-            0.005
+            1
         );
-        $this->assertEqualsWithDelta($d->getTimestamp(), $clock->currentTimestamp(), 0.005);
+        
+        $this->assertEqualsWithDelta($d->getTimestamp(), $clock->currentTimestamp(), 1);
     }
     
     /** @test */
@@ -35,7 +36,7 @@ final class SystemClockTest extends TestCase
         sleep(1);
         
         $ts2 = $clock->currentTimestamp();
-        $this->assertEqualsWithDelta($ts1 + 1, $ts2, 0.005);
+        $this->assertEqualsWithDelta($ts1 + 1, $ts2, 1);
     }
     
 }
