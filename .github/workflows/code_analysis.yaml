@@ -1,0 +1,36 @@
+name: Code Analysis
+
+on:
+  pull_request:
+  push:
+
+env:
+  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+  COMPOSER_ROOT_VERSION: "dev-master"
+
+jobs:
+  code_analysis:
+    runs-on: ubuntu-20.04
+    name: ${{ matrix.actions.name }}
+    strategy:
+      matrix:
+        actions:
+          - name: 'Composer Validate'
+            run: composer validate
+      fail-fast: false
+
+
+    steps:
+      - name: 'Checkout repo'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: 'Install dependencies'
+        uses: ramsey/composer-install@v1
+
+      - run: ${{ matrix.actions.run }}
