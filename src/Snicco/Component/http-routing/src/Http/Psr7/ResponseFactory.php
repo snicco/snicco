@@ -26,7 +26,7 @@ interface ResponseFactory extends Psr17ResponseFactory, Psr17StreamFactory
     public function html(string $html, int $status_code = 200) :Response;
     
     /**
-     * @param  mixed  $content  Anything that can be passed to {@see json_encode()}
+     * @param  mixed  $content  Anything that can be passed to {@see \json_encode()}
      */
     public function json($content, int $status_code = 200) :Response;
     

@@ -10,6 +10,7 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
+    "ext-filter": "*",
     "sniccowp/scopable-wp": "dev-master"
   },
   "autoload": {
