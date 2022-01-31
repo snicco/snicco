@@ -1,0 +1,105 @@
+name: tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+
+env:
+  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+  COMPOSER_ROOT_VERSION: "dev-master"
+
+jobs:
+
+  unit_tests:
+
+    name: Unit Tests
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ 7.4, 8.0, 8.1 ]
+        dependencies: [ lowest, highest ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP [${{ matrix.php }}]
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+          ini-values: error_reporting=E_ALL
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Run phpunit, testsuite unit
+        run: composer unit
+
+  wordpress_tests:
+
+    name: WordPress Tests
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0', '8.1' ]
+        wp: [ '5.8', '5.9' ]
+        dependencies: [ lowest, highest ]
+
+    services:
+
+      mysql:
+        image: mysql:8.0.21
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: sniccowp_1
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=3s --health-timeout=3s --health-retries=10
+
+      redis:
+        image: redis:5.0
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP [${{ matrix.php }}]
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, wp-cli
+          coverage: none
+          ini-values: error_reporting=E_ALL
+
+      - name: Install composer dependencies
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+
+      # Config value must match the ones in env.testing.dist
+      - name: Download WordPress [${{ matrix.wp }}]
+        run: |
+          mkdir wordpress && cd wordpress
+          wp core download --force --skip-content --version=${{ matrix.wp }}
+          wp config create --dbname="sniccowp_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
+          wp core install --url="sniccowp.test" --title="SniccoWP" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
+          wp core update-db
+          wp rewrite structure '/%postname%/'
+          wp plugin install redis-cache
+          wp plugin activate redis-cache
+          wp redis enable
+        working-directory: /tmp
+
+      - name: Run WordPress tests with codeception
+        run: composer wordpress

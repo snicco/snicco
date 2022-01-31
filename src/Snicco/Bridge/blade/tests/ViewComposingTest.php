@@ -6,6 +6,8 @@ namespace Snicco\Bridge\Blade\Tests;
 
 use Snicco\Bridge\Blade\BladeView;
 
+use function trim;
+
 class ViewComposingTest extends BladeTestCase
 {
     
@@ -28,7 +30,7 @@ class ViewComposingTest extends BladeTestCase
             }
         );
         
-        $this->assertSame('calvinalkan', $this->renderView('nested-view-composer'));
+        $this->assertSame('calvinalkan', trim($this->renderView('nested-view-composer')));
     }
     
     /** @test */

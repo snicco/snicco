@@ -1,33 +1,33 @@
 {
-  "name": "sniccowp/redirect-middleware",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
+    "name": "sniccowp/redirect-middleware",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "sniccowp/http-runner": "dev-master",
+        "sniccowp/str-arr": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Middleware\\Redirect\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Middleware\\Redirect\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
     }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "sniccowp/http-runner": "dev-master",
-    "sniccowp/str-arr": "dev-master"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.5"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Middleware\\Redirect\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Middleware\\Redirect\\Tests\\": "tests"
-    }
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true
-  }
 }
