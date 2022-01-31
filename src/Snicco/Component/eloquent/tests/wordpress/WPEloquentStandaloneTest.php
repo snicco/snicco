@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Eloquent\Tests\wordpress;
 
-use wpdb;
-use stdClass;
 use RuntimeException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
@@ -36,6 +34,20 @@ final class WPEloquentStandaloneTest extends WPTestCase
         Facade::setFacadeApplication(null);
         Eloquent::unsetEventDispatcher();
         Eloquent::unsetConnectionResolver();
+        
+        $this->withDatabaseExceptions(function () {
+            global $wpdb;
+            $wpdb->query('CREATE DATABASE IF NOT EXISTS sniccowp_2_testing');
+        });
+    }
+    
+    protected function tearDown() :void
+    {
+        $this->withDatabaseExceptions(function () {
+            global $wpdb;
+            $wpdb->query('DROP DATABASE IF EXISTS sniccowp_2_testing');
+        });
+        parent::tearDown();
     }
     
     /** @test */
@@ -110,53 +122,17 @@ final class WPEloquentStandaloneTest extends WPTestCase
     }
     
     /** @test */
-    public function secondary_connections_can_be_used()
-    {
-        (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
-        
-        $connection = DB::connection('mysql2');
-        
-        $this->assertInstanceOf(MySqlConnection::class, $connection);
-        $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $connection->getDatabaseName());
-    }
-    
-    /** @test */
     public function different_connections_can_be_used_side_by_side()
     {
-        $default_connection_blog_name = get_bloginfo('name');
-        
-        $wpdb = new wpdb(
-            $_SERVER['DB_USER'],
-            $_SERVER['DB_PASSWORD'],
-            $_SERVER['SECONDARY_DB_NAME'],
-            $_SERVER['DB_HOST']
-        );
-        
-        $wpdb->query(
-            "UPDATE wp_options SET option_value = 'SECONDARY_BLOG_NAME' where option_name = 'blogname'"
-        );
-        // We are inside a wp-browser transaction here.
-        $wpdb->query('COMMIT');
-        
         (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
         
-        $connection = DB::connection('mysql2');
+        $default = DB::connection();
+        $this->assertInstanceOf(MySqlConnection::class, $default);
         
-        $db_value = $connection->table('options')
-                               ->where('option_name', 'blogname')
-                               ->select(['option_value', 'option_name'])
-                               ->first();
+        $secondary = DB::connection('mysql2');
+        $this->assertInstanceOf(MySqlConnection::class, $secondary);
         
-        $this->assertNotSame($default_connection_blog_name, $db_value->option_value);
-        $this->assertSame('SECONDARY_BLOG_NAME', $db_value->option_value);
-        
-        $record = DB::connection()->table('options')
-                    ->where('option_name', 'blogname')
-                    ->select(['option_value', 'option_name'])
-                    ->first();
-        
-        $this->assertInstanceOf(stdClass::class, $record);
-        $this->assertSame($default_connection_blog_name, $record->option_value);
+        $this->assertNotSame($secondary->getName(), $default->getName());
     }
     
     /** @test */

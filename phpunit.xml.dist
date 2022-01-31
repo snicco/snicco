@@ -47,10 +47,11 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
+    <coverage includeUncoveredFiles="true">
         <include>
             <directory>./src/Snicco/Bridge/*</directory>
             <directory>./src/Snicco/Component/*</directory>
+            <directory>./src/Snicco/Middleware/*</directory>
         </include>
         <exclude>
             <directory>./src/Symfony/Bridge/*/Tests</directory>

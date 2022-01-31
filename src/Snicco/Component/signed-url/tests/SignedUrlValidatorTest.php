@@ -16,6 +16,8 @@ use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
 use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
 
+use function str_replace;
+
 final class SignedUrlValidatorTest extends TestCase
 {
     
@@ -67,13 +69,13 @@ final class SignedUrlValidatorTest extends TestCase
         
         $validator = new SignedUrlValidator($this->storage, $this->hasher);
         
-        $this->expectException(InvalidSignature::class);
-        
-        $wrong = Base64UrlSafe::encode('Foobar');
-        
-        $string = preg_replace('/signature=\w+/', "signature=$wrong", $signed_url->asString());
-        
-        $validator->validate($string);
+        $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
+        try {
+            $validator->validate($string);
+            $this->fail("No exception thrown for tampered signature.");
+        } catch (InvalidSignature $e) {
+            $this->assertStringStartsWith('Invalid signature', $e->getMessage());
+        }
     }
     
     /** @test */
