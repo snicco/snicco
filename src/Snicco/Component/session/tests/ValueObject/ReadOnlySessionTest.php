@@ -8,10 +8,10 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\Session;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\ImmutableSession;
-use Snicco\Component\Session\ValueObject\ReadOnly;
+use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 
-final class ReadOnlyTest extends TestCase
+final class ReadOnlySessionTest extends TestCase
 {
     
     use SessionHelpers;
@@ -21,7 +21,7 @@ final class ReadOnlyTest extends TestCase
     {
         $session = $this->newSession();
         
-        $store = ReadOnly::fromSession($session);
+        $store = ReadOnlySession::fromSession($session);
         
         $this->assertInstanceOf(ImmutableSession::class, $store);
         $this->assertNotInstanceOf(Session::class, $store);

@@ -791,4 +791,15 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         );
     }
     
+    /** @test */
+    public function an_exception_is_thrown_for_non_string_or_int_replacement()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Replacements must be string or integer. Got [array].");
+        
+        $this->routeConfigurator()->get('foo', 'foo/{required}');
+        
+        $this->generator->toRoute('foo', ['required' => []]);
+    }
+    
 }

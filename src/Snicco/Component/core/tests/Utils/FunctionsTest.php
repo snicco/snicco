@@ -9,6 +9,7 @@ use Countable;
 use ArrayAccess;
 use Traversable;
 use JsonSerializable;
+use ReturnTypeWillChange;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -82,7 +83,7 @@ final class FunctionsTest extends TestCase
 class TestSubject implements Countable
 {
     
-    public function count()
+    public function count() :int
     {
     }
     
@@ -91,23 +92,25 @@ class TestSubject implements Countable
 class TestTraversable implements Iterator
 {
     
+    #[ReturnTypeWillChange]
     public function current()
     {
     }
     
-    public function next()
+    public function next() :void
     {
     }
     
+    #[ReturnTypeWillChange]
     public function key()
     {
     }
     
-    public function valid()
+    public function valid() :bool
     {
     }
     
-    public function rewind()
+    public function rewind() :void
     {
     }
     

@@ -6,6 +6,7 @@ namespace Snicco\Component\Core\Configuration;
 
 use Closure;
 use ArrayAccess;
+use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\ParameterBag\ParameterPag;
 
@@ -79,6 +80,7 @@ final class WritableConfig implements ArrayAccess
         return $this->repository->offsetExists($offset);
     }
     
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->repository->offsetGet($offset);

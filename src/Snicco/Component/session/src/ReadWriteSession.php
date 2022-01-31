@@ -9,10 +9,10 @@ use DateTimeImmutable;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
-use Snicco\Component\Session\ValueObject\ReadOnly;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\Session\Exception\SessionIsLocked;
+use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\Component\Session\ValueObject\SerializedSessionData;
 
@@ -285,7 +285,7 @@ final class ReadWriteSession implements Session
         $this->invalidated_id = $this->id;
         $this->id = SessionId::createFresh();
         $this->refreshCsrfToken();
-        $this->recordEvent(new SessionRotated(ReadOnly::fromSession($this)));
+        $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
     }
     
     public function saveUsing(SessionDriver $driver, DateTimeImmutable $now) :void

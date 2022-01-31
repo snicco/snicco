@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
 use Webmozart\Assert\Assert;
+use InvalidArgumentException;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
@@ -15,8 +16,12 @@ use function trim;
 use function ltrim;
 use function substr;
 use function strpos;
+use function is_int;
 use function is_null;
+use function sprintf;
+use function gettype;
 use function parse_str;
+use function is_string;
 use function preg_match;
 use function str_replace;
 use function array_merge;
@@ -327,6 +332,15 @@ final class InternalUrlGenerator implements UrlGenerator
             
             $replacement = $provided_arguments[$segment] ?? '';
             
+            if ( ! is_string($replacement) && ! is_int($replacement)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Replacements must be string or integer. Got [%s].',
+                        gettype($replacement)
+                    )
+                );
+            }
+            
             if ($has_value && array_key_exists($segment, $requirements)) {
                 $pattern = $requirements[$segment];
                 
@@ -342,7 +356,7 @@ final class InternalUrlGenerator implements UrlGenerator
             
             $search = $optional ? '{'.$segment.'?}' : '{'.$segment.'}';
             
-            $route_path = str_replace($search, $replacement, $route_path);
+            $route_path = str_replace($search, (string) $replacement, $route_path);
         }
         
         return $route_path;

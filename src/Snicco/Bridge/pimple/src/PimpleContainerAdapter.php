@@ -6,6 +6,7 @@ namespace Snicco\Bridge\Pimple;
 
 use Closure;
 use Pimple\Container;
+use ReturnTypeWillChange;
 use Snicco\Component\Core\DIContainer;
 use Pimple\Exception\FrozenServiceException;
 use Snicco\Component\Core\Exception\FrozenService;
@@ -61,6 +62,7 @@ final class PimpleContainerAdapter extends DIContainer
         return $this->pimple->offsetExists($offset);
     }
     
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if (true === $this->locked) {

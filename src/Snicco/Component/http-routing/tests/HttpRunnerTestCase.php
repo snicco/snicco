@@ -213,7 +213,7 @@ class HttpRunnerTestCase extends TestCase
         return $this->generator;
     }
     
-    final private function defaultMiddlewareAliases() :array
+    private function defaultMiddlewareAliases() :array
     {
         return [
             'foo' => FooMiddleware::class,
@@ -223,7 +223,7 @@ class HttpRunnerTestCase extends TestCase
         ];
     }
     
-    final private function createNeededCollaborators()
+    private function createNeededCollaborators()
     {
         $this->container = $this->createContainer();
         $this->container->instance(DIContainer::class, $this->container);

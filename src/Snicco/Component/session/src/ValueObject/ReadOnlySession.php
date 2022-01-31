@@ -10,7 +10,7 @@ use Snicco\Component\Session\ImmutableSession;
 /**
  * @api
  */
-final class ReadOnly implements ImmutableSession
+final class ReadOnlySession implements ImmutableSession
 {
     
     private Session $session;
@@ -20,9 +20,9 @@ final class ReadOnly implements ImmutableSession
         $this->session = $session;
     }
     
-    public static function fromSession(Session $session) :ReadOnly
+    public static function fromSession(Session $session) :ReadOnlySession
     {
-        return new ReadOnly($session);
+        return new ReadOnlySession($session);
     }
     
     public function all() :array
