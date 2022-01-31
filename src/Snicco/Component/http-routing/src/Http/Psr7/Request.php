@@ -83,7 +83,7 @@ final class Request implements ServerRequestInterface
     // scheme + host + path
     final public function url() :string
     {
-        return preg_replace('/\?.*/', '', $this->getUri());
+        return preg_replace('/\?.*/', '', (string) $this->getUri());
     }
     
     // scheme + host + path + query + fragment

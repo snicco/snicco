@@ -248,7 +248,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $body);
         $this->assertStringContainsString(
             '<h1>Hi</h1><p>FOO</p><p>BAR_NOT_AVAILABLE</p><p>BAZ</p>',
-            str_replace("\n", '', $body)
+            str_replace(["\n", "\r"], '', $body)
         );
     }
     
@@ -610,10 +610,12 @@ final class MailerTest extends WPTestCase
         
         $this->assertStringContainsString('öö', $body);
         $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
-        $this->assertStringContainsString(
-            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename=my-elephant\n",
-            $body
-        );
+        
+        $this->assertStringContainsString('Content-Type: image/jpeg', $body);
+        $this->assertStringContainsString('name=my-elephant', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: attachment;', $body);
+        $this->assertStringContainsString('filename=my-elephant', $body);
     }
     
     /** @test */
@@ -646,11 +648,11 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('öö', $body);
         $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
         
-        // octet-stream because the mail did not provide a content-type specifically.
-        $this->assertStringContainsString(
-            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename=my-elephant\n",
-            $body
-        );
+        $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
+        $this->assertStringContainsString('name=my-elephant', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: attachment;', $body);
+        $this->assertStringContainsString('filename=my-elephant', $body);
     }
     
     /** @test */
@@ -681,14 +683,15 @@ final class MailerTest extends WPTestCase
         
         $this->assertStringContainsString('öö', $body);
         $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
-        $this->assertStringContainsString(
-            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64",
-            $body
-        );
-        $this->assertStringContainsString(
-            "Content-Disposition: inline; filename=my-elephant",
-            $body
-        );
+        
+        $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
+        $this->assertStringContainsString('name=my-elephant', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: inline;', $body);
+        $this->assertStringContainsString('filename=my-elephant', $body);
+        
+        $expected_cid = $email->attachments()[0]->cid();
+        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
     }
     
     /** @test */
@@ -719,14 +722,15 @@ final class MailerTest extends WPTestCase
         
         $this->assertStringContainsString('öö', $body);
         $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
-        $this->assertStringContainsString(
-            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64\nContent-ID: <",
-            $body
-        );
-        $this->assertStringContainsString(
-            "Content-Disposition: inline; filename=my-elephant",
-            $body
-        );
+        
+        $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
+        $this->assertStringContainsString('name=my-elephant', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: inline;', $body);
+        $this->assertStringContainsString('filename=my-elephant', $body);
+        
+        $expected_cid = $email->attachments()[0]->cid();
+        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
     }
     
     /** @test */
@@ -764,19 +768,22 @@ final class MailerTest extends WPTestCase
         
         $this->assertStringContainsString('öö', $body);
         $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
-        $this->assertStringContainsString(
-            "Content-Type: image/jpeg; name=php-elephant-inline\nContent-Transfer-Encoding: base64\nContent-ID: <",
-            $body
-        );
-        $this->assertStringContainsString(
-            "Content-Disposition: inline; filename=php-elephant-inline\n",
-            $body
-        );
         
-        $this->assertStringContainsString(
-            "Content-Type: image/jpeg; name=php-elephant-attachment\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename=php-elephant-attachment\n",
-            $body
-        );
+        // Inline
+        $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
+        $this->assertStringContainsString('name=php-elephant-inline', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: inline;', $body);
+        $this->assertStringContainsString('filename=php-elephant-inline', $body);
+        $expected_cid = $email->attachments()[0]->cid();
+        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        
+        // Attachment
+        $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
+        $this->assertStringContainsString('name=php-elephant-attachment', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: attachment;', $body);
+        $this->assertStringContainsString('filename=php-elephant-attachment', $body);
     }
     
     /** @test */
@@ -821,15 +828,14 @@ final class MailerTest extends WPTestCase
             '<h1>Hi</h1><p>Here is your image</p><img src="cid:'.$first_attachment->cid().'"',
             $body
         );
-        $this->assertStringContainsString(
-            "Content-Type: application/octet-stream; name=php-elephant-inline\nContent-Transfer-Encoding: base64\nContent-ID: <{$first_attachment->cid()}>",
-            $body
-        );
         
-        $this->assertStringContainsString(
-            "Content-Disposition: inline; filename=php-elephant-inline\n",
-            $body
-        );
+        $this->assertStringContainsString('Content-Type: application/octet-stream;', $body);
+        $this->assertStringContainsString('name=php-elephant-inline', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: inline;', $body);
+        $this->assertStringContainsString('filename=php-elephant-inline', $body);
+        $expected_cid = $email->attachments()[0]->cid();
+        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
     }
     
     private function getSentMails() :array
