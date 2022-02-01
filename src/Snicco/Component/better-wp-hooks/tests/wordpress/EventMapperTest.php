@@ -34,8 +34,10 @@ class EventMapperTest extends WPTestCase
     private EventMapper $event_mapper;
     private BaseEventDispatcher $dispatcher;
 
-    /** @test */
-    public function mapped_actions_only_dispatch_for_their_hook()
+    /**
+     * @test
+     */
+    public function mapped_actions_only_dispatch_for_their_hook(): void
     {
         $this->event_mapper->map('foo', EmptyActionEvent::class);
 
@@ -48,8 +50,10 @@ class EventMapperTest extends WPTestCase
         $this->assertListenerNotRun(EmptyActionEvent::class, 'closure1');
     }
 
-    /** @test */
-    public function a_wordpress_action_can_be_mapped_to_a_custom_event_and_the_event_will_dispatch()
+    /**
+     * @test
+     */
+    public function a_wordpress_action_can_be_mapped_to_a_custom_event_and_the_event_will_dispatch(): void
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
 
@@ -66,8 +70,10 @@ class EventMapperTest extends WPTestCase
      * ACTIONS
      */
 
-    /** @test */
-    public function arguments_from_actions_are_passed_to_the_event()
+    /**
+     * @test
+     */
+    public function arguments_from_actions_are_passed_to_the_event(): void
     {
         $this->event_mapper->map('foo_action', FooActionEvent::class);
 
@@ -90,8 +96,10 @@ class EventMapperTest extends WPTestCase
         $this->assertListenerRun(ActionWithArrayArguments::class, 'closure2', 'foo|bar:baz');
     }
 
-    /** @test */
-    public function events_mapped_to_a_wordpress_action_are_passed_by_reference()
+    /**
+     * @test
+     */
+    public function events_mapped_to_a_wordpress_action_are_passed_by_reference(): void
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
 
@@ -112,8 +120,10 @@ class EventMapperTest extends WPTestCase
         $this->assertListenerRun(EmptyActionEvent::class, 'closure2', 'foobar');
     }
 
-    /** @test */
-    public function the_mapping_priority_can_be_customized()
+    /**
+     * @test
+     */
+    public function the_mapping_priority_can_be_customized(): void
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
@@ -133,8 +143,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function two_different_custom_events_can_be_mapped_to_one_action()
+    /**
+     * @test
+     */
+    public function two_different_custom_events_can_be_mapped_to_one_action(): void
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
@@ -159,8 +171,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(3, $count);
     }
 
-    /** @test */
-    public function mapped_actions_are_not_accessible_with_wordpress_plugin_functions()
+    /**
+     * @test
+     */
+    public function mapped_actions_are_not_accessible_with_wordpress_plugin_functions(): void
     {
         $count = 0;
 
@@ -180,8 +194,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function mapped_filters_only_dispatch_for_their_hook()
+    /**
+     * @test
+     */
+    public function mapped_filters_only_dispatch_for_their_hook(): void
     {
         $this->event_mapper->map('foo', EmptyActionEvent::class);
 
@@ -194,8 +210,10 @@ class EventMapperTest extends WPTestCase
         $this->assertListenerNotRun(EmptyActionEvent::class, 'closure1');
     }
 
-    /** @test */
-    public function a_wordpress_filter_can_be_mapped_to_a_custom_event()
+    /**
+     * @test
+     */
+    public function a_wordpress_filter_can_be_mapped_to_a_custom_event(): void
     {
         $this->event_mapper->map('filter', EventFilterWithNoArgs::class);
 
@@ -215,8 +233,10 @@ class EventMapperTest extends WPTestCase
      * FILTERS
      */
 
-    /** @test */
-    public function the_priority_can_be_customized_for_a_mapped_filter()
+    /**
+     * @test
+     */
+    public function the_priority_can_be_customized_for_a_mapped_filter(): void
     {
         add_filter('filter', function (string $value) {
             return $value . '_wp_filtered_1';
@@ -240,8 +260,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame('foo_wp_filtered_1barbaz_wp_filtered_2', $final_value);
     }
 
-    /** @test */
-    public function two_different_custom_events_can_be_mapped_to_a_wordpress_filter()
+    /**
+     * @test
+     */
+    public function two_different_custom_events_can_be_mapped_to_a_wordpress_filter(): void
     {
         add_filter('filter', function (string $value) {
             return $value . '_wp_filtered_1_';
@@ -267,8 +289,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame('foo_wp_filtered_1_bar_wp_filtered_2_bar', $final_value);
     }
 
-    /** @test */
-    public function test_map_first_if_no_other_callback_present()
+    /**
+     * @test
+     */
+    public function test_map_first_if_no_other_callback_present(): void
     {
         $count = 0;
 
@@ -288,8 +312,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(2, $count);
     }
 
-    /** @test */
-    public function test_map_first_if_another_callback_is_registered_before()
+    /**
+     * @test
+     */
+    public function test_map_first_if_another_callback_is_registered_before(): void
     {
         $count = 0;
 
@@ -313,8 +339,10 @@ class EventMapperTest extends WPTestCase
      * MAP_FIRST
      */
 
-    /** @test */
-    public function test_map_first_if_registered_with_php_int_min()
+    /**
+     * @test
+     */
+    public function test_map_first_if_registered_with_php_int_min(): void
     {
         $count = 0;
 
@@ -350,8 +378,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(5, $count);
     }
 
-    /** @test */
-    public function test_exception_if_filtering_during_the_same_filter()
+    /**
+     * @test
+     */
+    public function test_exception_if_filtering_during_the_same_filter(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -368,8 +398,10 @@ class EventMapperTest extends WPTestCase
         do_action('wp_hook');
     }
 
-    /** @test */
-    public function test_map_last_if_no_other_callback_present()
+    /**
+     * @test
+     */
+    public function test_map_last_if_no_other_callback_present(): void
     {
         $count = 0;
 
@@ -384,8 +416,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function test_ensure_last_with_callback_added_after()
+    /**
+     * @test
+     */
+    public function test_ensure_last_with_callback_added_after(): void
     {
         $count = 0;
 
@@ -424,8 +458,10 @@ class EventMapperTest extends WPTestCase
      * MAP_LAST
      */
 
-    /** @test */
-    public function a_mapped_event_has_to_have_on_of_the_valid_interfaces()
+    /**
+     * @test
+     */
+    public function a_mapped_event_has_to_have_on_of_the_valid_interfaces(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -434,8 +470,10 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->map('foobar', NormalEvent::class);
     }
 
-    /** @test */
-    public function cant_map_the_same_hook_twice_to_the_same_custom_event()
+    /**
+     * @test
+     */
+    public function cant_map_the_same_hook_twice_to_the_same_custom_event(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -452,8 +490,10 @@ class EventMapperTest extends WPTestCase
      * VALIDATION
      */
 
-    /** @test */
-    public function conditional_filters_are_prevented_if_conditions_dont_match()
+    /**
+     * @test
+     */
+    public function conditional_filters_are_prevented_if_conditions_dont_match(): void
     {
         $this->event_mapper->map('filter', ConditionalFilter::class);
 
@@ -472,8 +512,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame('foo:filtered', $final_value);
     }
 
-    /** @test */
-    public function conditional_filter_events_are_dispatched_if_conditions_match()
+    /**
+     * @test
+     */
+    public function conditional_filter_events_are_dispatched_if_conditions_match(): void
     {
         $this->event_mapper->map('filter', ConditionalFilter::class);
 
@@ -492,8 +534,10 @@ class EventMapperTest extends WPTestCase
         $this->assertSame('CUSTOM:filtered', $final_value);
     }
 
-    /** @test */
-    public function conditional_actions_are_prevented_if_conditions_dont_match()
+    /**
+     * @test
+     */
+    public function conditional_actions_are_prevented_if_conditions_dont_match(): void
     {
         $this->event_mapper->map('action', ConditionalAction::class);
 
@@ -711,7 +755,7 @@ class FooActionEvent implements MappedAction
         $this->baz = $baz;
     }
 
-    public function value()
+    public function value(): string
     {
         return $this->foo . $this->bar . $this->baz;
     }

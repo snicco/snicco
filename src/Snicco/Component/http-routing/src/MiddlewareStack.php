@@ -296,7 +296,7 @@ final class MiddlewareStack
         return $middleware;
     }
 
-    public function withMiddlewareGroup(string $group, array $middlewares)
+    public function withMiddlewareGroup(string $group, array $middlewares): void
     {
         Assert::allString($middlewares);
         $this->user_provided_groups = Arr::mergeRecursive(
@@ -305,12 +305,12 @@ final class MiddlewareStack
         );
     }
 
-    public function middlewarePriority(array $middleware_priority)
+    public function middlewarePriority(array $middleware_priority): void
     {
         $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
     }
 
-    public function middlewareAliases(array $route_middleware_aliases)
+    public function middlewareAliases(array $route_middleware_aliases): void
     {
         $this->route_middleware_aliases = array_merge(
             $this->route_middleware_aliases,
@@ -318,7 +318,7 @@ final class MiddlewareStack
         );
     }
 
-    public function disableAllMiddleware()
+    public function disableAllMiddleware(): void
     {
         $this->middleware_disabled = true;
     }

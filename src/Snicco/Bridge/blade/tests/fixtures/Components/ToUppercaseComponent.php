@@ -14,7 +14,7 @@ class ToUppercaseComponent extends BladeComponent
         return $this->view('uppercase');
     }
 
-    public function toUpper($string)
+    public function toUpper($string): string
     {
         return strtoupper($string);
     }

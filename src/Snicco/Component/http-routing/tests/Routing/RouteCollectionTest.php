@@ -14,16 +14,20 @@ use stdClass;
 final class RouteCollectionTest extends TestCase
 {
 
-    /** @test */
-    public function test_exception_if_constructed_with_bad_route()
+    /**
+     * @test
+     */
+    public function test_exception_if_constructed_with_bad_route(): void
     {
         $this->expectException(InvalidArgumentException::class);
         /** @noinspection PhpParamsInspection */
         $routes = new RouteCollection([new stdClass()]);
     }
 
-    /** @test */
-    public function test_exception_if_route_with_duplicate_name_added()
+    /**
+     * @test
+     */
+    public function test_exception_if_route_with_duplicate_name_added(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -36,8 +40,10 @@ final class RouteCollectionTest extends TestCase
         $routes = new RouteCollection([$r1, $r2]);
     }
 
-    /** @test */
-    public function test_count()
+    /**
+     * @test
+     */
+    public function test_count(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -47,8 +53,10 @@ final class RouteCollectionTest extends TestCase
         $this->assertSame(2, count($routes));
     }
 
-    /** @test */
-    public function test_iterator()
+    /**
+     * @test
+     */
+    public function test_iterator(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -63,8 +71,10 @@ final class RouteCollectionTest extends TestCase
         $this->assertSame(2, $count);
     }
 
-    /** @test */
-    public function test_exception_for_bad_route_name()
+    /**
+     * @test
+     */
+    public function test_exception_for_bad_route_name(): void
     {
         $this->expectException(RouteNotFound::class);
 

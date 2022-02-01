@@ -26,8 +26,10 @@ final class ApplicationBundlesTest extends TestCase
     private string $base_dir;
     private string $base_dir_with_bundles;
 
-    /** @test */
-    public function bundles_are_loaded_from_a_bundle_php_file()
+    /**
+     * @test
+     */
+    public function bundles_are_loaded_from_a_bundle_php_file(): void
     {
         $app1 = new Application(
             $this->createContainer(),
@@ -49,8 +51,10 @@ final class ApplicationBundlesTest extends TestCase
         $this->assertTrue($app2->usesBundle('bundle_prod'));
     }
 
-    /** @test */
-    public function the_declared_bundle_environment_has_to_match_the_current_app_env()
+    /**
+     * @test
+     */
+    public function the_declared_bundle_environment_has_to_match_the_current_app_env(): void
     {
         $app1 = new Application(
             $this->createContainer(),
@@ -73,8 +77,10 @@ final class ApplicationBundlesTest extends TestCase
         $this->assertTrue($app2->usesBundle('bundle_prod'));
     }
 
-    /** @test */
-    public function a_bundle_can_run_in_all_environments()
+    /**
+     * @test
+     */
+    public function a_bundle_can_run_in_all_environments(): void
     {
         $app1 = new Application(
             $this->createContainer(),
@@ -88,8 +94,10 @@ final class ApplicationBundlesTest extends TestCase
         $this->assertTrue($app1->usesBundle('bundle_always'));
     }
 
-    /** @test */
-    public function test_exception_if_bundle_has_wrong_interface()
+    /**
+     * @test
+     */
+    public function test_exception_if_bundle_has_wrong_interface(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -115,8 +123,10 @@ final class ApplicationBundlesTest extends TestCase
         }
     }
 
-    /** @test */
-    public function plugins_are_loaded_in_the_order_they_are_declared_in_the_config()
+    /**
+     * @test
+     */
+    public function plugins_are_loaded_in_the_order_they_are_declared_in_the_config(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -135,8 +145,10 @@ final class ApplicationBundlesTest extends TestCase
         $this->assertTrue($app['bundle2.booted']->val);
     }
 
-    /** @test */
-    public function plugin_methods_are_called_in_the_correct_order()
+    /**
+     * @test
+     */
+    public function plugin_methods_are_called_in_the_correct_order(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -151,8 +163,10 @@ final class ApplicationBundlesTest extends TestCase
         $this->assertTrue($app->di()['bundle_that_asserts_order.bootstrapped']->val);
     }
 
-    /** @test */
-    public function plugins_can_only_run_in_some_environments()
+    /**
+     * @test
+     */
+    public function plugins_can_only_run_in_some_environments(): void
     {
         $app1 = new Application(
             $this->createContainer(),
@@ -195,8 +209,10 @@ final class ApplicationBundlesTest extends TestCase
         );
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_two_plugins_use_the_same_alias()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_two_plugins_use_the_same_alias(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
@@ -222,8 +238,10 @@ final class ApplicationBundlesTest extends TestCase
         $app->boot();
     }
 
-    /** @test */
-    public function the_configure_method_will_not_called_if_the_configuration_is_cached()
+    /**
+     * @test
+     */
+    public function the_configure_method_will_not_called_if_the_configuration_is_cached(): void
     {
         $app = new Application(
             $this->createContainer(),

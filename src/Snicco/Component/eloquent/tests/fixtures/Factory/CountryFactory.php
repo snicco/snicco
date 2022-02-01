@@ -33,7 +33,10 @@ class CountryFactory extends Factory
         return Arr::random($continents);
     }
 
-    public function narnia()
+    /**
+     * @return static
+     */
+    public function narnia(): self
     {
         return $this->state(function (array $attributes) {
             return [

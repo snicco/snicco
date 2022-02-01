@@ -30,6 +30,9 @@ final class MailboxList implements Countable, IteratorAggregate
         }
     }
 
+    /**
+     * @return void
+     */
     private function addAddress(Mailbox $address)
     {
         $email = $address->address();

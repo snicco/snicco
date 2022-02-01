@@ -20,8 +20,10 @@ class AuthorizeTest extends MiddlewareTestCase
 
     private Request $request;
 
-    /** @test */
-    public function a_user_with_given_capabilities_can_access_the_route()
+    /**
+     * @test
+     */
+    public function a_user_with_given_capabilities_can_access_the_route(): void
     {
         $wp = new AuthorizeTestScopableWp(function (string $cap) {
             if ($cap !== 'manage_options') {
@@ -42,8 +44,10 @@ class AuthorizeTest extends MiddlewareTestCase
         return new Authorize($wp, $cap, $id);
     }
 
-    /** @test */
-    public function a_user_without_authorisation_to_the_route_will_throw_an_exception()
+    /**
+     * @test
+     */
+    public function a_user_without_authorisation_to_the_route_will_throw_an_exception(): void
     {
         $wp = new AuthorizeTestScopableWp(function (string $cap) {
             if ($cap !== 'manage_options') {
@@ -66,8 +70,10 @@ class AuthorizeTest extends MiddlewareTestCase
         }
     }
 
-    /** @test */
-    public function the_user_can_be_authorized_against_a_resource()
+    /**
+     * @test
+     */
+    public function the_user_can_be_authorized_against_a_resource(): void
     {
         $wp = new AuthorizeTestScopableWp(function (string $cap, int $resource_id) {
             if ($cap !== 'manage_options') {

@@ -18,8 +18,10 @@ use function array_values;
 final class DelegatingTest extends TestCase
 {
 
-    /** @test */
-    public function all_displayers_that_should_display_are_included()
+    /**
+     * @test
+     */
+    public function all_displayers_that_should_display_are_included(): void
     {
         $filter = new Delegating(
             new Verbosity(true),

@@ -14,8 +14,10 @@ use function usleep;
 final class TestClockTest extends TestCase
 {
 
-    /** @test */
-    public function the_current_time_defaults_to_the_system_time()
+    /**
+     * @test
+     */
+    public function the_current_time_defaults_to_the_system_time(): void
     {
         $clock = new TestClock();
 
@@ -23,8 +25,10 @@ final class TestClockTest extends TestCase
         $this->assertEqualsWithDelta(time(), $clock->currentTimestamp(), 0.1);
     }
 
-    /** @test */
-    public function the_current_time_can_be_passed_as_a_constructor_argument()
+    /**
+     * @test
+     */
+    public function the_current_time_can_be_passed_as_a_constructor_argument(): void
     {
         $clock = new TestClock($time = new DateTimeImmutable('12-12-2020'));
 
@@ -38,8 +42,10 @@ final class TestClockTest extends TestCase
         $this->assertEqualsWithDelta($time, $clock->currentTime(), 0.1);
     }
 
-    /** @test */
-    public function the_clock_stays_frozen()
+    /**
+     * @test
+     */
+    public function the_clock_stays_frozen(): void
     {
         $clock = new TestClock();
         $ts1 = $clock->currentTimestamp();
@@ -51,8 +57,10 @@ final class TestClockTest extends TestCase
         $this->assertEquals($ts1, $ts2);
     }
 
-    /** @test */
-    public function the_clock_can_travel_into_the_future()
+    /**
+     * @test
+     */
+    public function the_clock_can_travel_into_the_future(): void
     {
         $clock = new TestClock();
         $ts1 = $clock->currentTimestamp();
@@ -62,8 +70,10 @@ final class TestClockTest extends TestCase
         $this->assertEquals($ts1 + 100, $clock->currentTimestamp());
     }
 
-    /** @test */
-    public function the_clock_can_travel_into_the_past()
+    /**
+     * @test
+     */
+    public function the_clock_can_travel_into_the_past(): void
     {
         $clock = new TestClock();
         $ts1 = $clock->currentTimestamp();

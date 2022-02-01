@@ -21,8 +21,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
     use WPDBTestHelpers;
     use WithTestTables;
 
-    /** @test */
-    public function test_select_one_works()
+    /**
+     * @test
+     */
+    public function test_select_one_works(): void
     {
         $record = DB::connection()->selectOne(
             'select `name` from `wp_cities` where `country_id` = ? limit 1',
@@ -33,8 +35,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame('berlin', $record->name);
     }
 
-    /** @test */
-    public function test_select_works()
+    /**
+     * @test
+     */
+    public function test_select_works(): void
     {
         $records = DB::table('cities')
             ->select('name')
@@ -47,8 +51,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertEquals((object)['name' => 'munich'], $records[1]);
     }
 
-    /** @test */
-    public function test_select_from_write_connection_is_just_an_alias_for_select()
+    /**
+     * @test
+     */
+    public function test_select_from_write_connection_is_just_an_alias_for_select(): void
     {
         $records = $this->getMysqliConnection()->selectFromWriteConnection(
             'select `name` from `wp_cities` where `country_id` = ? limit 1',
@@ -65,8 +71,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         return $connection;
     }
 
-    /** @test */
-    public function test_inserts_work()
+    /**
+     * @test
+     */
+    public function test_inserts_work(): void
     {
         $this->assertSame(2, DB::table('cities')->where('country_id', 2)->count());
 
@@ -79,8 +87,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(3, DB::table('cities')->where('country_id', 2)->count());
     }
 
-    /** @test */
-    public function test_insert_get_id_works()
+    /**
+     * @test
+     */
+    public function test_insert_get_id_works(): void
     {
         $id = DB::table('cities')->insertGetId([
             'name' => 'seville',
@@ -91,8 +101,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertIsNumeric($id);
     }
 
-    /** @test */
-    public function test_updates_work()
+    /**
+     * @test
+     */
+    public function test_updates_work(): void
     {
         $rows = DB::table('cities')
             ->where('country_id', 2)
@@ -105,8 +117,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame($madrid->population, 5);
     }
 
-    /** @test */
-    public function updates_with_no_affected_rows_return_zero()
+    /**
+     * @test
+     */
+    public function updates_with_no_affected_rows_return_zero(): void
     {
         $rows = DB::table('cities')
             ->where('country_id', 10)
@@ -115,8 +129,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(0, $rows);
     }
 
-    /** @test */
-    public function deletes_return_the_number_of_deleted_records()
+    /**
+     * @test
+     */
+    public function deletes_return_the_number_of_deleted_records(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -129,8 +145,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(1, $connection->table('cities')->where('country_id', 1)->count());
     }
 
-    /** @test */
-    public function test_returns_zero_for_non_matching_deletes()
+    /**
+     * @test
+     */
+    public function test_returns_zero_for_non_matching_deletes(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -144,8 +162,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(2, $connection->table('cities')->where('country_id', 1)->count());
     }
 
-    /** @test */
-    public function test_unprepared_queries_work()
+    /**
+     * @test
+     */
+    public function test_unprepared_queries_work(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -161,8 +181,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_raw_works()
+    /**
+     * @test
+     */
+    public function test_raw_works(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -174,8 +196,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(2, $record->cities_in_germany);
     }
 
-    /** @test */
-    public function test_cursor_select()
+    /**
+     * @test
+     */
+    public function test_cursor_select(): void
     {
         $records = $this->getMysqliConnection()->table('cities')
             ->whereIn('country_id', [1, 2])
@@ -192,8 +216,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(['berlin', 'munich', 'madrid', 'barcelona'], $names);
     }
 
-    /** @test */
-    public function test_cursor_with_empty_results()
+    /**
+     * @test
+     */
+    public function test_cursor_with_empty_results(): void
     {
         $records = $this->getMysqliConnection()->table('cities')
             ->whereIn('country_id', [10, 11])
@@ -211,8 +237,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame([], $names);
     }
 
-    /** @test */
-    public function test_cursor_when_pretending()
+    /**
+     * @test
+     */
+    public function test_cursor_when_pretending(): void
     {
         $connection = $this->getMysqliConnection();
         $sql = $connection->pretend(function (MysqliConnection $connection) {

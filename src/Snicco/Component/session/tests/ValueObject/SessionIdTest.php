@@ -10,8 +10,10 @@ use Snicco\Component\Session\ValueObject\SessionId;
 final class SessionIdTest extends TestCase
 {
 
-    /** @test */
-    public function testConstructWithoutIdCreatesNewId()
+    /**
+     * @test
+     */
+    public function testConstructWithoutIdCreatesNewId(): void
     {
         SessionId::$token_strength = 20;
         $session_id = SessionId::createFresh();
@@ -23,8 +25,10 @@ final class SessionIdTest extends TestCase
         $this->assertSame(40, strlen($id_as_string2));
     }
 
-    /** @test */
-    public function testConstructWithIdStaysSameId()
+    /**
+     * @test
+     */
+    public function testConstructWithIdStaysSameId(): void
     {
         $id_as_string = SessionId::createFresh()->asString();
 
@@ -33,8 +37,10 @@ final class SessionIdTest extends TestCase
         $this->assertSame($id_as_string, $session_id->asString());
     }
 
-    /** @test */
-    public function testAsHash()
+    /**
+     * @test
+     */
+    public function testAsHash(): void
     {
         $id_as_string = SessionId::createFresh()->asString();
 
@@ -44,8 +50,10 @@ final class SessionIdTest extends TestCase
         $this->assertNotSame($id_as_string, $session_id->asHash());
     }
 
-    /** @test */
-    public function testSameAs()
+    /**
+     * @test
+     */
+    public function testSameAs(): void
     {
         $id1 = SessionId::createFresh();
         $id2 = SessionId::createFresh();

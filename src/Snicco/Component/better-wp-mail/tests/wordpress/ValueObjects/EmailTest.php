@@ -17,8 +17,10 @@ use function fopen;
 final class EmailTest extends WPTestCase
 {
 
-    /** @test */
-    public function emails_are_immutable()
+    /**
+     * @test
+     */
+    public function emails_are_immutable(): void
     {
         $email = new Email();
 
@@ -30,8 +32,10 @@ final class EmailTest extends WPTestCase
         $this->assertCount(0, $email->to());
     }
 
-    /** @test */
-    public function test_to()
+    /**
+     * @test
+     */
+    public function test_to(): void
     {
         $email = (new Email())->withTo('calvin@web.de');
 
@@ -48,8 +52,10 @@ final class EmailTest extends WPTestCase
         $this->assertTrue($cc->has('jon@web.de'));
     }
 
-    /** @test */
-    public function test_cc()
+    /**
+     * @test
+     */
+    public function test_cc(): void
     {
         $email = (new Email())->withCc('calvin@web.de');
 
@@ -66,8 +72,10 @@ final class EmailTest extends WPTestCase
         $this->assertTrue($cc->has('jon@web.de'));
     }
 
-    /** @test */
-    public function test_bcc()
+    /**
+     * @test
+     */
+    public function test_bcc(): void
     {
         $email = (new Email())->withBcc('calvin@web.de');
 
@@ -84,16 +92,20 @@ final class EmailTest extends WPTestCase
         $this->assertTrue($bcc->has('jon@web.de'));
     }
 
-    /** @test */
-    public function test_subject()
+    /**
+     * @test
+     */
+    public function test_subject(): void
     {
         $email = (new Email())->withSubject('hello');
 
         $this->assertSame('hello', $email->subject());
     }
 
-    /** @test */
-    public function test_sender()
+    /**
+     * @test
+     */
+    public function test_sender(): void
     {
         $email = new Email();
 
@@ -104,8 +116,10 @@ final class EmailTest extends WPTestCase
         $this->assertEquals(Mailbox::create('calvin@web.de'), $email->sender());
     }
 
-    /** @test */
-    public function test_returnPath()
+    /**
+     * @test
+     */
+    public function test_returnPath(): void
     {
         $email = new Email();
 
@@ -116,8 +130,10 @@ final class EmailTest extends WPTestCase
         $this->assertEquals(Mailbox::create('calvin@web.de'), $email->returnPath());
     }
 
-    /** @test */
-    public function test_replyTo()
+    /**
+     * @test
+     */
+    public function test_replyTo(): void
     {
         $email = new Email();
 
@@ -138,8 +154,10 @@ final class EmailTest extends WPTestCase
         $this->assertCount(1, $email->replyTo());
     }
 
-    /** @test */
-    public function test_from()
+    /**
+     * @test
+     */
+    public function test_from(): void
     {
         $email = new Email();
 
@@ -161,8 +179,10 @@ final class EmailTest extends WPTestCase
         $this->assertTrue($from->has('foo@web.de'));
     }
 
-    /** @test */
-    public function test_attach()
+    /**
+     * @test
+     */
+    public function test_attach(): void
     {
         $email = new Email();
 
@@ -183,8 +203,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('elephant', $first->name());
     }
 
-    /** @test */
-    public function test_attachBinary()
+    /**
+     * @test
+     */
+    public function test_attachBinary(): void
     {
         $email = new Email();
 
@@ -227,8 +249,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('elephant', $first->name());
     }
 
-    /** @test */
-    public function test_embed()
+    /**
+     * @test
+     */
+    public function test_embed(): void
     {
         $email = new Email();
 
@@ -249,8 +273,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('elephant', $first->name());
     }
 
-    /** @test */
-    public function test_embedBinary()
+    /**
+     * @test
+     */
+    public function test_embedBinary(): void
     {
         $email = new Email();
 
@@ -293,8 +319,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('elephant', $first->name());
     }
 
-    /** @test */
-    public function test_priority()
+    /**
+     * @test
+     */
+    public function test_priority(): void
     {
         $email = new Email();
 
@@ -310,8 +338,10 @@ final class EmailTest extends WPTestCase
         $email = $email->withPriority(10);
     }
 
-    /** @test */
-    public function test_html_template()
+    /**
+     * @test
+     */
+    public function test_html_template(): void
     {
         $email = new Email();
 
@@ -322,8 +352,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('foobar.php', $email->htmlTemplate());
     }
 
-    /** @test */
-    public function test_text_template()
+    /**
+     * @test
+     */
+    public function test_text_template(): void
     {
         $email = new Email();
 
@@ -334,8 +366,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('foobar.txt', $email->textTemplate());
     }
 
-    /** @test */
-    public function test_htmlBody()
+    /**
+     * @test
+     */
+    public function test_htmlBody(): void
     {
         $email = new Email();
         $this->assertSame(null, $email->htmlBody());
@@ -345,8 +379,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('<h1>Foo</h1>', $email->htmlBody());
     }
 
-    /** @test */
-    public function test_textBody()
+    /**
+     * @test
+     */
+    public function test_textBody(): void
     {
         $email = new Email();
         $this->assertSame(null, $email->textBody());
@@ -356,8 +392,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('Foo', $email->textBody());
     }
 
-    /** @test */
-    public function text_body_falls_back_to_html_with_stripped_tags()
+    /**
+     * @test
+     */
+    public function text_body_falls_back_to_html_with_stripped_tags(): void
     {
         $email = (new Email())->withHtmlBody('<h1>Foo</h1>');
         $this->assertSame('Foo', $email->textBody());
@@ -368,8 +406,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame('<h1>Foo</h1>', $email->htmlBody());
     }
 
-    /** @test */
-    public function test_context()
+    /**
+     * @test
+     */
+    public function test_context(): void
     {
         $email = new Email();
 
@@ -388,8 +428,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame(['foo' => 'baz', 'bar' => 'biz'], $email->context());
     }
 
-    /** @test */
-    public function test_custom_headers()
+    /**
+     * @test
+     */
+    public function test_custom_headers(): void
     {
         $email = new Email();
 
@@ -404,8 +446,10 @@ final class EmailTest extends WPTestCase
         $this->assertSame(['X-FOO' => 'BAR', 'X-BAZ' => 'BIZ'], $email->customHeaders());
     }
 
-    /** @test */
-    public function test_priority_too_low_throws_exception()
+    /**
+     * @test
+     */
+    public function test_priority_too_low_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$priority must be an integer between 1 and 5.');
@@ -416,8 +460,10 @@ final class EmailTest extends WPTestCase
         $email->withPriority(0);
     }
 
-    /** @test */
-    public function test_priority_too_high_throws_exception()
+    /**
+     * @test
+     */
+    public function test_priority_too_high_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$priority must be an integer between 1 and 5.');
@@ -427,8 +473,10 @@ final class EmailTest extends WPTestCase
         $email = $email->withPriority(6);
     }
 
-    /** @test */
-    public function test_exception_if_settings_images_context()
+    /**
+     * @test
+     */
+    public function test_exception_if_settings_images_context(): void
     {
         $email = new Email();
 

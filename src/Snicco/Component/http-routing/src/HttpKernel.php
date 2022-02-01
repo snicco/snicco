@@ -40,7 +40,7 @@ final class HttpKernel
 
     // This should never happen.
 
-    private function validateRequest(Request $request)
+    private function validateRequest(Request $request): void
     {
         try {
             // This will throw an exception if no type is set.

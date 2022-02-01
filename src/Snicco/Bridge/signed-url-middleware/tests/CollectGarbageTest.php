@@ -16,16 +16,20 @@ use Snicco\Component\TestableClock\TestClock;
 final class CollectGarbageTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function test_next_is_called()
+    /**
+     * @test
+     */
+    public function test_next_is_called(): void
     {
         $middleware = new CollectGarbage(0, new InMemoryStorage(), new TestLogger());
 
         $this->runMiddleware($middleware, $this->frontendRequest())->assertNextMiddlewareCalled();
     }
 
-    /** @test */
-    public function garbage_collection_works()
+    /**
+     * @test
+     */
+    public function garbage_collection_works(): void
     {
         $signer = new UrlSigner(
             $storage = new InMemoryStorage($test_clock = new TestClock()),

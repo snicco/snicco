@@ -91,7 +91,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         }
     }
 
-    private function validateThatNoAdminPrefixesAreSet(string $path, string $name)
+    private function validateThatNoAdminPrefixesAreSet(string $path, string $name): void
     {
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($path)->startsWith($prefix)) {
@@ -102,7 +102,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         }
     }
 
-    private function validateThatAdminRouteHasNoSegments(Route $route)
+    private function validateThatAdminRouteHasNoSegments(Route $route): void
     {
         if (count($route->getSegmentNames())) {
             throw BadRouteConfiguration::becauseAdminRouteHasSegments($route->getName());
@@ -190,7 +190,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         }
     }
 
-    private function validateThatParentHasNoAdminPrefixSet(string $parent, string $name)
+    private function validateThatParentHasNoAdminPrefixSet(string $parent, string $name): void
     {
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($parent)->startsWith($prefix)) {

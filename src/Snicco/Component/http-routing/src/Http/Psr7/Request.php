@@ -79,6 +79,9 @@ final class Request implements ServerRequestInterface
 
     // scheme + host + path
 
+    /**
+     * @return false|string
+     */
     final public function userAgent()
     {
         return substr($this->getHeaderLine('User-Agent'), 0, 500);
@@ -344,6 +347,11 @@ final class Request implements ServerRequestInterface
         return Str::contains($accepts, ['/json', '+json']);
     }
 
+    /**
+     * @return string|string[]
+     *
+     * @psalm-return array<string>|string
+     */
     final public function acceptableContentTypes(bool $as_array = true)
     {
         return $as_array ? $this->getHeader('Accept') : $this->getHeaderLine('Accept');
@@ -444,6 +452,9 @@ final class Request implements ServerRequestInterface
         return $this->psr_request->getParsedBody();
     }
 
+    /**
+     * @return bool|false
+     */
     final public function boolean($key = null, $default = false)
     {
         return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);

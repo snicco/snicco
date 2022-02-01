@@ -13,8 +13,10 @@ use Snicco\Component\Core\Exception\MissingConfigKey;
 final class ReadOnlyConfigTest extends TestCase
 {
 
-    /** @test */
-    public function test_get()
+    /**
+     * @test
+     */
+    public function test_get(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => ['biz' => 'boo']]);
 
@@ -22,8 +24,10 @@ final class ReadOnlyConfigTest extends TestCase
         $this->assertSame('boo', $config->get('baz.biz'));
     }
 
-    /** @test */
-    public function test_get_on_missing_key_throws_exception()
+    /**
+     * @test
+     */
+    public function test_get_on_missing_key_throws_exception(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => ['biz' => 'boo']]);
 
@@ -35,8 +39,10 @@ final class ReadOnlyConfigTest extends TestCase
         $config->get('bar');
     }
 
-    /** @test */
-    public function test_get_string()
+    /**
+     * @test
+     */
+    public function test_get_string(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
 
@@ -50,8 +56,10 @@ final class ReadOnlyConfigTest extends TestCase
         $config->string('baz');
     }
 
-    /** @test */
-    public function test_get_int()
+    /**
+     * @test
+     */
+    public function test_get_int(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => 1, 'baz' => 'biz']);
 
@@ -65,8 +73,10 @@ final class ReadOnlyConfigTest extends TestCase
         $config->integer('baz');
     }
 
-    /** @test */
-    public function test_get_array()
+    /**
+     * @test
+     */
+    public function test_get_array(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => ['bar'], 'baz' => 'biz']);
 
@@ -80,8 +90,10 @@ final class ReadOnlyConfigTest extends TestCase
         $config->array('baz');
     }
 
-    /** @test */
-    public function test_boolean()
+    /**
+     * @test
+     */
+    public function test_boolean(): void
     {
         $config =
             ReadOnlyConfig::fromArray(['foo' => ['bar' => true], 'baz' => false, 'biz' => 'boo']);
@@ -97,16 +109,20 @@ final class ReadOnlyConfigTest extends TestCase
         $config->boolean('biz');
     }
 
-    /** @test */
-    public function test_array_access_get_works()
+    /**
+     * @test
+     */
+    public function test_array_access_get_works(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => ['bar' => 'baz']]);
 
         $this->assertSame('baz', $config['foo.bar']);
     }
 
-    /** @test */
-    public function test_array_access_get_throws_for_missing_key()
+    /**
+     * @test
+     */
+    public function test_array_access_get_throws_for_missing_key(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => ['bar' => 'baz']]);
 
@@ -116,8 +132,10 @@ final class ReadOnlyConfigTest extends TestCase
         $val = $config['foo.biz'];
     }
 
-    /** @test */
-    public function test_array_access_isset_works()
+    /**
+     * @test
+     */
+    public function test_array_access_isset_works(): void
     {
         $config = ReadOnlyConfig::fromArray(['foo' => ['bar' => 'baz']]);
 
@@ -125,8 +143,10 @@ final class ReadOnlyConfigTest extends TestCase
         $this->assertFalse(isset($config['foo.biz']));
     }
 
-    /** @test */
-    public function test_array_access_set_throws()
+    /**
+     * @test
+     */
+    public function test_array_access_set_throws(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The configuration is read-only and cannot be changed.');
@@ -135,8 +155,10 @@ final class ReadOnlyConfigTest extends TestCase
         $config['foo'] = 'bar';
     }
 
-    /** @test */
-    public function test_array_access_unset_throws()
+    /**
+     * @test
+     */
+    public function test_array_access_unset_throws(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The configuration is read-only and cannot be changed.');

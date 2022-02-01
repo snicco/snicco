@@ -17,8 +17,10 @@ use function array_values;
 final class ContentTypeTest extends TestCase
 {
 
-    /** @test */
-    public function all_displayers_that_can_display_are_included()
+    /**
+     * @test
+     */
+    public function all_displayers_that_can_display_are_included(): void
     {
         $filter = new ContentType();
         $displayers = [
@@ -49,8 +51,10 @@ final class ContentTypeTest extends TestCase
         $this->assertSame([$d3, $d4], array_values($filtered));
     }
 
-    /** @test */
-    public function the_content_type_is_only_parsed_for_the_first_mime_type()
+    /**
+     * @test
+     */
+    public function the_content_type_is_only_parsed_for_the_first_mime_type(): void
     {
         $filter = new ContentType();
         $displayers = [

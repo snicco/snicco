@@ -24,8 +24,10 @@ final class ApplicationTest extends TestCase
 
     private string $base_dir;
 
-    /** @test */
-    public function test_construct()
+    /**
+     * @test
+     */
+    public function test_construct(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -35,8 +37,10 @@ final class ApplicationTest extends TestCase
         $this->assertInstanceOf(Application::class, $app);
     }
 
-    /** @test */
-    public function test_array_access_proxies_to_set_container()
+    /**
+     * @test
+     */
+    public function test_array_access_proxies_to_set_container(): void
     {
         $container = $this->createContainer();
         $container['foo'] = 'bar';
@@ -65,8 +69,10 @@ final class ApplicationTest extends TestCase
         $this->assertTrue(isset($container['baz']));
     }
 
-    /** @test */
-    public function test_env_returns_environment()
+    /**
+     * @test
+     */
+    public function test_env_returns_environment(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -77,8 +83,10 @@ final class ApplicationTest extends TestCase
         $this->assertEquals($env, $app->env());
     }
 
-    /** @test */
-    public function the_environment_is_not_saved_in_the_container_so_that_it_cannot_be_overwritten()
+    /**
+     * @test
+     */
+    public function the_environment_is_not_saved_in_the_container_so_that_it_cannot_be_overwritten(): void
     {
         $app = new Application(
             $container = $this->createContainer(),
@@ -89,8 +97,10 @@ final class ApplicationTest extends TestCase
         $this->assertFalse($container->has(Environment::class));
     }
 
-    /** @test */
-    public function the_container_is_accessible()
+    /**
+     * @test
+     */
+    public function the_container_is_accessible(): void
     {
         $app = new Application(
             $container = $this->createContainer(),
@@ -100,8 +110,10 @@ final class ApplicationTest extends TestCase
         $this->assertSame($container, $app->di());
     }
 
-    /** @test */
-    public function the_app_dirs_are_accessible()
+    /**
+     * @test
+     */
+    public function the_app_dirs_are_accessible(): void
     {
         $app = new Application(
             $container = $this->createContainer(),
@@ -113,8 +125,10 @@ final class ApplicationTest extends TestCase
         $this->assertEquals($dirs, $app->directories());
     }
 
-    /** @test */
-    public function the_container_is_bound_as_the_psr_container_interface()
+    /**
+     * @test
+     */
+    public function the_container_is_bound_as_the_psr_container_interface(): void
     {
         $app = new Application(
             $container = $this->createContainer(),
@@ -125,8 +139,10 @@ final class ApplicationTest extends TestCase
         $this->assertSame($container, $app[ContainerInterface::class]);
     }
 
-    /** @test */
-    public function the_application_cant_be_bootstrapped_twice()
+    /**
+     * @test
+     */
+    public function the_application_cant_be_bootstrapped_twice(): void
     {
         $app = new Application(
             $container = $this->createContainer(),
@@ -142,8 +158,10 @@ final class ApplicationTest extends TestCase
         $app->boot();
     }
 
-    /** @test */
-    public function test_exception_if_app_php_config_file_is_not_found()
+    /**
+     * @test
+     */
+    public function test_exception_if_app_php_config_file_is_not_found(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -162,8 +180,10 @@ final class ApplicationTest extends TestCase
         $app->boot();
     }
 
-    /** @test */
-    public function the_config_method_on_the_app_returns_are_read_only_config()
+    /**
+     * @test
+     */
+    public function the_config_method_on_the_app_returns_are_read_only_config(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -186,8 +206,10 @@ final class ApplicationTest extends TestCase
         $this->assertSame('bar', $config->get('app.foo'));
     }
 
-    /** @test */
-    public function offset_set_throws_after_booting()
+    /**
+     * @test
+     */
+    public function offset_set_throws_after_booting(): void
     {
         $app = new Application(
             $container = $this->createContainer(),
@@ -202,8 +224,10 @@ final class ApplicationTest extends TestCase
         $container['foo'] = 'bar';
     }
 
-    /** @test */
-    public function offset_unset_throws_after_booting()
+    /**
+     * @test
+     */
+    public function offset_unset_throws_after_booting(): void
     {
         $app = new Application(
             $container = $this->createContainer(),

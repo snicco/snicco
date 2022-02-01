@@ -13,8 +13,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class RouteGroupsTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function an_exception_is_thrown_if_a_route_is_added_and_delegated_attributes_have_not_been_applied()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_a_route_is_added_and_delegated_attributes_have_not_been_applied(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Cant register route [r1] because delegated');
@@ -22,8 +24,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->routeConfigurator()->prefix('foo')->get('r1', '/bar', RoutingTestController::class);
     }
 
-    /** @test */
-    public function middleware_is_merged_for_route_groups()
+    /**
+     * @test
+     */
+    public function middleware_is_merged_for_route_groups(): void
     {
         $this->routeConfigurator()
             ->middleware('foo:FOO')
@@ -43,8 +47,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static . ':FOO', $post_request);
     }
 
-    /** @test */
-    public function the_group_namespace_is_applied_to_child_routes()
+    /**
+     * @test
+     */
+    public function the_group_namespace_is_applied_to_child_routes(): void
     {
         $this->routeConfigurator()
             ->namespace(self::CONTROLLER_NAMESPACE)
@@ -56,8 +62,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $get_request);
     }
 
-    /** @test */
-    public function a_group_can_prefix_all_child_route_urls()
+    /**
+     * @test
+     */
+    public function a_group_can_prefix_all_child_route_urls(): void
     {
         $this->routeConfigurator()
             ->prefix('foo')
@@ -79,8 +87,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertSame('/foo/bar', $this->generator->toRoute('r1'));
     }
 
-    /** @test */
-    public function a_group_name_can_be_prefixed_to_child_routes()
+    /**
+     * @test
+     */
+    public function a_group_name_can_be_prefixed_to_child_routes(): void
     {
         $this->routeConfigurator()
             ->name('users')
@@ -96,8 +106,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->generator->toRoute('route1');
     }
 
-    /** @test */
-    public function the_namespace_is_always_overwritten_by_child_routes()
+    /**
+     * @test
+     */
+    public function the_namespace_is_always_overwritten_by_child_routes(): void
     {
         $this->routeConfigurator()
             ->namespace('Tests\FalseNamespace')
@@ -114,8 +126,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $get_request);
     }
 
-    /** @test */
-    public function group_prefixes_are_merged_on_multiple_levels()
+    /**
+     * @test
+     */
+    public function group_prefixes_are_merged_on_multiple_levels(): void
     {
         $this->routeConfigurator()->prefix('foo')->group(function (WebRoutingConfigurator $router) {
             $router
@@ -142,8 +156,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertEmptyBody($this->frontendRequest('/bar/biz'));
     }
 
-    /** @test */
-    public function group_names_are_merged_on_multiple_levels()
+    /**
+     * @test
+     */
+    public function group_names_are_merged_on_multiple_levels(): void
     {
         $this->routeConfigurator()
             ->name('users')
@@ -164,8 +180,10 @@ class RouteGroupsTest extends HttpRunnerTestCase
         $this->generator->toRoute('admins.calvin');
     }
 
-    /** @test */
-    public function middleware_is_merged_on_multiple_levels()
+    /**
+     * @test
+     */
+    public function middleware_is_merged_on_multiple_levels(): void
     {
         $this->routeConfigurator()
             ->middleware('foo:FOO')

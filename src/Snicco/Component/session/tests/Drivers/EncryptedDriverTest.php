@@ -18,8 +18,10 @@ final class EncryptedDriverTest extends TestCase
 
     use SessionDriverTests;
 
-    /** @test */
-    public function session_content_is_encrypted()
+    /**
+     * @test
+     */
+    public function session_content_is_encrypted(): void
     {
         $array_driver = new InMemoryDriver();
 

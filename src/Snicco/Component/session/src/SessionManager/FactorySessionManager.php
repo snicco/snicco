@@ -124,7 +124,7 @@ final class FactorySessionManager implements SessionManager
         }
     }
 
-    private function destroyInactiveSessions()
+    private function destroyInactiveSessions(): void
     {
         $this->driver->gc($this->config->idleTimeoutInSec());
     }

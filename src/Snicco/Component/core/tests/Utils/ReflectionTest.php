@@ -11,8 +11,10 @@ use Snicco\Component\Core\Utils\Reflection;
 final class ReflectionTest extends TestCase
 {
 
-    /** @test */
-    public function test_getReflectionFunction_with_class()
+    /**
+     * @test
+     */
+    public function test_getReflectionFunction_with_class(): void
     {
         $this->assertNull(Reflection::getReflectionFunction(NoConstructor::class));
         $reflection = Reflection::getReflectionFunction(ClassWithConstructor::class);
@@ -21,8 +23,10 @@ final class ReflectionTest extends TestCase
         $this->assertSame('foo', $reflection->getParameters()[0]->getName());
     }
 
-    /** @test */
-    public function test_getReflectionFunction_with_closure()
+    /**
+     * @test
+     */
+    public function test_getReflectionFunction_with_closure(): void
     {
         $closure = function ($foo) {
         };
@@ -31,8 +35,10 @@ final class ReflectionTest extends TestCase
         $this->assertSame('foo', $reflection->getParameters()[0]->getName());
     }
 
-    /** @test */
-    public function test_getReflectionFunction_with_class_and_method()
+    /**
+     * @test
+     */
+    public function test_getReflectionFunction_with_class_and_method(): void
     {
         $reflection =
             Reflection::getReflectionFunction([ClassWithConstructor::class, 'someMethod']);
@@ -53,7 +59,7 @@ class ClassWithConstructor
     {
     }
 
-    public function someMethod(string $foo, string $bar)
+    public function someMethod(string $foo, string $bar): void
     {
     }
 

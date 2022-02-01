@@ -19,8 +19,10 @@ use function Snicco\Component\Core\Utils\isInterface;
 final class FunctionsTest extends TestCase
 {
 
-    /** @test */
-    public function test_isInterface_with_object()
+    /**
+     * @test
+     */
+    public function test_isInterface_with_object(): void
     {
         $subject = new TestSubject();
 
@@ -29,16 +31,20 @@ final class FunctionsTest extends TestCase
         $this->assertFalse(isInterface($subject, JsonSerializable::class));
     }
 
-    /** @test */
-    public function test_is_interface_with_class_string()
+    /**
+     * @test
+     */
+    public function test_is_interface_with_class_string(): void
     {
         $this->assertTrue(isInterface(TestSubject::class, Countable::class));
 
         $this->assertFalse(isInterface(TestSubject::class, JsonSerializable::class));
     }
 
-    /** @test */
-    public function test_with_extended_interface()
+    /**
+     * @test
+     */
+    public function test_with_extended_interface(): void
     {
         $this->assertTrue(isInterface(new TestTraversable(), Iterator::class));
         $this->assertFalse(isInterface(new TestTraversable(), ArrayAccess::class));
@@ -49,21 +55,27 @@ final class FunctionsTest extends TestCase
         $this->assertTrue(isInterface(TestTraversable::class, Traversable::class));
     }
 
-    /** @test */
-    public function test_true_with_interface_string()
+    /**
+     * @test
+     */
+    public function test_true_with_interface_string(): void
     {
         $this->assertTrue(isInterface(ContainerInterface::class, ContainerInterface::class));
         $this->assertFalse(isInterface(ContainerInterface::class, ArrayAccess::class));
     }
 
-    /** @test */
-    public function test_false_for_missing_class()
+    /**
+     * @test
+     */
+    public function test_false_for_missing_class(): void
     {
         $this->assertFalse(isInterface('Foo', ArrayAccess::class));
     }
 
-    /** @test */
-    public function test_exception_for_bad_interface()
+    /**
+     * @test
+     */
+    public function test_exception_for_bad_interface(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Interface [Foo] does not exist.');
@@ -71,8 +83,10 @@ final class FunctionsTest extends TestCase
         $foo = isInterface(TestTraversable::class, 'Foo');
     }
 
-    /** @test */
-    public function test_with_child_interface_as_string()
+    /**
+     * @test
+     */
+    public function test_with_child_interface_as_string(): void
     {
         $this->assertTrue(isInterface(Iterator::class, Traversable::class));
         $this->assertFalse(isInterface(Traversable::class, Iterator::class));

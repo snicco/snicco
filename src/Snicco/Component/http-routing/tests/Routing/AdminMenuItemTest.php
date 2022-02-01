@@ -12,8 +12,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController
 final class AdminMenuItemTest extends TestCase
 {
 
-    /** @test */
-    public function the_menu_item_can_be_constructed_just_with_a_route()
+    /**
+     * @test
+     */
+    public function the_menu_item_can_be_constructed_just_with_a_route(): void
     {
         $route = Route::create(
             '/wp-admin/admin.php/foo',
@@ -46,8 +48,10 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame(null, $item->position());
     }
 
-    /** @test */
-    public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route()
+    /**
+     * @test
+     */
+    public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route(): void
     {
         $route = Route::create(
             '/wp-admin/admin.php/foo',
@@ -106,8 +110,10 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
     }
 
-    /** @test */
-    public function test_empty_page_title_throws_exception()
+    /**
+     * @test
+     */
+    public function test_empty_page_title_throws_exception(): void
     {
         $this->expectExceptionMessage('$page_title cant be empty');
         $route = $this->getRoute();
@@ -125,8 +131,10 @@ final class AdminMenuItemTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_empty_menu_title_throws_exception()
+    /**
+     * @test
+     */
+    public function test_empty_menu_title_throws_exception(): void
     {
         $this->expectExceptionMessage('$menu_title cant be empty');
         $route = $this->getRoute();
@@ -136,8 +144,10 @@ final class AdminMenuItemTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function test_a_capability_can_be_set()
+    /**
+     * @test
+     */
+    public function test_a_capability_can_be_set(): void
     {
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => 'read.whatever']);
@@ -145,16 +155,20 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('read.whatever', $item->requiredCapability());
     }
 
-    /** @test */
-    public function test_empty_non_null_capability_throws()
+    /**
+     * @test
+     */
+    public function test_empty_non_null_capability_throws(): void
     {
         $this->expectExceptionMessage('$capability has to be null or non empty string.');
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => '']);
     }
 
-    /** @test */
-    public function test_a_icon_can_be_set()
+    /**
+     * @test
+     */
+    public function test_a_icon_can_be_set(): void
     {
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => 'admin-site-icon']);
@@ -162,16 +176,20 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('admin-site-icon', $item->icon());
     }
 
-    /** @test */
-    public function test_empty_non_null_icon_throws()
+    /**
+     * @test
+     */
+    public function test_empty_non_null_icon_throws(): void
     {
         $this->expectExceptionMessage('$icon has to be null or non empty string.');
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => '']);
     }
 
-    /** @test */
-    public function test_a_position_can_be_set()
+    /**
+     * @test
+     */
+    public function test_a_position_can_be_set(): void
     {
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::POSITION => 12]);
@@ -179,16 +197,20 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame(12, $item->position());
     }
 
-    /** @test */
-    public function test_empty_non_null_parent_throws()
+    /**
+     * @test
+     */
+    public function test_empty_non_null_parent_throws(): void
     {
         $this->expectExceptionMessage('$parent_slug has to be null or non empty string.');
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [], '');
     }
 
-    /** @test */
-    public function test_a_parent_slug_can_be_set()
+    /**
+     * @test
+     */
+    public function test_a_parent_slug_can_be_set(): void
     {
         $route = $this->getRoute();
         $item = AdminMenuItem::fromRoute($route, [], 'parent_slug');

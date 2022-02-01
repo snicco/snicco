@@ -85,7 +85,7 @@ final class FastRouteSyntaxConverter
         return $count > 1;
     }
 
-    private function combineOptionalSegments(string &$url_pattern)
+    private function combineOptionalSegments(string &$url_pattern): void
     {
         preg_match('/(\[(.*?)])/', $url_pattern, $matches);
 
@@ -113,7 +113,7 @@ final class FastRouteSyntaxConverter
     /**
      * @note Fast Route uses unescaped forward slashes and wraps the entire regex in ~ chars.
      */
-    private function replaceEscapedForwardSlashes(string $regex)
+    private function replaceEscapedForwardSlashes(string $regex): string
     {
         return str_replace('\\/', '/', $regex);
     }

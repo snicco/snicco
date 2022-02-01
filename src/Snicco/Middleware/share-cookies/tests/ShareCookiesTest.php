@@ -12,8 +12,10 @@ use Snicco\Middleware\ShareCookies\ShareCookies;
 class ShareCookiesTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function response_cookies_can_be_added()
+    /**
+     * @test
+     */
+    public function response_cookies_can_be_added(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withCookie(new Cookie('foo', 'bar'));
@@ -31,8 +33,10 @@ class ShareCookiesTest extends MiddlewareTestCase
         );
     }
 
-    /** @test */
-    public function multiple_cookies_can_be_added()
+    /**
+     * @test
+     */
+    public function multiple_cookies_can_be_added(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             $cookie1 = new Cookie('foo', 'bar');
@@ -59,8 +63,10 @@ class ShareCookiesTest extends MiddlewareTestCase
         );
     }
 
-    /** @test */
-    public function a_cookie_can_be_deleted()
+    /**
+     * @test
+     */
+    public function a_cookie_can_be_deleted(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withoutCookie('foo');

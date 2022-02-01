@@ -23,8 +23,10 @@ final class LazyErrorHandlerTest extends TestCase
     use CreateTestPsrContainer;
     use CreateTestPsr17Factories;
 
-    /** @test */
-    public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to()
+    /**
+     * @test
+     */
+    public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to(): void
     {
         $c = $this->createContainer();
         $c[HttpErrorHandlerInterface::class] = new TestableErrorHandler(function () {
@@ -34,8 +36,10 @@ final class LazyErrorHandlerTest extends TestCase
         $this->assertInstanceOf(HttpErrorHandlerInterface::class, $lazy_handler);
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_the_lazy_error_handler_doesnt_have_the_http_error_handler_interface()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_lazy_error_handler_doesnt_have_the_http_error_handler_interface(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -45,8 +49,10 @@ final class LazyErrorHandlerTest extends TestCase
         $lazy_handler = new LazyHttpErrorHandler($c = $this->createContainer());
     }
 
-    /** @test */
-    public function calls_are_proxies_to_the_real_handler()
+    /**
+     * @test
+     */
+    public function calls_are_proxies_to_the_real_handler(): void
     {
         $count = 0;
         $c = $this->createContainer();

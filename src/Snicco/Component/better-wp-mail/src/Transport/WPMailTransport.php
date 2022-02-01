@@ -176,7 +176,7 @@ final class WPMailTransport implements Transport
         return $stringify;
     }
 
-    private function resetPHPMailer()
+    private function resetPHPMailer(): void
     {
         global $phpmailer;
         $phpmailer->Body = '';

@@ -11,8 +11,10 @@ use Snicco\Middleware\DefaultHeaders\DefaultHeaders;
 class DefaultHeadersTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function all_headers_are_added_to_the_response()
+    /**
+     * @test
+     */
+    public function all_headers_are_added_to_the_response(): void
     {
         $response = $this->runMiddleware(
             new DefaultHeaders(['foo' => 'bar', 'baz' => 'biz']),
@@ -25,8 +27,10 @@ class DefaultHeadersTest extends MiddlewareTestCase
         $response->psr()->assertHeader('baz', 'biz');
     }
 
-    /** @test */
-    public function header_values_are_not_overwritten()
+    /**
+     * @test
+     */
+    public function header_values_are_not_overwritten(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withHeader('foo', 'bar');

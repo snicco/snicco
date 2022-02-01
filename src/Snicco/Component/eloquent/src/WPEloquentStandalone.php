@@ -63,7 +63,7 @@ final class WPEloquentStandalone
         string $model_namespace,
         string $factory_namespace,
         string $faker_locale = 'en_US'
-    ) {
+    ): void {
         if (!class_exists(FakerGenerator::class)) {
             throw new RuntimeException(
                 'Faker is not installed. Please try running composer require fakerphp/faker --dev'
@@ -92,7 +92,7 @@ final class WPEloquentStandalone
         WPModel::$factory_namespace = $factory_namespace;
     }
 
-    public function withEvents(Dispatcher $event_dispatcher)
+    public function withEvents(Dispatcher $event_dispatcher): void
     {
         $this->bindEventDispatcher($event_dispatcher);
     }
@@ -119,7 +119,7 @@ final class WPEloquentStandalone
         return $connection_resolver;
     }
 
-    private function bindConfig()
+    private function bindConfig(): void
     {
         if ($this->illuminate_container->has('config')) {
             $config = $this->illuminate_container->get('config');
@@ -134,7 +134,7 @@ final class WPEloquentStandalone
         }
     }
 
-    private function bindTransactionManager()
+    private function bindTransactionManager(): void
     {
         $this->illuminate_container->singletonIf('db.transactions', function () {
             return new DatabaseTransactionsManager;

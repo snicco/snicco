@@ -19,8 +19,10 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
 
     private MysqliConnection $connection;
 
-    /** @test */
-    public function errors_get_handled_for_inserts()
+    /**
+     * @test
+     */
+    public function errors_get_handled_for_inserts(): void
     {
         try {
             $this->connection->insert('foo', ['bar']);
@@ -35,8 +37,10 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function errors_get_handles_for_updates()
+    /**
+     * @test
+     */
+    public function errors_get_handles_for_updates(): void
     {
         try {
             $this->connection->update('foobar', ['foo' => 'bar']);
@@ -51,8 +55,10 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function errors_get_handled_for_deletes()
+    /**
+     * @test
+     */
+    public function errors_get_handled_for_deletes(): void
     {
         try {
             $this->connection->delete('foobar', ['foo' => 'bar']);
@@ -67,8 +73,10 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function errors_get_handled_for_unprepared_queries()
+    /**
+     * @test
+     */
+    public function errors_get_handled_for_unprepared_queries(): void
     {
         try {
             $this->connection->unprepared('foobar');
@@ -83,8 +91,10 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function errors_get_handled_for_cursor_selects()
+    /**
+     * @test
+     */
+    public function errors_get_handled_for_cursor_selects(): void
     {
         try {
             $generator = $this->connection->cursor('foobar', ['foo' => 'bar']);
@@ -99,8 +109,10 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function errors_get_handled_for_selects()
+    /**
+     * @test
+     */
+    public function errors_get_handled_for_selects(): void
     {
         try {
             $this->connection->select('foobar', ['foo' => 'bar']);

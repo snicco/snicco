@@ -19,8 +19,10 @@ final class UrlGenerationContextTest extends TestCase
 
     private ServerRequestInterface $base_request;
 
-    /** @test */
-    public function test_properties()
+    /**
+     * @test
+     */
+    public function test_properties(): void
     {
         $request = $this->frontendRequest('https://foobar.com:4000/foo?bar=baz#fragment');
 
@@ -38,8 +40,10 @@ final class UrlGenerationContextTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_ports_from_request()
+    /**
+     * @test
+     */
+    public function test_ports_from_request(): void
     {
         $context = UrlGenerationContext::fromRequest($this->base_request);
         $this->assertSame(80, $context->httpPort());
@@ -60,8 +64,10 @@ final class UrlGenerationContextTest extends TestCase
         $this->assertSame(4000, $context->httpsPort());
     }
 
-    /** @test */
-    public function test_exception_for_empty_host()
+    /**
+     * @test
+     */
+    public function test_exception_for_empty_host(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$host cant be empty');
@@ -72,15 +78,19 @@ final class UrlGenerationContextTest extends TestCase
         $context = UrlGenerationContext::fromRequest($request);
     }
 
-    /** @test */
-    public function test_should_force_https_can_be_set()
+    /**
+     * @test
+     */
+    public function test_should_force_https_can_be_set(): void
     {
         $context = UrlGenerationContext::fromRequest($this->base_request, true);
         $this->assertTrue($context->shouldForceHttps());
     }
 
-    /** @test */
-    public function test_referer_header()
+    /**
+     * @test
+     */
+    public function test_referer_header(): void
     {
         $context = UrlGenerationContext::fromRequest(
             $this->base_request->withHeader('referer', '/foo/bar')
@@ -89,8 +99,10 @@ final class UrlGenerationContextTest extends TestCase
         $this->assertSame('/foo/bar', $context->referer());
     }
 
-    /** @test */
-    public function test_referer_returns_null_for_empty_string()
+    /**
+     * @test
+     */
+    public function test_referer_returns_null_for_empty_string(): void
     {
         $context = UrlGenerationContext::fromRequest(
             $this->base_request->withHeader('referer', '')
@@ -99,8 +111,10 @@ final class UrlGenerationContextTest extends TestCase
         $this->assertSame(null, $context->referer());
     }
 
-    /** @test */
-    public function test_exception_for_request_scheme_not_http_or_https()
+    /**
+     * @test
+     */
+    public function test_exception_for_request_scheme_not_http_or_https(): void
     {
         $this->expectExceptionMessage(
             'The scheme for url generation has to be either http or https.'
@@ -110,8 +124,10 @@ final class UrlGenerationContextTest extends TestCase
         );
     }
 
-    /** @test */
-    public function testForConsole()
+    /**
+     * @test
+     */
+    public function testForConsole(): void
     {
         $context = UrlGenerationContext::forConsole(
             'foobar.com',
@@ -151,8 +167,10 @@ final class UrlGenerationContextTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_forConsoleThrowsExceptionOnHostMismatch()
+    /**
+     * @test
+     */
+    public function test_forConsoleThrowsExceptionOnHostMismatch(): void
     {
         $this->expectExceptionMessage(
             '$host and $current_uri_as_string are not compatible because the http host is different.'
@@ -167,8 +185,10 @@ final class UrlGenerationContextTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_isSecure()
+    /**
+     * @test
+     */
+    public function test_isSecure(): void
     {
         $context = UrlGenerationContext::forConsole(
             'foo.com',

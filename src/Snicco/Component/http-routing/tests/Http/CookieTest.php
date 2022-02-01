@@ -13,8 +13,10 @@ use Snicco\Component\HttpRouting\Http\Cookie;
 class CookieTest extends TestCase
 {
 
-    /** @test */
-    public function testIsImmutable()
+    /**
+     * @test
+     */
+    public function testIsImmutable(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie2 = $cookie->withPath('/web');
@@ -22,7 +24,7 @@ class CookieTest extends TestCase
         $this->assertNotSame($cookie, $cookie2);
     }
 
-    public function testDefault()
+    public function testDefault(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -38,7 +40,7 @@ class CookieTest extends TestCase
         ], $cookie->properties());
     }
 
-    public function testAllowJs()
+    public function testAllowJs(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withJsAccess();
@@ -55,7 +57,7 @@ class CookieTest extends TestCase
         ], $cookie->properties());
     }
 
-    public function testAllowUnsecure()
+    public function testAllowUnsecure(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withUnsecureHttp();
@@ -72,7 +74,7 @@ class CookieTest extends TestCase
         ], $cookie->properties());
     }
 
-    public function testSameSite()
+    public function testSameSite(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withSameSite('strict');
@@ -116,7 +118,7 @@ class CookieTest extends TestCase
         $cookie->withSameSite('bogus');
     }
 
-    public function testExpiresInteger()
+    public function testExpiresInteger(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withExpiryTimestamp(1000);
@@ -132,7 +134,7 @@ class CookieTest extends TestCase
         ], $cookie->properties());
     }
 
-    public function testExpiresDatetimeInterface()
+    public function testExpiresDatetimeInterface(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -152,14 +154,14 @@ class CookieTest extends TestCase
         ], $cookie->properties());
     }
 
-    public function testExpiresInvalidArgumentThrowsException()
+    public function testExpiresInvalidArgumentThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $cookie = new Cookie('foo', 'bar');
         $cookie->withExpiryTimestamp('1000');
     }
 
-    public function testValueIsUrlEncoded()
+    public function testValueIsUrlEncoded(): void
     {
         $cookie = new Cookie('foo_cookie', 'foo bar');
 

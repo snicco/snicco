@@ -63,7 +63,7 @@ class BladeTestCase extends TestCase
         //$this->clearCache();
     }
 
-    protected function assertViewContent(string $expected, $actual)
+    protected function assertViewContent(string $expected, $actual): void
     {
         $actual = ($actual instanceof View) ? $actual->toString() : $actual;
 
@@ -72,7 +72,7 @@ class BladeTestCase extends TestCase
         PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
     }
 
-    private function clearCache()
+    private function clearCache(): void
     {
         $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
         foreach ($files as $file) {

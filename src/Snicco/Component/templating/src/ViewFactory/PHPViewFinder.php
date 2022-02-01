@@ -58,7 +58,7 @@ final class PHPViewFinder
         throw new ViewNotFound("No file can be found for view name [$view_name].");
     }
 
-    private function normalizeViewName(string $view_name)
+    private function normalizeViewName(string $view_name): string
     {
         $name = strstr($view_name, '.php', true);
         $name = ($name === false) ? $view_name : $name;

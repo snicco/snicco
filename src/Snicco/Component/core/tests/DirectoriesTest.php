@@ -13,16 +13,20 @@ final class DirectoriesTest extends TestCase
 
     private string $valid_base_dir;
 
-    /** @test */
-    public function test_from_defaults()
+    /**
+     * @test
+     */
+    public function test_from_defaults(): void
     {
         $dirs = Directories::fromDefaults($this->valid_base_dir);
 
         $this->assertInstanceOf(Directories::class, $dirs);
     }
 
-    /** @test */
-    public function test_exception_if_base_directory_is_not_readable()
+    /**
+     * @test
+     */
+    public function test_exception_if_base_directory_is_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$base_directory [bogus] is not readable.');
@@ -30,32 +34,40 @@ final class DirectoriesTest extends TestCase
         $dirs = Directories::fromDefaults('bogus');
     }
 
-    /** @test */
-    public function test_config_directory()
+    /**
+     * @test
+     */
+    public function test_config_directory(): void
     {
         $dirs = Directories::fromDefaults($this->valid_base_dir);
 
         $this->assertSame($this->valid_base_dir . '/config', $dirs->configDir());
     }
 
-    /** @test */
-    public function test_cache_directory()
+    /**
+     * @test
+     */
+    public function test_cache_directory(): void
     {
         $dirs = Directories::fromDefaults($this->valid_base_dir);
 
         $this->assertSame($this->valid_base_dir . '/var/cache', $dirs->cacheDir());
     }
 
-    /** @test */
-    public function test_log_directory()
+    /**
+     * @test
+     */
+    public function test_log_directory(): void
     {
         $dirs = Directories::fromDefaults($this->valid_base_dir);
 
         $this->assertSame($this->valid_base_dir . '/var/log', $dirs->logDir());
     }
 
-    /** @test */
-    public function test_exception_if_config_dir_not_readable()
+    /**
+     * @test
+     */
+    public function test_exception_if_config_dir_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -65,8 +77,10 @@ final class DirectoriesTest extends TestCase
         $dirs = new Directories(__DIR__, __DIR__ . '/config', __DIR__ . '/cache', __DIR__ . '/log');
     }
 
-    /** @test */
-    public function test_exception_if_cache_dir_not_readable()
+    /**
+     * @test
+     */
+    public function test_exception_if_cache_dir_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -81,8 +95,10 @@ final class DirectoriesTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_exception_if_log_dir_not_readable()
+    /**
+     * @test
+     */
+    public function test_exception_if_log_dir_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(

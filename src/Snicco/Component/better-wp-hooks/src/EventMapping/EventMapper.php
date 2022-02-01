@@ -93,7 +93,7 @@ final class EventMapper
         );
     }
 
-    private function mapValidated(string $wordpress_hook_name, string $map_to, int $priority)
+    private function mapValidated(string $wordpress_hook_name, string $map_to, int $priority): void
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
             $this->wp->addAction(
@@ -171,6 +171,9 @@ final class EventMapper
         $this->ensureFirst($wordpress_hook_name, $map_to_event_class);
     }
 
+    /**
+     * @return void
+     */
     private function ensureFirst(string $wordpress_hook_name, string $map_to)
     {
         $filter = $this->wp->currentFilter();
@@ -220,7 +223,7 @@ final class EventMapper
         $this->ensureLast($wordpress_hook_name, $map_to);
     }
 
-    private function ensureLast(string $wordpress_hook_name, string $map_to)
+    private function ensureLast(string $wordpress_hook_name, string $map_to): void
     {
         $this->wp->addAction($wordpress_hook_name, function (...$args) use ($map_to) {
             // Even if somebody else registered a filter with PHP_INT_MAX our mapped action

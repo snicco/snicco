@@ -14,8 +14,10 @@ use function array_merge;
 final class AddressTest extends WPTestCase
 {
 
-    /** @test */
-    public function test_from_string()
+    /**
+     * @test
+     */
+    public function test_from_string(): void
     {
         $address = Mailbox::create('calvin@web.de');
         $this->assertSame('calvin@web.de', $address->address());
@@ -28,24 +30,30 @@ final class AddressTest extends WPTestCase
         $this->assertSame('Calvin Alkan', $address->name());
     }
 
-    /** @test */
-    public function test_from_string_throws_exception_for_invalid_email()
+    /**
+     * @test
+     */
+    public function test_from_string_throws_exception_for_invalid_email(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[calvin@webde] is not a valid email');
         $address = Mailbox::create('calvin@webde');
     }
 
-    /** @test */
-    public function test_from_string_throws_exception_for_bad_pattern()
+    /**
+     * @test
+     */
+    public function test_from_string_throws_exception_for_bad_pattern(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[Calvin <calvin@webde] is not a valid address');
         $address = Mailbox::create('Calvin <calvin@webde');
     }
 
-    /** @test */
-    public function test_from_array_with_names_keys()
+    /**
+     * @test
+     */
+    public function test_from_array_with_names_keys(): void
     {
         $address = Mailbox::create(['name' => 'Calvin Alkan', 'email' => 'c@web.de']);
         $this->assertSame('c@web.de', $address->address());
@@ -58,8 +66,10 @@ final class AddressTest extends WPTestCase
         $this->assertSame('Calvin Alkan', $address->name());
     }
 
-    /** @test */
-    public function test_from_array_with_numerical_keys()
+    /**
+     * @test
+     */
+    public function test_from_array_with_numerical_keys(): void
     {
         $address = Mailbox::create(['c@web.de', 'Calvin Alkan']);
         $this->assertSame('c@web.de', $address->address());
@@ -67,8 +77,10 @@ final class AddressTest extends WPTestCase
         $this->assertSame('Calvin Alkan', $address->name());
     }
 
-    /** @test */
-    public function test_from_array_with_numerical_keys_must_have_email_part_first()
+    /**
+     * @test
+     */
+    public function test_from_array_with_numerical_keys_must_have_email_part_first(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[calvin alkan] is not a valid email.');
@@ -76,8 +88,10 @@ final class AddressTest extends WPTestCase
         $address = Mailbox::create(['Calvin Alkan', 'c@web.de']);
     }
 
-    /** @test */
-    public function test_from_wp_user_with_first_name_and_last_name()
+    /**
+     * @test
+     */
+    public function test_from_wp_user_with_first_name_and_last_name(): void
     {
         $admin = $this->createAdmin([
             'first_name' => 'Calvin',
@@ -110,8 +124,10 @@ final class AddressTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_from_wp_user_with_only_display_name()
+    /**
+     * @test
+     */
+    public function test_from_wp_user_with_only_display_name(): void
     {
         $admin = $this->createAdmin([
             'display_name' => 'Calvin Alkan',
@@ -125,8 +141,10 @@ final class AddressTest extends WPTestCase
         $this->assertSame('Calvin Alkan', $address->name());
     }
 
-    /** @test */
-    public function test_exception_if_no_valid_argument()
+    /**
+     * @test
+     */
+    public function test_exception_if_no_valid_argument(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(

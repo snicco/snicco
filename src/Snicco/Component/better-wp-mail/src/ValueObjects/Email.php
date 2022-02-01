@@ -236,7 +236,7 @@ class Email
     /**
      * @api
      */
-    final protected function _addAttachment(Attachment $attachment)
+    final protected function _addAttachment(Attachment $attachment): void
     {
         $this->attachments[] = $attachment;
     }
@@ -275,7 +275,7 @@ class Email
     /**
      * @api
      */
-    final protected function _setPriority(int $priority)
+    final protected function _setPriority(int $priority): void
     {
         if ($priority < 1 || $priority > 5) {
             throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
@@ -322,7 +322,7 @@ class Email
     /**
      * @api
      */
-    final protected function _addContext($key, $value = null)
+    final protected function _addContext($key, $value = null): void
     {
         $context = is_array($key) ? $key : [$key => $value];
 
@@ -359,7 +359,7 @@ class Email
     /**
      * @api
      */
-    final protected function _addCustomHeader(string $name, string $value)
+    final protected function _addCustomHeader(string $name, string $value): void
     {
         $this->custom_headers = array_merge($this->custom_headers, [$name => $value]);
     }

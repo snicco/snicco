@@ -21,7 +21,7 @@ trait WriteTestConfig
         }
     }
 
-    private function writeConfig(Application $application, array $data)
+    private function writeConfig(Application $application, array $data): void
     {
         if (!$application->env()->isProduction() && !$application->env()->isStaging()) {
             throw new RuntimeException('app is not in cacheable env.');

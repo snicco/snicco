@@ -24,8 +24,10 @@ final class SignedUrlValidatorTest extends TestCase
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
 
-    /** @test */
-    public function invalid_if_changed_path()
+    /**
+     * @test
+     */
+    public function invalid_if_changed_path(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
@@ -40,8 +42,10 @@ final class SignedUrlValidatorTest extends TestCase
         $validator->validate($string);
     }
 
-    /** @test */
-    public function invalid_if_tampered_expiry()
+    /**
+     * @test
+     */
+    public function invalid_if_tampered_expiry(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
@@ -54,8 +58,10 @@ final class SignedUrlValidatorTest extends TestCase
         $validator->validate($string);
     }
 
-    /** @test */
-    public function invalid_if_tampered_signature()
+    /**
+     * @test
+     */
+    public function invalid_if_tampered_signature(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
@@ -70,8 +76,10 @@ final class SignedUrlValidatorTest extends TestCase
         }
     }
 
-    /** @test */
-    public function invalid_if_no_signature()
+    /**
+     * @test
+     */
+    public function invalid_if_no_signature(): void
     {
         $e = time() + 10;
         $url = '/foo?expires=' . $e;
@@ -82,8 +90,10 @@ final class SignedUrlValidatorTest extends TestCase
         $validator->validate($url);
     }
 
-    /** @test */
-    public function invalid_if_secret_is_changed()
+    /**
+     * @test
+     */
+    public function invalid_if_secret_is_changed(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
         $validator = new SignedUrlValidator($this->storage, new Sha256Hasher(Secret::generate()));
@@ -92,8 +102,10 @@ final class SignedUrlValidatorTest extends TestCase
         $validator->validate($signed_url->asString());
     }
 
-    /** @test */
-    public function invalid_if_expired()
+    /**
+     * @test
+     */
+    public function invalid_if_expired(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
@@ -112,8 +124,10 @@ final class SignedUrlValidatorTest extends TestCase
         $validator->validate($signed_url->asString());
     }
 
-    /** @test */
-    public function invalid_after_max_usage()
+    /**
+     * @test
+     */
+    public function invalid_after_max_usage(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10, 2);
         $validator = new SignedUrlValidator(
@@ -129,8 +143,10 @@ final class SignedUrlValidatorTest extends TestCase
         $validator->validate($signed_url->asString());
     }
 
-    /** @test */
-    public function invalid_if_identifier_is_changed()
+    /**
+     * @test
+     */
+    public function invalid_if_identifier_is_changed(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
@@ -152,7 +168,7 @@ final class SignedUrlValidatorTest extends TestCase
     /**
      * @test
      */
-    public function valid_if_created_with_path_and_validated_with_path()
+    public function valid_if_created_with_path_and_validated_with_path(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
@@ -162,8 +178,10 @@ final class SignedUrlValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function valid_if_created_with_path_and_validated_with_full_url()
+    /**
+     * @test
+     */
+    public function valid_if_created_with_path_and_validated_with_full_url(): void
     {
         $signed_url = $this->url_signer->sign('/bar', 10);
 
@@ -173,8 +191,10 @@ final class SignedUrlValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function valid_if_created_with_full_url_and_validated_with_full_url()
+    /**
+     * @test
+     */
+    public function valid_if_created_with_full_url_and_validated_with_full_url(): void
     {
         $signed_url = $this->url_signer->sign('https://foo.com/bar/baz/', 10);
 
@@ -184,8 +204,10 @@ final class SignedUrlValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function valid_if_created_with_full_url_and_validated_with_path()
+    /**
+     * @test
+     */
+    public function valid_if_created_with_full_url_and_validated_with_path(): void
     {
         $signed_url = $this->url_signer->sign('https://foo.com/bar/baz/', 10);
 
@@ -196,8 +218,10 @@ final class SignedUrlValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function additional_request_data_can_be_added_for_validation()
+    /**
+     * @test
+     */
+    public function additional_request_data_can_be_added_for_validation(): void
     {
         $pre = $_SERVER['HTTP_USER_AGENT'] ?? null;
         $_SERVER['HTTP_USER_AGENT'] = 'foobar';

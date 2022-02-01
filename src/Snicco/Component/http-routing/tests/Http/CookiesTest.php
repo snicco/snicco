@@ -13,8 +13,10 @@ use function urlencode;
 final class CookiesTest extends TestCase
 {
 
-    /** @test */
-    public function cookies_are_immutable()
+    /**
+     * @test
+     */
+    public function cookies_are_immutable(): void
     {
         $cookies = new Cookies();
         $this->assertSame([], $cookies->toHeaders());
@@ -28,8 +30,10 @@ final class CookiesTest extends TestCase
         );
     }
 
-    /** @test */
-    public function cookies_can_be_converted_to_an_array_of_headers()
+    /**
+     * @test
+     */
+    public function cookies_can_be_converted_to_an_array_of_headers(): void
     {
         $cookie1 = (new Cookie('foo', 'val1'))->withPath('/foo')->withDomain('foo.com');
         $cookie2 = (new Cookie('bar', 'val2'))->withSameSite('strict');

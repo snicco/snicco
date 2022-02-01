@@ -15,8 +15,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function the_request_does_not_have_to_be_bound_in_the_container()
+    /**
+     * @test
+     */
+    public function the_request_does_not_have_to_be_bound_in_the_container(): void
     {
         $this->assertFalse($this->container->has(Request::class));
 
@@ -30,8 +32,10 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
 
-    /** @test */
-    public function its_not_required_to_have_class_dependencies()
+    /**
+     * @test
+     */
+    public function its_not_required_to_have_class_dependencies(): void
     {
         $this->routeConfigurator()->get(
             'r1',
@@ -43,8 +47,10 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody('dortmund:calvin', $request);
     }
 
-    /** @test */
-    public function the_request_can_be_required_together_with_params()
+    /**
+     * @test
+     */
+    public function the_request_can_be_required_together_with_params(): void
     {
         $this->routeConfigurator()->get(
             'r1',
@@ -56,8 +62,10 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody('dortmund:calvin', $request);
     }
 
-    /** @test */
-    public function controllers_are_resolved_from_the_container()
+    /**
+     * @test
+     */
+    public function controllers_are_resolved_from_the_container(): void
     {
         $foo = new Foo();
         $this->container[Foo::class] = $foo;
@@ -71,8 +79,10 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody('FOO_controller', $request);
     }
 
-    /** @test */
-    public function arguments_from_conditions_are_passed_after_class_dependencies()
+    /**
+     * @test
+     */
+    public function arguments_from_conditions_are_passed_after_class_dependencies(): void
     {
         $config = new WritableConfig();
         $this->container[WritableConfig::class] = $config;

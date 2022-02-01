@@ -16,8 +16,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class RouteMiddlewareTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group()
+    /**
+     * @test
+     */
+    public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group(): void
     {
         $this->withMiddlewareGroups([
             'foobar' => [
@@ -39,8 +41,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function middleware_in_the_global_group_is_always_applied()
+    /**
+     * @test
+     */
+    public function middleware_in_the_global_group_is_always_applied(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
 
@@ -60,8 +64,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function duplicate_middleware_is_filtered_out()
+    /**
+     * @test
+     */
+    public function duplicate_middleware_is_filtered_out(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             'foobar'
@@ -89,8 +95,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function duplicate_middleware_does_not_throw_an_exception()
+    /**
+     * @test
+     */
+    public function duplicate_middleware_does_not_throw_an_exception(): void
     {
         $this->routeConfigurator()->middleware(FooMiddleware::class)->group(
             function (WebRoutingConfigurator $router) {
@@ -112,8 +120,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments()
+    /**
+     * @test
+     */
+    public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             ['all', 'foo:FOO']
@@ -133,8 +143,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function duplicate_middleware_is_not_filtered_out_when_passing_different_arguments()
+    /**
+     * @test
+     */
+    public function duplicate_middleware_is_not_filtered_out_when_passing_different_arguments(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             ['all', 'foo:FOO1']
@@ -156,8 +168,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function multiple_middleware_groups_can_be_applied()
+    /**
+     * @test
+     */
+    public function multiple_middleware_groups_can_be_applied(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware(['foo', 'bar']);
@@ -182,7 +196,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function unknown_middleware_throws_an_exception()
+    public function unknown_middleware_throws_an_exception(): void
     {
         $this->expectExceptionMessage('The middleware alias [abc] does not exist.');
 
@@ -192,8 +206,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->runKernel($this->frontendRequest('foo'));
     }
 
-    /** @test */
-    public function multiple_middleware_arguments_can_be_passed()
+    /**
+     * @test
+     */
+    public function multiple_middleware_arguments_can_be_passed(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware('foobar');
@@ -214,8 +230,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static . ':FOO_BAR', $request);
     }
 
-    /** @test */
-    public function boolean_true_false_is_converted()
+    /**
+     * @test
+     */
+    public function boolean_true_false_is_converted(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware(BooleanMiddleware::class . ':true');
@@ -230,8 +248,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static . ':boolean_false', $request);
     }
 
-    /** @test */
-    public function a_middleware_group_can_point_to_a_middleware_alias()
+    /**
+     * @test
+     */
+    public function a_middleware_group_can_point_to_a_middleware_alias(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             'foogroup'
@@ -249,8 +269,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static . ':foo_middleware', $request);
     }
 
-    /** @test */
-    public function group_and_route_middleware_can_be_combined()
+    /**
+     * @test
+     */
+    public function group_and_route_middleware_can_be_combined(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             ['baz', 'foobar']
@@ -270,8 +292,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function a_middleware_group_can_contain_another_middleware_group()
+    /**
+     * @test
+     */
+    public function a_middleware_group_can_contain_another_middleware_group(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             'baz_group'
@@ -300,8 +324,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function middleware_can_be_applied_without_an_alias()
+    /**
+     * @test
+     */
+    public function middleware_can_be_applied_without_an_alias(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             FooMiddleware::class . ':FOO'
@@ -314,8 +340,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function middleware_can_be_sorted()
+    /**
+     * @test
+     */
+    public function middleware_can_be_sorted(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware(['barbaz', FooMiddleware::class]);
@@ -344,8 +372,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined()
+    /**
+     * @test
+     */
+    public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
             'all'

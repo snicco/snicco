@@ -11,8 +11,10 @@ use Snicco\Middleware\MustMatchRoute\MustMatchRoute;
 final class MustMatchRouteTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function test_exception_for_delegated_response()
+    /**
+     * @test
+     */
+    public function test_exception_for_delegated_response(): void
     {
         $this->withNextMiddlewareResponse(function () {
             return $this->getResponseFactory()->delegate();
@@ -28,8 +30,10 @@ final class MustMatchRouteTest extends MiddlewareTestCase
         }
     }
 
-    /** @test */
-    public function test_no_exception_for_handled_response()
+    /**
+     * @test
+     */
+    public function test_no_exception_for_handled_response(): void
     {
         $this->withNextMiddlewareResponse(function () {
             return $this->getResponseFactory()->html('foo');

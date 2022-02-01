@@ -25,8 +25,10 @@ final class ApplicationBootstrappersTest extends TestCase
 
     private string $base_dir;
 
-    /** @test */
-    public function bootstrappers_are_loaded_from_the_app_bootstrapper_key()
+    /**
+     * @test
+     */
+    public function bootstrappers_are_loaded_from_the_app_bootstrapper_key(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -48,8 +50,10 @@ final class ApplicationBootstrappersTest extends TestCase
         $this->assertTrue($app['bootstrapper_1_booted']->val);
     }
 
-    /** @test */
-    public function bootstrappers_are_loaded_after_external_bundles()
+    /**
+     * @test
+     */
+    public function bootstrappers_are_loaded_after_external_bundles(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -77,8 +81,10 @@ final class ApplicationBootstrappersTest extends TestCase
         $this->assertTrue($app->di()->get('bootstrapper_2_booted')->val);
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_the_container_is_modified_after_the_register_method()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_container_is_modified_after_the_register_method(): void
     {
         $app = new Application(
             $this->createContainer(),

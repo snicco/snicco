@@ -15,9 +15,10 @@ class UrlPathTest extends TestCase
 
     /**
      * @dataProvider providePath
+     *
      * @test
      */
-    public function testFromString($path, $expected)
+    public function testFromString($path, $expected): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame($expected, $path->asString());
@@ -25,9 +26,10 @@ class UrlPathTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider providePath
      */
-    public function testWithTrailingSlash($path)
+    public function testWithTrailingSlash($path): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame('/foo/', $path->withTrailingSlash()->asString());
@@ -35,16 +37,19 @@ class UrlPathTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider providePath
      */
-    public function testWithoutTrailingSlash($path)
+    public function testWithoutTrailingSlash($path): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame('/foo', $path->withoutTrailingSlash()->asString());
     }
 
-    /** @test */
-    public function testWithoutTrailingSlashImmutable()
+    /**
+     * @test
+     */
+    public function testWithoutTrailingSlashImmutable(): void
     {
         $path = UrlPath::fromString('foo');
         $path_new = $path->withoutTrailingSlash();
@@ -52,8 +57,10 @@ class UrlPathTest extends TestCase
         $this->assertNotSame($path_new, $path);
     }
 
-    /** @test */
-    public function testWithTrailingSlashImmutable()
+    /**
+     * @test
+     */
+    public function testWithTrailingSlashImmutable(): void
     {
         $path = UrlPath::fromString('foo');
         $path_new = $path->withTrailingSlash();
@@ -63,9 +70,10 @@ class UrlPathTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider prependProvider
      */
-    public function testPrepend($prepend)
+    public function testPrepend($prepend): void
     {
         $path = UrlPath::fromString('/foo');
         $this->assertSame('/' . trim($prepend, '/') . '/foo', $path->prepend($prepend)->asString());
@@ -73,9 +81,10 @@ class UrlPathTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider prependProvider
      */
-    public function testAppend($append_path)
+    public function testAppend($append_path): void
     {
         $expected = Str::endsWith($append_path, '/')
             ? trim($append_path, '/') . '/'
@@ -88,8 +97,10 @@ class UrlPathTest extends TestCase
         $this->assertSame('/foo/' . $expected, $path->append($append_path)->asString());
     }
 
-    /** @test */
-    public function test_startsWith()
+    /**
+     * @test
+     */
+    public function test_startsWith(): void
     {
         $path = UrlPath::fromString('/wp-admin/foo/bar');
 
@@ -104,8 +115,10 @@ class UrlPathTest extends TestCase
         $this->assertFalse($path->startsWith('/wp-admin/foo/baz'));
     }
 
-    /** @test */
-    public function test_equals_with_slash_only()
+    /**
+     * @test
+     */
+    public function test_equals_with_slash_only(): void
     {
         $path = UrlPath::fromString('/');
         $this->assertTrue($path->equals('/'));

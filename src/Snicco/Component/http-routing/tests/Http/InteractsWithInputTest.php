@@ -17,7 +17,7 @@ class InteractsWithInputTest extends TestCase
 
     private Request $request;
 
-    public function testGetFromServer()
+    public function testGetFromServer(): void
     {
         $request = $this->frontendRequest('/foo', ['foo' => 'bar']);
 
@@ -26,7 +26,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame('default', $request->server('bogus', 'default'));
     }
 
-    public function testInputDoesNotDependOnVerb()
+    public function testInputDoesNotDependOnVerb(): void
     {
         $request = $this->request->withQueryParams(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
@@ -35,7 +35,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $request->all());
     }
 
-    public function testInputWithKey()
+    public function testInputWithKey(): void
     {
         $request = $this->request->withQueryParams(
             [
@@ -52,7 +52,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame('calvin', $request->input('team.player'));
     }
 
-    public function testInputNested()
+    public function testInputNested(): void
     {
         $request = $this->request->withQueryParams([
             'products' => [
@@ -74,7 +74,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame(['shoe', 'shirt'], $names);
     }
 
-    public function testInputIsAliasForAll()
+    public function testInputIsAliasForAll(): void
     {
         $request = $this->request->withQueryParams(
             [
@@ -95,7 +95,7 @@ class InteractsWithInputTest extends TestCase
         ], $request->input());
     }
 
-    public function testQuery()
+    public function testQuery(): void
     {
         $request = $this->request->withQueryParams(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->query());
@@ -106,14 +106,14 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame(null, $request->query('foo'));
     }
 
-    public function testQueryString()
+    public function testQueryString(): void
     {
         $request = $this->frontendRequest('https://foobar.com?foo=bar&baz=biz&=');
 
         $this->assertSame('foo=bar&baz=biz', $request->queryString());
     }
 
-    public function testBoolean()
+    public function testBoolean(): void
     {
         $request = $this->request->withQueryParams([
             'foo' => 1,
@@ -134,7 +134,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertFalse($request->boolean('bogus'));
     }
 
-    public function testOnly()
+    public function testOnly(): void
     {
         $request = $this->request->withQueryParams([
             'product' => [
@@ -157,7 +157,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame($expected, $only);
     }
 
-    public function testExcept()
+    public function testExcept(): void
     {
         $request = $this->request->withQueryParams([
             'product' => [
@@ -181,7 +181,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertSame($expected, $input);
     }
 
-    public function testHas()
+    public function testHas(): void
     {
         $request = $this->request->withQueryParams([
             'products' => [
@@ -206,7 +206,7 @@ class InteractsWithInputTest extends TestCase
         );
     }
 
-    public function testHasAny()
+    public function testHasAny(): void
     {
         $request =
             $this->request->withQueryParams(['name' => 'calvin', 'age' => '', 'city' => null]);
@@ -229,7 +229,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertTrue($request->hasAny(['foo.bax', 'foo.baz']));
     }
 
-    public function testFilled()
+    public function testFilled(): void
     {
         $request = $this->request->withQueryParams([
             'dev' => 'calvin',
@@ -240,7 +240,7 @@ class InteractsWithInputTest extends TestCase
         $this->assertFalse($request->filled('foo'));
     }
 
-    public function testMissing()
+    public function testMissing(): void
     {
         $request =
             $this->request->withQueryParams(['name' => 'calvin', 'age' => '', 'city' => null]);

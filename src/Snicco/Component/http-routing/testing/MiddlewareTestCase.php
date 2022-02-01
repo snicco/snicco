@@ -68,7 +68,7 @@ abstract class MiddlewareTestCase extends TestCase
         return new Psr17Factory();
     }
 
-    final protected function withRoutes(array $routes)
+    final protected function withRoutes(array $routes): void
     {
         $this->routes = new RouteCollection($routes);
     }
@@ -77,7 +77,7 @@ abstract class MiddlewareTestCase extends TestCase
      * Overwrite this function if you want to specify a custom response that should be returned by
      * the next middleware.
      */
-    final protected function withNextMiddlewareResponse(Closure $closure)
+    final protected function withNextMiddlewareResponse(Closure $closure): void
     {
         $this->next_middleware_response = $closure;
     }
@@ -160,6 +160,9 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
 
+    /**
+     * @return MiddlewareTestResponse|ResponseInterface&MiddlewareTestResponse
+     */
     private function transformResponse(ResponseInterface $response)
     {
         if (!$response instanceof MiddlewareTestResponse) {

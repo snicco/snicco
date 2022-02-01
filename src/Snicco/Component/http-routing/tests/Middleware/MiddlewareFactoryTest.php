@@ -27,8 +27,10 @@ final class MiddlewareFactoryTest extends TestCase
     private MiddlewareFactory $factory;
     private DIContainer $container;
 
-    /** @test */
-    public function if_middleware_is_defined_in_the_service_container_it_is_resolved()
+    /**
+     * @test
+     */
+    public function if_middleware_is_defined_in_the_service_container_it_is_resolved(): void
     {
         $foo = new Foo();
         $foo->value = 'FOO_CHANGED';
@@ -45,15 +47,19 @@ final class MiddlewareFactoryTest extends TestCase
         $this->assertSame('BAR_CHANGED', $m->bar->value);
     }
 
-    /** @test */
-    public function if_middleware_without_constructor_args_is_defined_in_the_container_its_resolved()
+    /**
+     * @test
+     */
+    public function if_middleware_without_constructor_args_is_defined_in_the_container_its_resolved(): void
     {
         $this->container->instance(FooMiddleware::class, $foo_m = new FooMiddleware());
         $this->assertSame($foo_m, $this->factory->create(FooMiddleware::class));
     }
 
-    /** @test */
-    public function if_route_arguments_are_passed_and_the_middleware_is_in_the_container_its_constructed()
+    /**
+     * @test
+     */
+    public function if_route_arguments_are_passed_and_the_middleware_is_in_the_container_its_constructed(): void
     {
         $foo = new Foo();
         $foo->foo = 'FOO_CHANGED';
@@ -70,8 +76,10 @@ final class MiddlewareFactoryTest extends TestCase
         $this->assertSame('BAR_CHANGED', $m->bar->bar);
     }
 
-    /** @test */
-    public function middleware_not_in_the_container_will_newed_up_with_the_passed_args()
+    /**
+     * @test
+     */
+    public function middleware_not_in_the_container_will_newed_up_with_the_passed_args(): void
     {
         $middleware = $this->factory->create(FooMiddleware::class);
         $this->assertInstanceOf(FooMiddleware::class, $middleware);
@@ -83,9 +91,11 @@ final class MiddlewareFactoryTest extends TestCase
         $this->assertSame('FOO_PASSED', $middleware->foo);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function a_middleware_that_needs_both_constructor_arguments_and_runtime_arguments_can_be_returned_as_closure_from_the_container(
-    )
+    ): void
     {
         $this->container->singleton(MiddlewareWithContextualAndRuntimeArgs::class, function () {
             return function (string $bar, string $baz) {
@@ -103,8 +113,10 @@ final class MiddlewareFactoryTest extends TestCase
         $this->assertSame('BAZ_PASSED', $middleware->baz);
     }
 
-    /** @test */
-    public function test_exception_if_container_closure_doesnt_return_instance_of_middleware()
+    /**
+     * @test
+     */
+    public function test_exception_if_container_closure_doesnt_return_instance_of_middleware(): void
     {
         $this->container->singleton(MiddlewareWithContextualAndRuntimeArgs::class, function () {
             return function (string $bar, string $baz) {

@@ -52,7 +52,7 @@ final class BladeStandalone
         return $this->illuminate_container[BladeViewFactory::class];
     }
 
-    public function boostrap()
+    public function boostrap(): void
     {
         $this->bindDependencies();
         $this->bootIlluminateViewServiceProvider();
@@ -61,7 +61,7 @@ final class BladeStandalone
         $this->bindFrameworkDependencies();
     }
 
-    private function bindDependencies()
+    private function bindDependencies(): void
     {
         if ($this->illuminate_container->has('config')) {
             $config = $this->illuminate_container->get('config');
@@ -105,7 +105,7 @@ final class BladeStandalone
 
     // These are all the dependencies that Blade expects to be present in the global service container.
 
-    private function listenToEvents()
+    private function listenToEvents(): void
     {
         /** @var Dispatcher $laravel_dispatcher */
         $event_dispatcher = $this->illuminate_container->make('events');
@@ -139,7 +139,7 @@ final class BladeStandalone
 
     // Bind the dependencies that are needed for our view component to work.
 
-    private function bindFrameworkDependencies()
+    private function bindFrameworkDependencies(): void
     {
         $this->illuminate_container->resolving(BladeComponent::class,
             function (BladeComponent $component) {

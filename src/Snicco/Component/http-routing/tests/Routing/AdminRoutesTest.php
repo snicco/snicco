@@ -16,8 +16,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
 
     private AdminRoutingConfigurator $admin_configurator;
 
-    /** @test */
-    public function an_exception_is_thrown_for_admin_routes_that_declare_patterns()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_for_admin_routes_that_declare_patterns(): void
     {
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
@@ -26,9 +28,11 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->admin_configurator->page('admin1', 'admin.php/foo/{bar}', Route::DELEGATE, [], null);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function an_exception_is_thrown_if_admin_routes_are_registered_with_pending_attributes_without_a_call_to_group(
-    )
+    ): void
     {
         $this->expectException(LogicException::class);
         $this->admin_configurator->middleware('foo')->page(
@@ -40,8 +44,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_admin_routes_are_registered_with_the_prefix_declared_explicitly()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_admin_routes_are_registered_with_the_prefix_declared_explicitly(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -57,8 +63,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_an_admin_route_is_registered_without_using_the_admin_method()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_an_admin_route_is_registered_without_using_the_admin_method(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -75,8 +83,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path()
+    /**
+     * @test
+     */
+    public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path(): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -90,8 +100,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
 
-    /** @test */
-    public function routes_to_different_admin_pages_dont_match()
+    /**
+     * @test
+     */
+    public function routes_to_different_admin_pages_dont_match(): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -105,8 +117,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $request);
     }
 
-    /** @test */
-    public function non_get_requests_do_not_match()
+    /**
+     * @test
+     */
+    public function non_get_requests_do_not_match(): void
     {
         $router = $this->admin_configurator;
         $router->page('r1', 'admin.php/foo', RoutingTestController::class, [], null);
@@ -117,8 +131,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $response->assertDelegated();
     }
 
-    /** @test */
-    public function two_different_admin_routes_can_be_created()
+    /**
+     * @test
+     */
+    public function two_different_admin_routes_can_be_created(): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -145,8 +161,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $request);
     }
 
-    /** @test */
-    public function reverse_routing_works_with_admin_routes()
+    /**
+     * @test
+     */
+    public function reverse_routing_works_with_admin_routes(): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -160,8 +178,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertSame('/wp-admin/admin.php?bar=baz&page=foo', $url);
     }
 
-    /** @test */
-    public function a_route_with_the_same_page_query_var_but_different_parent_menu_doesnt_match()
+    /**
+     * @test
+     */
+    public function a_route_with_the_same_page_query_var_but_different_parent_menu_doesnt_match(): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -178,9 +198,11 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $request);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function admin_routes_do_not_match_for_non_admin_requests_that_have_the_same_rewritten_url_but_are_not_loaded_from_withing_the_admin_dashboard(
-    )
+    ): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -197,8 +219,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
 
-    /** @test */
-    public function the_real_request_path_is_available_in_the_controller_not_the_rewritten_one()
+    /**
+     * @test
+     */
+    public function the_real_request_path_is_available_in_the_controller_not_the_rewritten_one(): void
     {
         $this->admin_configurator->page(
             'r1',
@@ -214,8 +238,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertResponseBody($as_string, $request);
     }
 
-    /** @test */
-    public function admin_routes_work_with_redirects()
+    /**
+     * @test
+     */
+    public function admin_routes_work_with_redirects(): void
     {
         $this->routeConfigurator()->prefix('/wp-admin')
             ->group(function (AdminRoutingConfigurator $router) {

@@ -93,6 +93,9 @@ final class WritableConfig implements ArrayAccess
         $this->repository->set($key, $value);
     }
 
+    /**
+     * @return void
+     */
     public function mergeIfMissing(string $key, Closure $default)
     {
         $existing_config = $this->repository->get($key, []);

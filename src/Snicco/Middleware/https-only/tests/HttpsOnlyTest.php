@@ -10,8 +10,10 @@ use Snicco\Middleware\HttpsOnly\HttpsOnly;
 final class HttpsOnlyTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function no_redirect_happens_in_a_local_environment()
+    /**
+     * @test
+     */
+    public function no_redirect_happens_in_a_local_environment(): void
     {
         $middleware = new HttpsOnly(true);
 
@@ -23,8 +25,10 @@ final class HttpsOnlyTest extends MiddlewareTestCase
         $response->psr()->assertOk();
     }
 
-    /** @test */
-    public function http_request_are_redirected()
+    /**
+     * @test
+     */
+    public function http_request_are_redirected(): void
     {
         $middleware = new HttpsOnly();
 
@@ -36,8 +40,10 @@ final class HttpsOnlyTest extends MiddlewareTestCase
         $response->psr()->assertRedirect('https://foobar.com/foo/bar', 301);
     }
 
-    /** @test */
-    public function https_requests_are_not_redirected()
+    /**
+     * @test
+     */
+    public function https_requests_are_not_redirected(): void
     {
         $middleware = new HttpsOnly();
 
