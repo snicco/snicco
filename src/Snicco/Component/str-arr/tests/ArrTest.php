@@ -231,7 +231,7 @@ final class ArrTest extends TestCase
         $this->assertEquals(100, Arr::first($array));
 
         // Callback is not null and array is not empty
-        $value = Arr::first($array, function ($value) {
+        $value = Arr::first($array, function (int $value) {
             return $value >= 150;
         });
         $this->assertEquals(200, $value);
@@ -259,14 +259,6 @@ final class ArrTest extends TestCase
     public function test_random(): void
     {
         $random = Arr::random(['foo', 'bar', 'baz']);
-        $this->assertContains($random, ['foo', 'bar', 'baz']);
-
-        $random = Arr::random(['foo', 'bar', 'baz'], 0);
-        $this->assertIsArray($random);
-        $this->assertCount(0, $random);
-
-        $random = Arr::random(['foo', 'bar', 'baz'], 1);
-        $this->assertIsArray($random);
         $this->assertCount(1, $random);
         $this->assertContains($random[0], ['foo', 'bar', 'baz']);
 
@@ -276,25 +268,22 @@ final class ArrTest extends TestCase
         $this->assertContains($random[0], ['foo', 'bar', 'baz']);
         $this->assertContains($random[1], ['foo', 'bar', 'baz']);
 
-        // preserve keys
-        $random = Arr::random(['one' => 'foo', 'two' => 'bar', 'three' => 'baz'], 2, true);
-        $this->assertIsArray($random);
-        $this->assertCount(2, $random);
-        $this->assertCount(
-            2,
-            array_intersect_assoc(['one' => 'foo', 'two' => 'bar', 'three' => 'baz'], $random)
-        );
-
-        $random = Arr::random([], 0);
-        $this->assertIsArray($random);
-        $this->assertCount(0, $random);
-
         // exception for count bigger than available
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'You requested 4 items, but there are only 3 items available.'
+            'You requested [4] items, but there are only [3] items available.'
         );
         Arr::random(['foo', 'bar', 'baz'], 4);
+    }
+
+    /**
+     * @test
+     */
+    public function test_random_throws_for_count_small_than_one(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$number must be > 1');
+        Arr::random(['foo', 'bar', 'baz'], 0);
     }
 
     /**
@@ -363,6 +352,10 @@ final class ArrTest extends TestCase
 
         $array = [[1], [2], [3], ['foo', 'bar'], new ArrayObject(['baz', 'boom'])];
         $this->assertEquals([1, 2, 3, 'foo', 'bar', 'baz', 'boom'], Arr::collapse($array));
+
+        // skips non arrays.
+        $array = [[1], 2, 3, ['foo', 'bar'], new ArrayObject(['baz', 'boom'])];
+        $this->assertEquals([1, 'foo', 'bar', 'baz', 'boom'], Arr::collapse($array));
     }
 
     /**
@@ -433,7 +426,7 @@ final class ArrTest extends TestCase
         $array = [['#foo', new ArrayObject(['#bar'])], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arr::flatten($array));
 
-        // Nested arrays containing arrays containing arrays are flattened
+        // Nested arrays containing arrays are flattened
         $array = [['#foo', new ArrayObject(['#bar', ['foo' => '#zap']])], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arr::flatten($array));
     }
