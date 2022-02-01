@@ -15,13 +15,17 @@ use Snicco\Component\HttpRouting\NextMiddleware;
 final class DefaultHeaders extends AbstractMiddleware
 {
 
+    /**
+     * @var  array<string,string> $default_headers
+     */
     private array $default_headers;
 
+    /**
+     * @param array<string,string> $default_headers
+     */
     public function __construct(array $default_headers)
     {
-        foreach ($default_headers as $name => $value) {
-            $this->addHeader($name, $value);
-        }
+        $this->default_headers = $default_headers;
     }
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -35,11 +39,6 @@ final class DefaultHeaders extends AbstractMiddleware
         }
 
         return $response;
-    }
-
-    private function addHeader(string $name, string $value): void
-    {
-        $this->default_headers[$name] = $value;
     }
 
 }

@@ -7,6 +7,7 @@ namespace Snicco\Middleware\WPCap;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\ScopableWP\ScopableWP;
 
@@ -22,7 +23,7 @@ final class Authorize extends AbstractMiddleware
     private ?int $object_id;
     private ScopableWP $wp;
 
-    public function __construct(ScopableWP $wp, $capability, int $object_id = null)
+    public function __construct(ScopableWP $wp, string $capability, int $object_id = null)
     {
         $this->wp = $wp;
         $this->capability = $capability;
@@ -32,7 +33,7 @@ final class Authorize extends AbstractMiddleware
     /**
      * @throws HttpException
      */
-    public function handle(Request $request, $next): ResponseInterface
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $args = [];
         if ($this->object_id) {

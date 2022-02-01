@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\GuestsOnly\Tests;
 
-use Closure;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\ScopableWP\ScopableWP;
@@ -24,6 +23,11 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
         $response->psr()->assertOk();
+    }
+
+    private function newMiddleware(ScopableWP $scopable_wp, string $redirect_url = null): GuestsOnly
+    {
+        return new GuestsOnly($scopable_wp, $redirect_url);
     }
 
     /**
@@ -85,15 +89,6 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
 
-    private function newMiddleware(ScopableWP $scopable_wp, string $redirect_url = null): GuestsOnly
-    {
-        return new GuestsOnly($scopable_wp, $redirect_url);
-    }
-
-    private function providerThatReturnsId(int $id): Closure
-    {
-        return (fn() => $id);
-    }
 
 }
 
