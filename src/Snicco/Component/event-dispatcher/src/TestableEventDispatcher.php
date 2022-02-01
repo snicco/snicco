@@ -157,7 +157,7 @@ final class TestableEventDispatcher implements EventDispatcher
 
     private function getDispatched(string $event_name, Closure $callback_condition = null): array
     {
-        $callback_condition = $callback_condition ?? function () {
+        $callback_condition = $callback_condition ?? function (): bool {
                 return true;
             };
 
@@ -183,9 +183,9 @@ final class TestableEventDispatcher implements EventDispatcher
      * @param string|Closure $event_name
      * @param Closure|null $condition
      *
+     * @return void
      * @throws ReflectionException
      *
-     * @return void
      */
     public function assertNotDispatched($event_name, ?Closure $condition = null)
     {

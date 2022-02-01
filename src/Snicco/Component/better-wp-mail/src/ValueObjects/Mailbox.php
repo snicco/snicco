@@ -38,17 +38,22 @@ final class Mailbox
         $address = strtolower($address);
 
         if (self::$email_validator === null) {
-            self::$email_validator = function (string $email) {
-                return filter_var($email, FILTER_VALIDATE_EMAIL);
+            self::$email_validator = function (string $email): bool {
+                return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
             };
         }
 
-        if (!call_user_func(self::$email_validator, $address)) {
+        if (!$this->isEmailValid($address)) {
             throw new InvalidArgumentException("[$address] is not a valid email.");
         }
 
         $this->address = $address;
         $this->name = ucwords(trim(str_replace(["\n", "\r"], '', $name)));
+    }
+
+    private function isEmailValid(string $address): bool
+    {
+        return call_user_func(self::$email_validator, $address);
     }
 
     /**

@@ -99,6 +99,9 @@ final class WPMailTransport implements Transport
      */
     protected function handleFailure(): Closure
     {
+        /**
+         * @return never
+         */
         $closure = function (WP_Error $error) {
             throw CantSendEmailWithWPMail::becauseWPMailRaisedErrors($error);
         };
@@ -116,7 +119,7 @@ final class WPMailTransport implements Transport
      */
     private function justInTimeConfiguration(Email $mail, Envelope $envelope): Closure
     {
-        $closure = function (PHPMailer $php_mailer) use ($mail, $envelope) {
+        $closure = function (PHPMailer $php_mailer) use ($mail, $envelope): void {
             if (($text = $mail->textBody()) && $mail->htmlBody() !== null) {
                 $php_mailer->AltBody = $text;
             }
