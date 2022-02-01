@@ -124,14 +124,22 @@ class ScopableWP
         return add_action($hook_name, $callback, $priority, $accepted_args);
     }
 
-    /** @final */
+    /**
+     * @final
+     *
+     * @param mixed $args
+     */
     public function doAction(string $hook_name, ...$args): void
     {
         do_action($hook_name, ...$args);
     }
 
-    /** @final */
-    public function applyFilters(string $hook_name, $value, ...$args)
+    /**
+     * @final
+     *
+     * @param mixed $args
+     */
+    public function applyFilters(string $hook_name, string $value, ...$args)
     {
         return apply_filters($hook_name, $value, ...$args);
     }
@@ -154,25 +162,36 @@ class ScopableWP
         return get_current_user_id();
     }
 
-    /** @final */
-    public function cacheGet($key, string $group = '', $force = false, &$found = null)
+    /**
+     * @final
+     */
+    public function cacheGet(string $key, string $group = '', bool $force = false, &$found = null)
     {
         return wp_cache_get($key, $group, $force, $found);
     }
 
-    /** @final */
-    public function cacheSet($key, $data, string $group = '', int $expire = 0): bool
+    /**
+     * @final
+     * @param mixed $data
+     */
+    public function cacheSet(string $key, $data, string $group = '', int $expire = 0): bool
     {
         return wp_cache_set($key, $data, $group, $expire);
     }
 
-    /** @final */
-    public function cacheDelete($key, string $group = ''): bool
+    /**
+     * @final
+     */
+    public function cacheDelete(string $key, string $group = ''): bool
     {
         return wp_cache_delete($key, $group);
     }
 
-    /** @final */
+    /**
+     * @final
+     *
+     * @param mixed $args
+     */
     public function currentUserCan(string $capability, ...$args): bool
     {
         return current_user_can($capability, ...$args);

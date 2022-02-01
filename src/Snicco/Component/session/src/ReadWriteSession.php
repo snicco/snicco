@@ -112,6 +112,9 @@ final class ReadWriteSession implements Session
         return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
 
+    /**
+     * @param mixed $default
+     */
     public function get(string $key, $default = null)
     {
         return Arr::get($this->attributes, $key, $default);
@@ -127,7 +130,7 @@ final class ReadWriteSession implements Session
         return new CsrfToken($this->get('_sniccowp.csrf_token'));
     }
 
-    public function decrement(string $key, $amount = 1): void
+    public function decrement(string $key, int $amount = 1): void
     {
         $this->increment($key, $amount * -1);
     }
@@ -180,6 +183,9 @@ final class ReadWriteSession implements Session
             : !is_null($old);
     }
 
+    /**
+     * @param mixed|null $default
+     */
     public function oldInput(string $key = null, $default = null)
     {
         $old = $this->get('_old_input', []);

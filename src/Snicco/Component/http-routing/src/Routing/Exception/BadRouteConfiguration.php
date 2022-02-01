@@ -21,7 +21,7 @@ final class BadRouteConfiguration extends LogicException
 
     public static function becauseAdminRouteWasAddedWithHardcodedPrefix(
         string $name,
-        $admin_prefix
+        string $admin_prefix
     ): BadRouteConfiguration {
         return new self(
             sprintf(

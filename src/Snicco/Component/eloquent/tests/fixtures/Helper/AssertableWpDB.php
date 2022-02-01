@@ -104,7 +104,7 @@ class AssertableWpDB
         );
     }
 
-    private function compile($conditions): array
+    private function compile(array $conditions): array
     {
         $wheres = '';
         $values = [];
@@ -132,7 +132,12 @@ class AssertableWpDB
         return [$wheres, $values];
     }
 
-    public function assertRecordEquals($conditions, array $expected): void
+    /**
+     * @param (int|string)[] $conditions
+     *
+     * @psalm-param array{id: 1, first_name?: 'calvin', last_name?: 'alkan', price?: 10} $conditions
+     */
+    public function assertRecordEquals(array $conditions, array $expected): void
     {
         [$wheres, $values] = $this->compile($conditions);
 

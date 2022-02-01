@@ -28,6 +28,14 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     }
 
     /**
+     * @param string[] $whitelist
+     */
+    private function newMiddleware(array $whitelist = []): OpenRedirectProtection
+    {
+        return new OpenRedirectProtection('https://foo.com', $whitelist);
+    }
+
+    /**
      * @test
      */
     public function a_redirect_response_is_allowed_if_its_relative(): void
@@ -75,6 +83,18 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
         $this->assertForbiddenRedirect($response->psr(), 'https://bar.com/foo');
+    }
+
+    private function assertForbiddenRedirect(AssertableResponse $response, string $intended): void
+    {
+        $this->assertStringStartsWith(
+            '/redirect/exit',
+            $response->getPsrResponse()->getHeaderLine('Location')
+        );
+        $this->assertStringContainsString(
+            '?intended_redirect=' . $intended,
+            $response->getPsrResponse()->getHeaderLine('Location')
+        );
     }
 
     /**
@@ -223,23 +243,6 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
             ['GET']
         );
         $this->withRoutes([$route]);
-    }
-
-    private function newMiddleware($whitelist = []): OpenRedirectProtection
-    {
-        return new OpenRedirectProtection('https://foo.com', $whitelist);
-    }
-
-    private function assertForbiddenRedirect(AssertableResponse $response, string $intended): void
-    {
-        $this->assertStringStartsWith(
-            '/redirect/exit',
-            $response->getPsrResponse()->getHeaderLine('Location')
-        );
-        $this->assertStringContainsString(
-            '?intended_redirect=' . $intended,
-            $response->getPsrResponse()->getHeaderLine('Location')
-        );
     }
 
 }

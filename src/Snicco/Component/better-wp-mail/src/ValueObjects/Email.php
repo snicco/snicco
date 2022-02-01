@@ -92,6 +92,10 @@ class Email
 
     /**
      * @return Mailbox[]
+     *
+     * @param (Mailbox|WP_User|string|string[])[]|Mailbox|WP_User|string $addresses
+     *
+     * @psalm-param Mailbox|WP_User|array<Mailbox|WP_User|array<string, string>|string>|string $addresses
      */
     private function normalizeAddress($addresses): array
     {
@@ -258,6 +262,9 @@ class Email
         return $new;
     }
 
+    /**
+     * @param false|resource|string $data
+     */
     final public function addBinaryEmbed($data, string $name = null, string $content_type = null): Email
     {
         $new = clone $this;
@@ -340,7 +347,13 @@ class Email
         }
     }
 
-    final public function addContext($key, $value = null): Email
+    /**
+     * @param string|string[] $key
+     * @param null|string $value
+     *
+     * @psalm-param 'bar'|'foo'|'images'|array{foo: 'FOO', baz: 'BAZ'} $key
+     */
+    final public function addContext($key, ?string $value = null): Email
     {
         $new = clone $this;
         $new->_addContext($key, $value);

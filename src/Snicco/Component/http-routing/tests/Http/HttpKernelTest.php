@@ -80,7 +80,7 @@ class HttpKernelTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         $test_response = $this->runKernel($this->frontendRequest('/foo'));
 
-        $test_response->assertHeader('content-length', strlen(RoutingTestController::static));
+        $test_response->assertHeader('content-length', (string)strlen(RoutingTestController::static));
     }
 
     /**

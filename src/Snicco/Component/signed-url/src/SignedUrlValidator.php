@@ -115,7 +115,7 @@ final class SignedUrlValidator
         }
     }
 
-    private function validateUsage(string $identifier, $path): void
+    private function validateUsage(string $identifier, string $path): void
     {
         try {
             $this->storage->consume($identifier);

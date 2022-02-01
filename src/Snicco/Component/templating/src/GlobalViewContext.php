@@ -18,6 +18,9 @@ final class GlobalViewContext
      */
     private array $context = [];
 
+    /**
+     * @param mixed $context
+     */
     public function add(string $name, $context): void
     {
         if (is_array($context)) {

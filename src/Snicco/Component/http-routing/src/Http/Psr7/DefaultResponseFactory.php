@@ -53,7 +53,7 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         return $this->make($code, $reasonPhrase);
     }
 
-    public function make(int $status_code = 200, $reason_phrase = ''): Response
+    public function make(int $status_code = 200, string $reason_phrase = ''): Response
     {
         Assert::range($status_code, 100, 599);
 

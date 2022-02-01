@@ -24,7 +24,7 @@ final class CantDestroySession extends RuntimeException
     }
 
     public static function forSessionIDs(
-        $ids,
+        array $ids,
         string $driver_identifier,
         Throwable $previous = null
     ): CantDestroySession {

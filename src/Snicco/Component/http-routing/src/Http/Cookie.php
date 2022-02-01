@@ -121,7 +121,7 @@ final class Cookie
     }
 
     /**
-     * @param int|DateTimeInterface|$timestamp
+     * @param int|DateTimeInterface $timestamp
      */
     public function withExpiryTimestamp($timestamp): Cookie
     {

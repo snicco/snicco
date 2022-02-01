@@ -39,6 +39,9 @@ final class ParameterPag implements ArrayAccess
         Arr::set($this->items, $key, $value);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function prepend(string $key, $value): void
     {
         $array = $this->get($key);
@@ -58,6 +61,9 @@ final class ParameterPag implements ArrayAccess
         return Arr::get($this->items, $key, $default);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function append(string $key, $value): void
     {
         $array = $this->get($key);

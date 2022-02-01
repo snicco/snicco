@@ -93,6 +93,9 @@ final class UrlPath
         return Str::contains($this->asString(), $path);
     }
 
+    /**
+     * @param string|UrlPath $path
+     */
     public function startsWith($path): bool
     {
         $path = $path instanceof UrlPath ? $path : UrlPath::fromString($path);

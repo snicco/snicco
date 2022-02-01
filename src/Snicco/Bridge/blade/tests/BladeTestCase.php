@@ -10,7 +10,6 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewEngine;
 use Symfony\Component\Finder\Finder;
@@ -54,22 +53,7 @@ class BladeTestCase extends TestCase
         $this->blade = $blade;
         $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
         $this->global_view_context = $global_view_context;
-        //$this->clearCache();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        //$this->clearCache();
-    }
-
-    protected function assertViewContent(string $expected, $actual): void
-    {
-        $actual = ($actual instanceof View) ? $actual->toString() : $actual;
-
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
-
-        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
+        $this->clearCache();
     }
 
     private function clearCache(): void
@@ -78,6 +62,19 @@ class BladeTestCase extends TestCase
         foreach ($files as $file) {
             unlink($file->getRealPath());
         }
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->clearCache();
+    }
+
+    protected function assertViewContent(string $expected, string $actual): void
+    {
+        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+
+        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
     }
 
 }

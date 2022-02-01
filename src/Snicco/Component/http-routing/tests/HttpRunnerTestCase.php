@@ -198,7 +198,7 @@ class HttpRunnerTestCase extends TestCase
         $this->assertResponseBody('', $request);
     }
 
-    final protected function assertResponseBody($expected, Request $request): void
+    final protected function assertResponseBody(string $expected, Request $request): void
     {
         $response = $this->runKernel($request);
         $this->assertSame(

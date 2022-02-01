@@ -186,7 +186,7 @@ final class AssertableResponse
         return $this;
     }
 
-    public function assertHeader(string $header_name, $value = null): AssertableResponse
+    public function assertHeader(string $header_name, ?string $value = null): AssertableResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->hasHeader($header_name),

@@ -118,7 +118,7 @@ final class Request implements ServerRequestInterface
         return preg_replace('/\?.*/', '', (string)$this->getUri());
     }
 
-    final public function cookie(string $name, $default = null)
+    final public function cookie(string $name, ?string $default = null)
     {
         return Arr::get($this->getCookieParams(), $name, $default);
     }
@@ -152,7 +152,7 @@ final class Request implements ServerRequestInterface
     /**
      * @note The full url is not urldecoded here.
      */
-    final function fullUrlIs(...$patterns): bool
+    final function fullUrlIs(string ...$patterns): bool
     {
         $url = $this->fullUrl();
 
@@ -170,7 +170,7 @@ final class Request implements ServerRequestInterface
         return $this->getUri()->__toString();
     }
 
-    final function pathIs(...$patterns): bool
+    final function pathIs(string ...$patterns): bool
     {
         $path = $this->decodedPath();
 
@@ -260,7 +260,12 @@ final class Request implements ServerRequestInterface
         return $this->server('REMOTE_ADDR');
     }
 
-    final public function server(string $key, $default = null)
+    /**
+     * @param null|string $default
+     *
+     * @psalm-param 'default'|null $default
+     */
+    final public function server(string $key, ?string $default = null)
     {
         return Arr::get($this->getServerParams(), $key, $default);
     }
@@ -406,7 +411,12 @@ final class Request implements ServerRequestInterface
         return false;
     }
 
-    final public function query(string $key = null, $default = null)
+    /**
+     * @param null|string $default
+     *
+     * @psalm-param 'default'|null $default
+     */
+    final public function query(string $key = null, ?string $default = null)
     {
         $query = $this->getQueryParams();
 
@@ -453,17 +463,23 @@ final class Request implements ServerRequestInterface
     }
 
     /**
+     * @param null|string $key
      * @return bool|false
+     *
      */
-    final public function boolean($key = null, $default = false)
+    final public function boolean(?string $key, bool $default = false): bool
     {
         return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
      * This method supports "*" as wildcards in the key.
+     *
+     * @param mixed $default
+     *
+     * @return mixed
      */
-    final public function input($key = null, $default = null)
+    final public function input(?string $key = null, $default = null)
     {
         $all = $this->all();
 
@@ -495,8 +511,10 @@ final class Request implements ServerRequestInterface
 
     /**
      * This method does not support * WILDCARDS
+     *
+     * @psalm-param 'product.description'|'product.name' $keys
      */
-    final public function only($keys): array
+    final public function only(string $keys): array
     {
         $results = [];
 
@@ -542,8 +560,10 @@ final class Request implements ServerRequestInterface
 
     /**
      * This method does not support * WILDCARDS
+     *
+     * @psalm-param 'product.name' $keys
      */
-    final public function except($keys): array
+    final public function except(string $keys): array
     {
         $keys = is_array($keys) ? $keys : func_get_args();
 
@@ -554,6 +574,11 @@ final class Request implements ServerRequestInterface
         return $results;
     }
 
+    /**
+     * @param string|string[] $keys
+     *
+     * @psalm-param array{0: 'foo.bax'|'name'|'surname', 1: 'email'|'foo.baz'|'password'}|string $keys
+     */
     final public function hasAny($keys): bool
     {
         $keys = is_array($keys) ? $keys : func_get_args();
@@ -565,6 +590,10 @@ final class Request implements ServerRequestInterface
 
     /**
      * Will return falls if any of the provided keys is missing.
+     *
+     * @param string|string[] $key
+     *
+     * @psalm-param array{0: 'foo.bax'|'surname', 1: 'foo.baz'|'password'}|string $key
      */
     final public function missing($key): bool
     {
@@ -573,6 +602,11 @@ final class Request implements ServerRequestInterface
         return !$this->has($keys);
     }
 
+    /**
+     * @param array|string $key
+     *
+     * @psalm-param 'products'|'products.0.name'|array $key
+     */
     final public function has($key): bool
     {
         $keys = is_array($key) ? $key : func_get_args();

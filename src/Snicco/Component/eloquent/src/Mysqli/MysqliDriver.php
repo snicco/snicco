@@ -47,13 +47,9 @@ final class MysqliDriver implements MysqliDriverInterface
     }
 
     /**
-     * @param $sql
-     * @param $bindings
-     *
-     * @return mysqli_stmt
      * @throws QueryException
      */
-    private function createPreparedStatement($sql, $bindings): mysqli_stmt
+    private function createPreparedStatement(string $sql, array $bindings = []): mysqli_stmt
     {
         try {
             $stmt = $this->mysqli->prepare($sql);

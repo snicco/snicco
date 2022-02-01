@@ -109,10 +109,10 @@ final class ReadOnlyConfig implements ArrayAccess
     }
 
     /**
+     * @param mixed $offset
      * @return mixed
      * @throws MissingConfigKey
      */
-    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
