@@ -38,6 +38,9 @@ final class WPAdminArea implements AdminArea
         return AdminDashboardPrefix::fromString($this->prefix);
     }
 
+    /**
+     * @psalm-return array{0: string, 1: string[]}
+     */
     public function rewriteForUrlGeneration(string $route_pattern): array
     {
         $parts = explode('.php/', $route_pattern);

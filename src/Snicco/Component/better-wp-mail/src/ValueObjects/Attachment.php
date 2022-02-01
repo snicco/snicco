@@ -89,7 +89,10 @@ final class Attachment
         return new self($data, $filename, $content_type, $inline);
     }
 
-    public function body(): string
+    /**
+     * @return resource|string
+     */
+    public function body()
     {
         if (!$this->seekable) {
             return $this->body;

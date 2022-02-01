@@ -39,7 +39,7 @@ abstract class MiddlewareTestCase extends TestCase
     use CreatesPsrRequests;
 
     private Routes $routes;
-    private ResponseFactoryInterface $response_factory;
+    private DefaultResponseFactory $response_factory;
     private Request $request;
     private Closure $next_middleware_response;
 
@@ -160,17 +160,12 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
 
-    /**
-     * @return MiddlewareTestResponse|ResponseInterface&MiddlewareTestResponse
-     */
-    private function transformResponse(ResponseInterface $response)
+    private function transformResponse(ResponseInterface $response): MiddlewareTestResponse
     {
-        if (!$response instanceof MiddlewareTestResponse) {
-            $response = new MiddlewareTestResponse(
-                $response,
-                $GLOBALS['test']['_next_middleware_called']
-            );
-        }
+        $response = new MiddlewareTestResponse(
+            $response,
+            $GLOBALS['test']['_next_middleware_called']
+        );
 
         $GLOBALS['test']['_next_middleware_called'] = false;
 

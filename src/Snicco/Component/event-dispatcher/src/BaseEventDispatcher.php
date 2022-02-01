@@ -84,6 +84,11 @@ final class BaseEventDispatcher implements EventDispatcher
         return GenericEvent::fromObject($event);
     }
 
+    /**
+     * @return (Closure|mixed)[]
+     *
+     * @psalm-return array<array|array-key, Closure|mixed>
+     */
     private function getListenersForEvent(string $event_name, bool $include_reflection = true): array
     {
         if (isset($this->listener_cache[$event_name])) {
