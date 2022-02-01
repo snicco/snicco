@@ -25,6 +25,9 @@ interface View
      */
     public function with($key, $value = null): View;
 
+    /**
+     * @return array<string,mixed>
+     */
     public function context(): array;
 
     public function name(): string;
