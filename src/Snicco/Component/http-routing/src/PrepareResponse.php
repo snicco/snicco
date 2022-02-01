@@ -15,15 +15,15 @@ use function headers_list;
  */
 final class PrepareResponse extends AbstractMiddleware
 {
-    
+
     private ResponsePreparation $response_preparation;
-    
+
     public function __construct(ResponsePreparation $response_preparation)
     {
         $this->response_preparation = $response_preparation;
     }
-    
-    public function handle(Request $request, NextMiddleware $next) :ResponseInterface
+
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
         return $this->response_preparation->prepare(
@@ -32,5 +32,5 @@ final class PrepareResponse extends AbstractMiddleware
             headers_list()
         );
     }
-    
+
 }

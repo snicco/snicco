@@ -9,21 +9,21 @@ use Snicco\Bridge\Blade\Tests\fixtures\TestDependencies\Foo;
 
 class Dependency extends BladeComponent
 {
-    
-    public Foo    $foo;
+
+    public Foo $foo;
     public string $message;
-    
+
     protected $except = ['foo'];
-    
+
     public function __construct(Foo $foo, $message)
     {
         $this->foo = $foo;
-        $this->message = $foo->value.$message;
+        $this->message = $foo->value . $message;
     }
-    
+
     public function render()
     {
         return $this->view('components.with-dependency');
     }
-    
+
 }

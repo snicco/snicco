@@ -1,37 +1,37 @@
 {
-    "name": "sniccowp/blade-bridge",
-    "description": "Use v8.x of Laravel's Blade templating engine in WordPress. Fully tested and production ready.",
-    "authors": [
-        {
-            "name": "Calvin Alkan",
-            "email": "calvin@snicco.de"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0",
-        "sniccowp/templating": "dev-master",
-        "illuminate/view": "^8.81",
-        "illuminate/collections": "^8.81",
-        "illuminate/container": "^8.81",
-        "illuminate/contracts": "^8.81",
-        "illuminate/events": "^8.81",
-        "illuminate/filesystem": "^8.81",
-        "illuminate/macroable": "^8.81",
-        "illuminate/support": "^8.81",
-        "sniccowp/scopable-wp": "dev-master"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "9.5.13"
-    },
-    "autoload": {
-        "psr-4": {
-            "Snicco\\Bridge\\Blade\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Snicco\\Bridge\\Blade\\Tests\\": "tests"
-        }
-    },
-    "minimum-stability": "stable"
+  "name": "sniccowp/blade-bridge",
+  "description": "Use v8.x of Laravel's Blade templating engine in WordPress. Fully tested and production ready.",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/templating": "dev-master",
+    "illuminate/view": "^8.81",
+    "illuminate/collections": "^8.81",
+    "illuminate/container": "^8.81",
+    "illuminate/contracts": "^8.81",
+    "illuminate/events": "^8.81",
+    "illuminate/filesystem": "^8.81",
+    "illuminate/macroable": "^8.81",
+    "illuminate/support": "^8.81",
+    "sniccowp/scopable-wp": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bridge\\Blade\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bridge\\Blade\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "stable"
 }

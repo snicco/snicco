@@ -13,7 +13,7 @@ use function spl_object_hash;
 
 final class SplHashIdentifierTest extends TestCase
 {
-    
+
     /** @test */
     public function test_identify_is_spl_hash()
     {
@@ -23,28 +23,28 @@ final class SplHashIdentifierTest extends TestCase
             (new SplHashIdentifier())->identify($exception)
         );
     }
-    
+
     /** @test */
     public function test_identify_is_pure()
     {
         $identifier = new SplHashIdentifier();
-        
+
         $e = new Exception('foobar');
-        
+
         $id = $identifier->identify($e);
-        
+
         $this->assertSame(spl_object_hash($e), $id);
-        
+
         $this->assertSame($id, $identifier->identify($e));
         $this->assertNotSame(
             $id,
             $new_id = $identifier->identify($new_e = new Exception('foobar'))
         );
-        
+
         sleep(1);
-        
+
         $this->assertSame($new_id, $identifier->identify($new_e));
         $this->assertSame($id, $identifier->identify($e));
     }
-    
+
 }

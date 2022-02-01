@@ -1,5 +1,5 @@
 @php
-	$counter = 10
+    $counter = 10
 @endphp
 
 {{$counter}}

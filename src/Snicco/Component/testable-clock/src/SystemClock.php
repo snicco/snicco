@@ -8,15 +8,15 @@ use DateTimeImmutable;
 
 final class SystemClock implements Clock
 {
-    
-    public function currentTimestamp() :int
+
+    public function currentTimestamp(): int
     {
         return $this->currentTime()->getTimestamp();
     }
-    
-    public function currentTime() :DateTimeImmutable
+
+    public function currentTime(): DateTimeImmutable
     {
         return new DateTimeImmutable('now');
     }
-    
+
 }

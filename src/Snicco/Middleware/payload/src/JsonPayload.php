@@ -7,27 +7,27 @@ namespace Snicco\Middleware\Payload;
 use JsonException;
 use Psr\Http\Message\StreamInterface;
 
-use function sprintf;
 use function json_decode;
+use function sprintf;
 
-use const JSON_THROW_ON_ERROR;
 use const JSON_OBJECT_AS_ARRAY;
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @api
  */
 final class JsonPayload extends Payload
 {
-    
+
     public function __construct()
     {
         parent::__construct(['application/json']);
     }
-    
-    protected function parse(StreamInterface $stream) :array
+
+    protected function parse(StreamInterface $stream): array
     {
-        $json = trim((string) $stream);
-        
+        $json = trim((string)$stream);
+
         if ($json === '') {
             return [];
         }
@@ -44,5 +44,5 @@ final class JsonPayload extends Payload
             );
         }
     }
-    
+
 }

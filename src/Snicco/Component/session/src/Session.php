@@ -13,15 +13,15 @@ use Snicco\Component\Session\SessionManager\SessionManager;
  */
 interface Session extends ImmutableSession, MutableSession
 {
-    
+
     /**
      * Release all lifecycle events and clear them afterwards.
      *
      * @return object[]
      * @interal
      */
-    public function releaseEvents() :array;
-    
+    public function releaseEvents(): array;
+
     /**
      * This method is not meant to be used directly by clients.
      * Sessions have to be saved through the {@see SessionManager}
@@ -29,6 +29,6 @@ interface Session extends ImmutableSession, MutableSession
      *
      * @interal
      */
-    public function saveUsing(SessionDriver $driver, DateTimeImmutable $now) :void;
-    
+    public function saveUsing(SessionDriver $driver, DateTimeImmutable $now): void;
+
 }

@@ -11,15 +11,15 @@ use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
  */
 interface MailRenderer
 {
-    
+
     /**
      * @throws CantRenderMailContent
      */
-    public function getMailContent(string $template_name, array $context = []) :string;
-    
+    public function getMailContent(string $template_name, array $context = []): string;
+
     /**
      * @see AggregateRenderer
      */
-    public function supports(string $template_name, ?string $extension = null) :bool;
-    
+    public function supports(string $template_name, ?string $extension = null): bool;
+
 }

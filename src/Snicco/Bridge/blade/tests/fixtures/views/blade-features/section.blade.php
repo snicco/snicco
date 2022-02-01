@@ -1,6 +1,6 @@
 @hasSection('foo')
-	@yield('foo')
+    @yield('foo')
 @endif
 @sectionMissing('bar')
-	BAZ
+    BAZ
 @endif

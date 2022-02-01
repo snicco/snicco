@@ -13,12 +13,12 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
  */
 interface Filter
 {
-    
+
     /**
-     * @param  ExceptionDisplayer[]  $displayers
+     * @param ExceptionDisplayer[] $displayers
      *
      * @return ExceptionDisplayer[]
      */
-    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array;
-    
+    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array;
+
 }

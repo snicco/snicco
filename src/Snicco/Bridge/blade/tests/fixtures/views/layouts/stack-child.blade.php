@@ -1,7 +1,7 @@
 @extends('layouts.stack-parent')
 @push('parent')
-	BAR
+    BAR
 @endpush
 @prepend('parent')
-	BAZ
+    BAZ
 @endprepend

@@ -16,28 +16,28 @@ namespace Snicco\Component\Eloquent\Mysqli;
  */
 interface PDOAdapter
 {
-    
+
     /**
      * @see \PDO::commit()
      */
-    public function commit() :bool;
-    
+    public function commit(): bool;
+
     /**
      * @see \PDO::beginTransaction()
      */
-    public function beginTransaction() :bool;
-    
+    public function beginTransaction(): bool;
+
     /**
      * @return int|false
      * @see \PDO::exec()
      */
     public function exec($statement);
-    
+
     /**
      * @see \PDO::rollBack()
      */
-    public function rollback() :bool;
-    
-    public function lastInsertId() :int;
-    
+    public function rollback(): bool;
+
+    public function lastInsertId(): int;
+
 }

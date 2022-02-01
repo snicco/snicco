@@ -11,10 +11,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
  */
 final class IsAdminDashboardRequest extends AbstractRouteCondition
 {
-    
-    public function isSatisfied(Request $request) :bool
+
+    public function isSatisfied(Request $request): bool
     {
         return $request->isToAdminArea();
     }
-    
+
 }

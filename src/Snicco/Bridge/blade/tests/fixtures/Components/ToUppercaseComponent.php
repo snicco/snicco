@@ -8,15 +8,15 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class ToUppercaseComponent extends BladeComponent
 {
-    
+
     public function render()
     {
         return $this->view('uppercase');
     }
-    
+
     public function toUpper($string)
     {
         return strtoupper($string);
     }
-    
+
 }

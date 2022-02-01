@@ -12,12 +12,12 @@ use Snicco\Component\Templating\Exception\BadViewComposer;
  */
 interface ViewComposerFactory
 {
-    
+
     /**
-     * @param  string|Closure  $composer
+     * @param string|Closure $composer
      *
      * @throws BadViewComposer
      */
-    public function create($composer) :ViewComposer;
-    
+    public function create($composer): ViewComposer;
+
 }

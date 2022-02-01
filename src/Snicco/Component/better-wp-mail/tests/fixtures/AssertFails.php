@@ -10,7 +10,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 
 trait AssertFails
 {
-    
+
     private function assertFailsWithMessageStarting(string $message, Closure $closure)
     {
         try {
@@ -24,5 +24,5 @@ trait AssertFails
             );
         }
     }
-    
+
 }

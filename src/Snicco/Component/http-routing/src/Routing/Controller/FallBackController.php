@@ -12,10 +12,10 @@ use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
  */
 final class FallBackController extends AbstractController
 {
-    
-    public function delegate() :DelegatedResponse
+
+    public function delegate(): DelegatedResponse
     {
         return $this->respond()->delegate(true);
     }
-    
+
 }
