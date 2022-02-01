@@ -12,6 +12,7 @@ final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 
     /**
      * @param string[] $keys
+     * @return array<string,mixed>
      */
     public function cacheGetMultiple(
         array $keys,

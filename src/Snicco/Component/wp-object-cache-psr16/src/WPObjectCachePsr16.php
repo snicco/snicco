@@ -7,11 +7,12 @@ namespace Snicco\Component\WPObjectCachePsr16;
 use DateInterval;
 use DateTimeImmutable;
 use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 use Snicco\Component\WPObjectCachePsr16\Exception\BadKey;
 use Snicco\Component\WPObjectCachePsr16\Exception\BadTtl;
 use Traversable;
 
-use function array_walk;
+use function array_map;
 use function gettype;
 use function is_array;
 use function is_int;
@@ -32,23 +33,77 @@ final class WPObjectCachePsr16 implements CacheInterface
         $this->wp = $wp;
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     * @throws RuntimeException If the cache contents for the key are malformed and can't be unserialized.
+     * @throws BadKey
+     */
     public function get($key, $default = null)
     {
-        $this->validateKey($key);
+        $key = $this->validatedKey($key);
+
         $content = $this->wp->cacheGet($key, '', true, $found);
 
         if (false === $content && false === $found) {
             return $default;
         }
 
-        return unserialize($content);
+        return $this->validatedUnserialize($content, $key);
     }
 
-    public function clear(): bool
+    /**
+     * @param int|string|mixed $key
+     *
+     * @throws BadKey
+     */
+    private function validatedKey($key): string
     {
-        return $this->wp->cacheFlush();
+        if (!is_string($key)) {
+            throw new BadKey(
+                sprintf('$key has to be string or integer. Got: [%s]', gettype($key))
+            );
+        }
+
+        if ('' === $key) {
+            throw new BadKey('$key cant be an empty string.');
+        }
+
+        if (preg_match('|[\{\}\(\)/\\\@\:]|', $key)) {
+            throw new BadKey(
+                sprintf(
+                    'Invalid key: "%s". The key contains one or more characters reserved for future extension: {}()/\@:',
+                    $key
+                )
+            );
+        }
+
+        return $key;
     }
 
+    /**
+     *
+     * @param string|mixed $content
+     * @return mixed
+     *
+     * @psalm-suppress MixedAssignment
+     * @throws RuntimeException If content cant be unserialized
+     */
+    private function validatedUnserialize($content, string $key)
+    {
+        if (!is_string($content)) {
+            throw new RuntimeException("Cache content for key [$key] was not a serialized string.");
+        }
+
+        $parsed = unserialize($content);
+        if (false === $parsed && 'b:0;' !== $content) {
+            throw new RuntimeException("Cant unserialize cache content for key [$key].");
+        }
+        return $parsed;
+    }
+
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function getMultiple($keys, $default = null): array
     {
         if (!is_array($keys)) {
@@ -60,21 +115,37 @@ final class WPObjectCachePsr16 implements CacheInterface
             $keys = iterator_to_array($keys, false);
         }
 
-        array_walk($keys, [$this, 'validateKey']);
+        /** @var string[] $_keys */
+        $_keys = [];
+        foreach ($keys as $key) {
+            $_keys[] = $this->validatedKey($key);
+        }
 
-        $res = $this->wp->cacheGetMultiple($keys);
+        $res = $this->wp->cacheGetMultiple($_keys);
 
         $values = [];
         foreach ($res as $key => $value) {
-            $values[$key] = (false === $value) ? $default : unserialize($value);
+            if ($value === false) {
+                $values[$key] = $default;
+            } else {
+                $values[$key] = $this->validatedUnserialize($value, $key);
+            }
         }
         return $values;
+    }
+
+    public function clear(): bool
+    {
+        return $this->wp->cacheFlush();
     }
 
     /**
      * @note It's not possible for us to set multiple keys in one operation.
      *       There is NOTHING we can do on that front until WordPress core decides to add these
      *       methods as a requirement.
+     *
+     * @psalm-suppress TypeDoesNotContainType
+     * @psalm-suppress MixedAssignment
      */
     public function setMultiple($values, $ttl = null): bool
     {
@@ -93,12 +164,12 @@ final class WPObjectCachePsr16 implements CacheInterface
             if (is_int($key)) {
                 $key = (string)$key;
             }
-            $this->validateKey($key);
-            $iterator[$key] = $value;
+            $iterator[$this->validatedKey($key)] = $value;
         }
 
         $res = true;
         foreach ($iterator as $key => $item) {
+            // The double string casting is needed because for psr16 (string) "1" is a valid key while (int) 1 is not.
             if (is_int($key)) {
                 $key = (string)$key;
             }
@@ -107,9 +178,12 @@ final class WPObjectCachePsr16 implements CacheInterface
         return $res;
     }
 
+    /**
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     */
     public function set($key, $value, $ttl = null): bool
     {
-        $this->validateKey($key);
+        $key = $this->validatedKey($key);
 
         // Setting an item with an expiration <=0 should not mean that its persisted forever
         // like in the messy interface that WordPress provides.
@@ -140,6 +214,9 @@ final class WPObjectCachePsr16 implements CacheInterface
      * @note It's not possible for us to delete multiple keys in one operation.
      *       There is NOTHING we can do on that front until WordPress core decides to add these
      *       methods as a requirement.
+     *
+     * @param iterable $keys
+     * @throws BadKey
      */
     public function deleteMultiple($keys): bool
     {
@@ -153,18 +230,21 @@ final class WPObjectCachePsr16 implements CacheInterface
         }
 
         $res = true;
-        foreach ($keys as $key) {
-            $this->validateKey($key);
-        }
+
+        $keys = array_map(fn($key) => $this->validatedKey($key), $keys);
+
         foreach ($keys as $key) {
             $res = $this->delete($key);
         }
         return $res;
     }
 
+    /**
+     * @throws BadKey
+     */
     public function delete($key): bool
     {
-        $this->validateKey($key);
+        $key = $this->validatedKey($key);
         $res = $this->wp->cacheDelete($key);
         if (false === $res) {
             // Deleting a value that doesn't exist should return true in the psr-interface.
@@ -176,39 +256,14 @@ final class WPObjectCachePsr16 implements CacheInterface
         return $res;
     }
 
-    public function has($key): bool
-    {
-        $this->validateKey($key);
-        $this->wp->cacheGet($key, '', true, $found);
-        return true === $found;
-    }
-
     /**
-     * @param string|array $key
-     *
      * @throws BadKey
      */
-    private function validateKey($key): void
+    public function has($key): bool
     {
-        if (!is_string($key)) {
-            throw new BadKey(
-                sprintf(
-                    'Cache key must be string, "%s" given',
-                    gettype($key)
-                )
-            );
-        }
-        if (!isset($key[0])) {
-            throw new BadKey('Cache key cannot be an empty string');
-        }
-        if (preg_match('|[\{\}\(\)/\\\@\:]|', $key)) {
-            throw new BadKey(
-                sprintf(
-                    'Invalid key: "%s". The key contains one or more characters reserved for future extension: {}()/\@:',
-                    $key
-                )
-            );
-        }
+        $this->validatedKey($key);
+        $this->wp->cacheGet($key, '', true, $found);
+        return true === $found;
     }
 
 }
