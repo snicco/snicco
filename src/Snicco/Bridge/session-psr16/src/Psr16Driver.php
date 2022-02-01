@@ -44,7 +44,9 @@ final class Psr16Driver implements SessionDriver
     /**
      * @param string $session_id
      *
-     * @return array<int,string>
+     * @return (int|string)[]
+     *
+     * @psalm-return array{0: int, 1: string}
      */
     private function readParts(string $session_id): array
     {

@@ -159,7 +159,8 @@
     "propagate": [
       "vendor/bin/monorepo-builder propagate"
     ],
-    "deptrac": "/usr/local/bin/deptrac --config-file=deptrac/deptrac.yaml"
+    "deptrac": "/usr/local/bin/deptrac --config-file=deptrac/deptrac.yaml",
+    "psalm": "vendor/bin/psalm"
   },
   "replace": {
     "sniccowp/better-wp-hooks": "self.version",

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -74,7 +75,7 @@ class HttpRunnerTestCase extends TestCase
     private AdminArea $admin_area;
     private UrlGenerationContext $request_context;
     private MiddlewareStack $middleware_stack;
-    private WebRoutingConfigurator $routing_configurator;
+    private RoutingConfiguratorUsingRouter $routing_configurator;
     private HttpErrorHandlerInterface $error_handler;
 
     protected function setUp(): void
@@ -163,7 +164,7 @@ class HttpRunnerTestCase extends TestCase
             ),
             new class implements EventDispatcherInterface {
 
-                public function dispatch(object $event)
+                public function dispatch(object $event): void
                 {
                     //
                 }
@@ -258,11 +259,17 @@ class HttpRunnerTestCase extends TestCase
 
     final protected function routeConfigurator(): WebRoutingConfigurator
     {
+        if (!$this->routing_configurator instanceof WebRoutingConfigurator) {
+            throw new LogicException('$routing_configurator does not implement WebRoutingConfigurator');
+        }
         return $this->routing_configurator;
     }
 
     final protected function adminRouteConfigurator(): AdminRoutingConfigurator
     {
+        if (!$this->routing_configurator instanceof AdminRoutingConfigurator) {
+            throw new LogicException('$routing_configurator does not implement AdminRoutingConfigurator');
+        }
         return $this->routing_configurator;
     }
 

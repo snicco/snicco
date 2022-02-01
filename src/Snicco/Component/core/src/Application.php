@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Core;
 
 use ArrayAccess;
+use Generator;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use ReturnTypeWillChange;
@@ -106,9 +107,9 @@ final class Application implements ArrayAccess
     }
 
     /**
-     * @return Bundle[]
+     * @psalm-return Generator<Bundle>
      */
-    private function bundles(array $configuration): iterable
+    private function bundles(array $configuration): Generator
     {
         $bundles = $configuration['bundles'] ?? [];
         foreach ($bundles as $class => $envs) {
@@ -140,9 +141,9 @@ final class Application implements ArrayAccess
     /**
      * @param array $loaded_config
      *
-     * @return Bootstrapper[]
+     * @psalm-return Generator<int, object, mixed, void>
      */
-    private function bootstrappers(array $loaded_config): iterable
+    private function bootstrappers(array $loaded_config): Generator
     {
         $boot_with = $loaded_config['app']['bootstrappers'] ?? [];
         foreach ($boot_with as $class) {

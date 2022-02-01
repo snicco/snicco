@@ -199,7 +199,7 @@ final class MysqliDriver implements MysqliDriverInterface
 
     public function lastInsertId(): int
     {
-        return $this->mysqli->insert_id;
+        return (int)$this->mysqli->insert_id;
     }
 
     public function isStillConnected(): bool
