@@ -537,8 +537,11 @@ class ReadWriteSessionTest extends TestCase
         $this->assertTrue($session->isDirty());
     }
 
-    private function newPersistedSession(string $id = null, array $data = [], $driver = null): ReadWriteSession
-    {
+    private function newPersistedSession(
+        string $id = null,
+        array $data = [],
+        ?InMemoryDriver $driver = null
+    ): ReadWriteSession {
         $session = $this->newSession($id, $data);
         $driver = $driver ?? new InMemoryDriver();
         $session->saveUsing($driver, new DateTimeImmutable());

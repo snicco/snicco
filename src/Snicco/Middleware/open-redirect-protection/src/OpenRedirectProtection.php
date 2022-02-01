@@ -90,7 +90,7 @@ final class OpenRedirectProtection extends AbstractMiddleware
         return $this->forbiddenRedirect($target);
     }
 
-    private function isSameSiteRedirect(Request $request, $location): bool
+    private function isSameSiteRedirect(Request $request, string $location): bool
     {
         $parsed = parse_url($location);
         $target = $parsed['host'] ?? null;
@@ -117,7 +117,7 @@ final class OpenRedirectProtection extends AbstractMiddleware
         return false;
     }
 
-    private function forbiddenRedirect($location): RedirectResponse
+    private function forbiddenRedirect(string $location): RedirectResponse
     {
         try {
             return $this->redirect()

@@ -57,7 +57,7 @@ interface MutableSession
     /**
      * @throws SessionIsLocked
      */
-    public function decrement(string $key, $amount = 1): void;
+    public function decrement(string $key, int $amount = 1): void;
 
     /**
      * @throws SessionIsLocked

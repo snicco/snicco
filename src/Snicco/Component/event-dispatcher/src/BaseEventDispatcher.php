@@ -198,11 +198,7 @@ final class BaseEventDispatcher implements EventDispatcher
         unset($this->listener_cache[$event_name]);
     }
 
-    /**
-     * @return (class-string|mixed|string)[]|Closure
-     *
-     * @psalm-return Closure|array{0: class-string, 1: '__invoke'|mixed}
-     */
+
     private function validatedListener($listener)
     {
         if ($listener instanceof Closure) {

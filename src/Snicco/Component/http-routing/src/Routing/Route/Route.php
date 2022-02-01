@@ -95,7 +95,11 @@ final class Route
     {
     }
 
-    /** @interal */
+    /**
+     * @interal
+     *
+     * @param array<string,string>|string $controller
+     */
     public static function create(
         string $pattern,
         $controller,
@@ -142,7 +146,7 @@ final class Route
     }
 
     /**
-     * @param string|array $controller
+     * @param array<string,string>|string $controller
      */
     private function setController($controller): void
     {
@@ -271,6 +275,9 @@ final class Route
         $this->defaults[$key] = $value;
     }
 
+    /**
+     * @param mixed $args
+     */
     public function condition(string $condition, ...$args): Route
     {
         $b = new ConditionBlueprint($condition, $args);

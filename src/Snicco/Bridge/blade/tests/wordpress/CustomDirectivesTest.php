@@ -60,10 +60,8 @@ class CustomDirectivesTest extends WPTestCase
         return $this->view_engine->make('blade-features.' . $view);
     }
 
-    protected function assertViewContent(string $expected, $actual): void
+    protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = ($actual instanceof View) ? $actual->toString() : $actual;
-
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
 
         PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');

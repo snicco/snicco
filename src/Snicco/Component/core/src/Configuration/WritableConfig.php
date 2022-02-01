@@ -30,6 +30,9 @@ final class WritableConfig implements ArrayAccess
         return new self(new ParameterPag($items));
     }
 
+    /**
+     * @param mixed $extend_with
+     */
     public function merge(string $key, $extend_with): void
     {
         $existing_config = $this->repository->get($key, []);
@@ -88,6 +91,11 @@ final class WritableConfig implements ArrayAccess
         return $this->repository->get($key, $default);
     }
 
+    /**
+     * @param string|true $value
+     *
+     * @psalm-param 'FOO_CONFIG'|'bar'|true $value
+     */
     public function set(string $key, $value): void
     {
         $this->repository->set($key, $value);

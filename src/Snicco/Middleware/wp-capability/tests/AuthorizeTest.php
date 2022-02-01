@@ -39,7 +39,7 @@ class AuthorizeTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
     }
 
-    private function newMiddleware(ScopableWP $wp, string $cap, $id = null): Authorize
+    private function newMiddleware(ScopableWP $wp, string $cap, ?int $id = null): Authorize
     {
         return new Authorize($wp, $cap, $id);
     }

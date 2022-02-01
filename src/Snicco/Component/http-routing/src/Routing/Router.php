@@ -147,6 +147,9 @@ final class Router implements UrlMatcher, UrlGenerator, Routes
         return $route;
     }
 
+    /**
+     * @param array<string,string>|string $controller
+     */
     private function createRoute(string $name, string $path, array $methods, $controller): Route
     {
         if ($this->cache_file && $this->cache_file->isCreated()) {

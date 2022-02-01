@@ -1965,7 +1965,7 @@ class TestSchemaBuilder extends MySqlBuilder
         parent::__construct($connection);
     }
 
-    public function seeColumnOfType($column, $type): void
+    public function seeColumnOfType(string $column, string $type): void
     {
         $table = $this->table;
 
@@ -1993,7 +1993,10 @@ class TestSchemaBuilder extends MySqlBuilder
         return $this->getFullColumnInfo($table)[$column]->Type ?? '';
     }
 
-    public function getFullColumnInfo($table): array
+    /**
+     * @param null|string $table
+     */
+    public function getFullColumnInfo(?string $table): array
     {
         $query = 'show full columns from ?';
 
@@ -2010,7 +2013,7 @@ class TestSchemaBuilder extends MySqlBuilder
         return $field_names->combine($col_info)->toArray();
     }
 
-    public function seePrimaryKey($column): void
+    public function seePrimaryKey(string $column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
         PHPUnit::assertTrue($col->Key === 'PRI');
@@ -2044,7 +2047,10 @@ class TestSchemaBuilder extends MySqlBuilder
         return $parent->pluck($key)->toArray();
     }
 
-    public function getColumnsByOrdinalPosition($table): array
+    /**
+     * @psalm-param 'books' $table
+     */
+    public function getColumnsByOrdinalPosition(string $table): array
     {
         $query = 'show full columns from ' . $this->connection->getTablePrefix() . $table;
 
@@ -2053,14 +2059,20 @@ class TestSchemaBuilder extends MySqlBuilder
         return $col_info->pluck('Field')->toArray();
     }
 
-    public function getTableCharset($table): string
+    /**
+     * @psalm-param 'books' $table
+     */
+    public function getTableCharset(string $table): string
     {
         $collation = $this->getTableCollation($table);
 
         return Str::beforeFirst($collation, '_');
     }
 
-    public function getTableCollation($table)
+    /**
+     * @psalm-param 'books' $table
+     */
+    public function getTableCollation(string $table)
     {
         $query = 'show table status where name like ?';
 

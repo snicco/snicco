@@ -352,6 +352,9 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         return $route;
     }
 
+    /**
+     * @param array<string,string>|string $action
+     */
     public function any(string $name, string $path, $action = Route::DELEGATE): Route
     {
         return $this->addWebRoute($name, $path, Route::ALL_METHODS, $action);
@@ -372,6 +375,9 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         return $route;
     }
 
+    /**
+     * @param array<string,string>|string $action
+     */
     public function match(array $verbs, string $name, string $path, $action = Route::DELEGATE): Route
     {
         return $this->addWebRoute($name, $path, array_map('strtoupper', $verbs), $action);

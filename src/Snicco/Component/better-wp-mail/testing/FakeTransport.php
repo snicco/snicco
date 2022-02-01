@@ -38,7 +38,7 @@ final class FakeTransport implements Transport
         $this->recordMail($email, $envelope);
     }
 
-    private function recordMail($email, Envelope $envelope): void
+    private function recordMail(Email $email, Envelope $envelope): void
     {
         $class = get_class($email);
 
@@ -191,7 +191,7 @@ final class FakeTransport implements Transport
      * @param string|WP_User|array<string,<string> $recipient
      * @param string $email_class
      */
-    public function assertSentTo($recipient, string $email_class): void
+    public function assertSentTo(string $recipient, string $email_class): void
     {
         $expected_recipient = Mailbox::create($recipient);
 
@@ -241,8 +241,10 @@ final class FakeTransport implements Transport
 
     /**
      * @param string|WP_User|array<string,<string> $recipient
+     *
+     * @psalm-param 'c@web.de'|'m@web.de'|'marlon@web.de' $recipient
      */
-    public function assertNotSentTo($recipient, string $mailable_class): void
+    public function assertNotSentTo(string $recipient, string $mailable_class): void
     {
         $expected_recipient = Mailbox::create($recipient);
         $matching = $this->sentEmailsThatMatchCondition(

@@ -18,7 +18,7 @@ final class BladeStandaloneTest extends BladeTestCase
     {
         $view = $this->view_engine->make('nested.view');
 
-        $this->assertViewContent('FOO', $view);
+        $this->assertViewContent('FOO', $view->toString());
     }
 
     /**

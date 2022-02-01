@@ -110,7 +110,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $displayers[0] ?? $this->fallback_displayer;
     }
 
-    private function handleDisplayError($display_error, RequestInterface $request): ResponseInterface
+    private function handleDisplayError(Throwable $display_error, RequestInterface $request): ResponseInterface
     {
         $info = $this->information_provider->createFor($display_error);
         $this->logException($info, $request);
@@ -119,7 +119,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $res->withHeader('content-type', 'text/plain');
     }
 
-    private function withHttpHeaders($transformed, $response): ResponseInterface
+    private function withHttpHeaders(Throwable $transformed, ResponseInterface $response): ResponseInterface
     {
         if (!$transformed instanceof HttpException) {
             return $response;

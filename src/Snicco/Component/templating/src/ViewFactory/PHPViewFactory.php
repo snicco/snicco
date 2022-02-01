@@ -94,7 +94,7 @@ final class PHPViewFactory implements ViewFactory
      *
      * @return never
      */
-    private function handleViewException(Throwable $e, $ob_level, PHPView $view)
+    private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
     {
         while (ob_get_level() > $ob_level) {
             ob_end_clean();

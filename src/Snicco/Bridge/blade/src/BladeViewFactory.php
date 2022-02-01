@@ -59,7 +59,7 @@ final class BladeViewFactory implements ViewFactory
     }
 
     // We need to do this because Blade only supports views by name relative to one of the view directories.
-    private function convertAbsolutePathToName($path): string
+    private function convertAbsolutePathToName(string $path): string
     {
         foreach ($this->view_directories as $view_directory) {
             if (Str::startsWith($path, $view_directory)) {

@@ -157,7 +157,7 @@ class Response implements ResponseInterface
     /**
      * @param array<string,string>|<array<string,array<string>> $errors
      */
-    final public function withErrors($errors, string $namespace = 'default'): self
+    final public function withErrors(array $errors, string $namespace = 'default'): self
     {
         $_errors = $this->errors;
         foreach ($errors as $key => $messages) {

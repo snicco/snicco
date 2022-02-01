@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail;
 
+use Closure;
+
 use function get_bloginfo;
 use function network_home_url;
 use function remove_filter;
@@ -15,12 +17,16 @@ use function wp_mail;
 final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
 
-    public function mail($to, $subject, $message, $headers = '', $attachments = []): bool
+    /**
+     * @param string|string[] $to
+     * @param string|string[] $headers
+     */
+    public function mail($to, string $subject, string $message, $headers = '', array $attachments = []): bool
     {
         return wp_mail($to, $subject, $message, $headers, $attachments);
     }
 
-    public function removeFilter(string $hook_name, $callback, $priority = 10): bool
+    public function removeFilter(string $hook_name, Closure $callback, int $priority = 10): bool
     {
         return remove_filter($hook_name, $callback, $priority);
     }

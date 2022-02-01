@@ -190,6 +190,9 @@ final class Arr
         }
     }
 
+    /**
+     * @param mixed $value
+     */
     public static function toArray($value): array
     {
         return is_array($value) ? $value : [$value];
@@ -228,6 +231,9 @@ final class Arr
         return array_key_exists($key, $array);
     }
 
+    /**
+     * @param ArrayAccess|array $array
+     */
     private static function checkIsArray($array, string $called_method): void
     {
         if (!self::accessible($array)) {
@@ -249,6 +255,9 @@ final class Arr
         return is_array($value) || $value instanceof ArrayAccess;
     }
 
+    /**
+     * @param int|string $key
+     */
     private static function checkKeyStringInt($key, string $called_method): void
     {
         if (!is_string($key) && !is_int($key)) {

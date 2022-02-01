@@ -118,7 +118,7 @@ final class FastRouteSyntaxConverter
         return str_replace('\\/', '/', $regex);
     }
 
-    private function ensureOptionalRouteCanMatchWithTrailingSlash($url): string
+    private function ensureOptionalRouteCanMatchWithTrailingSlash(string $url): string
     {
         $l1 = strlen($url);
         $url = rtrim($url, ']');
