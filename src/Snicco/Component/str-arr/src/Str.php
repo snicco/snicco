@@ -21,11 +21,15 @@ declare(strict_types=1);
 
 namespace Snicco\Component\StrArr;
 
+use Exception;
+use RuntimeException;
+
 use function array_map;
 use function array_reverse;
 use function bin2hex;
 use function explode;
 use function implode;
+use function is_string;
 use function mb_internal_encoding;
 use function mb_strpos;
 use function mb_strrpos;
@@ -51,6 +55,9 @@ final class Str
      */
     private static array $studly_cache = [];
 
+    /**
+     * @param list<string> $needles
+     */
     public static function containsAll(string $haystack, array $needles): bool
     {
         foreach ($needles as $needle) {
@@ -76,6 +83,9 @@ final class Str
         return false;
     }
 
+    /**
+     * @param list<string> $needles
+     */
     public static function containsAny(string $haystack, array $needles): bool
     {
         foreach ($needles as $needle) {
@@ -90,6 +100,9 @@ final class Str
     /**
      * Generates a random secret with the passed bytes as strength.
      * The output is hex encoded and will have TWICE the length as $strength.
+     *
+     * @param positive-int $bytes
+     * @throws Exception
      */
     public static function random(int $bytes = 16): string
     {
@@ -118,6 +131,9 @@ final class Str
     {
         if ($encoding === null) {
             $encoding = mb_internal_encoding();
+            if (!is_string($encoding)) {
+                throw new RuntimeException('Internal multi-byte encoding not set.');
+            }
         }
         return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_substr(
                 $str,
@@ -153,7 +169,11 @@ final class Str
             return $subject;
         }
 
-        return substr($subject, $position + strlen($search));
+        $res = substr($subject, $position + strlen($search));
+        if (false === $res) {
+            throw new RuntimeException("substr returned false for subject [$subject].");
+        }
+        return $res;
     }
 
     public static function startsWith(string $haystack, string $needle): bool
