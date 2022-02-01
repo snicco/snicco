@@ -21,7 +21,7 @@ final class EventDispatcherWithContainerTest extends TestCase
     {
         $container = new PimplePsr11($pimple = new Container());
 
-        $pimple[ListenerWithDependency::class] = function (Container $container) {
+        $pimple[ListenerWithDependency::class] = function (Container $container): ListenerWithDependency {
             return new ListenerWithDependency($container[Dependency::class]);
         };
 

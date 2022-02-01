@@ -28,7 +28,7 @@ final class ReflectionTest extends TestCase
      */
     public function test_getReflectionFunction_with_closure(): void
     {
-        $closure = function ($foo) {
+        $closure = function ($foo): void {
         };
 
         $reflection = Reflection::getReflectionFunction($closure);

@@ -380,7 +380,7 @@ final class FactorySessionManagerTest extends TestCase
         $this->idle_timeout = 1000;
 
         $count = 0;
-        $listener = function (SessionRotated $event) use (&$count) {
+        $listener = function (SessionRotated $event) use (&$count): void {
             $count++;
             $this->assertSame('bar', $event->session->get('foo'));
         };
