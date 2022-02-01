@@ -129,7 +129,7 @@ final class ReadOnlyConfigTest extends TestCase
         $this->expectException(MissingConfigKey::class);
         $this->expectExceptionMessage('The key [foo.biz] does not exist in the configuration.');
 
-        $val = $config['foo.biz'];
+        $config['foo.biz'];
     }
 
     /**

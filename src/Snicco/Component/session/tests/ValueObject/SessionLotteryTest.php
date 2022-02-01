@@ -18,7 +18,7 @@ final class SessionLotteryTest extends TestCase
     {
         $this->expectException(LogicException::class);
 
-        $lottery = new SessionLottery(101);
+        new SessionLottery(101);
     }
 
     /**
@@ -28,7 +28,7 @@ final class SessionLotteryTest extends TestCase
     {
         $this->expectException(LogicException::class);
 
-        $lottery = new SessionLottery(-1);
+        new SessionLottery(-1);
     }
 
     /**

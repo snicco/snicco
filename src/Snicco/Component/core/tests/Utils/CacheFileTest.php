@@ -19,7 +19,7 @@ final class CacheFileTest extends TestCase
     public function test_exception_if_dir_does_not_exist(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $cache_file = new CacheFile(__DIR__ . '/foo', 'foo.php');
+        new CacheFile(__DIR__ . '/foo', 'foo.php');
     }
 
     /**
@@ -29,7 +29,7 @@ final class CacheFileTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The cache file name can not be empty.');
-        $cache_file = new CacheFile(__DIR__, '');
+        new CacheFile(__DIR__, '');
     }
 
     /**

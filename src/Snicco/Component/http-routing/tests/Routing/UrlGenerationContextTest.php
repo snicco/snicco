@@ -75,7 +75,7 @@ final class UrlGenerationContextTest extends TestCase
         $request = $this->psrServerRequestFactory()
             ->createServerRequest('GET', '/foo');
 
-        $context = UrlGenerationContext::fromRequest($request);
+        UrlGenerationContext::fromRequest($request);
     }
 
     /**
@@ -119,7 +119,7 @@ final class UrlGenerationContextTest extends TestCase
         $this->expectExceptionMessage(
             'The scheme for url generation has to be either http or https.'
         );
-        $context = UrlGenerationContext::fromRequest(
+        UrlGenerationContext::fromRequest(
             $this->psrServerRequestFactory()->createServerRequest('GET', '//foo.com/foo')
         );
     }
@@ -176,7 +176,7 @@ final class UrlGenerationContextTest extends TestCase
             '$host and $current_uri_as_string are not compatible because the http host is different.'
         );
 
-        $context = UrlGenerationContext::forConsole(
+        UrlGenerationContext::forConsole(
             'foobar.com',
             true,
             443,

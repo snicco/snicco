@@ -46,7 +46,7 @@ final class LazyErrorHandlerTest extends TestCase
             'The psr container needs a service for id [' . HttpErrorHandlerInterface::class . '].'
         );
 
-        $lazy_handler = new LazyHttpErrorHandler($c = $this->createContainer());
+        new LazyHttpErrorHandler($c = $this->createContainer());
     }
 
     /**

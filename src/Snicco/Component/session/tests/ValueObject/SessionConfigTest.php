@@ -48,7 +48,7 @@ final class SessionConfigTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         unset($this->defaults['cookie_name']);
-        $config = new SessionConfig($this->defaults);
+        new SessionConfig($this->defaults);
     }
 
     /**

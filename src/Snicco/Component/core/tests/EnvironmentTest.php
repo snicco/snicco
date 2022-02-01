@@ -30,7 +30,7 @@ final class EnvironmentTest extends TestCase
         $this->expectExceptionMessage(
             'App environment can not be constructed with an empty string.'
         );
-        $app_env = Environment::fromString('');
+        Environment::fromString('');
     }
 
     /**
@@ -38,17 +38,17 @@ final class EnvironmentTest extends TestCase
      */
     public function test_exception_if_not_a_valid_environment(): void
     {
-        $app_env = Environment::fromString('prod');
-        $app_env = Environment::fromString('testing');
-        $app_env = Environment::fromString('dev');
-        $app_env = Environment::fromString('staging');
+        Environment::fromString('prod');
+        Environment::fromString('testing');
+        Environment::fromString('dev');
+        Environment::fromString('staging');
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'App environment has to be one of [testing,prod,dev,staging]. Got: [local]'
         );
 
-        $app_env = Environment::fromString('local');
+        Environment::fromString('local');
     }
 
     /**
@@ -132,7 +132,7 @@ final class EnvironmentTest extends TestCase
         $this->expectExceptionMessage(
             'App environment can not be in debug mode while in production.'
         );
-        $app_env = Environment::fromString('prod', true);
+        Environment::fromString('prod', true);
     }
 
     /**

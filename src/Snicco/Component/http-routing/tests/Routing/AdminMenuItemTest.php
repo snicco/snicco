@@ -117,7 +117,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$page_title cant be empty');
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [
+        AdminMenuItem::fromRoute($route, [
             AdminMenuItem::PAGE_TITLE => '',
         ]);
     }
@@ -138,7 +138,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$menu_title cant be empty');
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [
+        AdminMenuItem::fromRoute($route, [
             AdminMenuItem::MENU_TITLE => '',
             AdminMenuItem::PAGE_TITLE => 'foo',
         ]);
@@ -162,7 +162,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$capability has to be null or non empty string.');
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => '']);
+        AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => '']);
     }
 
     /**
@@ -183,7 +183,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$icon has to be null or non empty string.');
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => '']);
+        AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => '']);
     }
 
     /**
@@ -204,7 +204,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$parent_slug has to be null or non empty string.');
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [], '');
+        AdminMenuItem::fromRoute($route, [], '');
     }
 
     /**

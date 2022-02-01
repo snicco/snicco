@@ -88,7 +88,7 @@ final class ApplicationTest extends TestCase
      */
     public function the_environment_is_not_saved_in_the_container_so_that_it_cannot_be_overwritten(): void
     {
-        $app = new Application(
+        new Application(
             $container = $this->createContainer(),
             $env = Environment::testing(),
             Directories::fromDefaults($this->base_dir)
@@ -192,7 +192,7 @@ final class ApplicationTest extends TestCase
         );
 
         try {
-            $config = $app->config();
+            $app->config();
         } catch (LogicException $e) {
             $this->assertStringContainsString(
                 'only be accessed after bootstrapping.',

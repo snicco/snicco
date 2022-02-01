@@ -31,7 +31,7 @@ final class DirectoriesTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$base_directory [bogus] is not readable.');
 
-        $dirs = Directories::fromDefaults('bogus');
+        Directories::fromDefaults('bogus');
     }
 
     /**
@@ -74,7 +74,7 @@ final class DirectoriesTest extends TestCase
             sprintf('$config_dir [%s] is not readable', __DIR__ . '/config')
         );
 
-        $dirs = new Directories(__DIR__, __DIR__ . '/config', __DIR__ . '/cache', __DIR__ . '/log');
+        new Directories(__DIR__, __DIR__ . '/config', __DIR__ . '/cache', __DIR__ . '/log');
     }
 
     /**
@@ -87,7 +87,7 @@ final class DirectoriesTest extends TestCase
             sprintf('$cache_dir [%s] is not readable', __DIR__ . '/cache')
         );
 
-        $dirs = new Directories(
+        new Directories(
             $this->valid_base_dir,
             $this->valid_base_dir . '/config',
             __DIR__ . '/cache',
@@ -105,7 +105,7 @@ final class DirectoriesTest extends TestCase
             sprintf('$log_dir [%s] is not readable', __DIR__ . '/log')
         );
 
-        $dirs = new Directories(
+        new Directories(
             $this->valid_base_dir,
             $this->valid_base_dir . '/config',
             $this->valid_base_dir . '/var/cache',

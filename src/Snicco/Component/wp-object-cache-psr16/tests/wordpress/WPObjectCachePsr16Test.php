@@ -481,7 +481,7 @@ final class WPObjectCachePsr16Test extends WPTestCase
         }
 
         $this->expectException('Psr\SimpleCache\InvalidArgumentException');
-        $result = $this->cache->getMultiple(['key1', $key, 'key2']);
+        $this->cache->getMultiple(['key1', $key, 'key2']);
     }
 
     public function testGetMultipleNoIterable(): void
@@ -491,7 +491,7 @@ final class WPObjectCachePsr16Test extends WPTestCase
         }
 
         $this->expectException('Psr\SimpleCache\InvalidArgumentException');
-        $result = $this->cache->getMultiple('key');
+        $this->cache->getMultiple('key');
     }
 
     /**
@@ -744,7 +744,6 @@ final class WPObjectCachePsr16Test extends WPTestCase
             $data .= chr($i);
         }
 
-        $array = ['a' => 'foo', 2 => 'bar'];
         $this->cache->set('key', $data);
         $result = $this->cache->get('key');
         $this->assertTrue($data === $result, 'Binary data must survive a round trip.');

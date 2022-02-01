@@ -36,9 +36,9 @@ final class CollectGarbageTest extends MiddlewareTestCase
             new Sha256Hasher(Secret::generate())
         );
 
-        $link1 = $signer->sign('/foo', 10);
-        $link2 = $signer->sign('/bar', 10);
-        $link3 = $signer->sign('/baz', 10);
+        $signer->sign('/foo', 10);
+        $signer->sign('/bar', 10);
+        $signer->sign('/baz', 10);
 
         $this->assertCount(3, $storage->all());
 

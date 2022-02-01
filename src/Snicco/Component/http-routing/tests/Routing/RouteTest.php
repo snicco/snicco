@@ -50,7 +50,7 @@ final class RouteTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('bogus');
 
-        $route = Route::create('/foo', Route::DELEGATE, 'foo_route', ['GET', 'bogus']);
+        Route::create('/foo', Route::DELEGATE, 'foo_route', ['GET', 'bogus']);
     }
 
     /**
@@ -149,7 +149,7 @@ final class RouteTest extends TestCase
         $c = RoutingTestController::class;
         $this->expectExceptionMessage('The method [' . $c . '::bogus] is not callable.');
 
-        $route = Route::create(
+        Route::create(
             '/foo',
             'RoutingTestController@bogus',
             null,
@@ -192,7 +192,7 @@ final class RouteTest extends TestCase
             'Route segment names have to be unique but 1 of them is duplicated.'
         );
 
-        $route = Route::create('/foo/{bar}/{bar}', Route::DELEGATE);
+        Route::create('/foo/{bar}/{bar}', Route::DELEGATE);
     }
 
     /**
@@ -205,7 +205,7 @@ final class RouteTest extends TestCase
             'Route segment names have to be unique but 1 of them is duplicated.'
         );
 
-        $route = Route::create('/foo/{bar?}/{bar?}', Route::DELEGATE);
+        Route::create('/foo/{bar?}/{bar?}', Route::DELEGATE);
     }
 
     /**
@@ -218,7 +218,7 @@ final class RouteTest extends TestCase
             'Route segment names have to be unique but 1 of them is duplicated.'
         );
 
-        $route = Route::create('/foo/{bar}/{bar?}', Route::DELEGATE);
+        Route::create('/foo/{bar}/{bar?}', Route::DELEGATE);
     }
 
     /**
