@@ -9,7 +9,7 @@ use Snicco\Bridge\Blade\BladeComponent;
 class InlineComponent extends BladeComponent
 {
 
-    public $content;
+    public string $content;
 
     public function __construct($content)
     {

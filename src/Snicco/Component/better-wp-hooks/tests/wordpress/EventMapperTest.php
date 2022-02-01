@@ -714,7 +714,7 @@ class EmptyActionEvent implements MappedAction
     use ClassAsName;
     use ClassAsPayload;
 
-    public $value = 'foo';
+    public string $value = 'foo';
 
     public function shouldDispatch(): bool
     {
@@ -729,7 +729,7 @@ class EmptyActionEvent2 implements MappedAction
     use ClassAsName;
     use ClassAsPayload;
 
-    public $value = 'bar';
+    public string $value = 'bar';
 
     public function shouldDispatch(): bool
     {
@@ -773,7 +773,7 @@ class ActionWithArrayArguments implements MappedAction
     use ClassAsName;
     use ClassAsPayload;
 
-    public $message;
+    public string $message;
 
     public function __construct(array $words, $suffix)
     {
