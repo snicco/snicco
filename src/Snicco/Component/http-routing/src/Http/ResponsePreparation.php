@@ -91,7 +91,7 @@ final class ResponsePreparation
         return $response;
     }
 
-    private function getCacheControlHeader(Response $response, array $headers_sent_with_php)
+    private function getCacheControlHeader(Response $response, array $headers_sent_with_php): string
     {
         if ($response->hasHeader('cache-control')) {
             return strtolower($response->getHeaderLine('cache-control'));

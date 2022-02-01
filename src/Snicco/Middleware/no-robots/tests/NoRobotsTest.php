@@ -10,8 +10,10 @@ use Snicco\Middleware\NoRobots\NoRobots;
 class NoRobotsTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function everything_is_disabled_by_default()
+    /**
+     * @test
+     */
+    public function everything_is_disabled_by_default(): void
     {
         $middleware = new NoRobots();
 
@@ -25,8 +27,10 @@ class NoRobotsTest extends MiddlewareTestCase
         $this->assertContains('noarchive', $header);
     }
 
-    /** @test */
-    public function no_index_can_be_configured_separately()
+    /**
+     * @test
+     */
+    public function no_index_can_be_configured_separately(): void
     {
         $middleware = new NoRobots(false);
 
@@ -40,8 +44,10 @@ class NoRobotsTest extends MiddlewareTestCase
         $this->assertContains('noarchive', $header);
     }
 
-    /** @test */
-    public function no_follow_can_be_configured_separately()
+    /**
+     * @test
+     */
+    public function no_follow_can_be_configured_separately(): void
     {
         $middleware = new NoRobots(true, false);
 
@@ -55,8 +61,10 @@ class NoRobotsTest extends MiddlewareTestCase
         $this->assertContains('noarchive', $header);
     }
 
-    /** @test */
-    public function no_archive_can_be_configured_separately()
+    /**
+     * @test
+     */
+    public function no_archive_can_be_configured_separately(): void
     {
         $middleware = new NoRobots(true, true, false);
 

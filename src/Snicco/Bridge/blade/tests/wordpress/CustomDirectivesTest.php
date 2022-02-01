@@ -34,8 +34,10 @@ class CustomDirectivesTest extends WPTestCase
     protected GlobalViewContext $global_view_context;
     protected BladeStandalone $blade;
 
-    /** @test */
-    public function custom_auth_user_directive_works()
+    /**
+     * @test
+     */
+    public function custom_auth_user_directive_works(): void
     {
         $this->blade->bindWordPressDirectives(new ScopableWP());
 
@@ -58,7 +60,7 @@ class CustomDirectivesTest extends WPTestCase
         return $this->view_engine->make('blade-features.' . $view);
     }
 
-    protected function assertViewContent(string $expected, $actual)
+    protected function assertViewContent(string $expected, $actual): void
     {
         $actual = ($actual instanceof View) ? $actual->toString() : $actual;
 
@@ -67,8 +69,10 @@ class CustomDirectivesTest extends WPTestCase
         PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
     }
 
-    /** @test */
-    public function custom_guest_user_directive_works()
+    /**
+     * @test
+     */
+    public function custom_guest_user_directive_works(): void
     {
         $this->blade->bindWordPressDirectives(new ScopableWP());
 
@@ -83,8 +87,10 @@ class CustomDirectivesTest extends WPTestCase
         $this->assertViewContent('', $content);
     }
 
-    /** @test */
-    public function custom_wp_role_directives_work()
+    /**
+     * @test
+     */
+    public function custom_wp_role_directives_work(): void
     {
         $this->blade->bindWordPressDirectives(new ScopableWP());
 
@@ -139,7 +145,7 @@ class CustomDirectivesTest extends WPTestCase
         $this->clearCache();
     }
 
-    private function clearCache()
+    private function clearCache(): void
     {
         $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
         foreach ($files as $file) {

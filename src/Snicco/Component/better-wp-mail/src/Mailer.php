@@ -146,7 +146,7 @@ final class Mailer
             ->merge($mail->bcc());
     }
 
-    private function fireSentEvent(Email $email, Envelope $envelope)
+    private function fireSentEvent(Email $email, Envelope $envelope): void
     {
         $this->event_dispatcher->fireSent(new EmailWasSent($email, $envelope));
     }

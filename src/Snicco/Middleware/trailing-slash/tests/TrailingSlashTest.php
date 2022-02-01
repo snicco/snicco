@@ -10,8 +10,10 @@ use Snicco\Middleware\TrailingSlash\TrailingSlash;
 class TrailingSlashTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function a_request_without_trailing_slash_is_redirected()
+    /**
+     * @test
+     */
+    public function a_request_without_trailing_slash_is_redirected(): void
     {
         $request = $this->frontendRequest('https://foo.com/bar');
 
@@ -24,8 +26,10 @@ class TrailingSlashTest extends MiddlewareTestCase
         $response->psr()->assertRedirectPath('/bar/');
     }
 
-    /** @test */
-    public function a_request_with_trailing_slash_is_not_redirected()
+    /**
+     * @test
+     */
+    public function a_request_with_trailing_slash_is_not_redirected(): void
     {
         $request = $this->frontendRequest('https://foo.com/bar/');
 
@@ -35,8 +39,10 @@ class TrailingSlashTest extends MiddlewareTestCase
         $response->psr()->assertOk();
     }
 
-    /** @test */
-    public function a_request_with_trailing_slash_is_redirected()
+    /**
+     * @test
+     */
+    public function a_request_with_trailing_slash_is_redirected(): void
     {
         $request = $this->frontendRequest('https://foo.com/bar/');
 
@@ -46,8 +52,10 @@ class TrailingSlashTest extends MiddlewareTestCase
         $response->psr()->assertRedirectPath('/bar')->assertStatus(301);
     }
 
-    /** @test */
-    public function a_request_without_trailing_slash_is_not_redirected()
+    /**
+     * @test
+     */
+    public function a_request_without_trailing_slash_is_not_redirected(): void
     {
         $request = $this->frontendRequest('https://foo.com/bar');
 

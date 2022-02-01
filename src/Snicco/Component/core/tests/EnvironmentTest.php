@@ -11,16 +11,20 @@ use Snicco\Component\Core\Environment;
 final class EnvironmentTest extends TestCase
 {
 
-    /** @test */
-    public function test_from_string()
+    /**
+     * @test
+     */
+    public function test_from_string(): void
     {
         $app_env = Environment::fromString('prod');
 
         $this->assertInstanceOf(Environment::class, $app_env);
     }
 
-    /** @test */
-    public function test_exception_if_empty_string()
+    /**
+     * @test
+     */
+    public function test_exception_if_empty_string(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -29,8 +33,10 @@ final class EnvironmentTest extends TestCase
         $app_env = Environment::fromString('');
     }
 
-    /** @test */
-    public function test_exception_if_not_a_valid_environment()
+    /**
+     * @test
+     */
+    public function test_exception_if_not_a_valid_environment(): void
     {
         $app_env = Environment::fromString('prod');
         $app_env = Environment::fromString('testing');
@@ -45,8 +51,10 @@ final class EnvironmentTest extends TestCase
         $app_env = Environment::fromString('local');
     }
 
-    /** @test */
-    public function test_as_string()
+    /**
+     * @test
+     */
+    public function test_as_string(): void
     {
         $app_env = Environment::fromString('prod');
         $this->assertSame('prod', $app_env->asString());
@@ -61,8 +69,10 @@ final class EnvironmentTest extends TestCase
         $this->assertSame('staging', $app_env->asString());
     }
 
-    /** @test */
-    public function test_named_constructors()
+    /**
+     * @test
+     */
+    public function test_named_constructors(): void
     {
         $app_env = Environment::prod();
         $this->assertSame('prod', $app_env->asString());
@@ -77,8 +87,10 @@ final class EnvironmentTest extends TestCase
         $this->assertSame('staging', $app_env->asString());
     }
 
-    /** @test */
-    public function test_is_environment()
+    /**
+     * @test
+     */
+    public function test_is_environment(): void
     {
         $env = Environment::prod();
         $this->assertTrue($env->isProduction());
@@ -105,8 +117,10 @@ final class EnvironmentTest extends TestCase
         $this->assertFalse($env->isTesting());
     }
 
-    /** @test */
-    public function test_debug_is_not_allowed_in_production()
+    /**
+     * @test
+     */
+    public function test_debug_is_not_allowed_in_production(): void
     {
         $app_env = Environment::prod();
         $this->assertFalse($app_env->isDebug());
@@ -121,8 +135,10 @@ final class EnvironmentTest extends TestCase
         $app_env = Environment::fromString('prod', true);
     }
 
-    /** @test */
-    public function test_debug_can_be_enabled_in_other_envs()
+    /**
+     * @test
+     */
+    public function test_debug_can_be_enabled_in_other_envs(): void
     {
         $app_env = Environment::fromString('dev');
         $this->assertFalse($app_env->isDebug());
@@ -140,8 +156,10 @@ final class EnvironmentTest extends TestCase
         $this->assertTrue($app_env->isDebug());
     }
 
-    /** @test */
-    public function test_debug_is_enabled_by_default_when_using_named_dev_constructor()
+    /**
+     * @test
+     */
+    public function test_debug_is_enabled_by_default_when_using_named_dev_constructor(): void
     {
         $env = Environment::dev();
         $this->assertTrue($env->isDebug());
@@ -150,8 +168,10 @@ final class EnvironmentTest extends TestCase
         $this->assertFalse($env->isDebug());
     }
 
-    /** @test */
-    public function test_debug_is_disabled_by_default_when_using_named_testing_constructor()
+    /**
+     * @test
+     */
+    public function test_debug_is_disabled_by_default_when_using_named_testing_constructor(): void
     {
         $env = Environment::testing();
         $this->assertFalse($env->isDebug());
@@ -160,8 +180,10 @@ final class EnvironmentTest extends TestCase
         $this->assertTrue($env->isDebug());
     }
 
-    /** @test */
-    public function test_debug_is_disabled_by_default_when_using_named_staging_constructor()
+    /**
+     * @test
+     */
+    public function test_debug_is_disabled_by_default_when_using_named_staging_constructor(): void
     {
         $env = Environment::staging();
         $this->assertFalse($env->isDebug());
@@ -170,8 +192,10 @@ final class EnvironmentTest extends TestCase
         $this->assertTrue($env->isDebug());
     }
 
-    /** @test */
-    public function test_debug_is_always_disabled_when_using_named_production_constructor()
+    /**
+     * @test
+     */
+    public function test_debug_is_always_disabled_when_using_named_production_constructor(): void
     {
         $env = Environment::prod();
         $this->assertFalse($env->isDebug());
@@ -180,8 +204,10 @@ final class EnvironmentTest extends TestCase
         $this->assertFalse($env->isDebug());
     }
 
-    /** @test */
-    public function test_is_running_in_console()
+    /**
+     * @test
+     */
+    public function test_is_running_in_console(): void
     {
         $env = Environment::prod();
         $this->assertTrue($env->isCli());

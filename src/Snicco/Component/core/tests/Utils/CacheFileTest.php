@@ -13,23 +13,29 @@ final class CacheFileTest extends TestCase
 
     private string $file;
 
-    /** @test */
-    public function test_exception_if_dir_does_not_exist()
+    /**
+     * @test
+     */
+    public function test_exception_if_dir_does_not_exist(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $cache_file = new CacheFile(__DIR__ . '/foo', 'foo.php');
     }
 
-    /** @test */
-    public function test_exception_for_empty_file_name()
+    /**
+     * @test
+     */
+    public function test_exception_for_empty_file_name(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The cache file name can not be empty.');
         $cache_file = new CacheFile(__DIR__, '');
     }
 
-    /** @test */
-    public function test_is_created()
+    /**
+     * @test
+     */
+    public function test_is_created(): void
     {
         $cache_file = new CacheFile(__DIR__, 'foo.php');
         $this->assertFalse($cache_file->isCreated());
@@ -39,15 +45,19 @@ final class CacheFileTest extends TestCase
         $this->assertTrue($cache_file->isCreated());
     }
 
-    /** @test */
-    public function test_as_string()
+    /**
+     * @test
+     */
+    public function test_as_string(): void
     {
         $cache_file = new CacheFile(__DIR__, 'foo.php');
         $this->assertSame($this->file, $cache_file->realpath());
     }
 
-    /** @test */
-    public function test_get_contents()
+    /**
+     * @test
+     */
+    public function test_get_contents(): void
     {
         file_put_contents($this->file, '<?php return "foo";');
 

@@ -11,7 +11,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 trait AssertFails
 {
 
-    private function assertFailsWithMessageStarting(string $message, Closure $closure)
+    private function assertFailsWithMessageStarting(string $message, Closure $closure): void
     {
         try {
             $closure();

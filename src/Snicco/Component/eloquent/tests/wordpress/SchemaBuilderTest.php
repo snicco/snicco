@@ -37,8 +37,10 @@ class SchemaBuilderTest extends WPTestCase
      */
     private $mysqli_connection;
 
-    /** @test */
-    public function a_basic_table_can_be_created()
+    /**
+     * @test
+     */
+    public function a_basic_table_can_be_created(): void
     {
         $this->assertFalse($this->builder->hasTable('books'));
 
@@ -50,8 +52,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($this->builder->hasTable('books'));
     }
 
-    /** @test */
-    public function table_existence_can_be_checked()
+    /**
+     * @test
+     */
+    public function table_existence_can_be_checked(): void
     {
         $this->assertFalse($this->builder->hasTable('books'));
 
@@ -63,8 +67,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($this->builder->hasTable('books'));
     }
 
-    /** @test */
-    public function all_table_names_can_be_retrieved()
+    /**
+     * @test
+     */
+    public function all_table_names_can_be_retrieved(): void
     {
         $pluck = 'Tables_in_' . $this->mysqli_connection->getDatabaseName();
         $tables = collect($this->builder->getAllTables())->pluck($pluck)->toArray();
@@ -89,8 +95,10 @@ class SchemaBuilderTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function column_existence_can_be_checked()
+    /**
+     * @test
+     */
+    public function column_existence_can_be_checked(): void
     {
         $this->assertTrue($this->builder->hasColumn('users', 'user_login'));
         $this->assertFalse($this->builder->hasColumn('users', 'user_profile_pic'));
@@ -104,8 +112,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($this->builder->hasColumns('users', ['user_login', 'user_email']));
     }
 
-    /** @test */
-    public function a_table_can_be_dropped()
+    /**
+     * @test
+     */
+    public function a_table_can_be_dropped(): void
     {
         $this->builder->create('books2', function (Blueprint $table) {
             $table->id();
@@ -123,8 +133,10 @@ class SchemaBuilderTest extends WPTestCase
      * General methods
      */
 
-    /** @test */
-    public function columns_can_be_dropped()
+    /**
+     * @test
+     */
+    public function columns_can_be_dropped(): void
     {
         $this->builder->create('books', function (Blueprint $table) {
             $table->bigIncrements('book_id');
@@ -179,8 +191,10 @@ class SchemaBuilderTest extends WPTestCase
         return $wpdb->get_results("show full columns from $table_with_prefix", ARRAY_A);
     }
 
-    /** @test */
-    public function an_existing_column_can_be_renamed()
+    /**
+     * @test
+     */
+    public function an_existing_column_can_be_renamed(): void
     {
         $this->builder->create('books', function (Blueprint $table) {
             $table->id();
@@ -195,8 +209,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->builder->drop('books_new');
     }
 
-    /** @test */
-    public function columns_can_be_added_to_an_existing_table()
+    /**
+     * @test
+     */
+    public function columns_can_be_added_to_an_existing_table(): void
     {
         $this->builder->create('books', function (Blueprint $table) {
             $table->bigIncrements('book_id');
@@ -212,8 +228,10 @@ class SchemaBuilderTest extends WPTestCase
         ], $this->getColumnsByOrdinalPosition('books'));
     }
 
-    /** @test */
-    public function big_increments_works()
+    /**
+     * @test
+     */
+    public function big_increments_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -231,8 +249,10 @@ class SchemaBuilderTest extends WPTestCase
         return new TestSchemaBuilder($this->mysqli_connection, $table);
     }
 
-    /** @test */
-    public function big_integer_works()
+    /**
+     * @test
+     */
+    public function big_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -247,8 +267,10 @@ class SchemaBuilderTest extends WPTestCase
      * Creating column types
      */
 
-    /** @test */
-    public function binary_works()
+    /**
+     * @test
+     */
+    public function binary_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -259,8 +281,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('photo', 'blob');
     }
 
-    /** @test */
-    public function boolean_works()
+    /**
+     * @test
+     */
+    public function boolean_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -271,8 +295,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('confirmed', 'tinyint(1)');
     }
 
-    /** @test */
-    public function char_works()
+    /**
+     * @test
+     */
+    public function char_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -285,8 +311,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('email', 'char(255)');
     }
 
-    /** @test */
-    public function date_time_tz_works()
+    /**
+     * @test
+     */
+    public function date_time_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -299,8 +327,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('created_at_precise', 'datetime(2)');
     }
 
-    /** @test */
-    public function date_time_works()
+    /**
+     * @test
+     */
+    public function date_time_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -313,8 +343,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('created_at_precise', 'datetime(2)');
     }
 
-    /** @test */
-    public function date_works()
+    /**
+     * @test
+     */
+    public function date_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -325,8 +357,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('date', 'date');
     }
 
-    /** @test */
-    public function decimal_works()
+    /**
+     * @test
+     */
+    public function decimal_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -339,8 +373,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('vote_count', 'decimal(10,3)');
     }
 
-    /** @test */
-    public function double_works()
+    /**
+     * @test
+     */
+    public function double_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -353,8 +389,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('vote_count', 'double(10,3)');
     }
 
-    /** @test */
-    public function enum_works()
+    /**
+     * @test
+     */
+    public function enum_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -365,8 +403,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('difficulty', "enum('easy','hard')");
     }
 
-    /** @test */
-    public function float_works()
+    /**
+     * @test
+     */
+    public function float_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -379,8 +419,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('money', 'double(10,3)');
     }
 
-    /** @test */
-    public function foreign_id_works()
+    /**
+     * @test
+     */
+    public function foreign_id_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -391,8 +433,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('user_id', 'bigint unsigned');
     }
 
-    /** @test */
-    public function geometry_collection_works()
+    /**
+     * @test
+     */
+    public function geometry_collection_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -403,8 +447,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('positions', 'geomcollection');
     }
 
-    /** @test */
-    public function id_works()
+    /**
+     * @test
+     */
+    public function id_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -416,8 +462,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('ID');
     }
 
-    /** @test */
-    public function increments_works()
+    /**
+     * @test
+     */
+    public function increments_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -429,8 +477,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('id');
     }
 
-    /** @test */
-    public function integer_works()
+    /**
+     * @test
+     */
+    public function integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -441,8 +491,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('amount', 'int');
     }
 
-    /** @test */
-    public function ip_address_works()
+    /**
+     * @test
+     */
+    public function ip_address_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -453,8 +505,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('visitor', 'varchar(45)');
     }
 
-    /** @test */
-    public function json_works()
+    /**
+     * @test
+     */
+    public function json_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -465,8 +519,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('options', 'json');
     }
 
-    /** @test */
-    public function json_b_works()
+    /**
+     * @test
+     */
+    public function json_b_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -477,8 +533,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('options', 'json');
     }
 
-    /** @test */
-    public function line_string_works()
+    /**
+     * @test
+     */
+    public function line_string_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -489,8 +547,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('position', 'linestring');
     }
 
-    /** @test */
-    public function long_text_works()
+    /**
+     * @test
+     */
+    public function long_text_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -501,8 +561,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('description', 'longtext');
     }
 
-    /** @test */
-    public function mac_address_works()
+    /**
+     * @test
+     */
+    public function mac_address_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -513,8 +575,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('device', 'varchar(17)');
     }
 
-    /** @test */
-    public function medium_increments_works()
+    /**
+     * @test
+     */
+    public function medium_increments_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -526,8 +590,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('id');
     }
 
-    /** @test */
-    public function medium_integer_works()
+    /**
+     * @test
+     */
+    public function medium_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -538,8 +604,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'mediumint');
     }
 
-    /** @test */
-    public function medium_text_works()
+    /**
+     * @test
+     */
+    public function medium_text_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -550,8 +618,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('descriptions', 'mediumtext');
     }
 
-    /** @test */
-    public function morphs_works()
+    /**
+     * @test
+     */
+    public function morphs_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -563,8 +633,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('taggable_type', 'varchar(255)');
     }
 
-    /** @test */
-    public function multi_line_string_works()
+    /**
+     * @test
+     */
+    public function multi_line_string_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -575,8 +647,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('positions', 'multilinestring');
     }
 
-    /** @test */
-    public function multi_point_works()
+    /**
+     * @test
+     */
+    public function multi_point_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -587,8 +661,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('positions', 'multipoint');
     }
 
-    /** @test */
-    public function multi_polygon_works()
+    /**
+     * @test
+     */
+    public function multi_polygon_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -599,8 +675,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('positions', 'multipolygon');
     }
 
-    /** @test */
-    public function nullable_timestamps_works()
+    /**
+     * @test
+     */
+    public function nullable_timestamps_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -614,8 +692,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($builder->seeNullableColumn('updated_at'));
     }
 
-    /** @test */
-    public function nullable_morphs_works()
+    /**
+     * @test
+     */
+    public function nullable_morphs_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -629,8 +709,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($builder->seeNullableColumn('taggable_type'));
     }
 
-    /** @test */
-    public function nullable_uuid_morphs_works()
+    /**
+     * @test
+     */
+    public function nullable_uuid_morphs_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -644,8 +726,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($builder->seeNullableColumn('taggable_type'));
     }
 
-    /** @test */
-    public function point_works()
+    /**
+     * @test
+     */
+    public function point_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -656,8 +740,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('position', 'point');
     }
 
-    /** @test */
-    public function polygon_works()
+    /**
+     * @test
+     */
+    public function polygon_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -668,8 +754,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('position', 'polygon');
     }
 
-    /** @test */
-    public function remember_token_works()
+    /**
+     * @test
+     */
+    public function remember_token_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -680,8 +768,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('remember_token', 'varchar(100)');
     }
 
-    /** @test */
-    public function set_works()
+    /**
+     * @test
+     */
+    public function set_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -692,8 +782,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('flavors', "set('strawberry','vanilla')");
     }
 
-    /** @test */
-    public function small_increments_works()
+    /**
+     * @test
+     */
+    public function small_increments_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -706,8 +798,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('id');
     }
 
-    /** @test */
-    public function small_integer_works()
+    /**
+     * @test
+     */
+    public function small_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -718,8 +812,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('amount', 'smallint');
     }
 
-    /** @test */
-    public function soft_deletes_tz_works()
+    /**
+     * @test
+     */
+    public function soft_deletes_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -732,8 +828,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('deleted_at_precise', 'timestamp(2)');
     }
 
-    /** @test */
-    public function soft_deletes_works()
+    /**
+     * @test
+     */
+    public function soft_deletes_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -746,8 +844,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('deleted_at_precise', 'timestamp(2)');
     }
 
-    /** @test */
-    public function string_works()
+    /**
+     * @test
+     */
+    public function string_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -758,8 +858,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('name', 'varchar(55)');
     }
 
-    /** @test */
-    public function text_works()
+    /**
+     * @test
+     */
+    public function text_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -770,8 +872,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('description', 'text');
     }
 
-    /** @test */
-    public function time_tz_works()
+    /**
+     * @test
+     */
+    public function time_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -782,8 +886,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('sunrise', 'time(2)');
     }
 
-    /** @test */
-    public function time_works()
+    /**
+     * @test
+     */
+    public function time_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -794,8 +900,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('sunrise', 'time(2)');
     }
 
-    /** @test */
-    public function timestamp_tz_works()
+    /**
+     * @test
+     */
+    public function timestamp_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -806,8 +914,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('added_at', 'timestamp(2)');
     }
 
-    /** @test */
-    public function timestamp_works()
+    /**
+     * @test
+     */
+    public function timestamp_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -818,8 +928,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('added_at', 'timestamp(2)');
     }
 
-    /** @test */
-    public function timestamps_tz_works()
+    /**
+     * @test
+     */
+    public function timestamps_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -831,8 +943,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('updated_at', 'timestamp(2)');
     }
 
-    /** @test */
-    public function timestamps_works()
+    /**
+     * @test
+     */
+    public function timestamps_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -844,8 +958,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('updated_at', 'timestamp(2)');
     }
 
-    /** @test */
-    public function tiny_increments_works()
+    /**
+     * @test
+     */
+    public function tiny_increments_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -858,8 +974,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('id');
     }
 
-    /** @test */
-    public function tiny_integer_works()
+    /**
+     * @test
+     */
+    public function tiny_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -870,8 +988,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('amount', 'tinyint');
     }
 
-    /** @test */
-    public function unsigned_big_integer_works()
+    /**
+     * @test
+     */
+    public function unsigned_big_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -882,8 +1002,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'bigint unsigned');
     }
 
-    /** @test */
-    public function unsigned_decimal_works()
+    /**
+     * @test
+     */
+    public function unsigned_decimal_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -894,8 +1016,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'decimal(10,2) unsigned');
     }
 
-    /** @test */
-    public function unsigned_integer_works()
+    /**
+     * @test
+     */
+    public function unsigned_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -906,8 +1030,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'int unsigned');
     }
 
-    /** @test */
-    public function unsigned_medium_integer_works()
+    /**
+     * @test
+     */
+    public function unsigned_medium_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -918,8 +1044,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'mediumint unsigned');
     }
 
-    /** @test */
-    public function unsigned_small_integer_works()
+    /**
+     * @test
+     */
+    public function unsigned_small_integer_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -930,8 +1058,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'smallint unsigned');
     }
 
-    /** @test */
-    public function unsigned_tiny_int_works()
+    /**
+     * @test
+     */
+    public function unsigned_tiny_int_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -942,8 +1072,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('votes', 'tinyint unsigned');
     }
 
-    /** @test */
-    public function uuid_morphs_works()
+    /**
+     * @test
+     */
+    public function uuid_morphs_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -955,8 +1087,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('taggable_type', 'varchar(255)');
     }
 
-    /** @test */
-    public function uuid_works()
+    /**
+     * @test
+     */
+    public function uuid_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -967,8 +1101,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('id', 'char(36)');
     }
 
-    /** @test */
-    public function year_works()
+    /**
+     * @test
+     */
+    public function year_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -979,8 +1115,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeColumnOfType('birth_year', 'year');
     }
 
-    /** @test */
-    public function new_columns_can_be_inserted_after_existing_columns()
+    /**
+     * @test
+     */
+    public function new_columns_can_be_inserted_after_existing_columns(): void
     {
         $this->builder->create('books', function (Blueprint $table) {
             $table->string('first_name');
@@ -1011,8 +1149,10 @@ class SchemaBuilderTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function auto_incrementing_works()
+    /**
+     * @test
+     */
+    public function auto_incrementing_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1053,8 +1193,10 @@ class SchemaBuilderTest extends WPTestCase
      * TEST FOR MODIFYING COLUMNS
      */
 
-    /** @test */
-    public function charset_can_be_set_for_table_and_column()
+    /**
+     * @test
+     */
+    public function charset_can_be_set_for_table_and_column(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1071,8 +1213,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame('latin1', Str::beforeFirst($columns['name']->Collation, '_'));
     }
 
-    /** @test */
-    public function collation_can_be_set_for_table_and_column()
+    /**
+     * @test
+     */
+    public function collation_can_be_set_for_table_and_column(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1090,8 +1234,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame('latin1_german1_ci', $columns['name']->Collation);
     }
 
-    /** @test */
-    public function comments_can_be_added()
+    /**
+     * @test
+     */
+    public function comments_can_be_added(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1105,8 +1251,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame('My comment', $name_col->Comment);
     }
 
-    /** @test */
-    public function a_default_value_can_be_set()
+    /**
+     * @test
+     */
+    public function a_default_value_can_be_set(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1138,8 +1286,10 @@ class SchemaBuilderTest extends WPTestCase
         return new AssertableWpDB($table_name);
     }
 
-    /** @test */
-    public function a_column_can_be_added_at_the_first_place()
+    /**
+     * @test
+     */
+    public function a_column_can_be_added_at_the_first_place(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1165,8 +1315,10 @@ class SchemaBuilderTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function a_column_can_be_nullable()
+    /**
+     * @test
+     */
+    public function a_column_can_be_nullable(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1200,8 +1352,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function a_stored_column_can_be_created()
+    /**
+     * @test
+     */
+    public function a_stored_column_can_be_created(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1241,8 +1395,10 @@ class SchemaBuilderTest extends WPTestCase
         ], $expected);
     }
 
-    /** @test */
-    public function a_virtual_column_can_be_created()
+    /**
+     * @test
+     */
+    public function a_virtual_column_can_be_created(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1282,8 +1438,10 @@ class SchemaBuilderTest extends WPTestCase
         ], $expected);
     }
 
-    /** @test */
-    public function integers_can_be_unsigned()
+    /**
+     * @test
+     */
+    public function integers_can_be_unsigned(): void
     {
         $builder = $this->newTestBuilder('books');
         $builder->create('books', function (Blueprint $table) {
@@ -1313,8 +1471,10 @@ class SchemaBuilderTest extends WPTestCase
         });
     }
 
-    /** @test */
-    public function timestamps_can_use_the_current_time_as_default()
+    /**
+     * @test
+     */
+    public function timestamps_can_use_the_current_time_as_default(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1335,8 +1495,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertNotNull($row[2]);
     }
 
-    /** @test */
-    public function test_drop_morphs_works()
+    /**
+     * @test
+     */
+    public function test_drop_morphs_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1361,8 +1523,10 @@ class SchemaBuilderTest extends WPTestCase
      * TESTS FOR DROPPING COLUMNS WITH ALIASES
      */
 
-    /** @test */
-    public function test_remember_token_works()
+    /**
+     * @test
+     */
+    public function test_remember_token_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1383,8 +1547,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame(['id'], $builder->getColumnsByOrdinalPosition('books'));
     }
 
-    /** @test */
-    public function test_drop_soft_deletes_works()
+    /**
+     * @test
+     */
+    public function test_drop_soft_deletes_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1402,8 +1568,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame(['id'], $builder->getColumnListing('books'));
     }
 
-    /** @test */
-    public function test_drop_soft_deletes_tz_works()
+    /**
+     * @test
+     */
+    public function test_drop_soft_deletes_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1421,8 +1589,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame(['id'], $builder->getColumnListing('books'));
     }
 
-    /** @test */
-    public function test_drop_timestamps_works()
+    /**
+     * @test
+     */
+    public function test_drop_timestamps_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1443,8 +1613,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame(['id'], $builder->getColumnListing('books'));
     }
 
-    /** @test */
-    public function test_drop_timestamps_tz_works()
+    /**
+     * @test
+     */
+    public function test_drop_timestamps_tz_works(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1465,8 +1637,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame(['id'], $builder->getColumnListing('books'));
     }
 
-    /** @test */
-    public function unique_indexes_work()
+    /**
+     * @test
+     */
+    public function unique_indexes_work(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1491,8 +1665,10 @@ class SchemaBuilderTest extends WPTestCase
      * Creating indexes
      */
 
-    /** @test */
-    public function normal_indexes_work()
+    /**
+     * @test
+     */
+    public function normal_indexes_work(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1512,8 +1688,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeIndexColumn('address');
     }
 
-    /** @test */
-    public function a_composite_index_can_be_added()
+    /**
+     * @test
+     */
+    public function a_composite_index_can_be_added(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1531,8 +1709,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeIndexColumn('name');
     }
 
-    /** @test */
-    public function a_primary_key_index_can_be_created()
+    /**
+     * @test
+     */
+    public function a_primary_key_index_can_be_created(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1544,8 +1724,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('name');
     }
 
-    /** @test */
-    public function an_index_can_be_renamed()
+    /**
+     * @test
+     */
+    public function an_index_can_be_renamed(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1563,8 +1745,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeIndexColumn('name');
     }
 
-    /** @test */
-    public function indexes_can_be_dropped()
+    /**
+     * @test
+     */
+    public function indexes_can_be_dropped(): void
     {
         $builder = $this->newTestBuilder('books');
 
@@ -1604,8 +1788,10 @@ class SchemaBuilderTest extends WPTestCase
      * Dropping Indexes.
      */
 
-    /** @test */
-    public function foreign_keys_can_be_created()
+    /**
+     * @test
+     */
+    public function foreign_keys_can_be_created(): void
     {
         $builder1 = $this->newTestBuilder('authors');
 
@@ -1628,8 +1814,10 @@ class SchemaBuilderTest extends WPTestCase
         $builder2->seePrimaryKey('id');
     }
 
-    /** @test */
-    public function foreign_keys_cascade_correctly_on_update()
+    /**
+     * @test
+     */
+    public function foreign_keys_cascade_correctly_on_update(): void
     {
         $builder1 = $this->newTestBuilder('authors');
 
@@ -1655,8 +1843,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertDbTable()->assertRecordExists(['id' => 1, 'author_id' => 2]);
     }
 
-    /** @test */
-    public function foreign_keys_cascade_correctly_on_delete()
+    /**
+     * @test
+     */
+    public function foreign_keys_cascade_correctly_on_delete(): void
     {
         $builder1 = $this->newTestBuilder('authors');
 
@@ -1685,8 +1875,10 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertDbTable('wp_books')->assertRecordNotExists(['id' => 1, 'author_id' => 1]);
     }
 
-    /** @test */
-    public function foreign_keys_can_be_dropped()
+    /**
+     * @test
+     */
+    public function foreign_keys_can_be_dropped(): void
     {
         $builder1 = $this->newTestBuilder('authors');
 
@@ -1773,7 +1965,7 @@ class TestSchemaBuilder extends MySqlBuilder
         parent::__construct($connection);
     }
 
-    public function seeColumnOfType($column, $type)
+    public function seeColumnOfType($column, $type): void
     {
         $table = $this->table;
 
@@ -1818,7 +2010,7 @@ class TestSchemaBuilder extends MySqlBuilder
         return $field_names->combine($col_info)->toArray();
     }
 
-    public function seePrimaryKey($column)
+    public function seePrimaryKey($column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
         PHPUnit::assertTrue($col->Key === 'PRI');
@@ -1831,13 +2023,13 @@ class TestSchemaBuilder extends MySqlBuilder
         return $col->Null === 'YES';
     }
 
-    public function seeUniqueColumn(string $column)
+    public function seeUniqueColumn(string $column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
         PHPUnit::assertTrue($col->Key === 'UNI');
     }
 
-    public function seeIndexColumn(string $column)
+    public function seeIndexColumn(string $column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
         PHPUnit::assertTrue($col->Key === 'MUL');
@@ -1852,7 +2044,7 @@ class TestSchemaBuilder extends MySqlBuilder
         return $parent->pluck($key)->toArray();
     }
 
-    public function getColumnsByOrdinalPosition($table)
+    public function getColumnsByOrdinalPosition($table): array
     {
         $query = 'show full columns from ' . $this->connection->getTablePrefix() . $table;
 

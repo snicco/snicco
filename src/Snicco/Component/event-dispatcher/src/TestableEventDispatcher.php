@@ -89,7 +89,7 @@ final class TestableEventDispatcher implements EventDispatcher
     /**
      * @param string|string[] $event_names
      */
-    public function fake($event_names = [])
+    public function fake($event_names = []): void
     {
         $event_names = is_array($event_names) ? $event_names : [$event_names];
 
@@ -100,7 +100,7 @@ final class TestableEventDispatcher implements EventDispatcher
         $this->events_to_fake = array_merge($this->events_to_fake, $event_names);
     }
 
-    public function fakeAll()
+    public function fakeAll(): void
     {
         $this->fake_all = true;
     }
@@ -108,7 +108,7 @@ final class TestableEventDispatcher implements EventDispatcher
     /**
      * @param string|string[] $event_names
      */
-    public function fakeExcept($event_names = [])
+    public function fakeExcept($event_names = []): void
     {
         $event_names = is_array($event_names) ? $event_names : [$event_names];
 
@@ -119,7 +119,7 @@ final class TestableEventDispatcher implements EventDispatcher
         $this->dont_fake = array_merge($this->dont_fake, $event_names);
     }
 
-    public function assertNotingDispatched()
+    public function assertNotingDispatched(): void
     {
         $count = count($this->dispatched_events);
         PHPUnit::assertSame(0, $count, "$count event[s] dispatched.");
@@ -131,7 +131,7 @@ final class TestableEventDispatcher implements EventDispatcher
      *
      * @throws ReflectionException
      */
-    public function assertDispatched($event_name, $condition = null)
+    public function assertDispatched($event_name, $condition = null): void
     {
         if ($event_name instanceof Closure) {
             $condition = $event_name;
@@ -184,6 +184,8 @@ final class TestableEventDispatcher implements EventDispatcher
      * @param Closure|null $condition
      *
      * @throws ReflectionException
+     *
+     * @return void
      */
     public function assertNotDispatched($event_name, ?Closure $condition = null)
     {
@@ -203,7 +205,7 @@ final class TestableEventDispatcher implements EventDispatcher
         }
     }
 
-    public function assertDispatchedTimes(string $event_name, int $times = 1)
+    public function assertDispatchedTimes(string $event_name, int $times = 1): void
     {
         $count = count($this->getDispatched($event_name));
 
@@ -214,7 +216,7 @@ final class TestableEventDispatcher implements EventDispatcher
         );
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->events_to_fake = [];
         $this->fake_all = false;

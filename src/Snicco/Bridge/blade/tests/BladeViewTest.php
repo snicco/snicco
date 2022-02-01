@@ -11,8 +11,10 @@ use Snicco\Component\Templating\View\View;
 class BladeViewTest extends BladeTestCase
 {
 
-    /** @test */
-    public function a_blade_view_can_be_rendered()
+    /**
+     * @test
+     */
+    public function a_blade_view_can_be_rendered(): void
     {
         $view = $this->view_engine->make('foo');
 
@@ -21,8 +23,10 @@ class BladeViewTest extends BladeTestCase
         $this->assertViewContent('FOO', $view->toString());
     }
 
-    /** @test */
-    public function variables_can_be_shared_with_a_view()
+    /**
+     * @test
+     */
+    public function variables_can_be_shared_with_a_view(): void
     {
         $view = $this->view_engine->make('variables');
         $view->with('name', 'calvin');
@@ -30,8 +34,10 @@ class BladeViewTest extends BladeTestCase
         $this->assertViewContent('hello calvin', $view->toString());
     }
 
-    /** @test */
-    public function view_errors_are_caught()
+    /**
+     * @test
+     */
+    public function view_errors_are_caught(): void
     {
         $this->expectException(ViewCantBeRendered::class);
 
@@ -41,24 +47,30 @@ class BladeViewTest extends BladeTestCase
         $this->assertViewContent('hello calvin', $view->toString());
     }
 
-    /** @test */
-    public function blade_internals_are_included_in_the_view()
+    /**
+     * @test
+     */
+    public function blade_internals_are_included_in_the_view(): void
     {
         $view = $this->view_engine->make('internal');
 
         $this->assertViewContent('app:env', $view->toString());
     }
 
-    /** @test */
-    public function blade_views_can_be_rendered()
+    /**
+     * @test
+     */
+    public function blade_views_can_be_rendered(): void
     {
         $html = $this->view_engine->render('variables', ['name' => 'calvin']);
 
         $this->assertViewContent('hello calvin', $html);
     }
 
-    /** @test */
-    public function a_blade_view_can_be_created_from_an_absolute_path()
+    /**
+     * @test
+     */
+    public function a_blade_view_can_be_created_from_an_absolute_path(): void
     {
         $path = realpath($this->blade_views . '/foo.blade.php');
 

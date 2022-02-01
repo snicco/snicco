@@ -11,8 +11,10 @@ use Snicco\Component\BetterWPMail\ValueObjects\MailboxList;
 final class AddressListTest extends WPTestCase
 {
 
-    /** @test */
-    public function duplicate_addresses_are_filtered_out()
+    /**
+     * @test
+     */
+    public function duplicate_addresses_are_filtered_out(): void
     {
         $address1 = Mailbox::create('calvin@web.de');
         $address2 = Mailbox::create('calvin@web.de');
@@ -30,8 +32,10 @@ final class AddressListTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function duplicate_addresses_are_filtered_out_if_they_have_the_same_email_and_different_name()
+    /**
+     * @test
+     */
+    public function duplicate_addresses_are_filtered_out_if_they_have_the_same_email_and_different_name(): void
     {
         $address1 = Mailbox::create('Calvin <calvin@web.de>');
         $address2 = Mailbox::create('Marlon <calvin@web.de>');
@@ -49,8 +53,10 @@ final class AddressListTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function test_has()
+    /**
+     * @test
+     */
+    public function test_has(): void
     {
         $address1 = Mailbox::create('calvin@web.de');
         $address2 = Mailbox::create('marlon@web.de');

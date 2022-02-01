@@ -20,8 +20,10 @@ use Snicco\Component\TestableClock\TestClock;
 trait SessionDriverTests
 {
 
-    /** @test */
-    public function read_from_session_throws_exception_for_bad_id()
+    /**
+     * @test
+     */
+    public function read_from_session_throws_exception_for_bad_id(): void
     {
         $driver = $this->createDriver(new TestClock());
 
@@ -38,8 +40,10 @@ trait SessionDriverTests
         }
     }
 
-    /** @test */
-    public function last_activity_is_stored_correctly()
+    /**
+     * @test
+     */
+    public function last_activity_is_stored_correctly(): void
     {
         $driver = $this->createDriver($clock = new TestClock(new DateTimeImmutable('2000-01-01')));
 
@@ -53,8 +57,10 @@ trait SessionDriverTests
         PHPUnit::assertSame($clock->currentTimestamp(), $data->lastActivity()->getTimestamp());
     }
 
-    /** @test */
-    public function data_can_be_read_from_the_session()
+    /**
+     * @test
+     */
+    public function data_can_be_read_from_the_session(): void
     {
         $driver = $this->createDriver(new TestClock());
 
@@ -69,8 +75,10 @@ trait SessionDriverTests
         PHPUnit::assertSame(['foo' => 'bar'], $data->asArray());
     }
 
-    /** @test */
-    public function data_can_be_written_to_the_session()
+    /**
+     * @test
+     */
+    public function data_can_be_written_to_the_session(): void
     {
         $driver = $this->createDriver(new TestClock());
 
@@ -86,8 +94,10 @@ trait SessionDriverTests
         PHPUnit::assertSame(['foo' => 'baz'], $driver->read('session1')->asArray());
     }
 
-    /** @test */
-    public function a_session_can_be_destroyed()
+    /**
+     * @test
+     */
+    public function a_session_can_be_destroyed(): void
     {
         $driver = $this->createDriver(new TestClock());
 
@@ -103,8 +113,10 @@ trait SessionDriverTests
         }
     }
 
-    /** @test */
-    public function multiple_session_ids_can_be_destroyed()
+    /**
+     * @test
+     */
+    public function multiple_session_ids_can_be_destroyed(): void
     {
         $driver = $this->createDriver(new TestClock());
 
@@ -127,8 +139,10 @@ trait SessionDriverTests
         }
     }
 
-    /** @test */
-    public function garbage_collection_works_for_old_sessions()
+    /**
+     * @test
+     */
+    public function garbage_collection_works_for_old_sessions(): void
     {
         $driver = $this->createDriver($clock = new TestClock());
 
@@ -163,8 +177,10 @@ trait SessionDriverTests
         }
     }
 
-    /** @test */
-    public function touching_the_session_activity_works()
+    /**
+     * @test
+     */
+    public function touching_the_session_activity_works(): void
     {
         $driver = $this->createDriver($clock = new TestClock());
         $driver->write(

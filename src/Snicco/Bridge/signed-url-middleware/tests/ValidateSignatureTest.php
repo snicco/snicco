@@ -22,8 +22,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
     private SignedUrlValidator $validator;
     private UrlSigner $signer;
 
-    /** @test */
-    public function next_is_called_for_valid_signature()
+    /**
+     * @test
+     */
+    public function next_is_called_for_valid_signature(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -39,8 +41,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $response->psr()->assertOk();
     }
 
-    /** @test */
-    public function next_is_not_called_for_invalid_signature()
+    /**
+     * @test
+     */
+    public function next_is_not_called_for_invalid_signature(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -54,8 +58,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->runMiddleware($m, $request);
     }
 
-    /** @test */
-    public function next_not_called_for_expired()
+    /**
+     * @test
+     */
+    public function next_not_called_for_expired(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -71,8 +77,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->runMiddleware($m, $request);
     }
 
-    /** @test */
-    public function next_not_called_for_used()
+    /**
+     * @test
+     */
+    public function next_not_called_for_used(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -95,8 +103,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->runMiddleware($m, $request);
     }
 
-    /** @test */
-    public function additional_context_can_be_provided()
+    /**
+     * @test
+     */
+    public function additional_context_can_be_provided(): void
     {
         $m = new ValidateSignature(
             $this->validator,

@@ -35,8 +35,10 @@ class ViewEngineTest extends TestCase
 
     private string $view_dir;
 
-    /** @test */
-    public function a_view_can_be_created()
+    /**
+     * @test
+     */
+    public function a_view_can_be_created(): void
     {
         $view = $this->view_engine->make('foo.php');
         $this->assertSame('foo', $view->toString());
@@ -45,8 +47,10 @@ class ViewEngineTest extends TestCase
         $this->assertSame('foo', $view->toString());
     }
 
-    /** @test */
-    public function a_view_can_be_created_from_an_absolute_path()
+    /**
+     * @test
+     */
+    public function a_view_can_be_created_from_an_absolute_path(): void
     {
         $path = realpath($this->view_dir . '/foo.php');
 
@@ -56,15 +60,19 @@ class ViewEngineTest extends TestCase
         $this->assertSame('foo', $view->toString());
     }
 
-    /** @test */
-    public function a_view_as_access_to_the_view_engine()
+    /**
+     * @test
+     */
+    public function a_view_as_access_to_the_view_engine(): void
     {
         $view = $this->view_engine->make('has-engine.php');
         $this->assertSame('View has engine: ' . get_class($this->view_engine), $view->toString());
     }
 
-    /** @test */
-    public function a_nested_view_can_be_rendered_with_dot_notation()
+    /**
+     * @test
+     */
+    public function a_nested_view_can_be_rendered_with_dot_notation(): void
     {
         $view = $this->view_engine->make('components.input');
         $this->assertEquals('input-component', $view->toString());
@@ -73,8 +81,10 @@ class ViewEngineTest extends TestCase
         $this->assertEquals('input-component', $view->toString());
     }
 
-    /** @test */
-    public function non_existing_views_throw_an_exception()
+    /**
+     * @test
+     */
+    public function non_existing_views_throw_an_exception(): void
     {
         $this->expectExceptionMessage(
             'None of the used view factories can render the view [bogus.php].'
@@ -84,16 +94,20 @@ class ViewEngineTest extends TestCase
         $this->view_engine->make('bogus.php');
     }
 
-    /** @test */
-    public function a_view_can_be_rendered_to_a_string()
+    /**
+     * @test
+     */
+    public function a_view_can_be_rendered_to_a_string(): void
     {
         $view_content = $this->view_engine->render('greeting', ['name' => 'Calvin']);
 
         $this->assertSame('Hello Calvin', $view_content);
     }
 
-    /** @test */
-    public function the_prefix_of_the_global_context_can_be_set_and_accessed_with_dot_notation()
+    /**
+     * @test
+     */
+    public function the_prefix_of_the_global_context_can_be_set_and_accessed_with_dot_notation(): void
     {
         $this->global_view_context->add('app_context', [
             'foo' => [
@@ -106,8 +120,10 @@ class ViewEngineTest extends TestCase
         $this->assertSame('baz', $view->toString());
     }
 
-    /** @test */
-    public function multiple_global_variables_can_be_shared()
+    /**
+     * @test
+     */
+    public function multiple_global_variables_can_be_shared(): void
     {
         $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
         $this->global_view_context->add('global2', ['foo' => ['bar' => 'biz']]);
@@ -117,8 +133,10 @@ class ViewEngineTest extends TestCase
         $this->assertSame('baz:biz', $view->toString());
     }
 
-    /** @test */
-    public function view_composers_have_precedence_over_globals()
+    /**
+     * @test
+     */
+    public function view_composers_have_precedence_over_globals(): void
     {
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
@@ -135,8 +153,10 @@ class ViewEngineTest extends TestCase
         $this->assertSame('biz', $view->toString());
     }
 
-    /** @test */
-    public function local_context_has_precedence_over_composers_and_globals()
+    /**
+     * @test
+     */
+    public function local_context_has_precedence_over_composers_and_globals(): void
     {
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
@@ -158,31 +178,39 @@ class ViewEngineTest extends TestCase
         $this->assertSame('boom', $view->toString());
     }
 
-    /** @test */
-    public function one_view_can_be_rendered_from_within_another()
+    /**
+     * @test
+     */
+    public function one_view_can_be_rendered_from_within_another(): void
     {
         $view = $this->view_engine->make('inline-render');
 
         $this->assertSame('foo:inline=>Hello Calvin', $view->toString());
     }
 
-    /** @test */
-    public function views_can_extend_parent_views()
+    /**
+     * @test
+     */
+    public function views_can_extend_parent_views(): void
     {
         $view = $this->view_engine->make('partials.post-title')->with('post_title', 'Foobar');
         $this->assertSame('You are viewing post: Foobar', $view->toString());
     }
 
-    /** @test */
-    public function views_can_be_extended_multiple_times()
+    /**
+     * @test
+     */
+    public function views_can_be_extended_multiple_times(): void
     {
         $view = $this->view_engine->make('partials.post-body')->with('post_body', 'Foo');
 
         $this->assertSame('You are viewing post: Special Layout: Foo', $view->toString());
     }
 
-    /** @test */
-    public function views_with_errors_dont_print_output_to_the_client()
+    /**
+     * @test
+     */
+    public function views_with_errors_dont_print_output_to_the_client(): void
     {
         $view = $this->view_engine->make('bad-function');
 
@@ -199,8 +227,10 @@ class ViewEngineTest extends TestCase
         }
     }
 
-    /** @test */
-    public function directories_are_searched_by_order_allowing_overwritten_of_view_names()
+    /**
+     * @test
+     */
+    public function directories_are_searched_by_order_allowing_overwritten_of_view_names(): void
     {
         $engine = new ViewEngine(
             new PHPViewFactory(
@@ -218,8 +248,10 @@ class ViewEngineTest extends TestCase
         $this->assertSame('foo modified', $view->toString());
     }
 
-    /** @test */
-    public function extended_parents_view_are_also_passed_through_view_composers()
+    /**
+     * @test
+     */
+    public function extended_parents_view_are_also_passed_through_view_composers(): void
     {
         $this->composers->addComposer(
             'post-layout',
@@ -230,8 +262,10 @@ class ViewEngineTest extends TestCase
         $this->assertSame('You are viewing post: Foobar Our Sidebar: hi', $view->toString());
     }
 
-    /** @test */
-    public function errors_in_child_views_dont_print_output()
+    /**
+     * @test
+     */
+    public function errors_in_child_views_dont_print_output(): void
     {
         $this->expectException(ViewCantBeRendered::class);
         $this->expectExceptionMessage('Error rendering view [partials.with-error].');
@@ -245,15 +279,19 @@ class ViewEngineTest extends TestCase
         }
     }
 
-    /** @test */
-    public function child_view_context_is_shared_with_parent_view()
+    /**
+     * @test
+     */
+    public function child_view_context_is_shared_with_parent_view(): void
     {
         $view = $this->view_engine->make('partials.share-var')->with('child_var', 'BAZ');
         $this->assertSame('Var from child template: BAZ', $view->toString());
     }
 
-    /** @test */
-    public function multiple_view_factories_can_be_used_together()
+    /**
+     * @test
+     */
+    public function multiple_view_factories_can_be_used_together(): void
     {
         $view_engine = new ViewEngine($this->php_view_factory, new TestTwigViewFactory());
 
@@ -264,8 +302,10 @@ class ViewEngineTest extends TestCase
         $this->assertInstanceOf(TestView::class, $twig_view);
     }
 
-    /** @test */
-    public function test_exception_when_no_view_factory_can_render_a_view()
+    /**
+     * @test
+     */
+    public function test_exception_when_no_view_factory_can_render_a_view(): void
     {
         $view_engine = new ViewEngine($this->php_view_factory, new TestTwigViewFactory());
 

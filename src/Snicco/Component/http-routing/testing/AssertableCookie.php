@@ -33,7 +33,7 @@ final class AssertableCookie
         $this->parseHeader($set_cookie_header);
     }
 
-    private function parseHeader(string $set_cookie_header)
+    private function parseHeader(string $set_cookie_header): void
     {
         $this->name = Str::beforeFirst($set_cookie_header, '=');
         $this->value = Str::betweenFirst($set_cookie_header, '=', ';');

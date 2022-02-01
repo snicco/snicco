@@ -22,8 +22,10 @@ final class CachedApplicationTest extends TestCase
     private string $base_dir;
     private string $base_dir_with_bundles;
 
-    /** @test */
-    public function test_is_config_cached()
+    /**
+     * @test
+     */
+    public function test_is_config_cached(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -45,8 +47,10 @@ final class CachedApplicationTest extends TestCase
         $this->assertFalse($app->isConfigurationCached());
     }
 
-    /** @test */
-    public function the_application_can_be_booted_with_a_cached_config()
+    /**
+     * @test
+     */
+    public function the_application_can_be_booted_with_a_cached_config(): void
     {
         $app = new Application(
             $this->createContainer(),

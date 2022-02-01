@@ -222,6 +222,9 @@ final class RouteLoader
         throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
     }
 
+    /**
+     * @return void
+     */
     private function validateAdminRoutingUsage(string $used_interface, bool $is_admin_file, string $filepath)
     {
         if ($is_admin_file) {

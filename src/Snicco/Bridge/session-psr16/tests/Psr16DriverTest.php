@@ -20,13 +20,15 @@ final class Psr16DriverTest extends TestCase
 
     use SessionDriverTests;
 
-    public function garbage_collection_works_for_old_sessions()
+    public function garbage_collection_works_for_old_sessions(): void
     {
         // Automatically
     }
 
-    /** @test */
-    public function garbage_collection_works_automatically()
+    /**
+     * @test
+     */
+    public function garbage_collection_works_automatically(): void
     {
         $driver = new Psr16Driver(new ArrayCachePool(), 1);
 

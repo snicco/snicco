@@ -104,7 +104,7 @@ final class SessionConfig
         return $this->path;
     }
 
-    public function cookieName()
+    public function cookieName(): string
     {
         return $this->cookie_name;
     }
@@ -119,7 +119,7 @@ final class SessionConfig
         return $this->same_site;
     }
 
-    public function onlyHttp()
+    public function onlyHttp(): bool
     {
         return $this->http_only;
     }

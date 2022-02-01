@@ -11,24 +11,30 @@ use Snicco\Component\SignedUrl\Secret;
 final class SecretTest extends TestCase
 {
 
-    /** @test */
-    public function testErrorForWeakStrength()
+    /**
+     * @test
+     */
+    public function testErrorForWeakStrength(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         Secret::generate(15);
     }
 
-    /** @test */
-    public function testWorksForMinStrength16()
+    /**
+     * @test
+     */
+    public function testWorksForMinStrength16(): void
     {
         $secret = Secret::generate(16);
         $this->assertInstanceOf(Secret::class, $secret);
         $this->assertIsString($secret->asString());
     }
 
-    /** @test */
-    public function testFromStored()
+    /**
+     * @test
+     */
+    public function testFromStored(): void
     {
         $secret = Secret::generate();
 
@@ -39,15 +45,19 @@ final class SecretTest extends TestCase
         $this->assertSame($secret->asString(), $secret_new->asString());
     }
 
-    /** @test */
-    public function testExceptionIfClearlyBadStringIsPassed()
+    /**
+     * @test
+     */
+    public function testExceptionIfClearlyBadStringIsPassed(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $secret_new = Secret::fromHexEncoded('badsecret');
     }
 
-    /** @test */
-    public function testByteStringStaysSame()
+    /**
+     * @test
+     */
+    public function testByteStringStaysSame(): void
     {
         $secret = Secret::generate();
 

@@ -42,8 +42,10 @@ class MiddlewarePipelineTest extends TestCase
     private Request $request;
     private ResponseFactoryInterface $response_factory;
 
-    /** @test */
-    public function a_pipeline_is_immutable()
+    /**
+     * @test
+     */
+    public function a_pipeline_is_immutable(): void
     {
         $p1 = $this->pipeline->send($this->request);
 
@@ -54,8 +56,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertNotSame($p2, $this->pipeline);
     }
 
-    /** @test */
-    public function middleware_can_be_run()
+    /**
+     * @test
+     */
+    public function middleware_can_be_run(): void
     {
         $response = $this->pipeline
             ->send($this->request)
@@ -70,8 +74,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertSame('foo:pm1', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function instantiated_middleware_can_be_used()
+    /**
+     * @test
+     */
+    public function instantiated_middleware_can_be_used(): void
     {
         $foo = new FooMiddleware('FOO');
 
@@ -90,8 +96,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertSame('handler:BAR:FOO', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function middleware_can_be_stacked()
+    /**
+     * @test
+     */
+    public function middleware_can_be_stacked(): void
     {
         $response = $this->pipeline
             ->send($this->request)
@@ -112,8 +120,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertSame('foobar:pm2:pm1', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function middleware_can_break_out_of_the_middleware_stack()
+    /**
+     * @test
+     */
+    public function middleware_can_break_out_of_the_middleware_stack(): void
     {
         $middleware = array_map(
             [MiddlewareBlueprint::class, 'create'],
@@ -131,8 +141,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertSame('stopped:pm1', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function middleware_can_be_resolved_from_the_container()
+    /**
+     * @test
+     */
+    public function middleware_can_be_resolved_from_the_container(): void
     {
         $this->container->instance(
             MiddlewareWithDependencies::class,
@@ -150,8 +162,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertSame('handler:FOOBAR', $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function middleware_can_receive_config_arguments()
+    /**
+     * @test
+     */
+    public function middleware_can_receive_config_arguments(): void
     {
         $response = $this->pipeline
             ->send($this->request)
@@ -172,8 +186,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertSame('foo_handler:FOO_M_DIFFERENT', (string)$response->getBody());
     }
 
-    /** @test */
-    public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline()
+    /**
+     * @test
+     */
+    public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline(): void
     {
         $pipeline = new MiddlewarePipeline(
             $this->container,
@@ -201,8 +217,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertStringEndsWith('foo_middleware', $body);
     }
 
-    /** @test */
-    public function exceptions_in_the_request_handler_get_handled_without_breaking_other_middleware()
+    /**
+     * @test
+     */
+    public function exceptions_in_the_request_handler_get_handled_without_breaking_other_middleware(): void
     {
         $pipeline = new MiddlewarePipeline(
             $this->container,
@@ -227,8 +245,10 @@ class MiddlewarePipelineTest extends TestCase
         $this->assertStringEndsWith(':bar_middleware:foo_middleware', $body);
     }
 
-    /** @test */
-    public function the_same_pipeline_cant_be_run_twice_without_providing_a_new_request()
+    /**
+     * @test
+     */
+    public function the_same_pipeline_cant_be_run_twice_without_providing_a_new_request(): void
     {
         $response = $this->pipeline->send($this->request)
             ->through([])
@@ -246,8 +266,10 @@ class MiddlewarePipelineTest extends TestCase
         });
     }
 
-    /** @test */
-    public function test_exception_when_the_pipeline_is_run_without_sending_a_request()
+    /**
+     * @test
+     */
+    public function test_exception_when_the_pipeline_is_run_without_sending_a_request(): void
     {
         $this->expectExceptionMessage(
             'You cant run a middleware pipeline twice without calling send() first.'
@@ -257,8 +279,10 @@ class MiddlewarePipelineTest extends TestCase
         });
     }
 
-    /** @test */
-    public function middleware_is_replaced_and_not_merged_when_using_the_same_pipeline_twice()
+    /**
+     * @test
+     */
+    public function middleware_is_replaced_and_not_merged_when_using_the_same_pipeline_twice(): void
     {
         $response = $this->pipeline
             ->send($this->request)

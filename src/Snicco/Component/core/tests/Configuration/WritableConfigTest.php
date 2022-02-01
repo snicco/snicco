@@ -19,24 +19,30 @@ class WritableConfigTest extends TestCase
         $this->config = new WritableConfig();
     }
 
-    /** @test */
-    public function a_value_can_be_a_boolean_false()
+    /**
+     * @test
+     */
+    public function a_value_can_be_a_boolean_false(): void
     {
         $this->config->merge('foo', false);
 
         $this->assertSame(false, $this->config->get('foo'));
     }
 
-    /** @test */
-    public function a_value_can_be_null()
+    /**
+     * @test
+     */
+    public function a_value_can_be_null(): void
     {
         $this->config->merge('foo', null);
 
         $this->assertSame(null, $this->config->get('foo'));
     }
 
-    /** @test */
-    public function a_value_can_be_string_int_zero()
+    /**
+     * @test
+     */
+    public function a_value_can_be_string_int_zero(): void
     {
         $this->config->merge('foo', '0');
         $this->config->merge('bar', 0);
@@ -45,8 +51,10 @@ class WritableConfigTest extends TestCase
         $this->assertSame(0, $this->config->get('bar'));
     }
 
-    /** @test */
-    public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config()
+    /**
+     * @test
+     */
+    public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config(): void
     {
         $this->assertSame(null, $this->config->get('foo'));
 
@@ -55,8 +63,10 @@ class WritableConfigTest extends TestCase
         $this->assertEquals('bar', $this->config->get('foo'));
     }
 
-    /** @test */
-    public function user_config_has_precedence_over_default_config()
+    /**
+     * @test
+     */
+    public function user_config_has_precedence_over_default_config(): void
     {
         $this->assertSame(null, $this->config->get('foo'));
 
@@ -69,8 +79,10 @@ class WritableConfigTest extends TestCase
         $this->assertSame('bar', $this->config->get('foo'));
     }
 
-    /** @test */
-    public function user_config_has_precedence_over_default_config_and_gets_merged_recursively()
+    /**
+     * @test
+     */
+    public function user_config_has_precedence_over_default_config_and_gets_merged_recursively(): void
     {
         $config = WritableConfig::fromArray(
             [
@@ -109,8 +121,10 @@ class WritableConfigTest extends TestCase
         $this->assertSame($expected, $config->get('foo'));
     }
 
-    /** @test */
-    public function everything_works_with_dot_notation_as_well()
+    /**
+     * @test
+     */
+    public function everything_works_with_dot_notation_as_well(): void
     {
         $config = WritableConfig::fromArray([
             'foo' => [
@@ -135,8 +149,10 @@ class WritableConfigTest extends TestCase
         $this->assertEquals('boo', $config->get('foo.baz.biz'));
     }
 
-    /** @test */
-    public function numerically_indexed_arrays_are_merged_and_unique_values_remain()
+    /**
+     * @test
+     */
+    public function numerically_indexed_arrays_are_merged_and_unique_values_remain(): void
     {
         $config = WritableConfig::fromArray([
             'first' => [
@@ -150,8 +166,10 @@ class WritableConfigTest extends TestCase
         $this->assertEquals(['foo', 'bar', 'boo', 'biz'], $config->get('first'));
     }
 
-    /** @test */
-    public function test_extend_with_closure()
+    /**
+     * @test
+     */
+    public function test_extend_with_closure(): void
     {
         $config = WritableConfig::fromArray([
             'first' => [

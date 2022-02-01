@@ -84,7 +84,7 @@ final class CachedRouteCollection implements Routes
         return $_routes;
     }
 
-    private function checkIsValidRoute($route)
+    private function checkIsValidRoute($route): void
     {
         Assert::isInstanceOf(
             $route,
@@ -96,7 +96,7 @@ final class CachedRouteCollection implements Routes
         );
     }
 
-    private function checkValidName(string $used_name, Route $route)
+    private function checkValidName(string $used_name, Route $route): void
     {
         if ($route->getName() !== $used_name) {
             throw RouteNotFound::accessByBadName($used_name, $route->getName());

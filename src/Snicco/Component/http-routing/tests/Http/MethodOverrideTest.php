@@ -12,8 +12,10 @@ class MethodOverrideTest extends MiddlewareTestCase
 
     private MethodOverride $middleware;
 
-    /** @test */
-    public function the_method_can_be_overwritten_for_post_requests()
+    /**
+     * @test
+     */
+    public function the_method_can_be_overwritten_for_post_requests(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
             '_method' => 'PUT',
@@ -25,8 +27,10 @@ class MethodOverrideTest extends MiddlewareTestCase
         $this->assertSame('PUT', $this->getReceivedRequest()->getMethod());
     }
 
-    /** @test */
-    public function the_method_cant_be_overwritten_for_anything_but_post_requests()
+    /**
+     * @test
+     */
+    public function the_method_cant_be_overwritten_for_anything_but_post_requests(): void
     {
         $request = $this->frontendRequest('/foo')->withParsedBody([
             '_method' => 'PUT',
@@ -38,8 +42,10 @@ class MethodOverrideTest extends MiddlewareTestCase
         $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
     }
 
-    /** @test */
-    public function the_method_can_be_overwritten_with_the_method_override_header()
+    /**
+     * @test
+     */
+    public function the_method_can_be_overwritten_with_the_method_override_header(): void
     {
         $request = $this->frontendRequest('/foo', [], 'POST')
             ->withHeader('X-HTTP-Method-Override', 'PUT');

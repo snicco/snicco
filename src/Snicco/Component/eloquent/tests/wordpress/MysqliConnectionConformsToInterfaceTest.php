@@ -21,8 +21,10 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
 {
 
-    /** @test */
-    public function constructing_the_wp_connection_correctly_sets_up_all_collaborators()
+    /**
+     * @test
+     */
+    public function constructing_the_wp_connection_correctly_sets_up_all_collaborators(): void
     {
         global $wpdb;
         $wpdb->prefix = 'my_prefix';
@@ -52,8 +54,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         return $connection;
     }
 
-    /** @test */
-    public function the_query_builder_uses_the_correct_grammar_and_processor()
+    /**
+     * @test
+     */
+    public function the_query_builder_uses_the_correct_grammar_and_processor(): void
     {
         $wp_connection = $this->getMysqliConnection();
 
@@ -65,8 +69,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $this->assertSame($wp_connection->getQueryGrammar(), $query_builder->grammar);
     }
 
-    /** @test */
-    public function the_schema_builder_uses_the_correct_grammar_and_processor()
+    /**
+     * @test
+     */
+    public function the_schema_builder_uses_the_correct_grammar_and_processor(): void
     {
         $wp_connection = $this->getMysqliConnection();
 
@@ -75,8 +81,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $this->assertInstanceOf(MySqlBuilder::class, $schema_builder);
     }
 
-    /** @test */
-    public function the_connection_can_begin_a_query_against_a_query_builder_table()
+    /**
+     * @test
+     */
+    public function the_connection_can_begin_a_query_against_a_query_builder_table(): void
     {
         $wp_connection = $this->getMysqliConnection();
 
@@ -87,8 +95,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $this->assertSame('wp_users as users', $query_builder->from);
     }
 
-    /** @test */
-    public function bindings_get_prepared_correctly()
+    /**
+     * @test
+     */
+    public function bindings_get_prepared_correctly(): void
     {
         $result = $this->getMysqliConnection()->prepareBindings([
             true,
@@ -107,8 +117,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         ], $result);
     }
 
-    /** @test */
-    public function test_get_config()
+    /**
+     * @test
+     */
+    public function test_get_config(): void
     {
         global $wpdb;
         $wpdb->prefix = 'my_prefix';

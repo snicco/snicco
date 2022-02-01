@@ -22,7 +22,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
 
     private ContainerInterface $container;
 
-    public function setContainer(ContainerInterface $container)
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }

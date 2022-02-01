@@ -13,6 +13,11 @@ class PasswordLogin extends AbstractLogin
     use ClassAsName;
     use ClassAsPayload;
 
+    /**
+     * @return string
+     *
+     * @psalm-return 'password login'
+     */
     public function message()
     {
         return 'password login';

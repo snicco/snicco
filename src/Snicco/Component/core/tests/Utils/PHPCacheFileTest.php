@@ -14,8 +14,10 @@ final class PHPCacheFileTest extends TestCase
 
     private string $file;
 
-    /** @test */
-    public function test_exception_if_path_is_not_php()
+    /**
+     * @test
+     */
+    public function test_exception_if_path_is_not_php(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('must be [.php].');
@@ -23,8 +25,10 @@ final class PHPCacheFileTest extends TestCase
         new PHPCacheFile(__DIR__, 'foo.js');
     }
 
-    /** @test */
-    public function test_isCreated()
+    /**
+     * @test
+     */
+    public function test_isCreated(): void
     {
         $cache = new PHPCacheFile(__DIR__, 'foo.php');
         $this->assertFalse($cache->isCreated());
@@ -32,15 +36,19 @@ final class PHPCacheFileTest extends TestCase
         $this->assertTrue($cache->isCreated());
     }
 
-    /** @test */
-    public function test_realpath()
+    /**
+     * @test
+     */
+    public function test_realpath(): void
     {
         $cache = new PHPCacheFile(__DIR__, 'foo.php');
         $this->assertSame(__DIR__ . '/foo.php', $cache->realPath());
     }
 
-    /** @test */
-    public function test_require()
+    /**
+     * @test
+     */
+    public function test_require(): void
     {
         $class = new stdClass();
         $class->foo = 'bar';

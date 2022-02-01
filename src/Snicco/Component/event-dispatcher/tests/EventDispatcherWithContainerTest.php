@@ -14,8 +14,10 @@ use stdClass;
 final class EventDispatcherWithContainerTest extends TestCase
 {
 
-    /** @test */
-    public function listeners_can_be_resolved_from_a_psr11_container()
+    /**
+     * @test
+     */
+    public function listeners_can_be_resolved_from_a_psr11_container(): void
     {
         $container = new PimplePsr11($pimple = new Container());
 

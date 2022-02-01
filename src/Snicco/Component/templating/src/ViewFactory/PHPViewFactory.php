@@ -52,6 +52,9 @@ final class PHPViewFactory implements ViewFactory
         return ltrim(ob_get_clean());
     }
 
+    /**
+     * @return void
+     */
     private function render(PHPView $view)
     {
         $this->composer_collection->compose($view);
@@ -78,7 +81,7 @@ final class PHPViewFactory implements ViewFactory
         $this->requireView($view);
     }
 
-    private function requireView(PHPView $view)
+    private function requireView(PHPView $view): void
     {
         $this->finder->includeFile(
             $view->path(),
@@ -88,6 +91,8 @@ final class PHPViewFactory implements ViewFactory
 
     /**
      * @throws ViewCantBeRendered
+     *
+     * @return never
      */
     private function handleViewException(Throwable $e, $ob_level, PHPView $view)
     {

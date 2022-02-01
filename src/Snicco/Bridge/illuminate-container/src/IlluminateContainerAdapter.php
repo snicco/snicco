@@ -30,7 +30,7 @@ final class IlluminateContainerAdapter extends DIContainer
         $this->illuminate_container->bind($id, $service);
     }
 
-    private function checkIfCanBeOverwritten(string $id)
+    private function checkIfCanBeOverwritten(string $id): void
     {
         if (true === $this->locked) {
             throw ContainerIsLocked::whileSettingId($id);

@@ -322,7 +322,7 @@ final class AssertableResponse
         return $this;
     }
 
-    public function assertContentType(string $expected, string $charset = 'UTF-8')
+    public function assertContentType(string $expected, string $charset = 'UTF-8'): void
     {
         if (Str::startsWith($expected, 'text')) {
             $expected = trim($expected, ';') . '; charset=' . $charset;

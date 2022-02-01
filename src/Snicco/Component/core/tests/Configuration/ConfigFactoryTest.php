@@ -27,8 +27,10 @@ final class ConfigFactoryTest extends TestCase
     private string $base_dir;
     private string $cache_dir;
 
-    /** @test */
-    public function a_configuration_instance_can_be_created()
+    /**
+     * @test
+     */
+    public function a_configuration_instance_can_be_created(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -43,8 +45,10 @@ final class ConfigFactoryTest extends TestCase
         $this->assertArrayHasKey('custom-config', $config);
     }
 
-    /** @test */
-    public function all_files_in_the_config_directory_are_loaded_and_included_as_a_root_node_in_the_config()
+    /**
+     * @test
+     */
+    public function all_files_in_the_config_directory_are_loaded_and_included_as_a_root_node_in_the_config(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -58,8 +62,10 @@ final class ConfigFactoryTest extends TestCase
         $this->assertSame('baz', $config['custom-config']['foo']);
     }
 
-    /** @test */
-    public function the_configuration_can_be_cached()
+    /**
+     * @test
+     */
+    public function the_configuration_can_be_cached(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -90,8 +96,10 @@ final class ConfigFactoryTest extends TestCase
         $this->assertEquals($config, $loaded);
     }
 
-    /** @test */
-    public function the_configuration_can_be_read_from_cache()
+    /**
+     * @test
+     */
+    public function the_configuration_can_be_read_from_cache(): void
     {
         $app = new Application(
             $this->createContainer(),
@@ -123,8 +131,10 @@ final class ConfigFactoryTest extends TestCase
         $this->assertSame('baz', $config['app']['foo']);
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_the_cached_config_does_not_contain_the_app_key()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_cached_config_does_not_contain_the_app_key(): void
     {
         $app = new Application(
             $this->createContainer(),

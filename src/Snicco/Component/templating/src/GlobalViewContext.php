@@ -18,7 +18,7 @@ final class GlobalViewContext
      */
     private array $context = [];
 
-    public function add(string $name, $context)
+    public function add(string $name, $context): void
     {
         if (is_array($context)) {
             $context = new ParameterPag($context);

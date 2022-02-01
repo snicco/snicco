@@ -24,8 +24,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
     private TestableEventDispatcher $fake_dispatcher;
 
-    /** @test */
-    public function assertNothingDispatched_can_pass()
+    /**
+     * @test
+     */
+    public function assertNothingDispatched_can_pass(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -34,8 +36,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->assertNotingDispatched();
     }
 
-    /** @test */
-    public function assertNothingDispatched_can_fail()
+    /**
+     * @test
+     */
+    public function assertNothingDispatched_can_fail(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -49,8 +53,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_pass()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_pass(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -60,8 +66,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->assertDispatched('foo_event');
     }
 
-    /** @test */
-    public function assertDispatched_can_fail()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_fail(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -75,8 +83,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_pass_with_truthful_condition_about_the_event()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_pass_with_truthful_condition_about_the_event(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -88,8 +98,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         });
     }
 
-    /** @test */
-    public function assertDispatched_can_fail_when_the_event_was_not_dispatched()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_fail_when_the_event_was_not_dispatched(): void
     {
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was not dispatched',
@@ -101,8 +113,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_fail_when_the_event_was_dispatched_but_the_additional_condition_didnt_match()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_fail_when_the_event_was_dispatched_but_the_additional_condition_didnt_match(): void
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO', 'BAZ']));
 
@@ -116,8 +130,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_pass_with_object_event()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_pass_with_object_event(): void
     {
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
@@ -129,8 +145,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_fail_object_event()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_fail_object_event(): void
     {
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
@@ -150,8 +168,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_pass_with_typehinted_closure_only()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_pass_with_typehinted_closure_only(): void
     {
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
@@ -162,8 +182,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_can_fail_with_typehinted_closure_only()
+    /**
+     * @test
+     */
+    public function assertDispatched_can_fail_with_typehinted_closure_only(): void
     {
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
@@ -183,16 +205,20 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatchedTimes_can_pass()
+    /**
+     * @test
+     */
+    public function assertDispatchedTimes_can_pass(): void
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
         $this->fake_dispatcher->assertDispatchedTimes('foo_event', 2);
     }
 
-    /** @test */
-    public function assertDispatchedTimes_can_fail()
+    /**
+     * @test
+     */
+    public function assertDispatchedTimes_can_fail(): void
     {
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched [3] time[s].',
@@ -205,14 +231,18 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertNotDispatched_can_pass()
+    /**
+     * @test
+     */
+    public function assertNotDispatched_can_pass(): void
     {
         $this->fake_dispatcher->assertNotDispatched('foo_event');
     }
 
-    /** @test */
-    public function assertNotDispatched_can_fail()
+    /**
+     * @test
+     */
+    public function assertNotDispatched_can_fail(): void
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event'));
 
@@ -224,8 +254,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertNotDispatched_can_pass_with_wrong_condition()
+    /**
+     * @test
+     */
+    public function assertNotDispatched_can_pass_with_wrong_condition(): void
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['BAR']));
 
@@ -237,8 +269,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertNotDispatched_will_fail_with_truthful_condition()
+    /**
+     * @test
+     */
+    public function assertNotDispatched_will_fail_with_truthful_condition(): void
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['BAR']));
 
@@ -255,8 +289,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertNotDispatched_can_pass_with_typehinted_closure_only()
+    /**
+     * @test
+     */
+    public function assertNotDispatched_can_pass_with_typehinted_closure_only(): void
     {
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAZ'));
 
@@ -267,8 +303,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertDispatched_accepts_a_generic_object_as_the_closure_argument()
+    /**
+     * @test
+     */
+    public function assertDispatched_accepts_a_generic_object_as_the_closure_argument(): void
     {
         $event = new stdClass();
         $event->foo = 'FOO';
@@ -283,8 +321,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function assertNotDispatched_will_fail_if_event_object_was_dispatched_and_condition_passed()
+    /**
+     * @test
+     */
+    public function assertNotDispatched_will_fail_if_event_object_was_dispatched_and_condition_passed(): void
     {
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAZ'));
 

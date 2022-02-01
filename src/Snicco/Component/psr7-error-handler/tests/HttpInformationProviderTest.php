@@ -19,8 +19,10 @@ use Throwable;
 final class HttpInformationProviderTest extends TestCase
 {
 
-    /** @test */
-    public function http_exceptions_use_the_correct_title_and_status_code()
+    /**
+     * @test
+     */
+    public function http_exceptions_use_the_correct_title_and_status_code(): void
     {
         $provider = new TransformableInformationProvider([
             404 => [
@@ -50,8 +52,10 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame($e, $information->transformedException());
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_the_500_message_data_is_not_provided()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_500_message_data_is_not_provided(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Data for the 500 status code must be provided.');
@@ -64,8 +68,10 @@ final class HttpInformationProviderTest extends TestCase
         ], new StubIdentifier('foo'));
     }
 
-    /** @test */
-    public function exceptions_can_be_transformed()
+    /**
+     * @test
+     */
+    public function exceptions_can_be_transformed(): void
     {
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
@@ -92,8 +98,10 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame(401, $transformed->statusCode());
     }
 
-    /** @test */
-    public function exceptions_will_only_be_transformed_if_a_transformer_decides_so()
+    /**
+     * @test
+     */
+    public function exceptions_will_only_be_transformed_if_a_transformer_decides_so(): void
     {
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
@@ -109,8 +117,10 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('Internal Server Error', $information->title());
     }
 
-    /** @test */
-    public function multiple_transformers_can_be_used_in_the_same_order_they_were_run()
+    /**
+     * @test
+     */
+    public function multiple_transformers_can_be_used_in_the_same_order_they_were_run(): void
     {
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
@@ -128,8 +138,10 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('You cant do this.', $information->safeDetails());
     }
 
-    /** @test */
-    public function exceptions_that_implement_user_facing_will_be_used_to_get_the_title_and_message()
+    /**
+     * @test
+     */
+    public function exceptions_that_implement_user_facing_will_be_used_to_get_the_title_and_message(): void
     {
         $provider = $this->newProvider([
             401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
@@ -146,8 +158,10 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('Bar message', $information->safeDetails());
     }
 
-    /** @test */
-    public function user_facing_exceptions_will_be_used_even_if_a_transformer_transforms_them()
+    /**
+     * @test
+     */
+    public function user_facing_exceptions_will_be_used_even_if_a_transformer_transforms_them(): void
     {
         $provider = $this->newProvider([
             403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
@@ -164,8 +178,10 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('Bar message', $information->safeDetails());
     }
 
-    /** @test */
-    public function a_transformed_user_facing_exception_has_priority_over_a_provided_user_facing_exception()
+    /**
+     * @test
+     */
+    public function a_transformed_user_facing_exception_has_priority_over_a_provided_user_facing_exception(): void
     {
         $provider =
             $this->newProvider([], new StubIdentifier('foo_id'), new ToUserFacingException());

@@ -90,7 +90,7 @@ final class ReadWriteSession implements Session
     /**
      * @throws SessionIsLocked
      */
-    private function checkLocked()
+    private function checkLocked(): void
     {
         if ($this->locked) {
             throw new SessionIsLocked();
@@ -211,7 +211,7 @@ final class ReadWriteSession implements Session
         $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
     }
 
-    private function recordEvent(object $event)
+    private function recordEvent(object $event): void
     {
         $this->stored_events[] = $event;
     }

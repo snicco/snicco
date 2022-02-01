@@ -85,7 +85,7 @@ class HttpRunnerTestCase extends TestCase
         $this->routes_dir = __DIR__ . '/fixtures/routes';
     }
 
-    private function createNeededCollaborators()
+    private function createNeededCollaborators(): void
     {
         $this->container = $this->createContainer();
         $this->container->instance(DIContainer::class, $this->container);
@@ -111,7 +111,7 @@ class HttpRunnerTestCase extends TestCase
         PHPCacheFile $cache_file = null,
         UrlGenerationContext $context = null,
         array $config = []
-    ) {
+    ): void {
         unset($this->container[ResponseFactory::class]);
         unset($this->container[UrlGenerator::class]);
         unset($this->container[Redirector::class]);
@@ -192,12 +192,12 @@ class HttpRunnerTestCase extends TestCase
         );
     }
 
-    final protected function assertEmptyBody(Request $request)
+    final protected function assertEmptyBody(Request $request): void
     {
         $this->assertResponseBody('', $request);
     }
 
-    final protected function assertResponseBody($expected, Request $request)
+    final protected function assertResponseBody($expected, Request $request): void
     {
         $response = $this->runKernel($request);
         $this->assertSame(
@@ -215,7 +215,7 @@ class HttpRunnerTestCase extends TestCase
         return new AssertableResponse($response);
     }
 
-    final protected function withMiddlewareAlias(array $aliases)
+    final protected function withMiddlewareAlias(array $aliases): void
     {
         $this->middleware_stack->middlewareAliases($aliases);
     }
@@ -230,7 +230,7 @@ class HttpRunnerTestCase extends TestCase
         ];
     }
 
-    final protected function withGlobalMiddleware(array $middleware)
+    final protected function withGlobalMiddleware(array $middleware): void
     {
         $this->withMiddlewareGroups([RoutingConfigurator::GLOBAL_MIDDLEWARE => $middleware]);
     }
@@ -245,13 +245,13 @@ class HttpRunnerTestCase extends TestCase
         }
     }
 
-    final protected function withNewMiddlewareStack(MiddlewareStack $middleware_stack)
+    final protected function withNewMiddlewareStack(MiddlewareStack $middleware_stack): void
     {
         $this->middleware_stack = $middleware_stack;
         $this->refreshRouter();
     }
 
-    final protected function withMiddlewarePriority(array $array)
+    final protected function withMiddlewarePriority(array $array): void
     {
         $this->middleware_stack->middlewarePriority($array);
     }

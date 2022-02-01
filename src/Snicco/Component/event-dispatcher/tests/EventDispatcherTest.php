@@ -33,8 +33,10 @@ class EventDispatcherTest extends TestCase
 
     use AssertListenerResponse;
 
-    /** @test */
-    public function listeners_are_run_for_matching_events()
+    /**
+     * @test
+     */
+    public function listeners_are_run_for_matching_events(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -54,8 +56,10 @@ class EventDispatcherTest extends TestCase
         );
     }
 
-    /** @test */
-    public function listeners_dont_respond_to_different_events()
+    /**
+     * @test
+     */
+    public function listeners_dont_respond_to_different_events(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -68,8 +72,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerNotRun(FooEvent::class, 'closure1');
     }
 
-    /** @test */
-    public function multiple_listeners_can_be_added_for_the_same_event()
+    /**
+     * @test
+     */
+    public function multiple_listeners_can_be_added_for_the_same_event(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -87,8 +93,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun('foo_event', 'closure2', 'baz');
     }
 
-    /** @test */
-    public function listeners_can_be_added_after_an_event_was_dispatched_already()
+    /**
+     * @test
+     */
+    public function listeners_can_be_added_after_an_event_was_dispatched_already(): void
     {
         $dispatcher = $this->getDispatcher();
         $dispatcher->dispatch(new GenericEvent('foo_event'));
@@ -104,8 +112,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun('foo_event', 'closure1', 'bar');
     }
 
-    /** @test */
-    public function arguments_are_passed_to_the_listener()
+    /**
+     * @test
+     */
+    public function arguments_are_passed_to_the_listener(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -118,8 +128,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun('foo_event', 'closure1', 'FOOBAR');
     }
 
-    /** @test */
-    public function events_can_be_instances_of_the_event_interface()
+    /**
+     * @test
+     */
+    public function events_can_be_instances_of_the_event_interface(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -132,8 +144,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun('foo_event', 'closure1', 'foobar');
     }
 
-    /** @test */
-    public function events_can_be_plain_objects()
+    /**
+     * @test
+     */
+    public function events_can_be_plain_objects(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -149,8 +163,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(stdClass::class, 'closure1', 'FOOBAR');
     }
 
-    /** @test */
-    public function listeners_can_be_registered_as_only_a_class_name_where_the_handle_event_method_will_be_used()
+    /**
+     * @test
+     */
+    public function listeners_can_be_registered_as_only_a_class_name_where_the_handle_event_method_will_be_used(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -161,8 +177,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
     }
 
-    /** @test */
-    public function a_listener_can_have_a_custom_method()
+    /**
+     * @test
+     */
+    public function a_listener_can_have_a_custom_method(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -176,8 +194,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
     }
 
-    /** @test */
-    public function non_existing_listener_classes_throw_exceptions()
+    /**
+     * @test
+     */
+    public function non_existing_listener_classes_throw_exceptions(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -187,8 +207,10 @@ class EventDispatcherTest extends TestCase
         $dispatcher->listen('foo_event', 'BogusClass');
     }
 
-    /** @test */
-    public function a_missing_invoke_method_will_throw_an_exception()
+    /**
+     * @test
+     */
+    public function a_missing_invoke_method_will_throw_an_exception(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -203,8 +225,10 @@ class EventDispatcherTest extends TestCase
         $dispatcher->listen('foo_event', ListenerWithoutMethod::class);
     }
 
-    /** @test */
-    public function listeners_can_be_registered_as_strings_if_they_are_invokable()
+    /**
+     * @test
+     */
+    public function listeners_can_be_registered_as_strings_if_they_are_invokable(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -215,8 +239,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun('foo_event', InvokableListener::class, 'foobar');
     }
 
-    /** @test */
-    public function an_exception_is_thrown_for_invalid_instance_methods()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_for_invalid_instance_methods(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -232,8 +258,10 @@ class EventDispatcherTest extends TestCase
         $dispatcher->listen('foo_event', [ClassListener::class, 'bogus']);
     }
 
-    /** @test */
-    public function an_exception_is_thrown_for_invalid_classes_when_passed_as_array()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_for_invalid_classes_when_passed_as_array(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -245,8 +273,10 @@ class EventDispatcherTest extends TestCase
         $dispatcher->listen('foo_event', ['BogusClass', 'bogus']);
     }
 
-    /** @test */
-    public function closure_listeners_can_be_created_without_the_event_parameter()
+    /**
+     * @test
+     */
+    public function closure_listeners_can_be_created_without_the_event_parameter(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -259,8 +289,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(FooEvent::class, 'closure1', 'foobar');
     }
 
-    /** @test */
-    public function class_listeners_can_be_removed()
+    /**
+     * @test
+     */
+    public function class_listeners_can_be_removed(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -276,8 +308,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
     }
 
-    /** @test */
-    public function closure_listeners_can_be_removed_by_object_id()
+    /**
+     * @test
+     */
+    public function closure_listeners_can_be_removed_by_object_id(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -298,8 +332,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerNotRun(FooEvent::class, 'closure1');
     }
 
-    /** @test */
-    public function class_listeners_can_be_removed_by_method()
+    /**
+     * @test
+     */
+    public function class_listeners_can_be_removed_by_method(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -320,8 +356,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(BarEvent::class, ClassListener::class, 'BARBAZ');
     }
 
-    /** @test */
-    public function all_listeners_for_an_event_can_be_removed()
+    /**
+     * @test
+     */
+    public function all_listeners_for_an_event_can_be_removed(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -344,8 +382,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerNotRun(FooEvent::class, ClassListener2::class);
     }
 
-    /** @test */
-    public function a_class_listener_can_be_marked_as_unremovable()
+    /**
+     * @test
+     */
+    public function a_class_listener_can_be_marked_as_unremovable(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -356,8 +396,10 @@ class EventDispatcherTest extends TestCase
         $dispatcher->remove(FooEvent::class, ClassListener::class);
     }
 
-    /** @test */
-    public function a_closure_listener_can_be_marked_as_unremovable()
+    /**
+     * @test
+     */
+    public function a_closure_listener_can_be_marked_as_unremovable(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -373,8 +415,10 @@ class EventDispatcherTest extends TestCase
         $dispatcher->remove(FooEvent::class, $closure);
     }
 
-    /** @test */
-    public function all_listeners_receive_the_same_event_object()
+    /**
+     * @test
+     */
+    public function all_listeners_receive_the_same_event_object(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -393,8 +437,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(MutableEvent::class, 'closure2', 'FOOBAZ');
     }
 
-    /** @test */
-    public function events_can_be_filterable_and_the_final_value_will_be_returned()
+    /**
+     * @test
+     */
+    public function events_can_be_filterable_and_the_final_value_will_be_returned(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -417,8 +463,10 @@ class EventDispatcherTest extends TestCase
         $this->assertSame('FOOBAR:Filter1:Filter2', $result->val);
     }
 
-    /** @test */
-    public function listeners_can_listen_to_interfaces()
+    /**
+     * @test
+     */
+    public function listeners_can_listen_to_interfaces(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -435,8 +483,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(LogEvent2::class, 'closure1', 'foobar');
     }
 
-    /** @test */
-    public function listeners_can_listen_to_abstract_classes_up_to_one_parent_level()
+    /**
+     * @test
+     */
+    public function listeners_can_listen_to_abstract_classes_up_to_one_parent_level(): void
     {
         $dispatcher = $this->getDispatcher();
 
@@ -448,8 +498,10 @@ class EventDispatcherTest extends TestCase
         $this->assertListenerRun(PasswordLogin::class, 'closure1', 'password login');
     }
 
-    /** @test */
-    public function an_event_can_be_dispatched_with_a_custom_name()
+    /**
+     * @test
+     */
+    public function an_event_can_be_dispatched_with_a_custom_name(): void
     {
         $dispatcher = $this->getDispatcher();
 

@@ -15,7 +15,7 @@ use const MYSQLI_REPORT_OFF;
 trait WPDBTestHelpers
 {
 
-    protected function withDatabaseExceptions(Closure $test)
+    protected function withDatabaseExceptions(Closure $test): void
     {
         global $wpdb;
         /** @var mysqli $mysqli */
@@ -58,7 +58,7 @@ trait WPDBTestHelpers
         ];
     }
 
-    protected function wpdbInsert(string $table, array $data)
+    protected function wpdbInsert(string $table, array $data): void
     {
         global $wpdb;
 
@@ -91,13 +91,13 @@ trait WPDBTestHelpers
         return $format;
     }
 
-    protected function removeWpBrowserTransaction()
+    protected function removeWpBrowserTransaction(): void
     {
         global $wpdb;
         $wpdb->query('COMMIT');
     }
 
-    protected function wpdbUpdate(string $table, array $data, array $where)
+    protected function wpdbUpdate(string $table, array $data, array $where): void
     {
         global $wpdb;
 
@@ -111,7 +111,7 @@ trait WPDBTestHelpers
         }
     }
 
-    protected function wpdbDelete(string $table, array $wheres)
+    protected function wpdbDelete(string $table, array $wheres): void
     {
         global $wpdb;
 

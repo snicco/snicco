@@ -33,8 +33,10 @@ final class FactorySessionManagerTest extends TestCase
     private string $cookie_name = 'sniccowp_session';
     private InMemoryDriver $driver;
 
-    /** @test */
-    public function starting_a_session_without_an_existing_id_works()
+    /**
+     * @test
+     */
+    public function starting_a_session_without_an_existing_id_works(): void
     {
         $manager = $this->getSessionManager();
 
@@ -73,8 +75,10 @@ final class FactorySessionManagerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function starting_a_session_with_a_wrong_id_will_generate_a_new_id()
+    /**
+     * @test
+     */
+    public function starting_a_session_with_a_wrong_id_will_generate_a_new_id(): void
     {
         $_COOKIE[$this->cookie_name] = 'foobar';
 
@@ -85,8 +89,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertNotSame('foobar', $session->id());
     }
 
-    /** @test */
-    public function retrieving_the_session_twice_will_not_return_the_same_object_reference()
+    /**
+     * @test
+     */
+    public function retrieving_the_session_twice_will_not_return_the_same_object_reference(): void
     {
         $manager = $this->getSessionManager();
         $session1 = $manager->start(CookiePool::fromSuperGlobals());
@@ -95,8 +101,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertNotSame($session1, $session2);
     }
 
-    /** @test */
-    public function data_can_be_read_from_the_session_driver()
+    /**
+     * @test
+     */
+    public function data_can_be_read_from_the_session_driver(): void
     {
         $id = $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -125,8 +133,10 @@ final class FactorySessionManagerTest extends TestCase
         return (new DateTimeImmutable())->getTimestamp();
     }
 
-    /** @test */
-    public function updated_session_data_is_saved_to_the_driver()
+    /**
+     * @test
+     */
+    public function updated_session_data_is_saved_to_the_driver(): void
     {
         $id = $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -148,8 +158,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame($id->asString(), $session->id()->asString());
     }
 
-    /** @test */
-    public function the_session_cookie_has_the_same_id_as_the_active_session()
+    /**
+     * @test
+     */
+    public function the_session_cookie_has_the_same_id_as_the_active_session(): void
     {
         $id = $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -163,8 +175,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame($this->cookie_name, $cookie->name());
     }
 
-    /** @test */
-    public function invalidating_deletes_the_old_session_and_clears_the_current_session()
+    /**
+     * @test
+     */
+    public function invalidating_deletes_the_old_session_and_clears_the_current_session(): void
     {
         $old_id = $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -181,8 +195,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->driver->read($old_id->asHash());
     }
 
-    /** @test */
-    public function the_old_session_is_deleted_after_migrating_a_session()
+    /**
+     * @test
+     */
+    public function the_old_session_is_deleted_after_migrating_a_session(): void
     {
         $old_id = $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -197,8 +213,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->driver->read($old_id->asHash());
     }
 
-    /** @test */
-    public function an_idle_session_is_not_started()
+    /**
+     * @test
+     */
+    public function an_idle_session_is_not_started(): void
     {
         $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -217,8 +235,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame(null, $session->get('foo'));
     }
 
-    /** @test */
-    public function a_session_with_activity_can_not_be_started_after_it_has_expired_absolutely()
+    /**
+     * @test
+     */
+    public function a_session_with_activity_can_not_be_started_after_it_has_expired_absolutely(): void
     {
         $this->absolute_lifetime = 6;
         $this->idle_timeout = 3;
@@ -256,8 +276,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame(null, $session->get('foo'));
     }
 
-    /** @test */
-    public function session_ids_are_rotated_if_needed()
+    /**
+     * @test
+     */
+    public function session_ids_are_rotated_if_needed(): void
     {
         // Irrelevant here
         $this->idle_timeout = 1000;
@@ -288,8 +310,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertFalse($old_id->sameAs($new_id));
     }
 
-    /** @test */
-    public function garbage_collection_works()
+    /**
+     * @test
+     */
+    public function garbage_collection_works(): void
     {
         $test_clock = new TestClock();
         $this->driver = new InMemoryDriver($test_clock);
@@ -318,8 +342,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->driver->read($old_id->asHash());
     }
 
-    /** @test */
-    public function testSessionCookie()
+    /**
+     * @test
+     */
+    public function testSessionCookie(): void
     {
         $manager = $this->getSessionManager(null, [
             'cookie_name' => 'foobar_cookie',
@@ -345,8 +371,10 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame(30, $cookie->lifetime());
     }
 
-    /** @test */
-    public function session_events_are_recorded_and_dispatched()
+    /**
+     * @test
+     */
+    public function session_events_are_recorded_and_dispatched(): void
     {
         // Irrelevant here
         $this->idle_timeout = 1000;

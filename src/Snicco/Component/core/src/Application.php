@@ -155,7 +155,7 @@ final class Application implements ArrayAccess
         $this->bootstrappers[] = $bootstrapper;
     }
 
-    private function configureBundles(WritableConfig $config)
+    private function configureBundles(WritableConfig $config): void
     {
         foreach ($this->bundles as $bundle) {
             $bundle->configure($config, $this);

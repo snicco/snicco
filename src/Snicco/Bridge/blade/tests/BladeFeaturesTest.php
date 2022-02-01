@@ -11,8 +11,10 @@ use stdClass;
 class BladeFeaturesTest extends BladeTestCase
 {
 
-    /** @test */
-    public function xss_protection_works()
+    /**
+     * @test
+     */
+    public function xss_protection_works(): void
     {
         $view = $this->view('xss');
 
@@ -24,8 +26,10 @@ class BladeFeaturesTest extends BladeTestCase
         return $this->view_engine->make('blade-features.' . $view);
     }
 
-    /** @test */
-    public function xss_encoding_can_be_disabled()
+    /**
+     * @test
+     */
+    public function xss_encoding_can_be_disabled(): void
     {
         $view = $this->view('xss-disabled')
             ->with('script', '<script type="text/javascript">alert("Hacked!");</script>');
@@ -33,16 +37,20 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertStringStartsWith('<script', $view->toString());
     }
 
-    /** @test */
-    public function json_works()
+    /**
+     * @test
+     */
+    public function json_works(): void
     {
         $view = $this->view('json')->with('json', ['foo' => 'bar']);
         $content = $view->toString();
         $this->assertSame(['foo' => 'bar'], json_decode($content, true));
     }
 
-    /** @test */
-    public function if_works()
+    /**
+     * @test
+     */
+    public function if_works(): void
     {
         $view = $this->view('if')->with('records', ['foo']);
         $content = $view->toString();
@@ -57,8 +65,10 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent("I don't have any records!", $content);
     }
 
-    /** @test */
-    public function unless_works()
+    /**
+     * @test
+     */
+    public function unless_works(): void
     {
         $view = $this->view('unless')->with('foo', 'foo');
         $content = $view->toString();
@@ -69,8 +79,10 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent('UNLESS', $content);
     }
 
-    /** @test */
-    public function empty_isset_works()
+    /**
+     * @test
+     */
+    public function empty_isset_works(): void
     {
         $view = $this->view('isset-empty')->with('isset', 'foo')->with('empty', 'blabla');
         $content = $view->toString();
@@ -81,16 +93,20 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent('EMPTY', $content);
     }
 
-    /** @test */
-    public function including_a_subview_works()
+    /**
+     * @test
+     */
+    public function including_a_subview_works(): void
     {
         $view = $this->view('parent')->with('greeting', 'Hello');
         $content = $view->toString();
         $this->assertViewContent('Hello calvin', $content);
     }
 
-    /** @test */
-    public function include_if_works()
+    /**
+     * @test
+     */
+    public function include_if_works(): void
     {
         $view = $this->view('include-if')->with('greeting', 'Hello');
         $content = $view->toString();
@@ -101,8 +117,10 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent('', $content);
     }
 
-    /** @test */
-    public function include_when_works()
+    /**
+     * @test
+     */
+    public function include_when_works(): void
     {
         $view = $this->view('include-when')->with(['greeting' => 'Hello', 'foo' => 'foo']);
         $content = $view->toString();
@@ -113,8 +131,10 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent('', $content);
     }
 
-    /** @test */
-    public function include_unless_works()
+    /**
+     * @test
+     */
+    public function include_unless_works(): void
     {
         $view = $this->view('include-unless')->with(['greeting' => 'Hello', 'foo' => 'foo']);
         $content = $view->toString();
@@ -125,16 +145,20 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent('Hello Calvin', $content);
     }
 
-    /** @test */
-    public function include_first_works()
+    /**
+     * @test
+     */
+    public function include_first_works(): void
     {
         $view = $this->view('include-first')->with(['greeting' => 'Hello', 'foo' => 'foo']);
         $content = $view->toString();
         $this->assertViewContent('Hello Calvin', $content);
     }
 
-    /** @test */
-    public function each_works()
+    /**
+     * @test
+     */
+    public function each_works(): void
     {
         $user1 = new stdClass();
         $user1->first_name = 'Calvin';
@@ -156,16 +180,20 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertViewContent('NO USERS', $content);
     }
 
-    /** @test */
-    public function raw_php_works()
+    /**
+     * @test
+     */
+    public function raw_php_works(): void
     {
         $view = $this->view('raw-php');
         $content = $view->toString();
         $this->assertViewContent('10', $content);
     }
 
-    /** @test */
-    public function service_injection_is_forbidden()
+    /**
+     * @test
+     */
+    public function service_injection_is_forbidden(): void
     {
         $view = $this->view('service-injection');
         try {
@@ -179,8 +207,10 @@ class BladeFeaturesTest extends BladeTestCase
         }
     }
 
-    /** @test */
-    public function csrf_directive_throws_expection()
+    /**
+     * @test
+     */
+    public function csrf_directive_throws_expection(): void
     {
         $view = $this->view('csrf');
         try {
@@ -194,8 +224,10 @@ class BladeFeaturesTest extends BladeTestCase
         }
     }
 
-    /** @test */
-    public function the_method_directive_throws()
+    /**
+     * @test
+     */
+    public function the_method_directive_throws(): void
     {
         $view = $this->view('method');
         try {
@@ -209,16 +241,20 @@ class BladeFeaturesTest extends BladeTestCase
         }
     }
 
-    /** @test */
-    public function section_directives_work()
+    /**
+     * @test
+     */
+    public function section_directives_work(): void
     {
         $view = $this->view('section-child');
         $content = $view->toString();
         $this->assertViewContent('FOOBAZ', $content);
     }
 
-    /** @test */
-    public function php_files_can_be_rendered()
+    /**
+     * @test
+     */
+    public function php_files_can_be_rendered(): void
     {
         $view = $this->view('php-file');
         $content = $view->toString();

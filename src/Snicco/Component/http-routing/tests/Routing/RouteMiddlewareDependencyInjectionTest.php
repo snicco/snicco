@@ -20,8 +20,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function middleware_is_resolved_from_the_service_container()
+    /**
+     * @test
+     */
+    public function middleware_is_resolved_from_the_service_container(): void
     {
         $foo = new Foo();
         $foo->value = 'FOO';
@@ -42,8 +44,10 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static . ':FOOBAR', $request);
     }
 
-    /** @test */
-    public function controller_middleware_is_resolved_from_the_service_container()
+    /**
+     * @test
+     */
+    public function controller_middleware_is_resolved_from_the_service_container(): void
     {
         $this->container->singleton(ControllerWithMiddleware::class, function () {
             $baz = new Baz();
@@ -57,9 +61,11 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody('BAZ:controller_with_middleware:foobar', $request);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function after_controller_middleware_got_resolved_the_controller_is_not_instantiated_again_when_handling_the_request(
-    )
+    ): void
     {
         $GLOBALS['test'][ControllerWithMiddleware::CONSTRUCTED_KEY] = 0;
 
@@ -71,8 +77,10 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertSame(1, $GLOBALS['test'][ControllerWithMiddleware::CONSTRUCTED_KEY] ?? 0);
     }
 
-    /** @test */
-    public function middleware_arguments_are_passed_after_any_class_dependencies()
+    /**
+     * @test
+     */
+    public function middleware_arguments_are_passed_after_any_class_dependencies(): void
     {
         $foo = new Foo();
         $foo->foo = 'FOO';
@@ -107,8 +115,10 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static . ':FOOBARBAZBIZ', $request);
     }
 
-    /** @test */
-    public function a_middleware_with_a_typed_default_value_and_no_passed_arguments_works()
+    /**
+     * @test
+     */
+    public function a_middleware_with_a_typed_default_value_and_no_passed_arguments_works(): void
     {
         $this->withMiddlewareAlias([
             'm' => MiddlewareWithTypedDefault::class,
@@ -136,7 +146,7 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         });
     }
 
-    private function assertRouteActionConstructedTimes(int $times, $class)
+    private function assertRouteActionConstructedTimes(int $times, $class): void
     {
     }
 

@@ -11,8 +11,10 @@ use function trim;
 class ViewComposingTest extends BladeTestCase
 {
 
-    /** @test */
-    public function global_data_can_be_shared_with_all_views()
+    /**
+     * @test
+     */
+    public function global_data_can_be_shared_with_all_views(): void
     {
         $this->global_view_context->add('globals', ['foo' => 'calvin']);
 
@@ -25,8 +27,10 @@ class ViewComposingTest extends BladeTestCase
         return $view->toString();
     }
 
-    /** @test */
-    public function data_is_shared_with_nested_views()
+    /**
+     * @test
+     */
+    public function data_is_shared_with_nested_views(): void
     {
         $this->global_view_context->add('globals', ['surname' => 'alkan']);
         $this->composers->addComposer(
@@ -39,8 +43,10 @@ class ViewComposingTest extends BladeTestCase
         $this->assertSame('calvinalkan', trim($this->renderView('nested-view-composer')));
     }
 
-    /** @test */
-    public function a_view_composer_can_be_added_to_a_view()
+    /**
+     * @test
+     */
+    public function a_view_composer_can_be_added_to_a_view(): void
     {
         $this->composers->addComposer('view-composer', function (BladeView $view) {
             $view->with(['name' => 'calvin']);

@@ -17,8 +17,10 @@ final class DelegatedResponseTest extends TestCase
 
     private ResponseFactory $factory;
 
-    /** @test */
-    public function test_sendHeaders()
+    /**
+     * @test
+     */
+    public function test_sendHeaders(): void
     {
         $response = $this->factory->delegate();
         $this->assertTrue($response->shouldHeadersBeSent());

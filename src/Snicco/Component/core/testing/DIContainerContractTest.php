@@ -17,8 +17,10 @@ trait DIContainerContractTest
 
     abstract function createContainer(): DIContainer;
 
-    /** @test */
-    final public function testFactoryReturnsDifferentObjects()
+    /**
+     * @test
+     */
+    final public function testFactoryReturnsDifferentObjects(): void
     {
         $container = $this->createContainer();
 
@@ -34,8 +36,10 @@ trait DIContainerContractTest
         PHPUnit::assertNotSame($foo1, $foo2);
     }
 
-    /** @test */
-    final public function testSingletonReturnsSameObject()
+    /**
+     * @test
+     */
+    final public function testSingletonReturnsSameObject(): void
     {
         $container = $this->createContainer();
 
@@ -51,8 +55,10 @@ trait DIContainerContractTest
         PHPUnit::assertSame($foo1, $foo2);
     }
 
-    /** @test */
-    final public function testInstanceReturnsSameObject()
+    /**
+     * @test
+     */
+    final public function testInstanceReturnsSameObject(): void
     {
         $container = $this->createContainer();
 
@@ -68,8 +74,10 @@ trait DIContainerContractTest
         PHPUnit::assertSame($foo2, $foo);
     }
 
-    /** @test */
-    final public function testRedefiningWorks()
+    /**
+     * @test
+     */
+    final public function testRedefiningWorks(): void
     {
         $container = $this->createContainer();
 
@@ -83,8 +91,10 @@ trait DIContainerContractTest
         PHPUnit::assertSame($bar, $val);
     }
 
-    /** @test */
-    final public function testPrimitive()
+    /**
+     * @test
+     */
+    final public function testPrimitive(): void
     {
         $container = $this->createContainer();
 
@@ -93,8 +103,10 @@ trait DIContainerContractTest
         PHPUnit::assertSame('bar', $container['foo']);
     }
 
-    /** @test */
-    final public function testOverwrittenFrozenServiceThrowsException()
+    /**
+     * @test
+     */
+    final public function testOverwrittenFrozenServiceThrowsException(): void
     {
         $container = $this->createContainer();
 
@@ -154,8 +166,10 @@ trait DIContainerContractTest
         }
     }
 
-    /** @test */
-    final public function test_overwritten_primitive_throws_exception()
+    /**
+     * @test
+     */
+    final public function test_overwritten_primitive_throws_exception(): void
     {
         $container = $this->createContainer();
 
@@ -170,8 +184,10 @@ trait DIContainerContractTest
         }
     }
 
-    /** @test */
-    public function test_lock_throws_exception_for_singleton()
+    /**
+     * @test
+     */
+    public function test_lock_throws_exception_for_singleton(): void
     {
         $container = $this->createContainer();
         $container->lock();
@@ -181,8 +197,10 @@ trait DIContainerContractTest
         $container->singleton('foo', fn() => 'bar');
     }
 
-    /** @test */
-    public function test_lock_throws_exception_for_factory()
+    /**
+     * @test
+     */
+    public function test_lock_throws_exception_for_factory(): void
     {
         $container = $this->createContainer();
         $container->lock();
@@ -192,8 +210,10 @@ trait DIContainerContractTest
         $container->factory('foo', fn() => 'bar');
     }
 
-    /** @test */
-    public function test_lock_throws_exception_for_instance()
+    /**
+     * @test
+     */
+    public function test_lock_throws_exception_for_instance(): void
     {
         $container = $this->createContainer();
         $container->lock();
@@ -203,8 +223,10 @@ trait DIContainerContractTest
         $container->instance('foo', new stdClass());
     }
 
-    /** @test */
-    public function test_lock_throws_for_primitive()
+    /**
+     * @test
+     */
+    public function test_lock_throws_for_primitive(): void
     {
         $container = $this->createContainer();
         $container->lock();
@@ -214,8 +236,10 @@ trait DIContainerContractTest
         $container->primitive('foo', 'bar');
     }
 
-    /** @test */
-    public function test_lock_throws_exception_for_array_set()
+    /**
+     * @test
+     */
+    public function test_lock_throws_exception_for_array_set(): void
     {
         $container = $this->createContainer();
         $container->lock();
@@ -225,8 +249,10 @@ trait DIContainerContractTest
         $container['foo'] = 'bar';
     }
 
-    /** @test */
-    public function test_lock_throws_exception_for_array_unset()
+    /**
+     * @test
+     */
+    public function test_lock_throws_exception_for_array_unset(): void
     {
         $container = $this->createContainer();
         $container['foo'] = 'bar';

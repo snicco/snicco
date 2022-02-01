@@ -17,8 +17,10 @@ use function array_values;
 final class CanDisplayTest extends TestCase
 {
 
-    /** @test */
-    public function all_displayers_that_can_display_are_included()
+    /**
+     * @test
+     */
+    public function all_displayers_that_can_display_are_included(): void
     {
         $filter = new CanDisplay();
         $displayers = [

@@ -19,8 +19,10 @@ final class RFC3986EncoderTest extends TestCase
         '?' => '%3F',
     ];
 
-    /** @test */
-    public function test_encodePath()
+    /**
+     * @test
+     */
+    public function test_encodePath(): void
     {
         $allowed = array_keys(RFC3986Encoder::RFC3986_PCHARS);
         $path = '/foo/bar/münchen/' . implode('', $allowed);
@@ -30,8 +32,10 @@ final class RFC3986EncoderTest extends TestCase
         $this->assertSame('/foo/bar/' . rawurlencode('münchen') . '/' . implode('', $allowed), $res);
     }
 
-    /** @test */
-    public function test_encodeQueryString()
+    /**
+     * @test
+     */
+    public function test_encodeQueryString(): void
     {
         $allowed = RFC3986Encoder::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA;
         unset($allowed['+'], $allowed['&'], $allowed['=']);
@@ -45,8 +49,10 @@ final class RFC3986EncoderTest extends TestCase
         $this->assertSame('foo=' . $expected, $res);
     }
 
-    /** @test */
-    public function test_encodeFragment()
+    /**
+     * @test
+     */
+    public function test_encodeFragment(): void
     {
         $allowed = array_keys(RFC3986Encoder::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA);
 
@@ -58,8 +64,10 @@ final class RFC3986EncoderTest extends TestCase
         $this->assertSame($expected, $res);
     }
 
-    /** @test */
-    public function plus_signs_are_allowed_in_the_query_and_fragment()
+    /**
+     * @test
+     */
+    public function plus_signs_are_allowed_in_the_query_and_fragment(): void
     {
         $encoder = new RFC3986Encoder();
 
@@ -67,8 +75,10 @@ final class RFC3986EncoderTest extends TestCase
         $this->assertSame('section1+', $encoder->encodeFragment('section1+'));
     }
 
-    /** @test */
-    public function question_marks_are_allowed_in_the_query_and_fragment()
+    /**
+     * @test
+     */
+    public function question_marks_are_allowed_in_the_query_and_fragment(): void
     {
         $encoder = new RFC3986Encoder();
 
@@ -76,8 +86,10 @@ final class RFC3986EncoderTest extends TestCase
         $this->assertSame('section1?', $encoder->encodeFragment('section1?'));
     }
 
-    /** @test */
-    public function forward_slashes_are_allowed_in_the_query_and_fragment()
+    /**
+     * @test
+     */
+    public function forward_slashes_are_allowed_in_the_query_and_fragment(): void
     {
         $encoder = new RFC3986Encoder();
 
@@ -85,15 +97,19 @@ final class RFC3986EncoderTest extends TestCase
         $this->assertSame('section1/', $encoder->encodeFragment('section1/'));
     }
 
-    /** @test */
-    public function by_default_question_marks_and_equals_signs_are_not_allowed_in_the_query()
+    /**
+     * @test
+     */
+    public function by_default_question_marks_and_equals_signs_are_not_allowed_in_the_query(): void
     {
         $encoder = new RFC3986Encoder();
         $this->assertSame('foo=%26&bar=%3D', $encoder->encodeQuery(['foo' => '&', 'bar' => '=']));
     }
 
-    /** @test */
-    public function question_marks_and_equals_signs_can_be_allowed_in_the_query()
+    /**
+     * @test
+     */
+    public function question_marks_and_equals_signs_can_be_allowed_in_the_query(): void
     {
         $encoder = new RFC3986Encoder([]);
         $this->assertSame('foo=&&bar==', $encoder->encodeQuery(['foo' => '&', 'bar' => '=']));

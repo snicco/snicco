@@ -20,8 +20,10 @@ final class SessionStorageTestUsingArray extends TestCase
 
     use SignedUrlStorageTests;
 
-    /** @test */
-    public function the_storage_array_is_passed_by_reference()
+    /**
+     * @test
+     */
+    public function the_storage_array_is_passed_by_reference(): void
     {
         $arr = [];
         $storage = new SessionStorage($arr);

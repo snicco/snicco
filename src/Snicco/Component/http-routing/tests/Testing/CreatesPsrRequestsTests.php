@@ -24,8 +24,10 @@ final class CreatesPsrRequestsTests extends TestCase
 
     protected string $host = 'foo.com';
 
-    /** @test */
-    public function the_frontend_request_url_is_correctly_encoded()
+    /**
+     * @test
+     */
+    public function the_frontend_request_url_is_correctly_encoded(): void
     {
         $request = $this->frontendRequest('foo?bar=baz#section1');
         $this->assertInstanceOf(Request::class, $request);
@@ -39,8 +41,10 @@ final class CreatesPsrRequestsTests extends TestCase
         $this->assertEquals(['city' => 'foo bar'], $request->getQueryParams());
     }
 
-    /** @test */
-    public function a_full_uri_can_be_specified()
+    /**
+     * @test
+     */
+    public function a_full_uri_can_be_specified(): void
     {
         $request = $this->frontendRequest('http://foobar.com:8080/foo?bar=baz#section1');
         $this->assertInstanceOf(Request::class, $request);
@@ -52,39 +56,49 @@ final class CreatesPsrRequestsTests extends TestCase
         $this->assertEquals(['bar' => 'baz'], $request->getQueryParams());
     }
 
-    /** @test */
-    public function the_method_is_get_by_default()
+    /**
+     * @test
+     */
+    public function the_method_is_get_by_default(): void
     {
         $request = $this->frontendRequest('/foo');
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals('GET', $request->server('REQUEST_METHOD'));
     }
 
-    /** @test */
-    public function the_method_can_be_changed()
+    /**
+     * @test
+     */
+    public function the_method_can_be_changed(): void
     {
         $request = $this->frontendRequest('/foo', [], 'POST');
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('POST', $request->server('REQUEST_METHOD'));
     }
 
-    /** @test */
-    public function server_params_can_be_set()
+    /**
+     * @test
+     */
+    public function server_params_can_be_set(): void
     {
         $request = $this->frontendRequest('/foo', ['X-FOO' => 'BAR'], 'POST');
         $this->assertEquals('POST', $request->server('REQUEST_METHOD'));
         $this->assertEquals('BAR', $request->server('X-FOO'));
     }
 
-    /** @test */
-    public function the_request_type_is_set_to_frontend()
+    /**
+     * @test
+     */
+    public function the_request_type_is_set_to_frontend(): void
     {
         $request = $this->frontendRequest('/foo');
         $this->assertTrue($request->isToFrontend());
     }
 
-    /** @test */
-    public function test_admin_request()
+    /**
+     * @test
+     */
+    public function test_admin_request(): void
     {
         $request = $this->adminRequest(
             '/wp-admin/admin.php?page=foo&city=foo bar',
