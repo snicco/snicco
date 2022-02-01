@@ -40,6 +40,9 @@ jobs:
           - name: 'Composer Validate'
             run: composer validate
 
+          - name: 'Psalm'
+            run: vendor/bin/psalm
+
     steps:
       - name: 'Checkout repo'
         uses: actions/checkout@v2
