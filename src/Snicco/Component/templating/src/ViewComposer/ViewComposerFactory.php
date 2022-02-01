@@ -14,7 +14,7 @@ interface ViewComposerFactory
 {
 
     /**
-     * @param string|Closure $composer
+     * @param class-string<ViewComposer>|Closure $composer
      *
      * @throws BadViewComposer
      */

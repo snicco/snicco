@@ -50,6 +50,9 @@ final class ViewEngine
         return $view->with('view', $this);
     }
 
+    /**
+     * @throws ViewNotFound
+     */
     private function createView(string $view): View
     {
         foreach ($this->view_factories as $view_factory) {

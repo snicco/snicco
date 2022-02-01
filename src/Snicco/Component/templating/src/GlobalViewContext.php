@@ -7,6 +7,8 @@ namespace Snicco\Component\Templating;
 use Closure;
 use Snicco\Component\ParameterBag\ParameterPag;
 
+use function call_user_func;
+
 /**
  * @api
  */
@@ -32,6 +34,10 @@ final class GlobalViewContext
 
     /**
      * @interal
+     *
+     * @return array<string,mixed>
+     *
+     * @psalm-suppress MissingClosureReturnType
      */
     public function get(): array
     {
