@@ -156,6 +156,9 @@
       "vendor/bin/monorepo-builder merge",
       "composer dump-autoload"
     ],
+    "propagate": [
+      "vendor/bin/monorepo-builder propagate"
+    ],
     "deptrac": "/usr/local/bin/deptrac --config-file=deptrac/deptrac.yaml"
   },
   "replace": {
