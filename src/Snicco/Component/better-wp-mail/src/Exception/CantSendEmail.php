@@ -9,7 +9,7 @@ namespace Snicco\Component\BetterWPMail\Exception;
  */
 interface CantSendEmail
 {
-    
-    public function getDebugData() :string;
-    
+
+    public function getDebugData(): string;
+
 }

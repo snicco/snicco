@@ -2,4 +2,4 @@
 
 declare(strict_types=1);
 
-echo 'Hello '.($greet ?? 'World');
+echo 'Hello ' . ($greet ?? 'World');

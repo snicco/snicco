@@ -8,8 +8,8 @@ use Snicco\Component\BetterWPMail\ValueObjects\Email;
 
 class TestMail extends Email
 {
-    
+
     protected string $subject = 'foo';
-    protected string $text    = 'bar';
-    
+    protected string $text = 'bar';
+
 }

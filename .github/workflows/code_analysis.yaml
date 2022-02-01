@@ -1,0 +1,59 @@
+name: Code Analysis
+
+on:
+  pull_request:
+  push:
+
+env:
+  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+  COMPOSER_ROOT_VERSION: "dev-master"
+
+jobs:
+  code_analysis:
+    runs-on: ubuntu-20.04
+    name: ${{ matrix.actions.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        actions:
+          - name: 'Deptrac'
+            run: |
+              curl -LS https://github.com/qossmic/deptrac/releases/download/0.19.3/deptrac.phar -o deptrac.phar
+              sudo chmod +x deptrac.phar
+              sudo mv deptrac.phar /usr/local/bin/deptrac
+              composer deptrac -- --formatter=github-actions
+
+          - name: 'Composer require checker'
+            run: |
+              curl -LS https://github.com/maglnet/ComposerRequireChecker/releases/download/3.8.0/composer-require-checker.phar -o require-checker.phar
+              sudo chmod +x require-checker.phar
+              sudo mv require-checker.phar /usr/local/bin/require-checker
+              require-checker check composer.json --config-file=$GITHUB_WORKSPACE/tools/composer-require-checker.json
+
+          - name: 'Composer unused'
+            run: |
+              curl -LS https://github.com/composer-unused/composer-unused/releases/download/0.7.12/composer-unused.phar -o composer-unused.phar
+              sudo chmod +x composer-unused.phar
+              sudo mv composer-unused.phar /usr/local/bin/composer-unused
+              composer-unused
+
+          - name: 'Composer Validate'
+            run: composer validate
+
+          - name: 'Psalm'
+            run: vendor/bin/psalm
+
+    steps:
+      - name: 'Checkout repo'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: 'Install dependencies'
+        uses: ramsey/composer-install@v1
+
+      - run: ${{ matrix.actions.run }}

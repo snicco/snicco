@@ -9,27 +9,27 @@ use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 
 class MaybeRouteCondition extends AbstractRouteCondition
 {
-    
+
     /** @var string|bool */
     private $make_it_pass;
-    
+
     public function __construct($make_it_pass)
     {
         $this->make_it_pass = $make_it_pass;
     }
-    
-    public function isSatisfied(Request $request) :bool
+
+    public function isSatisfied(Request $request): bool
     {
         $val = $GLOBALS['test']['maybe_condition_run'] ?? 0;
         $val++;
         $GLOBALS['test']['maybe_condition_run'] = $val;
-        
+
         return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
     }
-    
-    public function getArguments(Request $request) :array
+
+    public function getArguments(Request $request): array
     {
         return [];
     }
-    
+
 }

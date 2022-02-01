@@ -4,24 +4,29 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler;
 
-use Throwable;
 use RuntimeException;
+use Throwable;
 
 /**
  * @api
  */
 class HttpException extends RuntimeException
 {
-    
+
     private int $status_code;
-    
+
     /**
      * @var array<string,string>
      */
     private array $response_headers;
-    
-    public function __construct(int $status_code, string $message, array $response_headers = [], int $code = 0, Throwable $previous = null)
-    {
+
+    public function __construct(
+        int $status_code,
+        string $message,
+        array $response_headers = [],
+        int $code = 0,
+        Throwable $previous = null
+    ) {
         $this->status_code = $status_code;
         $this->response_headers = $response_headers;
         parent::__construct(
@@ -30,8 +35,8 @@ class HttpException extends RuntimeException
             $previous
         );
     }
-    
-    final public static function fromPrevious(int $status_code, Throwable $previous, array $response_headers = []) :self
+
+    final public static function fromPrevious(int $status_code, Throwable $previous, array $response_headers = []): self
     {
         return new self(
             $status_code,
@@ -41,15 +46,15 @@ class HttpException extends RuntimeException
             $previous
         );
     }
-    
-    final public function headers() :array
+
+    final public function headers(): array
     {
         return $this->response_headers;
     }
-    
-    final public function statusCode() :int
+
+    final public function statusCode(): int
     {
         return $this->status_code;
     }
-    
+
 }

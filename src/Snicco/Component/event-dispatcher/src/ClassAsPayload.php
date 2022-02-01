@@ -9,10 +9,10 @@ namespace Snicco\Component\EventDispatcher;
  */
 trait ClassAsPayload
 {
-    
-    public function payload() :self
+
+    public function payload(): self
     {
         return $this;
     }
-    
+
 }

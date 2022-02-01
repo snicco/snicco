@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Eloquent\Tests\fixtures\Helper;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
 trait WithTestTables
 {
-    
+
     protected static $tables_created = false;
-    
+
     /**
      * @var array
      */
@@ -22,18 +22,58 @@ trait WithTestTables
         'activities',
         'activity_city',
     ];
-    
+
     protected function withNewTables()
     {
-        if ( ! static::$tables_created) {
+        if (!static::$tables_created) {
             $this->dropTables();
             $this->createTables();
             $this->insertInitialRecords();
         }
-        
+
         static::$tables_created = true;
     }
-    
+
+    private function dropTables()
+    {
+        foreach ($this->tables as $table) {
+            Schema::dropIfExists($table);
+        }
+    }
+
+    private function createTables()
+    {
+        Schema::create('countries', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('continent');
+            $table->timestamps();
+        });
+
+        Schema::create('cities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('country_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->integer('population');
+            $table->timestamps();
+        });
+
+        Schema::create('activities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('activity_city', function (Blueprint $table) {
+            $table->integer('city_id');
+            $table->integer('activity_id');
+            $table->integer('popularity')->nullable();
+        });
+    }
+
     protected function insertInitialRecords()
     {
         DB::table('countries')->insert([
@@ -58,45 +98,5 @@ trait WithTestTables
             ['name' => 'los angeles', 'country_id' => 7, 'population' => 6],
         ]);
     }
-    
-    private function dropTables()
-    {
-        foreach ($this->tables as $table) {
-            Schema::dropIfExists($table);
-        }
-    }
-    
-    private function createTables()
-    {
-        Schema::create('countries', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('continent');
-            $table->timestamps();
-        });
-        
-        Schema::create('cities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('country_id')
-                  ->constrained()
-                  ->onUpdate('cascade')
-                  ->onDelete('cascade');
-            $table->integer('population');
-            $table->timestamps();
-        });
-        
-        Schema::create('activities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
-        });
-        
-        Schema::create('activity_city', function (Blueprint $table) {
-            $table->integer('city_id');
-            $table->integer('activity_id');
-            $table->integer('popularity')->nullable();
-        });
-    }
-    
+
 }

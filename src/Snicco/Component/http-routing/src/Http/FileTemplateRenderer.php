@@ -10,11 +10,11 @@ use function sprintf;
 
 final class FileTemplateRenderer implements TemplateRenderer
 {
-    
-    public function render(string $template_name, array $data = []) :string
+
+    public function render(string $template_name, array $data = []): string
     {
         $this->validateTemplate($template_name);
-        
+
         ob_start();
         (static function () use ($template_name, $data) {
             extract($data, EXTR_SKIP);
@@ -22,8 +22,8 @@ final class FileTemplateRenderer implements TemplateRenderer
         })();
         return ob_get_clean();
     }
-    
-    private function validateTemplate(string $template_name) :void
+
+    private function validateTemplate(string $template_name): void
     {
         Assert::file(
             $template_name,
@@ -35,5 +35,5 @@ final class FileTemplateRenderer implements TemplateRenderer
             )
         );
     }
-    
+
 }

@@ -11,12 +11,12 @@ use Snicco\Component\Templating\View\View;
  */
 interface ViewComposer
 {
-    
+
     /**
      * Add context values to the passed view
      *
-     * @param  View  $view
+     * @param View $view
      */
-    public function compose(View $view) :void;
-    
+    public function compose(View $view): void;
+
 }

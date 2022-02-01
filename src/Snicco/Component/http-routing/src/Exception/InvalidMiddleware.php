@@ -9,19 +9,19 @@ use Psr\Http\Server\MiddlewareInterface;
 
 final class InvalidMiddleware extends LogicException
 {
-    
-    public static function incorrectInterface(string $name) :InvalidMiddleware
+
+    public static function incorrectInterface(string $name): InvalidMiddleware
     {
         return new self(
             sprintf(
-                "The middleware [%s] does not implement [%s]",
+                'The middleware [%s] does not implement [%s]',
                 $name,
                 MiddlewareInterface::class
             )
         );
     }
-    
-    public static function becauseTheAliasDoesNotExist(string $alias) :InvalidMiddleware
+
+    public static function becauseTheAliasDoesNotExist(string $alias): InvalidMiddleware
     {
         return new self(
             sprintf(
@@ -30,5 +30,5 @@ final class InvalidMiddleware extends LogicException
             )
         );
     }
-    
+
 }

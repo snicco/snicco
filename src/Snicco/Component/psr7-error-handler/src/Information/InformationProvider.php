@@ -11,7 +11,7 @@ use Throwable;
  */
 interface InformationProvider
 {
-    
-    public function createFor(Throwable $e) :ExceptionInformation;
-    
+
+    public function createFor(Throwable $e): ExceptionInformation;
+
 }

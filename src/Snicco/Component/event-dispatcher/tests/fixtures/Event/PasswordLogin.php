@@ -9,13 +9,13 @@ use Snicco\Component\EventDispatcher\ClassAsPayload;
 
 class PasswordLogin extends AbstractLogin
 {
-    
+
     use ClassAsName;
     use ClassAsPayload;
-    
+
     public function message()
     {
         return 'password login';
     }
-    
+
 }

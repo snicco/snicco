@@ -9,7 +9,7 @@ use Snicco\Component\Eloquent\Tests\fixtures\Model\Country;
 
 class CityFactory extends Factory
 {
-    
+
     public function definition()
     {
         return [
@@ -18,5 +18,5 @@ class CityFactory extends Factory
             'population' => $this->faker->numberBetween(100000, 1000000),
         ];
     }
-    
+
 }

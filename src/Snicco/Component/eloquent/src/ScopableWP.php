@@ -4,59 +4,65 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Eloquent;
 
-use wpdb;
 use mysqli;
 use Throwable;
+use wpdb;
 
-use const DB_HOST;
-use const DB_USER;
-use const DB_NAME;
 use const DB_CHARSET;
 use const DB_COLLATE;
+use const DB_HOST;
+use const DB_NAME;
 use const DB_PASSWORD;
+use const DB_USER;
 
 /**
  * @interal
  */
 class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
-    
-    public function dbHost() :string
+
+    public function dbHost(): string
     {
         return DB_HOST;
     }
-    
-    public function dbUser() :string
+
+    public function dbUser(): string
     {
         return DB_USER;
     }
-    
-    public function dbName() :string
+
+    public function dbName(): string
     {
         return DB_NAME;
     }
-    
-    public function dbPassword() :string
+
+    public function dbPassword(): string
     {
         return DB_PASSWORD;
     }
-    
-    public function dbCharset() :string
+
+    public function dbCharset(): string
     {
         return DB_CHARSET;
     }
-    
-    public function dbCollate() :string
+
+    public function dbCollate(): string
     {
         return DB_COLLATE;
     }
-    
-    public function tablePrefix() :string
+
+    public function tablePrefix(): string
     {
         return $this->wpdb()->prefix;
     }
-    
-    public function mysqli() :mysqli
+
+    public function wpdb(): wpdb
+    {
+        global $wpdb;
+        return $wpdb;
+    }
+
+    public function mysqli(): mysqli
     {
         try {
             // This is a protected property in wpdb, but it has __get() access.
@@ -71,11 +77,5 @@ class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
             })->call($wpdb);
         }
     }
-    
-    public function wpdb() :wpdb
-    {
-        global $wpdb;
-        return $wpdb;
-    }
-    
+
 }

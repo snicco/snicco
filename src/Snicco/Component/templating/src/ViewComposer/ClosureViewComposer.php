@@ -12,17 +12,17 @@ use Snicco\Component\Templating\View\View;
  */
 final class ClosureViewComposer implements ViewComposer
 {
-    
+
     private Closure $composer;
-    
+
     public function __construct(Closure $composer)
     {
         $this->composer = $composer;
     }
-    
-    public function compose(View $view) :void
+
+    public function compose(View $view): void
     {
         call_user_func($this->composer, $view);
     }
-    
+
 }

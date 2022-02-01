@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Component\EventDispatcher\ListenerFactory;
 
-use Throwable;
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
+use Throwable;
 
 /**
  * @internal
  */
 final class NewableListenerFactory implements ListenerFactory
 {
-    
-    public function create(string $listener_class, string $event_name) :object
+
+    public function create(string $listener_class, string $event_name): object
     {
         try {
             return new $listener_class();
@@ -25,5 +25,5 @@ final class NewableListenerFactory implements ListenerFactory
             );
         }
     }
-    
+
 }

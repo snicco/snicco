@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Eloquent\Tests\fixtures\Factory;
 
-use Snicco\Component\StrArr\Arr;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Snicco\Component\StrArr\Arr;
 
 class CountryFactory extends Factory
 {
-    
+
     public function definition()
     {
         return [
@@ -17,16 +17,7 @@ class CountryFactory extends Factory
             'continent' => $this->continent(),
         ];
     }
-    
-    public function narnia()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'continent' => 'Narnia',
-            ];
-        });
-    }
-    
+
     private function continent()
     {
         $continents = [
@@ -38,8 +29,17 @@ class CountryFactory extends Factory
             'South America',
             'Antarctica.',
         ];
-        
+
         return Arr::random($continents);
     }
-    
+
+    public function narnia()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'continent' => 'Narnia',
+            ];
+        });
+    }
+
 }

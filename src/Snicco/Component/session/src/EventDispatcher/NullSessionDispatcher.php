@@ -9,10 +9,10 @@ namespace Snicco\Component\Session\EventDispatcher;
  */
 final class NullSessionDispatcher implements SessionEventDispatcher
 {
-    
-    public function dispatchAll(array $events) :void
+
+    public function dispatchAll(array $events): void
     {
         //
     }
-    
+
 }

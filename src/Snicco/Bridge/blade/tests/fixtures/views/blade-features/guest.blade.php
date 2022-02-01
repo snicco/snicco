@@ -1,4 +1,4 @@
 @guest
-	YOU ARE A GUEST
+    YOU ARE A GUEST
 @endguest
 

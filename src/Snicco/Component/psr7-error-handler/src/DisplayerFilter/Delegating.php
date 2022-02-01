@@ -12,23 +12,23 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
  */
 final class Delegating implements Filter
 {
-    
+
     /**
      * @var Filter[]
      */
     private array $filters;
-    
+
     public function __construct(Filter ...$filter)
     {
         $this->filters = $filter;
     }
-    
-    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info) :array
+
+    public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array
     {
         foreach ($this->filters as $filter) {
             $displayers = $filter->filter($displayers, $request, $info);
         }
         return $displayers;
     }
-    
+
 }

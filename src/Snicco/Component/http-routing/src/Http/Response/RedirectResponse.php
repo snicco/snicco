@@ -8,33 +8,33 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 final class RedirectResponse extends Response
 {
-    
+
     private bool $bypass_validation = false;
-    
+
     /**
      * @api
      */
-    public function to(string $url) :self
+    public function to(string $url): self
     {
         return $this->withHeader('Location', $url);
     }
-    
+
     /**
      * @interal
      */
-    public function externalRedirectAllowed() :bool
+    public function externalRedirectAllowed(): bool
     {
         return $this->bypass_validation;
     }
-    
+
     /**
      * @interal
      */
-    public function withExternalRedirectAllowed() :RedirectResponse
+    public function withExternalRedirectAllowed(): RedirectResponse
     {
         $res = clone $this;
         $res->bypass_validation = true;
         return $res;
     }
-    
+
 }

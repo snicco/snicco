@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
 
-use Webmozart\Assert\Assert;
-use Snicco\Component\StrArr\Str;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
+use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
-use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
+use Snicco\Component\StrArr\Str;
+use Webmozart\Assert\Assert;
 
+use function array_merge;
 use function count;
 use function is_array;
 use function preg_match;
-use function array_merge;
 
 /*
  * This class is modified version of nikic/fast-routes RegexBaseAbstract RouteDispatcher.
@@ -72,11 +72,11 @@ use function array_merge;
  */
 final class FastRouteDispatcher
 {
-    
+
     private Routes $routes;
-    
+
     private RouteConditionFactory $condition_factory;
-    
+
     /**
      * A multidimensional array where each HTTP Verbs contains an array of [path => route_name]
      * pairs.
@@ -84,7 +84,7 @@ final class FastRouteDispatcher
      * @var array<string,array<string,string>
      */
     private $static_route_map;
-    
+
     /**
      * A multidimensional array where each HTTP Verbs contains multiple arrays of route definitions.
      * pairs.
@@ -92,7 +92,7 @@ final class FastRouteDispatcher
      * @var array<string,array<array<string,string>
      */
     private $dynamic_route_map;
-    
+
     public function __construct(Routes $routes, array $data, RouteConditionFactory $condition_factory)
     {
         $this->routes = $routes;
@@ -101,40 +101,40 @@ final class FastRouteDispatcher
         Assert::isArray($this->dynamic_route_map);
         $this->condition_factory = $condition_factory;
     }
-    
+
     /**
      * @throws MethodNotAllowed
      */
-    public function dispatch(Request $request) :RoutingResult
+    public function dispatch(Request $request): RoutingResult
     {
         $path = $request->decodedPath();
         $request_method = $request->getMethod();
-        
+
         if (isset($this->static_route_map[$request_method][$path])) {
             $result = $this->dispatchStaticRoute($request_method, $path, $request);
-            
+
             if ($result->isMatch()) {
                 return $result;
             }
         }
-        
+
         if (isset($this->dynamic_route_map[$request_method])) {
             $result = $this->dispatchVariableRoute(
                 $this->dynamic_route_map[$request_method],
                 $path,
                 $request
             );
-            
+
             if ($result->isMatch()) {
                 return $result;
             }
         }
-        
+
         // For HEAD requests, attempt fallback to GET
         if ($request_method === 'HEAD') {
             if (isset($this->static_route_map['GET'][$path])) {
                 $result = $this->dispatchStaticRoute('GET', $path, $request);
-                
+
                 if ($result->isMatch()) {
                     return $result;
                 }
@@ -145,49 +145,62 @@ final class FastRouteDispatcher
                     $path,
                     $request
                 );
-                
+
                 if ($result->isMatch()) {
                     return $result;
                 }
             }
         }
-        
+
         $allowed_methods = [];
-        
+
         foreach ($this->static_route_map as $method => $uri_map) {
-            if ($request_method === $method || ! isset($uri_map[$path])) {
+            if ($request_method === $method || !isset($uri_map[$path])) {
                 continue;
             }
-            
+
             $res = $this->dispatchStaticRoute($method, $path, $request);
-            
+
             if ($res->isMatch()) {
                 $allowed_methods[] = $method;
             }
         }
-        
+
         if (count($allowed_methods)) {
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
-        
+
         foreach ($this->dynamic_route_map as $method => $route_data) {
             if ($request_method === $method) {
                 continue;
             }
-            
+
             $result = $this->dispatchVariableRoute($route_data, $path, $request);
             if ($result->isMatch()) {
                 $allowed_methods[] = $method;
             }
         }
-        
+
         if (count($allowed_methods)) {
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
-        
+
         return RoutingResult::noMatch();
     }
-    
+
+    private function dispatchStaticRoute(string $method, string $path, Request $request): RoutingResult
+    {
+        $route_name = $this->static_route_map[$method][$path];
+        $route = $this->routes->getByName($route_name);
+        $res = $this->checkRouteConditions($route, $request);
+
+        if (is_array($res)) {
+            return RoutingResult::match($this->routes->getByName($route_name), $res);
+        }
+
+        return RoutingResult::noMatch();
+    }
+
     /**
      * @return array|false
      */
@@ -199,65 +212,52 @@ final class FastRouteDispatcher
         $has_optional_segments = count($route->getOptionalSegmentNames()) > 0;
         $request_has_trailing = Str::endsWith($request->path(), '/');
         $route_needs_trailing = Str::endsWith($route->getPattern(), '/');
-        
-        if ($route_needs_trailing && $has_optional_segments && ! $request_has_trailing) {
+
+        if ($route_needs_trailing && $has_optional_segments && !$request_has_trailing) {
             return false;
         }
-        
+
         $args = [];
         foreach ($route->getConditions() as $blueprint) {
             $instance = $this->condition_factory->create($blueprint);
-            
-            if ( ! $instance->isSatisfied($request)) {
+
+            if (!$instance->isSatisfied($request)) {
                 return false;
             }
-            
+
             $args = array_merge($args, $instance->getArguments($request));
         }
-        
+
         return $args;
     }
-    
-    private function dispatchVariableRoute(array $variable_route_data, string $path, Request $request) :RoutingResult
+
+    private function dispatchVariableRoute(array $variable_route_data, string $path, Request $request): RoutingResult
     {
         foreach ($variable_route_data as $data) {
             Assert::keyExists($data, 'regex');
             Assert::keyExists($data, 'routeMap');
-            if ( ! preg_match($data['regex'], $path, $matches)) {
+            if (!preg_match($data['regex'], $path, $matches)) {
                 continue;
             }
-            
+
             [$route_name, $segment_names] = $data['routeMap'][count($matches)];
-            
+
             $vars = [];
             $i = 0;
             foreach ($segment_names as $segment_name) {
                 $vars[$segment_name] = $matches[++$i];
             }
-            
+
             $route = $this->routes->getByName($route_name);
-            
+
             $res = $this->checkRouteConditions($route, $request);
-            
+
             if (is_array($res)) {
                 return RoutingResult::match($route, array_merge($vars, $res));
             }
         }
-        
+
         return RoutingResult::noMatch();
     }
-    
-    private function dispatchStaticRoute(string $method, string $path, Request $request) :RoutingResult
-    {
-        $route_name = $this->static_route_map[$method][$path];
-        $route = $this->routes->getByName($route_name);
-        $res = $this->checkRouteConditions($route, $request);
-        
-        if (is_array($res)) {
-            return RoutingResult::match($this->routes->getByName($route_name), $res);
-        }
-        
-        return RoutingResult::noMatch();
-    }
-    
+
 }

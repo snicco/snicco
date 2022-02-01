@@ -10,18 +10,18 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
  */
 final class DelegatedResponse extends Response
 {
-    
+
     private bool $should_sent_headers;
-    
+
     public function __construct(bool $should_sent_headers, ResponseInterface $psr_response)
     {
         parent::__construct($psr_response);
         $this->should_sent_headers = $should_sent_headers;
     }
-    
-    public function shouldHeadersBeSent() :bool
+
+    public function shouldHeadersBeSent(): bool
     {
         return $this->should_sent_headers;
     }
-    
+
 }

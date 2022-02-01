@@ -10,13 +10,13 @@ use Snicco\Component\HttpRouting\Http\NegotiateContent;
 
 final class KernelMiddleware
 {
-    
-    private PrepareResponse   $prepare_response;
+
+    private PrepareResponse $prepare_response;
     private RoutingMiddleware $routing;
-    private RouteRunner       $route_runner;
-    private MethodOverride    $method_override;
-    private NegotiateContent  $negotiate_content;
-    
+    private RouteRunner $route_runner;
+    private MethodOverride $method_override;
+    private NegotiateContent $negotiate_content;
+
     public function __construct(
         NegotiateContent $negotiate_content,
         PrepareResponse $prepare_response,
@@ -30,11 +30,11 @@ final class KernelMiddleware
         $this->routing = $routing;
         $this->route_runner = $route_runner;
     }
-    
+
     /**
      * @return MiddlewareInterface[]
      */
-    public function asArray() :array
+    public function asArray(): array
     {
         return [
             $this->negotiate_content,
@@ -44,5 +44,5 @@ final class KernelMiddleware
             $this->route_runner,
         ];
     }
-    
+
 }

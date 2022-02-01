@@ -8,15 +8,15 @@ use Snicco\Component\Session\SessionEncryptor;
 
 class TestSessionEncryptor implements SessionEncryptor
 {
-    
-    public function decrypt(string $data) :string
+
+    public function decrypt(string $data): string
     {
         return trim($data, 'X');
     }
-    
-    public function encrypt(string $data) :string
+
+    public function encrypt(string $data): string
     {
-        return 'XXX'.$data.'XXX';
+        return 'XXX' . $data . 'XXX';
     }
-    
+
 }

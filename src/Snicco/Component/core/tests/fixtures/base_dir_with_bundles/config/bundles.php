@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Snicco\Component\Core\Environment;
-use Snicco\Component\Core\Tests\fixtures\bundles\Bundle2;
-use Snicco\Component\Core\Tests\fixtures\bundles\Bundle1;
 use Snicco\Component\Core\Tests\fixtures\bundles\AllEnvBundle;
-use Snicco\Component\Core\Tests\fixtures\bundles\BundleProduction;
+use Snicco\Component\Core\Tests\fixtures\bundles\Bundle1;
+use Snicco\Component\Core\Tests\fixtures\bundles\Bundle2;
 use Snicco\Component\Core\Tests\fixtures\bundles\BundleAssertsMethodOrder;
+use Snicco\Component\Core\Tests\fixtures\bundles\BundleProduction;
 
 return [
     BundleProduction::class => [Environment::PROD => true],

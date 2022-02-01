@@ -9,18 +9,13 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 final class RequestHasNoType extends LogicException
 {
-    
-    public static function becauseTheTypeIsNotAnInteger($type) :RequestHasNoType
+
+    public static function becauseTheTypeIsNotAnInteger($type): RequestHasNoType
     {
         return self::createNew(gettype($type));
     }
-    
-    public static function becauseTheRangeIsNotCorrect(int $type) :RequestHasNoType
-    {
-        return self::createNew((string) $type);
-    }
-    
-    private static function createNew(string $received_value) :RequestHasNoType
+
+    private static function createNew(string $received_value): RequestHasNoType
     {
         return new self(
             sprintf(
@@ -30,5 +25,10 @@ final class RequestHasNoType extends LogicException
             )
         );
     }
-    
+
+    public static function becauseTheRangeIsNotCorrect(int $type): RequestHasNoType
+    {
+        return self::createNew((string)$type);
+    }
+
 }

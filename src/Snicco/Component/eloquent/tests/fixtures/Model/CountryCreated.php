@@ -8,5 +8,5 @@ use Snicco\EloquentBundle\EloquentEvent;
 
 final class CountryCreated extends EloquentEvent
 {
-    
+
 }

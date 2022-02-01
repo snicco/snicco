@@ -1,5 +1,5 @@
 TITLE:{{$title ?? 'FAILED:NO SLOT WAS PASSED'}},
 CONTENT:{{ strtoupper($slot) }}
 @isset($scoped)
-	,SCOPED:{{$scoped}}
+    ,SCOPED:{{$scoped}}
 @endisset

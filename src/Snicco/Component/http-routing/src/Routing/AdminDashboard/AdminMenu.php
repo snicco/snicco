@@ -11,10 +11,10 @@ use IteratorAggregate;
  */
 interface AdminMenu extends IteratorAggregate
 {
-    
+
     /**
      * @return AdminMenuItem[]
      */
-    public function items() :array;
-    
+    public function items(): array;
+
 }

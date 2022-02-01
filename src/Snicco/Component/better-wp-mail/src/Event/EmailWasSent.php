@@ -12,24 +12,24 @@ use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
  */
 final class EmailWasSent
 {
-    
-    private Email    $email;
+
+    private Email $email;
     private Envelope $envelope;
-    
+
     public function __construct(Email $email, Envelope $envelope)
     {
         $this->email = $email;
         $this->envelope = $envelope;
     }
-    
-    public function email() :Email
+
+    public function email(): Email
     {
         return $this->email;
     }
-    
-    public function envelope() :Envelope
+
+    public function envelope(): Envelope
     {
         return $this->envelope;
     }
-    
+
 }

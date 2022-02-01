@@ -8,22 +8,22 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class AlertAttributes extends BladeComponent
 {
-    
+
     /**
      * The alert type.
      */
     public string $type;
-    
+
     /**
      * The alert message.
      */
     public string $message;
-    
+
     /**
      * Create the component instance.
      *
-     * @param  string  $type
-     * @param  string  $message
+     * @param string $type
+     * @param string $message
      *
      * @return void
      */
@@ -32,10 +32,10 @@ class AlertAttributes extends BladeComponent
         $this->type = $type;
         $this->message = $message;
     }
-    
+
     public function render()
     {
         return $this->view('components.alert-attributes');
     }
-    
+
 }

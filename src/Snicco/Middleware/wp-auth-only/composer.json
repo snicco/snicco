@@ -1,35 +1,35 @@
 {
-    "name": "sniccowp/wp-auth-only-middleware",
-    "description": "Provides a middleware for sniccowp/http-runner that uses the WP auth system.",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Calvin Alkan",
-            "email": "calvin@snicco.de"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0",
-        "sniccowp/http-runner": "dev-master",
-        "sniccowp/psr7-error-handler": "dev-master",
-        "sniccowp/scopable-wp": "dev-master"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "9.5.13"
-    },
-    "autoload": {
-        "psr-4": {
-            "Snicco\\Middleware\\WPAuth\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Snicco\\Middleware\\WPAuth\\Tests\\": "tests"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
+  "name": "sniccowp/wp-auth-only-middleware",
+  "description": "Provides a middleware for sniccowp/http-runner that uses the WP auth system.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
     }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/http-runner": "dev-master",
+    "sniccowp/psr7-error-handler": "dev-master",
+    "sniccowp/scopable-wp": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Middleware\\WPAuth\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Middleware\\WPAuth\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
 }

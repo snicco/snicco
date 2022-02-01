@@ -11,7 +11,7 @@ use PHPUnit\Framework\Assert;
  */
 trait AssertListenerResponse
 {
-    
+
     private function respondedToEvent($event, string $key, $response)
     {
         if (is_object($event)) {
@@ -19,7 +19,7 @@ trait AssertListenerResponse
         }
         $GLOBALS['test']['sniccowp_listeners'][$event][$key] = $response;
     }
-    
+
     private function assertListenerRun($event, string $key, $expected)
     {
         Assert::assertArrayHasKey(
@@ -27,20 +27,20 @@ trait AssertListenerResponse
             $GLOBALS['test']['sniccowp_listeners'],
             "No listeners were called for the event [$event]."
         );
-        
+
         Assert::assertArrayHasKey(
             $key,
             $GLOBALS['test']['sniccowp_listeners'][$event],
             "No listeners with key [$key] were called for the event [$event]."
         );
-        
+
         Assert::assertSame(
             $expected,
             $actual = $GLOBALS['test']['sniccowp_listeners'][$event][$key],
             "The response from the listener with key [$key] was [$actual]. Expected: [$expected]."
         );
     }
-    
+
     private function assertListenerNotRun($event, string $key)
     {
         if (isset($GLOBALS['test']['sniccowp_listeners'][$event])) {
@@ -49,15 +49,14 @@ trait AssertListenerResponse
                 $GLOBALS['test']['sniccowp_listeners'][$event],
                 "The listener with key [$key] was run."
             );
-        }
-        else {
+        } else {
             $this->assertTrue(true);
         }
     }
-    
+
     private function resetListenersResponses()
     {
         $GLOBALS['test']['sniccowp_listeners'] = [];
     }
-    
+
 }

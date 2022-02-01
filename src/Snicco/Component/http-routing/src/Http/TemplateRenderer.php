@@ -6,10 +6,10 @@ namespace Snicco\Component\HttpRouting\Http;
 
 interface TemplateRenderer
 {
-    
+
     /**
      * @todo add dedicated exception class for the interface
      */
-    public function render(string $template_name, array $data = []) :string;
-    
+    public function render(string $template_name, array $data = []): string;
+
 }

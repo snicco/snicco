@@ -9,7 +9,7 @@ use Snicco\Component\Session\ValueObject\SerializedSessionData;
 
 final class SerializedSessionDataTest extends TestCase
 {
-    
+
     /** @test */
     public function testFromSerializedString()
     {
@@ -17,11 +17,11 @@ final class SerializedSessionDataTest extends TestCase
             $as_string = serialize(['foo' => 'bar']),
             time()
         );
-        
+
         $this->assertSame($as_string, $data->asString());
         $this->assertSame(['foo' => 'bar'], $data->asArray());
     }
-    
+
     /** @test */
     public function testFromArray()
     {
@@ -29,11 +29,11 @@ final class SerializedSessionDataTest extends TestCase
             $array = ['foo' => 'bar'],
             time()
         );
-        
+
         $this->assertSame(serialize($array), $data->asString());
         $this->assertSame($array, $data->asArray());
     }
-    
+
     /** @test */
     public function testLastActivity()
     {
@@ -41,8 +41,8 @@ final class SerializedSessionDataTest extends TestCase
             ['foo' => 'bar'],
             time()
         );
-        
+
         $this->assertSame(time(), $data->lastActivity()->getTimestamp());
     }
-    
+
 }

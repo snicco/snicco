@@ -11,8 +11,8 @@ use Throwable;
  */
 final class BadIdentifier extends SignedUrlException
 {
-    
-    public static function for(string $id, Throwable $previous = null) :BadIdentifier
+
+    public static function for(string $id, Throwable $previous = null): BadIdentifier
     {
         return new self(
             "The identifier [$id] does not exists.",
@@ -20,5 +20,5 @@ final class BadIdentifier extends SignedUrlException
             $previous
         );
     }
-    
+
 }

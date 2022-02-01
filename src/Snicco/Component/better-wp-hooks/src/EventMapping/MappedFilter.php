@@ -13,7 +13,7 @@ use Snicco\Component\EventDispatcher\Event;
  */
 interface MappedFilter extends Event, DispatchesConditionally
 {
-    
+
     /**
      * The returned value of this method will be returned to the calling filter.
      * One way to use this is to return the value of a PUBLIC and TYPE-HINTED property on your
@@ -24,5 +24,5 @@ interface MappedFilter extends Event, DispatchesConditionally
      * @return mixed
      */
     public function filterableAttribute();
-    
+
 }
