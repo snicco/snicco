@@ -19,12 +19,20 @@ use function strpos;
 abstract class Payload extends AbstractMiddleware
 {
 
-    private array $content_types;
     /**
-     * @var array<string>
+     * @var string[]
      */
-    private $methods;
+    private array $content_types;
 
+    /**
+     * @var string[]
+     */
+    private array $methods;
+
+    /**
+     * @param string[] $content_types
+     * @param string[] $methods
+     */
     public function __construct(array $content_types, $methods = ['POST', 'PUT', 'PATCH', 'DELETE'])
     {
         Assert::allString($content_types);
@@ -61,6 +69,8 @@ abstract class Payload extends AbstractMiddleware
     }
 
     /**
+     * @return array<string,mixed>
+     *
      * @throws CantParseRequestBody
      */
     abstract protected function parse(StreamInterface $stream): array;

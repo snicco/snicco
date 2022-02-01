@@ -7,6 +7,7 @@ namespace Snicco\Middleware\GuestsOnly;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\ScopableWP\ScopableWP;
 
@@ -30,7 +31,7 @@ final class GuestsOnly extends AbstractMiddleware
         $this->json_message = $json_message;
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (false === $this->wp->isUserLoggedIn()) {
             return $next($request);

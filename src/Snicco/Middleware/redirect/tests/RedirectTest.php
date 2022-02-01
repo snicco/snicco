@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\Redirect\Tests;
 
+use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\Redirect\Redirect;
 
@@ -25,6 +26,11 @@ class RedirectTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareNotCalled();
         $response->psr()->assertRedirect('/bar')->assertStatus(301);
+    }
+
+    private function getMiddleware(array $redirects = []): Redirect
+    {
+        return new Redirect($redirects);
     }
 
     /**
@@ -90,7 +96,8 @@ class RedirectTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function if_a_redirect_is_defined_with_a_query_string_the_redirect_will_only_happen_for_that_query_string(): void
+    public function if_a_redirect_is_defined_with_a_query_string_the_redirect_will_only_happen_for_that_query_string(
+    ): void
     {
         $middleware = $this->getMiddleware([
             301 => [
@@ -145,9 +152,19 @@ class RedirectTest extends MiddlewareTestCase
         $response->psr()->assertRedirect('/bar', 301);
     }
 
-    private function getMiddleware(array $redirects = []): Redirect
+    /**
+     * @test
+     */
+    public function exceptions_are_thrown_for_bad_status_codes(): void
     {
-        return new Redirect($redirects);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$status');
+        $middleware = $this->getMiddleware([
+            400 => [
+                '/foo' => '/bar',
+                '/baz' => '/bar',
+            ],
+        ]);
     }
 
 }
