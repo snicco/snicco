@@ -335,7 +335,7 @@ final class EmailTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$priority must be an integer between 1 and 5.');
 
-        $email = $email->withPriority(10);
+        $email->withPriority(10);
     }
 
     /**
@@ -470,7 +470,7 @@ final class EmailTest extends WPTestCase
 
         $email = new Email();
         $email = $email->withPriority(5);
-        $email = $email->withPriority(6);
+        $email->withPriority(6);
     }
 
     /**

@@ -62,7 +62,7 @@ final class NegotiateContentTest extends MiddlewareTestCase
         );
 
         try {
-            $response = $this->runMiddleware($middleware, $request);
+            $this->runMiddleware($middleware, $request);
             $this->fail('No exception thrown for bad content type');
         } catch (HttpException $e) {
             $this->assertSame(406, $e->statusCode());

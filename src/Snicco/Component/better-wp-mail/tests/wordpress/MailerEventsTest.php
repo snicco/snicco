@@ -88,7 +88,7 @@ final class MailerEventsTest extends WPTestCase
         $mailer->send($email);
 
         $data = $this->getSentMails()[0];
-        $header = $data['header'];
+        $data['header'];
 
         $this->assertStringContainsString('Custom Html', $data['body']);
     }

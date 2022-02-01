@@ -60,7 +60,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Data for the 500 status code must be provided.');
 
-        $provider = new TransformableInformationProvider([
+        new TransformableInformationProvider([
             404 => [
                 'title' => 'Not Found',
                 'message' => 'The requested resource could not be found but may be available again in the future.',

@@ -51,7 +51,7 @@ final class SecretTest extends TestCase
     public function testExceptionIfClearlyBadStringIsPassed(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $secret_new = Secret::fromHexEncoded('badsecret');
+        Secret::fromHexEncoded('badsecret');
     }
 
     /**

@@ -209,7 +209,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('can not be used as middleware that is always');
 
-        $m = new MiddlewareStack([
+        new MiddlewareStack([
             FooMiddleware::class,
         ]);
     }

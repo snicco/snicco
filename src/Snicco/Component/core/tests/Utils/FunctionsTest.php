@@ -80,7 +80,7 @@ final class FunctionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Interface [Foo] does not exist.');
 
-        $foo = isInterface(TestTraversable::class, 'Foo');
+        isInterface(TestTraversable::class, 'Foo');
     }
 
     /**

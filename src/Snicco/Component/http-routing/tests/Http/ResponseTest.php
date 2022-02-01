@@ -307,7 +307,7 @@ class ResponseTest extends TestCase
         $this->assertSame([], $this->response->errors());
 
         $this->expectExceptionMessage('Keys have to be strings');
-        $response = $this->response->withErrors(['foo', 'bar']);
+        $this->response->withErrors(['foo', 'bar']);
     }
 
     protected function setUp(): void

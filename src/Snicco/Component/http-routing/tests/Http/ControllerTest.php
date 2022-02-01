@@ -53,7 +53,7 @@ class ControllerTest extends TestCase
             'The only() method cant be combined with the except() method for one middleware'
         );
 
-        $subject = new InvalidAbstractController();
+        new InvalidAbstractController();
     }
 
 }

@@ -21,7 +21,7 @@ final class RouteCollectionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         /** @noinspection PhpParamsInspection */
-        $routes = new RouteCollection([new stdClass()]);
+        new RouteCollection([new stdClass()]);
     }
 
     /**
@@ -37,7 +37,7 @@ final class RouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r1');
 
-        $routes = new RouteCollection([$r1, $r2]);
+        new RouteCollection([$r1, $r2]);
     }
 
     /**
@@ -86,7 +86,7 @@ final class RouteCollectionTest extends TestCase
         $route = $routes->getByName('r1');
         $this->assertEquals($r1, $route);
 
-        $route = $routes->getByName('r3');
+        $routes->getByName('r3');
     }
 
 }

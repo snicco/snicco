@@ -37,7 +37,7 @@ final class AddressTest extends WPTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[calvin@webde] is not a valid email');
-        $address = Mailbox::create('calvin@webde');
+        Mailbox::create('calvin@webde');
     }
 
     /**
@@ -47,7 +47,7 @@ final class AddressTest extends WPTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[Calvin <calvin@webde] is not a valid address');
-        $address = Mailbox::create('Calvin <calvin@webde');
+        Mailbox::create('Calvin <calvin@webde');
     }
 
     /**
@@ -85,7 +85,7 @@ final class AddressTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('[calvin alkan] is not a valid email.');
 
-        $address = Mailbox::create(['Calvin Alkan', 'c@web.de']);
+        Mailbox::create(['Calvin Alkan', 'c@web.de']);
     }
 
     /**
@@ -151,7 +151,7 @@ final class AddressTest extends WPTestCase
             '$address has to be string,array or an instance of WP_User. Got [integer].'
         );
 
-        $address = Mailbox::create(1);
+        Mailbox::create(1);
     }
 
 }

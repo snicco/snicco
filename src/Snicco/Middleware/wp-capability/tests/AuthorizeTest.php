@@ -59,7 +59,7 @@ class AuthorizeTest extends MiddlewareTestCase
         $m = $this->newMiddleware($wp, 'manage_options');
 
         try {
-            $response = $this->runMiddleware($m, $this->request);
+            $this->runMiddleware($m, $this->request);
             $this->fail('An Exception should have been thrown.');
         } catch (HttpException $e) {
             $this->assertSame(403, $e->statusCode());
@@ -90,7 +90,7 @@ class AuthorizeTest extends MiddlewareTestCase
         $m = $this->newMiddleware($wp, 'manage_options', 10);
 
         try {
-            $response = $this->runMiddleware($m, $this->request);
+            $this->runMiddleware($m, $this->request);
             $this->fail('An Exception should have been thrown.');
         } catch (HttpException $e) {
             $this->assertSame(403, $e->statusCode());

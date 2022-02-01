@@ -256,7 +256,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $response1 = $next($request);
+                $next($request);
 
                 return $this->respond()->html('foo');
             }
@@ -279,7 +279,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 if ($request->isGet()) {
-                    $response1 = $next($request);
+                    $next($request);
                 }
                 return $this->respond()->html('foo');
             }

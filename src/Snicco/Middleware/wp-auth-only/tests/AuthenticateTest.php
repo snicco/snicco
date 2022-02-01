@@ -46,7 +46,7 @@ class AuthenticateTest extends MiddlewareTestCase
         $middleware = new Authenticate(new WPTestDouble(false));
 
         try {
-            $response = $this->runMiddleware(
+            $this->runMiddleware(
                 $middleware,
                 $request
             );

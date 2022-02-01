@@ -23,7 +23,7 @@ final class MustMatchRouteTest extends MiddlewareTestCase
         $middleware = new MustMatchRoute();
 
         try {
-            $response = $this->runMiddleware($middleware, $this->frontendRequest());
+            $this->runMiddleware($middleware, $this->frontendRequest());
             $this->fail('Exception should have been thrown');
         } catch (HttpException $e) {
             $this->assertSame(404, $e->statusCode());
