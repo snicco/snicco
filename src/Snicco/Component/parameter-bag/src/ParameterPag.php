@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\ParameterBag;
 
 use ArrayAccess;
+use InvalidArgumentException;
 use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
+
+use function is_array;
 
 /**
  * @api
@@ -23,6 +26,8 @@ final class ParameterPag implements ArrayAccess
 
     /**
      * @param array<string,mixed> $items
+     *
+     * @psalm-suppress MixedAssignment
      */
     public function add(array $items): void
     {
@@ -46,6 +51,10 @@ final class ParameterPag implements ArrayAccess
     {
         $array = $this->get($key);
 
+        if (!is_array($array)) {
+            throw new InvalidArgumentException("Value for key [$key] is not an array.");
+        }
+
         array_unshift($array, $value);
 
         $this->set($key, $array);
@@ -63,10 +72,16 @@ final class ParameterPag implements ArrayAccess
 
     /**
      * @param mixed $value
+     *
+     * @psalm-suppress MixedAssignment
      */
     public function append(string $key, $value): void
     {
         $array = $this->get($key);
+
+        if (!is_array($array)) {
+            throw new InvalidArgumentException("Value for key [$key] is not an array.");
+        }
 
         $array[] = $value;
 
