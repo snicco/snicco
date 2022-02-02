@@ -6,12 +6,30 @@
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
         phpVersion="7.4"
+        strictBinaryOperands="true"
+        disableSuppressAll="true"
+        ignoreInternalFunctionFalseReturn="false"
+        ignoreInternalFunctionNullReturn="false"
+        findUnusedPsalmSuppress="true"
+        ensureArrayIntOffsetsExist="true"
+        sealAllMethods="true"
+        sealAllProperties="true"
 >
     <projectFiles>
         <directory name="src/Snicco"/>
         <ignoreFiles>
             <directory name="vendor"/>
+            <directory name="src/Snicco/*/*/tests"/>
         </ignoreFiles>
     </projectFiles>
+
+    <plugins>
+        <plugin filename="psalm/SuppressPropertyNotSetInConstructorForTestCase.php"/>
+    </plugins>
+
+    <!--    <stubs>-->
+    <!--        <file name="vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"/>-->
+    <!--    </stubs>-->
+
 </psalm>
 

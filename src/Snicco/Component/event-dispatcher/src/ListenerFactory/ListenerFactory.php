@@ -13,6 +13,10 @@ interface ListenerFactory
 {
 
     /**
+     * @template T
+     * @param class-string<T> $listener_class
+     * @return  T
+     *
      * @throws CantCreateListener
      */
     public function create(string $listener_class, string $event_name): object;
