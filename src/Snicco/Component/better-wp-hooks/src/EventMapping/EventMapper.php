@@ -27,12 +27,12 @@ final class EventMapper
     private MappedEventFactory $event_factory;
 
     /**
-     * @var array<string,array<string,string>>
+     * @var array<string, array<class-string,true> >
      */
     private array $mapped_actions = [];
 
     /**
-     * @var array<string,array<string,string>>
+     * @var array<string, array<class-string,true> >
      */
     private array $mapped_filters = [];
 
@@ -48,6 +48,7 @@ final class EventMapper
 
     /**
      * Map a WordPress hook to a dedicated event class with the provided priority.
+     * @param class-string<MappedFilter>|class-string<MappedAction> $map_to_event_class
      */
     public function map(string $wordpress_hook_name, string $map_to_event_class, int $priority = 10): void
     {
@@ -56,6 +57,8 @@ final class EventMapper
     }
 
     /**
+     * @param class-string<MappedFilter>|class-string<MappedAction> $map_to
+     *
      * @throws LogicException If the hook is already mapped to the same event class
      * @throws InvalidArgumentException If $map_to is not either a MappedAction or MappedFilter
      */
@@ -80,11 +83,11 @@ final class EventMapper
         $interfaces = class_implements($map_to);
 
         if (in_array(MappedAction::class, $interfaces, true)) {
-            $this->mapped_actions[$wordpress_hook_name][$map_to] = $map_to;
+            $this->mapped_actions[$wordpress_hook_name][$map_to] = true;
             return;
         }
         if (in_array(MappedFilter::class, $interfaces, true)) {
-            $this->mapped_filters[$wordpress_hook_name][$map_to] = $map_to;
+            $this->mapped_filters[$wordpress_hook_name][$map_to] = true;
             return;
         }
 
@@ -112,9 +115,12 @@ final class EventMapper
         }
     }
 
+    /**
+     * @psalm-suppress MissingClosureParamType
+     */
     private function dispatchMappedAction(string $event_class): Closure
     {
-        return function (...$args_from_wordpress_hooks) use ($event_class) {
+        return function (...$args_from_wordpress_hooks) use ($event_class): void {
             // Remove the empty "" that WordPress will pass for actions without any passed arguments.
             if (is_string($args_from_wordpress_hooks[0])
                 && empty($args_from_wordpress_hooks[0])
@@ -136,6 +142,10 @@ final class EventMapper
         };
     }
 
+    /**
+     * @psalm-suppress MissingClosureParamType
+     * @psalm-suppress MissingClosureReturnType
+     */
     private function dispatchMappedFilter(string $event_class): Closure
     {
         return function (...$args_from_wordpress_hooks) use ($event_class) {
@@ -164,6 +174,8 @@ final class EventMapper
     /**
      * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE
      * any other callbacks are run for the hook.
+     *
+     * @param class-string<MappedFilter>|class-string<MappedAction> $map_to_event_class
      */
     public function mapFirst(string $wordpress_hook_name, string $map_to_event_class): void
     {
@@ -171,10 +183,7 @@ final class EventMapper
         $this->ensureFirst($wordpress_hook_name, $map_to_event_class);
     }
 
-    /**
-     * @return void
-     */
-    private function ensureFirst(string $wordpress_hook_name, string $map_to)
+    private function ensureFirst(string $wordpress_hook_name, string $map_to): void
     {
         $filter = $this->wp->currentFilter();
         if ($filter && $filter === $wordpress_hook_name) {
@@ -182,6 +191,7 @@ final class EventMapper
                 "You can can't map the event [$map_to] to the hook [$wordpress_hook_name] after it was fired."
             );
         }
+
 
         $wp_hook = $this->wp->getHook($wordpress_hook_name);
 
@@ -193,7 +203,10 @@ final class EventMapper
             return;
         }
 
-        $lowest_priority = array_key_first($wp_hook->callbacks);
+        /** @var non-empty-array<int,array<string,array>> $all_callbacks */
+        $all_callbacks = $wp_hook->callbacks;
+
+        $lowest_priority = array_key_first($all_callbacks);
 
         if ($lowest_priority > PHP_INT_MIN) {
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
@@ -202,7 +215,7 @@ final class EventMapper
 
         // If other filters are already created with the priority PHP_INT_MIN we remove them and
         // add them add the new priority which is PHP_INT_MIN+1.
-        $callbacks = $wp_hook->callbacks[$lowest_priority];
+        $callbacks = $all_callbacks[$lowest_priority];
         unset($wp_hook->callbacks[$lowest_priority]);
 
         $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
@@ -216,6 +229,9 @@ final class EventMapper
     /**
      * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all
      * other callbacks are run for the hook.
+     *
+     * @param class-string<MappedFilter>|class-string<MappedAction> $map_to
+     *
      */
     public function mapLast(string $wordpress_hook_name, string $map_to): void
     {
@@ -223,13 +239,23 @@ final class EventMapper
         $this->ensureLast($wordpress_hook_name, $map_to);
     }
 
+    /**
+     * @psalm-suppress MissingClosureReturnType
+     * @psalm-suppress MissingClosureParamType
+     */
     private function ensureLast(string $wordpress_hook_name, string $map_to): void
     {
         $this->wp->addAction($wordpress_hook_name, function (...$args) use ($map_to) {
             // Even if somebody else registered a filter with PHP_INT_MAX our mapped action
             // will be run after the present callback unless it was also added during runtime
             // at the priority PHP_INT_MAX -1 which is highly unlikely.
-            $this->mapValidated($this->wp->currentFilter(), $map_to, PHP_INT_MAX);
+
+            $current = $this->wp->currentFilter();
+            if (null === $current) {
+                throw new LogicException('$current_filter should never be null during mapping.');
+            }
+
+            $this->mapValidated($current, $map_to, PHP_INT_MAX);
             return $args[0];
         }, PHP_INT_MAX - 1, 999);
     }

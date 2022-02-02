@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\EventDispatcher\Tests;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\GenericEvent;
@@ -116,7 +117,8 @@ final class TestableDispatcherAssertionsTest extends TestCase
     /**
      * @test
      */
-    public function assertDispatched_can_fail_when_the_event_was_dispatched_but_the_additional_condition_didnt_match(): void
+    public function assertDispatched_can_fail_when_the_event_was_dispatched_but_the_additional_condition_didnt_match(
+    ): void
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO', 'BAZ']));
 
@@ -202,6 +204,23 @@ final class TestableDispatcherAssertionsTest extends TestCase
                     }
                 );
             },
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function assertDispatched_fails_if_closure_does_not_return_boolean(): void
+    {
+        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('did not return bool');
+
+        $this->fake_dispatcher->assertDispatched(
+            function (EventStub $event_stub) {
+                return '1';
+            }
         );
     }
 

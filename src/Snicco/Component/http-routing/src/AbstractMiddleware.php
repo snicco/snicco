@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -27,35 +29,45 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         $this->container = $container;
     }
 
-    /**
-     * @param Request $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        if (!$request instanceof Request) {
+            $request = new Request($request);
+        }
+
+        if (!$handler instanceof NextMiddleware) {
+            $handler = new NextMiddleware(function (Request $request) use ($handler) {
+                return $handler->handle($request);
+            });
+        }
+
         return $this->handle($request, $handler);
     }
 
-    /**
-     * @param Request $request
-     * @param NextMiddleware $next This class can be called as a closure. $next($request)
-     *
-     * @return ResponseInterface
-     */
     abstract public function handle(Request $request, NextMiddleware $next): ResponseInterface;
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     final protected function redirect(): Redirector
     {
         return $this->container->get(Redirector::class);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     final protected function url(): UrlGenerator
     {
         return $this->container->get(UrlGenerator::class);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     final protected function render(string $template_identifier, array $data = []): Response
     {
         /** @var TemplateRenderer $renderer */
@@ -64,6 +76,10 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         return $this->respond()->html($renderer->render($template_identifier, $data));
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     final protected function respond(): ResponseFactory
     {
         return $this->container->get(ResponseFactory::class);

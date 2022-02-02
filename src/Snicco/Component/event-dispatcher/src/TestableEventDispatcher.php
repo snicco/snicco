@@ -6,12 +6,14 @@ namespace Snicco\Component\EventDispatcher;
 
 use Closure;
 use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use ReflectionException;
 
+use function call_user_func_array;
 use function count;
 use function is_array;
-use function Snicco\Component\EventDispatcher\functions\getTypeHintedObjectFromClosure;
+use function is_bool;
 
 /**
  * @api
@@ -27,7 +29,7 @@ final class TestableEventDispatcher implements EventDispatcher
     private array $events_to_fake = [];
 
     /**
-     * @var array<string,Event[]>
+     * @var array<string, list<Event>>
      */
     private $dispatched_events = [];
 
@@ -43,9 +45,9 @@ final class TestableEventDispatcher implements EventDispatcher
         $this->real_dispatcher = $real_dispatcher;
     }
 
-    public function listen($event_name, $listener = null, bool $can_be_removed = true): void
+    public function listen($event_name, $listener = null): void
     {
-        $this->real_dispatcher->listen($event_name, $listener, $can_be_removed);
+        $this->real_dispatcher->listen($event_name, $listener);
     }
 
     public function dispatch(object $event): object
@@ -53,7 +55,7 @@ final class TestableEventDispatcher implements EventDispatcher
         $original = $event;
         $event = $event instanceof Event ? $event : GenericEvent::fromObject($event);
 
-        $this->dispatched_events[$event->name()][] = [$event];
+        $this->dispatched_events[$event->name()][] = $event;
 
         if ($this->shouldFakeEvent($event->name())) {
             return $original;
@@ -135,7 +137,7 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         if ($event_name instanceof Closure) {
             $condition = $event_name;
-            $event_name = getTypeHintedObjectFromClosure($event_name);
+            $event_name = ClosureTypeHint::first($event_name);
         }
 
         PHPUnit::assertArrayHasKey(
@@ -155,24 +157,33 @@ final class TestableEventDispatcher implements EventDispatcher
         }
     }
 
+    /**
+     *
+     * @return list<Event>
+     *
+     * @psalm-suppress MixedAssignment
+     */
     private function getDispatched(string $event_name, Closure $callback_condition = null): array
     {
-        $callback_condition = $callback_condition ?? function (): bool {
-                return true;
-            };
-
         $passed = [];
 
-        foreach ($this->dispatched_events[$event_name] ?? [] as $events) {
-            foreach ($events as $event) {
-                /** @var Event $payload */
-                $payload = $event->payload();
+        foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
+            if (!$callback_condition) {
+                $passed[] = $event;
+                continue;
+            }
 
-                $payload = is_array($payload) ? $payload : [$payload];
+            $payload = $event->payload();
 
-                if ($callback_condition(...$payload) === true) {
-                    $passed[] = $event;
-                }
+            $payload = is_array($payload) ? $payload : [$payload];
+
+            $res = call_user_func_array($callback_condition, $payload);
+
+            if (!is_bool($res)) {
+                throw new LogicException('Test closure that asserts events did not return boolean.');
+            }
+            if ($res) {
+                $passed[] = $event;
             }
         }
 
@@ -190,7 +201,7 @@ final class TestableEventDispatcher implements EventDispatcher
     public function assertNotDispatched($event_name, ?Closure $condition = null)
     {
         if ($event_name instanceof Closure) {
-            $this->assertNotDispatched(getTypeHintedObjectFromClosure($event_name), $event_name);
+            $this->assertNotDispatched(ClosureTypeHint::first($event_name), $event_name);
             return;
         }
 

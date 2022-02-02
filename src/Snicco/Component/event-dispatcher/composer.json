@@ -19,10 +19,7 @@
   "autoload": {
     "psr-4": {
       "Snicco\\Component\\EventDispatcher\\": "src"
-    },
-    "files": [
-      "src/functions.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {

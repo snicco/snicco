@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\EventDispatcher\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
@@ -26,6 +27,7 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\ClassListener;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\ClassListener2;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\InvokableListener;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\ListenerWithoutMethod;
+use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\UnremovableListener;
 use stdClass;
 
 class EventDispatcherTest extends TestCase
@@ -389,30 +391,11 @@ class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(FooEvent::class, ClassListener::class, false);
+        $dispatcher->listen(FooEvent::class, UnremovableListener::class);
 
         $this->expectException(CantRemove::class);
 
-        $dispatcher->remove(FooEvent::class, ClassListener::class);
-    }
-
-    /**
-     * @test
-     */
-    public function a_closure_listener_can_be_marked_as_unremovable(): void
-    {
-        $dispatcher = $this->getDispatcher();
-
-        $dispatcher->listen(
-            FooEvent::class,
-            $closure = function () {
-            },
-            false
-        );
-
-        $this->expectException(CantRemove::class);
-
-        $dispatcher->remove(FooEvent::class, $closure);
+        $dispatcher->remove(FooEvent::class, UnremovableListener::class);
     }
 
     /**
@@ -512,6 +495,18 @@ class EventDispatcherTest extends TestCase
         $dispatcher->dispatch(new UserCreated('calvin'));
 
         $this->assertListenerRun('my_plugin_user_created', 'closure1', 'calvin');
+    }
+
+    /**
+     * @test
+     */
+    public function exception_for_listener_null_and_event_not_being_a_closure(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$listener can not be null if first $event_name is not a closure.');
+        $dispatcher = $this->getDispatcher();
+
+        $dispatcher->listen('my_plugin_user_created', null);
     }
 
     protected function setUp(): void

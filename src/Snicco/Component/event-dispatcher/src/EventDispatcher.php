@@ -18,25 +18,23 @@ interface EventDispatcher extends EventDispatcherInterface
 {
 
     /**
-     * @param string|Closure $event_name If  the event name is a closure the event will be
+     * @param string|Closure $event_name If the event name is a closure the event will be
      * retrieved from the first typehinted parameter in the closure.
-     * @param Closure|string|array<string,string> $listener
+     * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
      *
      * @throws InvalidListener|ReflectionException|InvalidArgumentException
      */
-    public function listen($event_name, $listener = null, bool $can_be_removed = true): void;
+    public function listen($event_name, $listener = null): void;
 
     /**
-     * @param string $event_subscriber a class name that implements {@see EventSubscriber}
+     * @param class-string<EventSubscriber> $event_subscriber a class name that implements {@see EventSubscriber}
      */
     public function subscribe(string $event_subscriber): void;
 
     /**
-     * @note Wildcard Listeners can not be removed. They can be muted instead for a specific
-     *       pattern.
      *
      * @param string $event_name
-     * @param string|array|null $listener
+     * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
      *
      * @throws CantRemove
      * @throws InvalidListener

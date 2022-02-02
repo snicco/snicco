@@ -9,10 +9,14 @@ use Throwable;
 
 /**
  * @internal
+ * @psalm-internal Snicco\Component\EventDispatcher
  */
 final class NewableListenerFactory implements ListenerFactory
 {
 
+    /**
+     * @psalm-suppress MixedMethodCall
+     */
     public function create(string $listener_class, string $event_name): object
     {
         try {

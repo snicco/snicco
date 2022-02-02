@@ -98,7 +98,7 @@ final class Route
     /**
      * @interal
      *
-     * @param array<string,string>|string $controller
+     * @param class-string|array{0: string, 1: string} $controller
      */
     public static function create(
         string $pattern,
