@@ -1,0 +1,37 @@
+{
+  "name": "sniccowp/kernel",
+  "description": "The core of the sniccowp framework",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "webmozart/assert": "^1.10",
+    "sniccowp/str-arr": "dev-master",
+    "sniccowp/parameter-bag": "dev-master",
+    "symfony/finder": "^5.0",
+    "psr/container": "^1.1"
+  },
+  "require-dev": {
+    "sniccowp/pimple-bridge": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\Kernel\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\Kernel\\Tests\\": "tests",
+      "Snicco\\Component\\Kernel\\Testing\\": "testing"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

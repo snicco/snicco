@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Snicco\Component\Kernel\ValueObject;
+
+use Webmozart\Assert\Assert;
+
+/**
+ * @psalm-internal Snicco
+ */
+final class PHPCacheFile
+{
+
+    private CacheFile $cache_file;
+
+    public function __construct(string $dir, string $filename_with_extension)
+    {
+        Assert::endsWith($filename_with_extension, '.php', 'The file extension must be [.php].');
+        $this->cache_file = new CacheFile($dir, $filename_with_extension);
+    }
+
+    public function isCreated(): bool
+    {
+        return $this->cache_file->isCreated();
+    }
+
+    public function realPath(): string
+    {
+        return $this->cache_file->realpath();
+    }
+
+    /**
+     * @return mixed
+     * @psalm-suppress UnresolvableInclude
+     */
+    public function require()
+    {
+        return require $this->cache_file->realpath();
+    }
+
+}
