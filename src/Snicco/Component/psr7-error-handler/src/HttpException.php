@@ -20,6 +20,10 @@ class HttpException extends RuntimeException
      */
     private array $response_headers;
 
+
+    /**
+     * @param array<string,string> $response_headers
+     */
     public function __construct(
         int $status_code,
         string $message,
@@ -36,17 +40,23 @@ class HttpException extends RuntimeException
         );
     }
 
+    /**
+     * @param array<string,string> $response_headers
+     */
     final public static function fromPrevious(int $status_code, Throwable $previous, array $response_headers = []): self
     {
         return new self(
             $status_code,
             $previous->getMessage(),
             $response_headers,
-            $previous->getCode(),
+            (int)$previous->getCode(),
             $previous
         );
     }
 
+    /**
+     * @return  array<string,string>
+     */
     final public function headers(): array
     {
         return $this->response_headers;
