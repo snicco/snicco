@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Information;
 
 use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
@@ -12,7 +14,9 @@ use Throwable;
 
 use function dirname;
 use function file_get_contents;
+use function is_string;
 use function json_decode;
+use function sprintf;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -25,7 +29,7 @@ final class TransformableInformationProvider implements InformationProvider
     private ExceptionIdentifier $identifier;
 
     /**
-     * @var array<int,array<string,string>>
+     * @var array<positive-int,array{title:string, message:string}>
      */
     private array $default_messages;
 
@@ -34,6 +38,9 @@ final class TransformableInformationProvider implements InformationProvider
      */
     private array $transformer;
 
+    /**
+     * @param array<positive-int,array{title:string, message:string}> $data
+     */
     public function __construct(array $data, ExceptionIdentifier $identifier, ExceptionTransformer ...$transformer)
     {
         foreach ($data as $status_code => $title_and_details) {
@@ -48,27 +55,43 @@ final class TransformableInformationProvider implements InformationProvider
         $this->identifier = $identifier;
     }
 
+    /**
+     * @param int $status_code
+     * @param array{title: string, message:string} $info
+     *
+     * @psalm-suppress DocblockTypeContradiction
+     */
     private function addMessage(int $status_code, array $info): void
     {
-        if (!isset($info['title'])) {
-            throw new InvalidArgumentException("Missing key title for status code [$status_code].");
+        if ($status_code < 400) {
+            throw new LogicException('$status_code must be greater >= 400.');
         }
-        if (!isset($info['message'])) {
+        /** @var positive-int $status_code */
+
+        if (!isset($info['title']) || !is_string($info['title'])) {
+            throw new InvalidArgumentException("title must be string for status code [$status_code].");
+        }
+        if (!isset($info['message']) || !is_string($info['message'])) {
             throw new InvalidArgumentException(
-                "Missing key message for status code [$status_code]."
+                "message must be string for status code [$status_code]."
             );
         }
         $this->default_messages[$status_code] = $info;
     }
 
-    public static function withDefaultData(ExceptionIdentifier $identifier, ExceptionIdentifier ...$transformer): self
+    public static function withDefaultData(ExceptionIdentifier $identifier, ExceptionTransformer ...$transformer): self
     {
-        $data = file_get_contents(dirname(__DIR__, 2) . '/resources/en_US.error.json');
+        $data = file_get_contents($f = dirname(__DIR__, 2) . '/resources/en_US.error.json');
 
-        $data = json_decode($data, true, JSON_THROW_ON_ERROR);
+        if (false === $data) {
+            throw new RuntimeException(sprintf('Cant read file contents of file [%s]', $f));
+        }
+
+        /** @var array<positive-int,array{title:string, message:string}> $decoded */
+        $decoded = json_decode($data, true, JSON_THROW_ON_ERROR);
 
         return new self(
-            $data,
+            $decoded,
             $identifier,
             ...$transformer
         );
@@ -104,6 +127,10 @@ final class TransformableInformationProvider implements InformationProvider
         return $transformed;
     }
 
+    /**
+     * @return array{0:string, 1:string}
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset Always defined.
+     */
     private function getData(int $status_code, Throwable $transformed, Throwable $original): array
     {
         $info = $this->default_messages[$status_code] ?? $this->default_messages[500];
