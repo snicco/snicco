@@ -4,36 +4,51 @@ declare(strict_types=1);
 
 namespace Snicco\Component\SignedUrl;
 
+use Exception;
 use ParagonIE\ConstantTime\Binary;
 use ParagonIE\ConstantTime\Hex;
 use Webmozart\Assert\Assert;
 
 use function random_bytes;
+use function strval;
 
 /**
  * @api
+ *
+ *
  */
 final class Secret
 {
 
     private string $hex_encoded;
 
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    private string $as_bytes;
+
     private function __construct(string $hex_encoded)
     {
         $this->hex_encoded = $hex_encoded;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function generate(int $strength = 32): Secret
     {
         Assert::greaterThanEq($strength, 16, 'Minimum strength of 16 bytes is required.');
 
+        /** @var positive-int $strength */
         $bytes = random_bytes($strength);
-        return new Secret($strength . '|' . Hex::encode($bytes));
+
+        return new Secret(strval($strength) . '|' . Hex::encode($bytes));
     }
 
     public static function fromHexEncoded(string $string): Secret
     {
         // This is not foolproof and just a quick check to catch obviously wrong secrets.
+        /** @var array{0:string, 1:string} $parts */
         $parts = explode('|', $string);
 
         Assert::count($parts, 2, 'Your stored secret seems to be malformed.');
@@ -51,12 +66,15 @@ final class Secret
 
     /**
      * @interal
+     *
+     * @psalm-suppress RedundantPropertyInitializationCheck
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     public function asBytes(): string
     {
         if (!isset($this->as_bytes)) {
-            [$length, $hex_encoded] = explode('|', $this->hex_encoded);
-            $this->as_bytes = Hex::decode($hex_encoded);
+            $parts = explode('|', $this->hex_encoded);
+            $this->as_bytes = Hex::decode($parts[1]);
         }
 
         return $this->as_bytes;

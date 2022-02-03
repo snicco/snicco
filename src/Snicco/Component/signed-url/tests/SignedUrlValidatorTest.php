@@ -23,6 +23,37 @@ final class SignedUrlValidatorTest extends TestCase
 
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
+    private Sha256Hasher $hasher;
+
+    /**
+     * @test
+     */
+    public function invalid_if_no_signature_provided(): void
+    {
+        $this->url_signer->sign('/foo', 10);
+
+        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+
+        $this->expectException(InvalidSignature::class);
+        $this->expectExceptionMessage('Missing signature parameter for path [/foo].');
+
+        $validator->validate('/foo');
+    }
+
+    /**
+     * @test
+     */
+    public function invalid_if_no_expiry_parameter(): void
+    {
+        $this->url_signer->sign('/foo', 10);
+
+        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+
+        $this->expectException(InvalidSignature::class);
+        $this->expectExceptionMessage('Missing expires parameter for path [/foo].');
+
+        $validator->validate('/foo?signature=foo');
+    }
 
     /**
      * @test
