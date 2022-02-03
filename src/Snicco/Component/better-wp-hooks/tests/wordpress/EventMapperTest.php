@@ -10,6 +10,7 @@ use LogicException;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedAction;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedFilter;
+use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
 use Snicco\Component\BetterWPHooks\ScopableWP;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ClassAsName;
@@ -602,7 +603,7 @@ class ConditionalFilter implements MappedFilter
 
 }
 
-class ConditionalAction implements MappedAction
+class ConditionalAction implements MappedHook
 {
 
     use ClassAsName;
@@ -708,7 +709,7 @@ class EventFilter2 implements MappedFilter
 
 }
 
-class EmptyActionEvent implements MappedAction
+class EmptyActionEvent implements MappedHook
 {
 
     use ClassAsName;
@@ -723,7 +724,7 @@ class EmptyActionEvent implements MappedAction
 
 }
 
-class EmptyActionEvent2 implements MappedAction
+class EmptyActionEvent2 implements MappedHook
 {
 
     use ClassAsName;
@@ -738,7 +739,7 @@ class EmptyActionEvent2 implements MappedAction
 
 }
 
-class FooActionEvent implements MappedAction
+class FooActionEvent implements MappedHook
 {
 
     use ClassAsName;
@@ -767,7 +768,7 @@ class FooActionEvent implements MappedAction
 
 }
 
-class ActionWithArrayArguments implements MappedAction
+class ActionWithArrayArguments implements MappedHook
 {
 
     use ClassAsName;

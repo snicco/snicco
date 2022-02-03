@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPHooks\EventMapping;
 
-use Snicco\Component\EventDispatcher\Event;
-
 /**
  * Use this interface if you want to map your event to a WordPress filter.
  *
  * @api
  */
-interface MappedFilter extends Event, DispatchesConditionally
+interface MappedFilter extends MappedHook
 {
 
     /**
