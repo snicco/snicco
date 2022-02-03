@@ -16,7 +16,7 @@ final class BadIdentifier extends SignedUrlException
     {
         return new self(
             "The identifier [$id] does not exists.",
-            $previous ? $previous->getCode() : 0,
+            $previous ? (int)$previous->getCode() : 0,
             $previous
         );
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\SignedUrl;
 
+use Exception;
 use InvalidArgumentException;
 use LogicException;
 use ParagonIE\ConstantTime\Base64UrlSafe;
@@ -18,6 +19,7 @@ use function parse_url;
 use function random_bytes;
 use function rtrim;
 use function strpos;
+use function strval;
 use function time;
 
 /**
@@ -38,7 +40,10 @@ final class UrlSigner
     }
 
     /**
+     * @param positive-int $max_usage
+     *
      * @throws UnavailableStorage
+     * @throws Exception if random_bytes can be generated
      */
     public function sign(
         string $protect,
@@ -133,7 +138,10 @@ final class UrlSigner
             }
         }
 
-        parse_str($parsed['query'] ?? '', $query);
+        /** @var string $qs */
+        $qs = $parsed['query'] ?? '';
+
+        parse_str($qs, $query);
 
         if (isset($query[SignedUrl::EXPIRE_KEY])) {
             throw new LogicException(
@@ -148,6 +156,10 @@ final class UrlSigner
         }
     }
 
+    /**
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
     private function getPath(array $parts): string
     {
         if (isset($parts['path'])) {
@@ -159,6 +171,9 @@ final class UrlSigner
         );
     }
 
+    /**
+     * @psalm-suppress MixedArgument
+     */
     private function getQueryString(array $parts): ?string
     {
         if (!isset($parts['query'])) {
@@ -176,12 +191,15 @@ final class UrlSigner
     private function appendExpiryQueryParam(string $path, int $expires_at): string
     {
         if (!strpos($path, '?')) {
-            return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . $expires_at;
+            return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
         }
 
-        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . $expires_at;
+        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
     }
 
+    /**
+     * @psalm-suppress MixedOperand
+     */
     private function getDomainAndSchema(array $parts): ?string
     {
         if (isset($parts['host']) && isset($parts['scheme'])) {
