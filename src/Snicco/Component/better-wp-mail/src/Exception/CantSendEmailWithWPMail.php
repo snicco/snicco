@@ -8,6 +8,10 @@ use RuntimeException;
 use Throwable;
 use WP_Error;
 
+use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
+
 /**
  * @api
  */
@@ -16,7 +20,7 @@ final class CantSendEmailWithWPMail extends RuntimeException implements CantSend
 
     private string $debug_data;
 
-    public function __construct($message = '', string $debug_data = '', Throwable $previous = null)
+    public function __construct(string $message = '', string $debug_data = '', Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
         $this->debug_data = $debug_data;
@@ -24,24 +28,15 @@ final class CantSendEmailWithWPMail extends RuntimeException implements CantSend
 
     public static function becauseWPMailRaisedErrors(WP_Error $error): CantSendEmailWithWPMail
     {
-        $message = implode("\n", $error->get_error_messages('wp_mail_failed'));
+        /** @var string[] $errors */
+        $errors = $error->get_error_messages('wp_mail_failed');
+        $message = implode("\n", $errors);
 
-        $errors_as_string = '';
-
-        foreach ($error->get_all_error_data('wp_mail_failed') as $data) {
-            $data = (array)$data;
-
-            foreach ($data as $key => $value) {
-                if (!($value = (string)$value)) {
-                    continue;
-                }
-                $errors_as_string .= "$key: $value, ";
-            }
-        }
+        $extra = json_encode($error->errors, JSON_THROW_ON_ERROR);
 
         return new self(
-            "wp_mail() failure. Message: [$message]. Data: [$errors_as_string]",
-            "Error Data: [$errors_as_string]."
+            "wp_mail() failure. Message: [$message].",
+            "Errors: [$extra]."
         );
     }
 

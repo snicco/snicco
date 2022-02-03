@@ -15,8 +15,8 @@ use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\NamedViewRenderer;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
 use WP_Error;
 use WP_User;
 
@@ -111,7 +111,8 @@ final class MailerTest extends WPTestCase
 
         $email = (new Email())->withTo(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])
             ->withTextBody('foo')
-            ->withSubject('foo');
+            ->withSubject('foo')
+            ->addCustomHeaders(['X-FOO' => 'BAR']);
 
         $mailer->send($email);
 
@@ -121,6 +122,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $headers);
         $this->assertStringContainsString('From: Calvin INC <no-reply@inc.de>', $headers);
         $this->assertStringContainsString('Reply-To: Office Calvin INC <office@inc.de>', $headers);
+        $this->assertStringContainsString('X-FOO: BAR', $headers);
     }
 
     /**

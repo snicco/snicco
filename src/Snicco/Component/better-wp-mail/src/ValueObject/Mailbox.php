@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use InvalidArgumentException;
+use LogicException;
 use WP_User;
 
 use function filter_var;
 use function gettype;
+use function is_bool;
 use function sprintf;
 
 use const FILTER_VALIDATE_EMAIL;
@@ -27,7 +29,7 @@ final class Mailbox
     private const PATTERN = '/^(?<name>\w+\s?\w+)?\s*<(?<address>[^>]+)>$/';
 
     /**
-     * @var callable
+     * @var callable|null
      */
     public static $email_validator;
     private string $address;
@@ -37,13 +39,13 @@ final class Mailbox
     {
         $address = strtolower($address);
 
-        if (self::$email_validator === null) {
+        if (null === self::$email_validator) {
             self::$email_validator = function (string $email): bool {
                 return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
             };
         }
 
-        if (!$this->isEmailValid($address)) {
+        if (!$this->isEmailValid($address, self::$email_validator)) {
             throw new InvalidArgumentException("[$address] is not a valid email.");
         }
 
@@ -51,15 +53,17 @@ final class Mailbox
         $this->name = ucwords(trim(str_replace(["\n", "\r"], '', $name)));
     }
 
-    private function isEmailValid(string $address): bool
+    private function isEmailValid(string $address, callable $validator): bool
     {
-        return call_user_func(self::$email_validator, $address);
+        $res = call_user_func($validator, $address);
+        if (!is_bool($res)) {
+            throw new LogicException("MailBox::email_validator did not return a boolean for address [$address].");
+        }
+        return $res;
     }
 
     /**
-     * @param Mailbox|string|WP_User|array<string,string> $address
-     *
-     * @throws InvalidArgumentException
+     * @param Mailbox|string|array{0:string, 1:string}|array{email:string, name:string}|WP_User $address
      */
     public static function create($address): Mailbox
     {
@@ -85,7 +89,7 @@ final class Mailbox
         }
 
         if (is_array($address)) {
-            if (isset($address['name']) && $address['email']) {
+            if (isset($address['name']) && isset($address['email'])) {
                 return new self($address['email'], $address['name']);
             }
             return new self(...array_values($address));
