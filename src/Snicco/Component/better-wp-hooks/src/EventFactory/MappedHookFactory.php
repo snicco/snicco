@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPHooks\EventFactory;
 
+use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
 use Snicco\Component\BetterWPHooks\Exception\CantCreateMappedEvent;
 use Snicco\Component\EventDispatcher\Event;
 
@@ -12,13 +13,13 @@ use Snicco\Component\EventDispatcher\Event;
  * an {@see Event} object.
  *
  * @api
- * @see ParameterBasedEventFactory
+ * @see ParameterBasedHookFactory
  */
-interface MappedEventFactory
+interface MappedHookFactory
 {
 
     /**
-     * @template-covariant  T as DispatchesConditionally
+     * @template  T of MappedHook
      * @psalm-param class-string<T> $event_class
      * @param array $wordpress_hook_arguments The arguments that were received from the firing
      *                                           WordPress hook.
@@ -26,6 +27,6 @@ interface MappedEventFactory
      * @return T
      * @throws CantCreateMappedEvent
      */
-    public function make(string $event_class, array $wordpress_hook_arguments);
+    public function make(string $event_class, array $wordpress_hook_arguments): MappedHook;
 
 }
