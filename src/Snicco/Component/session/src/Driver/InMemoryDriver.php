@@ -16,6 +16,9 @@ use Snicco\Component\TestableClock\SystemClock;
 final class InMemoryDriver implements SessionDriver
 {
 
+    /**
+     * @var array<string,array{data:string, last_activity:positive-int}>
+     */
     private array $storage = [];
     private Clock $clock;
 

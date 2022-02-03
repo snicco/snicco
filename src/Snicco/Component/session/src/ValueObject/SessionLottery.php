@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\ValueObject;
 
+use Exception;
 use LogicException;
 
 use function random_int;
@@ -33,6 +34,9 @@ final class SessionLottery
         $this->percentage = $percentage;
     }
 
+    /**
+     * @throws Exception
+     */
     public function wins(): bool
     {
         return random_int(0, 99) < $this->percentage;

@@ -112,7 +112,7 @@ interface MutableSession
      *
      * @throws SessionIsLocked
      */
-    public function keep($keys = null): void;
+    public function keep($keys): void;
 
     /**
      * Flush all developer provided data from the session.

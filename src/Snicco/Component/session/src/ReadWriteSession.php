@@ -6,6 +6,7 @@ namespace Snicco\Component\Session;
 
 use Closure;
 use DateTimeImmutable;
+use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
@@ -21,9 +22,10 @@ use function array_merge;
 use function array_unique;
 use function count;
 use function filter_var;
-use function func_get_args;
 use function is_array;
+use function is_int;
 use function is_null;
+use function is_string;
 use function md5;
 
 /**
@@ -42,7 +44,7 @@ final class ReadWriteSession implements Session
     private ?SessionId $invalidated_id = null;
 
     /**
-     * @var <array,object>
+     * @var list<object>
      */
     private $stored_events = [];
 
@@ -74,6 +76,9 @@ final class ReadWriteSession implements Session
         return Arr::get($this->attributes, $key) !== null;
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function put($key, $value = null): void
     {
         $this->checkLocked();
@@ -112,9 +117,6 @@ final class ReadWriteSession implements Session
         return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
 
-    /**
-     * @param mixed $default
-     */
     public function get(string $key, $default = null)
     {
         return Arr::get($this->attributes, $key, $default);
@@ -122,12 +124,24 @@ final class ReadWriteSession implements Session
 
     public function createdAt(): int
     {
-        return $this->get('_sniccowp.timestamps.created_at');
+        $ts = $this->get('_sniccowp.timestamps.created_at');
+        if (!is_int($ts)) {
+            throw new RuntimeException(
+                'The session storage seems corrupted as the value for key [_sniccowp.timestamps.created_at] is not an integer.'
+            );
+        }
+        return $ts;
     }
 
     public function csrfToken(): CsrfToken
     {
-        return new CsrfToken($this->get('_sniccowp.csrf_token'));
+        $token = $this->get('_sniccowp.csrf_token');
+        if (!is_string($token)) {
+            throw new RuntimeException(
+                'The session storage seems corrupted as the value for key [_sniccowp.csrf_token] is not a string.'
+            );
+        }
+        return new CsrfToken($token);
     }
 
     public function decrement(string $key, int $amount = 1): void
@@ -140,8 +154,12 @@ final class ReadWriteSession implements Session
         if (!$this->has($key)) {
             $this->put($key, $start_value);
         }
+        $current = $this->get($key, 0);
+        if (!is_int($current)) {
+            throw new RuntimeException("Current value for key [$key] is not an integer.");
+        }
 
-        $this->put($key, $this->get($key, 0) + $amount);
+        $this->put($key, $current + $amount);
     }
 
     public function flashInput(array $input): void
@@ -160,9 +178,16 @@ final class ReadWriteSession implements Session
         $this->removeFromOldFlashData([$key]);
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function push(string $key, $value): void
     {
         $array = $this->get($key, []);
+
+        if (!is_array($array)) {
+            throw new RuntimeException("Value for key [$key] is not an array.");
+        }
 
         $array[] = $value;
 
@@ -171,20 +196,36 @@ final class ReadWriteSession implements Session
 
     private function removeFromOldFlashData(array $keys): void
     {
-        $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
+        $this->put('_flash.old', array_diff($this->oldFlashes(), $keys));
     }
 
+    /**
+     * @return string[]
+     * @psalm-suppress MixedReturnTypeCoercion
+     */
+    private function oldFlashes(): array
+    {
+        $old = Arr::get($this->attributes, '_flash.old', []);
+        if (!is_array($old)) {
+            throw new RuntimeException('_flash.old must be an array of strings.');
+        }
+        return $old;
+    }
+
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function hasOldInput(string $key = null): bool
     {
         $old = $this->oldInput($key);
 
         return is_null($key)
-            ? count($old) > 0
+            ? is_array($old) && count($old) > 0
             : !is_null($old);
     }
 
     /**
-     * @param mixed|null $default
+     * @psalm-suppress MixedAssignment
      */
     public function oldInput(string $key = null, $default = null)
     {
@@ -192,6 +233,9 @@ final class ReadWriteSession implements Session
 
         if (null === $key) {
             return $old;
+        }
+        if (!is_array($old)) {
+            throw new RuntimeException('_old_input must be an associative array.');
         }
 
         return Arr::get($old, $key, $default);
@@ -222,6 +266,9 @@ final class ReadWriteSession implements Session
         $this->stored_events[] = $event;
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function flush(): void
     {
         $this->checkLocked();
@@ -230,20 +277,29 @@ final class ReadWriteSession implements Session
         $this->put('_sniccowp', $internal);
     }
 
-    public function keep($keys = null): void
+    public function keep($keys): void
     {
-        $this->mergeNewFlashes(
-            $keys = is_array($keys)
-                ? $keys
-                : func_get_args()
-        );
+        $keys = is_array($keys)
+            ? $keys
+            : [$keys];
+
+        $this->mergeNewFlashes($keys);
 
         $this->removeFromOldFlashData($keys);
     }
 
+    /**
+     * @param string[] $keys
+     */
     private function mergeNewFlashes(array $keys): void
     {
-        $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
+        $new = $this->get('_flash.new', []);
+
+        if (!is_array($new)) {
+            throw new RuntimeException('_flash.new must be an array of strings.');
+        }
+
+        $values = array_unique(array_merge($new, $keys));
 
         $this->put('_flash.new', $values);
     }
@@ -255,7 +311,13 @@ final class ReadWriteSession implements Session
 
     public function lastRotation(): int
     {
-        return $this->get('_sniccowp.timestamps.last_rotated');
+        $ts = $this->get('_sniccowp.timestamps.last_rotated');
+        if (!is_int($ts)) {
+            throw new RuntimeException(
+                'The session storage seems corrupted as the value for key [_sniccowp.timestamps.last_rotated] is not an integer.'
+            );
+        }
+        return $ts;
     }
 
     public function flashNow(string $key, $value): void
@@ -297,7 +359,8 @@ final class ReadWriteSession implements Session
 
     public function reflash(): void
     {
-        $this->mergeNewFlashes($this->get('_flash.old', []));
+        $arr = $this->oldFlashes();
+        $this->mergeNewFlashes($arr);
 
         $this->put('_flash.old', []);
     }
@@ -365,12 +428,12 @@ final class ReadWriteSession implements Session
             return true;
         }
 
-        return count(Arr::get($this->attributes, '_flash.old', [])) > 0;
+        return count($this->oldFlashes()) > 0;
     }
 
     private function ageFlashData(): void
     {
-        $this->forget($this->get('_flash.old', []));
+        $this->forget($this->oldFlashes());
 
         $this->put('_flash.old', $this->get('_flash.new', []));
 

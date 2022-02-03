@@ -6,6 +6,7 @@ namespace Snicco\Component\Session\Tests;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
@@ -714,6 +715,21 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
+    public function test_exception_if_csrf_token_is_not_valid(): void
+    {
+        $driver = new InMemoryDriver();
+        $session = $this->newPersistedSession(null, [], $driver);
+
+        $this->assertNotEmpty($session->csrfToken());
+        $session->remove('_sniccowp.csrf_token');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('corrupted');
+        $session->csrfToken();
+    }
+
+    /**
+     * @test
+     */
     public function testSessionRotatedEventIsStored(): void
     {
         $session = $this->newSession();
@@ -908,7 +924,7 @@ class ReadWriteSessionTest extends TestCase
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->keep();
+        $session->keep(['foo']);
     }
 
     /**
@@ -935,6 +951,36 @@ class ReadWriteSessionTest extends TestCase
         $this->expectException(SessionIsLocked::class);
 
         $session->remove('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function test_bad_created_at_timestamp_throws(): void
+    {
+        $driver = new InMemoryDriver();
+        $session = $this->newPersistedSession(null, [], $driver);
+
+        $this->assertNotEmpty($session->createdAt());
+        $session->remove('_sniccowp.timestamps.created_at');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('corrupted');
+        $session->createdAt();
+    }
+
+    /**
+     * @test
+     */
+    public function test_bad_rotated_at_timestamp_throws(): void
+    {
+        $driver = new InMemoryDriver();
+        $session = $this->newPersistedSession(null, [], $driver);
+
+        $this->assertNotEmpty($session->lastRotation());
+        $session->remove('_sniccowp.timestamps.last_rotated');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('corrupted');
+        $session->lastRotation();
     }
 
 }
