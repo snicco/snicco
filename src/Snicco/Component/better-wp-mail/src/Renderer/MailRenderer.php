@@ -13,6 +13,9 @@ interface MailRenderer
 {
 
     /**
+     *
+     * @param array<string,mixed> $context
+     *
      * @throws CantRenderMailContent
      */
     public function getMailContent(string $template_name, array $context = []): string;

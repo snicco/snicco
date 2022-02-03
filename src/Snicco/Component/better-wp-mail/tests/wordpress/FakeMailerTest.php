@@ -11,8 +11,8 @@ use Snicco\Component\BetterWPMail\Testing\WPMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\AssertFails;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail2;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
 use function iterator_to_array;
 use function sprintf;
@@ -84,13 +84,6 @@ final class FakeMailerTest extends WPTestCase
 
         $this->fake_transport->assertSent(
             TestMail::class
-        );
-    }
-
-    private function aValidTestEmail(): Email
-    {
-        return (new TestMail())->withTo(
-            'Calvin Alkan <calvin@web.de>'
         );
     }
 
@@ -446,6 +439,13 @@ final class FakeMailerTest extends WPTestCase
         parent::setUp();
         $this->mail_data = [];
         $this->fake_transport = new FakeTransport();
+    }
+
+    private function aValidTestEmail(): Email
+    {
+        return (new TestMail())->withTo(
+            'Calvin Alkan <calvin@web.de>'
+        );
     }
 
 }

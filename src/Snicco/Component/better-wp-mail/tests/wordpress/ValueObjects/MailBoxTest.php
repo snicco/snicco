@@ -6,12 +6,12 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
-use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
+use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use WP_User;
 
 use function array_merge;
 
-final class AddressTest extends WPTestCase
+final class MailBoxTest extends WPTestCase
 {
 
     /**

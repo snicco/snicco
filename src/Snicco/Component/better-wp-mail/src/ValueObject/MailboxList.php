@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use ArrayIterator;
 use Countable;
@@ -23,25 +23,14 @@ final class MailboxList implements Countable, IteratorAggregate
      */
     private array $addresses = [];
 
+    /**
+     * @param Mailbox[] $addresses
+     */
     public function __construct(array $addresses)
     {
         foreach ($addresses as $address) {
             $this->addAddress($address);
         }
-    }
-
-    /**
-     * @return void
-     */
-    private function addAddress(Mailbox $address)
-    {
-        $email = $address->address();
-
-        if (isset($this->addresses[$email])) {
-            return;
-        }
-
-        $this->addresses[$email] = $address;
     }
 
     /**
@@ -65,11 +54,19 @@ final class MailboxList implements Countable, IteratorAggregate
     }
 
     /**
-     * @return ArrayIterator|Mailbox[]
+     * @return ArrayIterator<int, Mailbox>
      */
     public function getIterator(): ArrayIterator
     {
-        return new ArrayIterator(array_values($this->addresses));
+        return new ArrayIterator($this->toArray());
+    }
+
+    /**
+     * @return list<Mailbox>
+     */
+    public function toArray(): array
+    {
+        return array_values($this->addresses);
     }
 
     /**
@@ -82,6 +79,20 @@ final class MailboxList implements Countable, IteratorAggregate
         $address = is_string($address) ? Mailbox::create($address) : $address;
 
         return isset($this->addresses[$address->address()]);
+    }
+
+    /**
+     * @return void
+     */
+    private function addAddress(Mailbox $address)
+    {
+        $email = $address->address();
+
+        if (isset($this->addresses[$email])) {
+            return;
+        }
+
+        $this->addresses[$email] = $address;
     }
 
 }

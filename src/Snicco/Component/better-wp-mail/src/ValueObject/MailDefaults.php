@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use Snicco\Component\BetterWPMail\ScopableWP;
 

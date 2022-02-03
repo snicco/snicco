@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObject;
 
 /*
  * Slight modified version of the symfony/mailer package envelope

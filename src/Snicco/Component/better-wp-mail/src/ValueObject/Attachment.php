@@ -2,11 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\ValueObjects;
+namespace Snicco\Component\BetterWPMail\ValueObject;
 
+use Exception;
 use InvalidArgumentException;
+use LogicException;
 
+use function bin2hex;
+use function fopen;
+use function fseek;
 use function is_resource;
+use function is_string;
+use function stream_get_meta_data;
 
 use const SEEK_CUR;
 
@@ -21,13 +28,15 @@ use const SEEK_CUR;
 
 /**
  * @api
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ *
  */
 final class Attachment
 {
 
     private string $encoding = 'base64';
     private string $content_type;
-    private bool $seekable;
     private string $filename;
     private string $disposition;
     private string $cid;
@@ -39,6 +48,8 @@ final class Attachment
 
     /**
      * @param resource|string $body
+     * @psalm-suppress DocblockTypeContradiction
+     * @throws Exception random bytes can't be generated for the content id
      */
     private function __construct($body, string $filename, string $content_type = null, bool $inline = false)
     {
@@ -47,16 +58,13 @@ final class Attachment
         }
 
         $this->content_type = ($content_type === null) ? 'application/octet-stream' : $content_type;
-
-        if (!is_resource($body)) {
-            $this->seekable = false;
-        } else {
-            $this->seekable = stream_get_meta_data($body)['seekable']
-                && fseek($body, 0, SEEK_CUR) === 0;
-        }
-
         $this->filename = $filename;
         $this->disposition = $inline ? 'inline' : 'attachment';
+
+        if ('inline' === $this->disposition) {
+            $this->cid = bin2hex(random_bytes(16)) . '@sniccowp';
+        }
+
         $this->body = $body;
     }
 
@@ -69,8 +77,8 @@ final class Attachment
         if (!is_readable($path)) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
         }
-
-        if (false === $stream = @fopen($path, 'r')) {
+        $stream = @fopen($path, 'r');
+        if (false === $stream) {
             throw new InvalidArgumentException(sprintf('Unable to open path "%s".', $path));
         }
 
@@ -89,16 +97,17 @@ final class Attachment
         return new self($data, $filename, $content_type, $inline);
     }
 
-    /**
-     * @return resource|string
-     */
-    public function body()
+    public function bodyAsString(): string
     {
-        if (!$this->seekable) {
+        if (is_string($this->body)) {
             return $this->body;
         }
 
-        rewind($this->body);
+        $seekable = stream_get_meta_data($this->body)['seekable'] && fseek($this->body, 0, SEEK_CUR) === 0;
+
+        if ($seekable) {
+            rewind($this->body);
+        }
 
         return stream_get_contents($this->body) ?: '';
     }
@@ -130,17 +139,15 @@ final class Attachment
 
     public function cid(): string
     {
-        return $this->cid ??= $this->generateContentId();
-    }
-
-    private function generateContentId(): string
-    {
-        return bin2hex(random_bytes(16)) . '@sniccwp';
+        if ('inline' !== $this->disposition) {
+            throw new LogicException('Attachment is not embedded an has no cid.');
+        }
+        return $this->cid;
     }
 
     public function __destruct()
     {
-        if ($this->body && is_resource($this->body)) {
+        if (is_resource($this->body)) {
             fclose($this->body);
         }
     }

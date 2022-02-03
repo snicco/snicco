@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
-use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
-use Snicco\Component\BetterWPMail\ValueObjects\MailboxList;
+use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
+use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 
-final class AddressListTest extends WPTestCase
+final class MailboxListTest extends WPTestCase
 {
 
     /**
