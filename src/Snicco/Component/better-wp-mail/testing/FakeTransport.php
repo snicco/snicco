@@ -107,8 +107,7 @@ final class FakeTransport implements Transport
             }
         }
 
-        /** @var string $from */
-        $from = $this->wp->applyFilters('wp_mail_from', $from);
+        $from = $this->wp->applyFiltersStrict('wp_mail_from', $from);
         $from = Mailbox::create($from);
 
         $wp_mail = new WPMail();

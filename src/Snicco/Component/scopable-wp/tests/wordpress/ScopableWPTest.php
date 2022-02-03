@@ -7,6 +7,7 @@ namespace Snicco\Component\ScopableWP\Tests\wordpress;
 use BadMethodCallException;
 use Codeception\TestCase\WPTestCase;
 use Exception;
+use LogicException;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\ScopableWP\Tests\fixtures\TestWPApi;
 use WP_Post;
@@ -155,16 +156,45 @@ final class ScopableWPTest extends WPTestCase
      */
     public function test_applyFilters(): void
     {
-        add_filter('foobar', function (string $foo, string $bar) {
+        add_filter('foobar', function (string $foo, string $bar, array $baz) {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
+            $this->assertSame(['baz', 'biz'], $baz);
             return 'filtered';
-        }, 10, 2);
+        }, 10, 3);
 
         $wp = new ScopableWP();
 
-        $res = $wp->applyFilters('foobar', 'foo', 'bar');
+        $res = $wp->applyFilters('foobar', 'foo', 'bar', ['baz', 'biz']);
         $this->assertSame('filtered', $res);
+    }
+
+    /**
+     * @test
+     */
+    public function test_applyFiltersStrict(): void
+    {
+        add_filter('filter1', function (string $foo, string $bar, array $baz) {
+            $this->assertSame('foo', $foo);
+            $this->assertSame('bar', $bar);
+            $this->assertSame(['baz', 'biz'], $baz);
+            return 'filtered';
+        }, 10, 3);
+
+        add_filter('filter2', function (string $foo, string $bar, array $baz) {
+            $this->assertSame('foo', $foo);
+            $this->assertSame('bar', $bar);
+            $this->assertSame(['baz', 'biz'], $baz);
+            return 1;
+        }, 10, 3);
+
+        $wp = new ScopableWP();
+
+        $this->assertSame('filtered', $wp->applyFiltersStrict('filter1', 'foo', 'bar', ['baz', 'biz']));
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Initial value [foo] for filter [filter2] is string. Returned [integer].');
+        $wp->applyFiltersStrict('filter2', 'foo', 'bar', ['baz', 'biz']);
     }
 
     /**
