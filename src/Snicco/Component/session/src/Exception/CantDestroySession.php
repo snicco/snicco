@@ -8,6 +8,7 @@ use RuntimeException;
 use Throwable;
 
 use function implode;
+use function intval;
 use function sprintf;
 
 /**
@@ -16,13 +17,18 @@ use function sprintf;
 final class CantDestroySession extends RuntimeException
 {
 
-    public static function forId($id, string $driver_identifier, Throwable $previous = null): CantDestroySession
+    public static function forId(string $id, string $driver_identifier, Throwable $previous = null): CantDestroySession
     {
         return new self(
-            "Cant destroy session [$id] with the [$driver_identifier] driver.", 0, $previous
+            "Cant destroy session [$id] with the [$driver_identifier] driver.",
+            intval($previous ? $previous->getCode() : 0),
+            $previous
         );
     }
 
+    /**
+     * @param string[] $ids
+     */
     public static function forSessionIDs(
         array $ids,
         string $driver_identifier,
@@ -33,7 +39,7 @@ final class CantDestroySession extends RuntimeException
                 'Cant destroy session ids [%s] with the [%s] driver.',
                 implode(',', $ids),
                 $driver_identifier
-            ), 0, $previous
+            ), intval($previous ? $previous->getCode() : 0), $previous
         );
     }
 

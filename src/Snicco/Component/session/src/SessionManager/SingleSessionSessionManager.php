@@ -19,6 +19,10 @@ final class SingleSessionSessionManager implements SessionManager
 {
 
     private SessionManager $session_manager;
+
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private Session $session;
 
     public function __construct(SessionManager $session_manager)

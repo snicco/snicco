@@ -7,6 +7,8 @@ namespace Snicco\Component\Session\Exception;
 use RuntimeException;
 use Throwable;
 
+use function intval;
+
 /**
  * @api
  */
@@ -17,7 +19,7 @@ final class CantReadSessionContent extends RuntimeException
     {
         return new CantReadSessionContent(
             "Cant read session content for session [$id] with driver [$driver].",
-            $previous->getCode(),
+            intval($previous ? $previous->getCode() : 0),
             $previous
         );
     }

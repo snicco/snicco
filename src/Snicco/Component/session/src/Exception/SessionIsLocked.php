@@ -14,8 +14,8 @@ final class SessionIsLocked extends LogicException
 {
 
     public function __construct(
-        $message = 'The session has been persisted and can not be changed any longer.',
-        $code = 0,
+        string $message = 'The session has been persisted and can not be changed any longer.',
+        int $code = 0,
         Throwable $previous = null
     ) {
         parent::__construct(
