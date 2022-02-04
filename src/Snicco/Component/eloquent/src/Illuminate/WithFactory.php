@@ -16,6 +16,10 @@ trait WithFactory
 
     use WithIlluminateFactory;
 
+    /**
+     * @psalm-suppress InvalidStringClass
+     * @psalm-suppress MoreSpecificReturnType
+     */
     protected static function newFactory(): Factory
     {
         $model = Str::afterLast(static::class, '\\');

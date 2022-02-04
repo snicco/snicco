@@ -14,8 +14,14 @@ use RuntimeException;
 final class MysqliReconnect
 {
 
+    /**
+     * @param Closure(): mysqli $reconnect_callable
+     */
     private Closure $reconnect_callable;
 
+    /**
+     * @param Closure(): mysqli $reconnect_callable
+     */
     public function __construct(Closure $reconnect_callable)
     {
         $this->reconnect_callable = $reconnect_callable;
@@ -23,10 +29,12 @@ final class MysqliReconnect
 
     /**
      * @throws RuntimeException
+     * @psalm-suppress MixedAssignment
      */
     public function getMysqli(): mysqli
     {
-        $mysqli = call_user_func($this->reconnect_callable);
+        $callable = $this->reconnect_callable;
+        $mysqli = $callable();
 
         if ($mysqli instanceof mysqli) {
             return $mysqli;

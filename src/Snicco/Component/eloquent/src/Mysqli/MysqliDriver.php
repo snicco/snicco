@@ -10,11 +10,12 @@ use mysqli_result;
 use mysqli_sql_exception;
 use mysqli_stmt;
 
+use function count;
 use function sprintf;
 
 /**
  * This class needs to double-check every method call to mysqli for errors because by default
- * WordPress configures mysqli to not throw exceptions and also sets the mysql mode to non strict.
+ * WordPress configures mysqli to not throw exceptions and also sets the mysql mode to non-strict.
  *
  * @internal
  */
@@ -30,7 +31,7 @@ final class MysqliDriver implements MysqliDriverInterface
         $this->reconnect = $reconnect;
     }
 
-    public function doSelect($sql, $bindings): array
+    public function doSelect(string $sql, array $bindings): array
     {
         $stmt = $this->createPreparedStatement($sql, $bindings);
 
@@ -48,6 +49,7 @@ final class MysqliDriver implements MysqliDriverInterface
 
     /**
      * @throws QueryException
+     * @psalm-suppress MixedAssignment
      */
     private function createPreparedStatement(string $sql, array $bindings = []): mysqli_stmt
     {
@@ -61,7 +63,7 @@ final class MysqliDriver implements MysqliDriverInterface
             throw new QueryException($sql, $bindings, $this->lastException());
         }
 
-        if (empty($bindings)) {
+        if (!count($bindings)) {
             return $stmt;
         }
 
@@ -77,17 +79,19 @@ final class MysqliDriver implements MysqliDriverInterface
             }
         }
 
+        $copy = $bindings;
+
         try {
             $success = $stmt->bind_param($types, ...$bindings);
         } catch (mysqli_sql_exception $e) {
             throw new QueryException(
-                $sql, $bindings, $this->lastException()
+                $sql, $copy, $this->lastException()
             );
         }
 
         if (!$success) {
             throw new QueryException(
-                $sql, $bindings, $this->lastException()
+                $sql, $copy, $this->lastException()
             );
         }
 
@@ -96,6 +100,9 @@ final class MysqliDriver implements MysqliDriverInterface
 
     private function lastException(): mysqli_sql_exception
     {
+        /**
+         * @var array<array{error: string, errno: string, sqlstate: string}> $errors
+         */
         $errors = $this->mysqli->error_list;
         $msg = '';
 
@@ -218,7 +225,7 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw $this->lastException();
             }
 
-            return $res === true;
+            return true;
         } catch (mysqli_sql_exception $e) {
             throw new QueryException('COMMIT', [], $e);
         }
@@ -233,18 +240,18 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw $this->lastException();
             }
 
-            return $res === true;
+            return true;
         } catch (mysqli_sql_exception $e) {
             throw new QueryException('START TRANSACTION', [], $e);
         }
     }
 
-    public function exec($statement)
+    public function exec(string $statement)
     {
         return $this->doAffectingStatement($statement, []);
     }
 
-    public function doAffectingStatement($sql, array $bindings): int
+    public function doAffectingStatement(string $sql, array $bindings): int
     {
         if (empty($bindings)) {
             try {
@@ -275,7 +282,7 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw $this->lastException();
             }
 
-            return $res === true;
+            return true;
         } catch (mysqli_sql_exception $e) {
             throw new QueryException('ROLLBACK', [], $e);
         }

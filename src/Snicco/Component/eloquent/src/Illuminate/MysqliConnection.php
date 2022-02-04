@@ -16,6 +16,8 @@ use Snicco\Component\Eloquent\ScopableWP;
 
 /**
  * @internal
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {
@@ -90,13 +92,17 @@ final class MysqliConnection extends IlluminateMysqlConnection
     /**
      * Run an SQL statement through the mysqli_driver class.
      *
+     * @template T
      * @param string $query
      * @param array $bindings
-     * @param Closure $callback
+     * @param Closure(string,array): T $callback
      *
-     * @return mixed
+     * @return T
+     *
+     * @psalm-suppress InvalidScalarArgument
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function run($query, $bindings, Closure $callback)
+    protected function run($query, $bindings, Closure $callback)
     {
         $start = microtime(true);
 

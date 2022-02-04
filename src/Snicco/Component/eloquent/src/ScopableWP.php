@@ -58,8 +58,7 @@ class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 
     public function wpdb(): wpdb
     {
-        global $wpdb;
-        return $wpdb;
+        return $GLOBALS['wpdb'];
     }
 
     public function mysqli(): mysqli
