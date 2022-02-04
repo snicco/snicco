@@ -29,8 +29,7 @@ class CountryFactory extends Factory
             'South America',
             'Antarctica.',
         ];
-
-        return Arr::random($continents);
+        return Arr::random($continents)[0];
     }
 
     /**

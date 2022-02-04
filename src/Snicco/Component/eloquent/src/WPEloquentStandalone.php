@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Eloquent;
 
+use ArrayAccess;
 use Faker\Factory;
 use Faker\Generator as FakerGenerator;
 use Illuminate\Container\Container;
@@ -39,6 +40,9 @@ final class WPEloquentStandalone
     private array $connection_configuration;
     private bool $enable_global_facades;
 
+    /**
+     * @psalm-suppress InvalidArgument
+     */
     public function __construct(array $connection_configuration = [], bool $enable_global_facades = true)
     {
         $this->illuminate_container = Container::getInstance();
@@ -84,7 +88,7 @@ final class WPEloquentStandalone
             return rtrim($factory_namespace, '\\') . '\\' . $model . 'Factory';
         });
 
-        EloquentFactory::guessModelNamesUsing(function ($factory) use ($model_namespace) {
+        EloquentFactory::guessModelNamesUsing(function (EloquentFactory $factory) use ($model_namespace): string {
             $model = class_basename($factory);
             return str_replace('Factory', '', rtrim($model_namespace, '\\') . '\\' . $model);
         });
@@ -122,6 +126,7 @@ final class WPEloquentStandalone
     private function bindConfig(): void
     {
         if ($this->illuminate_container->has('config')) {
+            /** @var ArrayAccess $config */
             $config = $this->illuminate_container->get('config');
             $config['database.connections'] = $this->connection_configuration;
         } else {
@@ -141,6 +146,9 @@ final class WPEloquentStandalone
         });
     }
 
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     */
     private function newConnectionResolver(): ConnectionResolverInterface
     {
         $illuminate_database_manager = new DatabaseManager(

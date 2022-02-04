@@ -20,8 +20,12 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 {
 
     private string $default_connection;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
     private ConnectionInterface $mysqli_connection;
+
     private IlluminateConnectionResolver $connection_resolver;
+
     private MysqliFactory $mysqli_connection_factory;
 
     public function __construct(IlluminateConnectionResolver $connection_resolver, MysqliFactory $mysqli_factory)
@@ -56,8 +60,6 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
     /**
      * Get the default connection name.
-     *
-     * @return string
      */
     public function getDefaultConnection(): string
     {
