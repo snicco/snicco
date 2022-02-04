@@ -7,6 +7,7 @@ namespace Snicco\Component\Psr7ErrorHandler;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Filter;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
@@ -56,7 +57,12 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $this->fallback_displayer = $default_displayer;
     }
 
-    public function handle(Throwable $e, RequestInterface $request): ResponseInterface
+    private function addDisplayer(ExceptionDisplayer $displayer): void
+    {
+        $this->displayers[] = $displayer;
+    }
+
+    public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         $info = $this->information_provider->createFor($e);
 
@@ -76,11 +82,6 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         }
 
         return $this->withHttpHeaders($info->transformedException(), $response);
-    }
-
-    private function addDisplayer(ExceptionDisplayer $displayer): void
-    {
-        $this->displayers[] = $displayer;
     }
 
     private function logException(ExceptionInformation $info, RequestInterface $request): void
