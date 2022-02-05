@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Kernel\Tests\Utils;
+namespace Snicco\Component\HttpRouting\Tests;
 
 use ArrayAccess;
 use Countable;
@@ -12,7 +12,7 @@ use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use ReflectionFunctionAbstract;
-use Snicco\Component\Kernel\Utils\Reflection;
+use Snicco\Component\HttpRouting\Reflection;
 use Traversable;
 
 final class ReflectionTest extends TestCase

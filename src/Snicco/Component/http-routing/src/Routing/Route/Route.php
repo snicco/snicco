@@ -6,20 +6,20 @@ namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use InvalidArgumentException;
 use Snicco\Component\HttpRouting\MiddlewareStack;
+use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
-use function array_walk;
+use function array_map;
 use function class_exists;
 use function explode;
 use function get_object_vars;
 use function implode;
 use function is_array;
 use function is_int;
-use function is_object;
-use function is_resource;
+use function is_scalar;
 use function method_exists;
 use function preg_match_all;
 use function rtrim;
@@ -41,7 +41,7 @@ final class Route
     const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
 
     /**
-     * @var array<string>
+     * @var string[]
      */
     private array $methods;
 
@@ -52,7 +52,7 @@ final class Route
     private string $namespace;
 
     /**
-     * @var array<string,string>
+     * @var array{0:class-string, 1:string}
      */
     private array $controller;
 
@@ -67,38 +67,53 @@ final class Route
     private array $defaults = [];
 
     /**
-     * @var array<string>
+     * @var string[]
      */
     private array $segment_names = [];
 
     /**
-     * @var array<string>
+     * @var string[]
      */
     private array $required_segments_names = [];
 
     /**
-     * @var array<string>
+     * @var string[]
      */
     private array $optional_segment_names = [];
 
     /**
-     * @var array<string,string
+     * @var array<string,string>
      */
     private array $requirements = [];
 
     /**
-     * @var array<ConditionBlueprint>
+     * @var ConditionBlueprint[]
      */
     private array $conditions = [];
 
-    private function __construct()
-    {
+    /**
+     * @param string|class-string|array{0: class-string, 1: string} $controller
+     * @param string[] $methods
+     */
+    private function __construct(
+        string $pattern,
+        $controller,
+        string $name = null,
+        array $methods = self::ALL_METHODS,
+        string $namespace = ''
+    ) {
+        $this->setPattern($pattern);
+        $this->setNamespace($namespace);
+        $this->setController($controller);
+        $this->setMethods($methods);
+        $this->setName($name);
     }
 
     /**
      * @interal
      *
-     * @param class-string|array{0: string, 1: string} $controller
+     * @param string|class-string|array{0: class-string, 1: string} $controller
+     * @param string[] $methods
      */
     public static function create(
         string $pattern,
@@ -107,124 +122,46 @@ final class Route
         array $methods = self::ALL_METHODS,
         string $namespace = ''
     ): Route {
-        $route = new self();
-
-        $route->setPattern($pattern);
-        $route->setNamespace($namespace);
-        $route->setController($controller);
-        $route->setMethods($methods);
-        $route->setName($name);
-
-        return $route;
-    }
-
-    private function setPattern(string $pattern): void
-    {
-        Assert::startsWith($pattern, '/', 'Expected route pattern to start with /.');
-        Assert::notStartsWith($pattern, '//');
-        $this->pattern = $pattern;
-
-        // @see https://regexr.com/6cn0d
-        preg_match_all('/[^{]\w+(?=\??})/', $pattern, $names);
-        Assert::uniqueValues(
-            $names[0],
-            'Route segment names have to be unique but %s of them %s duplicated.'
+        return new self(
+            $pattern, $controller, $name, $methods, $namespace
         );
-
-        $this->segment_names = $names[0];
-
-        preg_match_all('/[^{]\w+(?=})/', $pattern, $required_names);
-        $this->required_segments_names = $required_names[0];
-
-        preg_match_all('/[^{]\w+(?=\?})/', $pattern, $optional_names);
-        $this->optional_segment_names = $optional_names[0];
-    }
-
-    private function setNamespace(string $namespace): void
-    {
-        $this->namespace = rtrim($namespace, '\\');
     }
 
     /**
-     * @param array<string,string>|string $controller
+     * @return string[]
      */
-    private function setController($controller): void
-    {
-        $controller = is_array($controller)
-            ? $controller
-            : explode('@', $controller);
-
-        if (!isset($controller[1])) {
-            $controller[1] = '__invoke';
-        }
-
-        Assert::count($controller, 2, 'Expected controller array to have a class and a method.');
-        Assert::stringNotEmpty($controller[0], 'Expected controller class to be a string.');
-        Assert::stringNotEmpty($controller[1], 'Expected controller method to be a string.');
-
-        if (!class_exists($controller[0])) {
-            $controller[0] = !empty($this->namespace)
-                ? $this->namespace . '\\' . $controller[0]
-                : $controller[0];
-
-            if (!class_exists($controller[0])) {
-                throw new InvalidArgumentException(
-                    sprintf('Controller class [%s] does not exist.', $controller[0]),
-                );
-            }
-        }
-
-        if (!method_exists($controller[0], $controller[1])) {
-            throw new InvalidArgumentException(
-                sprintf('The method [%s::%s] is not callable.', $controller[0], $controller[1]),
-            );
-        }
-
-        $this->controller = $controller;
-    }
-
-    private function setMethods(array $methods): void
-    {
-        Assert::allInArray($methods, self::ALL_METHODS);
-        $this->methods = $methods;
-    }
-
-    private function setName(?string $name): void
-    {
-        if (!empty($name)) {
-            Assert::stringNotEmpty($name);
-            Assert::notStartsWith($name, '.');
-            Assert::notContains(
-                $name,
-                ' ',
-                "Route name for route [$name] should not contain whitespaces."
-            );
-        } else {
-            $name = $this->pattern . ':' . implode('@', $this->controller);
-        }
-        $this->name = $name;
-    }
-
     public function getMethods(): array
     {
         return $this->methods;
     }
 
+    /**
+     * @return array<string,string>
+     */
     public function getRequirements(): array
     {
         return $this->requirements;
     }
 
+    /**
+     * @return string[]
+     */
     public function getRequiredSegmentNames(): array
     {
         return $this->required_segments_names;
     }
 
+    /**
+     * @return string[]
+     */
     public function getOptionalSegmentNames(): array
     {
         return $this->optional_segment_names;
     }
 
+    /**
+     * @return string[]
+     */
     public function getSegmentNames(): array
     {
         return $this->segment_names;
@@ -235,6 +172,9 @@ final class Route
         return $this->pattern;
     }
 
+    /**
+     * @return array{0:class-string, 1:string}
+     */
     public function getController(): array
     {
         return $this->controller;
@@ -248,6 +188,9 @@ final class Route
         return array_values($this->middleware);
     }
 
+    /**
+     * @return ConditionBlueprint[]
+     */
     public function getConditions(): array
     {
         return $this->conditions;
@@ -258,6 +201,9 @@ final class Route
         return $this->defaults;
     }
 
+    /**
+     * @param array<string,scalar|array<scalar>> $defaults
+     */
     public function defaults(array $defaults): Route
     {
         foreach ($defaults as $key => $value) {
@@ -266,16 +212,8 @@ final class Route
         return $this;
     }
 
-    private function addDefaultValue(string $key, $value): void
-    {
-        if (is_object($value) || is_resource($value)) {
-            throw new InvalidArgumentException('A route default value has to be a primitive type.');
-        }
-
-        $this->defaults[$key] = $value;
-    }
-
     /**
+     * @param class-string<AbstractRouteCondition>|'!' $condition
      * @param mixed $args
      */
     public function condition(string $condition, ...$args): Route
@@ -304,7 +242,7 @@ final class Route
     /**
      * @param string|array<string> $middleware
      *
-     * @todo Bad Middleware is currently only detected at runtime.
+     * @todo Bad Middleware is currently only detected at when the route matches.
      */
     public function middleware($middleware): Route
     {
@@ -313,17 +251,6 @@ final class Route
         }
 
         return $this;
-    }
-
-    private function addMiddleware(string $m): void
-    {
-        $middleware_id = Str::beforeFirst($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
-        Assert::keyNotExists(
-            $this->middleware,
-            $middleware_id,
-            "Middleware [$middleware_id] added twice to route [$this->name]."
-        );
-        $this->middleware[$middleware_id] = $m;
     }
 
     public function matchesOnlyWithTrailingSlash(): bool
@@ -350,25 +277,6 @@ final class Route
     {
         $this->addRequirements($requirements);
         return $this;
-    }
-
-    private function addRequirements(array $requirements): void
-    {
-        foreach ($requirements as $segment => $regex) {
-            Assert::stringNotEmpty($segment);
-            Assert::stringNotEmpty($regex);
-            Assert::inArray(
-                $segment,
-                $this->segment_names,
-                'Expected one of the valid segment names: [%2$s]. Got: [%s].'
-            );
-            Assert::keyNotExists(
-                $this->requirements,
-                $segment,
-                "Requirement for segment [$segment] can not be overwritten."
-            );
-            $this->requirements[$segment] = $regex;
-        }
     }
 
     /**
@@ -401,12 +309,16 @@ final class Route
         return $this;
     }
 
+    /**
+     * @param array<string,string|int> $values
+     */
     public function requireOneOf(string $segment_name, array $values): Route
     {
-        array_walk($values, function ($value) {
+        $values = array_map(function ($value) {
             $value = is_int($value) ? (string)$value : $value;
             Assert::string($value);
-        });
+            return $value;
+        }, $values);
 
         $arr = [$segment_name => implode('|', $values)];
 
@@ -420,10 +332,158 @@ final class Route
         return get_object_vars($this);
     }
 
+    /** @psalm-suppress MixedAssignment */
     public function __unserialize(array $data): void
     {
         foreach ($data as $property_name => $value) {
             $this->{$property_name} = $value;
+        }
+    }
+
+    private function setPattern(string $pattern): void
+    {
+        Assert::startsWith($pattern, '/', 'Expected route pattern to start with /.');
+        Assert::notStartsWith($pattern, '//');
+        $this->pattern = $pattern;
+
+        // @see https://regexr.com/6cn0d
+        preg_match_all('/[^{]\w+(?=\??})/', $pattern, $names);
+
+        if (!empty($names[0])) {
+            Assert::uniqueValues(
+                $names[0],
+                'Route segment names have to be unique but %s of them %s duplicated.'
+            );
+            $this->segment_names = $names[0];
+        }
+
+
+        preg_match_all('/[^{]\w+(?=})/', $pattern, $required_names);
+
+        if (!empty($required_names[0])) {
+            $this->required_segments_names = $required_names[0];
+        }
+
+        preg_match_all('/[^{]\w+(?=\?})/', $pattern, $optional_names);
+
+        if (!empty($optional_names[0])) {
+            $this->optional_segment_names = $optional_names[0];
+        }
+    }
+
+    private function setNamespace(string $namespace): void
+    {
+        $this->namespace = rtrim($namespace, '\\');
+    }
+
+    /**
+     * @param string|class-string|array{0: class-string, 1: string} $controller
+     */
+    private function setController($controller): void
+    {
+        $controller = is_array($controller)
+            ? $controller
+            : explode('@', $controller);
+
+        if (!isset($controller[0])) {
+            throw new InvalidArgumentException('Expected controller array to have a class and a method.');
+        }
+
+        if (!isset($controller[1])) {
+            $controller[1] = '__invoke';
+        }
+
+        Assert::count($controller, 2, 'Expected controller array to have a class and a method.');
+        Assert::stringNotEmpty($controller[0], 'Expected controller class to be a string.');
+        Assert::stringNotEmpty($controller[1], 'Expected controller method to be a string.');
+
+        if (!class_exists($controller[0])) {
+            $controller[0] = !empty($this->namespace)
+                ? $this->namespace . '\\' . $controller[0]
+                : $controller[0];
+
+            if (!class_exists($controller[0])) {
+                throw new InvalidArgumentException(
+                    sprintf('Controller class [%s] does not exist.', $controller[0]),
+                );
+            }
+        }
+
+        if (!method_exists($controller[0], $controller[1])) {
+            throw new InvalidArgumentException(
+                sprintf('The method [%s::%s] is not callable.', $controller[0], $controller[1]),
+            );
+        }
+
+        $this->controller = $controller;
+    }
+
+    /**
+     * @param string[] $methods
+     */
+    private function setMethods(array $methods): void
+    {
+        Assert::allInArray($methods, self::ALL_METHODS);
+        $this->methods = $methods;
+    }
+
+    private function setName(?string $name): void
+    {
+        if (!empty($name)) {
+            Assert::stringNotEmpty($name);
+            Assert::notStartsWith($name, '.');
+            Assert::notContains(
+                $name,
+                ' ',
+                "Route name for route [$name] should not contain whitespaces."
+            );
+        } else {
+            $name = $this->pattern . ':' . implode('@', $this->controller);
+        }
+        $this->name = $name;
+    }
+
+    /**
+     * @param string $key
+     * @param scalar|array<scalar> $value
+     * @psalm-suppress DocblockTypeContradiction
+     */
+    private function addDefaultValue(string $key, $value): void
+    {
+        if (!is_scalar($value) && !is_array($value)) {
+            throw new InvalidArgumentException('A route default value has to be a scalar or an array of scalars.');
+        }
+
+        $this->defaults[$key] = $value;
+    }
+
+    private function addMiddleware(string $m): void
+    {
+        $middleware_id = Str::beforeFirst($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
+        Assert::keyNotExists(
+            $this->middleware,
+            $middleware_id,
+            "Middleware [$middleware_id] added twice to route [$this->name]."
+        );
+        $this->middleware[$middleware_id] = $m;
+    }
+
+    private function addRequirements(array $requirements): void
+    {
+        foreach ($requirements as $segment => $regex) {
+            Assert::stringNotEmpty($segment);
+            Assert::stringNotEmpty($regex);
+            Assert::inArray(
+                $segment,
+                $this->segment_names,
+                'Expected one of the valid segment names: [%2$s]. Got: [%s].'
+            );
+            Assert::keyNotExists(
+                $this->requirements,
+                $segment,
+                "Requirement for segment [$segment] can not be overwritten."
+            );
+            $this->requirements[$segment] = $regex;
         }
     }
 

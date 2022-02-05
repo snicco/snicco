@@ -44,7 +44,7 @@ final class ResponsePreparation
 
     /**
      * @param string[] $sent_headers_with_php A list of headers sent directly with
-     *                                           {@see header()}. Use {@see headers_list()}
+     *                                        {@see header()}. Use {@see headers_list()}
      */
     public function prepare(Psr7\Response $response, Psr7\Request $request, array $sent_headers_with_php): Psr7\Response
     {
@@ -63,8 +63,9 @@ final class ResponsePreparation
         return $response;
     }
 
-    // There is no need to remove a header possibly added by a call to header() in WordPress
-    // since our ResponseEmitter will take of this anyway.
+    /**
+     * @param string[] $headers_sent_with_php
+     */
     private function fixCacheControl(Response $response, array $headers_sent_with_php): Response
     {
         $header = $this->getCacheControlHeader($response, $headers_sent_with_php);
@@ -91,13 +92,16 @@ final class ResponsePreparation
         return $response;
     }
 
+    /**
+     * @param string[] $headers_sent_with_php
+     */
     private function getCacheControlHeader(Response $response, array $headers_sent_with_php): string
     {
         if ($response->hasHeader('cache-control')) {
             return strtolower($response->getHeaderLine('cache-control'));
         }
 
-        $header = Arr::first($headers_sent_with_php, function ($header) {
+        $header = Arr::first($headers_sent_with_php, function (string $header): bool {
             return Str::startsWith(strtolower($header), 'cache-control');
         }, '');
 

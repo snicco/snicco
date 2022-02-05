@@ -8,7 +8,6 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
@@ -39,7 +38,8 @@ final class LazyErrorHandlerTest extends TestCase
     /**
      * @test
      */
-    public function an_exception_is_thrown_if_the_lazy_error_handler_doesnt_have_the_http_error_handler_interface(): void
+    public function an_exception_is_thrown_if_the_lazy_error_handler_doesnt_have_the_http_error_handler_interface(
+    ): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -92,7 +92,7 @@ class TestableErrorHandler implements HttpErrorHandlerInterface
         $this->return = $return;
     }
 
-    public function handle(Throwable $e, RequestInterface $request): ResponseInterface
+    public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         return call_user_func($this->return, $e, $request);
     }

@@ -184,16 +184,16 @@ class InspectsRequestTest extends TestCase
         $this->assertTrue($request->accepts('application/json'));
         $this->assertFalse($request->accepts('text/html'));
 
+        // no accept header
         $request = $this->frontendRequest('/', [], 'POST');
-        $this->assertTrue($request->accepts('application/json'));
-        $this->assertTrue($request->accepts('text/html'));
+        $this->assertFalse($request->accepts('application/json'));
+        $this->assertFalse($request->accepts('text/html'));
 
         $request = $this->frontendRequest('/', [], 'POST')->withAddedHeader('Accept', '*/*');
         $this->assertTrue($request->accepts('application/json'));
         $this->assertTrue($request->accepts('text/html'));
 
-        $request =
-            $this->frontendRequest('/', [], 'POST')->withAddedHeader('Accept', 'application/*');
+        $request = $this->frontendRequest('/', [], 'POST')->withAddedHeader('Accept', 'application/*');
         $this->assertTrue($request->accepts('application/json'));
         $this->assertTrue($request->accepts('application/json+ld'));
         $this->assertFalse($request->accepts('text/html'));

@@ -50,11 +50,10 @@ final class QueryStringConditionTest extends TestCase
 
         $condition = new QueryStringCondition(['foo' => 'bar', 'baz' => 'biz']);
 
-        // Boo not present
-        $this->assertSame([
-            'bar',
-            'biz',
-        ], $condition->getArguments($request));
+        $this->assertTrue($condition->isSatisfied($request));
+
+        // Boo, not present
+        $this->assertSame(['foo' => 'bar', 'baz' => 'biz'], $condition->getArguments($request));
     }
 
     protected function adminDashboard(): AdminArea

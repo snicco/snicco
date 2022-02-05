@@ -8,8 +8,6 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Component\Core\DIContainer;
-use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Http\MethodOverride;
 use Snicco\Component\HttpRouting\Http\NegotiateContent;
@@ -36,8 +34,8 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorFactory;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
@@ -50,6 +48,8 @@ use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
+use Snicco\Component\Kernel\DIContainer;
+use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
 /**
@@ -68,7 +68,7 @@ class HttpRunnerTestCase extends TestCase
     protected string $app_domain = 'foobar.com';
     protected string $routes_dir;
     protected DIContainer $container;
-    protected UrlGenerator $generator;
+    protected UrlGeneratorInterface $generator;
 
     private Router $router;
     private HttpKernel $kernel;
@@ -86,35 +86,13 @@ class HttpRunnerTestCase extends TestCase
         $this->routes_dir = __DIR__ . '/fixtures/routes';
     }
 
-    private function createNeededCollaborators(): void
-    {
-        $this->container = $this->createContainer();
-        $this->container->instance(DIContainer::class, $this->container);
-
-        $this->admin_area = WPAdminArea::fromDefaults();
-        $this->container[AdminArea::class] = $this->admin_area;
-
-        $this->error_handler = new NullErrorHandler();
-        $this->middleware_stack = new MiddlewareStack();
-
-        $this->refreshRouter();
-
-        // internal controllers
-        $this->container->instance(FallBackController::class, new FallBackController());
-        $this->container->instance(
-            ViewController::class,
-            new ViewController(new FileTemplateRenderer())
-        );
-        $this->container->instance(RedirectController::class, new RedirectController());
-    }
-
     final protected function refreshRouter(
         PHPCacheFile $cache_file = null,
         UrlGenerationContext $context = null,
         array $config = []
     ): void {
         unset($this->container[ResponseFactory::class]);
-        unset($this->container[UrlGenerator::class]);
+        unset($this->container[UrlGeneratorInterface::class]);
         unset($this->container[Redirector::class]);
 
         if (is_null($context)) {
@@ -145,52 +123,13 @@ class HttpRunnerTestCase extends TestCase
         );
 
         $this->generator = $this->router;
-        $this->container->instance(UrlGenerator::class, $this->router);
+        $this->container->instance(UrlGeneratorInterface::class, $this->router);
         $rf = $this->createResponseFactory($this->generator);
         $this->container->instance(ResponseFactory::class, $rf);
         $this->container->instance(Redirector::class, $rf);
         $this->container->instance(StreamFactoryInterface::class, $rf);
 
         $this->kernel = $this->createKernel();
-    }
-
-    private function createKernel(): HttpKernel
-    {
-        return new HttpKernel(
-            $this->createKernelMiddleware(),
-            new MiddlewarePipeline(
-                $this->container,
-                $this->error_handler,
-            ),
-            new class implements EventDispatcherInterface {
-
-                public function dispatch(object $event): void
-                {
-                    //
-                }
-
-            }
-        );
-    }
-
-    private function createKernelMiddleware(): KernelMiddleware
-    {
-        return new KernelMiddleware(
-            new NegotiateContent(['en']),
-            new PrepareResponse(new ResponsePreparation($this->psrStreamFactory())),
-            new MethodOverride(),
-            new RoutingMiddleware(
-                $this->router,
-            ),
-            new RouteRunner(
-                new MiddlewarePipeline(
-                    $this->container,
-                    $this->error_handler,
-                ),
-                $this->middleware_stack,
-                $this->container,
-            )
-        );
     }
 
     final protected function assertEmptyBody(Request $request): void
@@ -219,16 +158,6 @@ class HttpRunnerTestCase extends TestCase
     final protected function withMiddlewareAlias(array $aliases): void
     {
         $this->middleware_stack->middlewareAliases($aliases);
-    }
-
-    private function defaultMiddlewareAliases(): array
-    {
-        return [
-            'foo' => FooMiddleware::class,
-            'bar' => BarMiddleware::class,
-            'baz' => BazMiddleware::class,
-            'foobar' => FoobarMiddleware::class,
-        ];
     }
 
     final protected function withGlobalMiddleware(array $middleware): void
@@ -273,7 +202,7 @@ class HttpRunnerTestCase extends TestCase
         return $this->routing_configurator;
     }
 
-    final protected function refreshUrlGenerator(UrlGenerationContext $context = null): UrlGenerator
+    final protected function refreshUrlGenerator(UrlGenerationContext $context = null): UrlGeneratorInterface
     {
         $this->refreshRouter(null, $context);
         return $this->generator;
@@ -289,9 +218,80 @@ class HttpRunnerTestCase extends TestCase
         return $this->admin_area;
     }
 
-    protected function urlGenerator(): UrlGenerator
+    protected function urlGenerator(): UrlGeneratorInterface
     {
         return $this->generator;
+    }
+
+    private function createNeededCollaborators(): void
+    {
+        $this->container = $this->createContainer();
+        $this->container->instance(DIContainer::class, $this->container);
+
+        $this->admin_area = WPAdminArea::fromDefaults();
+        $this->container[AdminArea::class] = $this->admin_area;
+
+        $this->error_handler = new NullErrorHandler();
+        $this->middleware_stack = new MiddlewareStack();
+
+        $this->refreshRouter();
+
+        // internal controllers
+        $this->container->instance(FallBackController::class, new FallBackController());
+        $this->container->instance(
+            ViewController::class,
+            new ViewController(new FileTemplateRenderer())
+        );
+        $this->container->instance(RedirectController::class, new RedirectController());
+    }
+
+    private function createKernel(): HttpKernel
+    {
+        return new HttpKernel(
+            $this->createKernelMiddleware(),
+            new MiddlewarePipeline(
+                $this->container,
+                $this->error_handler,
+            ),
+            new class implements EventDispatcherInterface {
+
+                public function dispatch(object $event): void
+                {
+                    //
+                }
+
+            }
+        );
+    }
+
+    private function createKernelMiddleware(): KernelMiddleware
+    {
+        return new KernelMiddleware(
+            new NegotiateContent(['en']),
+            new PrepareResponse(new ResponsePreparation($this->psrStreamFactory())),
+            new MethodOverride(),
+            new RoutingMiddleware(
+                $this->router,
+            ),
+            new RouteRunner(
+                new MiddlewarePipeline(
+                    $this->container,
+                    $this->error_handler,
+                ),
+                $this->middleware_stack,
+                $this->container,
+            )
+        );
+    }
+
+    private function defaultMiddlewareAliases(): array
+    {
+        return [
+            'foo' => FooMiddleware::class,
+            'bar' => BarMiddleware::class,
+            'baz' => BazMiddleware::class,
+            'foobar' => FoobarMiddleware::class,
+        ];
     }
 
 }

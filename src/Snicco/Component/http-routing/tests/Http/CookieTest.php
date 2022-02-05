@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use DateTime;
+use DateTimeImmutable;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +22,8 @@ class CookieTest extends TestCase
         $cookie2 = $cookie->withPath('/web');
 
         $this->assertNotSame($cookie, $cookie2);
+        $this->assertSame('foo', $cookie->name);
+        $this->assertSame('bar', $cookie->value);
     }
 
     public function testDefault(): void
@@ -29,7 +31,6 @@ class CookieTest extends TestCase
         $cookie = new Cookie('foo', 'bar');
 
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -37,7 +38,10 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => true,
             'samesite' => 'Lax',
-        ], $cookie->properties());
+        ], $cookie->properties);
+
+        $this->assertSame('bar', $cookie->value);
+        $this->assertSame('foo', $cookie->name);
     }
 
     public function testAllowJs(): void
@@ -46,7 +50,6 @@ class CookieTest extends TestCase
         $cookie = $cookie->withJsAccess();
 
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -54,7 +57,7 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => false,
             'samesite' => 'Lax',
-        ], $cookie->properties());
+        ], $cookie->properties);
     }
 
     public function testAllowUnsecure(): void
@@ -63,7 +66,6 @@ class CookieTest extends TestCase
         $cookie = $cookie->withUnsecureHttp();
 
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -71,7 +73,7 @@ class CookieTest extends TestCase
             'secure' => false,
             'httponly' => true,
             'samesite' => 'Lax',
-        ], $cookie->properties());
+        ], $cookie->properties);
     }
 
     public function testSameSite(): void
@@ -79,7 +81,6 @@ class CookieTest extends TestCase
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withSameSite('strict');
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -87,11 +88,10 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => true,
             'samesite' => 'Strict',
-        ], $cookie->properties());
+        ], $cookie->properties);
 
         $cookie = $cookie->withSameSite('lax');
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -99,11 +99,10 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => true,
             'samesite' => 'Lax',
-        ], $cookie->properties());
+        ], $cookie->properties);
 
         $cookie = $cookie->withSameSite('none');
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -111,7 +110,7 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => true,
             'samesite' => 'None',
-        ], $cookie->properties());
+        ], $cookie->properties);
 
         $this->expectException(LogicException::class);
 
@@ -123,7 +122,6 @@ class CookieTest extends TestCase
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withExpiryTimestamp(1000);
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -131,19 +129,18 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => true,
             'samesite' => 'Lax',
-        ], $cookie->properties());
+        ], $cookie->properties);
     }
 
     public function testExpiresDatetimeInterface(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
-        $date = new DateTime('2000-01-01');
+        $date = new DateTimeImmutable('2000-01-01');
 
         $cookie = $cookie->withExpiryTimestamp($date);
 
         $this->assertSame([
-            'value' => 'bar',
             'domain' => null,
             'hostonly' => true,
             'path' => '/',
@@ -151,7 +148,7 @@ class CookieTest extends TestCase
             'secure' => true,
             'httponly' => true,
             'samesite' => 'Lax',
-        ], $cookie->properties());
+        ], $cookie->properties);
     }
 
     public function testExpiresInvalidArgumentThrowsException(): void
@@ -161,15 +158,11 @@ class CookieTest extends TestCase
         $cookie->withExpiryTimestamp('1000');
     }
 
-    public function testValueIsUrlEncoded(): void
+    public function testValueIsNotUrlEncoded(): void
     {
         $cookie = new Cookie('foo_cookie', 'foo bar');
 
-        $this->assertSame(urlencode('foo bar'), $cookie->properties()['value']);
-
-        $cookie = new Cookie('foo_cookie', 'foo bar', false);
-
-        $this->assertSame('foo bar', $cookie->properties()['value']);
+        $this->assertSame('foo bar', $cookie->value);
     }
 
 }

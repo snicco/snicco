@@ -336,10 +336,10 @@ class DefaultResponseFactoryTest extends TestCase
     public function test_away_allows_validation_bypass(): void
     {
         $normal_response = $this->factory->to('/foo');
-        $this->assertFalse($normal_response->externalRedirectAllowed());
+        $this->assertFalse($normal_response->isExternalRedirectAllowed());
 
         $external = $this->factory->away('https://external.com/foo', 307);
-        $this->assertTrue($external->externalRedirectAllowed());
+        $this->assertTrue($external->isExternalRedirectAllowed());
 
         $this->assertSame(307, $external->getStatusCode());
         $this->assertSame('https://external.com/foo', $external->getHeaderLine('location'));

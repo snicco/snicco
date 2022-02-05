@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http;
 
 use function gmdate;
-use function in_array;
+use function is_int;
 use function is_string;
-use function strtolower;
-use function strtotime;
 use function urlencode;
 
 /**
  * @api
+ * @psalm-immutable
  */
 final class Cookies
 {
@@ -25,7 +24,7 @@ final class Cookies
     public function withCookie(Cookie $cookie): Cookies
     {
         $new = clone $this;
-        $new->response_cookies[$cookie->name()] = $cookie->properties();
+        $new->response_cookies[$cookie->name] = $cookie;
         return $new;
     }
 
@@ -36,56 +35,42 @@ final class Cookies
     {
         $headers = [];
 
-        foreach ($this->response_cookies as $name => $properties) {
-            $headers[] = $this->toHeader($name, $properties);
+        foreach ($this->response_cookies as $cookie) {
+            $headers[] = $this->toHeader($cookie);
         }
 
         return $headers;
     }
 
-    private function toHeader(string $name, array $properties): string
+    private function toHeader(Cookie $cookie): string
     {
-        $header = urlencode($name) . '=' . $properties['value'];
+        $properties = $cookie->properties;
+        $header = urlencode($cookie->name) . '=' . urlencode($cookie->value);
 
-        if (isset($properties['domain'])) {
+        if (is_string($properties['domain'])) {
             $header .= '; domain=' . $properties['domain'];
         }
 
-        if (isset($properties['path'])) {
+        if (is_string($properties['path'])) {
             $header .= '; path=' . $properties['path'];
         }
 
-        if (isset($properties['expires'])) {
-            if (is_string($properties['expires'])) {
-                $timestamp = strtotime($properties['expires']);
-            } else {
-                $timestamp = (int)$properties['expires'];
-            }
-            if ($timestamp && $timestamp !== 0) {
-                $header .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $timestamp);
-            }
+        if (is_int($properties['expires'])) {
+            $header .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $properties['expires']);
         }
 
-        if (isset($properties['secure']) && $properties['secure']) {
+        $header .= '; SameSite=' . $properties['samesite'];
+
+        if ($properties['secure']) {
             $header .= '; secure';
         }
 
-        if (isset($properties['hostonly']) && $properties['hostonly']) {
+        if ($properties['hostonly']) {
             $header .= '; HostOnly';
         }
 
-        if (isset($properties['httponly']) && $properties['httponly']) {
+        if ($properties['httponly']) {
             $header .= '; HttpOnly';
-        }
-
-        if (isset($properties['samesite'])
-            && in_array(
-                strtolower($properties['samesite']),
-                ['lax', 'strict'],
-                true
-            )) {
-            // While strtolower is needed for correct comparison, the RFC doesn't care about case
-            $header .= '; SameSite=' . $properties['samesite'];
         }
 
         return $header;

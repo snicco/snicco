@@ -259,9 +259,14 @@ class RouteSegmentsTest extends HttpRunnerTestCase
             'r1',
             'users/{user_id}/{name}',
             [RoutingTestController::class, 'twoParams']
-        )
-            ->requirements(['user_id' => '[a]+'])
+        )->requirements(['user_id' => '[a]+'])
             ->requirements(['name' => 'calvin']);
+
+        $this->routeConfigurator()->get(
+            'r2',
+            'foobar',
+            [RoutingTestController::class, 'twoParams']
+        );
 
         $request = $this->frontendRequest('/users/a/calvin');
         $this->assertResponseBody('a:calvin', $request);

@@ -35,7 +35,7 @@ interface AdminArea
      *
      * @param string $route_pattern
      *
-     * @return array<string,array<string,string>>
+     * @return array{0:string, 1: array<string,string>}
      */
     public function rewriteForUrlGeneration(string $route_pattern): array;
 

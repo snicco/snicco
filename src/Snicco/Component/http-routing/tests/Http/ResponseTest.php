@@ -225,9 +225,9 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testWith(): void
+    public function test_withFlashMessages(): void
     {
-        $response = $this->response->withFlashMessages('foo', 'bar');
+        $response = $this->response->withFlashMessages(['foo' => 'bar']);
 
         $this->assertSame(['foo' => 'bar'], $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
@@ -237,7 +237,7 @@ class ResponseTest extends TestCase
         $this->assertSame($arr, $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
 
-        $response_new = $response->withFlashMessages('biz', 'boom');
+        $response_new = $response->withFlashMessages(['biz' => 'boom']);
 
         $this->assertSame(
             ['foo' => 'bar', 'bar' => 'baz', 'biz' => 'boom'],
@@ -251,7 +251,7 @@ class ResponseTest extends TestCase
      */
     public function testWithInput(): void
     {
-        $response = $this->response->withOldInput('foo', 'bar');
+        $response = $this->response->withOldInput(['foo' => 'bar']);
 
         $this->assertSame(['foo' => 'bar'], $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
@@ -261,7 +261,7 @@ class ResponseTest extends TestCase
         $this->assertSame($arr, $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
 
-        $response_new = $response->withOldInput('biz', 'boom');
+        $response_new = $response->withOldInput(['biz' => 'boom']);
 
         $this->assertSame(
             ['foo' => 'bar', 'bar' => 'baz', 'biz' => 'boom'],
@@ -305,9 +305,6 @@ class ResponseTest extends TestCase
         $response = $this->response->withErrors(['foo' => 'bar'], 'namespace1');
         $this->assertSame(['namespace1' => ['foo' => ['bar']]], $response->errors());
         $this->assertSame([], $this->response->errors());
-
-        $this->expectExceptionMessage('Keys have to be strings');
-        $this->response->withErrors(['foo', 'bar']);
     }
 
     protected function setUp(): void

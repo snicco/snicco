@@ -20,9 +20,7 @@ abstract class AbstractRouteCondition
      * Get an array of arguments that will be merged with the url segments and passed to the
      * controller.
      *
-     * @param Request $request
-     *
-     * @return array<mixed>
+     * @return array<string,string>
      */
     public function getArguments(Request $request): array
     {
