@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Middleware\Redirect;
 
 use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -36,6 +38,31 @@ final class Redirect extends AbstractMiddleware
     }
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    {
+        if (isset($this->redirects[$request->path()])) {
+            return $this->respond()->redirect(
+                $this->redirects[$request->path()]['to'],
+                $this->redirects[$request->path()]['status']
+            );
+        }
+
+        $path_qs = $request->path() . '?' . $request->queryString();
+
+        if (isset($this->redirects[$path_qs])) {
+            return $this->respond()->redirect(
+                $this->redirects[$path_qs]['to'],
+                $this->redirects[$path_qs]['status']
+            );
+        }
+
+        return $next($request);
+    }
+
+    /**
      * @param array<positive-int,array<string,string>> $redirects
      * @return array<string,array{to: string, status: positive-int}>
      */
@@ -61,27 +88,6 @@ final class Redirect extends AbstractMiddleware
             }
         }
         return $_r;
-    }
-
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
-    {
-        if (isset($this->redirects[$request->path()])) {
-            return $this->respond()->redirect(
-                $this->redirects[$request->path()]['to'],
-                $this->redirects[$request->path()]['status']
-            );
-        }
-
-        $path_qs = $request->path() . '?' . $request->queryString();
-
-        if (isset($this->redirects[$path_qs])) {
-            return $this->respond()->redirect(
-                $this->redirects[$path_qs]['to'],
-                $this->redirects[$path_qs]['status']
-            );
-        }
-
-        return $next($request);
     }
 
 }

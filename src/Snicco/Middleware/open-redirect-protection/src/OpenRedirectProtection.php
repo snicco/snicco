@@ -50,6 +50,37 @@ final class OpenRedirectProtection extends AbstractMiddleware
         $this->whitelist[] = $this->allSubdomainsOfApplication();
     }
 
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    {
+        $response = $next($request);
+
+        if (!$response->isRedirect()) {
+            return $response;
+        }
+
+        if ($response instanceof RedirectResponse && $response->isExternalRedirectAllowed()) {
+            return $response;
+        }
+
+        $target = $response->getHeaderLine('location');
+
+        $is_same_site = $this->isSameSiteRedirect($request, $target);
+
+        // Always allow relative redirects
+        if ($is_same_site) {
+            return $response;
+        }
+
+        $target_host = parse_url($target, PHP_URL_HOST);
+
+        // Only allow redirects away to whitelisted hosts.
+        if ($target_host && $this->isWhitelisted($target_host)) {
+            return $response;
+        }
+
+        return $this->forbiddenRedirect($target);
+    }
+
     /**
      * @return string[]
      */
@@ -72,36 +103,6 @@ final class OpenRedirectProtection extends AbstractMiddleware
     private function allSubdomainsOfApplication(): string
     {
         return $this->allSubdomains($this->host);
-    }
-
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
-    {
-        $response = $next($request);
-
-        if (!$response->isRedirect()) {
-            return $response;
-        }
-
-        if ($response instanceof RedirectResponse && $response->externalRedirectAllowed()) {
-            return $response;
-        }
-
-        $target = $response->getHeaderLine('location');
-
-        $target_host = parse_url($target, PHP_URL_HOST);
-        $is_same_site = $this->isSameSiteRedirect($request, $target);
-
-        // Always allow relative redirects
-        if ($is_same_site) {
-            return $response;
-        }
-
-        // Only allow redirects away to whitelisted hosts.
-        if ($this->isWhitelisted($target_host)) {
-            return $response;
-        }
-
-        return $this->forbiddenRedirect($target);
     }
 
     private function isSameSiteRedirect(Request $request, string $location): bool

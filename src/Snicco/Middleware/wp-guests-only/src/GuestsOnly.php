@@ -22,13 +22,13 @@ final class GuestsOnly extends AbstractMiddleware
     private string $json_message;
 
     public function __construct(
-        ScopableWP $wp,
         string $redirect_to = null,
-        string $json_message = 'You are already authenticated'
+        string $json_message = null,
+        ScopableWP $wp = null
     ) {
-        $this->wp = $wp;
         $this->redirect_to = $redirect_to;
-        $this->json_message = $json_message;
+        $this->json_message = $json_message ?: 'You are already authenticated';
+        $this->wp = $wp ?: new ScopableWP();
     }
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface

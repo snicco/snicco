@@ -33,7 +33,7 @@ abstract class Payload extends AbstractMiddleware
      * @param string[] $content_types
      * @param string[] $methods
      */
-    public function __construct(array $content_types, $methods = ['POST', 'PUT', 'PATCH', 'DELETE'])
+    public function __construct(array $content_types, array $methods = ['POST', 'PUT', 'PATCH', 'DELETE'])
     {
         Assert::allString($content_types);
         Assert::allString($methods);
@@ -51,6 +51,13 @@ abstract class Payload extends AbstractMiddleware
         return $next($request);
     }
 
+    /**
+     * @return array<string,mixed>
+     *
+     * @throws CantParseRequestBody
+     */
+    abstract protected function parse(StreamInterface $stream): array;
+
     private function shouldParseRequest(Request $request): bool
     {
         if (!in_array($request->getMethod(), $this->methods, true)) {
@@ -67,12 +74,5 @@ abstract class Payload extends AbstractMiddleware
 
         return false;
     }
-
-    /**
-     * @return array<string,mixed>
-     *
-     * @throws CantParseRequestBody
-     */
-    abstract protected function parse(StreamInterface $stream): array;
 
 }
