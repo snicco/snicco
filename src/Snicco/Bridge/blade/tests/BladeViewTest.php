@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade\Tests;
 
+use RuntimeException;
 use Snicco\Bridge\Blade\BladeView;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
@@ -73,6 +74,10 @@ class BladeViewTest extends BladeTestCase
     public function a_blade_view_can_be_created_from_an_absolute_path(): void
     {
         $path = realpath($this->blade_views . '/foo.blade.php');
+
+        if (false === $path) {
+            throw new RuntimeException("path [$path] does not exist.");
+        }
 
         $view = $this->view_engine->make($path);
 

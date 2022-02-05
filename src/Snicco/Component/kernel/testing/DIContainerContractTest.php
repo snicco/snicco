@@ -12,9 +12,6 @@ use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Exception\FrozenService;
 use stdClass;
 
-use function fclose;
-use function fopen;
-
 trait DIContainerContractTest
 {
 
@@ -98,6 +95,7 @@ trait DIContainerContractTest
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     final public function testPrimitive(): void
     {
@@ -119,12 +117,8 @@ trait DIContainerContractTest
         PHPUnit::assertSame(false, $container['false']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('$value must be Closure,object or scalar. Got [resource].');
-        try {
-            $container->primitive('resource', $stream = fopen(__DIR__, 'r'));
-        } finally {
-            fclose($stream);
-        }
+        $this->expectExceptionMessage('$value must be a scalar or an array of scalars. Got [object].');
+        $container->primitive('resource', new stdClass());
     }
 
     /**
@@ -312,7 +306,7 @@ trait DIContainerContractTest
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Resolved value for class-string');
-        $resolved = $container[Foo::class];
+        $container[Foo::class];
     }
 
 

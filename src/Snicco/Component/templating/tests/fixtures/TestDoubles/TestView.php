@@ -4,19 +4,27 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\Tests\fixtures\TestDoubles;
 
+use BadMethodCallException;
 use Snicco\Component\Templating\View\PHPView;
 use Snicco\Component\Templating\View\View;
+
+use function sprintf;
 
 class TestView implements View
 {
 
+    /**
+     * @var array<string,mixed>
+     */
     private array $context = [];
+
     private string $name;
 
     public function __construct(string $name)
     {
         $this->name = $name;
     }
+
 
     public function with($key, $value = null): View
     {
@@ -36,31 +44,22 @@ class TestView implements View
 
     public function toString(): string
     {
-        $context = '[';
-
-        foreach ($this->context as $key => $value) {
-            if ($key === '__view') {
-                continue;
-            }
-            $context .= $key . '=>' . $value . ',';
-        }
-        $context = rtrim($context, ',');
-        $context .= ']';
-
-        return 'VIEW:' . $this->name . ',CONTEXT:' . $context;
+        throw new BadMethodCallException(sprintf('Test double [%s] can not be rendered to string.', self::class));
     }
 
     public function path(): string
     {
-    }
-
-    public function parent(): ?PHPView
-    {
+        throw new BadMethodCallException('TestView.php has no path.');
     }
 
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function parent(): ?PHPView
+    {
+        return null;
     }
 
 }

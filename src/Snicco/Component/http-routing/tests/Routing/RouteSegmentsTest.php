@@ -388,8 +388,7 @@ class RouteSegmentsTest extends HttpRunnerTestCase
             'route1',
             'route1/{name}',
             [RoutingTestController::class, 'dynamicInt']
-        )
-            ->requireOneOf('name', [1, 2, 3]);
+        )->requireOneOf('name', [1, 2, 3]);
 
         $request = $this->frontendRequest('/route1/1');
         $this->assertResponseBody('dynamic:1', $request);

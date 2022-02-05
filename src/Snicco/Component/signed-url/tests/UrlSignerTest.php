@@ -21,6 +21,14 @@ final class UrlSignerTest extends TestCase
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->storage = new InMemoryStorage();
+        $this->url_signer =
+            new UrlSigner($this->storage, new Sha256Hasher(Secret::generate()));
+    }
+
     /**
      * @test
      */
@@ -59,6 +67,8 @@ final class UrlSignerTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_for_bad_max_usage(): void
     {
@@ -181,14 +191,6 @@ final class UrlSignerTest extends TestCase
 
         $link = $this->url_signer->sign('/foo', 10, 10);
         $this->assertSame(10, $link->maxUsage());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->storage = new InMemoryStorage();
-        $this->url_signer =
-            new UrlSigner($this->storage, new Sha256Hasher(Secret::generate()));
     }
 
 }

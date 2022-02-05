@@ -15,9 +15,17 @@ final class ValidateSignature implements MiddlewareInterface
 {
 
     private SignedUrlValidator $validator;
+
+    /**
+     * @var Closure(ServerRequestInterface):string | null $request_context
+     */
     private ?Closure $request_context;
+
     private bool $check_post_request;
 
+    /**
+     * @param Closure(ServerRequestInterface):string | null $request_context
+     */
     public function __construct(
         SignedUrlValidator $validator,
         ?Closure $request_context = null,
@@ -36,8 +44,7 @@ final class ValidateSignature implements MiddlewareInterface
 
         $this->validator->validate($request->getRequestTarget(), $context);
 
-        $response = $handler->handle($request);
-        return $response;
+        return $handler->handle($request);
     }
 
 }

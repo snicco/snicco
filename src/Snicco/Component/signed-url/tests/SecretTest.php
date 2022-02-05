@@ -14,7 +14,7 @@ final class SecretTest extends TestCase
     /**
      * @test
      */
-    public function testErrorForWeakStrength(): void
+    public function test_error_for_weak_strength(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -24,17 +24,16 @@ final class SecretTest extends TestCase
     /**
      * @test
      */
-    public function testWorksForMinStrength16(): void
+    public function a_secret_can_be_generated_at_min_strength_16(): void
     {
         $secret = Secret::generate(16);
         $this->assertInstanceOf(Secret::class, $secret);
-        $this->assertIsString($secret->asString());
     }
 
     /**
      * @test
      */
-    public function testFromStored(): void
+    public function test_fromHexEncoded(): void
     {
         $secret = Secret::generate();
 
@@ -48,7 +47,7 @@ final class SecretTest extends TestCase
     /**
      * @test
      */
-    public function testExceptionIfClearlyBadStringIsPassed(): void
+    public function an_exception_is_thrown_for_a_clearly_malformed_secret(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Secret::fromHexEncoded('badsecret');
@@ -57,7 +56,7 @@ final class SecretTest extends TestCase
     /**
      * @test
      */
-    public function testByteStringStaysSame(): void
+    public function binary_secrets_stay_the_same(): void
     {
         $secret = Secret::generate();
 

@@ -65,26 +65,6 @@ trait SignedUrlStorageTests
         }
     }
 
-    protected function createSignedUrl(
-        string $link_target,
-        string $signature,
-        int $expires_in = 10,
-        int $max_usage = 1
-    ): SignedUrl {
-        return SignedUrl::create(
-            $link_target,
-            $link_target,
-            $signature,
-            time() + $expires_in,
-            $max_usage
-        );
-    }
-
-    protected function advanceTime(int $seconds, TestClock $clock): void
-    {
-        $clock->travelIntoFuture($seconds);
-    }
-
     /**
      * @test
      */
@@ -134,6 +114,29 @@ trait SignedUrlStorageTests
                 $e->getMessage()
             );
         }
+    }
+
+    protected function createSignedUrl(
+        string $link_target,
+        string $signature,
+        int $expires_in = 10,
+        int $max_usage = 1
+    ): SignedUrl {
+        return SignedUrl::create(
+            $link_target,
+            $link_target,
+            $signature,
+            time() + $expires_in,
+            $max_usage
+        );
+    }
+
+    /**
+     * @param positive-int $seconds
+     */
+    protected function advanceTime(int $seconds, TestClock $clock): void
+    {
+        $clock->travelIntoFuture($seconds);
     }
 
     abstract protected function createStorage(Clock $clock): SignedUrlStorage;

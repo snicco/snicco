@@ -34,9 +34,10 @@ final class WPObjectCachePsr16 implements CacheInterface
     }
 
     /**
-     * @psalm-suppress MixedAssignment
      * @throws RuntimeException If the cache contents for the key are malformed and can't be unserialized.
      * @throws BadKey
+     *
+     * @psalm-suppress MixedAssignment
      */
     public function get($key, $default = null)
     {
@@ -49,56 +50,6 @@ final class WPObjectCachePsr16 implements CacheInterface
         }
 
         return $this->validatedUnserialize($content, $key);
-    }
-
-    /**
-     * @param int|string|mixed $key
-     *
-     * @throws BadKey
-     */
-    private function validatedKey($key): string
-    {
-        if (!is_string($key)) {
-            throw new BadKey(
-                sprintf('$key has to be string or integer. Got: [%s]', gettype($key))
-            );
-        }
-
-        if ('' === $key) {
-            throw new BadKey('$key cant be an empty string.');
-        }
-
-        if (preg_match('|[\{\}\(\)/\\\@\:]|', $key)) {
-            throw new BadKey(
-                sprintf(
-                    'Invalid key: "%s". The key contains one or more characters reserved for future extension: {}()/\@:',
-                    $key
-                )
-            );
-        }
-
-        return $key;
-    }
-
-    /**
-     *
-     * @param string|mixed $content
-     * @return mixed
-     *
-     * @psalm-suppress MixedAssignment
-     * @throws RuntimeException If content cant be unserialized
-     */
-    private function validatedUnserialize($content, string $key)
-    {
-        if (!is_string($content)) {
-            throw new RuntimeException("Cache content for key [$key] was not a serialized string.");
-        }
-
-        $parsed = unserialize($content);
-        if (false === $parsed && 'b:0;' !== $content) {
-            throw new RuntimeException("Cant unserialize cache content for key [$key].");
-        }
-        return $parsed;
     }
 
     /**
@@ -261,6 +212,57 @@ final class WPObjectCachePsr16 implements CacheInterface
         $this->validatedKey($key);
         $this->wp->cacheGet($key, '', true, $found);
         return true === $found;
+    }
+
+    /**
+     * @param int|string|mixed $key
+     *
+     * @throws BadKey
+     */
+    private function validatedKey($key): string
+    {
+        if (!is_string($key)) {
+            throw new BadKey(
+                sprintf('$key has to be string or integer. Got: [%s]', gettype($key))
+            );
+        }
+
+        if ('' === $key) {
+            throw new BadKey('$key cant be an empty string.');
+        }
+
+        if (preg_match('|[\{\}\(\)/\\\@\:]|', $key)) {
+            throw new BadKey(
+                sprintf(
+                    'Invalid key: "%s". The key contains one or more characters reserved for future extension: {}()/\@:',
+                    $key
+                )
+            );
+        }
+
+        return $key;
+    }
+
+    /**
+     *
+     * @param string|mixed $content
+     * @return mixed
+     *
+     * @throws RuntimeException If content cant be unserialized
+     *
+     * @psalm-suppress MixedAssignment
+     */
+    private function validatedUnserialize($content, string $key)
+    {
+        if (!is_string($content)) {
+            throw new RuntimeException("Cache content for key [$key] was not a serialized string.");
+        }
+
+        $parsed = unserialize($content);
+        if (false === $parsed && 'b:0;' !== $content) {
+            throw new RuntimeException("Cant unserialize cache content for key [$key].");
+        }
+        return $parsed;
     }
 
 }

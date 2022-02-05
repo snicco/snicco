@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade;
 
-use Illuminate\Contracts\View\View as IlluminateViewContract;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
 use Throwable;
@@ -12,12 +11,12 @@ use Throwable;
 /**
  * @internal
  */
-final class BladeView implements View, IlluminateViewContract
+final class BladeView implements View, \Illuminate\Contracts\View\View
 {
 
     private \Illuminate\View\View $illuminate_view;
 
-    public function __construct($illuminate_view)
+    public function __construct(\Illuminate\View\View $illuminate_view)
     {
         $this->illuminate_view = $illuminate_view;
     }
@@ -25,19 +24,6 @@ final class BladeView implements View, IlluminateViewContract
     public function render(): string
     {
         return $this->toString();
-    }
-
-    public function toString(): string
-    {
-        try {
-            return $this->illuminate_view->render();
-        } catch (Throwable $e) {
-            throw new ViewCantBeRendered(
-                "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
-                $e->getCode(),
-                $e,
-            );
-        }
     }
 
     public function name(): string
@@ -64,9 +50,24 @@ final class BladeView implements View, IlluminateViewContract
         return $this->context();
     }
 
+    public function toString(): string
+    {
+        try {
+            return $this->illuminate_view->render();
+        } catch (Throwable $e) {
+            throw new ViewCantBeRendered(
+                "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
+                (int)$e->getCode(),
+                $e,
+            );
+        }
+    }
+
     public function context(): array
     {
-        return $this->illuminate_view->getData();
+        /** @var array<string,mixed> $data */
+        $data = $this->illuminate_view->getData();
+        return $data;
     }
 
     public function path(): string

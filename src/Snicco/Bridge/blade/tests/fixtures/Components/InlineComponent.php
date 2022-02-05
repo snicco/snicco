@@ -11,7 +11,7 @@ class InlineComponent extends BladeComponent
 
     public string $content;
 
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->content = strtoupper($content);
     }

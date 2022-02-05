@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\Assert as PHPUnit;
+use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\Templating\GlobalViewContext;
@@ -35,6 +36,44 @@ class CustomDirectivesTest extends WPTestCase
     protected BladeStandalone $blade;
 
     /**
+     * @psalm-suppress NullArgument
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (class_exists(Facade::class)) {
+            Facade::clearResolvedInstances();
+            Facade::setFacadeApplication(null);
+        }
+
+        if (class_exists(Container::class)) {
+            Container::setInstance();
+        }
+
+        $this->blade_cache = dirname(__DIR__) . '/fixtures/cache';
+        $this->blade_views = dirname(__DIR__) . '/fixtures/views';
+
+        $this->composers = new ViewComposerCollection(
+            null,
+            $global_view_context = new GlobalViewContext()
+        );
+        $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
+        $blade->boostrap();
+        $this->blade = $blade;
+        $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
+        $this->global_view_context = $global_view_context;
+
+        $this->clearCache();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->clearCache();
+        parent::tearDown();
+    }
+
+    /**
      * @test
      */
     public function custom_auth_user_directive_works(): void
@@ -53,18 +92,6 @@ class CustomDirectivesTest extends WPTestCase
         $view = $this->view('auth');
         $content = $view->toString();
         $this->assertViewContent('', $content);
-    }
-
-    private function view(string $view): View
-    {
-        return $this->view_engine->make('blade-features.' . $view);
-    }
-
-    protected function assertViewContent(string $expected, string $actual): void
-    {
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
-
-        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
     }
 
     /**
@@ -114,33 +141,20 @@ class CustomDirectivesTest extends WPTestCase
         $this->assertViewContent('', $content);
     }
 
-    protected function setUp(): void
+    protected function assertViewContent(string $expected, string $actual): void
     {
-        parent::setUp();
+        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
 
-        if (class_exists(Facade::class)) {
-            Facade::clearResolvedInstances();
-            Facade::setFacadeApplication(null);
+        if (null === $actual) {
+            throw new RuntimeException('preg_replcae failed in test case.');
         }
 
-        if (class_exists(Container::class)) {
-            Container::setInstance();
-        }
+        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
+    }
 
-        $this->blade_cache = dirname(__DIR__) . '/fixtures/cache';
-        $this->blade_views = dirname(__DIR__) . '/fixtures/views';
-
-        $this->composers = new ViewComposerCollection(
-            null,
-            $global_view_context = new GlobalViewContext()
-        );
-        $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
-        $blade->boostrap();
-        $this->blade = $blade;
-        $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
-        $this->global_view_context = $global_view_context;
-
-        $this->clearCache();
+    private function view(string $view): View
+    {
+        return $this->view_engine->make('blade-features.' . $view);
     }
 
     private function clearCache(): void

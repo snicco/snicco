@@ -19,6 +19,13 @@ class ViewComposerCollectionTest extends TestCase
 
     private ViewComposerFactory $factory;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->factory = new NewableInstanceViewComposerFactory();
+    }
+
     /**
      * @test
      */
@@ -35,11 +42,6 @@ class ViewComposerCollectionTest extends TestCase
         $collection->compose($view);
 
         $this->assertSame(['foo' => 'baz'], $view->context());
-    }
-
-    private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewComposerCollection
-    {
-        return new ViewComposerCollection($this->factory, $global_view_context);
     }
 
     /**
@@ -112,8 +114,8 @@ class ViewComposerCollectionTest extends TestCase
 
         $view = new TestView('foo_view');
 
-        $collection->addComposer('foo_view', function ($view_file) {
-            $view_file->with(['foo' => 'baz']);
+        $collection->addComposer('foo_view', function (View $view) {
+            $view->with(['foo' => 'baz']);
         });
 
         $collection->compose($view);
@@ -123,6 +125,7 @@ class ViewComposerCollectionTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exception_for_adding_a_bad_view_composer(): void
     {
@@ -151,6 +154,7 @@ class ViewComposerCollectionTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress ArgumentTypeCoercion
      */
     public function test_exception_for_bad_composer_class(): void
     {
@@ -164,6 +168,7 @@ class ViewComposerCollectionTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_for_composer_without_interface(): void
     {
@@ -247,11 +252,9 @@ class ViewComposerCollectionTest extends TestCase
         $this->assertSame([], $view->context());
     }
 
-    protected function setUp(): void
+    private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewComposerCollection
     {
-        parent::setUp();
-
-        $this->factory = new NewableInstanceViewComposerFactory();
+        return new ViewComposerCollection($this->factory, $global_view_context);
     }
 
 }

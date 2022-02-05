@@ -310,7 +310,7 @@ final class Route
     }
 
     /**
-     * @param array<string,string|int> $values
+     * @param array<string|int> $values
      */
     public function requireOneOf(string $segment_name, array $values): Route
     {

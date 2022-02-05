@@ -8,9 +8,9 @@ use Closure;
 use Pimple\Container;
 use Pimple\Exception\FrozenServiceException;
 use ReturnTypeWillChange;
-use Snicco\Component\Core\DIContainer;
-use Snicco\Component\Core\Exception\ContainerIsLocked;
-use Snicco\Component\Core\Exception\FrozenService;
+use Snicco\Component\Kernel\DIContainer;
+use Snicco\Component\Kernel\Exception\ContainerIsLocked;
+use Snicco\Component\Kernel\Exception\FrozenService;
 
 final class PimpleContainerAdapter extends DIContainer
 {
@@ -25,7 +25,7 @@ final class PimpleContainerAdapter extends DIContainer
 
     public function factory(string $id, Closure $service): void
     {
-        if (true === $this->locked) {
+        if ($this->locked) {
             throw ContainerIsLocked::whileSettingId($id);
         }
         try {
@@ -40,14 +40,9 @@ final class PimpleContainerAdapter extends DIContainer
         return $this->pimple[$id];
     }
 
-    public function primitive(string $id, $value): void
-    {
-        $this->singleton($id, fn() => $value);
-    }
-
     public function singleton(string $id, Closure $service): void
     {
-        if (true === $this->locked) {
+        if ($this->locked) {
             throw ContainerIsLocked::whileSettingId($id);
         }
         try {
@@ -59,16 +54,16 @@ final class PimpleContainerAdapter extends DIContainer
 
     public function offsetExists($offset): bool
     {
-        return $this->pimple->offsetExists($offset);
+        return $this->pimple->offsetExists((string)$offset);
     }
 
     #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
-        if (true === $this->locked) {
-            throw ContainerIsLocked::whileRemovingId($offset);
+        if ($this->locked) {
+            throw ContainerIsLocked::whileRemovingId((string)$offset);
         }
-        $this->pimple->offsetUnset($offset);
+        $this->pimple->offsetUnset((string)$offset);
     }
 
     public function has(string $id): bool

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Templating\Tests;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\ParameterBag\ParameterPag;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
@@ -32,8 +33,38 @@ class ViewEngineTest extends TestCase
     private ViewEngine $view_engine;
     private GlobalViewContext $global_view_context;
     private ViewComposerCollection $composers;
+    private PHPViewFactory $php_view_factory;
 
     private string $view_dir;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->view_dir = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'views';
+
+        $this->global_view_context = new GlobalViewContext();
+        $this->composers = new ViewComposerCollection(
+            new NewableInstanceViewComposerFactory(),
+            $this->global_view_context
+        );
+
+        $this->php_view_factory = new PHPViewFactory(
+            new PHPViewFinder([$this->view_dir]),
+            $this->composers
+        );
+
+        $this->view_engine = new ViewEngine($this->php_view_factory);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        if (is_file($this->view_dir . '/framework/redirect-protection.php')) {
+            unlink($this->view_dir . '/framework/redirect-protection.php');
+        }
+    }
 
     /**
      * @test
@@ -53,6 +84,10 @@ class ViewEngineTest extends TestCase
     public function a_view_can_be_created_from_an_absolute_path(): void
     {
         $path = realpath($this->view_dir . '/foo.php');
+
+        if (false === $path) {
+            throw new RuntimeException("test view [$path] does not exist.");
+        }
 
         $view = $this->view_engine->make($path);
         $this->assertInstanceOf(PHPView::class, $view);
@@ -140,7 +175,7 @@ class ViewEngineTest extends TestCase
     {
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
-        $this->composers->addComposer('context-priority', function (PHPView $view) {
+        $this->composers->addComposer('context-priority', function (View $view) {
             $view->with([
                 'test_context' => new ParameterPag([
                     'foo' => ['bar' => 'biz'],
@@ -160,7 +195,7 @@ class ViewEngineTest extends TestCase
     {
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
-        $this->composers->addComposer('context-priority', function (PHPView $view) {
+        $this->composers->addComposer('context-priority', function (View $view) {
             $view->with([
                 'test_context' => new ParameterPag([
                     'foo' => ['bar' => 'biz'],
@@ -316,35 +351,6 @@ class ViewEngineTest extends TestCase
                 'None of the used view factories can render the view [foo.xml].',
                 $e->getMessage()
             );
-        }
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->view_dir = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'views';
-
-        $this->global_view_context = new GlobalViewContext();
-        $this->composers = new ViewComposerCollection(
-            new NewableInstanceViewComposerFactory(),
-            $this->global_view_context
-        );
-
-        $this->php_view_factory = new PHPViewFactory(
-            new PHPViewFinder([$this->view_dir]),
-            $this->composers
-        );
-
-        $this->view_engine = new ViewEngine($this->php_view_factory);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        if (is_file($this->view_dir . '/framework/redirect-protection.php')) {
-            unlink($this->view_dir . '/framework/redirect-protection.php');
         }
     }
 

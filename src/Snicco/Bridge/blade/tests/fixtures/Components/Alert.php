@@ -10,7 +10,7 @@ use Snicco\Component\Templating\View\View;
 class Alert extends BladeComponent
 {
 
-    
+
     public string $type;
 
     public string $message;
@@ -26,7 +26,7 @@ class Alert extends BladeComponent
         return $this->view('components.alert');
     }
 
-    public function isUppercaseFoo($foo): bool
+    public function isUppercaseFoo(string $foo): bool
     {
         return $foo === 'FOO';
     }

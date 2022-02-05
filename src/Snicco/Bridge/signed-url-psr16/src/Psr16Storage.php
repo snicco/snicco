@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Bridge\SignedUrlPsr16;
 
 use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 use Snicco\Component\SignedUrl\Exception\BadIdentifier;
 use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
 use Snicco\Component\SignedUrl\SignedUrl;
 use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 
 use function is_array;
+use function is_int;
 use function time;
 
 final class Psr16Storage implements SignedUrlStorage
@@ -27,11 +29,7 @@ final class Psr16Storage implements SignedUrlStorage
     {
         $key = $this->buildCacheKey($identifier);
 
-        $data = $this->cache->get($key);
-
-        if (null == $data || !is_array($data)) {
-            throw BadIdentifier::for($identifier);
-        }
+        $data = $this->getData($key, $identifier);
 
         $new = $data['left_usages'] - 1;
 
@@ -52,20 +50,6 @@ final class Psr16Storage implements SignedUrlStorage
                 throw new UnavailableStorage("Cant decrement usage for signed url [$identifier].");
             }
         }
-    }
-
-    private function buildCacheKey(string $identifier): string
-    {
-        return 'signed_url_' . $identifier;
-    }
-
-    private function ttlInSeconds(int $expires_at): int
-    {
-        // A link that was created at a hypothetical timestamp "1000" with a ttl
-        // of 1 second should still be valid at timestamp "1001".
-        // psr/simple-cache does not compare ttl like but considers only items as a hit where $expires_at > time().
-        // This tho which is why we need to add one extra second.
-        return ($expires_at - time()) + 1;
     }
 
     public function store(SignedUrl $signed_url): void
@@ -89,6 +73,42 @@ final class Psr16Storage implements SignedUrlStorage
     public function gc(): void
     {
         //
+    }
+
+    private function buildCacheKey(string $identifier): string
+    {
+        return 'signed_url_' . $identifier;
+    }
+
+    private function ttlInSeconds(int $expires_at): int
+    {
+        // A link that was created at a hypothetical timestamp "1000" with a ttl
+        // of 1 second should still be valid at timestamp "1001".
+        // psr/simple-cache does not compare ttl like but considers only items as a hit where $expires_at > time().
+        // This tho which is why we need to add one extra second.
+        return ($expires_at - time()) + 1;
+    }
+
+    /**
+     * @param string $key
+     * @return array{left_usages:positive-int, expires_at:int}
+     * @throws BadIdentifier
+     */
+    private function getData(string $key, string $identifier): array
+    {
+        $data = $this->cache->get($key);
+
+        if (null == $data || !is_array($data)) {
+            throw BadIdentifier::for($identifier);
+        }
+
+        if (!isset($data['left_usages']) || !is_int($data['left_usages'])) {
+            throw new RuntimeException("Cached contents for key [$identifier] are corrupted.");
+        }
+        if (!isset($data['expires_at']) || !is_int($data['expires_at'])) {
+            throw new RuntimeException("Cached contents for key [$identifier] are corrupted.");
+        }
+        return $data;
     }
 
 }

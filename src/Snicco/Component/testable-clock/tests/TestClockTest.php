@@ -21,8 +21,8 @@ final class TestClockTest extends TestCase
     {
         $clock = new TestClock();
 
-        $this->assertEqualsWithDelta(new DateTimeImmutable('now'), $clock->currentTime(), 0.1);
-        $this->assertEqualsWithDelta(time(), $clock->currentTimestamp(), 0.1);
+        $this->assertEqualsWithDelta(new DateTimeImmutable('now'), $clock->currentTime(), 1);
+        $this->assertEqualsWithDelta(time(), $clock->currentTimestamp(), 1);
     }
 
     /**
@@ -32,14 +32,14 @@ final class TestClockTest extends TestCase
     {
         $clock = new TestClock($time = new DateTimeImmutable('12-12-2020'));
 
-        $this->assertNotEqualsWithDelta(time(), $clock->currentTimestamp(), 0.1);
+        $this->assertNotEqualsWithDelta(time(), $clock->currentTimestamp(), 1);
         $this->assertNotEqualsWithDelta(
             new DateTimeImmutable('now'),
             $clock->currentTime(),
-            0.1
+            1
         );
 
-        $this->assertEqualsWithDelta($time, $clock->currentTime(), 0.1);
+        $this->assertSame($time, $clock->currentTime());
     }
 
     /**

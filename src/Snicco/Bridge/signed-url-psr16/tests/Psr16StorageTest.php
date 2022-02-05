@@ -20,11 +20,11 @@ final class Psr16StorageTest extends TestCase
     use SignedUrlStorageTests;
 
     /**
-     * @return false|int
+     * @param positive-int $seconds
      */
-    protected function advanceTime(int $seconds, TestClock $clock)
+    protected function advanceTime(int $seconds, TestClock $clock): void
     {
-        return sleep($seconds);
+        sleep($seconds);
     }
 
     protected function createStorage(Clock $clock): SignedUrlStorage

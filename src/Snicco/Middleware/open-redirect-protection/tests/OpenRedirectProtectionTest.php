@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\OpenRedirectProtection\Tests;
 
-use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
@@ -13,6 +12,19 @@ use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
 
 class OpenRedirectProtectionTest extends MiddlewareTestCase
 {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $route = Route::create(
+            '/redirect/exit',
+            [RedirectController::class, 'exit'],
+            'redirect.protection',
+            ['GET']
+        );
+        $this->withRoutes([$route]);
+    }
 
     /**
      * @test
@@ -28,19 +40,11 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     }
 
     /**
-     * @param string[] $whitelist
-     */
-    private function newMiddleware(array $whitelist = []): OpenRedirectProtection
-    {
-        return new OpenRedirectProtection('https://foo.com', $whitelist);
-    }
-
-    /**
      * @test
      */
     public function a_redirect_response_is_allowed_if_its_relative(): void
     {
-        $this->withNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function () {
             return $this->getRedirector()->to('foo');
         });
 
@@ -57,7 +61,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function a_redirect_response_is_allowed_if_its_absolute_and_to_the_same_host(): void
     {
-        $this->withNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function () {
             return $this->getResponseFactory()->redirect('https://foo.com/bar');
         });
 
@@ -83,18 +87,6 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
         $this->assertForbiddenRedirect($response->psr(), 'https://bar.com/foo');
-    }
-
-    private function assertForbiddenRedirect(AssertableResponse $response, string $intended): void
-    {
-        $this->assertStringStartsWith(
-            '/redirect/exit',
-            $response->getPsrResponse()->getHeaderLine('Location')
-        );
-        $this->assertStringContainsString(
-            '?intended_redirect=' . $intended,
-            $response->getPsrResponse()->getHeaderLine('Location')
-        );
     }
 
     /**
@@ -232,17 +224,24 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response->psr()->assertRedirect('/?intended_redirect=https://paypal.com/pay');
     }
 
-    protected function setUp(): void
+    /**
+     * @param string[] $whitelist
+     */
+    private function newMiddleware(array $whitelist = []): OpenRedirectProtection
     {
-        parent::setUp();
+        return new OpenRedirectProtection('https://foo.com', $whitelist);
+    }
 
-        $route = Route::create(
+    private function assertForbiddenRedirect(AssertableResponse $response, string $intended): void
+    {
+        $this->assertStringStartsWith(
             '/redirect/exit',
-            [RedirectController::class, 'exit'],
-            'redirect.protection',
-            ['GET']
+            $response->getPsrResponse()->getHeaderLine('Location')
         );
-        $this->withRoutes([$route]);
+        $this->assertStringContainsString(
+            '?intended_redirect=' . $intended,
+            $response->getPsrResponse()->getHeaderLine('Location')
+        );
     }
 
 }
