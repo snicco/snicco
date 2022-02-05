@@ -58,6 +58,9 @@ final class RFC3986Encoder implements UrlEncoder
      */
     private $query_special;
 
+    /**
+     * @param null|array<string,string> $query_special
+     */
     public function __construct(?array $query_special = null)
     {
         $this->query_special = is_null($query_special)

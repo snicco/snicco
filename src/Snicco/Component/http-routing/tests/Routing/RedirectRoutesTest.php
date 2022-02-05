@@ -90,7 +90,8 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function regex_based_redirects_works(): void
     {
-        $this->routeConfigurator()->redirect('base/{slug}', 'base/new')
+        $this->routeConfigurator()
+            ->redirect('base/{slug}', 'base/new')
             ->requireOneOf('slug', ['foo', 'bar']);
 
         $this->routeConfigurator()->get('r1', 'base/biz', RoutingTestController::class);

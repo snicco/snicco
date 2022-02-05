@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
@@ -19,8 +18,19 @@ class Response implements ResponseInterface
     private ResponseInterface $psr7_response;
     private Cookies $cookies;
 
+    /**
+     * @var array<string,string>
+     */
     private array $flash_messages = [];
+
+    /**
+     * @var array<string,string>
+     */
     private array $old_input = [];
+
+    /**
+     * @var array<string,array<string,string[]>>
+     */
     private array $errors = [];
 
     public function __construct(ResponseInterface $psr7_response)
@@ -36,60 +46,80 @@ class Response implements ResponseInterface
         return $this->cookies;
     }
 
-    final public function withNoIndex(?string $bot = null): self
+    /**
+     * @return static
+     */
+    final public function withNoIndex(?string $bot = null)
     {
         $value = $bot ? $bot . ': noindex' : 'noindex';
 
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
 
-    final public function withAddedHeader($name, $value): self
+    final public function withAddedHeader($name, $value)
     {
-        return $this->new($this->psr7_response->withAddedHeader($name, $value));
+        return $this->new(
+            $this->psr7_response->withAddedHeader($name, $value)
+        );
     }
 
     /**
      * @return static
      */
-    final protected function new(ResponseInterface $new_psr_response): self
+    final protected function new(ResponseInterface $new_psr_response)
     {
         $new = clone $this;
         $new->psr7_response = $new_psr_response;
         return $new;
     }
 
-    final public function withNoFollow(?string $bot = null): self
+    /**
+     * @return static
+     */
+    final public function withNoFollow(?string $bot = null)
     {
         $value = $bot ? $bot . ': nofollow' : 'nofollow';
 
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
 
-    final public function withNoRobots(?string $bot = null): self
+    /**
+     * @return static
+     */
+    final public function withNoRobots(?string $bot = null)
     {
         $value = $bot ? $bot . ': none' : 'none';
 
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
 
-    final public function withNoArchive(?string $bot = null): self
+    /**
+     * @return static
+     */
+    final public function withNoArchive(?string $bot = null)
     {
         $value = $bot ? $bot . ': noarchive' : 'noarchive';
 
         return $this->withAddedHeader('X-Robots-Tag', $value);
     }
 
-    final public function withContentType(string $content_type): self
+    /**
+     * @return static
+     */
+    final public function withContentType(string $content_type)
     {
         return $this->withHeader('content-type', $content_type);
     }
 
-    final public function withHeader($name, $value): self
+    final public function withHeader($name, $value)
     {
         return $this->new($this->psr7_response->withHeader($name, $value));
     }
 
-    final public function withCookie(Cookie $cookie): self
+    /**
+     * @return static
+     */
+    final public function withCookie(Cookie $cookie)
     {
         $response = clone $this;
         $response->cookies = $this->cookies->withCookie($cookie);
@@ -97,7 +127,10 @@ class Response implements ResponseInterface
         return $response;
     }
 
-    final public function withoutCookie(string $name, string $path = '/'): self
+    /**
+     * @return static
+     */
+    final public function withoutCookie(string $name, string $path = '/')
     {
         $cookie = (new Cookie($name, 'deleted'))
             ->withExpiryTimestamp(1)
@@ -110,18 +143,13 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param string|array $key
-     * @param mixed $value
+     * @param array<string,string> $flash
+     * @return static
      */
-    final public function withFlashMessages($key, $value = null): self
+    final public function withFlashMessages(array $flash)
     {
-        $key = is_array($key) ? $key : [$key => $value];
-
         $flash_messages = $this->flash_messages;
-        foreach ($key as $k => $v) {
-            if (!is_string($k)) {
-                throw new InvalidArgumentException('Keys have to be strings');
-            }
+        foreach ($flash as $k => $v) {
             $flash_messages[$k] = $v;
         }
 
@@ -133,17 +161,13 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param string|array $key
-     * @param mixed $value
+     * @param array<string,string> $old_input
+     * @return static
      */
-    final public function withOldInput($key, $value = null): self
+    final public function withOldInput(array $old_input)
     {
-        $input = is_array($key) ? $key : [$key => $value];
         $_input = $this->old_input;
-        foreach ($input as $k => $v) {
-            if (!is_string($k)) {
-                throw new InvalidArgumentException('Keys have to be strings');
-            }
+        foreach ($old_input as $k => $v) {
             $_input[$k] = $v;
         }
 
@@ -155,16 +179,12 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param array<string,string>|<array<string,array<string>> $errors
+     * @param array<string,string|string[]> $errors
      */
     final public function withErrors(array $errors, string $namespace = 'default'): self
     {
         $_errors = $this->errors;
         foreach ($errors as $key => $messages) {
-            if (!is_string($key)) {
-                throw new InvalidArgumentException('Keys have to be strings');
-            }
-
             $messages = (array)$messages;
             foreach ($messages as $message) {
                 $_errors[$namespace][$key][] = $message;
@@ -184,15 +204,18 @@ class Response implements ResponseInterface
             ->withBody($html);
     }
 
-    final public function withBody(StreamInterface $body): self
+    final public function withBody(StreamInterface $body)
     {
         return $this->new($this->psr7_response->withBody($body));
     }
 
-    final public function json(StreamInterface $json): self
+    /**
+     * @param StreamInterface $json
+     * @return static
+     */
+    final public function json(StreamInterface $json)
     {
-        return $this->withHeader('Content-Type', 'application/json')
-            ->withBody($json);
+        return $this->withHeader('Content-Type', 'application/json')->withBody($json);
     }
 
     final public function isRedirect(string $location = null): bool
@@ -284,17 +307,17 @@ class Response implements ResponseInterface
         return $this->errors;
     }
 
-    final public function withProtocolVersion($version): self
+    final public function withProtocolVersion($version)
     {
         return $this->new($this->psr7_response->withProtocolVersion($version));
     }
 
-    final public function withoutHeader($name): self
+    final public function withoutHeader($name)
     {
         return $this->new($this->psr7_response->withoutHeader($name));
     }
 
-    final public function withStatus($code, $reasonPhrase = ''): self
+    final public function withStatus($code, $reasonPhrase = '')
     {
         return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
     }
@@ -304,6 +327,10 @@ class Response implements ResponseInterface
         return $this->psr7_response->getProtocolVersion();
     }
 
+    /**
+     * @return array<string, string[]>
+     * @psalm-suppress MixedReturnTypeCoercion
+     */
     final public function getHeaders(): array
     {
         return $this->psr7_response->getHeaders();

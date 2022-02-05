@@ -9,7 +9,9 @@ use InvalidArgumentException;
 use LogicException;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionNamedType;
 use ReflectionParameter;
+use Snicco\Component\HttpRouting\Reflection;
 use Snicco\Component\HttpRouting\Routing\Exception\InvalidRouteClosureReturned;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
@@ -20,7 +22,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Webmozart\Assert\Assert;
 
-use function Snicco\Component\Core\Utils\isInterface;
 
 /**
  * @api
@@ -78,22 +79,43 @@ final class RouteLoader
         }
     }
 
-    private function getFiles(array $route_directories): Finder
+    /**
+     * @throws ReflectionException
+     */
+    public function loadApiRoutesIn(array $api_directories): void
     {
-        Assert::allString($route_directories);
-        Assert::allReadable($route_directories);
+        foreach ($this->getFiles($api_directories) as $file) {
+            $name = $file->getFilenameWithoutExtension();
 
-        $finder = new Finder();
-        $finder->in($route_directories)
-            ->depth(0)
-            ->files()
-            ->name(self::SEARCH_PATTERN);
+            Assert::notSame(
+                $name,
+                self::FRONTEND_ROUTE_FILENAME,
+                sprintf(
+                    '[%s] is a reserved filename and can not be loaded as an API file.',
+                    self::FRONTEND_ROUTE_FILENAME . '.php'
+                )
+            );
 
-        return $finder;
+            [$name, $version] = $this->parseNameAndVersion($name);
+
+            $attributes = $this->options->getApiRouteAttributes($name, $version);
+
+            $this->requireFile($file, $attributes);
+        }
     }
 
     /**
+     * @param array{
+     *     namespace?:string,
+     *     prefix?:string,
+     *     name?:string,
+     *     middleware?: string[]
+     * } $attributes
+     *
      * @throws ReflectionException
+     *
+     * @psalm-suppress UnresolvableInclude
+     *
      */
     private function requireFile(SplFileInfo $file, array $attributes = [], bool $is_admin_file = false): void
     {
@@ -119,12 +141,35 @@ final class RouteLoader
             $is_admin_file
         );
 
+        /** @var Closure(RoutingConfigurator):void $closure */
         $this->routing_configurator->group(
             $closure,
             $attributes
         );
     }
 
+    private function getFiles(array $route_directories): Finder
+    {
+        Assert::allString($route_directories);
+        Assert::allReadable($route_directories);
+
+        $finder = new Finder();
+        $finder->in($route_directories)
+            ->depth(0)
+            ->files()
+            ->name(self::SEARCH_PATTERN);
+
+        return $finder;
+    }
+
+    /**
+     * @param array{
+     *     namespace?:string,
+     *     prefix?:string,
+     *     name?:string,
+     *     middleware?: string[]
+     * } $attributes
+     */
     private function validateAttributes(array $attributes): void
     {
         foreach ($attributes as $key => $value) {
@@ -140,6 +185,7 @@ final class RouteLoader
                     );
                     break;
                 case RoutingConfigurator::PREFIX_KEY:
+                    Assert::string($value);
                     Assert::startsWith(
                         $value,
                         '/',
@@ -175,6 +221,8 @@ final class RouteLoader
 
     /**
      * @throws ReflectionException
+     *
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     private function validateClosureTypeHint(Closure $closure, string $filepath, bool $is_admin_file = false): void
     {
@@ -209,13 +257,13 @@ final class RouteLoader
     {
         $type = $param->getType();
 
-        if (null === $type) {
+        if (!$type instanceof ReflectionNamedType) {
             throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
         }
 
         $name = $type->getName();
 
-        if (isInterface($name, RoutingConfigurator::class)) {
+        if (Reflection::isInterface($name, RoutingConfigurator::class)) {
             return $name;
         }
 
@@ -228,43 +276,22 @@ final class RouteLoader
     private function validateAdminRoutingUsage(string $used_interface, bool $is_admin_file, string $filepath)
     {
         if ($is_admin_file) {
-            if (isInterface($used_interface, WebRoutingConfigurator::class)) {
+            if (Reflection::isInterface($used_interface, WebRoutingConfigurator::class)) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
 
             return;
         }
 
-        if (isInterface($used_interface, AdminRoutingConfigurator::class)) {
+        if (Reflection::isInterface($used_interface, AdminRoutingConfigurator::class)) {
             throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
         }
     }
 
     /**
-     * @throws ReflectionException
+     * @return array{0:string, 1:?string}
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
-    public function loadApiRoutesIn(array $api_directories): void
-    {
-        foreach ($this->getFiles($api_directories) as $file) {
-            $name = $file->getFilenameWithoutExtension();
-
-            Assert::notSame(
-                $name,
-                self::FRONTEND_ROUTE_FILENAME,
-                sprintf(
-                    '[%s] is a reserved filename and can not be loaded as an API file.',
-                    self::FRONTEND_ROUTE_FILENAME . '.php'
-                )
-            );
-
-            [$name, $version] = $this->parseNameAndVersion($name);
-
-            $attributes = $this->options->getApiRouteAttributes($name, $version);
-
-            $this->requireFile($file, $attributes);
-        }
-    }
-
     private function parseNameAndVersion(string $filename): array
     {
         // https://regexr.com/6d3v2

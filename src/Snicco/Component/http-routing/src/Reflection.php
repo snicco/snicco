@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Kernel\Utils;
+namespace Snicco\Component\HttpRouting;
 
 use Closure;
 use InvalidArgumentException;
@@ -20,6 +20,7 @@ use function get_class;
 use function in_array;
 use function interface_exists;
 use function is_object;
+use function is_string;
 
 /**
  * @psalm-internal Snicco
@@ -38,25 +39,8 @@ final class Reflection
         return self::getTypeName($parameter, $type);
     }
 
-    private static function getTypeName(ReflectionParameter $parameter, ReflectionNamedType $type): string
-    {
-        $name = $type->getName();
-
-        if (!is_null($class = $parameter->getDeclaringClass())) {
-            if ($name === 'self') {
-                return $class->getName();
-            }
-
-            if ($name === 'parent' && $parent = $class->getParentClass()) {
-                return $parent->getName();
-            }
-        }
-
-        return $name;
-    }
-
     /**
-     * @param object|class-string $class_or_object
+     * @param object|string $class_or_object
      * @param class-string $interface
      *
      * @throws InvalidArgumentException if the interface does not exist
@@ -153,6 +137,23 @@ final class Reflection
         }
 
         return new ReflectionMethod($callable[0], $callable[1]);
+    }
+
+    private static function getTypeName(ReflectionParameter $parameter, ReflectionNamedType $type): string
+    {
+        $name = $type->getName();
+
+        if (!is_null($class = $parameter->getDeclaringClass())) {
+            if ($name === 'self') {
+                return $class->getName();
+            }
+
+            if ($name === 'parent' && $parent = $class->getParentClass()) {
+                return $parent->getName();
+            }
+        }
+
+        return $name;
     }
 
 }

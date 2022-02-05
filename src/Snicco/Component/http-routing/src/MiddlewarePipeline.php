@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -24,6 +25,8 @@ use function strtolower;
 
 /**
  * @interal
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 final class MiddlewarePipeline
 {
@@ -36,8 +39,15 @@ final class MiddlewarePipeline
      * @var array<MiddlewareInterface|MiddlewareBlueprint>
      */
     private array $middleware = [];
+    
     private Request $current_request;
+
+    /**
+     * @var Closure(Request):ResponseInterface $request_handler
+     * @psalm-var Closure(Request=):ResponseInterface $request_handler
+     */
     private Closure $request_handler;
+
     private bool $exhausted = false;
 
     public function __construct(ContainerInterface $container, HttpErrorHandlerInterface $error_handler)
@@ -55,7 +65,7 @@ final class MiddlewarePipeline
     }
 
     /**
-     * @param MiddlewareBlueprint|MiddlewareBlueprint[]|MiddlewareInterface|MiddlewareInterface[] $middleware
+     * @param MiddlewareInterface|MiddlewareInterface[]|MiddlewareBlueprint|MiddlewareBlueprint[] $middleware
      */
     public function through($middleware): MiddlewarePipeline
     {
@@ -72,10 +82,13 @@ final class MiddlewarePipeline
         return $new;
     }
 
+    /**
+     * @param Closure(Request):ResponseInterface $request_handler
+     * @psalm-param Closure(Request=):ResponseInterface $request_handler
+     */
     public function then(Closure $request_handler): Response
     {
         $this->request_handler = $request_handler;
-
         return $this->run();
     }
 
@@ -108,7 +121,7 @@ final class MiddlewarePipeline
         if ($this->middleware === []) {
             $this->exhausted = true;
 
-            return new NextMiddleware(function (Request $request) {
+            return new NextMiddleware(function (ServerRequestInterface $request): ResponseInterface {
                 try {
                     return call_user_func($this->request_handler, $request);
                 } catch (Throwable $e) {
@@ -117,7 +130,7 @@ final class MiddlewarePipeline
             });
         }
 
-        return new NextMiddleware(function (Request $request) {
+        return new NextMiddleware(function (ServerRequestInterface $request) {
             try {
                 return $this->runNextMiddleware($request);
             } catch (Throwable $e) {
@@ -126,7 +139,7 @@ final class MiddlewarePipeline
         });
     }
 
-    private function exceptionToHttpResponse(Throwable $e, Request $request): Response
+    private function exceptionToHttpResponse(Throwable $e, ServerRequestInterface $request): Response
     {
         $psr_7_response = $this->error_handler->handle($e, $request);
         return $psr_7_response instanceof Response
@@ -134,7 +147,7 @@ final class MiddlewarePipeline
             : new Response($psr_7_response);
     }
 
-    private function runNextMiddleware(Request $request): ResponseInterface
+    private function runNextMiddleware(ServerRequestInterface $request): ResponseInterface
     {
         $middleware = array_shift($this->middleware);
 

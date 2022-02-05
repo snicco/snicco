@@ -57,22 +57,22 @@ class RequestTest extends TestCase
     public function testGetFullPath(): void
     {
         $request = $this->frontendRequest('/foo/bar');
-        $this->assertSame('/foo/bar', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('/foo/bar/');
-        $this->assertSame('/foo/bar/', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar/', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('/');
-        $this->assertSame('/', $request->fullRequestTarget());
+        $this->assertSame('/', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
-        $this->assertSame('/foo/bar?baz=biz', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar?baz=biz', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
-        $this->assertSame('/foo/bar/?baz=biz', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar/?baz=biz', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz#section');
-        $this->assertSame('/foo/bar?baz=biz#section', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar?baz=biz#section', $request->requestTargetWithFragment());
     }
 
     public function testGetUrl(): void
@@ -118,6 +118,9 @@ class RequestTest extends TestCase
         $this->assertSame('bar', $request->cookie('foo'));
 
         $this->assertSame('default', $request->cookie('baz', 'default'));
+
+        $request = $this->request->withCookieParams(['foo' => ['bar', 'baz']]);
+        $this->assertSame('bar', $request->cookie('foo'));
     }
 
     public function testRouteIs(): void

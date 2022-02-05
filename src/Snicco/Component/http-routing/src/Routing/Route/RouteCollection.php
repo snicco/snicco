@@ -6,6 +6,7 @@ namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use ArrayIterator;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
+use Traversable;
 use Webmozart\Assert\Assert;
 
 use function count;
@@ -17,7 +18,7 @@ final class RouteCollection implements Routes
 {
 
     /**
-     * @var array<Route>
+     * @var array<string,Route>
      */
     private array $routes = [];
 
@@ -52,14 +53,6 @@ final class RouteCollection implements Routes
         return $this->routes[$name];
     }
 
-    /**
-     * @return Route[]|ArrayIterator An \ArrayIterator object for iterating over routes
-     */
-    public function getIterator(): ArrayIterator
-    {
-        return new ArrayIterator($this->toArray());
-    }
-
     public function toArray(): array
     {
         return $this->routes;
@@ -70,4 +63,8 @@ final class RouteCollection implements Routes
         return count($this->routes);
     }
 
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->toArray());
+    }
 }

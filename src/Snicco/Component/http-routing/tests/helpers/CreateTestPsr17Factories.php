@@ -12,7 +12,7 @@ use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 
 /**
  * @internal
@@ -30,23 +30,9 @@ trait CreateTestPsr17Factories
         return new Psr17Factory();
     }
 
-    public function psrUploadedFileFactory(): UploadedFileFactoryInterface
-    {
-        return new Psr17Factory();
-    }
-
     public function psrUriFactory(): UriFactoryInterface
     {
         return new Psr17Factory();
-    }
-
-    public function createResponseFactory(UrlGenerator $generator): ResponseFactory
-    {
-        return new DefaultResponseFactory(
-            $this->psrResponseFactory(),
-            $this->psrStreamFactory(),
-            $generator
-        );
     }
 
     public function psrResponseFactory(): ResponseFactoryInterface
@@ -57,6 +43,20 @@ trait CreateTestPsr17Factories
     public function psrStreamFactory(): StreamFactoryInterface
     {
         return new Psr17Factory();
+    }
+
+    public function psrUploadedFileFactory(): UploadedFileFactoryInterface
+    {
+        return new Psr17Factory();
+    }
+
+    public function createResponseFactory(UrlGeneratorInterface $generator): ResponseFactory
+    {
+        return new DefaultResponseFactory(
+            $this->psrResponseFactory(),
+            $this->psrStreamFactory(),
+            $generator
+        );
     }
 
 }

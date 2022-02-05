@@ -10,18 +10,22 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
+use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use stdClass;
 use Webmozart\Assert\Assert;
 
+use function is_string;
 use function json_encode;
+use function parse_url;
 
 use const JSON_THROW_ON_ERROR;
+use const PHP_URL_QUERY;
 
 /**
  * @interal You should never depend on this concrete response factory implementation.
@@ -31,12 +35,10 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
 {
 
     private Psr17ResponseFactory $psr_response;
-
     private Psr17StreamFactory $psr_stream;
+    private UrlGeneratorInterface $url;
 
-    private UrlGenerator $url;
-
-    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGenerator $url)
+    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGeneratorInterface $url)
     {
         $this->psr_response = $response;
         $this->psr_stream = $stream;
@@ -125,6 +127,12 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
             ->json($this->createStream(json_encode($content, JSON_THROW_ON_ERROR)));
     }
 
+    public function redirect(string $location, int $status_code = 302): RedirectResponse
+    {
+        $psr = $this->make($status_code);
+        return (new RedirectResponse($psr))->to($location);
+    }
+
     public function home(array $arguments = [], int $status_code = 302): RedirectResponse
     {
         try {
@@ -134,12 +142,6 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         }
 
         return $this->redirect($location, $status_code);
-    }
-
-    public function redirect(string $location, int $status_code = 302): RedirectResponse
-    {
-        $psr = $this->make($status_code);
-        return (new RedirectResponse($psr))->to($location);
     }
 
     public function toRoute(string $name, array $arguments = [], int $status_code = 302): RedirectResponse
@@ -176,10 +178,21 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
     public function intended(string $fallback = '/', int $status_code = 302): RedirectResponse
     {
         $current = $this->url->full();
-        parse_str(parse_url($current, PHP_URL_QUERY) ?? '', $query);
-        $query = (array)$query;
+        $query = parse_url($current, PHP_URL_QUERY);
 
-        $location = $query['intended'] ?? $this->url->to($fallback);
+        if (false === $query) {
+            throw new RuntimeException("Current url [$current] can not be parsed.");
+        } elseif (null === $query) {
+            $query = '';
+        }
+
+        parse_str($query, $query);
+
+        if (isset($query['intended']) && is_string($query['intended'])) {
+            $location = $query['intended'];
+        } else {
+            $location = $this->url->to($fallback);
+        }
 
         return $this->redirect($location, $status_code);
     }

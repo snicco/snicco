@@ -16,8 +16,9 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Webmozart\Assert\Assert;
+
 
 abstract class AbstractMiddleware implements MiddlewareInterface
 {
@@ -32,7 +33,7 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (!$request instanceof Request) {
-            $request = new Request($request);
+            $request = Request::fromPsr($request);
         }
 
         if (!$handler instanceof NextMiddleware) {
@@ -49,6 +50,9 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
      */
     final protected function redirect(): Redirector
     {
@@ -58,10 +62,13 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
      */
-    final protected function url(): UrlGenerator
+    final protected function url(): UrlGeneratorInterface
     {
-        return $this->container->get(UrlGenerator::class);
+        return $this->container->get(UrlGeneratorInterface::class);
     }
 
     /**
@@ -72,13 +79,16 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     {
         /** @var TemplateRenderer $renderer */
         $renderer = $this->container->get(TemplateRenderer::class);
-        Assert::isInstanceOf(TemplateRenderer::class, $renderer);
+        Assert::isInstanceOf($renderer, TemplateRenderer::class);
         return $this->respond()->html($renderer->render($template_identifier, $data));
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
      */
     final protected function respond(): ResponseFactory
     {

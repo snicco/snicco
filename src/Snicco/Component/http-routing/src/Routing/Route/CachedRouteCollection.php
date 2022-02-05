@@ -6,6 +6,7 @@ namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use ArrayIterator;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
+use Traversable;
 use Webmozart\Assert\Assert;
 
 use function count;
@@ -41,11 +42,6 @@ final class CachedRouteCollection implements Routes
         $this->hydrated_routes = [];
     }
 
-    public function getIterator(): ArrayIterator
-    {
-        return new ArrayIterator($this->toArray());
-    }
-
     public function toArray(): array
     {
         if ($this->isFullyHydrated()) {
@@ -57,50 +53,6 @@ final class CachedRouteCollection implements Routes
         $this->hydrated_routes = $routes;
 
         return $this->hydrated_routes;
-    }
-
-    private function isFullyHydrated(): bool
-    {
-        return count($this->hydrated_routes) === count($this->serialized_routes);
-    }
-
-    private function hydrateAll(): array
-    {
-        $_routes = [];
-
-        foreach ($this->serialized_routes as $name => $route) {
-            if (isset($this->hydrated_routes[$name])) {
-                $_routes[$name] = $this->hydrated_routes[$name];
-                continue;
-            }
-
-            $route = unserialize($route);
-
-            $this->checkIsValidRoute($route);
-            $this->checkValidName($name, $route);
-
-            $_routes[$name] = $route;
-        }
-        return $_routes;
-    }
-
-    private function checkIsValidRoute($route): void
-    {
-        Assert::isInstanceOf(
-            $route,
-            Route::class,
-            sprintf(
-                "Your route cache seems corrupted.\nThe cached route collection contained a serialized of type [%s].",
-                is_object($route) ? get_class($route) : gettype($route)
-            )
-        );
-    }
-
-    private function checkValidName(string $used_name, Route $route): void
-    {
-        if ($route->getName() !== $used_name) {
-            throw RouteNotFound::accessByBadName($used_name, $route->getName());
-        }
     }
 
     public function count(): int
@@ -128,4 +80,60 @@ final class CachedRouteCollection implements Routes
         throw RouteNotFound::name($name);
     }
 
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->toArray());
+    }
+
+    private function isFullyHydrated(): bool
+    {
+        return count($this->hydrated_routes) === count($this->serialized_routes);
+    }
+
+    /**
+     * @return array<string,Route>
+     */
+    private function hydrateAll(): array
+    {
+        $_routes = [];
+
+        foreach ($this->serialized_routes as $name => $route) {
+            if (isset($this->hydrated_routes[$name])) {
+                $_routes[$name] = $this->hydrated_routes[$name];
+                continue;
+            }
+
+            /** @var Route|false|mixed $route */
+            $route = unserialize($route);
+
+            $this->checkIsValidRoute($route);
+            $this->checkValidName($name, $route);
+
+            $_routes[$name] = $route;
+        }
+        return $_routes;
+    }
+
+    /**
+     * @psalm-assert Route $route
+     * @param mixed $route
+     */
+    private function checkIsValidRoute($route): void
+    {
+        Assert::isInstanceOf(
+            $route,
+            Route::class,
+            sprintf(
+                "Your route cache seems corrupted.\nThe cached route collection contained a serialized of type [%s].",
+                is_object($route) ? get_class($route) : gettype($route)
+            )
+        );
+    }
+
+    private function checkValidName(string $used_name, Route $route): void
+    {
+        if ($route->getName() !== $used_name) {
+            throw RouteNotFound::accessByBadName($used_name, $route->getName());
+        }
+    }
 }

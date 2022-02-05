@@ -22,7 +22,7 @@ trait CreatesPsrRequests
 
     final protected function adminRequest(string $path, array $server = []): Request
     {
-        return $this->frontendRequest($path, $server, 'GET')
+        return $this->frontendRequest($path, $server)
             ->withAttribute(
                 Request::TYPE_ATTRIBUTE,
                 Request::TYPE_ADMIN_AREA
@@ -55,15 +55,12 @@ trait CreatesPsrRequests
 
         parse_str($uri->getQuery(), $query);
 
+        $request = $request->withParsedBody([]);
+
         return $request->withQueryParams($query)->withAttribute(
             Request::TYPE_ATTRIBUTE,
             Request::TYPE_FRONTEND
         );
-    }
-
-    private function createUri($uri): UriInterface
-    {
-        return $this->psrUriFactory()->createUri($uri);
     }
 
     abstract protected function psrUriFactory(): UriFactoryInterface;
@@ -74,5 +71,10 @@ trait CreatesPsrRequests
     }
 
     abstract protected function psrServerRequestFactory(): ServerRequestFactoryInterface;
+
+    private function createUri(string $uri): UriInterface
+    {
+        return $this->psrUriFactory()->createUri($uri);
+    }
 
 }

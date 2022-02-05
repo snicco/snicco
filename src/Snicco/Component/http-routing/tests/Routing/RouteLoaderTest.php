@@ -34,6 +34,25 @@ final class RouteLoaderTest extends HttpRunnerTestCase
     private string $base_prefix = '/sniccowp';
     private string $bad_routes;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->file_loader = new RouteLoader(
+            $this->routeConfigurator(),
+            new DefaultRouteLoadingOptions('')
+        );
+        $this->withMiddlewareGroups(['frontend' => [FooMiddleware::class]]);
+        $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
+        self::$web_include_partial = false;
+        $this->bad_routes = dirname(__DIR__) . '/fixtures/bad-routes';
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        self::$web_include_partial = false;
+    }
+
     /**
      * @test
      */
@@ -358,7 +377,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
         $loader = new RouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
-                RoutingConfigurator::PREFIX_KEY => 1,
+                RoutingConfigurator::PREFIX_KEY => 'abc',
             ])
         );
 
@@ -537,25 +556,6 @@ final class RouteLoaderTest extends HttpRunnerTestCase
         $this->file_loader->loadApiRoutesIn([$this->bad_routes . '/web-in-api-dir']);
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->file_loader = new RouteLoader(
-            $this->routeConfigurator(),
-            new DefaultRouteLoadingOptions('')
-        );
-        $this->withMiddlewareGroups(['frontend' => [FooMiddleware::class]]);
-        $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
-        self::$web_include_partial = false;
-        $this->bad_routes = dirname(__DIR__) . '/fixtures/bad-routes';
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        self::$web_include_partial = false;
-    }
-
 }
 
 class TestLoadingOptions implements RouteLoadingOptions
@@ -571,12 +571,12 @@ class TestLoadingOptions implements RouteLoadingOptions
     }
 
     public function getApiRouteAttributes(
-        string $file_name_without_extension_and_version,
+        string $file_basename,
         ?string $parsed_version
     ): array {
         $att = [
-            'prefix' => '/' . $file_name_without_extension_and_version,
-            'name' => $file_name_without_extension_and_version,
+            'prefix' => '/' . $file_basename,
+            'name' => $file_basename,
         ];
 
         if ($this->fail_because_of_array) {
@@ -589,7 +589,7 @@ class TestLoadingOptions implements RouteLoadingOptions
         return $att;
     }
 
-    public function getRouteAttributes(string $file_name_without_extension): array
+    public function getRouteAttributes(string $file_basename): array
     {
         return [];
     }
@@ -609,13 +609,13 @@ class ConfigurableLoadingOptions implements RouteLoadingOptions
     }
 
     public function getApiRouteAttributes(
-        string $file_name_without_extension_and_version,
+        string $file_basename,
         ?string $parsed_version
     ): array {
         return $this->return_api;
     }
 
-    public function getRouteAttributes(string $file_name_without_extension): array
+    public function getRouteAttributes(string $file_basename): array
     {
         return $this->return_normal;
     }

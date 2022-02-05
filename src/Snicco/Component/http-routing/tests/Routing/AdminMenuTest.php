@@ -19,6 +19,12 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     private AdminRoutingConfigurator $configurator;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->configurator = $this->adminRouteConfigurator();
+    }
+
     /**
      * @test
      */
@@ -431,7 +437,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
-            'Cannot use route [admin.sub1] as a parent for route [admin.sub2] because [admin.sub1] is already a child route with parent slug [/wp-admin/admin.php/parent].'
+            'Can not use route [admin.sub1] as a parent for route [admin.sub2] because [admin.sub1] is already a child of parent slug [/wp-admin/admin.php/parent].'
         );
 
         $this->configurator->page(
@@ -476,12 +482,6 @@ final class AdminMenuTest extends HttpRunnerTestCase
             $count++;
         }
         $this->assertSame(3, $count);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->configurator = $this->adminRouteConfigurator();
     }
 
 }

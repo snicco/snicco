@@ -10,6 +10,9 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 final class RequestHasNoType extends LogicException
 {
 
+    /**
+     * @param mixed $type
+     */
     public static function becauseTheTypeIsNotAnInteger($type): RequestHasNoType
     {
         return self::createNew(gettype($type));

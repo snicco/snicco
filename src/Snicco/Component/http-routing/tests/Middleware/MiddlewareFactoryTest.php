@@ -8,7 +8,6 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Component\Core\DIContainer;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\MiddlewareFactory;
@@ -18,6 +17,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
+use Snicco\Component\Kernel\DIContainer;
 
 final class MiddlewareFactoryTest extends TestCase
 {

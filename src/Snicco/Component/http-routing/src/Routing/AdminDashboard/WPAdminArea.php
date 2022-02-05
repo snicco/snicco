@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\AdminDashboard;
 
+use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Webmozart\Assert\Assert;
 
 use function explode;
+use function is_string;
 use function ltrim;
 use function rtrim;
 use function trim;
@@ -38,15 +40,14 @@ final class WPAdminArea implements AdminArea
         return AdminDashboardPrefix::fromString($this->prefix);
     }
 
-    /**
-     * @psalm-return array{0: string, 1: string[]}
-     */
     public function rewriteForUrlGeneration(string $route_pattern): array
     {
         $parts = explode('.php/', $route_pattern);
 
-        Assert::keyExists($parts, 0);
-        Assert::keyExists($parts, 1);
+        if (!isset($parts[0]) || !isset($parts[1])) {
+            throw new InvalidArgumentException("Invalid route pattern [$route_pattern] for url rewriting.");
+        }
+
         Assert::stringNotEmpty($parts[0]);
         Assert::stringNotEmpty($parts[1]);
 
@@ -63,7 +64,7 @@ final class WPAdminArea implements AdminArea
         $path = $request->path();
         $page = $request->query('page');
 
-        if (!$page) {
+        if (!$page || !is_string($page)) {
             return $request->path();
         }
 

@@ -236,11 +236,6 @@ final class RouteTest extends TestCase
         $route->requirements(['bogus' => '\d+']);
     }
 
-    private function newRoute(string $path = '/foo'): Route
-    {
-        return Route::create($path, Route::DELEGATE);
-    }
-
     /**
      * @test
      */
@@ -263,7 +258,7 @@ final class RouteTest extends TestCase
         $route = $this->newRoute();
         $route->defaults(['foo' => 'bar']);
 
-        $this->expectExceptionMessage('A route default value has to be a primitive type.');
+        $this->expectExceptionMessage('A route default value has to be a scalar or an array of scalars.');
 
         $route->defaults(['foo' => new stdClass()]);
     }
@@ -426,6 +421,11 @@ final class RouteTest extends TestCase
 
         $route = $this->newRoute('/foo/{bar?}/');
         $this->assertTrue($route->matchesOnlyWithTrailingSlash());
+    }
+
+    private function newRoute(string $path = '/foo'): Route
+    {
+        return Route::create($path, Route::DELEGATE);
     }
 
 }

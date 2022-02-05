@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
+use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 
 class RouteCachingTest extends HttpRunnerTestCase
 {

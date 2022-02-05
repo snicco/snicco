@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 
 class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 {
