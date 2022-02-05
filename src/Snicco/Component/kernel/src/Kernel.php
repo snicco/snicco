@@ -219,9 +219,6 @@ final class Kernel
         return $this->dirs;
     }
 
-    /**
-     * @psalm-suppress RedundantPropertyInitializationCheck
-     */
     public function config(): ReadOnlyConfig
     {
         if (!isset($this->read_only_config)) {

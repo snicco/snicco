@@ -69,7 +69,7 @@ trait SignedUrlStorageTests
         string $link_target,
         string $signature,
         int $expires_in = 10,
-        $max_usage = 1
+        int $max_usage = 1
     ): SignedUrl {
         return SignedUrl::create(
             $link_target,
@@ -96,9 +96,10 @@ trait SignedUrlStorageTests
             $signed = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3)
         );
 
-        $storage->consume($id = $signed->identifier());
-        $storage->consume($id = $signed->identifier());
-        $storage->consume($id = $signed->identifier());
+        $id = $signed->identifier();
+        $storage->consume($id);
+        $storage->consume($id);
+        $storage->consume($id);
 
         try {
             $storage->consume($id);
@@ -116,7 +117,7 @@ trait SignedUrlStorageTests
      */
     final function decrementing_a_missing_signature_throws_an_exception(): void
     {
-        $storage = $this->createStorage($clock = new TestClock());
+        $storage = $this->createStorage(new TestClock());
 
         $storage->store(
             $link = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3)

@@ -181,8 +181,6 @@ final class BaseEventDispatcher implements EventDispatcher
 
     /**
      * @param Closure|array{0:class-string, 1:string} $validated_listener
-     *
-     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     private function parseListenerId($validated_listener): string
     {

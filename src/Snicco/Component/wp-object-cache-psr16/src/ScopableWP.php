@@ -13,13 +13,12 @@ final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
     /**
      * @param string[] $keys
      * @return array<string,mixed>
+     *
+     * @psalm-suppress MixedReturnTypeCoercion
      */
-    public function cacheGetMultiple(
-        array $keys,
-        string $group = '',
-        bool $force_reload_from_persistent_cache = false
-    ): array {
-        return wp_cache_get_multiple($keys, $group, $force_reload_from_persistent_cache);
+    public function cacheGetMultiple(array $keys, string $group = '', bool $force_reload = false): array
+    {
+        return wp_cache_get_multiple($keys, $group, $force_reload);
     }
 
     public function cacheFlush(): bool

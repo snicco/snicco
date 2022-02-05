@@ -178,9 +178,6 @@ final class WPObjectCachePsr16 implements CacheInterface
         return $res;
     }
 
-    /**
-     * @psalm-suppress RedundantConditionGivenDocblockType
-     */
     public function set($key, $value, $ttl = null): bool
     {
         $key = $this->validatedKey($key);

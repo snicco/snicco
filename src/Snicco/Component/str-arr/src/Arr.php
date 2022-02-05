@@ -7,6 +7,7 @@
  * - way less permissive with invalid input like null values.
  * - removal of the Collection class and substitution with ArrayObject|ArrayAccess where applicable.
  * - removal of unneeded doc-blocks
+ * - support for psalm
  *
  * https://github.com/laravel/framework/blob/v8.35.1/src/Illuminate/Collections/Arr.php
  *
@@ -51,44 +52,35 @@ final class Arr
     }
 
     /**
-     * Return the first element in an array passing a given truth test or the default value.
+     * @template TKey
+     * @template TVal
      *
-     * @param iterable $array
-     * @param Closure|null $callback
+     * @param Closure(TVal,TKey):bool | null $condition
+     * @param iterable<TKey,TVal> $array
+     * @param TVal | null $default
      *
-     * @param Closure|mixed $default
-     * @return mixed
-     * @psalm-suppress MixedAssignment
+     * @return TVal|null
+     * @psalm-return (
+     *      $default is null ? TVal|null : TVal
+     * )
      */
-    public static function first(iterable $array, ?Closure $callback = null, $default = null)
+    public static function first(iterable $array, Closure $condition = null, $default = null)
     {
-        if ($callback instanceof Closure) {
+        if ($condition) {
             foreach ($array as $key => $value) {
-                if ($callback($value, $key)) {
+                if ($condition($value, $key)) {
                     return $value;
                 }
             }
-            return self::returnDefault($default);
+            /** @var TVal|null $default */
+            return $default;
         }
-
-        if (empty($array)) {
-            return self::returnDefault($default);
+        foreach ($array as $value) {
+            return $value;
         }
-
-        foreach ($array as $item) {
-            return $item;
-        }
-
-        return self::returnDefault($default);
-    }
-
-    /**
-     * @param Closure|mixed $default
-     * @return mixed
-     */
-    private static function returnDefault($default)
-    {
-        return $default instanceof Closure ? $default() : $default;
+        
+        /** @var TVal|null $default */
+        return $default;
     }
 
     /**
@@ -193,21 +185,6 @@ final class Arr
         }
     }
 
-    private static function checkAllStringKeys(array $keys, string $called_method): void
-    {
-        foreach ($keys as $key) {
-            if (!is_string($key)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        "\$keys has to be a string or an array of string when calling [%s].\nGot [%s]",
-                        self::class . '::' . $called_method . '()',
-                        gettype($key)
-                    )
-                );
-            }
-        }
-    }
-
     /**
      * Determine if the given key exists in the provided array.
      *
@@ -223,22 +200,6 @@ final class Arr
         }
 
         return array_key_exists($key, $array);
-    }
-
-    /**
-     * @param ArrayAccess|array $array
-     */
-    private static function checkIsArray($array, string $called_method): void
-    {
-        if (!self::accessible($array)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "\$array has to be an array or instance of ArrayAccess when calling [%s].\nGot [%s]",
-                    self::class . '::' . $called_method . '()',
-                    gettype($array)
-                )
-            );
-        }
     }
 
     /**
@@ -277,21 +238,9 @@ final class Arr
     }
 
     /**
-     * @param iterable $array
-     * @return list<mixed>
-     * @psalm-suppress MixedAssignment
-     */
-    private static function arrayItems(iterable $array): array
-    {
-        $res = [];
-        foreach ($array as $item) {
-            $res[] = $item;
-        }
-        return $res;
-    }
-
-    /**
-     * @param mixed $value
+     * @template T
+     * @param T $value
+     * @psalm-return (T is array ? T : array{0: T})
      */
     public static function toArray($value): array
     {
@@ -336,7 +285,7 @@ final class Arr
      * Determine if any of the keys exist in an array using "dot" notation.
      *
      * @param ArrayAccess|array $array
-     * @param string|list<string> $keys
+     * @param string|string[] $keys
      */
     public static function hasAny($array, $keys): bool
     {
@@ -361,12 +310,12 @@ final class Arr
      * Check if an item or items exist in an array using "dot" notation.
      *
      * @param ArrayAccess|array $array
-     * @param string|list<string> $keys
+     * @param string|string[] $keys
      */
     public static function has($array, $keys): bool
     {
         self::checkIsArray($array, 'has');
-        $keys = is_string($keys) ? [$keys] : $keys;
+        $keys = self::toArray($keys);
         self::checkAllStringKeys($keys, 'has');
 
         if ($keys === [] || $array === []) {
@@ -449,28 +398,6 @@ final class Arr
     }
 
     /**
-     * @param int|string $key
-     *
-     * @psalm-suppress DocblockTypeContradiction
-     */
-    private static function checkKeyStringInt($key, string $called_method): void
-    {
-        if (!is_string($key) && !is_int($key)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
-                    self::class . '::' . $called_method . '()',
-                    gettype($key)
-                )
-            );
-        }
-    }
-
-    /**
-     * @param array $array1
-     * @param array $array2
-     * @return array
-     *
      * @psalm-suppress MixedAssignment
      */
     public static function mergeRecursive(array $array1, array $array2): array
@@ -559,6 +486,83 @@ final class Arr
             }
         }
         return $results;
+    }
+
+    private static function checkAllStringKeys(array $keys, string $called_method): void
+    {
+        foreach ($keys as $key) {
+            if (!is_string($key)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        "\$keys has to be a string or an array of string when calling [%s].\nGot [%s]",
+                        self::class . '::' . $called_method . '()',
+                        gettype($key)
+                    )
+                );
+            }
+        }
+    }
+
+    /**
+     * @param ArrayAccess|array $array
+     */
+    private static function checkIsArray($array, string $called_method): void
+    {
+        if (!self::accessible($array)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "\$array has to be an array or instance of ArrayAccess when calling [%s].\nGot [%s]",
+                    self::class . '::' . $called_method . '()',
+                    gettype($array)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param iterable $array
+     * @return list<mixed>
+     * @psalm-suppress MixedAssignment
+     */
+    private static function arrayItems(iterable $array): array
+    {
+        $res = [];
+        foreach ($array as $item) {
+            $res[] = $item;
+        }
+        return $res;
+    }
+
+    /**
+     * @param int|string $key
+     *
+     * @psalm-suppress DocblockTypeContradiction
+     */
+    private static function checkKeyStringInt($key, string $called_method): void
+    {
+        if (!is_string($key) && !is_int($key)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
+                    self::class . '::' . $called_method . '()',
+                    gettype($key)
+                )
+            );
+        }
+    }
+
+    /**
+     * @template TVal
+     * @template Default as Closure():TVal|TVal
+     * @param Default $default
+     * @return TVal
+     */
+    private static function returnDefault($default)
+    {
+        if ($default instanceof Closure) {
+            $default = $default();
+        }
+        return $default;
     }
 
 }
