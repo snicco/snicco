@@ -67,7 +67,6 @@ final class Secret
     /**
      * @interal
      *
-     * @psalm-suppress RedundantPropertyInitializationCheck
      * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     public function asBytes(): string

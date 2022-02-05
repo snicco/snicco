@@ -17,6 +17,7 @@ namespace Snicco\Component\StrArr\Tests;
 
 use ArrayAccess;
 use ArrayObject;
+use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReturnTypeWillChange;
@@ -215,16 +216,19 @@ final class ArrTest extends TestCase
      */
     public function test_first(): void
     {
-        $array = [100, 200, 300];
+        $array = [
+            100,
+            200,
+            300
+        ];
 
         // Callback is null and array is empty
-        $this->assertNull(Arr::first([], null));
+        $this->assertNull(Arr::first([]));
         $this->assertSame('foo', Arr::first([], null, 'foo'));
+
         $this->assertSame(
             'bar',
-            Arr::first([], null, function () {
-                return 'bar';
-            })
+            Arr::first([], null, 'bar')
         );
 
         // Callback is null and array is not empty
@@ -237,20 +241,21 @@ final class ArrTest extends TestCase
         $this->assertEquals(200, $value);
 
         // Callback is not null, array is not empty but no satisfied item
-        $value2 = Arr::first($array, function ($value) {
+        $value2 = Arr::first($array, function (int $value) {
             return $value > 300;
         });
-        $value3 = Arr::first($array, function ($value) {
+
+        $value3 = Arr::first($array, function (int $value) {
             return $value > 300;
-        }, 'bar');
-        $value4 = Arr::first($array, function ($value) {
+        }, 500);
+
+        $value4 = Arr::first($array, function (int $value) {
             return $value > 300;
-        }, function () {
-            return 'baz';
-        });
+        }, 600);
+
         $this->assertNull($value2);
-        $this->assertSame('bar', $value3);
-        $this->assertSame('baz', $value4);
+        $this->assertSame(500, $value3);
+        $this->assertSame(600, $value4);
     }
 
     /**
@@ -727,6 +732,19 @@ final class ArrTest extends TestCase
         );
         $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name', 'irrelevant'));
         $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name'));
+    }
+
+    /**
+     * @template TKey
+     * @template TVal
+     *
+     * @param TKey $key
+     * @param TVal $val
+     * @param Closure(TVal,TKey):bool $closure
+     */
+    private function test_psalm($key, $val, Closure $closure): bool
+    {
+        return $closure($val, $key);
     }
 
 }

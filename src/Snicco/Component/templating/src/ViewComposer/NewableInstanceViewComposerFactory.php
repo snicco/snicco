@@ -15,12 +15,9 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
 {
 
     /**
-     *
      * @param class-string<ViewComposer>|Closure $composer
      *
      * @throws BadViewComposer
-     *
-     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     public function create($composer): ViewComposer
     {

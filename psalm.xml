@@ -14,22 +14,28 @@
         ensureArrayIntOffsetsExist="true"
         sealAllMethods="true"
         sealAllProperties="true"
+        autoloader="psalm/bootstrap.php"
 >
     <projectFiles>
         <directory name="src/Snicco"/>
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="src/Snicco/*/*/tests"/>
+            <file name="src/Snicco/Component/eloquent/src/ScopableWP.php"/>
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <RedundantConditionGivenDocblockType errorLevel="suppress"/>
+        <RedundantPropertyInitializationCheck errorLevel="suppress"/>
+    </issueHandlers>
 
     <plugins>
         <plugin filename="psalm/SuppressPropertyNotSetInConstructorForTestCase.php"/>
     </plugins>
-
-    <!--    <stubs>-->
-    <!--        <file name="vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"/>-->
-    <!--    </stubs>-->
+    <globals>
+        <var name="GLOBALS" type="array{phpmailer: \PHPMailer\PHPMailer\PHPMailer, wpdb: wpdb}"/>
+    </globals>
 
 </psalm>
 

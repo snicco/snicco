@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Kernel\Tests\Utils;
+namespace Snicco\Component\Kernel\Tests\ValueObject;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
