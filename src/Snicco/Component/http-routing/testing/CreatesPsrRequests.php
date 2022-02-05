@@ -55,8 +55,6 @@ trait CreatesPsrRequests
 
         parse_str($uri->getQuery(), $query);
 
-        $request = $request->withParsedBody([]);
-
         return $request->withQueryParams($query)->withAttribute(
             Request::TYPE_ATTRIBUTE,
             Request::TYPE_FRONTEND
