@@ -21,11 +21,6 @@ class BladeFeaturesTest extends BladeTestCase
         $this->assertStringStartsWith('&lt;script', $view->toString());
     }
 
-    private function view(string $view): View
-    {
-        return $this->view_engine->make('blade-features.' . $view);
-    }
-
     /**
      * @test
      */
@@ -202,7 +197,7 @@ class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The service directive is not supported. Dont use it. Its evil.',
-                $e->getPrevious()->getMessage()
+                ($e->getPrevious()) ? $e->getPrevious()->getMessage() : $e->getMessage()
             );
         }
     }
@@ -219,7 +214,7 @@ class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The csrf directive is not supported as it requires the entire laravel framework.',
-                $e->getPrevious()->getMessage()
+                ($e->getPrevious()) ? $e->getPrevious()->getMessage() : $e->getMessage()
             );
         }
     }
@@ -236,7 +231,7 @@ class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The method directive is not supported because form-method spoofing is not supported in WordPress.',
-                $e->getPrevious()->getMessage()
+                ($e->getPrevious()) ? $e->getPrevious()->getMessage() : $e->getMessage()
             );
         }
     }
@@ -259,6 +254,11 @@ class BladeFeaturesTest extends BladeTestCase
         $view = $this->view('php-file');
         $content = $view->toString();
         $this->assertViewContent('PHPONLYFILE', $content);
+    }
+
+    private function view(string $view): View
+    {
+        return $this->view_engine->make('blade-features.' . $view);
     }
 
 }

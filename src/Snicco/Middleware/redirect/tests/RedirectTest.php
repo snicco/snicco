@@ -28,11 +28,6 @@ class RedirectTest extends MiddlewareTestCase
         $response->psr()->assertRedirect('/bar')->assertStatus(301);
     }
 
-    private function getMiddleware(array $redirects = []): Redirect
-    {
-        return new Redirect($redirects);
-    }
-
     /**
      * @test
      */
@@ -159,12 +154,20 @@ class RedirectTest extends MiddlewareTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$status');
-        $middleware = $this->getMiddleware([
+        $this->getMiddleware([
             400 => [
                 '/foo' => '/bar',
                 '/baz' => '/bar',
             ],
         ]);
+    }
+
+    /**
+     * @param array<positive-int,array<string,string>> $redirects
+     */
+    private function getMiddleware(array $redirects = []): Redirect
+    {
+        return new Redirect($redirects);
     }
 
 }

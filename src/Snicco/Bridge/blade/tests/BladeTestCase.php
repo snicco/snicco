@@ -8,6 +8,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
@@ -28,6 +29,9 @@ class BladeTestCase extends TestCase
     protected GlobalViewContext $global_view_context;
     protected BladeStandalone $blade;
 
+    /**
+     * @psalm-suppress NullArgument
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -56,14 +60,6 @@ class BladeTestCase extends TestCase
         $this->clearCache();
     }
 
-    private function clearCache(): void
-    {
-        $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
-        foreach ($files as $file) {
-            unlink($file->getRealPath());
-        }
-    }
-
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -74,7 +70,19 @@ class BladeTestCase extends TestCase
     {
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
 
+        if (null === $actual) {
+            throw new RuntimeException('preg_replace failed in test case assertion.');
+        }
+
         PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
+    }
+
+    private function clearCache(): void
+    {
+        $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
+        foreach ($files as $file) {
+            unlink($file->getRealPath());
+        }
     }
 
 }

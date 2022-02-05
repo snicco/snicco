@@ -329,7 +329,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function testIs(): void
+    public function test_is(): void
     {
         $this->assertTrue(Str::is('/', '/'));
         $this->assertFalse(Str::is('/', ' /'));

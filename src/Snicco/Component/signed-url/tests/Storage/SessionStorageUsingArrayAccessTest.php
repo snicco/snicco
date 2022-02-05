@@ -36,6 +36,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
         $url2 = $signer->sign('/bar', 10);
         $url3 = $signer->sign('/baz', 10);
 
+        /** @var array $urls */
         $urls = $arr['_signed_urls'];
 
         $this->assertArrayHasKey($url1->identifier(), $urls);
@@ -43,30 +44,50 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
         $this->assertArrayHasKey($url3->identifier(), $urls);
     }
 
+    protected function createStorage(Clock $clock): SignedUrlStorage
+    {
+        $arr = $this->getArrayAccess();
+        return new SessionStorage($arr, $clock);
+    }
+
     private function getArrayAccess(): ArrayAccess
     {
         return new class implements ArrayAccess {
 
-            private $container = [];
+            private array $container = [];
 
+            /**
+             * @param int|string $offset
+             * @param mixed $value
+             */
             #[ReturnTypeWillChange]
             public function offsetSet($offset, $value)
             {
                 $this->container[$offset] = $value;
             }
 
+            /**
+             * @param int|string $offset
+             */
             #[ReturnTypeWillChange]
             public function offsetExists($offset)
             {
                 return isset($this->container[$offset]);
             }
 
+            /**
+             * @param int|string $offset
+             */
             #[ReturnTypeWillChange]
             public function offsetUnset($offset)
             {
                 unset($this->container[$offset]);
             }
 
+            /**
+             * @param int|string $offset
+             * @return mixed
+             */
             #[ReturnTypeWillChange]
             public function offsetGet($offset)
             {
@@ -74,12 +95,6 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
             }
 
         };
-    }
-
-    protected function createStorage(Clock $clock): SignedUrlStorage
-    {
-        $arr = $this->getArrayAccess();
-        return new SessionStorage($arr, $clock);
     }
 
 }

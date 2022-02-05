@@ -30,6 +30,16 @@ final class MailerTest extends WPTestCase
 
     private string $fixtures_dir;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        global $phpmailer;
+
+        $phpmailer = new MockPHPMailer(true);
+        $phpmailer->mock_sent = [];
+        $this->fixtures_dir = dirname(__DIR__) . '/fixtures';
+    }
+
     /**
      * @test
      */
@@ -80,19 +90,6 @@ final class MailerTest extends WPTestCase
 
         $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $body);
         $this->assertStringContainsString('<h1>whats up</h1>', $body);
-    }
-
-    private function createAdmin(array $data): WP_User
-    {
-        return $this->factory()->user->create_and_get(
-            array_merge($data, ['role' => 'administrator'])
-        );
-    }
-
-    private function getSentMails(): array
-    {
-        global $phpmailer;
-        return $phpmailer->mock_sent;
     }
 
     /**
@@ -489,8 +486,8 @@ final class MailerTest extends WPTestCase
 
             $this->fail('No exception thrown.');
         } catch (CantSendEmailWithWPMail $e) {
-            $this->assertSame(
-                'wp_mail() failure. Message: [Something went wrong here.]. Data: [to: foo, subject: bar, ]',
+            $this->assertStringStartsWith(
+                'wp_mail() failure. Message: [Something went wrong here.]',
                 $e->getMessage()
             );
         }
@@ -897,14 +894,17 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
     }
 
-    protected function setUp(): void
+    private function createAdmin(array $data): WP_User
     {
-        parent::setUp();
-        global $phpmailer;
+        return $this->factory()->user->create_and_get(
+            array_merge($data, ['role' => 'administrator'])
+        );
+    }
 
-        $phpmailer = new MockPHPMailer(true);
-        $phpmailer->mock_sent = [];
-        $this->fixtures_dir = dirname(__DIR__) . '/fixtures';
+    private function getSentMails(): array
+    {
+        global $phpmailer;
+        return $phpmailer->mock_sent;
     }
 
 }

@@ -48,9 +48,9 @@ parameters:
       - templating
       - scopable_wp
     illuminate_container:
-      - core
+      - kernel
     pimple:
-      - core
+      - kernel
     session_psr16:
       - session
       - testable_clock #tests only

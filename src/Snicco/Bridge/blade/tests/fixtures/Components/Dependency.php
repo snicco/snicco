@@ -14,12 +14,9 @@ class Dependency extends BladeComponent
     public Foo $foo;
     public string $message;
 
-    /**
-     * @var string[]
-     */
     protected $except = ['foo'];
 
-    public function __construct(Foo $foo, $message)
+    public function __construct(Foo $foo, string $message)
     {
         $this->foo = $foo;
         $this->message = $foo->value . $message;

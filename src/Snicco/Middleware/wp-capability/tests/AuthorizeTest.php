@@ -12,8 +12,7 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Middleware\WPCap\Authorize;
 
-use function array_merge;
-use function call_user_func_array;
+use function array_values;
 
 class AuthorizeTest extends MiddlewareTestCase
 {
@@ -112,8 +111,14 @@ class AuthorizeTest extends MiddlewareTestCase
 class AuthorizeTestScopableWp extends ScopableWP
 {
 
+    /**
+     * @var Closure(string, mixed...):bool $user_can
+     */
     private Closure $user_can;
 
+    /**
+     * @param Closure(string, mixed...):bool $user_can
+     */
     public function __construct(Closure $user_can)
     {
         $this->user_can = $user_can;
@@ -121,7 +126,7 @@ class AuthorizeTestScopableWp extends ScopableWP
 
     public function currentUserCan(string $capability, ...$args): bool
     {
-        return call_user_func_array($this->user_can, array_merge([$capability], $args));
+        return call_user_func($this->user_can, $capability, ...array_values($args));
     }
 
 }

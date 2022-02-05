@@ -6,8 +6,8 @@ namespace Snicco\Bridge\IlluminateContainer\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Bridge\IlluminateContainer\IlluminateContainerAdapter;
-use Snicco\Component\Core\DIContainer;
-use Snicco\Component\Core\Testing\DIContainerContractTest;
+use Snicco\Component\Kernel\DIContainer;
+use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
 final class IlluminateContainerAdapterTest extends TestCase
 {

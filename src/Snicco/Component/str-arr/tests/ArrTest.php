@@ -179,6 +179,7 @@ final class ArrTest extends TestCase
 
         $obj = new stdClass;
         $obj->value = 'a';
+        /** @var stdClass $obj */
         $obj = unserialize(serialize($obj));
         $this->assertEquals([$obj], Arr::toArray($obj));
         $this->assertSame($obj, Arr::toArray($obj)[0]);
@@ -268,7 +269,6 @@ final class ArrTest extends TestCase
         $this->assertContains($random[0], ['foo', 'bar', 'baz']);
 
         $random = Arr::random(['foo', 'bar', 'baz'], 2);
-        $this->assertIsArray($random);
         $this->assertCount(2, $random);
         $this->assertContains($random[0], ['foo', 'bar', 'baz']);
         $this->assertContains($random[1], ['foo', 'bar', 'baz']);
@@ -754,29 +754,44 @@ class SupportTestArrayAccess implements ArrayAccess
 
     private array $attributes;
 
-    public function __construct($attributes = [])
+    public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
     }
 
+    /**
+     * @param string|int $offset
+     * @return bool
+     */
     #[ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->attributes);
     }
 
+    /**
+     * @param string|int $offset
+     * @return mixed
+     */
     #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->attributes[$offset];
     }
 
+    /**
+     * @param string|int $offset
+     * @param mixed $value
+     */
     #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->attributes[$offset] = $value;
     }
 
+    /**
+     * @param string|int $offset
+     */
     #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {

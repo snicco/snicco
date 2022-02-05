@@ -34,7 +34,7 @@ final class ViewComposerCollection
 
     /**
      * @param string|list<string> $views
-     * @param class-string<ViewComposer>|Closure $composer
+     * @param class-string<ViewComposer>|Closure(View) $composer
      *
      * @psalm-suppress DocblockTypeContradiction
      *

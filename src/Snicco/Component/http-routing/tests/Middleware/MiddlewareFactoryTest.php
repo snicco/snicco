@@ -27,6 +27,12 @@ final class MiddlewareFactoryTest extends TestCase
     private MiddlewareFactory $factory;
     private DIContainer $container;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->factory = new MiddlewareFactory($this->container = $this->createContainer());
+    }
+
     /**
      * @test
      */
@@ -137,12 +143,6 @@ final class MiddlewareFactoryTest extends TestCase
             MiddlewareWithContextualAndRuntimeArgs::class,
             ['BAR_PASSED', 'BAZ_PASSED']
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->factory = new MiddlewareFactory($this->container = $this->createContainer());
     }
 
 }

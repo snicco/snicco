@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\SignedUrlMiddleware\Tests;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Bridge\SignedUrlMiddleware\ValidateSignature;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
@@ -21,6 +21,19 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
     private SignedUrlValidator $validator;
     private UrlSigner $signer;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->signer = new UrlSigner(
+            $storage = new InMemoryStorage(),
+            $hasher = new Sha256Hasher(Secret::generate())
+        );
+        $this->validator = new SignedUrlValidator(
+            $storage,
+            $hasher
+        );
+    }
 
     /**
      * @test
@@ -110,7 +123,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
     {
         $m = new ValidateSignature(
             $this->validator,
-            function (Request $request) {
+            function (ServerRequestInterface $request) {
                 return $request->getHeaderLine('User-Agent');
             }
         );
@@ -127,21 +140,6 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->expectException(InvalidSignature::class);
         // User agent header did not match
         $this->runMiddleware($m, $new_request)->psr()->assertForbidden();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->signer = new UrlSigner(
-            $storage = new InMemoryStorage(),
-            $hasher = new Sha256Hasher(Secret::generate())
-        );
-        $this->storage = $storage;
-
-        $this->validator = new SignedUrlValidator(
-            $storage,
-            $hasher
-        );
     }
 
 }

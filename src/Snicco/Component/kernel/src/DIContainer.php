@@ -70,6 +70,24 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
     }
 
     /**
+     * @psalm-suppress MixedArgument
+     */
+    final public function offsetSet($offset, $value): void
+    {
+        if ($value instanceof Closure) {
+            $this->singleton((string)$offset, $value);
+            return;
+        }
+
+        if (is_object($value)) {
+            $this->instance((string)$offset, $value);
+            return;
+        }
+
+        $this->primitive((string)$offset, $value);
+    }
+
+    /**
      * @template T
      * @param string|class-string<T> $id
      * @return T|mixed
@@ -94,21 +112,6 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
         }
 
         return $res;
-    }
-
-    final public function offsetSet($offset, $value): void
-    {
-        if ($value instanceof Closure) {
-            $this->singleton((string)$offset, $value);
-            return;
-        }
-
-        if (is_object($value)) {
-            $this->instance((string)$offset, $value);
-            return;
-        }
-
-        $this->primitive((string)$offset, $value);
     }
 
     /**
@@ -141,13 +144,14 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * Stores a primitive value in the container.
      *
      * @param string $id
-     * @param scalar|array<scalar>|mixed $value
+     * @param scalar|array<scalar> $value
+     * @psalm-suppress DocblockTypeContradiction
      */
     final public function primitive(string $id, $value): void
     {
         if (!is_scalar($value) && !is_array($value)) {
             throw new InvalidArgumentException(
-                sprintf('$value must be Closure,object or scalar. Got [%s].', gettype($value))
+                sprintf('$value must be a scalar or an array of scalars. Got [%s].', gettype($value))
             );
         }
         $this->singleton($id, fn() => $value);

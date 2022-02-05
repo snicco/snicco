@@ -6,6 +6,7 @@ namespace Snicco\Component\SignedUrl\Tests;
 
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
 use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
@@ -17,6 +18,7 @@ use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
 use function str_replace;
+use function strval;
 
 final class SignedUrlValidatorTest extends TestCase
 {
@@ -24,6 +26,14 @@ final class SignedUrlValidatorTest extends TestCase
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
     private Sha256Hasher $hasher;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->storage = new InMemoryStorage();
+        $this->hasher = new Sha256Hasher(Secret::generate());
+        $this->url_signer = new UrlSigner($this->storage, $this->hasher);
+    }
 
     /**
      * @test
@@ -84,7 +94,11 @@ final class SignedUrlValidatorTest extends TestCase
 
         $this->expectException(InvalidSignature::class);
 
-        $string = preg_replace('/expires=\d+/', 'expires=' . (time() + 100), $signed_url->asString());
+        $string = preg_replace('/expires=\d+/', 'expires=' . (string)(time() + 100), $signed_url->asString());
+
+        if (false == $string) {
+            throw new RuntimeException('preg_replace failed in test');
+        }
 
         $validator->validate($string);
     }
@@ -113,7 +127,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_if_no_signature(): void
     {
         $e = time() + 10;
-        $url = '/foo?expires=' . $e;
+        $url = '/foo?expires=' . strval($e);
 
         $this->expectException(InvalidSignature::class);
 
@@ -254,6 +268,7 @@ final class SignedUrlValidatorTest extends TestCase
      */
     public function additional_request_data_can_be_added_for_validation(): void
     {
+        /** @var null|string $pre */
         $pre = $_SERVER['HTTP_USER_AGENT'] ?? null;
         $_SERVER['HTTP_USER_AGENT'] = 'foobar';
 
@@ -288,14 +303,6 @@ final class SignedUrlValidatorTest extends TestCase
             $_SERVER['HTTP_USER_AGENT'] = $pre;
         }
         $this->assertTrue(true);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->storage = new InMemoryStorage();
-        $this->hasher = new Sha256Hasher(Secret::generate());
-        $this->url_signer = new UrlSigner($this->storage, $this->hasher);
     }
 
 }
