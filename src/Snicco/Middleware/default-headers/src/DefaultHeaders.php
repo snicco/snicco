@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Middleware\DefaultHeaders;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * @api
  */
-final class DefaultHeaders extends AbstractMiddleware
+final class DefaultHeaders implements MiddlewareInterface
 {
 
     /**
@@ -28,9 +28,9 @@ final class DefaultHeaders extends AbstractMiddleware
         $this->default_headers = $default_headers;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $next($request);
+        $response = $handler->handle($request);
 
         foreach ($this->default_headers as $name => $value) {
             if (!$response->hasHeader($name)) {
@@ -40,5 +40,4 @@ final class DefaultHeaders extends AbstractMiddleware
 
         return $response;
     }
-
 }

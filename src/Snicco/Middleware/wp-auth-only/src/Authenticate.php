@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Middleware\WPAuth;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\ScopableWP\ScopableWP;
 
 use function sprintf;
 
-final class Authenticate extends AbstractMiddleware
+final class Authenticate implements MiddlewareInterface
 {
 
     const KEY = '_user_id';
@@ -24,10 +24,10 @@ final class Authenticate extends AbstractMiddleware
         $this->wp = $wp ?: new ScopableWP();
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->wp->isUserLoggedIn()) {
-            return $next(
+            return $handler->handle(
                 $request->withAttribute(
                     self::KEY,
                     $this->wp->getCurrentUserId()
@@ -39,9 +39,8 @@ final class Authenticate extends AbstractMiddleware
             401,
             sprintf(
                 'Missing authentication for request path [%s].',
-                $request->path()
+                $request->getUri()->getPath()
             )
         );
     }
-
 }

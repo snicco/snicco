@@ -25,11 +25,6 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->psr()->assertOk();
     }
 
-    private function newMiddleware(ScopableWP $scopable_wp, string $redirect_url = null): GuestsOnly
-    {
-        return new GuestsOnly($scopable_wp, $redirect_url);
-    }
-
     /**
      * @test
      */
@@ -87,6 +82,11 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
         $response->psr()->assertRedirect('/custom-home-page');
         $response->assertNextMiddlewareNotCalled();
+    }
+
+    private function newMiddleware(ScopableWP $scopable_wp, string $redirect_url = null): GuestsOnly
+    {
+        return new GuestsOnly($redirect_url, null, $scopable_wp);
     }
 
 

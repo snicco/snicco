@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\HttpsOnly;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -22,6 +24,10 @@ final class HttpsOnly extends AbstractMiddleware
         $this->is_local = $is_local;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         // Don't enforce https in local development mode to allow CI/CD testing.

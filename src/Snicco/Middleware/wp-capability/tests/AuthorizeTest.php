@@ -20,6 +20,12 @@ class AuthorizeTest extends MiddlewareTestCase
 
     private Request $request;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->request = $this->frontendRequest('/foo');
+    }
+
     /**
      * @test
      */
@@ -37,11 +43,6 @@ class AuthorizeTest extends MiddlewareTestCase
         $response = $this->runMiddleware($m, $this->request);
 
         $response->assertNextMiddlewareCalled();
-    }
-
-    private function newMiddleware(ScopableWP $wp, string $cap, ?int $id = null): Authorize
-    {
-        return new Authorize($wp, $cap, $id);
     }
 
     /**
@@ -101,10 +102,9 @@ class AuthorizeTest extends MiddlewareTestCase
         }
     }
 
-    protected function setUp(): void
+    private function newMiddleware(ScopableWP $wp, string $cap, ?int $id = null): Authorize
     {
-        parent::setUp();
-        $this->request = $this->frontendRequest('/foo');
+        return new Authorize($cap, $id, $wp);
     }
 
 }
