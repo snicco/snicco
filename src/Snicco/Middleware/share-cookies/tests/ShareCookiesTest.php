@@ -84,6 +84,20 @@ class ShareCookiesTest extends MiddlewareTestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function everything_works_if_the_response_has_no_cookies_added(): void
+    {
+        $response = $this->runMiddleware(
+            new ShareCookies(),
+            $this->frontendRequest()
+        );
+
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertHeaderMissing('set-cookie');
+    }
+
 }
 
 
