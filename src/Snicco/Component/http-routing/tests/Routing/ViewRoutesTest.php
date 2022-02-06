@@ -11,8 +11,10 @@ use function dirname;
 class ViewRoutesTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function view_routes_work()
+    /**
+     * @test
+     */
+    public function view_routes_work(): void
     {
         $this->routeConfigurator()->view(
             '/foo',
@@ -29,8 +31,10 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
     }
 
-    /** @test */
-    public function the_default_values_can_be_customized_for_view_routes()
+    /**
+     * @test
+     */
+    public function the_default_values_can_be_customized_for_view_routes(): void
     {
         $this->routeConfigurator()->view(
             '/foo',

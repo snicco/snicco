@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\ViewFactory;
 
+use RuntimeException;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\PHPView;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Throwable;
+
+use function ob_get_clean;
 
 /**
  * @api
@@ -36,6 +39,7 @@ final class PHPViewFactory implements ViewFactory
     /**
      * @interal
      * @throws ViewCantBeRendered
+     * @throws RuntimeException If output buffering can't be enabled. This should never happen.
      */
     public function renderPhpView(PHPView $view): string
     {
@@ -49,10 +53,16 @@ final class PHPViewFactory implements ViewFactory
             $this->handleViewException($e, $ob_level, $view);
         }
 
-        return ltrim(ob_get_clean());
+        $output = ob_get_clean();
+
+        if (false === $output) {
+            throw new RuntimeException('Output buffering was not enabled. This should not be happen.');
+        }
+
+        return ltrim($output);
     }
 
-    private function render(PHPView $view)
+    private function render(PHPView $view): void
     {
         $this->composer_collection->compose($view);
 
@@ -78,7 +88,7 @@ final class PHPViewFactory implements ViewFactory
         $this->requireView($view);
     }
 
-    private function requireView(PHPView $view)
+    private function requireView(PHPView $view): void
     {
         $this->finder->includeFile(
             $view->path(),
@@ -87,9 +97,11 @@ final class PHPViewFactory implements ViewFactory
     }
 
     /**
+     * @return never
      * @throws ViewCantBeRendered
+     *
      */
-    private function handleViewException(Throwable $e, $ob_level, PHPView $view)
+    private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
     {
         while (ob_get_level() > $ob_level) {
             ob_end_clean();

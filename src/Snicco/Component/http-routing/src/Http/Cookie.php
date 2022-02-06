@@ -4,25 +4,33 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
 use LogicException;
 
-use function array_merge;
 use function in_array;
 use function is_int;
 use function ucwords;
-use function urlencode;
 
 /**
- * @api This class represent a cookie that is meant to be sent to the client.
- *      Not an incoming request cookie.
+ * @api
+ * @psalm-immutable
  */
 final class Cookie
 {
-
-    private array $defaults = [
-        'value' => '',
+    /**
+     * @var array{
+     *     domain: null|string,
+     *     hostonly: bool,
+     *     path: string,
+     *     expires: null|positive-int,
+     *     httponly: bool,
+     *     samesite: 'Lax'|'Strict'|'None',
+     *     secure: bool
+     * }
+     */
+    public array $properties = [
         'domain' => null,
         'hostonly' => true,
         'path' => '/',
@@ -31,42 +39,26 @@ final class Cookie
         'httponly' => true,
         'samesite' => 'Lax',
     ];
+    public string $name;
+    public string $value;
 
-    private array $properties;
-
-    private string $name;
-
-    public function __construct(string $name, string $value, bool $url_encode = true)
+    public function __construct(string $name, string $value)
     {
         $this->name = $name;
-
-        $value = ['value' => $url_encode ? urlencode($value) : $value];
-
-        $this->properties = array_merge($this->defaults, $value);
-    }
-
-    public function properties(): array
-    {
-        return $this->properties;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
+        $this->value = $value;
     }
 
     public function withJsAccess(): Cookie
     {
         $cookie = clone $this;
         $cookie->properties['httponly'] = false;
-
         return $cookie;
     }
 
     public function withOnlyHttpAccess(): Cookie
     {
         $cookie = clone $this;
-        $this->properties['httponly'] = true;
+        $cookie->properties['httponly'] = true;
         return $cookie;
     }
 
@@ -95,6 +87,9 @@ final class Cookie
         return $cookie;
     }
 
+    /**
+     * @psalm-param  'Lax'|'Strict'|'None'|'None; Secure' $same_site
+     */
     public function withSameSite(string $same_site): Cookie
     {
         $same_site = ucwords($same_site);
@@ -114,18 +109,18 @@ final class Cookie
         $cookie->properties['samesite'] = $same_site;
 
         if ($same_site === 'None') {
-            $this->properties['secure'] = true;
+            $cookie->properties['secure'] = true;
         }
 
         return $cookie;
     }
 
     /**
-     * @param int|DateTimeInterface|$timestamp
+     * @param positive-int|DateTimeImmutable $timestamp
      */
     public function withExpiryTimestamp($timestamp): Cookie
     {
-        if (!is_int($timestamp) && !$timestamp instanceof DateTimeInterface) {
+        if (!is_int($timestamp) && !$timestamp instanceof DateTimeImmutable) {
             throw new InvalidArgumentException(
                 '$timestamp must be an integer or DataTimeInterface'
             );

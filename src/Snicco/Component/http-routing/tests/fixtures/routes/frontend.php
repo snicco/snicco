@@ -13,7 +13,7 @@ return function (WebRoutingConfigurator $router) {
         RoutingTestController::class
     );
 
-    if (true === RouteLoaderTest::$web_include_partial) {
+    if (RouteLoaderTest::$web_include_partial) {
         $router->include(__DIR__ . '/_partial.php');
     }
 

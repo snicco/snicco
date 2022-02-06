@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\SignedUrl;
 
 use ParagonIE\ConstantTime\Base64UrlSafe;
+use RuntimeException;
 use Snicco\Component\SignedUrl\Exception\BadIdentifier;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
@@ -39,7 +40,7 @@ final class SignedUrlValidator
     }
 
     /**
-     * @param string $request_target $psr->request->getRequestTarget() ||
+     * @param string $request_target $psr_request->getRequestTarget() ||
      *     $_SERVER['PATHINFO].?$_SERVER['QUERY_STRING']
      * @param string $request_context Any additional request context to check against.
      *
@@ -54,14 +55,23 @@ final class SignedUrlValidator
             $request_target
         );
 
-        $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY] ?? '');
+        if (!isset($query_as_array[SignedUrl::SIGNATURE_KEY])) {
+            throw new InvalidSignature("Missing signature parameter for path [$path].");
+        }
+
+        if (!isset($query_as_array[SignedUrl::EXPIRE_KEY])) {
+            throw new InvalidSignature("Missing expires parameter for path [$path].");
+        }
+
+        $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
         $identifier = $arr[0] ?? '';
         $provided_signature = $arr[1] ?? '';
 
         // Rebuild the parts from the provided url
         // if anything has been changed at all the resulting signature will not match the
         // signature query parameter.
-        $plaint_text_signature = $identifier .
+        $plaint_text_signature =
+            $identifier .
             $request_context .
             $path . '?' . $this->queryStringWithoutSignature($query_string);
 
@@ -74,6 +84,10 @@ final class SignedUrlValidator
         $this->validateUsage($identifier, $path);
     }
 
+    /**
+     * @param string $path_with_query_string
+     * @return array{0:string, 1:string, 2: array<string,string>}
+     */
     private function parse(string $path_with_query_string): array
     {
         $parts = (array)parse_url($path_with_query_string);
@@ -81,19 +95,24 @@ final class SignedUrlValidator
         $path = $parts['path'] ?? '';
         $query_string = $parts['query'] ?? '';
         parse_str($query_string, $query_as_array);
+
+        /** @var array<string,string> $query_as_array */
         return [$path, $query_string, $query_as_array];
     }
 
-    private function queryStringWithoutSignature($query_string): string
+    private function queryStringWithoutSignature(string $query_string): string
     {
-        $str = rtrim(
-            preg_replace(
-                '/(^|&)' . SignedUrl::SIGNATURE_KEY . '=[^&]+/',
-                '',
-                $query_string
-            ),
-            '&'
+        $qs = preg_replace(
+            '/(^|&)' . SignedUrl::SIGNATURE_KEY . '=[^&]+/',
+            '',
+            $query_string
         );
+
+        if (null === $qs) {
+            throw new RuntimeException("preg_replace returned null for query_string [$query_string].");
+        }
+
+        $str = rtrim($qs, '&');
 
         return ltrim($str, '?');
     }
@@ -115,7 +134,7 @@ final class SignedUrlValidator
         }
     }
 
-    private function validateUsage(string $identifier, $path): void
+    private function validateUsage(string $identifier, string $path): void
     {
         try {
             $this->storage->consume($identifier);

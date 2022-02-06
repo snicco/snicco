@@ -6,6 +6,7 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
 use Snicco\Bridge\Blade\BladeComponent;
 use Snicco\Bridge\Blade\Tests\fixtures\TestDependencies\Foo;
+use Snicco\Component\Templating\View\View;
 
 class Dependency extends BladeComponent
 {
@@ -15,13 +16,13 @@ class Dependency extends BladeComponent
 
     protected $except = ['foo'];
 
-    public function __construct(Foo $foo, $message)
+    public function __construct(Foo $foo, string $message)
     {
         $this->foo = $foo;
         $this->message = $foo->value . $message;
     }
 
-    public function render()
+    public function render(): View
     {
         return $this->view('components.with-dependency');
     }

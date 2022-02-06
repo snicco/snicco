@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\GuestsOnly\Tests;
 
-use Closure;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\ScopableWP\ScopableWP;
@@ -13,8 +12,10 @@ use Snicco\Middleware\GuestsOnly\GuestsOnly;
 class GuestsOnlyTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function guests_can_access_the_route()
+    /**
+     * @test
+     */
+    public function guests_can_access_the_route(): void
     {
         $wp = new GuestScopableWP(false);
 
@@ -24,8 +25,10 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->psr()->assertOk();
     }
 
-    /** @test */
-    public function logged_in_users_are_redirected_to_a_dashboard_route_if_it_exists()
+    /**
+     * @test
+     */
+    public function logged_in_users_are_redirected_to_a_dashboard_route_if_it_exists(): void
     {
         $route = Route::create('/dashboard', Route::DELEGATE, 'dashboard');
         $this->withRoutes([$route]);
@@ -38,8 +41,10 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
 
-    /** @test */
-    public function logged_in_users_are_redirected_to_a_home_route_if_it_exists_and_no_dashboard_route_exists()
+    /**
+     * @test
+     */
+    public function logged_in_users_are_redirected_to_a_home_route_if_it_exists_and_no_dashboard_route_exists(): void
     {
         $route = Route::create('/home', Route::DELEGATE, 'home');
         $this->withRoutes([$route]);
@@ -52,8 +57,10 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
 
-    /** @test */
-    public function if_no_route_exists_users_are_redirected_to_the_root_domain_path()
+    /**
+     * @test
+     */
+    public function if_no_route_exists_users_are_redirected_to_the_root_domain_path(): void
     {
         $wp = new GuestScopableWP(true);
 
@@ -63,8 +70,10 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
 
-    /** @test */
-    public function logged_in_users_can_be_redirected_to_custom_urls()
+    /**
+     * @test
+     */
+    public function logged_in_users_can_be_redirected_to_custom_urls(): void
     {
         $response = $this->runMiddleware(
             $this->newMiddleware(new GuestScopableWP(true), '/custom-home-page'),
@@ -77,13 +86,9 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
     private function newMiddleware(ScopableWP $scopable_wp, string $redirect_url = null): GuestsOnly
     {
-        return new GuestsOnly($scopable_wp, $redirect_url);
+        return new GuestsOnly($redirect_url, null, $scopable_wp);
     }
 
-    private function providerThatReturnsId(int $id): Closure
-    {
-        return (fn() => $id);
-    }
 
 }
 

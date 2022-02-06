@@ -2,4 +2,4 @@
 /vendor
 composer.lock
 /tests/fixtures/cache
-!/tests/fixtures/cache/.gitkeep
+!tests/fixtures/cache/.gitkeep

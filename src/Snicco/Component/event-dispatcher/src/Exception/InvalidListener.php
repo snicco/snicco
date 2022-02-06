@@ -31,6 +31,9 @@ final class InvalidListener extends InvalidArgumentException
         );
     }
 
+    /**
+     * @param array{0:class-string, 1:string } $listener
+     */
     public static function becauseProvidedClassMethodDoesntExist(array $listener): InvalidListener
     {
         return new InvalidListener(

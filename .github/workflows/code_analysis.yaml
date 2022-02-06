@@ -2,7 +2,7 @@ name: Code Analysis
 
 on:
   pull_request:
-  push:
+    branches: master
 
 env:
   # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
@@ -28,7 +28,7 @@ jobs:
               curl -LS https://github.com/maglnet/ComposerRequireChecker/releases/download/3.8.0/composer-require-checker.phar -o require-checker.phar
               sudo chmod +x require-checker.phar
               sudo mv require-checker.phar /usr/local/bin/require-checker
-              require-checker check composer.json --config-file=$GITHUB_WORKSPACE/tools/composer-require-checker.json
+              require-checker check composer.json --config-file=$GITHUB_WORKSPACE/composer-require-checker.json
 
           - name: 'Composer unused'
             run: |
@@ -41,7 +41,7 @@ jobs:
             run: composer validate
 
           - name: 'Psalm'
-            run: vendor/bin/psalm
+            run: composer psalm
 
     steps:
       - name: 'Checkout repo'

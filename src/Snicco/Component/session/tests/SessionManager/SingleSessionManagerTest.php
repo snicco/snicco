@@ -14,8 +14,10 @@ final class SingleSessionManagerTest extends TestCase
 
     use SessionHelpers;
 
-    /** @test */
-    public function multiple_calls_to_get_session_return_the_same_instance()
+    /**
+     * @test
+     */
+    public function multiple_calls_to_get_session_return_the_same_instance(): void
     {
         $manager = new SingleSessionSessionManager($this->getSessionManager());
 

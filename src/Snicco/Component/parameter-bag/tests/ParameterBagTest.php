@@ -10,8 +10,10 @@ use Snicco\Component\ParameterBag\ParameterPag;
 final class ParameterBagTest extends TestCase
 {
 
-    /** @test */
-    public function testHas()
+    /**
+     * @test
+     */
+    public function testHas(): void
     {
         $bag = new ParameterPag([
             'foo' => [
@@ -28,8 +30,10 @@ final class ParameterBagTest extends TestCase
         $this->assertFalse($bag->has('foo.baz'));
     }
 
-    /** @test */
-    public function testGet()
+    /**
+     * @test
+     */
+    public function testGet(): void
     {
         $bag = new ParameterPag([
             'foo' => [
@@ -50,8 +54,10 @@ final class ParameterBagTest extends TestCase
         $this->assertEquals('default', $bag->get('foo.bogus', 'default'));
     }
 
-    /** @test */
-    public function testAdd()
+    /**
+     * @test
+     */
+    public function testAdd(): void
     {
         $bag = new ParameterPag([
             'foo' => [
@@ -66,8 +72,10 @@ final class ParameterBagTest extends TestCase
         $this->assertEquals('baz', $bag->get('bar'));
     }
 
-    /** @test */
-    public function testSet()
+    /**
+     * @test
+     */
+    public function testSet(): void
     {
         $bag = new ParameterPag([
             'foo' => [
@@ -81,8 +89,10 @@ final class ParameterBagTest extends TestCase
         $this->assertEquals('foobar', $bag->get('foo.bar.baz'));
     }
 
-    /** @test */
-    public function testPrepend()
+    /**
+     * @test
+     */
+    public function testPrepend(): void
     {
         $bag = new ParameterPag([
             'users' => [
@@ -102,8 +112,10 @@ final class ParameterBagTest extends TestCase
         ], $bag->get('users.names'));
     }
 
-    /** @test */
-    public function testAppend()
+    /**
+     * @test
+     */
+    public function testAppend(): void
     {
         $bag = new ParameterPag([
             'users' => [
@@ -123,8 +135,10 @@ final class ParameterBagTest extends TestCase
         ], $bag->get('users.names'));
     }
 
-    /** @test */
-    public function testRemove()
+    /**
+     * @test
+     */
+    public function testRemove(): void
     {
         $bag = new ParameterPag([
             'foo' => [
@@ -141,8 +155,10 @@ final class ParameterBagTest extends TestCase
         ], $bag->get('foo'));
     }
 
-    /** @test */
-    public function testToArray()
+    /**
+     * @test
+     */
+    public function testToArray(): void
     {
         $bag = new ParameterPag(
             $arr = [
@@ -156,8 +172,10 @@ final class ParameterBagTest extends TestCase
         $this->assertEquals($arr, $bag->toArray());
     }
 
-    /** @test */
-    public function test_arrayAccess()
+    /**
+     * @test
+     */
+    public function test_arrayAccess(): void
     {
         $bag = new ParameterPag([
             'foo' => [

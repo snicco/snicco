@@ -16,25 +16,29 @@ use Snicco\Component\TestableClock\TestClock;
 final class CollectGarbageTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function test_next_is_called()
+    /**
+     * @test
+     */
+    public function test_next_is_called(): void
     {
         $middleware = new CollectGarbage(0, new InMemoryStorage(), new TestLogger());
 
         $this->runMiddleware($middleware, $this->frontendRequest())->assertNextMiddlewareCalled();
     }
 
-    /** @test */
-    public function garbage_collection_works()
+    /**
+     * @test
+     */
+    public function garbage_collection_works(): void
     {
         $signer = new UrlSigner(
             $storage = new InMemoryStorage($test_clock = new TestClock()),
             new Sha256Hasher(Secret::generate())
         );
 
-        $link1 = $signer->sign('/foo', 10);
-        $link2 = $signer->sign('/bar', 10);
-        $link3 = $signer->sign('/baz', 10);
+        $signer->sign('/foo', 10);
+        $signer->sign('/bar', 10);
+        $signer->sign('/baz', 10);
 
         $this->assertCount(3, $storage->all());
 

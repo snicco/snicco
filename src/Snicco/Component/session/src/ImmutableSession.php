@@ -42,6 +42,9 @@ interface ImmutableSession
 
     /**
      * Get the previous input of a user, typically during a form submission.
+     *
+     * @param mixed $default
+     * @return mixed
      */
     public function oldInput(string $key = null, $default = null);
 
@@ -76,6 +79,8 @@ interface ImmutableSession
     /**
      * Get a value form the session with dot notation.
      * $session->get('user.name', 'calvin')
+     *
+     * @param mixed $default
      *
      * @return mixed
      */

@@ -13,8 +13,10 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 final class NegotiateContentTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function content_negotiation_is_performed()
+    /**
+     * @test
+     */
+    public function content_negotiation_is_performed(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $response->getBody()->write($request->getHeaderLine('accept'));
@@ -47,8 +49,10 @@ final class NegotiateContentTest extends MiddlewareTestCase
         $response->psr()->assertHeader('content-language', 'en');
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_no_content_type_can_be_matched()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_no_content_type_can_be_matched(): void
     {
         $middleware = new NegotiateContent(['en']);
 
@@ -58,7 +62,7 @@ final class NegotiateContentTest extends MiddlewareTestCase
         );
 
         try {
-            $response = $this->runMiddleware($middleware, $request);
+            $this->runMiddleware($middleware, $request);
             $this->fail('No exception thrown for bad content type');
         } catch (HttpException $e) {
             $this->assertSame(406, $e->statusCode());

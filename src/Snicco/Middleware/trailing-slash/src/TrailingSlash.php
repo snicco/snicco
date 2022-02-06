@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\TrailingSlash;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -24,6 +26,10 @@ final class TrailingSlash extends AbstractMiddleware
         $this->trailing_slash = $trailing_slash;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $path = UrlPath::fromString($request->path());

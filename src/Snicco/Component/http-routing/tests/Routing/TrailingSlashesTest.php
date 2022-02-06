@@ -10,8 +10,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class TrailingSlashesTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function routes_can_be_defined_without_leading_slash()
+    /**
+     * @test
+     */
+    public function routes_can_be_defined_without_leading_slash(): void
     {
         $this->routeConfigurator()->get('foo_route', 'foo', RoutingTestController::class);
 
@@ -19,8 +21,10 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $request);
     }
 
-    /** @test */
-    public function routes_can_be_defined_with_leading_slash()
+    /**
+     * @test
+     */
+    public function routes_can_be_defined_with_leading_slash(): void
     {
         $this->routeConfigurator()->get('foo_route', '/foo', RoutingTestController::class);
 
@@ -28,8 +32,10 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $request);
     }
 
-    /** @test */
-    public function a_route_with_trailing_slash_does_not_match_a_path_without_trailing_slash()
+    /**
+     * @test
+     */
+    public function a_route_with_trailing_slash_does_not_match_a_path_without_trailing_slash(): void
     {
         $this->routeConfigurator()->get('foo_route', '/foo/', RoutingTestController::class);
 
@@ -40,8 +46,10 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $request);
     }
 
-    /** @test */
-    public function a_route_without_trailing_slash_does_not_match_a_path_with_trailing_slash()
+    /**
+     * @test
+     */
+    public function a_route_without_trailing_slash_does_not_match_a_path_with_trailing_slash(): void
     {
         $this->routeConfigurator()->get('foo_route', '/foo', RoutingTestController::class);
 
@@ -52,8 +60,10 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $request);
     }
 
-    /** @test */
-    public function test_required_route_segments_and_trailing_slashes()
+    /**
+     * @test
+     */
+    public function test_required_route_segments_and_trailing_slashes(): void
     {
         $this->routeConfigurator()->get(
             'route1',
@@ -79,8 +89,10 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $this->assertResponseBody('foo:bar', $request);
     }
 
-    /** @test */
-    public function test_optional_route_segments_and_trailing_slashes()
+    /**
+     * @test
+     */
+    public function test_optional_route_segments_and_trailing_slashes(): void
     {
         $this->routeConfigurator()->get(
             'route1',

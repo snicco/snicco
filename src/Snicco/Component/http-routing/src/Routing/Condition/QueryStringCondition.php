@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Condition;
 
+use BadMethodCallException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\StrArr\Arr;
 
 /**
  * @api
@@ -18,9 +18,14 @@ class QueryStringCondition extends AbstractRouteCondition
      */
     private array $query_string_arguments;
 
-    public function __construct($query_string_arguments)
+    private bool $valid = false;
+
+    /**
+     * @param array<string,string> $query_string_arguments
+     */
+    public function __construct(array $query_string_arguments)
     {
-        $this->query_string_arguments = Arr::toArray($query_string_arguments);
+        $this->query_string_arguments = $query_string_arguments;
     }
 
     public function isSatisfied(Request $request): bool
@@ -31,21 +36,22 @@ class QueryStringCondition extends AbstractRouteCondition
             if (!in_array($key, array_keys($query_args), true)) {
                 return false;
             }
-        }
-
-        foreach ($this->query_string_arguments as $key => $value) {
             if ($value !== $query_args[$key]) {
                 return false;
             }
         }
+
+        $this->valid = true;
 
         return true;
     }
 
     public function getArguments(Request $request): array
     {
-        $q = Arr::only($request->getQueryParams(), array_keys($this->query_string_arguments));
-        return array_values($q);
+        if (!$this->valid) {
+            throw new BadMethodCallException('Condition arguments were retrieved before condition was validated.');
+        }
+        return $this->query_string_arguments;
     }
 
 }

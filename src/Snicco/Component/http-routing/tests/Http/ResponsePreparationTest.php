@@ -19,8 +19,10 @@ class ResponsePreparationTest extends TestCase
     private ResponsePreparation $preparation;
     private Request $request;
 
-    /** @test */
-    public function testDateIsSetIfNotSetAlready()
+    /**
+     * @test
+     */
+    public function testDateIsSetIfNotSetAlready(): void
     {
         $response = $this->factory->make();
 
@@ -29,8 +31,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame(gmdate('D, d M Y H:i:s') . ' GMT', $response->getHeaderLine('date'));
     }
 
-    /** @test */
-    public function testDateIsNotModifiedIfAlreadySet()
+    /**
+     * @test
+     */
+    public function testDateIsNotModifiedIfAlreadySet(): void
     {
         $date = gmdate('D, d M Y H:i:s T', time() + 10);
         $response = $this->factory->make()
@@ -41,8 +45,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame($date, $response->getHeaderLine('date'));
     }
 
-    /** @test */
-    public function testCacheControlDefaultsAreAdded()
+    /**
+     * @test
+     */
+    public function testCacheControlDefaultsAreAdded(): void
     {
         $response = $this->factory->make();
         $response = $this->preparation->prepare($response, $this->request, []);
@@ -54,7 +60,7 @@ class ResponsePreparationTest extends TestCase
     /**
      * @test
      */
-    public function cache_control_is_not_added_if_already_present_or_sent_by_a_call_to_header()
+    public function cache_control_is_not_added_if_already_present_or_sent_by_a_call_to_header(): void
     {
         $response = $this->factory->make()->withHeader('cache-control', 'public');
         $response = $this->preparation->prepare($response, $this->request, []);
@@ -72,8 +78,10 @@ class ResponsePreparationTest extends TestCase
         );
     }
 
-    /** @test */
-    public function testCacheControlHeadersWithValidatorsPresent()
+    /**
+     * @test
+     */
+    public function testCacheControlHeadersWithValidatorsPresent(): void
     {
         $date = gmdate('D, d M Y H:i:s T', time() + 10);
         $response = $this->factory->make()->withHeader('Expires', $date);
@@ -87,8 +95,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame('private, must-revalidate', $response->getHeaderLine('cache-control'));
     }
 
-    /** @test */
-    public function testFixesInformationalResponses()
+    /**
+     * @test
+     */
+    public function testFixesInformationalResponses(): void
     {
         $response = $this->factory->html('foo', 100)
             ->withHeader('content-length', 3);
@@ -100,8 +110,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame('', ini_get('default_mimetype'));
     }
 
-    /** @test */
-    public function testAddContentTypeIfNotPresent()
+    /**
+     * @test
+     */
+    public function testAddContentTypeIfNotPresent(): void
     {
         $response = $this->factory->make()->withBody($this->factory->createStream('foo'));
         $prepared = $this->preparation->prepare($response, $this->request, []);
@@ -124,8 +136,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame('text/html; charset=UTF-8', $prepared->getHeaderLine('content-type'));
     }
 
-    /** @test */
-    public function testRemoveContentLengthIfTransferEncoding()
+    /**
+     * @test
+     */
+    public function testRemoveContentLengthIfTransferEncoding(): void
     {
         $response = $this->factory->make()
             ->withBody($this->factory->createStream('foo'))
@@ -137,8 +151,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertFalse($prepared->hasHeader('content-length'));
     }
 
-    /** @test */
-    public function testHeadRequestRemovesBody()
+    /**
+     * @test
+     */
+    public function testHeadRequestRemovesBody(): void
     {
         $response = $this->factory->html('foo');
 
@@ -147,8 +163,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame(0, $prepared->getBody()->getSize());
     }
 
-    /** @test */
-    public function testContentLength()
+    /**
+     * @test
+     */
+    public function testContentLength(): void
     {
         $response = $this->factory->html(str_repeat('a', 40));
 
@@ -157,8 +175,10 @@ class ResponsePreparationTest extends TestCase
         $this->assertSame('40', $prepared->getHeaderLine('content-length'));
     }
 
-    /** @test */
-    public function no_content_length_if_output_buffering_is_on_and_has_content()
+    /**
+     * @test
+     */
+    public function no_content_length_if_output_buffering_is_on_and_has_content(): void
     {
         $response = $this->factory->html(str_repeat('a', 40));
         ob_start();
@@ -170,8 +190,10 @@ class ResponsePreparationTest extends TestCase
         ob_end_clean();
     }
 
-    /** @test */
-    public function no_content_length_if_empty_response_stream()
+    /**
+     * @test
+     */
+    public function no_content_length_if_empty_response_stream(): void
     {
         $response = $this->factory->html('');
 

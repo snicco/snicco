@@ -15,8 +15,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class HttpKernelTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function the_kernel_throws_an_exception_if_a_request_has_no_type_specified()
+    /**
+     * @test
+     */
+    public function the_kernel_throws_an_exception_if_a_request_has_no_type_specified(): void
     {
         $psr = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
         $request = new Request($psr);
@@ -29,8 +31,10 @@ class HttpKernelTest extends HttpRunnerTestCase
         $this->runKernel($request);
     }
 
-    /** @test */
-    public function a_delegate_response_is_returned_by_default_if_no_route_matches()
+    /**
+     * @test
+     */
+    public function a_delegate_response_is_returned_by_default_if_no_route_matches(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         $test_response = $this->runKernel($this->frontendRequest('/bar'));
@@ -38,8 +42,10 @@ class HttpKernelTest extends HttpRunnerTestCase
         $this->assertInstanceOf(DelegatedResponse::class, $test_response->getPsrResponse());
     }
 
-    /** @test */
-    public function a_normal_response_will_be_returned_for_matching_routes()
+    /**
+     * @test
+     */
+    public function a_normal_response_will_be_returned_for_matching_routes(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
 
@@ -51,8 +57,10 @@ class HttpKernelTest extends HttpRunnerTestCase
         $this->assertSame(RoutingTestController::static, $test_response->body());
     }
 
-    /** @test */
-    public function methods_can_be_overwritten()
+    /**
+     * @test
+     */
+    public function methods_can_be_overwritten(): void
     {
         $this->routeConfigurator()->put('r1', '/foo', RoutingTestController::class);
 
@@ -63,18 +71,22 @@ class HttpKernelTest extends HttpRunnerTestCase
         $this->assertSame(RoutingTestController::static, $test_response->body());
     }
 
-    /** @test */
-    public function the_response_is_prepared_and_fixed_for_common_mistakes()
+    /**
+     * @test
+     */
+    public function the_response_is_prepared_and_fixed_for_common_mistakes(): void
     {
         // We only verify that the corresponding middleware gets called
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
         $test_response = $this->runKernel($this->frontendRequest('/foo'));
 
-        $test_response->assertHeader('content-length', strlen(RoutingTestController::static));
+        $test_response->assertHeader('content-length', (string)strlen(RoutingTestController::static));
     }
 
-    /** @test */
-    public function content_negotiation_will_be_performed()
+    /**
+     * @test
+     */
+    public function content_negotiation_will_be_performed(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
 

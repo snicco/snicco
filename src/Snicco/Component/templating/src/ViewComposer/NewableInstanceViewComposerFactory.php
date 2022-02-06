@@ -15,7 +15,9 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
 {
 
     /**
-     * @param string|Closure $composer
+     * @param class-string<ViewComposer>|Closure $composer
+     *
+     * @throws BadViewComposer
      */
     public function create($composer): ViewComposer
     {
@@ -29,7 +31,7 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
             } catch (Throwable $e) {
                 throw new BadViewComposer(
                     "The view composer class [$composer] is not a newable.",
-                    $e->getCode(),
+                    (int)$e->getCode(),
                     $e
                 );
             }

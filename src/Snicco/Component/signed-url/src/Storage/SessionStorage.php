@@ -26,6 +26,10 @@ final class SessionStorage implements SignedUrlStorage
 
     private Clock $clock;
 
+    /**
+     * @param array|ArrayAccess $storage
+     * @param Clock|null $clock
+     */
     public function __construct(&$storage, Clock $clock = null)
     {
         if ($storage instanceof ArrayAccess) {
@@ -49,7 +53,7 @@ final class SessionStorage implements SignedUrlStorage
 
         $new_usage = $left_usage - 1;
 
-        $_temp = $this->storage[self::namespace];
+        $_temp = $this->getStored();
 
         if (0 === $new_usage) {
             unset($_temp[$identifier]);
@@ -62,11 +66,23 @@ final class SessionStorage implements SignedUrlStorage
 
     private function remainingUsage(string $identifier): int
     {
-        if (!isset($this->storage[self::namespace][$identifier])) {
+        $stored = $this->getStored();
+
+        if (!isset($stored[$identifier])) {
             return 0;
         }
 
-        return intval($this->storage[self::namespace][$identifier]['left_usages'] ?? 0);
+        return intval($stored[$identifier]['left_usages'] ?? 0);
+    }
+
+    /**
+     * @return array<string,array{expires_at: positive-int, left_usages:positive-int}>
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
+    private function getStored(): array
+    {
+        return $this->storage[self::namespace] ?? [];
     }
 
     public function store(SignedUrl $signed_url): void
@@ -77,7 +93,8 @@ final class SessionStorage implements SignedUrlStorage
         ];
 
         // $_temp is needed to work with ArrayAccess
-        $_temp = $this->storage[self::namespace] ?? [];
+        $_temp = $this->getStored();
+
         $_temp[$signed_url->identifier()] = $data;
 
         $this->storage[self::namespace] = $_temp;
@@ -85,9 +102,9 @@ final class SessionStorage implements SignedUrlStorage
 
     public function gc(): void
     {
-        foreach ($this->storage[self::namespace] as $id => $signed_url) {
-            if (($signed_url['expires_at'] ?? 0) < $this->clock->currentTimestamp()) {
-                $_temp = $this->storage[self::namespace] ?? [];
+        $_temp = $this->getStored();
+        foreach ($_temp as $id => $data) {
+            if (($data['expires_at'] ?? 0) < $this->clock->currentTimestamp()) {
                 unset($_temp[$id]);
                 $this->storage[self::namespace] = $_temp;
             }

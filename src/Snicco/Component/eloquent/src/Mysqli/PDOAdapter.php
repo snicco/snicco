@@ -31,7 +31,7 @@ interface PDOAdapter
      * @return int|false
      * @see \PDO::exec()
      */
-    public function exec($statement);
+    public function exec(string $statement);
 
     /**
      * @see \PDO::rollBack()

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Eloquent;
 
+use ArrayAccess;
 use Faker\Factory;
 use Faker\Generator as FakerGenerator;
 use Illuminate\Container\Container;
@@ -39,6 +40,9 @@ final class WPEloquentStandalone
     private array $connection_configuration;
     private bool $enable_global_facades;
 
+    /**
+     * @psalm-suppress InvalidArgument
+     */
     public function __construct(array $connection_configuration = [], bool $enable_global_facades = true)
     {
         $this->illuminate_container = Container::getInstance();
@@ -63,7 +67,7 @@ final class WPEloquentStandalone
         string $model_namespace,
         string $factory_namespace,
         string $faker_locale = 'en_US'
-    ) {
+    ): void {
         if (!class_exists(FakerGenerator::class)) {
             throw new RuntimeException(
                 'Faker is not installed. Please try running composer require fakerphp/faker --dev'
@@ -84,7 +88,7 @@ final class WPEloquentStandalone
             return rtrim($factory_namespace, '\\') . '\\' . $model . 'Factory';
         });
 
-        EloquentFactory::guessModelNamesUsing(function ($factory) use ($model_namespace) {
+        EloquentFactory::guessModelNamesUsing(function (EloquentFactory $factory) use ($model_namespace): string {
             $model = class_basename($factory);
             return str_replace('Factory', '', rtrim($model_namespace, '\\') . '\\' . $model);
         });
@@ -92,7 +96,7 @@ final class WPEloquentStandalone
         WPModel::$factory_namespace = $factory_namespace;
     }
 
-    public function withEvents(Dispatcher $event_dispatcher)
+    public function withEvents(Dispatcher $event_dispatcher): void
     {
         $this->bindEventDispatcher($event_dispatcher);
     }
@@ -119,9 +123,10 @@ final class WPEloquentStandalone
         return $connection_resolver;
     }
 
-    private function bindConfig()
+    private function bindConfig(): void
     {
         if ($this->illuminate_container->has('config')) {
+            /** @var ArrayAccess $config */
             $config = $this->illuminate_container->get('config');
             $config['database.connections'] = $this->connection_configuration;
         } else {
@@ -134,13 +139,16 @@ final class WPEloquentStandalone
         }
     }
 
-    private function bindTransactionManager()
+    private function bindTransactionManager(): void
     {
         $this->illuminate_container->singletonIf('db.transactions', function () {
             return new DatabaseTransactionsManager;
         });
     }
 
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     */
     private function newConnectionResolver(): ConnectionResolverInterface
     {
         $illuminate_database_manager = new DatabaseManager(

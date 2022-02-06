@@ -11,8 +11,8 @@ use Snicco\Component\BetterWPMail\Testing\WPMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\AssertFails;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail2;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
 use function iterator_to_array;
 use function sprintf;
@@ -27,8 +27,10 @@ final class FakeMailerTest extends WPTestCase
     private array $mail_data = [];
     private FakeTransport $fake_transport;
 
-    /** @test */
-    public function no_emails_are_sent_if_the_fake_mailer_is_used()
+    /**
+     * @test
+     */
+    public function no_emails_are_sent_if_the_fake_mailer_is_used(): void
     {
         add_filter('pre_wp_mail', function ($null, array $wp_mail_input) {
             $this->mail_data[] = $wp_mail_input;
@@ -46,8 +48,10 @@ final class FakeMailerTest extends WPTestCase
         $this->assertCount(0, $this->mail_data);
     }
 
-    /** @test */
-    public function wp_mail_emails_can_be_intercepted()
+    /**
+     * @test
+     */
+    public function wp_mail_emails_can_be_intercepted(): void
     {
         $mailer = new Mailer($fake_transport = new FakeTransport());
 
@@ -69,8 +73,10 @@ final class FakeMailerTest extends WPTestCase
         $this->assertSame(0, $count, 'wp_mail function not intercepted.');
     }
 
-    /** @test */
-    public function test_assertSent_can_pass()
+    /**
+     * @test
+     */
+    public function test_assertSent_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -81,15 +87,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    private function aValidTestEmail(): Email
-    {
-        return (new TestMail())->withTo(
-            'Calvin Alkan <calvin@web.de>'
-        );
-    }
-
-    /** @test */
-    public function test_assertSent_can_fail()
+    /**
+     * @test
+     */
+    public function test_assertSent_can_fail(): void
     {
         $this->assertFailsWithMessageStarting(
             sprintf(
@@ -102,8 +103,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertSent_can_pass_with_valid_condition()
+    /**
+     * @test
+     */
+    public function test_assertSent_can_pass_with_valid_condition(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -124,8 +127,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertSent_can_fail_with_invalid_condition()
+    /**
+     * @test
+     */
+    public function test_assertSent_can_fail_with_invalid_condition(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -149,8 +154,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertNotSent_can_pass()
+    /**
+     * @test
+     */
+    public function test_assertNotSent_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -161,8 +168,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertNotSent_can_fail()
+    /**
+     * @test
+     */
+    public function test_assertNotSent_can_fail(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -180,8 +189,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertSentTimes_can_pass()
+    /**
+     * @test
+     */
+    public function test_assertSentTimes_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -194,8 +205,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertSentTimes_can_fail()
+    /**
+     * @test
+     */
+    public function test_assertSentTimes_can_fail(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -215,8 +228,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_reset_works()
+    /**
+     * @test
+     */
+    public function test_reset_works(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -237,8 +252,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertSentTo_can_pass()
+    /**
+     * @test
+     */
+    public function test_assertSentTo_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -258,8 +275,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertTo_can_fail_for_duplicate_sending()
+    /**
+     * @test
+     */
+    public function test_assertTo_can_fail_for_duplicate_sending(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -278,8 +297,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertTo_can_fail_for_wrong_recipient()
+    /**
+     * @test
+     */
+    public function test_assertTo_can_fail_for_wrong_recipient(): void
     {
         $mailer = new Mailer($this->fake_transport);
         $email = (new TestMail())->withTo(
@@ -299,8 +320,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertNotSentTo_can_pass()
+    /**
+     * @test
+     */
+    public function test_assertNotSentTo_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -315,8 +338,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertNotSentTo_can_fail()
+    /**
+     * @test
+     */
+    public function test_assertNotSentTo_can_fail(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -337,8 +362,10 @@ final class FakeMailerTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function test_assertions_with_mails_sent_directly_by_wp_mail()
+    /**
+     * @test
+     */
+    public function test_assertions_with_mails_sent_directly_by_wp_mail(): void
     {
         $this->fake_transport->interceptWordPressEmails();
 
@@ -375,8 +402,10 @@ final class FakeMailerTest extends WPTestCase
         $this->fake_transport->assertSentTo('marlon@web.de', WPMail::class);
     }
 
-    /** @test */
-    public function testAssertSentWithClosureAndWordPressEmail()
+    /**
+     * @test
+     */
+    public function testAssertSentWithClosureAndWordPressEmail(): void
     {
         $this->fake_transport->interceptWordPressEmails();
 
@@ -410,6 +439,13 @@ final class FakeMailerTest extends WPTestCase
         parent::setUp();
         $this->mail_data = [];
         $this->fake_transport = new FakeTransport();
+    }
+
+    private function aValidTestEmail(): Email
+    {
+        return (new TestMail())->withTo(
+            'Calvin Alkan <calvin@web.de>'
+        );
     }
 
 }

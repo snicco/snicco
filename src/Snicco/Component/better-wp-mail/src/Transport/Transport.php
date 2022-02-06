@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\Transport;
 
 use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
 /**
  * @api

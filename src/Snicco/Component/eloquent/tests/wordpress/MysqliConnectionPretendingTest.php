@@ -21,8 +21,10 @@ final class MysqliConnectionPretendingTest extends WPTestCase
     use WPDBTestHelpers;
     use WithTestTables;
 
-    /** @test */
-    public function test_nothing_gets_executed_for_inserts()
+    /**
+     * @test
+     */
+    public function test_nothing_gets_executed_for_inserts(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -53,8 +55,10 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         return $connection;
     }
 
-    /** @test */
-    public function test_nothing_gets_run_for_updates()
+    /**
+     * @test
+     */
+    public function test_nothing_gets_run_for_updates(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -78,8 +82,10 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         $this->assertIsFloat($sql[0]['time']);
     }
 
-    /** @test */
-    public function test_nothing_gets_run_for_deletes()
+    /**
+     * @test
+     */
+    public function test_nothing_gets_run_for_deletes(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -101,8 +107,10 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         $this->assertIsFloat($sql[0]['time']);
     }
 
-    /** @test */
-    public function test_nothing_gets_run_for_unprepared_queries()
+    /**
+     * @test
+     */
+    public function test_nothing_gets_run_for_unprepared_queries(): void
     {
         $connection = $this->getMysqliConnection();
 
@@ -126,8 +134,10 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         $this->assertIsFloat($sql[0]['time']);
     }
 
-    /** @test */
-    public function test_nothing_gets_run_for_cursor_selects()
+    /**
+     * @test
+     */
+    public function test_nothing_gets_run_for_cursor_selects(): void
     {
         $connection = $this->getMysqliConnection();
 

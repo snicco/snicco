@@ -31,6 +31,19 @@ final class SessionConfig
     private int $rotation_interval;
     private int $gc_percentage;
 
+    /**
+     * @param array{
+     *     cookie_name:string,
+     *     idle_timeout_in_sec: positive-int,
+     *     rotation_interval_in_sec: positive-int,
+     *     absolute_lifetime_in_sec?: positive-int,
+     *     domain?: string,
+     *     same_site?: 'Lax'|'Strict'|'None',
+     *     path?:string,
+     *     http_only?: bool,
+     *     secure?: bool
+     * } $config
+     */
     public function __construct(array $config)
     {
         $this->path = isset($config['path'])
@@ -89,10 +102,9 @@ final class SessionConfig
         return new SessionConfig([
             'path' => '/',
             'cookie_name' => $cookie_name,
-            'domain' => null,
             'http_only' => true,
             'secure' => true,
-            'same_site' => 'lax',
+            'same_site' => 'Lax',
             'idle_timeout_in_sec' => 60 * 15,
             'rotation_interval_in_sec' => 60 * 10,
             'garbage_collection_percentage' => 2,
@@ -104,7 +116,7 @@ final class SessionConfig
         return $this->path;
     }
 
-    public function cookieName()
+    public function cookieName(): string
     {
         return $this->cookie_name;
     }
@@ -119,7 +131,7 @@ final class SessionConfig
         return $this->same_site;
     }
 
-    public function onlyHttp()
+    public function onlyHttp(): bool
     {
         return $this->http_only;
     }

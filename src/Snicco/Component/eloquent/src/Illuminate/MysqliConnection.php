@@ -11,10 +11,13 @@ use Illuminate\Database\QueryException;
 use mysqli_result;
 use mysqli_sql_exception;
 use Snicco\Component\Eloquent\Mysqli\MysqliDriverInterface;
+use Snicco\Component\Eloquent\Mysqli\PDOAdapter;
 use Snicco\Component\Eloquent\ScopableWP;
 
 /**
  * @internal
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {
@@ -25,7 +28,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
     public function __construct(MysqliDriverInterface $mysqli_driver, ScopableWP $wp)
     {
         $this->mysqli_driver = $mysqli_driver;
-        $pdo_adapter = function () {
+        $pdo_adapter = function (): PDOAdapter {
             return $this->mysqli_driver;
         };
 
@@ -89,13 +92,17 @@ final class MysqliConnection extends IlluminateMysqlConnection
     /**
      * Run an SQL statement through the mysqli_driver class.
      *
+     * @template T
      * @param string $query
      * @param array $bindings
-     * @param Closure $callback
+     * @param Closure(string,array): T $callback
      *
-     * @return mixed
+     * @return T
+     *
+     * @psalm-suppress InvalidScalarArgument
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function run($query, $bindings, Closure $callback)
+    protected function run($query, $bindings, Closure $callback)
     {
         $start = microtime(true);
 

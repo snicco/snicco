@@ -7,7 +7,6 @@ namespace Snicco\Component\HttpRouting;
 use Closure;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use RuntimeException;
 use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -38,9 +37,7 @@ final class HttpKernel
             ->then($this->handleExhaustedPipeline());
     }
 
-    // This should never happen.
-
-    private function validateRequest(Request $request)
+    private function validateRequest(Request $request): void
     {
         try {
             // This will throw an exception if no type is set.
@@ -52,10 +49,14 @@ final class HttpKernel
         }
     }
 
+    /**
+     * @return Closure(Request):never
+     */
     private function handleExhaustedPipeline(): Closure
     {
+        // This should never happen.
         return function (Request $request) {
-            throw new RuntimeException(
+            throw new LogicException(
                 sprintf(
                     'Middleware stack returned no response for request [%s].',
                     (string)$request->getUri()

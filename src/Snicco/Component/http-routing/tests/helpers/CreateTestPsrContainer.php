@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\helpers;
 
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Component\Core\DIContainer;
+use Snicco\Component\Kernel\DIContainer;
 
 trait CreateTestPsrContainer
 {

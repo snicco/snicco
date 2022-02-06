@@ -10,11 +10,24 @@ namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
 interface RouteLoadingOptions
 {
 
-    public function getApiRouteAttributes(
-        string $file_name_without_extension_and_version,
-        ?string $parsed_version
-    ): array;
+    /**
+     * @return  array{
+     *     namespace?:string,
+     *     prefix?:string,
+     *     name?:string,
+     *     middleware?: string[]
+     * }
+     */
+    public function getApiRouteAttributes(string $file_basename, ?string $parsed_version): array;
 
-    public function getRouteAttributes(string $file_name_without_extension): array;
+    /**
+     * @return  array{
+     *     namespace?:string,
+     *     prefix?:string,
+     *     name?:string,
+     *     middleware?: string[]
+     * }
+     */
+    public function getRouteAttributes(string $file_basename): array;
 
 }

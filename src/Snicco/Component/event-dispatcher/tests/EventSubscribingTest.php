@@ -20,8 +20,10 @@ final class EventSubscribingTest extends TestCase
 
     private EventDispatcher $dispatcher;
 
-    /** @test */
-    public function all_subscribed_events_are_added()
+    /**
+     * @test
+     */
+    public function all_subscribed_events_are_added(): void
     {
         $this->dispatcher->subscribe(TestSubscriber::class);
 
@@ -32,16 +34,20 @@ final class EventSubscribingTest extends TestCase
         $this->assertSame('SUBSCRIBED', $event->val1);
     }
 
-    /** @test */
-    public function test_exception_for_wrong_interface()
+    /**
+     * @test
+     */
+    public function test_exception_for_wrong_interface(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('does not implement');
         $this->dispatcher->subscribe(BadSubscriber::class);
     }
 
-    /** @test */
-    public function test_exception_for_wrong_method()
+    /**
+     * @test
+     */
+    public function test_exception_for_wrong_method(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('does not have a [bogus] method');

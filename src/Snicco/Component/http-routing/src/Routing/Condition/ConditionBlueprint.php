@@ -17,12 +17,21 @@ final class ConditionBlueprint
 {
 
     private bool $negated = false;
+
+    /**
+     * @var class-string<AbstractRouteCondition>
+     */
     private string $class;
+
     private array $args;
 
+    /**
+     * @param class-string<AbstractRouteCondition>|"!" $condition_class
+     */
     public function __construct(string $condition_class, array $arguments = [])
     {
         if ($condition_class === AbstractRouteCondition::NEGATE) {
+            /** @var string $condition_class */
             $condition_class = array_shift($arguments);
             Assert::stringNotEmpty($condition_class);
             $this->negated = true;
@@ -42,6 +51,9 @@ final class ConditionBlueprint
         $this->args = $arguments;
     }
 
+    /**
+     * @return class-string<AbstractRouteCondition>
+     */
     public function class(): string
     {
         return $this->class;

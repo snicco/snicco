@@ -9,15 +9,18 @@ use RuntimeException;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
-use Snicco\Component\StrArr\Arr;
 use Webmozart\Assert\Assert;
 
-use function Snicco\Component\Core\Utils\isInterface;
+use function array_merge;
+use function class_exists;
+use function explode;
 
 /**
  * The middleware stack is responsible for parsing and normalized all middleware for a request.
  *
  * @internal
+ * @psalm-internal Snicco\Component\HttpRouting
+ * @todo All the resolving of route middleware should maybe be done before the routes get compiled into the cache.
  */
 final class MiddlewareStack
 {
@@ -48,12 +51,12 @@ final class MiddlewareStack
     private array $user_provided_groups = [];
 
     /**
-     * @var array<string,string>
+     * @var array<string, class-string<MiddlewareInterface>>
      */
-    private array $route_middleware_aliases = [];
+    private array $middleware_aliases = [];
 
     /**
-     * @var string[]
+     * @var list<class-string<MiddlewareInterface>>
      */
     private array $middleware_by_increasing_priority = [];
 
@@ -64,6 +67,9 @@ final class MiddlewareStack
 
     private bool $middleware_disabled = false;
 
+    /**
+     * @param string[]|class-string<MiddlewareInterface>[] $middleware_to_always_run_on_non_route_match
+     */
     public function __construct(array $middleware_to_always_run_on_non_route_match = [])
     {
         Assert::allString($middleware_to_always_run_on_non_route_match);
@@ -77,6 +83,10 @@ final class MiddlewareStack
         }
     }
 
+    /**
+     * @param string[] $route_middleware
+     * @return MiddlewareBlueprint[]
+     */
     public function createWithRouteMiddleware(array $route_middleware): array
     {
         if ($this->middleware_disabled) {
@@ -85,9 +95,9 @@ final class MiddlewareStack
 
         $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
 
-        foreach ($route_middleware as $name) {
+        foreach ($route_middleware as $index => $name) {
             if ($this->isMiddlewareGroup($name)) {
-                unset($route_middleware[$name]);
+                unset($route_middleware[$index]);
                 $middleware = array_merge($middleware, $this->middlewareGroups()[$name]);
             } else {
                 $middleware[] = $name;
@@ -97,13 +107,57 @@ final class MiddlewareStack
         return $this->create($middleware);
     }
 
+    /**
+     * @return MiddlewareBlueprint[]
+     */
+    public function createForRequestWithoutRoute(Request $request): array
+    {
+        return $this->create($this->middlewareForNonMatchingRequest($request));
+    }
+
+    /**
+     * @param string $group
+     * @param string[] $middlewares
+     */
+    public function withMiddlewareGroup(string $group, array $middlewares): void
+    {
+        $this->user_provided_groups[$group] = array_merge(
+            $this->user_provided_groups[$group] ?? [],
+            $middlewares
+        );
+    }
+
+    /**
+     * @param list<class-string<MiddlewareInterface>> $middleware_priority
+     */
+    public function middlewarePriority(array $middleware_priority): void
+    {
+        $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
+    }
+
+    /**
+     * @param array<string, class-string<MiddlewareInterface> > $route_middleware_aliases
+     */
+    public function middlewareAliases(array $route_middleware_aliases): void
+    {
+        $this->middleware_aliases = array_merge(
+            $this->middleware_aliases,
+            $route_middleware_aliases
+        );
+    }
+
+    public function disableAllMiddleware(): void
+    {
+        $this->middleware_disabled = true;
+    }
+
     private function isMiddlewareGroup(string $alias_or_class): bool
     {
         return isset($this->middlewareGroups()[$alias_or_class]);
     }
 
     /**
-     * @return array<string,array>
+     * @return array<string,string[]>
      */
     private function middlewareGroups(): array
     {
@@ -111,14 +165,14 @@ final class MiddlewareStack
     }
 
     /**
-     * @param array $middleware
+     * @param string[] $middleware
      *
      * @return MiddlewareBlueprint[]
      */
     private function create(array $middleware = []): array
     {
         // Split out the global middleware since global middleware should always run first
-        // independently of priority
+        // independently of priority.
         $prepend = [];
         if (false !== ($key = array_search(RoutingConfigurator::GLOBAL_MIDDLEWARE, $middleware))) {
             unset($middleware[$key]);
@@ -140,15 +194,18 @@ final class MiddlewareStack
     /**
      * @note Middleware with the highest priority comes first in the array
      *
-     * @param MiddlewareBlueprint[] $middleware
+     * @param list<MiddlewareBlueprint> $middleware
      *
-     * @return MiddlewareBlueprint[]
+     * @return list<MiddlewareBlueprint>
+     *
+     * @psalm-suppress PossiblyFalseOperand
+     *
      */
     private function sort(array $middleware): array
     {
         $sorted = $middleware;
 
-        $success = usort($sorted, function ($a, $b) use ($middleware) {
+        $success = usort($sorted, function (MiddlewareBlueprint $a, MiddlewareBlueprint $b) use ($middleware): int {
             $a_priority = $this->priorityForMiddleware($a);
             $b_priority = $this->priorityForMiddleware($b);
             $diff = $b_priority - $a_priority;
@@ -172,26 +229,31 @@ final class MiddlewareStack
     {
         $priority = array_search($blueprint->class(), $this->middleware_by_increasing_priority);
 
-        return $priority !== false ? (int)$priority : -1;
+        return $priority !== false ? $priority : -1;
     }
 
     /**
      * @param string[] $middleware
      *
-     * @return MiddlewareBlueprint[]
+     * @return list<MiddlewareBlueprint>
      * @throws InvalidMiddleware
+     *
+     * @psalm-suppress PossiblyFalseArgument
      */
     private function parseAliasesAndArguments(array $middleware): array
     {
         $blueprints = [];
 
         foreach ($middleware as $middleware_string) {
+            /** @var array{0:string, 1?: string} $pieces */
             $pieces = explode(self::MIDDLEWARE_DELIMITER, $middleware_string, 2);
 
-            if (count($pieces) > 1) {
+            if (isset($pieces[1])) {
+                $args = explode(self::ARGUMENT_SEPARATOR, $pieces[1]);
+
                 $blueprints[] = new MiddlewareBlueprint(
                     $this->replaceMiddlewareAlias($pieces[0]),
-                    explode(self::ARGUMENT_SEPARATOR, $pieces[1])
+                    $args
                 );
 
                 continue;
@@ -213,15 +275,20 @@ final class MiddlewareStack
         return $blueprints;
     }
 
+    /**
+     * @param string $middleware
+     * @return class-string<MiddlewareInterface>
+     */
     private function replaceMiddlewareAlias(string $middleware): string
     {
-        if (isInterface($middleware, MiddlewareInterface::class)) {
+        if (class_exists($middleware) && Reflection::isInterface($middleware, MiddlewareInterface::class)) {
+            /** @var class-string<MiddlewareInterface> $middleware */
             return $middleware;
         }
 
-        if (isset($this->route_middleware_aliases[$middleware])) {
-            $middleware = $this->route_middleware_aliases[$middleware];
-            if (isInterface($middleware, MiddlewareInterface::class)) {
+        if (isset($this->middleware_aliases[$middleware])) {
+            $middleware = $this->middleware_aliases[$middleware];
+            if (Reflection::isInterface($middleware, MiddlewareInterface::class)) {
                 return $middleware;
             }
             throw InvalidMiddleware::incorrectInterface($middleware);
@@ -240,11 +307,9 @@ final class MiddlewareStack
         return array_values(array_unique($middleware, SORT_REGULAR));
     }
 
-    public function createForRequestWithoutRoute(Request $request): array
-    {
-        return $this->create($this->middlewareForNonMatchingRequest($request));
-    }
-
+    /**
+     * @return string[]
+     */
     private function middlewareForNonMatchingRequest(Request $request): array
     {
         if ($this->middleware_disabled) {
@@ -294,33 +359,6 @@ final class MiddlewareStack
         }
 
         return $middleware;
-    }
-
-    public function withMiddlewareGroup(string $group, array $middlewares)
-    {
-        Assert::allString($middlewares);
-        $this->user_provided_groups = Arr::mergeRecursive(
-            $this->user_provided_groups,
-            [$group => $middlewares]
-        );
-    }
-
-    public function middlewarePriority(array $middleware_priority)
-    {
-        $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
-    }
-
-    public function middlewareAliases(array $route_middleware_aliases)
-    {
-        $this->route_middleware_aliases = array_merge(
-            $this->route_middleware_aliases,
-            $route_middleware_aliases
-        );
-    }
-
-    public function disableAllMiddleware()
-    {
-        $this->middleware_disabled = true;
     }
 
 }

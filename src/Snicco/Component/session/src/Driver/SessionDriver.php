@@ -32,6 +32,7 @@ interface SessionDriver
     public function write(string $session_id, SerializedSessionData $data): void;
 
     /**
+     * @param string[] $session_ids
      * @throws CantDestroySession
      */
     public function destroy(array $session_ids): void;

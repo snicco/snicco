@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade;
 
+use ArrayAccess;
 use BadMethodCallException;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
@@ -14,9 +15,13 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Fluent;
+use Illuminate\View\View;
 use Illuminate\View\ViewServiceProvider;
+use RuntimeException;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
+
+use function sprintf;
 
 /**
  * @api
@@ -25,7 +30,12 @@ final class BladeStandalone
 {
 
     private string $view_cache_directory;
+
+    /**
+     * @var string[]
+     */
     private array $view_directories;
+
     private ViewComposerCollection $composers;
 
     /**
@@ -33,6 +43,10 @@ final class BladeStandalone
      */
     private $illuminate_container;
 
+    /**
+     * @param string[] $view_directories
+     * @psalm-suppress InvalidArgument
+     */
     public function __construct(
         string $view_cache_directory,
         array $view_directories,
@@ -47,12 +61,16 @@ final class BladeStandalone
         }
     }
 
+    /**
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
     public function getBladeViewFactory(): BladeViewFactory
     {
-        return $this->illuminate_container[BladeViewFactory::class];
+        return $this->illuminate_container->get(BladeViewFactory::class);
     }
 
-    public function boostrap()
+    public function boostrap(): void
     {
         $this->bindDependencies();
         $this->bootIlluminateViewServiceProvider();
@@ -61,9 +79,38 @@ final class BladeStandalone
         $this->bindFrameworkDependencies();
     }
 
-    private function bindDependencies()
+    /**
+     * @api
+     */
+    public function bindWordPressDirectives(ScopableWP $wp = null): void
+    {
+        $wp = $wp ?: new ScopableWP();
+
+        Blade::if('auth', fn() => $wp->isUserLoggedIn());
+
+        Blade::if('guest', fn() => !$wp->isUserLoggedIn());
+
+        Blade::if('role', function (string $expression) use ($wp) {
+            if ($expression === 'admin') {
+                $expression = 'administrator';
+            }
+            $user = $wp->getCurrentUser();
+            if (!empty($user->roles) && is_array($user->roles)
+                && in_array(
+                    $expression,
+                    $user->roles,
+                    true
+                )) {
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private function bindDependencies(): void
     {
         if ($this->illuminate_container->has('config')) {
+            /** @var ArrayAccess $config */
             $config = $this->illuminate_container->get('config');
             $config['view.compiled'] = $this->view_cache_directory;
             $config['view.paths'] = $this->view_directories;
@@ -88,33 +135,45 @@ final class BladeStandalone
             },
             true
         );
-        $this->illuminate_container->bindIf(Factory::class, function () {
-            return $this->illuminate_container->make('view');
+        $this->illuminate_container->bindIf(Factory::class, function (): Factory {
+            /** @var Factory $view */
+            $view = $this->illuminate_container->make('view');
+            return $view;
         });
-        $this->illuminate_container->bindIf(Application::class, function () {
+        $this->illuminate_container->bindIf(Application::class, function (): DummyApplication {
             return new DummyApplication();
         });
     }
 
-    // Register custom blade directives
-
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     */
     private function bootIlluminateViewServiceProvider(): void
     {
         ((new ViewServiceProvider($this->illuminate_container)))->register();
     }
 
-    // These are all the dependencies that Blade expects to be present in the global service container.
-
-    private function listenToEvents()
+    /**
+     * @psalm-suppress UnusedClosureParam
+     */
+    private function listenToEvents(): void
     {
-        /** @var Dispatcher $laravel_dispatcher */
+        /** @var Dispatcher $event_dispatcher */
         $event_dispatcher = $this->illuminate_container->make('events');
-        $event_dispatcher->listen('composing:*', function ($event_name, $payload) {
+        $event_dispatcher->listen('composing:*', function (string $event_name, array $payload): void {
+            if (!isset($payload[0]) || !$payload[0] instanceof View) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Expected payload[0] to be instance of [%s].',
+                        View::class,
+                    )
+                );
+            }
             $this->composers->compose(new BladeView($payload[0]));
         });
     }
 
-    // Make sure that our passed view composer collection is run when blade creates views.
+    // Bind the dependencies that are needed for our view component to work.
 
     private function disableUnsupportedDirectives(): void
     {
@@ -137,9 +196,10 @@ final class BladeStandalone
         });
     }
 
-    // Bind the dependencies that are needed for our view component to work.
-
-    private function bindFrameworkDependencies()
+    /**
+     * @psalm-suppress MixedArgument
+     */
+    private function bindFrameworkDependencies(): void
     {
         $this->illuminate_container->resolving(BladeComponent::class,
             function (BladeComponent $component) {
@@ -147,37 +207,9 @@ final class BladeStandalone
             }
         );
 
-        $this->illuminate_container->bindIf(BladeViewFactory::class, function ($container) {
+        $this->illuminate_container->bindIf(BladeViewFactory::class, function (IlluminateContainer $container) {
             return new BladeViewFactory($container->make('view'), $this->view_directories);
         }, true);
-    }
-
-    /**
-     * @api
-     */
-    public function bindWordPressDirectives(ScopableWP $wp = null): void
-    {
-        $wp = $wp ?: new ScopableWP();
-
-        Blade::if('auth', fn() => $wp->isUserLoggedIn());
-
-        Blade::if('guest', fn() => !$wp->isUserLoggedIn());
-
-        Blade::if('role', function ($expression) use ($wp) {
-            if ($expression === 'admin') {
-                $expression = 'administrator';
-            }
-            $user = $wp->getCurrentUser();
-            if (!empty($user->roles) && is_array($user->roles)
-                && in_array(
-                    $expression,
-                    $user->roles,
-                    true
-                )) {
-                return true;
-            }
-            return false;
-        });
     }
 
 }

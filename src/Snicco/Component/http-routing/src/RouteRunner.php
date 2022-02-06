@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
@@ -32,6 +33,10 @@ final class RouteRunner extends AbstractMiddleware
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArgument
      */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
@@ -47,7 +52,7 @@ final class RouteRunner extends AbstractMiddleware
             $this->container,
         );
 
-        $route_middleware = array_merge($route->getMiddleware(), $action->getMiddleware());
+        $route_middleware = array_merge($route->getMiddleware(), $action->middleware());
 
         $middleware = $this->middleware_stack->createWithRouteMiddleware($route_middleware);
 
@@ -55,11 +60,15 @@ final class RouteRunner extends AbstractMiddleware
             ->send($request)
             ->through($middleware)
             ->then(function (Request $request) use ($result, $action) {
+                $segments = $result->decodedSegments();
+                /** @var Routing\Route\Route $route */
+                $route = $result->route();
+
                 $response = $action->execute(
                     $request,
                     array_merge(
-                        $result->decodedSegments(),
-                        $result->route()->getDefaults()
+                        $segments,
+                        $route->getDefaults()
                     )
                 );
 

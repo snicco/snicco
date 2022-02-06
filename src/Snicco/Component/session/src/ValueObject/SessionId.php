@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\ValueObject;
 
+use RuntimeException;
 use Snicco\Component\StrArr\Str;
 
 use function ctype_alnum;
@@ -31,7 +32,8 @@ final class SessionId
 
     private function newString(): string
     {
-        return Str::random(self::$token_strength);
+        $strength = max(self::$token_strength, 16);
+        return Str::random($strength);
     }
 
     public static function fromCookieId(string $id): SessionId
@@ -56,7 +58,11 @@ final class SessionId
 
     public function asHash(): string
     {
-        return hash('sha256', $this->asString());
+        $res = hash('sha256', $this->asString());
+        if (false === $res) {
+            throw new RuntimeException('Could not create hash for session id.');
+        }
+        return $res;
     }
 
     public function sameAs(SessionId $id2): bool

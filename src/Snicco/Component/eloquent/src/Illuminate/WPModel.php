@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**
  * @api
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 class WPModel extends IlluminateModel
 {

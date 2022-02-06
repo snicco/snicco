@@ -19,9 +19,11 @@ use function add_filter;
 final class WPEventDispatcherTest extends WPTestCase
 {
 
-    /** @test */
+    /**
+     * @test
+     */
     public function if_event_objects_implement_expose_to_wp_they_are_passed_to_the_wp_hook_system_after_the_internal_dispatcher(
-    )
+    ): void
     {
         add_filter(
             FilterEvent::class,
@@ -58,8 +60,10 @@ final class WPEventDispatcherTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function wordpress_filters_can_be_also_be_used_if_no_listeners_are_attached()
+    /**
+     * @test
+     */
+    public function wordpress_filters_can_be_also_be_used_if_no_listeners_are_attached(): void
     {
         add_filter(FilterEvent::class, function (FilterEvent $event) {
             $event->value = $event->value . ':filtered';
@@ -73,8 +77,10 @@ final class WPEventDispatcherTest extends WPTestCase
         $this->assertSame('FOOBAR:filtered', $event->value);
     }
 
-    /** @test */
-    public function plain_object_events_can_be_shared_with_wordpress()
+    /**
+     * @test
+     */
+    public function plain_object_events_can_be_shared_with_wordpress(): void
     {
         add_filter(PlainObjectEvent::class, function (PlainObjectEvent $event) {
             $event->value = 'filtered_by_wp:' . $event->value;
@@ -96,8 +102,10 @@ final class WPEventDispatcherTest extends WPTestCase
         $this->assertSame('filtered_by_wp:FOOBAR:Filter1', $event->value);
     }
 
-    /** @test */
-    public function events_that_dont_implement_expose_to_wp_are_not_shared()
+    /**
+     * @test
+     */
+    public function events_that_dont_implement_expose_to_wp_are_not_shared(): void
     {
         add_filter(stdClass::class, function (stdClass $event) {
             $event->value = $event->value . ':filtered_by_wordpress';
@@ -119,8 +127,10 @@ final class WPEventDispatcherTest extends WPTestCase
         $this->assertSame($event, $result);
     }
 
-    /** @test */
-    public function stopped_psr_events_are_not_shared_with_wordpress()
+    /**
+     * @test
+     */
+    public function stopped_psr_events_are_not_shared_with_wordpress(): void
     {
         add_filter(StoppableEvent ::class, function (StoppableEvent $event) {
             $event->value = $event->value . ':filtered_by_wordpress';
@@ -144,8 +154,10 @@ final class WPEventDispatcherTest extends WPTestCase
         $this->assertSame($event, $result);
     }
 
-    /** @test */
-    public function events_with_custom_names_can_be_shared_with_wp()
+    /**
+     * @test
+     */
+    public function events_with_custom_names_can_be_shared_with_wp(): void
     {
         $event = new CustomNameEvent('FOOBAR', 'foo_event');
 

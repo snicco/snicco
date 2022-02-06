@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\SignedUrlMiddleware\Tests;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Bridge\SignedUrlMiddleware\ValidateSignature;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
@@ -22,8 +22,23 @@ final class ValidateSignatureTest extends MiddlewareTestCase
     private SignedUrlValidator $validator;
     private UrlSigner $signer;
 
-    /** @test */
-    public function next_is_called_for_valid_signature()
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->signer = new UrlSigner(
+            $storage = new InMemoryStorage(),
+            $hasher = new Sha256Hasher(Secret::generate())
+        );
+        $this->validator = new SignedUrlValidator(
+            $storage,
+            $hasher
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function next_is_called_for_valid_signature(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -39,8 +54,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $response->psr()->assertOk();
     }
 
-    /** @test */
-    public function next_is_not_called_for_invalid_signature()
+    /**
+     * @test
+     */
+    public function next_is_not_called_for_invalid_signature(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -54,8 +71,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->runMiddleware($m, $request);
     }
 
-    /** @test */
-    public function next_not_called_for_expired()
+    /**
+     * @test
+     */
+    public function next_not_called_for_expired(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -71,8 +90,10 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->runMiddleware($m, $request);
     }
 
-    /** @test */
-    public function next_not_called_for_used()
+    /**
+     * @test
+     */
+    public function next_not_called_for_used(): void
     {
         $m = new ValidateSignature(
             $this->validator,
@@ -95,12 +116,14 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->runMiddleware($m, $request);
     }
 
-    /** @test */
-    public function additional_context_can_be_provided()
+    /**
+     * @test
+     */
+    public function additional_context_can_be_provided(): void
     {
         $m = new ValidateSignature(
             $this->validator,
-            function (Request $request) {
+            function (ServerRequestInterface $request) {
                 return $request->getHeaderLine('User-Agent');
             }
         );
@@ -117,21 +140,6 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->expectException(InvalidSignature::class);
         // User agent header did not match
         $this->runMiddleware($m, $new_request)->psr()->assertForbidden();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->signer = new UrlSigner(
-            $storage = new InMemoryStorage(),
-            $hasher = new Sha256Hasher(Secret::generate())
-        );
-        $this->storage = $storage;
-
-        $this->validator = new SignedUrlValidator(
-            $storage,
-            $hasher
-        );
     }
 
 }

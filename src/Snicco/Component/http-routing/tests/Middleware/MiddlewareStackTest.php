@@ -17,8 +17,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 final class MiddlewareStackTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function global_middleware_is_always_run_when_a_route_matches()
+    /**
+     * @test
+     */
+    public function global_middleware_is_always_run_when_a_route_matches(): void
     {
         $this->withNewMiddlewareStack(new MiddlewareStack());
         $this->withGlobalMiddleware([FooMiddleware::class, BarMiddleware::class]);
@@ -33,8 +35,10 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function global_middleware_is_not_run_when_no_route_matches()
+    /**
+     * @test
+     */
+    public function global_middleware_is_not_run_when_no_route_matches(): void
     {
         $this->withGlobalMiddleware([FooMiddleware::class, BarMiddleware::class]);
 
@@ -48,8 +52,10 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function global_middleware_can_be_configured_to_run_for_even_for_non_matching_requests()
+    /**
+     * @test
+     */
+    public function global_middleware_can_be_configured_to_run_for_even_for_non_matching_requests(): void
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
@@ -68,8 +74,10 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function web_middleware_can_be_configured_to_always_run_for_non_matching_requests()
+    /**
+     * @test
+     */
+    public function web_middleware_can_be_configured_to_always_run_for_non_matching_requests(): void
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
@@ -95,8 +103,10 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function running_web_middleware_always_is_has_no_effect_on_admin_requests()
+    /**
+     * @test
+     */
+    public function running_web_middleware_always_is_has_no_effect_on_admin_requests(): void
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
@@ -127,8 +137,10 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         $this->assertSame('', $response->body());
     }
 
-    /** @test */
-    public function admin_middleware_can_be_configured_to_always_run_for_non_matching_requests()
+    /**
+     * @test
+     */
+    public function admin_middleware_can_be_configured_to_always_run_for_non_matching_requests(): void
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
@@ -165,8 +177,10 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function running_admin_middleware_always_has_no_effect_on_non_matching_web_requests()
+    /**
+     * @test
+     */
+    public function running_admin_middleware_always_has_no_effect_on_non_matching_web_requests(): void
     {
         $this->withNewMiddlewareStack(
             new MiddlewareStack([
@@ -187,19 +201,23 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         $this->assertSame('', $response->body());
     }
 
-    /** @test */
-    public function adding_one_of_the_non_core_middleware_groups_to_always_run_global_will_thrown_an_exception()
+    /**
+     * @test
+     */
+    public function adding_one_of_the_non_core_middleware_groups_to_always_run_global_will_thrown_an_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('can not be used as middleware that is always');
 
-        $m = new MiddlewareStack([
+        new MiddlewareStack([
             FooMiddleware::class,
         ]);
     }
 
-    /** @test */
-    public function no_middleware_is_run_if_middleware_is_disabled()
+    /**
+     * @test
+     */
+    public function no_middleware_is_run_if_middleware_is_disabled(): void
     {
         $m = new MiddlewareStack([
             RoutingConfigurator::FRONTEND_MIDDLEWARE,

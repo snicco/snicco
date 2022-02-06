@@ -11,8 +11,10 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 class RoutingResultTest extends TestCase
 {
 
-    /** @test */
-    public function captured_segments_are_returned_as_is()
+    /**
+     * @test
+     */
+    public function captured_segments_are_returned_as_is(): void
     {
         $result = RoutingResult::match(
             $route = $this->route(),
@@ -28,8 +30,10 @@ class RoutingResultTest extends TestCase
         return Route::create('/foo', Route::DELEGATE, 'foo');
     }
 
-    /** @test */
-    public function decoded_segments_convert_integerish_strings_to_numbers()
+    /**
+     * @test
+     */
+    public function decoded_segments_convert_integerish_strings_to_numbers(): void
     {
         $routing_result =
             RoutingResult::match($this->route(), ['foo' => 'foo%20bar', 'bar' => '1']);
@@ -37,8 +41,10 @@ class RoutingResultTest extends TestCase
         $this->assertSame(['foo' => 'foo bar', 'bar' => 1], $routing_result->decodedSegments());
     }
 
-    /** @test */
-    public function with_captured_segments_is_immutable()
+    /**
+     * @test
+     */
+    public function with_captured_segments_is_immutable(): void
     {
         $res1 = RoutingResult::match($this->route(), ['foo' => 'foo%20bar', 'bar' => '1']);
 
@@ -50,8 +56,10 @@ class RoutingResultTest extends TestCase
         $this->assertNotSame($res1, $res2);
     }
 
-    /** @test */
-    public function test_noMatch()
+    /**
+     * @test
+     */
+    public function test_noMatch(): void
     {
         $res = RoutingResult::noMatch();
 

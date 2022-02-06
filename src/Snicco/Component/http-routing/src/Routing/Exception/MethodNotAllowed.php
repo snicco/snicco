@@ -12,6 +12,9 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 final class MethodNotAllowed extends HttpException
 {
 
+    /**
+     * @param string[] $allowed_methods
+     */
     public static function currentMethod(string $method, array $allowed_methods, string $path): MethodNotAllowed
     {
         return new self(

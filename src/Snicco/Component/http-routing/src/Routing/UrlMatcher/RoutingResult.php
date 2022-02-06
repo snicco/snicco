@@ -9,19 +9,30 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use function array_map;
 use function intval;
 use function is_numeric;
-use function is_string;
 use function rawurldecode;
 
 /**
  * @api This class can be used to change the route parameters and perform some transformations.
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 final class RoutingResult
 {
 
     private ?Route $route;
+
+    /**
+     * @var array<string,string>
+     */
     private array $captured_segments;
+
+    /**
+     * @var array<string,string|int>
+     */
     private array $decoded_segments;
 
+    /**
+     * @param array<string,string> $captured_segments
+     */
     private function __construct(?Route $route = null, array $captured_segments = [])
     {
         $this->route = $route;
@@ -43,24 +54,25 @@ final class RoutingResult
         return $this->route instanceof Route;
     }
 
+    /**
+     * @return array<string,string>
+     */
     public function capturedSegments(): array
     {
         return $this->captured_segments;
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array<string,string|int>
      */
     public function decodedSegments(): array
     {
         if (!isset($this->decoded_segments)) {
-            $this->decoded_segments = array_map(function ($value) {
-                $value = (is_string($value)) ? rawurldecode($value) : $value;
-
+            $this->decoded_segments = array_map(function (string $value) {
                 if (is_numeric($value)) {
-                    $value = intval($value);
+                    return intval($value);
                 }
-                return $value;
+                return rawurldecode($value);
             }, $this->captured_segments);
         }
 
@@ -68,15 +80,16 @@ final class RoutingResult
     }
 
     /**
-     * @param array<string,string|int> $segments
-     *
-     * @return self
+     * @param array<string,string> $segments
      */
-    public function withCapturedSegments(array $segments): self
+    public function withCapturedSegments(array $segments): RoutingResult
     {
-        return RoutingResult::match($this->route, $segments);
+        return new self($this->route(), $segments);
     }
 
+    /**
+     * @param array<string,string> $captured_segments
+     */
     public static function match(Route $route, array $captured_segments = []): RoutingResult
     {
         return new self($route, $captured_segments);

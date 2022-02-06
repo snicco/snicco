@@ -22,9 +22,6 @@ final class SerializedSessionData
     private string $as_string;
     private DateTimeImmutable $last_activity;
 
-    /**
-     * @param string|array $data
-     */
     private function __construct(string $data, DateTimeImmutable $last_activity)
     {
         $this->as_string = $data;
@@ -71,6 +68,9 @@ final class SerializedSessionData
         return $this->as_string;
     }
 
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function asArray(): array
     {
         $data = unserialize($this->as_string);

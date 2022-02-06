@@ -13,10 +13,10 @@ parameters:
         - type: className
           regex: Snicco\\Component\\BetterWPMail\\.*
 
-    - name: core
+    - name: kernel
       collectors:
         - type: className
-          regex: Snicco\\Component\\Core\\.*
+          regex: Snicco\\Component\\Kernel\\.*
 
     - name: eloquent
       collectors:
@@ -87,7 +87,7 @@ parameters:
       - event_dispatcher
       - scopable_wp
 
-    core:
+    kernel:
       - parameter_bag
       - str_arr
       - pimple # tests only
@@ -98,9 +98,9 @@ parameters:
 
     http_routing:
       - psr7_error_handler
-      - core # only in tests for the DI_container interface
       - str_arr
       - pimple # test only
+      - kernel # test only
 
     session:
       - str_arr

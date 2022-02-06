@@ -6,6 +6,9 @@ namespace Snicco\Component\HttpRouting\Http\Response;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
+/**
+ * @psalm-suppress InvalidExtendClass
+ */
 final class RedirectResponse extends Response
 {
 
@@ -19,17 +22,11 @@ final class RedirectResponse extends Response
         return $this->withHeader('Location', $url);
     }
 
-    /**
-     * @interal
-     */
-    public function externalRedirectAllowed(): bool
+    public function isExternalRedirectAllowed(): bool
     {
         return $this->bypass_validation;
     }
 
-    /**
-     * @interal
-     */
     public function withExternalRedirectAllowed(): RedirectResponse
     {
         $res = clone $this;

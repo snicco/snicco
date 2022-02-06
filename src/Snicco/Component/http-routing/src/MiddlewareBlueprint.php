@@ -7,20 +7,25 @@ namespace Snicco\Component\HttpRouting;
 use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
-use function Snicco\Component\Core\Utils\isInterface;
-
 /**
  * @api
  */
 final class MiddlewareBlueprint
 {
 
+    /**
+     * @var class-string<MiddlewareInterface>
+     */
     private string $class;
+
     private array $arguments;
 
+    /**
+     * @param class-string<MiddlewareInterface> $class
+     */
     public function __construct(string $class, array $arguments = [])
     {
-        if (!isInterface($class, MiddlewareInterface::class)) {
+        if (!Reflection::isInterface($class, MiddlewareInterface::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected $class to implement interface [%s]. Got: [%s]',
@@ -33,11 +38,17 @@ final class MiddlewareBlueprint
         $this->arguments = $arguments;
     }
 
+    /**
+     * @param class-string<MiddlewareInterface> $class
+     */
     public static function create(string $class, array $arguments = []): MiddlewareBlueprint
     {
         return new self($class, $arguments);
     }
 
+    /**
+     * @return class-string<MiddlewareInterface>
+     */
     public function class(): string
     {
         return $this->class;

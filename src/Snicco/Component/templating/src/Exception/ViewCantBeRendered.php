@@ -17,7 +17,7 @@ final class ViewCantBeRendered extends RuntimeException
     {
         return new self(
             "Error rendering view [$view_name].\nCaused by: {$previous->getMessage()}",
-            $previous->getCode(),
+            (int)$previous->getCode(),
             $previous
         );
     }

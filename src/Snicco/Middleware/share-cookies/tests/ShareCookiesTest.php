@@ -12,8 +12,10 @@ use Snicco\Middleware\ShareCookies\ShareCookies;
 class ShareCookiesTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function response_cookies_can_be_added()
+    /**
+     * @test
+     */
+    public function response_cookies_can_be_added(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withCookie(new Cookie('foo', 'bar'));
@@ -27,12 +29,14 @@ class ShareCookiesTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->psr()->assertHeader(
             'Set-Cookie',
-            'foo=bar; path=/; secure; HostOnly; HttpOnly; SameSite=Lax'
+            'foo=bar; path=/; SameSite=Lax; secure; HostOnly; HttpOnly'
         );
     }
 
-    /** @test */
-    public function multiple_cookies_can_be_added()
+    /**
+     * @test
+     */
+    public function multiple_cookies_can_be_added(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             $cookie1 = new Cookie('foo', 'bar');
@@ -50,17 +54,19 @@ class ShareCookiesTest extends MiddlewareTestCase
         $cookie_header = $response->psr()->getHeader('Set-Cookie');
 
         $this->assertSame(
-            'foo=bar; path=/; secure; HostOnly; HttpOnly; SameSite=Lax',
+            'foo=bar; path=/; SameSite=Lax; secure; HostOnly; HttpOnly',
             $cookie_header[0]
         );
         $this->assertSame(
-            'baz=biz; path=/; secure; HostOnly; HttpOnly; SameSite=Lax',
+            'baz=biz; path=/; SameSite=Lax; secure; HostOnly; HttpOnly',
             $cookie_header[1]
         );
     }
 
-    /** @test */
-    public function a_cookie_can_be_deleted()
+    /**
+     * @test
+     */
+    public function a_cookie_can_be_deleted(): void
     {
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withoutCookie('foo');
@@ -73,7 +79,7 @@ class ShareCookiesTest extends MiddlewareTestCase
 
         $cookie_header = $response->psr()->getHeader('Set-Cookie');
         $this->assertSame(
-            'foo=deleted; path=/; expires=Thu, 01-Jan-1970 00:00:01 UTC; secure; HostOnly; HttpOnly; SameSite=Lax',
+            'foo=deleted; path=/; expires=Thu, 01-Jan-1970 00:00:01 UTC; SameSite=Lax; secure; HostOnly; HttpOnly',
             $cookie_header[0]
         );
     }

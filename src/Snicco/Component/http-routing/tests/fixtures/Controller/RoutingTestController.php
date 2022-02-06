@@ -78,12 +78,12 @@ class RoutingTestController
         return "Show all songs of band [$band].";
     }
 
-    public function onlyRequest(Request $request)
+    public function onlyRequest(Request $request): string
     {
         return $this->static();
     }
 
-    public function fallback(string $path)
+    public function fallback(string $path): string
     {
         return 'fallback:' . $path;
     }

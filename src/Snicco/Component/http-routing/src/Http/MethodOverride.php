@@ -10,6 +10,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
 
 use function in_array;
+use function is_string;
 use function strtoupper;
 
 /**
@@ -20,16 +21,21 @@ final class MethodOverride extends AbstractMiddleware
 
     const HEADER = 'X-HTTP-Method-Override';
 
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        if ('POST' !== ($method = $request->realMethod())) {
+        if ('POST' !== $request->realMethod()) {
             return $next($request);
         }
 
-        if ($request->filled('_method')) {
-            $method = $request->body('_method');
-        } elseif ($request->hasHeader(self::HEADER)) {
+        if ($request->hasHeader(self::HEADER)) {
             $method = $request->getHeaderLine(self::HEADER);
+        } elseif (is_string($m = $request->post('_method'))) {
+            $method = $m;
+        } else {
+            return $next($request);
         }
 
         if (!$this->validMethod($method)) {

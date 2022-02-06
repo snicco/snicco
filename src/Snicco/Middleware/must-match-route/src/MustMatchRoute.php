@@ -5,33 +5,29 @@ declare(strict_types=1);
 namespace Snicco\Middleware\MustMatchRoute;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
-use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 /**
  * @api
  */
-final class MustMatchRoute extends AbstractMiddleware
+final class MustMatchRoute implements MiddlewareInterface
 {
 
-    /**
-     * @throws HttpException
-     */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $next($request);
+        $response = $handler->handle($request);
 
         if ($response instanceof DelegatedResponse) {
             throw new HttpException(
                 404,
-                "A delegated response was returned for path [{$request->path()}]."
+                "A delegated response was returned for path [{$request->getUri()->getPath()}]."
             );
         }
 
         return $response;
     }
-
 }

@@ -11,6 +11,7 @@ use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 
 use function array_filter;
+use function array_values;
 use function count;
 use function get_class;
 use function json_encode;
@@ -62,7 +63,7 @@ final class AssertableResponse
 
         PHPUnit::assertTrue(
             $this->psr_response->isSuccessful(),
-            'Response status code [' . $this->status_code . '] is not a success status code.'
+            'Response status code [' . (string)$this->status_code . '] is not a success status code.'
         );
 
         return $this;
@@ -165,14 +166,6 @@ final class AssertableResponse
         return $this;
     }
 
-    private function assertIsRedirectStatus(): void
-    {
-        PHPUnit::assertTrue(
-            $this->psr_response->isRedirection(),
-            "Status code [$this->status_code] is not a redirection status code."
-        );
-    }
-
     public function assertLocation(string $location): AssertableResponse
     {
         $this->assertHeader('location');
@@ -186,7 +179,7 @@ final class AssertableResponse
         return $this;
     }
 
-    public function assertHeader(string $header_name, $value = null): AssertableResponse
+    public function assertHeader(string $header_name, ?string $value = null): AssertableResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->hasHeader($header_name),
@@ -208,15 +201,20 @@ final class AssertableResponse
         return $this;
     }
 
+    /**
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset
+     */
     public function getAssertableCookie(string $cookie_name): AssertableCookie
     {
         $this->assertHeader('set-cookie');
 
         $header = $this->psr_response->getHeader('Set-Cookie');
 
-        $headers = array_filter($header, function ($header) use ($cookie_name) {
-            return Str::startsWith($header, $cookie_name);
-        });
+        $headers = array_values(
+            array_filter($header, function ($header) use ($cookie_name) {
+                return Str::startsWith($header, $cookie_name);
+            })
+        );
 
         $count = count($headers);
 
@@ -256,39 +254,9 @@ final class AssertableResponse
         return $this->assertSee($value, false);
     }
 
-    private function assertSee(string $value, bool $text_only = true): AssertableResponse
-    {
-        $compare_to = $text_only ?
-            strip_tags($this->streamed_content)
-            : $this->streamed_content;
-
-        PHPUnit::assertStringContainsString(
-            $value,
-            $compare_to,
-            "Response body does not contain [$value]."
-        );
-
-        return $this;
-    }
-
     public function assertDontSeeHtml(string $value): AssertableResponse
     {
         return $this->assertDontSee($value, false);
-    }
-
-    private function assertDontSee(string $value, bool $text_only = true): AssertableResponse
-    {
-        $compare_to = $text_only ?
-            strip_tags($this->streamed_content)
-            : $this->streamed_content;
-
-        PHPUnit::assertStringNotContainsString(
-            $value,
-            $compare_to,
-            "Response body contains [$value]."
-        );
-
-        return $this;
     }
 
     public function assertSeeText(string $value): AssertableResponse
@@ -322,7 +290,7 @@ final class AssertableResponse
         return $this;
     }
 
-    public function assertContentType(string $expected, string $charset = 'UTF-8')
+    public function assertContentType(string $expected, string $charset = 'UTF-8'): void
     {
         if (Str::startsWith($expected, 'text')) {
             $expected = trim($expected, ';') . '; charset=' . $charset;
@@ -363,6 +331,44 @@ final class AssertableResponse
     public function getHeader(string $header): array
     {
         return $this->psr_response->getHeader($header);
+    }
+
+    private function assertIsRedirectStatus(): void
+    {
+        PHPUnit::assertTrue(
+            $this->psr_response->isRedirection(),
+            "Status code [$this->status_code] is not a redirection status code."
+        );
+    }
+
+    private function assertSee(string $value, bool $text_only = true): AssertableResponse
+    {
+        $compare_to = $text_only ?
+            strip_tags($this->streamed_content)
+            : $this->streamed_content;
+
+        PHPUnit::assertStringContainsString(
+            $value,
+            $compare_to,
+            "Response body does not contain [$value]."
+        );
+
+        return $this;
+    }
+
+    private function assertDontSee(string $value, bool $text_only = true): AssertableResponse
+    {
+        $compare_to = $text_only ?
+            strip_tags($this->streamed_content)
+            : $this->streamed_content;
+
+        PHPUnit::assertStringNotContainsString(
+            $value,
+            $compare_to,
+            "Response body contains [$value]."
+        );
+
+        return $this;
     }
 
 }

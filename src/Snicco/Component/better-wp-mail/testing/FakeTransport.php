@@ -6,17 +6,21 @@ namespace Snicco\Component\BetterWPMail\Testing;
 
 use Closure;
 use PHPUnit\Framework\Assert as PHPUnit;
+use RuntimeException;
 use Snicco\Component\BetterWPMail\ScopableWP;
 use Snicco\Component\BetterWPMail\Transport\Transport;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
-use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
-use Snicco\Component\BetterWPMail\ValueObjects\MailboxList;
-use WP_User;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
+use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 
 use function count;
+use function func_get_args;
+use function is_array;
+use function is_string;
+use function parse_url;
 use function sprintf;
-use function wp_parse_url;
+use function strval;
 
 final class FakeTransport implements Transport
 {
@@ -24,9 +28,9 @@ final class FakeTransport implements Transport
     private ScopableWP $wp;
 
     /**
-     * @var array<string,<array>
+     * @var array<class-string, array<array{0: Email, 1: Envelope}>>
      */
-    private $sent_mails;
+    private $sent_mails = [];
 
     public function __construct(ScopableWP $wp = null)
     {
@@ -38,26 +42,30 @@ final class FakeTransport implements Transport
         $this->recordMail($email, $envelope);
     }
 
-    private function recordMail($email, Envelope $envelope)
+    private function recordMail(Email $email, Envelope $envelope): void
     {
         $class = get_class($email);
 
-        $this->sent_mails[$class][] = [
-            'email' => $email,
-            'envelope' => $envelope,
-        ];
+        $this->sent_mails[$class][] = [$email, $envelope,];
     }
 
-    public function interceptWordPressEmails()
+    public function interceptWordPressEmails(): void
     {
-        $this->wp->addFilter('pre_wp_mail', function ($null, $attributes) {
-            $this->recordWPMail($attributes);
-
+        $this->wp->addFilter('pre_wp_mail', /** @psalm-suppress MixedArgumentTypeCoercion */ function (): bool {
+            $args = func_get_args();
+            if (!isset($args[1]) || !is_array($args[1])) {
+                throw new RuntimeException('pre_wp_mail did not receive correct arguments');
+            }
+            $this->recordWPMail($args[1]);
             return false;
         }, PHP_INT_MAX, 1000);
     }
 
-    private function recordWPMail(array $attributes)
+    /**
+     * @param array{to: string|string[], headers:string|string[], subject:string, message:string, attachments: string|string[]} $attributes
+     * @return void
+     */
+    private function recordWPMail(array $attributes): void
     {
         $to = [];
         foreach ((array)$attributes['to'] as $recipient) {
@@ -70,11 +78,14 @@ final class FakeTransport implements Transport
 
         $reply_to = [];
         $attachments = $attributes['attachments'] ?? [];
-        $site_name = wp_parse_url($this->wp->siteUrl(), PHP_URL_HOST);
+        $site_name = parse_url($this->wp->siteUrl(), PHP_URL_HOST);
+        if (!is_string($site_name)) {
+            throw new RuntimeException("Cant parse site name [$site_name].");
+        }
         if ('www.' === substr($site_name, 0, 4)) {
             $site_name = substr($site_name, 4);
         }
-        $from = 'wordpress@' . $site_name;
+        $from = 'wordpress@' . (strval($site_name));
 
         foreach (($headers) as $header) {
             if (strpos($header, 'Cc:') !== false) {
@@ -96,7 +107,7 @@ final class FakeTransport implements Transport
             }
         }
 
-        $from = $this->wp->applyFilters('wp_mail_from', $from);
+        $from = $this->wp->applyFiltersStrict('wp_mail_from', $from);
         $from = Mailbox::create($from);
 
         $wp_mail = new WPMail();
@@ -120,7 +131,7 @@ final class FakeTransport implements Transport
             $wp_mail = $wp_mail->withReplyTo($reply_to);
         }
 
-        foreach ($attachments as $attachment) {
+        foreach ((array)$attachments as $attachment) {
             $wp_mail->addAttachment(
                 $attachment
             );
@@ -129,12 +140,12 @@ final class FakeTransport implements Transport
         $this->recordMail($wp_mail, new Envelope($from, $recipients));
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->sent_mails = [];
     }
 
-    public function assertNotSent(string $email_class)
+    public function assertNotSent(string $email_class): void
     {
         $times = count($this->sentEmailsThatMatchCondition($email_class, fn() => true));
 
@@ -160,16 +171,20 @@ final class FakeTransport implements Transport
     {
         $matching = [];
 
-        foreach ($this->sent_mails[$email_class] ?? [] as $mail_data) {
-            if ($condition($mail_data['email'], $mail_data['envelope']) === true) {
-                $matching[] = $mail_data['email'];
+        if (!isset($this->sent_mails[$email_class])) {
+            return [];
+        }
+
+        foreach ($this->sent_mails[$email_class] as $mail_data) {
+            if ($condition($mail_data[0], $mail_data[1]) === true) {
+                $matching[] = $mail_data[0];
             }
         }
 
         return $matching;
     }
 
-    public function assertSentTimes(string $mailable_class, int $expected)
+    public function assertSentTimes(string $mailable_class, int $expected): void
     {
         $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn() => true));
 
@@ -188,22 +203,22 @@ final class FakeTransport implements Transport
     }
 
     /**
-     * @param string|WP_User|array<string,<string> $recipient
-     * @param string $email_class
+     * @param class-string<Email> $email_class
+     * @psalm-suppress UnusedClosureParam
      */
-    public function assertSentTo($recipient, string $email_class)
+    public function assertSentTo(string $recipient, string $email_class): void
     {
         $expected_recipient = Mailbox::create($recipient);
 
         $this->assertSent(
             $email_class,
-            function (Email $email, Envelope $envelope) use ($expected_recipient) {
+            function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
                 return $envelope->recipients()->has($expected_recipient);
             }
         );
     }
 
-    public function assertSent(string $email_class, ?Closure $closure = null)
+    public function assertSent(string $email_class, ?Closure $closure = null): void
     {
         PHPUnit::assertTrue(
             $this->wasSent($email_class),
@@ -212,7 +227,7 @@ final class FakeTransport implements Transport
 
         if ($closure) {
             $matching = $this->sentEmailsThatMatchCondition($email_class, $closure);
-            $count = count($this->sent_mails[$email_class]);
+            $count = count($this->sent_mails[$email_class] ?? []);
 
             PHPUnit::assertNotEmpty(
                 $matching,
@@ -240,14 +255,16 @@ final class FakeTransport implements Transport
     }
 
     /**
-     * @param string|WP_User|array<string,<string> $recipient
+     * @param string $recipient
+     * @param class-string<Email> $email_class
+     * @psalm-suppress UnusedClosureParam
      */
-    public function assertNotSentTo($recipient, string $mailable_class)
+    public function assertNotSentTo(string $recipient, string $email_class): void
     {
         $expected_recipient = Mailbox::create($recipient);
         $matching = $this->sentEmailsThatMatchCondition(
-            $mailable_class,
-            function (Email $email, Envelope $envelope) use ($expected_recipient) {
+            $email_class,
+            function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
                 return $envelope->recipients()->has($expected_recipient);
             }
         );
@@ -260,7 +277,7 @@ final class FakeTransport implements Transport
                 '[%d] %s of type [%s] %s sent to recipient [%s].',
                 $count,
                 $count > 1 ? 'emails' : 'email',
-                $mailable_class,
+                $email_class,
                 $count > 1 ? 'were' : 'was',
                 $expected_recipient->toString()
             )

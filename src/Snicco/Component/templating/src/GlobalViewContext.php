@@ -7,6 +7,8 @@ namespace Snicco\Component\Templating;
 use Closure;
 use Snicco\Component\ParameterBag\ParameterPag;
 
+use function call_user_func;
+
 /**
  * @api
  */
@@ -18,7 +20,10 @@ final class GlobalViewContext
      */
     private array $context = [];
 
-    public function add(string $name, $context)
+    /**
+     * @param mixed $context
+     */
+    public function add(string $name, $context): void
     {
         if (is_array($context)) {
             $context = new ParameterPag($context);
@@ -29,6 +34,10 @@ final class GlobalViewContext
 
     /**
      * @interal
+     *
+     * @return array<string,mixed>
+     *
+     * @psalm-suppress MissingClosureReturnType
      */
     public function get(): array
     {

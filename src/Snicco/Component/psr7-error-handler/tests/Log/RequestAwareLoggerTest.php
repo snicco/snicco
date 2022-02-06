@@ -24,8 +24,10 @@ final class RequestAwareLoggerTest extends TestCase
     private ServerRequestInterface $request;
     private TestLogger $test_logger;
 
-    /** @test */
-    public function exception_information_is_logged()
+    /**
+     * @test
+     */
+    public function exception_information_is_logged(): void
     {
         $logger = new RequestAwareLogger($test_logger = new TestLogger());
 
@@ -43,8 +45,10 @@ final class RequestAwareLoggerTest extends TestCase
         $this->assertTrue($test_logger->hasErrorRecords());
     }
 
-    /** @test */
-    public function the_exception_and_identifier_is_included_in_the_log_context()
+    /**
+     * @test
+     */
+    public function the_exception_and_identifier_is_included_in_the_log_context(): void
     {
         $logger = new RequestAwareLogger($test_logger = new TestLogger());
 
@@ -70,8 +74,10 @@ final class RequestAwareLoggerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function errors_are_logged_as_critical_by_default()
+    /**
+     * @test
+     */
+    public function errors_are_logged_as_critical_by_default(): void
     {
         $logger = new RequestAwareLogger($test_logger = new TestLogger());
 
@@ -97,8 +103,10 @@ final class RequestAwareLoggerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function custom_log_levels_can_be_provided()
+    /**
+     * @test
+     */
+    public function custom_log_levels_can_be_provided(): void
     {
         $logger = new RequestAwareLogger(
             $this->test_logger,
@@ -138,8 +146,10 @@ final class RequestAwareLoggerTest extends TestCase
         $this->assertTrue($this->test_logger->hasErrorRecords());
     }
 
-    /** @test */
-    public function request_context_can_be_added_to_the_log_entry()
+    /**
+     * @test
+     */
+    public function request_context_can_be_added_to_the_log_entry(): void
     {
         $logger = new RequestAwareLogger(
             $this->test_logger,

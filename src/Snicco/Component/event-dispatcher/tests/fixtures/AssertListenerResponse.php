@@ -12,7 +12,7 @@ use PHPUnit\Framework\Assert;
 trait AssertListenerResponse
 {
 
-    private function respondedToEvent($event, string $key, $response)
+    private function respondedToEvent($event, string $key, $response): void
     {
         if (is_object($event)) {
             $event = get_class($event);
@@ -20,7 +20,7 @@ trait AssertListenerResponse
         $GLOBALS['test']['sniccowp_listeners'][$event][$key] = $response;
     }
 
-    private function assertListenerRun($event, string $key, $expected)
+    private function assertListenerRun($event, string $key, $expected): void
     {
         Assert::assertArrayHasKey(
             $event,
@@ -41,7 +41,7 @@ trait AssertListenerResponse
         );
     }
 
-    private function assertListenerNotRun($event, string $key)
+    private function assertListenerNotRun($event, string $key): void
     {
         if (isset($GLOBALS['test']['sniccowp_listeners'][$event])) {
             Assert::assertArrayNotHasKey(
@@ -54,7 +54,7 @@ trait AssertListenerResponse
         }
     }
 
-    private function resetListenersResponses()
+    private function resetListenersResponses(): void
     {
         $GLOBALS['test']['sniccowp_listeners'] = [];
     }

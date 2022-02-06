@@ -8,9 +8,9 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewEngine;
 use Symfony\Component\Finder\Finder;
@@ -29,6 +29,9 @@ class BladeTestCase extends TestCase
     protected GlobalViewContext $global_view_context;
     protected BladeStandalone $blade;
 
+    /**
+     * @psalm-suppress NullArgument
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -54,25 +57,27 @@ class BladeTestCase extends TestCase
         $this->blade = $blade;
         $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
         $this->global_view_context = $global_view_context;
-        //$this->clearCache();
+        $this->clearCache();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        //$this->clearCache();
+        $this->clearCache();
     }
 
-    protected function assertViewContent(string $expected, $actual)
+    protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = ($actual instanceof View) ? $actual->toString() : $actual;
-
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+
+        if (null === $actual) {
+            throw new RuntimeException('preg_replace failed in test case assertion.');
+        }
 
         PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
     }
 
-    private function clearCache()
+    private function clearCache(): void
     {
         $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
         foreach ($files as $file) {

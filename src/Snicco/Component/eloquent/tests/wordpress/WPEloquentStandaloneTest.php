@@ -26,16 +26,20 @@ final class WPEloquentStandaloneTest extends WPTestCase
 
     use WPDBTestHelpers;
 
-    /** @test */
-    public function test_cant_be_bootstrapped_twice()
+    /**
+     * @test
+     */
+    public function test_cant_be_bootstrapped_twice(): void
     {
         (new WPEloquentStandalone())->bootstrap();
         $this->expectException(RuntimeException::class);
         (new WPEloquentStandalone())->bootstrap();
     }
 
-    /** @test */
-    public function eloquent_is_booted()
+    /**
+     * @test
+     */
+    public function eloquent_is_booted(): void
     {
         $resolver = (new WPEloquentStandalone())->bootstrap();
 
@@ -46,8 +50,10 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $this->assertSame($resolver, $eloquent_resolver);
     }
 
-    /** @test */
-    public function events_can_be_activated()
+    /**
+     * @test
+     */
+    public function events_can_be_activated(): void
     {
         ($eloquent = new WPEloquentStandalone())->bootstrap();
 
@@ -60,8 +66,10 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $this->assertSame($events, $d);
     }
 
-    /** @test */
-    public function the_db_facade_is_created()
+    /**
+     * @test
+     */
+    public function the_db_facade_is_created(): void
     {
         (new WPEloquentStandalone())->bootstrap();
         $this->assertInstanceOf(MysqliConnection::class, DB::connection());
@@ -70,16 +78,20 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $this->assertInstanceOf(Builder::class, $builder);
     }
 
-    /** @test */
-    public function global_facades_can_be_disabled_is_created()
+    /**
+     * @test
+     */
+    public function global_facades_can_be_disabled_is_created(): void
     {
         (new WPEloquentStandalone([], false))->bootstrap();
 
         $this->assertFalse(Container::getInstance()->has('db'));
     }
 
-    /** @test */
-    public function the_schema_facade_works()
+    /**
+     * @test
+     */
+    public function the_schema_facade_works(): void
     {
         (new WPEloquentStandalone())->bootstrap();
 
@@ -88,8 +100,10 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $this->assertInstanceOf(MySqlBuilder::class, $schema);
     }
 
-    /** @test */
-    public function the_default_connection_is_the_mysqli_connection_that_wordpress_always_creates()
+    /**
+     * @test
+     */
+    public function the_default_connection_is_the_mysqli_connection_that_wordpress_always_creates(): void
     {
         (new WPEloquentStandalone())->bootstrap();
         $connection = DB::connection();
@@ -97,8 +111,10 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $this->assertSame($connection, DB::connection());
     }
 
-    /** @test */
-    public function different_connections_can_be_used_side_by_side()
+    /**
+     * @test
+     */
+    public function different_connections_can_be_used_side_by_side(): void
     {
         (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
 
@@ -111,8 +127,10 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $this->assertNotSame($secondary->getName(), $default->getName());
     }
 
-    /** @test */
-    public function the_transaction_manager_is_bound()
+    /**
+     * @test
+     */
+    public function the_transaction_manager_is_bound(): void
     {
         (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
 
@@ -122,8 +140,10 @@ final class WPEloquentStandaloneTest extends WPTestCase
         );
     }
 
-    /** @test */
-    public function the_schema_builder_can_be_resolved_with_a_secondary_connection()
+    /**
+     * @test
+     */
+    public function the_schema_builder_can_be_resolved_with_a_secondary_connection(): void
     {
         (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
 
