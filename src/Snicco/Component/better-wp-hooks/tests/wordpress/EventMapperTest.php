@@ -8,7 +8,6 @@ use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use LogicException;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
-use Snicco\Component\BetterWPHooks\EventMapping\MappedAction;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedFilter;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
 use Snicco\Component\BetterWPHooks\ScopableWP;
@@ -34,6 +33,26 @@ class EventMapperTest extends WPTestCase
 
     private EventMapper $event_mapper;
     private BaseEventDispatcher $dispatcher;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->dispatcher = new BaseEventDispatcher(
+            new NewableListenerFactory()
+        );
+        $this->event_mapper = new EventMapper($this->dispatcher, new ScopableWP());
+        $this->resetListenersResponses();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->resetListenersResponses();
+        parent::tearDown();
+    }
+
+    /**
+     * ACTIONS
+     */
 
     /**
      * @test
@@ -66,10 +85,6 @@ class EventMapperTest extends WPTestCase
 
         $this->assertListenerRun(EmptyActionEvent::class, 'closure1', 'foo');
     }
-
-    /**
-     * ACTIONS
-     */
 
     /**
      * @test
@@ -196,6 +211,10 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
+     * FILTERS
+     */
+
+    /**
      * @test
      */
     public function mapped_filters_only_dispatch_for_their_hook(): void
@@ -229,10 +248,6 @@ class EventMapperTest extends WPTestCase
 
         $this->assertSame('foobarbaz', $final_value);
     }
-
-    /**
-     * FILTERS
-     */
 
     /**
      * @test
@@ -291,6 +306,10 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
+     * MAP_FIRST
+     */
+
+    /**
      * @test
      */
     public function test_map_first_if_no_other_callback_present(): void
@@ -335,10 +354,6 @@ class EventMapperTest extends WPTestCase
 
         $this->assertSame(2, $count);
     }
-
-    /**
-     * MAP_FIRST
-     */
 
     /**
      * @test
@@ -400,6 +415,10 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
+     * MAP_LAST
+     */
+
+    /**
      * @test
      */
     public function test_map_last_if_no_other_callback_present(): void
@@ -456,7 +475,7 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
-     * MAP_LAST
+     * VALIDATION
      */
 
     /**
@@ -486,10 +505,6 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->map('foobar', EventFilter1::class);
         $this->event_mapper->map('foobar', EventFilter1::class);
     }
-
-    /**
-     * VALIDATION
-     */
 
     /**
      * @test
@@ -556,22 +571,6 @@ class EventMapperTest extends WPTestCase
 
         $this->assertListenerNotRun(ConditionalAction::class, 'listener1');
         $this->assertSame(1, $count);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->dispatcher = new BaseEventDispatcher(
-            new NewableListenerFactory()
-        );
-        $this->event_mapper = new EventMapper($this->dispatcher, new ScopableWP());
-        $this->resetListenersResponses();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetListenersResponses();
-        parent::tearDown();
     }
 
 }
