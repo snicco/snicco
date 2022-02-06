@@ -1,89 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.19.0@a2ad69ae4f5ab1f7d225a8dc4e2ec2d9415ed599">
-  <file src="src/Snicco/Bridge/blade/tests/BladeComponentsTest.php">
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-      <code>BladeComponentsTest</code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Snicco/Bridge/blade/tests/BladeEngineTest.php">
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-      <code>BladeEngineTest</code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Snicco/Bridge/blade/tests/BladeFeaturesTest.php">
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-      <code>BladeFeaturesTest</code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Snicco/Bridge/blade/tests/BladeLayoutsTest.php">
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-      <code>BladeLayoutsTest</code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Snicco/Bridge/blade/tests/BladeStandaloneTest.php">
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-      <code>BladeStandaloneTest</code>
-    </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Snicco/Bridge/blade/tests/BladeViewTest.php">
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-      <code>BladeViewTest</code>
-    </PropertyNotSetInConstructor>
-  </file>
   <file src="src/Snicco/Bridge/blade/tests/ViewComposingTest.php">
     <ArgumentTypeCoercion occurrences="2"/>
-    <PropertyNotSetInConstructor occurrences="8">
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-      <code>ViewComposingTest</code>
-    </PropertyNotSetInConstructor>
   </file>
   <file src="src/Snicco/Bridge/blade/tests/fixtures/Components/Alert.php">
     <PropertyNotSetInConstructor occurrences="2">
@@ -1549,11 +1467,6 @@
       <code>$request</code>
     </UnusedClosureParam>
   </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RedirectRoutesTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>['foo', 'bar']</code>
-    </InvalidScalarArgument>
-  </file>
   <file src="src/Snicco/Component/http-routing/tests/Routing/RouteAttributesTest.php">
     <MixedArgument occurrences="2">
       <code>$path</code>
@@ -1649,11 +1562,6 @@
   </file>
   <file src="src/Snicco/Component/http-routing/tests/Routing/RouteMiddlewareTest.php">
     <ArgumentTypeCoercion occurrences="2"/>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteSegmentsTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>[1, 2, 3]</code>
-    </InvalidScalarArgument>
   </file>
   <file src="src/Snicco/Component/http-routing/tests/Routing/RouteTest.php">
     <InvalidArgument occurrences="8">

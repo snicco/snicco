@@ -15,6 +15,7 @@
         sealAllMethods="true"
         sealAllProperties="true"
         autoloader="psalm/bootstrap.php"
+        errorBaseline="psalm/tests-baseline.xml"
 >
     <projectFiles>
         <directory name="src/Snicco"/>
