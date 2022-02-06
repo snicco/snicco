@@ -159,11 +159,15 @@
             "vendor/bin/monorepo-builder propagate"
         ],
         "deptrac": "/usr/local/bin/deptrac --config-file=deptrac/deptrac.yaml",
-        "psalm": "vendor/bin/psalm --use-baseline=psalm/tests-baseline.xml",
-        "psalm:no-baseline": "vendor/bin/psalm",
+        "psalm": "vendor/bin/psalm",
+        "psalm:no-baseline": "vendor/bin/psalm --ignore-baseline",
         "psalm:clear-cache": [
             "vendor/bin/psalm --clear-cache",
             "vendor/bin/psalm --clear-global-cache"
+        ],
+        "psalm:update-baseline": [
+            "@psalm:clear-cache",
+            "@psalm --update-baseline"
         ]
     },
     "replace": {

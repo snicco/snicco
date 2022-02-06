@@ -7,6 +7,7 @@ use Codeception\TestCase\WPTestCase;
 use PHPUnit\Framework\TestCase;
 use Psalm\Plugin\EventHandler\AfterClassLikeVisitInterface;
 use Psalm\Plugin\EventHandler\Event\AfterClassLikeVisitEvent;
+use Snicco\Bridge\Blade\Tests\BladeTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -27,13 +28,20 @@ final class TestCaseClasses implements AfterClassLikeVisitInterface
             return;
         }
 
-        if (in_array(TestCase::class, $parents, true)
-            || in_array(MiddlewareTestCase::class, $parents, true)
-            || in_array(Codeception\Test\Unit::class, $parents, true)
-            || in_array(HttpRunnerTestCase::class, $parents, true)
-            || in_array(WPTestCase::class, $parents, true)) {
+        $suppress_for = [
+            TestCase::class,
+            MiddlewareTestCase::class,
+            Codeception\Test\Unit::class,
+            HttpRunnerTestCase::class,
+            WPTestCase::class,
+            BladeTestCase::class
+        ];
+
+        if (count(array_intersect($parents, $suppress_for))) {
             $storage->suppressed_issues[] = 'UnusedClass';
             $storage->suppressed_issues[] = 'PropertyNotSetInConstructor';
         }
     }
+
 }
+
