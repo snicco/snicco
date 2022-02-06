@@ -9,6 +9,10 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Middleware\GuestsOnly\GuestsOnly;
 
+use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
+
 class GuestsOnlyTest extends MiddlewareTestCase
 {
 
@@ -84,9 +88,50 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
 
-    private function newMiddleware(ScopableWP $scopable_wp, string $redirect_url = null): GuestsOnly
+    /**
+     * @test
+     */
+    public function a_json_response_is_returned_if_the_request_wants_json(): void
     {
-        return new GuestsOnly($redirect_url, null, $scopable_wp);
+        $response = $this->runMiddleware(
+            $this->newMiddleware(new GuestScopableWP(true)),
+            $this->frontendRequest()->withHeader('Accept', 'application/json')
+        );
+
+        $response->assertNextMiddlewareNotCalled();
+        $psr_response = $response->psr();
+        $psr_response->assertIsJson();
+        $psr_response->assertBodyExact(
+            json_encode(['message' => 'You are already authenticated'], JSON_THROW_ON_ERROR)
+        );
+        $psr_response->assertForbidden();
+    }
+
+    /**
+     * @test
+     */
+    public function a_custom_json_failure_message_can_be_used(): void
+    {
+        $response = $this->runMiddleware(
+            $this->newMiddleware(new GuestScopableWP(true), null, 'Guests only'),
+            $this->frontendRequest()->withHeader('Accept', 'application/json')
+        );
+
+        $response->assertNextMiddlewareNotCalled();
+        $psr_response = $response->psr();
+        $psr_response->assertIsJson();
+        $psr_response->assertBodyExact(
+            json_encode(['message' => 'Guests only'], JSON_THROW_ON_ERROR)
+        );
+        $psr_response->assertForbidden();
+    }
+
+    private function newMiddleware(
+        ScopableWP $scopable_wp,
+        string $redirect_url = null,
+        string $json_message = null
+    ): GuestsOnly {
+        return new GuestsOnly($redirect_url, $json_message, $scopable_wp);
     }
 
 
