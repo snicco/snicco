@@ -16,4 +16,6 @@ settings:
   report_useless_tests: true
 
 coverage:
-  enabled: false
+  enabled: true
+  include:
+    - src/*

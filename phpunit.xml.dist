@@ -49,13 +49,12 @@
 
     <coverage includeUncoveredFiles="true">
         <include>
-            <directory>./src/Snicco/Bridge/*</directory>
-            <directory>./src/Snicco/Component/*</directory>
-            <directory>./src/Snicco/Middleware/*</directory>
+            <directory>./src/Snicco/*</directory>
         </include>
         <exclude>
-            <directory>./src/Symfony/Bridge/*/Tests</directory>
-            <directory>./src/Symfony/Component/*/Tests</directory>
+            <directory>./src/Snicco/*/*/tests</directory>
+            <directory>./src/Snicco/*/*/tests</directory>
+            <directory>./src/Snicco/*/*/tests</directory>
         </exclude>
     </coverage>
 </phpunit>
