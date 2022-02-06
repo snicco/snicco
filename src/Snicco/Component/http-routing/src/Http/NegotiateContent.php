@@ -28,6 +28,15 @@ final class NegotiateContent extends AbstractMiddleware
      */
     private array $charsets;
 
+    /**
+     * @param string[] $languages
+     * @param string[]|null $charsets
+     * @param null|array<
+     *     string,
+     *     array{extension?: string[], mime-type?: string[], charset?: bool
+     * }
+     * > $content_types
+     */
     public function __construct(array $languages, array $content_types = null, array $charsets = null)
     {
         Assert::allString($languages);

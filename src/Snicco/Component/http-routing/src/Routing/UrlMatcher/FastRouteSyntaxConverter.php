@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
 
+use RuntimeException;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\StrArr\Str;
 
@@ -56,6 +57,9 @@ final class FastRouteSyntaxConverter
         return $url;
     }
 
+    /**
+     * @param string[] $optional_segment_names
+     */
     private function convertOptionalSegments(
         string $url_pattern,
         array $optional_segment_names,
@@ -85,9 +89,13 @@ final class FastRouteSyntaxConverter
         return $count > 1;
     }
 
-    private function combineOptionalSegments(string &$url_pattern)
+    private function combineOptionalSegments(string &$url_pattern): void
     {
         preg_match('/(\[(.*?)])/', $url_pattern, $matches);
+
+        if (!isset($matches[0])) {
+            return;
+        }
 
         $first = $matches[0];
 
@@ -103,9 +111,16 @@ final class FastRouteSyntaxConverter
 
         $pattern = sprintf("/(%s(?=\\}))/", preg_quote($param_name, '/'));
 
-        $url = preg_replace_callback($pattern, function ($match) use ($regex) {
+        $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
+            if (!isset($match[0])) {
+                return $regex;
+            }
             return $match[0] . ':' . $regex;
         }, $url, 1);
+
+        if (null == $url) {
+            throw new RuntimeException("preg_replace_callback returned an error for url [$url].");
+        }
 
         return rtrim($url, '/');
     }
@@ -113,12 +128,12 @@ final class FastRouteSyntaxConverter
     /**
      * @note Fast Route uses unescaped forward slashes and wraps the entire regex in ~ chars.
      */
-    private function replaceEscapedForwardSlashes(string $regex)
+    private function replaceEscapedForwardSlashes(string $regex): string
     {
         return str_replace('\\/', '/', $regex);
     }
 
-    private function ensureOptionalRouteCanMatchWithTrailingSlash($url): string
+    private function ensureOptionalRouteCanMatchWithTrailingSlash(string $url): string
     {
         $l1 = strlen($url);
         $url = rtrim($url, ']');

@@ -16,8 +16,10 @@ final class ReadOnlySessionTest extends TestCase
 
     use SessionHelpers;
 
-    /** @test */
-    public function testImmutableStore()
+    /**
+     * @test
+     */
+    public function testImmutableStore(): void
     {
         $session = $this->newSession();
 

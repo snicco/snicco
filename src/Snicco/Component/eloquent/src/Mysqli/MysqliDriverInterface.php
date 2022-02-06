@@ -17,7 +17,7 @@ interface MysqliDriverInterface extends PDOAdapter
 
     public function doStatement(string $sql, array $bindings): bool;
 
-    public function doAffectingStatement($sql, array $bindings): int;
+    public function doAffectingStatement(string $sql, array $bindings): int;
 
     public function doUnprepared(string $sql): bool;
 

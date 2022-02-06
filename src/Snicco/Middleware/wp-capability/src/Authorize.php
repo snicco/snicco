@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Middleware\WPCap;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\ScopableWP\ScopableWP;
 
@@ -15,16 +16,16 @@ use function sprintf;
 /**
  * @api
  */
-final class Authorize extends AbstractMiddleware
+final class Authorize implements MiddlewareInterface
 {
 
     private string $capability;
     private ?int $object_id;
     private ScopableWP $wp;
 
-    public function __construct(ScopableWP $wp, $capability, int $object_id = null)
+    public function __construct(string $capability, int $object_id = null, ScopableWP $wp = null)
     {
-        $this->wp = $wp;
+        $this->wp = $wp ?: new ScopableWP();
         $this->capability = $capability;
         $this->object_id = $object_id;
     }
@@ -32,7 +33,7 @@ final class Authorize extends AbstractMiddleware
     /**
      * @throws HttpException
      */
-    public function handle(Request $request, $next): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $args = [];
         if ($this->object_id) {
@@ -40,17 +41,16 @@ final class Authorize extends AbstractMiddleware
         }
 
         if ($this->wp->currentUserCan($this->capability, ...$args)) {
-            return $next($request);
+            return $handler->handle($request);
         }
 
         throw new HttpException(
             403,
             sprintf(
                 'Authorization failed for path [%s] with required capability [%s].',
-                $request->path(),
+                $request->getUri()->getPath(),
                 $this->capability
             )
         );
     }
-
 }

@@ -21,8 +21,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     use CreateTestPsr17Factories;
     use CreateTestPsrContainer;
 
-    /** @test */
-    public function testResponseIsTestResponse()
+    /**
+     * @test
+     */
+    public function testResponseIsTestResponse(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -39,8 +41,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->psr()->assertSeeText('foo');
     }
 
-    /** @test */
-    public function assertNextWasCalled_can_pass()
+    /**
+     * @test
+     */
+    public function assertNextWasCalled_can_pass(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -58,8 +62,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
     }
 
-    /** @test */
-    public function assertNextWasCalled_can_fail()
+    /**
+     * @test
+     */
+    public function assertNextWasCalled_can_fail(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -82,8 +88,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         }
     }
 
-    /** @test */
-    public function assertNextWasNotCalled_can_pass()
+    /**
+     * @test
+     */
+    public function assertNextWasNotCalled_can_pass(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -101,8 +109,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->assertNextMiddlewareNotCalled();
     }
 
-    /** @test */
-    public function assertNextWasNotCalled_can_fail()
+    /**
+     * @test
+     */
+    public function assertNextWasNotCalled_can_fail(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -123,8 +133,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         }
     }
 
-    /** @test */
-    public function assertions_about_the_passed_request_to_the_next_middleware_can_be_made()
+    /**
+     * @test
+     */
+    public function assertions_about_the_passed_request_to_the_next_middleware_can_be_made(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -140,9 +152,11 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $this->assertSame('bar', $this->getReceivedRequest()->getAttribute('foo'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function an_exception_is_thrown_if_the_middleware_did_not_delegate_to_the_next_one_and_assertions_about_the_received_request_are_made(
-    )
+    ): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -163,8 +177,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         }
     }
 
-    /** @test */
-    public function delegating_to_the_next_middleware_and_using_its_response_works()
+    /**
+     * @test
+     */
+    public function delegating_to_the_next_middleware_and_using_its_response_works(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
@@ -184,8 +200,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->psr()->assertHeader('foo', 'bar');
     }
 
-    /** @test */
-    public function custom_responses_for_the_next_middleware_can_be_set()
+    /**
+     * @test
+     */
+    public function custom_responses_for_the_next_middleware_can_be_set(): void
     {
         $this->withNextMiddlewareResponse(function () {
             return $this->getResponseFactory()->html('foo');
@@ -205,8 +223,10 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->psr()->assertSeeText('foo');
     }
 
-    /** @test */
-    public function assertNextMiddlewareCalled_still_works_with_custom_responses()
+    /**
+     * @test
+     */
+    public function assertNextMiddlewareCalled_still_works_with_custom_responses(): void
     {
         $this->withNextMiddlewareResponse(function () {
             return $this->getResponseFactory()->html('foo');
@@ -227,14 +247,16 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->psr()->assertSeeText('foo');
     }
 
-    /** @test */
-    public function assertNextMiddlewareCalled_works_if_the_middleware_under_test_generated_a_custom_responses()
+    /**
+     * @test
+     */
+    public function assertNextMiddlewareCalled_works_if_the_middleware_under_test_generated_a_custom_responses(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $response1 = $next($request);
+                $next($request);
 
                 return $this->respond()->html('foo');
             }
@@ -247,15 +269,17 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $response->psr()->assertSeeText('foo');
     }
 
-    /** @test */
-    public function everything_is_reset_after_running_a_middleware()
+    /**
+     * @test
+     */
+    public function everything_is_reset_after_running_a_middleware(): void
     {
         $middleware = new class extends AbstractMiddleware {
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 if ($request->isGet()) {
-                    $response1 = $next($request);
+                    $next($request);
                 }
                 return $this->respond()->html('foo');
             }

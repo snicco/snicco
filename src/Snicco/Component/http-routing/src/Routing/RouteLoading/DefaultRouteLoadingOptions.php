@@ -24,47 +24,43 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
         $this->add_middleware_for_api_files = $add_middleware_for_each_api_file;
     }
 
-    public function getApiRouteAttributes(
-        string $file_name_without_extension_and_version,
-        ?string $parsed_version
-    ): array {
+    public function getApiRouteAttributes(string $file_basename, ?string $parsed_version): array
+    {
         if ($parsed_version) {
             $_name = Str::beforeFirst(
-                $file_name_without_extension_and_version,
+                $file_basename,
                 RouteLoader::VERSION_FLAG
             );
-            $file_name_without_extension_and_version = $_name . ".v$parsed_version";
+            $file_basename = $_name . ".v$parsed_version";
             $prefix = (string)$this->api_base_prefix->append($_name)->append("v$parsed_version");
         } else {
-            $prefix = $this->api_base_prefix->append($file_name_without_extension_and_version)
-                ->asString();
+            $prefix = $this->api_base_prefix->append($file_basename)->asString();
         }
 
         $api_middleware = ['api'];
         if ($this->add_middleware_for_api_files) {
-            $api_middleware[] = $file_name_without_extension_and_version;
+            $api_middleware[] = $file_basename;
         }
 
         return [
             RoutingConfigurator::PREFIX_KEY => $prefix,
             RoutingConfigurator::MIDDLEWARE_KEY => $api_middleware,
-            RoutingConfigurator::NAME_KEY => 'api.' . $file_name_without_extension_and_version,
+            RoutingConfigurator::NAME_KEY => 'api.' . $file_basename,
         ];
     }
 
-    public function getRouteAttributes($file_name_without_extension): array
+    public function getRouteAttributes(string $file_basename): array
     {
         $att = [];
 
-        if (RouteLoader::ADMIN_ROUTE_FILENAME === $file_name_without_extension) {
+        if (RouteLoader::ADMIN_ROUTE_FILENAME === $file_basename) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::ADMIN_MIDDLEWARE];
             $att[RoutingConfigurator::NAME_KEY] = 'admin';
         }
 
-        if (RouteLoader::FRONTEND_ROUTE_FILENAME === $file_name_without_extension) {
+        if (RouteLoader::FRONTEND_ROUTE_FILENAME === $file_basename) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::FRONTEND_MIDDLEWARE];
         }
-
         return $att;
     }
 

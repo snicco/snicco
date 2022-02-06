@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http;
 
+use RuntimeException;
 use Webmozart\Assert\Assert;
 
 use function sprintf;
@@ -11,6 +12,9 @@ use function sprintf;
 final class FileTemplateRenderer implements TemplateRenderer
 {
 
+    /**
+     * @psalm-suppress UnresolvableInclude
+     */
     public function render(string $template_name, array $data = []): string
     {
         $this->validateTemplate($template_name);
@@ -20,7 +24,11 @@ final class FileTemplateRenderer implements TemplateRenderer
             extract($data, EXTR_SKIP);
             require $template_name;
         })();
-        return ob_get_clean();
+        $output = ob_get_clean();
+        if (false === $output) {
+            throw new RuntimeException('Could not get output buffer contents.');
+        }
+        return $output;
     }
 
     private function validateTemplate(string $template_name): void

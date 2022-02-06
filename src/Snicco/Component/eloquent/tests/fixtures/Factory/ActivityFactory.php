@@ -28,7 +28,7 @@ class ActivityFactory extends Factory
             'hockey',
         ];
 
-        return Arr::random($activities);
+        return Arr::random($activities)[0];
     }
 
 }

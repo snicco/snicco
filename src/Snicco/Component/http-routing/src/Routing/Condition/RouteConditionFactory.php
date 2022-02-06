@@ -9,6 +9,8 @@ use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * @interal
@@ -26,6 +28,8 @@ final class RouteConditionFactory
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws ReflectionException
+     * @psalm-suppress MixedAssignment
      */
     public function create(ConditionBlueprint $blueprint): AbstractRouteCondition
     {
@@ -49,7 +53,7 @@ final class RouteConditionFactory
         } catch (NotFoundExceptionInterface $e) {
             // Don't check if the entry is in the container with has since many DI-containers
             // are capable of constructing the service with auto-wiring.
-            $instance = new $class(...array_values($args));
+            $instance = (new ReflectionClass($class))->newInstanceArgs(array_values($args));
         }
 
         if ($blueprint->isNegated()) {

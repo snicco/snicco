@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\Core\Configuration\WritableConfig;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\FalseRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 
 class RouteConditionsTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function custom_conditions_can_be_added_as_a_full_namespace()
+    /**
+     * @test
+     */
+    public function custom_conditions_can_be_added_as_a_full_namespace(): void
     {
         $this->routeConfigurator()
             ->get('r1', '/foo', RoutingTestController::class)
@@ -33,8 +35,10 @@ class RouteConditionsTest extends HttpRunnerTestCase
         $this->runKernel($request)->assertDelegated();
     }
 
-    /** @test */
-    public function the_route_does_not_match_if_the_path_matches_but_the_condition_does_not()
+    /**
+     * @test
+     */
+    public function the_route_does_not_match_if_the_path_matches_but_the_condition_does_not(): void
     {
         $this->routeConfigurator()
             ->get('r1', '/foo/bar', RoutingTestController::class)
@@ -50,8 +54,10 @@ class RouteConditionsTest extends HttpRunnerTestCase
         $this->runKernel($request)->assertSeeText('dynamic:bar');
     }
 
-    /** @test */
-    public function multiple_conditions_can_be_combined_and_all_conditions_have_to_pass()
+    /**
+     * @test
+     */
+    public function multiple_conditions_can_be_combined_and_all_conditions_have_to_pass(): void
     {
         $GLOBALS['test']['maybe_condition_run'] = 0;
 
@@ -76,8 +82,10 @@ class RouteConditionsTest extends HttpRunnerTestCase
         $this->assertSame(2, $GLOBALS['test']['maybe_condition_run']);
     }
 
-    /** @test */
-    public function a_condition_can_be_negated()
+    /**
+     * @test
+     */
+    public function a_condition_can_be_negated(): void
     {
         $config = new WritableConfig();
         $this->container[WritableConfig::class] = $config;

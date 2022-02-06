@@ -49,8 +49,10 @@ final class HttpErrorHandlerTest extends TestCase
     private array $error_data;
     private SplHashIdentifier $identifier;
 
-    /** @test */
-    public function an_exception_can_be_converted_to_a_response()
+    /**
+     * @test
+     */
+    public function an_exception_can_be_converted_to_a_response(): void
     {
         $e = new Exception('foobar');
 
@@ -59,8 +61,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    /** @test */
-    public function if_no_displayer_matches_a_fallback_response_will_be_returned()
+    /**
+     * @test
+     */
+    public function if_no_displayer_matches_a_fallback_response_will_be_returned(): void
     {
         $e = new Exception('Secret message here.');
 
@@ -75,8 +79,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertStringContainsString(spl_object_hash($e), $body);
     }
 
-    /** @test */
-    public function the_fallback_response_has_the_correct_status_code_if_no_displayer_matches()
+    /**
+     * @test
+     */
+    public function the_fallback_response_has_the_correct_status_code_if_no_displayer_matches(): void
     {
         $e = new HttpException(404, 'Secret message here.');
 
@@ -91,8 +97,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertStringContainsString(spl_object_hash($e), $body);
     }
 
-    /** @test */
-    public function a_custom_displayer_can_handle_the_exception()
+    /**
+     * @test
+     */
+    public function a_custom_displayer_can_handle_the_exception(): void
     {
         $e = new Exception('Secret message here.');
 
@@ -114,8 +122,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertStringContainsString('details:' . $details, $body);
     }
 
-    /** @test */
-    public function a_custom_displayer_can_also_decide_if_an_individual_exception_can_be_handled()
+    /**
+     * @test
+     */
+    public function a_custom_displayer_can_also_decide_if_an_individual_exception_can_be_handled(): void
     {
         $e = new Exception('Secret message here.');
 
@@ -134,8 +144,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
     }
 
-    /** @test */
-    public function multiple_displayers_can_be_added_and_the_first_matching_one_will_be_used()
+    /**
+     * @test
+     */
+    public function multiple_displayers_can_be_added_and_the_first_matching_one_will_be_used(): void
     {
         $e = new Exception('Secret message here.');
 
@@ -195,8 +207,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
     }
 
-    /** @test */
-    public function headers_are_added_to_the_response_if_a_http_exception_was_handled()
+    /**
+     * @test
+     */
+    public function headers_are_added_to_the_response_if_a_http_exception_was_handled(): void
     {
         $handler = $this->createErrorHandler(
             [],
@@ -212,8 +226,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
     }
 
-    /** @test */
-    public function the_content_type_header_can_not_be_overwritten_by_a_transformer()
+    /**
+     * @test
+     */
+    public function the_content_type_header_can_not_be_overwritten_by_a_transformer(): void
     {
         $handler = $this->createErrorHandler(
             [new PlainTextExceptionDisplayer()],
@@ -229,8 +245,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertSame('text/plain', $response->getHeaderLine('content-type'));
     }
 
-    /** @test */
-    public function exceptions_are_logged()
+    /**
+     * @test
+     */
+    public function exceptions_are_logged(): void
     {
         $handler = $this->createErrorHandler([], [], $logger = new TestLogger());
 
@@ -252,8 +270,10 @@ final class HttpErrorHandlerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function a_custom_fallback_display_can_be_provided()
+    /**
+     * @test
+     */
+    public function a_custom_fallback_display_can_be_provided(): void
     {
         $handler = $this->createErrorHandler([], [], null, new JsonFallbackExceptionDisplayer());
 
@@ -265,8 +285,10 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertSame('custom_fallback_displayer', json_decode((string)$response->getBody()));
     }
 
-    /** @test */
-    public function an_exception_during_logging_will_be_logged()
+    /**
+     * @test
+     */
+    public function an_exception_during_logging_will_be_logged(): void
     {
         $logger = new RequestAwareLogger(
             $test_logger = new TestLogger(),
@@ -295,8 +317,10 @@ final class HttpErrorHandlerTest extends TestCase
         );
     }
 
-    /** @test */
-    public function an_exception_during_displaying_will_be_converted_into_a_minimal_500_error()
+    /**
+     * @test
+     */
+    public function an_exception_during_displaying_will_be_converted_into_a_minimal_500_error(): void
     {
         $logger = new RequestAwareLogger(
             $test_logger = new TestLogger(),

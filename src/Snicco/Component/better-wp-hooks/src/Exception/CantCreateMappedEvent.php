@@ -33,7 +33,7 @@ final class CantCreateMappedEvent extends RuntimeException
             $message .= " Received [$args]";
         }
 
-        return new CantCreateMappedEvent($message, $previous->getCode(), $previous);
+        return new CantCreateMappedEvent($message, (int)$previous->getCode(), $previous);
     }
 
 }

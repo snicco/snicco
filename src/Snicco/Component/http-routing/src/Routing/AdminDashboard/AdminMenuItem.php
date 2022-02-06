@@ -72,6 +72,15 @@ class AdminMenuItem
 
     /**
      * @interal
+     *
+     * @param array{
+     *     menu_title?: string,
+     *     page_title?: string,
+     *     icon?: string,
+     *     capability?: string,
+     *     position?: int
+     * } $attributes
+     *
      */
     final public static function fromRoute(
         Route $route,
@@ -112,19 +121,6 @@ class AdminMenuItem
         );
     }
 
-    private static function stringToHeadline(string $route_name): string
-    {
-        $parts = explode(' ', str_replace(['.', '_', '-'], ' ', $route_name));
-
-        if (count($parts) > 1) {
-            $parts = array_map(function (string $part) {
-                return mb_convert_case($part, MB_CASE_TITLE, 'UTF-8');
-            }, $parts);
-        }
-
-        return implode(' ', $parts);
-    }
-
     final function pageTitle(): string
     {
         return $this->page_title;
@@ -158,6 +154,19 @@ class AdminMenuItem
     public function parentSlug(): ?UrlPath
     {
         return $this->parent_slug ? UrlPath::fromString($this->parent_slug) : null;
+    }
+
+    private static function stringToHeadline(string $route_name): string
+    {
+        $parts = explode(' ', str_replace(['.', '_', '-'], ' ', $route_name));
+
+        if (count($parts) > 1) {
+            $parts = array_map(function (string $part) {
+                return mb_convert_case($part, MB_CASE_TITLE, 'UTF-8');
+            }, $parts);
+        }
+
+        return implode(' ', $parts);
     }
 
 }

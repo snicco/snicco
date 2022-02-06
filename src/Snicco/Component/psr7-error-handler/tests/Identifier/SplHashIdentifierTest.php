@@ -14,8 +14,10 @@ use function spl_object_hash;
 final class SplHashIdentifierTest extends TestCase
 {
 
-    /** @test */
-    public function test_identify_is_spl_hash()
+    /**
+     * @test
+     */
+    public function test_identify_is_spl_hash(): void
     {
         $exception = new Exception('foobar');
         $this->assertSame(
@@ -24,8 +26,10 @@ final class SplHashIdentifierTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_identify_is_pure()
+    /**
+     * @test
+     */
+    public function test_identify_is_pure(): void
     {
         $identifier = new SplHashIdentifier();
 

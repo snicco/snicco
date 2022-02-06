@@ -14,8 +14,10 @@ final class PsrEventDispatcherTest extends TestCase
 
     use AssertListenerResponse;
 
-    /** @test */
-    public function objects_are_dispatched_as_mutable_classes()
+    /**
+     * @test
+     */
+    public function objects_are_dispatched_as_mutable_classes(): void
     {
         $psr_dispatcher = new BaseEventDispatcher();
 
@@ -35,8 +37,10 @@ final class PsrEventDispatcherTest extends TestCase
         $this->assertSame($event, $returned);
     }
 
-    /** @test */
-    public function event_propagation_will_be_stopped_if_the_psr_interface_is_implemented()
+    /**
+     * @test
+     */
+    public function event_propagation_will_be_stopped_if_the_psr_interface_is_implemented(): void
     {
         $psr_dispatcher = new BaseEventDispatcher();
 

@@ -13,7 +13,7 @@ final class InMemoryStorage implements SignedUrlStorage
 {
 
     /**
-     * @var array<string,SignedUrl>
+     * @var array<string,array{expires_at: int, usages_left: int}>
      */
     private $links = [];
 

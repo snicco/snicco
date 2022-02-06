@@ -22,9 +22,16 @@ final class PHPView implements View
     public const PARENT_FILE_INDICATOR = 'Extends';
 
     private PHPViewFactory $engine;
+
     private ?PHPView $parent_view;
+
     private string $filepath;
+
+    /**
+     * @var array<string,mixed>
+     */
     private array $context = [];
+    
     private string $name;
 
     public function __construct(PHPViewFactory $engine, string $name, string $path)
@@ -118,6 +125,9 @@ final class PHPView implements View
         return $this;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function context(): array
     {
         return $this->context;

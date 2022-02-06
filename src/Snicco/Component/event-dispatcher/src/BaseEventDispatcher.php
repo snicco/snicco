@@ -15,6 +15,7 @@ use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
 use function array_merge;
 use function call_user_func;
+use function call_user_func_array;
 use function class_exists;
 use function class_implements;
 use function get_parent_class;
@@ -22,7 +23,6 @@ use function in_array;
 use function is_array;
 use function is_string;
 use function method_exists;
-use function Snicco\Component\EventDispatcher\functions\getTypeHintedObjectFromClosure;
 use function sprintf;
 
 /**
@@ -34,19 +34,12 @@ final class BaseEventDispatcher implements EventDispatcher
     private ListenerFactory $listener_factory;
 
     /**
-     * @var array<string,array<array,Closure>>
+     * @var array<string, array<string, Closure|array{0:class-string, 1:string}>>
      */
-    private $listeners = [];
+    private array $listeners = [];
 
     /**
-     * All listeners that are marked as unremovable keyed by event name
-     *
-     * @var array<string,array<array,Closure>>
-     */
-    private $unremovable = [];
-
-    /**
-     * @var array<string,array<array,Closure>>
+     * @var array<string, array<Closure|array{0:class-string, 1:string}>>
      */
     private array $listener_cache = [];
 
@@ -58,15 +51,13 @@ final class BaseEventDispatcher implements EventDispatcher
     public function dispatch(object $event): object
     {
         $original_event = $event;
-        $can_be_stopped = $original_event instanceof StoppablePsrEvent;
 
         $event = $this->transform($original_event);
 
         foreach ($this->getListenersForEvent($event->name()) as $listener) {
-            if ($can_be_stopped && $original_event->isPropagationStopped()) {
+            if ($original_event instanceof StoppablePsrEvent && $original_event->isPropagationStopped()) {
                 break;
             }
-
             $this->callListener(
                 $listener,
                 $event,
@@ -84,13 +75,17 @@ final class BaseEventDispatcher implements EventDispatcher
         return GenericEvent::fromObject($event);
     }
 
+    /**
+     * @return array<Closure|array{0: class-string, 1:string}>
+     */
     private function getListenersForEvent(string $event_name, bool $include_reflection = true): array
     {
         if (isset($this->listener_cache[$event_name])) {
-            $listeners = $this->listener_cache[$event_name];
+            return $this->listener_cache[$event_name];
         } else {
             $listeners = $this->listeners[$event_name] ?? [];
 
+            /** @var array<Closure|array{0: class-string, 1:string}> $listeners */
             $listeners = $include_reflection
                 ? $this->mergeReflectionListeners($event_name, $listeners)
                 : $listeners;
@@ -98,9 +93,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
         $this->listener_cache[$event_name] = $listeners;
 
-        return array_filter($listeners, function ($listener) use ($event_name) {
-            return !isset($this->muted_listeners[$event_name][$this->parseListenerId($listener)]);
-        });
+        return $listeners;
     }
 
     private function mergeReflectionListeners(string $event_name, array $listeners): array
@@ -109,7 +102,13 @@ final class BaseEventDispatcher implements EventDispatcher
             return $listeners;
         }
 
-        foreach ((array)class_implements($event_name) as $interface) {
+        $interfaces = class_implements($event_name);
+        $interfaces = (false === $interfaces)
+            ? []
+            : $interfaces;
+
+
+        foreach ($interfaces as $interface) {
             $listeners = array_merge($listeners, $this->getListenersForEvent($interface, false));
         }
 
@@ -122,9 +121,66 @@ final class BaseEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param array|Closure $validated_listener
+     * @param Closure|array{0:class-string, 1:string} $listener
      *
-     * @return string
+     * @psalm-suppress MixedAssignment
+     */
+    private function callListener($listener, Event $event): void
+    {
+        $payload = $event->payload();
+        $payload = is_array($payload) ? $payload : [$payload];
+
+        if ($listener instanceof Closure) {
+            $listener(...$payload);
+            return;
+        }
+
+        $instance = $this->listener_factory->create(
+            $listener[0],
+            $event->name()
+        );
+
+        call_user_func_array([$instance, $listener[1]], $payload);
+    }
+
+    public function remove(string $event_name, $listener = null): void
+    {
+        $this->resetListenerCache($event_name);
+
+        if (is_null($listener)) {
+            unset($this->listeners[$event_name]);
+            return;
+        }
+
+        if (!isset($this->listeners[$event_name])) {
+            return;
+        }
+
+        $id = $this->parseListenerId($this->validatedListener($listener));
+
+        if (!isset($this->listeners[$event_name][$id])) {
+            return;
+        }
+
+        $listener = $this->listeners[$event_name][$id];
+
+        if (!$listener instanceof Closure && in_array(Unremovable::class, (array)class_implements($listener[0]))) {
+            throw CantRemove::listenerThatIsMarkedAsUnremovable(
+                $listener,
+                $event_name
+            );
+        }
+
+        unset($this->listeners[$event_name][$id]);
+    }
+
+    private function resetListenerCache(string $event_name): void
+    {
+        unset($this->listener_cache[$event_name]);
+    }
+
+    /**
+     * @param Closure|array{0:class-string, 1:string} $validated_listener
      */
     private function parseListenerId($validated_listener): string
     {
@@ -141,58 +197,13 @@ final class BaseEventDispatcher implements EventDispatcher
         );
     }
 
-    private function callListener($listener, Event $event): void
-    {
-        $payload = $event->payload();
-        $payload = is_array($payload) ? $payload : [$payload];
-
-        if ($listener instanceof Closure) {
-            $listener(...$payload);
-            return;
-        }
-
-        $instance = $this->listener_factory->create(
-            $listener[0],
-            $event->name()
-        );
-
-        $instance->{$listener[1]}(...$payload);
-    }
-
-    public function remove(string $event_name, $listener = null): void
-    {
-        $this->resetListenerCache($event_name);
-
-        if (is_null($listener)) {
-            unset($this->listeners[$event_name]);
-            return;
-        }
-
-        if (!isset($this->listeners[$event_name])) {
-            return;
-        }
-
-        $id = $this->parseListenerId($listener = $this->validatedListener($listener));
-
-        if (!isset($this->listeners[$event_name][$id])) {
-            return;
-        }
-
-        if (isset($this->unremovable[$event_name][$id])) {
-            throw CantRemove::listenerThatIsMarkedAsUnremovable(
-                $listener,
-                $event_name
-            );
-        }
-
-        unset($this->listeners[$event_name][$id]);
-    }
-
-    private function resetListenerCache(string $event_name): void
-    {
-        unset($this->listener_cache[$event_name]);
-    }
-
+    /**
+     * @param Closure|class-string|array{0:class-string, 1:string} $listener
+     * @return Closure|array{0: class-string, 1:string}
+     *
+     * @psalm-suppress DocblockTypeContradiction
+     * @psalm-suppress MixedArgument
+     */
     private function validatedListener($listener)
     {
         if ($listener instanceof Closure) {
@@ -247,28 +258,30 @@ final class BaseEventDispatcher implements EventDispatcher
             );
         }
 
+        /** @var array<string,class-string> $events */
         $events = call_user_func([$event_subscriber, 'subscribedEvents']);
+
         foreach ($events as $name => $method) {
             $this->listen($name, [$event_subscriber, $method]);
         }
     }
 
-    public function listen($event_name, $listener = null, bool $can_be_removed = true): void
+    public function listen($event_name, $listener = null): void
     {
         if ($event_name instanceof Closure) {
-            $this->listen(getTypeHintedObjectFromClosure($event_name), $event_name);
+            $this->listen(ClosureTypeHint::first($event_name), $event_name);
             return;
+        } elseif (null === $listener) {
+            throw new InvalidArgumentException('$listener can not be null if first $event_name is not a closure.');
         }
 
         $this->resetListenerCache($event_name);
 
         $listener = $this->validatedListener($listener);
 
-        $this->listeners[$event_name][$id = $this->parseListenerId($listener)] = $listener;
+        $id = $this->parseListenerId($listener);
 
-        if (false === $can_be_removed) {
-            $this->unremovable[$event_name][$id] = $listener;
-        }
+        $this->listeners[$event_name][$id] = $listener;
     }
 
 }

@@ -20,16 +20,20 @@ use TypeError;
 final class RouteTest extends TestCase
 {
 
-    /** @test */
-    public function test_exception_if_path_does_not_start_with_forward_slash()
+    /**
+     * @test
+     */
+    public function test_exception_if_path_does_not_start_with_forward_slash(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected route pattern to start with /.');
         Route::create('foobar', []);
     }
 
-    /** @test */
-    public function test_exception_if_name_contains_whitespace()
+    /**
+     * @test
+     */
+    public function test_exception_if_name_contains_whitespace(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -38,49 +42,61 @@ final class RouteTest extends TestCase
         Route::create('/foobar', RoutingTestController::class, 'my route');
     }
 
-    /** @test */
-    public function test_exception_for_bad_methods()
+    /**
+     * @test
+     */
+    public function test_exception_for_bad_methods(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('bogus');
 
-        $route = Route::create('/foo', Route::DELEGATE, 'foo_route', ['GET', 'bogus']);
+        Route::create('/foo', Route::DELEGATE, 'foo_route', ['GET', 'bogus']);
     }
 
-    /** @test */
-    public function test_exception_if_controller_array_is_missing_method()
+    /**
+     * @test
+     */
+    public function test_exception_if_controller_array_is_missing_method(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Controller class [foo] does not exist.');
         Route::create('/foo', ['foo']);
     }
 
-    /** @test */
-    public function test_exception_controller_class_is_not_a_string()
+    /**
+     * @test
+     */
+    public function test_exception_controller_class_is_not_a_string(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected controller class to be a string.');
         Route::create('/foo', [new stdClass(), 'foo']);
     }
 
-    /** @test */
-    public function test_exception_controller_method_is_not_a_string()
+    /**
+     * @test
+     */
+    public function test_exception_controller_method_is_not_a_string(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected controller method to be a string.');
         Route::create('/foo', [RoutingTestController::class, new stdClass()]);
     }
 
-    /** @test */
-    public function test_exception_if_controller_class_does_not_exist()
+    /**
+     * @test
+     */
+    public function test_exception_if_controller_class_does_not_exist(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Controller class [Bogus] does not exist.');
         Route::create('/foo', ['Bogus', 'foo']);
     }
 
-    /** @test */
-    public function test_exception_if_controller_method_does_not_exist()
+    /**
+     * @test
+     */
+    public function test_exception_if_controller_method_does_not_exist(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $c = RoutingTestController::class;
@@ -88,8 +104,10 @@ final class RouteTest extends TestCase
         Route::create('/foo', [RoutingTestController::class, 'bogus']);
     }
 
-    /** @test */
-    public function a_controller_shorthand_with_a_namespace_works()
+    /**
+     * @test
+     */
+    public function a_controller_shorthand_with_a_namespace_works(): void
     {
         $route = Route::create(
             '/foo',
@@ -112,22 +130,26 @@ final class RouteTest extends TestCase
         $this->assertSame([RoutingTestController::class, 'static'], $route->getController());
     }
 
-    /** @test */
-    public function test_exception_if_name_starts_with_dot()
+    /**
+     * @test
+     */
+    public function test_exception_if_name_starts_with_dot(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         Route::create('/foo', Route::DELEGATE, '.foo');
     }
 
-    /** @test */
-    public function an_invalid_route_shorthand_still_fails()
+    /**
+     * @test
+     */
+    public function an_invalid_route_shorthand_still_fails(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $c = RoutingTestController::class;
         $this->expectExceptionMessage('The method [' . $c . '::bogus] is not callable.');
 
-        $route = Route::create(
+        Route::create(
             '/foo',
             'RoutingTestController@bogus',
             null,
@@ -136,15 +158,19 @@ final class RouteTest extends TestCase
         );
     }
 
-    /** @test */
-    public function invokable_controllers_can_be_passed_with_only_the_class_name()
+    /**
+     * @test
+     */
+    public function invokable_controllers_can_be_passed_with_only_the_class_name(): void
     {
         $route = Route::create('/foo', RoutingTestController::class);
         $this->assertSame([RoutingTestController::class, '__invoke'], $route->getController());
     }
 
-    /** @test */
-    public function a_route_name_will_be_generated_if_not_passed_explicitly()
+    /**
+     * @test
+     */
+    public function a_route_name_will_be_generated_if_not_passed_explicitly(): void
     {
         $route = Route::create('/foo', $arr = [RoutingTestController::class, 'static']);
 
@@ -156,41 +182,49 @@ final class RouteTest extends TestCase
         $this->assertSame('foo_route', $route->getName());
     }
 
-    /** @test */
-    public function test_exception_if_duplicate_required_segment_names()
+    /**
+     * @test
+     */
+    public function test_exception_if_duplicate_required_segment_names(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'Route segment names have to be unique but 1 of them is duplicated.'
         );
 
-        $route = Route::create('/foo/{bar}/{bar}', Route::DELEGATE);
+        Route::create('/foo/{bar}/{bar}', Route::DELEGATE);
     }
 
-    /** @test */
-    public function test_exception_if_duplicate_optional_segment_names()
+    /**
+     * @test
+     */
+    public function test_exception_if_duplicate_optional_segment_names(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'Route segment names have to be unique but 1 of them is duplicated.'
         );
 
-        $route = Route::create('/foo/{bar?}/{bar?}', Route::DELEGATE);
+        Route::create('/foo/{bar?}/{bar?}', Route::DELEGATE);
     }
 
-    /** @test */
-    public function test_exception_if_duplicate_required_and_optional_segment_names()
+    /**
+     * @test
+     */
+    public function test_exception_if_duplicate_required_and_optional_segment_names(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'Route segment names have to be unique but 1 of them is duplicated.'
         );
 
-        $route = Route::create('/foo/{bar}/{bar?}', Route::DELEGATE);
+        Route::create('/foo/{bar}/{bar?}', Route::DELEGATE);
     }
 
-    /** @test */
-    public function test_exception_if_requirements_are_added_for_missing_segment()
+    /**
+     * @test
+     */
+    public function test_exception_if_requirements_are_added_for_missing_segment(): void
     {
         $route = $this->newRoute('/foo/{bar}');
 
@@ -202,13 +236,10 @@ final class RouteTest extends TestCase
         $route->requirements(['bogus' => '\d+']);
     }
 
-    private function newRoute(string $path = '/foo'): Route
-    {
-        return Route::create($path, Route::DELEGATE);
-    }
-
-    /** @test */
-    public function test_exception_if_requirements_are_overwritten()
+    /**
+     * @test
+     */
+    public function test_exception_if_requirements_are_overwritten(): void
     {
         $route = $this->newRoute('/foo/{bar}');
 
@@ -219,19 +250,23 @@ final class RouteTest extends TestCase
         $route->requirements(['bar' => '\w+']);
     }
 
-    /** @test */
-    public function test_defaults_throws_exception_for_non_primitives()
+    /**
+     * @test
+     */
+    public function test_defaults_throws_exception_for_non_primitives(): void
     {
         $route = $this->newRoute();
         $route->defaults(['foo' => 'bar']);
 
-        $this->expectExceptionMessage('A route default value has to be a primitive type.');
+        $this->expectExceptionMessage('A route default value has to be a scalar or an array of scalars.');
 
         $route->defaults(['foo' => new stdClass()]);
     }
 
-    /** @test */
-    public function test_conditions_throws_exceptions_for_bad_class()
+    /**
+     * @test
+     */
+    public function test_conditions_throws_exceptions_for_bad_class(): void
     {
         $route = $this->newRoute();
 
@@ -250,8 +285,10 @@ final class RouteTest extends TestCase
         }
     }
 
-    /** @test */
-    public function test_condition_throws_exception_for_duplicate_condition()
+    /**
+     * @test
+     */
+    public function test_condition_throws_exception_for_duplicate_condition(): void
     {
         $route = $this->newRoute();
 
@@ -272,8 +309,10 @@ final class RouteTest extends TestCase
         }
     }
 
-    /** @test */
-    public function test_get_conditions()
+    /**
+     * @test
+     */
+    public function test_get_conditions(): void
     {
         $route = $this->newRoute();
 
@@ -286,8 +325,10 @@ final class RouteTest extends TestCase
         ], $route->getConditions());
     }
 
-    /** @test */
-    public function test_middleware_throws_exceptions_for_non_strings()
+    /**
+     * @test
+     */
+    public function test_middleware_throws_exceptions_for_non_strings(): void
     {
         $route = $this->newRoute();
 
@@ -296,8 +337,10 @@ final class RouteTest extends TestCase
         $route->middleware(['foo', new FooMiddleware()]);
     }
 
-    /** @test */
-    public function test_exception_if_duplicate_middleware_is_set()
+    /**
+     * @test
+     */
+    public function test_exception_if_duplicate_middleware_is_set(): void
     {
         $route = Route::create('/foo', Route::DELEGATE, 'foo_route');
 
@@ -309,8 +352,10 @@ final class RouteTest extends TestCase
         $route->middleware('foo');
     }
 
-    /** @test */
-    public function test_exception_if_duplicate_middleware_is_set_with_arguments()
+    /**
+     * @test
+     */
+    public function test_exception_if_duplicate_middleware_is_set_with_arguments(): void
     {
         $route = Route::create('/foo', Route::DELEGATE, 'foo_route');
 
@@ -322,8 +367,10 @@ final class RouteTest extends TestCase
         $route->middleware('foo:arg2');
     }
 
-    /** @test */
-    public function test_middleware_returns_array_of_string()
+    /**
+     * @test
+     */
+    public function test_middleware_returns_array_of_string(): void
     {
         $route = Route::create('/foo', Route::DELEGATE, 'foo_route');
 
@@ -336,8 +383,10 @@ final class RouteTest extends TestCase
         ], $route->getMiddleware());
     }
 
-    /** @test */
-    public function test_serialize()
+    /**
+     * @test
+     */
+    public function test_serialize(): void
     {
         $route = $this->newRoute();
 
@@ -350,8 +399,10 @@ final class RouteTest extends TestCase
         $this->assertEquals($route, $new_route);
     }
 
-    /** @test */
-    public function test_matchesOnlyTrailing()
+    /**
+     * @test
+     */
+    public function test_matchesOnlyTrailing(): void
     {
         $route = $this->newRoute('/foo');
         $this->assertFalse($route->matchesOnlyWithTrailingSlash());
@@ -370,6 +421,11 @@ final class RouteTest extends TestCase
 
         $route = $this->newRoute('/foo/{bar?}/');
         $this->assertTrue($route->matchesOnlyWithTrailingSlash());
+    }
+
+    private function newRoute(string $path = '/foo'): Route
+    {
+        return Route::create($path, Route::DELEGATE);
     }
 
 }

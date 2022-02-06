@@ -11,24 +11,30 @@ use Snicco\Component\Session\ValueObject\SessionLottery;
 final class SessionLotteryTest extends TestCase
 {
 
-    /** @test */
-    public function testExceptionHighPercentage()
+    /**
+     * @test
+     */
+    public function testExceptionHighPercentage(): void
     {
         $this->expectException(LogicException::class);
 
-        $lottery = new SessionLottery(101);
+        new SessionLottery(101);
     }
 
-    /** @test */
-    public function testExceptionLowPercentage()
+    /**
+     * @test
+     */
+    public function testExceptionLowPercentage(): void
     {
         $this->expectException(LogicException::class);
 
-        $lottery = new SessionLottery(-1);
+        new SessionLottery(-1);
     }
 
-    /** @test */
-    public function testHitsCanFail()
+    /**
+     * @test
+     */
+    public function testHitsCanFail(): void
     {
         for ($i = 0; $i < 50; $i++) {
             $lottery = new SessionLottery(0);
@@ -39,8 +45,10 @@ final class SessionLotteryTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function testHitsCanPass()
+    /**
+     * @test
+     */
+    public function testHitsCanPass(): void
     {
         for ($i = 0; $i < 50; $i++) {
             $lottery = new SessionLottery(100);

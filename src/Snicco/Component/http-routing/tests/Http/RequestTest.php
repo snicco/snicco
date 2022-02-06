@@ -21,7 +21,7 @@ class RequestTest extends TestCase
     use CreatesPsrRequests;
     use CreateTestPsr17Factories;
 
-    public function testIsImmutable()
+    public function testIsImmutable(): void
     {
         $request = $this->frontendRequest('foo');
 
@@ -36,7 +36,7 @@ class RequestTest extends TestCase
         $this->assertSame('POST', $next->getMethod());
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         $request = $this->frontendRequest('/foo/bar');
         $this->assertSame('/foo/bar', $request->path());
@@ -54,28 +54,28 @@ class RequestTest extends TestCase
         $this->assertSame('/foo/bar/', $request->path());
     }
 
-    public function testGetFullPath()
+    public function testGetFullPath(): void
     {
         $request = $this->frontendRequest('/foo/bar');
-        $this->assertSame('/foo/bar', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('/foo/bar/');
-        $this->assertSame('/foo/bar/', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar/', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('/');
-        $this->assertSame('/', $request->fullRequestTarget());
+        $this->assertSame('/', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
-        $this->assertSame('/foo/bar?baz=biz', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar?baz=biz', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
-        $this->assertSame('/foo/bar/?baz=biz', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar/?baz=biz', $request->requestTargetWithFragment());
 
         $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz#section');
-        $this->assertSame('/foo/bar?baz=biz#section', $request->fullRequestTarget());
+        $this->assertSame('/foo/bar?baz=biz#section', $request->requestTargetWithFragment());
     }
 
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
         $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
@@ -90,7 +90,7 @@ class RequestTest extends TestCase
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
     }
 
-    public function testGetFullUrl()
+    public function testGetFullUrl(): void
     {
         $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
@@ -108,7 +108,7 @@ class RequestTest extends TestCase
         $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
     }
 
-    public function test_cookie()
+    public function test_cookie(): void
     {
         $this->assertSame(null, $this->request->cookie('foo'));
 
@@ -118,9 +118,12 @@ class RequestTest extends TestCase
         $this->assertSame('bar', $request->cookie('foo'));
 
         $this->assertSame('default', $request->cookie('baz', 'default'));
+
+        $request = $this->request->withCookieParams(['foo' => ['bar', 'baz']]);
+        $this->assertSame('bar', $request->cookie('foo'));
     }
 
-    public function testRouteIs()
+    public function testRouteIs(): void
     {
         $route = Route::create('/foo', Route::DELEGATE, 'foobar', ['GET']);
 
@@ -133,7 +136,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->routeIs('foo*'));
     }
 
-    public function testFullUrlIs()
+    public function testFullUrlIs(): void
     {
         $request = $this->frontendRequest('https://example.com/foo/bar');
 
@@ -143,7 +146,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->fullUrlIs('https://example.com/foo/*'));
     }
 
-    public function testPathIs()
+    public function testPathIs(): void
     {
         $request = $this->frontendRequest('https://example.com/foo/bar');
 
@@ -165,7 +168,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->pathIs('/münchen/*'));
     }
 
-    public function testDecodedPath()
+    public function testDecodedPath(): void
     {
         $request = $this->frontendRequest('/münchen/düsseldorf');
 
@@ -176,8 +179,10 @@ class RequestTest extends TestCase
         $this->assertSame('/AC%2FDC', $request->decodedPath());
     }
 
-    /** @test */
-    public function test_IsSecure()
+    /**
+     * @test
+     */
+    public function test_IsSecure(): void
     {
         $request = $this->frontendRequest('http://foobar.com');
         $this->assertFalse($request->isSecure());
@@ -186,16 +191,20 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isSecure());
     }
 
-    /** @test */
-    public function test_isFrontend_throws_exception_if_no_type_is_set()
+    /**
+     * @test
+     */
+    public function test_isFrontend_throws_exception_if_no_type_is_set(): void
     {
         $request = new Request($this->psr_request);
         $this->expectExceptionMessage("The request's type attribute");
         $request->isToFrontend();
     }
 
-    /** @test */
-    public function test_isFrontend_throws_exception_if_type_is_invalid()
+    /**
+     * @test
+     */
+    public function test_isFrontend_throws_exception_if_type_is_invalid(): void
     {
         $request = (new Request($this->psr_request))
             ->withAttribute(Request::TYPE_ATTRIBUTE, 'foobar');
@@ -211,8 +220,10 @@ class RequestTest extends TestCase
         }
     }
 
-    /** @test */
-    public function test_isFrontend_throws_if_type_is_invalid_integer_range()
+    /**
+     * @test
+     */
+    public function test_isFrontend_throws_if_type_is_invalid_integer_range(): void
     {
         $request = new Request(
             $this->psr_request
@@ -230,8 +241,10 @@ class RequestTest extends TestCase
         }
     }
 
-    /** @test */
-    public function test_isFrontend()
+    /**
+     * @test
+     */
+    public function test_isFrontend(): void
     {
         $request = new Request(
             $this->psr_request
@@ -247,8 +260,10 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isToFrontend());
     }
 
-    /** @test */
-    public function test_isAdminArea()
+    /**
+     * @test
+     */
+    public function test_isAdminArea(): void
     {
         try {
             $request = new Request($this->psr_request);
@@ -275,8 +290,10 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isToAdminArea());
     }
 
-    /** @test */
-    public function test_isApiEndpoint()
+    /**
+     * @test
+     */
+    public function test_isApiEndpoint(): void
     {
         try {
             $request = new Request($this->psr_request);
@@ -303,8 +320,10 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isToApiEndpoint());
     }
 
-    /** @test */
-    public function test_ip()
+    /**
+     * @test
+     */
+    public function test_ip(): void
     {
         $request = new Request(
             $this->psrServerRequestFactory()
@@ -316,8 +335,10 @@ class RequestTest extends TestCase
         $this->assertSame(null, $this->frontendRequest('/foo')->ip());
     }
 
-    /** @test */
-    public function test_from_psr()
+    /**
+     * @test
+     */
+    public function test_from_psr(): void
     {
         $request = Request::fromPsr(
             $this->psrServerRequestFactory()->createServerRequest('GET', '/foo')

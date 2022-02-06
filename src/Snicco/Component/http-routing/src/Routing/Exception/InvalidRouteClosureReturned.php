@@ -9,6 +9,8 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigu
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
+use function sprintf;
+
 /**
  * @api
  */
@@ -57,6 +59,20 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
                 'The closure that was returned from the route file [%s] needs to have an instance of [%s] type-hinted as its first parameter.',
                 $path,
                 RoutingConfigurator::class
+            )
+        );
+    }
+
+    public static function becauseTheRouteClosureHasTheWrongTypehint(
+        string $actual,
+        string $filepath
+    ): InvalidRouteClosureReturned {
+        return new self(
+            sprintf(
+                "The returned closure from the route file\n[%s]\n has [%s] as the first parameter typehint but will receive an instance of [%s].",
+                $filepath,
+                $actual,
+                RoutingConfigurator::class,
             )
         );
     }

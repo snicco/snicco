@@ -7,6 +7,7 @@ namespace Snicco\Component\ScopableWP\Tests\wordpress;
 use BadMethodCallException;
 use Codeception\TestCase\WPTestCase;
 use Exception;
+use LogicException;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\ScopableWP\Tests\fixtures\TestWPApi;
 use WP_Post;
@@ -32,15 +33,19 @@ use const E_USER_NOTICE;
 final class ScopableWPTest extends WPTestCase
 {
 
-    /** @test */
-    public function methods_that_exists_will_be_called_on_the_subject()
+    /**
+     * @test
+     */
+    public function methods_that_exists_will_be_called_on_the_subject(): void
     {
         $wp_api = new TestWPApi();
         $this->assertSame('method1', $wp_api->method1());
     }
 
-    /** @test */
-    public function methods_that_dont_exists_in_the_global_namespace_will_throw_an_exception()
+    /**
+     * @test
+     */
+    public function methods_that_dont_exists_in_the_global_namespace_will_throw_an_exception(): void
     {
         try {
             $wp_api = new TestWPApi();
@@ -54,8 +59,10 @@ final class ScopableWPTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function calling_a_method_via_the_call_magic_method_will_trigger_a_notice()
+    /**
+     * @test
+     */
+    public function calling_a_method_via_the_call_magic_method_will_trigger_a_notice(): void
     {
         $wp_api = new TestWPApi();
 
@@ -76,9 +83,11 @@ final class ScopableWPTest extends WPTestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function methods_dont_exist_due_to_autoloading_conflicts_will_be_proxied_to_the_underlying_wordpress_function(
-    )
+    ): void
     {
         $user = $this->factory()->user->create_and_get();
         wp_set_current_user($user->ID);
@@ -89,8 +98,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame($user->ID, $wp_api->getCurrentUserId());
     }
 
-    /** @test */
-    public function the_wp_prefix_will_be_prepended_to_non_existing_proxied_functions()
+    /**
+     * @test
+     */
+    public function the_wp_prefix_will_be_prepended_to_non_existing_proxied_functions(): void
     {
         wp_cache_set('foo', 'bar');
         wp_cache_set('baz', 'biz');
@@ -105,8 +116,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame(false, wp_cache_get('baz'));
     }
 
-    /** @test */
-    public function test_class_can_be_extended()
+    /**
+     * @test
+     */
+    public function test_class_can_be_extended(): void
     {
         $class = new class extends ScopableWP {
 
@@ -120,8 +133,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame(1000, $class->getCurrentUserId());
     }
 
-    /** @test */
-    public function test_doAction()
+    /**
+     * @test
+     */
+    public function test_doAction(): void
     {
         $count = 0;
         add_action('foobar', function (string $foo, string $bar) use (&$count) {
@@ -136,23 +151,56 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function test_applyFilters()
+    /**
+     * @test
+     */
+    public function test_applyFilters(): void
     {
-        add_filter('foobar', function (string $foo, string $bar) {
+        add_filter('foobar', function (string $foo, string $bar, array $baz) {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
+            $this->assertSame(['baz', 'biz'], $baz);
             return 'filtered';
-        }, 10, 2);
+        }, 10, 3);
 
         $wp = new ScopableWP();
 
-        $res = $wp->applyFilters('foobar', 'foo', 'bar');
+        $res = $wp->applyFilters('foobar', 'foo', 'bar', ['baz', 'biz']);
         $this->assertSame('filtered', $res);
     }
 
-    /** @test */
-    public function test_addAction()
+    /**
+     * @test
+     */
+    public function test_applyFiltersStrict(): void
+    {
+        add_filter('filter1', function (string $foo, string $bar, array $baz) {
+            $this->assertSame('foo', $foo);
+            $this->assertSame('bar', $bar);
+            $this->assertSame(['baz', 'biz'], $baz);
+            return 'filtered';
+        }, 10, 3);
+
+        add_filter('filter2', function (string $foo, string $bar, array $baz) {
+            $this->assertSame('foo', $foo);
+            $this->assertSame('bar', $bar);
+            $this->assertSame(['baz', 'biz'], $baz);
+            return 1;
+        }, 10, 3);
+
+        $wp = new ScopableWP();
+
+        $this->assertSame('filtered', $wp->applyFiltersStrict('filter1', 'foo', 'bar', ['baz', 'biz']));
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Initial value [foo] for filter [filter2] is string. Returned [integer].');
+        $wp->applyFiltersStrict('filter2', 'foo', 'bar', ['baz', 'biz']);
+    }
+
+    /**
+     * @test
+     */
+    public function test_addAction(): void
     {
         $count = 0;
 
@@ -168,8 +216,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame(1, $count);
     }
 
-    /** @test */
-    public function test_addFilter()
+    /**
+     * @test
+     */
+    public function test_addFilter(): void
     {
         $wp = new ScopableWP();
         $wp->addFilter('foobar', function (string $foo, string $bar) {
@@ -182,8 +232,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame('filtered', $res);
     }
 
-    /** @test */
-    public function test_isUserLoggedIn()
+    /**
+     * @test
+     */
+    public function test_isUserLoggedIn(): void
     {
         $wp = new ScopableWP();
         $this->assertFalse($wp->isUserLoggedIn());
@@ -197,8 +249,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertFalse($wp->isUserLoggedIn());
     }
 
-    /** @test */
-    public function test_getCurrentUser_getCurrentUserId()
+    /**
+     * @test
+     */
+    public function test_getCurrentUser_getCurrentUserId(): void
     {
         $user = $this->factory()->user->create_and_get();
 
@@ -211,8 +265,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertEquals($user->ID, $wp->getCurrentUserId());
     }
 
-    /** @test */
-    public function test_caching_methods()
+    /**
+     * @test
+     */
+    public function test_caching_methods(): void
     {
         $wp = new ScopableWP();
         $this->assertFalse($wp->cacheGet('foo'));
@@ -236,8 +292,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertSame(false, $wp->cacheGet('foo', 'foo_group'));
     }
 
-    /** @test */
-    public function test_currentUserCan()
+    /**
+     * @test
+     */
+    public function test_currentUserCan(): void
     {
         /** @var WP_User $user1 */
         $user1 = $this->factory()->user->create_and_get();
@@ -259,8 +317,10 @@ final class ScopableWPTest extends WPTestCase
         $this->assertFalse($wp->currentUserCan('foo_cap'));
     }
 
-    /** @test */
-    public function test_currentUserCanWithArgs()
+    /**
+     * @test
+     */
+    public function test_currentUserCanWithArgs(): void
     {
         /** @var WP_User $user1 */
         $user1 = $this->factory()->user->create_and_get(['role' => 'author']);

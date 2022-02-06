@@ -26,7 +26,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_substr()
+    public function test_substr(): void
     {
         $this->assertSame('Ё', Str::substr('БГДЖИЛЁ', -1));
         $this->assertSame('ЛЁ', Str::substr('БГДЖИЛЁ', -2));
@@ -41,8 +41,10 @@ final class StrTest extends TestCase
         $this->assertEmpty(Str::substr('Б', 2));
     }
 
-    /** @test */
-    public function test_contains()
+    /**
+     * @test
+     */
+    public function test_contains(): void
     {
         $this->assertTrue(Str::contains('taylor', 'ylo'));
         $this->assertTrue(Str::contains('taylor', 'taylor'));
@@ -57,8 +59,10 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::contains('düsseldorf', 'ö'));
     }
 
-    /** @test */
-    public function test_contains_all()
+    /**
+     * @test
+     */
+    public function test_contains_all(): void
     {
         $this->assertTrue(Str::containsAll('taylor otwell', ['taylor', 'otwell']));
         $this->assertTrue(Str::containsAll('taylor otwell', ['taylor']));
@@ -68,8 +72,10 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::containsAll('düsseldorf', ['ö', 'o']));
     }
 
-    /** @test */
-    public function test_contains_any()
+    /**
+     * @test
+     */
+    public function test_contains_any(): void
     {
         $this->assertTrue(Str::containsAny('taylor otwell', ['taylor', 'otwell']));
         $this->assertTrue(Str::containsAny('taylor otwell', ['taylor']));
@@ -80,8 +86,10 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::contains('düsseldorf', ['ä', 'ö']));
     }
 
-    /** @test */
-    public function test_random()
+    /**
+     * @test
+     */
+    public function test_random(): void
     {
         $this->assertEquals(32, strlen(Str::random()));
         $randomInteger = random_int(1, 100);
@@ -89,8 +97,10 @@ final class StrTest extends TestCase
         $this->assertIsString(Str::random());
     }
 
-    /** @test */
-    public function test_studly()
+    /**
+     * @test
+     */
+    public function test_studly(): void
     {
         $this->assertSame('LaravelPHPFramework', Str::studly('laravel_p_h_p_framework'));
         $this->assertSame('LaravelPhpFramework', Str::studly('laravel_php_framework'));
@@ -110,8 +120,10 @@ final class StrTest extends TestCase
         $this->assertSame('DÜsseldorf', Str::studly('d_üsseldorf'));
     }
 
-    /** @test */
-    public function test_endsWith()
+    /**
+     * @test
+     */
+    public function test_endsWith(): void
     {
         $this->assertTrue(Str::endsWith('jason', 'on'));
         $this->assertTrue(Str::endsWith('jason', 'jason'));
@@ -131,8 +143,10 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::endsWith('你好', 'a'));
     }
 
-    /** @test */
-    public function test_doesNotEndWith()
+    /**
+     * @test
+     */
+    public function test_doesNotEndWith(): void
     {
         $this->assertFalse(Str::doesNotEndWith('jason', 'on'));
         $this->assertFalse(Str::doesNotEndWith('jason', 'jason'));
@@ -152,8 +166,10 @@ final class StrTest extends TestCase
         $this->assertTrue(Str::doesNotEndWith('你好', 'a'));
     }
 
-    /** @test */
-    public function test_after()
+    /**
+     * @test
+     */
+    public function test_after(): void
     {
         $this->assertSame('nah', Str::afterFirst('hannah', 'han'));
         $this->assertSame('nah', Str::afterFirst('hannah', 'n'));
@@ -169,8 +185,10 @@ final class StrTest extends TestCase
         $this->assertSame('ööööööxy', Str::afterFirst('öööööööxy', 'ö'));
     }
 
-    /** @test */
-    public function test_afterLast()
+    /**
+     * @test
+     */
+    public function test_afterLast(): void
     {
         $this->assertSame('tte', Str::afterLast('yvette', 'yve'));
         $this->assertSame('e', Str::afterLast('yvette', 't'));
@@ -184,8 +202,10 @@ final class StrTest extends TestCase
         $this->assertSame('xy', Str::afterLast('öööööööxy', 'ö'));
     }
 
-    /** @test */
-    public function test_starts_with()
+    /**
+     * @test
+     */
+    public function test_starts_with(): void
     {
         $this->assertTrue(Str::startsWith('jason', 'jas'));
         $this->assertTrue(Str::startsWith('jason', 'jason'));
@@ -205,8 +225,10 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::startsWith('你好', 'a'));
     }
 
-    /** @test */
-    public function test_ucFirst()
+    /**
+     * @test
+     */
+    public function test_ucFirst(): void
     {
         $this->assertSame('Snicco', Str::ucfirst('Snicco'));
         $this->assertSame('Snicco framework', Str::ucfirst('snicco framework'));
@@ -216,8 +238,10 @@ final class StrTest extends TestCase
         $this->assertSame('Düsseldorf', Str::ucfirst('düsseldorf'));
     }
 
-    /** @test */
-    public function test_between()
+    /**
+     * @test
+     */
+    public function test_between(): void
     {
         $this->assertSame('', Str::betweenLast('abc', 'a', 'b'));
         $this->assertSame('abc', Str::betweenLast('abc', '', 'c'));
@@ -241,8 +265,10 @@ final class StrTest extends TestCase
         $this->assertSame('xä', Str::betweenLast('öxäü', 'ö', 'ü'));
     }
 
-    /** @test */
-    public function test_betweenFirst()
+    /**
+     * @test
+     */
+    public function test_betweenFirst(): void
     {
         $this->assertSame('', Str::betweenFirst('abc', 'a', 'b'));
         $this->assertSame('abc', Str::betweenFirst('abc', '', 'c'));
@@ -265,8 +291,10 @@ final class StrTest extends TestCase
         $this->assertSame('ääääx', Str::betweenFirst('äääääxööööö', 'ä', 'ö'));
     }
 
-    /** @test */
-    public function test_beforeLast()
+    /**
+     * @test
+     */
+    public function test_beforeLast(): void
     {
         $this->assertSame('yve', Str::beforeLast('yvette', 'tte'));
         $this->assertSame('yvet', Str::beforeLast('yvette', 't'));
@@ -279,8 +307,10 @@ final class StrTest extends TestCase
         $this->assertSame('üäöö', Str::beforeLast('üäööö', 'ö'));
     }
 
-    /** @test */
-    public function test_before()
+    /**
+     * @test
+     */
+    public function test_before(): void
     {
         $this->assertSame('han', Str::beforeFirst('hannah', 'nah'));
         $this->assertSame('ha', Str::beforeFirst('hannah', 'n'));
@@ -296,8 +326,10 @@ final class StrTest extends TestCase
         $this->assertSame('你', Str::beforeFirst('你好好好好好好', '好'));
     }
 
-    /** @test */
-    public function testIs()
+    /**
+     * @test
+     */
+    public function test_is(): void
     {
         $this->assertTrue(Str::is('/', '/'));
         $this->assertFalse(Str::is('/', ' /'));
@@ -320,7 +352,7 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::is('Dü*', 'Dusseldorf'));
     }
 
-    public function test_replaceFirst()
+    public function test_replaceFirst(): void
     {
         $this->assertSame('fooqux foobar', Str::replaceFirst('bar', 'qux', 'foobar foobar'));
         $this->assertSame(

@@ -19,8 +19,16 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     private AdminRoutingConfigurator $configurator;
 
-    /** @test */
-    public function an_admin_menu_will_not_be_configured_if_no_route_handler_is_defined()
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->configurator = $this->adminRouteConfigurator();
+    }
+
+    /**
+     * @test
+     */
+    public function an_admin_menu_will_not_be_configured_if_no_route_handler_is_defined(): void
     {
         $this->configurator->page('admin1', '/foo', Route::DELEGATE, [], null);
         $this->configurator->page(
@@ -38,8 +46,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertCount(0, $items);
     }
 
-    /** @test */
-    public function an_admin_menu_will_be_preconfigured_based_on_the_route()
+    /**
+     * @test
+     */
+    public function an_admin_menu_will_be_preconfigured_based_on_the_route(): void
     {
         $this->configurator->page(
             'admin.my_route',
@@ -79,8 +89,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame(null, $second->icon());
     }
 
-    /** @test */
-    public function arguments_can_be_passed_explicitly_and_will_be_merged()
+    /**
+     * @test
+     */
+    public function arguments_can_be_passed_explicitly_and_will_be_merged(): void
     {
         $this->configurator->page(
             'admin.my_route',
@@ -103,8 +115,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame(null, $first->icon());
     }
 
-    /** @test */
-    public function admin_menus_will_not_be_added_if_null_is_passed_explicitly_even_tho_a_controller_is_defined()
+    /**
+     * @test
+     */
+    public function admin_menus_will_not_be_added_if_null_is_passed_explicitly_even_tho_a_controller_is_defined(): void
     {
         $this->configurator->page(
             'admin.redirect',
@@ -119,8 +133,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertCount(0, $item);
     }
 
-    /** @test */
-    public function sub_menu_items_can_be_added_by_passing_in_another_route()
+    /**
+     * @test
+     */
+    public function sub_menu_items_can_be_added_by_passing_in_another_route(): void
     {
         $r1 = $this->configurator->page(
             'admin_parent',
@@ -147,8 +163,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame('/wp-admin/admin.php/parent', $items[1]->parentSlug()->asString());
     }
 
-    /** @test */
-    public function sub_menu_items_can_be_added_in_a_parent_scope_closure()
+    /**
+     * @test
+     */
+    public function sub_menu_items_can_be_added_in_a_parent_scope_closure(): void
     {
         $r1 = $this->configurator->page(
             'admin_parent',
@@ -171,8 +189,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame('/wp-admin/admin.php/parent', $items[2]->parentSlug()->asString());
     }
 
-    /** @test */
-    public function test_exception_for_calling_recursive_subpages()
+    /**
+     * @test
+     */
+    public function test_exception_for_calling_recursive_subpages(): void
     {
         $r1 = $this->configurator->page(
             'admin_parent',
@@ -192,8 +212,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         });
     }
 
-    /** @test */
-    public function test_exception_for_passing_a_route_inside_childPages()
+    /**
+     * @test
+     */
+    public function test_exception_for_passing_a_route_inside_childPages(): void
     {
         $r1 = $this->configurator->page(
             'admin_parent',
@@ -213,8 +235,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         });
     }
 
-    /** @test */
-    public function test_routing_to_subpages_works()
+    /**
+     * @test
+     */
+    public function test_routing_to_subpages_works(): void
     {
         $r1 = $this->configurator->page(
             'admin_parent',
@@ -232,8 +256,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
             ->assertSeeText(RoutingTestController::static);
     }
 
-    /** @test */
-    public function calling_sub_pages_will_apply_all_middleware_of_the_parent_group()
+    /**
+     * @test
+     */
+    public function calling_sub_pages_will_apply_all_middleware_of_the_parent_group(): void
     {
         $r1 = $this->configurator->page(
             'admin_parent',
@@ -251,8 +277,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
             ->assertSeeText(RoutingTestController::static . ':foo_middleware');
     }
 
-    /** @test */
-    public function it_works_with_nested_grouping_and_supPages()
+    /**
+     * @test
+     */
+    public function it_works_with_nested_grouping_and_supPages(): void
     {
         $this->configurator->group(function (AdminRoutingConfigurator $router) {
             $r1 = $router->page(
@@ -273,10 +301,12 @@ final class AdminMenuTest extends HttpRunnerTestCase
             ->assertSeeText(RoutingTestController::static . ':bar_middleware:foo_middleware');
     }
 
-    /** @test */
-    public function parent_pages_can_be_added_by_slug_only()
+    /**
+     * @test
+     */
+    public function parent_pages_can_be_added_by_slug_only(): void
     {
-        $r1 = $this->configurator->page(
+        $this->configurator->page(
             'options.sub',
             '/options.php/sub',
             RoutingTestController::class,
@@ -299,15 +329,17 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame('/wp-admin/options.php/sub', $item->slug()->asString());
     }
 
-    /** @test */
-    public function test_exception_if_parent_pages_with_slug_only_are_prefix_with_the_admin_area_prefix()
+    /**
+     * @test
+     */
+    public function test_exception_if_parent_pages_with_slug_only_are_prefix_with_the_admin_area_prefix(): void
     {
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             "You should not add the prefix [/wp-admin] to the parent slug of pages.\nAffected route [options.sub]"
         );
 
-        $r1 = $this->configurator->page(
+        $this->configurator->page(
             'options.sub',
             '/options.php/sub',
             RoutingTestController::class,
@@ -319,8 +351,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function test_exception_if_parent_is_used_that_has_no_menu_item()
+    /**
+     * @test
+     */
+    public function test_exception_if_parent_is_used_that_has_no_menu_item(): void
     {
         $r1 = $this->configurator->page(
             'options.redirect',
@@ -332,7 +366,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'Can not use route [options.redirect] as a parent for [options.sub] because it has no menu item.'
         );
 
-        $r2 = $this->configurator->page(
+        $this->configurator->page(
             'options.sub',
             '/options.php/sub',
             RoutingTestController::class,
@@ -341,15 +375,17 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function test_exception_for_parents_by_slug_if_path_is_incompatible()
+    /**
+     * @test
+     */
+    public function test_exception_for_parents_by_slug_if_path_is_incompatible(): void
     {
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
             'Route pattern [/wp-admin/admin.php/sub] is incompatible with parent slug [/wp-admin/options.php].'
         );
 
-        $r1 = $this->configurator->page(
+        $this->configurator->page(
             'options.sub',
             '/admin.php/sub',
             RoutingTestController::class,
@@ -361,8 +397,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function test_exception_for_incompatible_path_with_parent_as_route()
+    /**
+     * @test
+     */
+    public function test_exception_for_incompatible_path_with_parent_as_route(): void
     {
         $this->expectExceptionMessage(
             'Route pattern [/wp-admin/options.php/sub] is incompatible with parent slug [/wp-admin/admin.php/parent].'
@@ -370,7 +408,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
         $r1 = $this->configurator->page('page1', '/admin.php/parent', RoutingTestController::class);
 
-        $r2 = $this->configurator->page(
+        $this->configurator->page(
             'page2',
             '/options.php/sub',
             RoutingTestController::class,
@@ -379,8 +417,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function test_exception_if_a_subpage_is_used_as_a_parent_page()
+    /**
+     * @test
+     */
+    public function test_exception_if_a_subpage_is_used_as_a_parent_page(): void
     {
         $r1 = $this->configurator->page(
             'admin.parent',
@@ -397,10 +437,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
-            'Cannot use route [admin.sub1] as a parent for route [admin.sub2] because [admin.sub1] is already a child route with parent slug [/wp-admin/admin.php/parent].'
+            'Can not use route [admin.sub1] as a parent for route [admin.sub2] because [admin.sub1] is already a child of parent slug [/wp-admin/admin.php/parent].'
         );
 
-        $r3 = $this->configurator->page(
+        $this->configurator->page(
             'admin.sub2',
             '/admin.php/sub2',
             RoutingTestController::class,
@@ -409,13 +449,15 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function test_exception_if_parent_page_is_not_string_or_route()
+    /**
+     * @test
+     */
+    public function test_exception_if_parent_page_is_not_string_or_route(): void
     {
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('$parent has to be a string or an instance of Route.');
 
-        $r2 = $this->configurator->page(
+        $this->configurator->page(
             'admin.sub1',
             '/admin.php/sub1',
             RoutingTestController::class,
@@ -424,8 +466,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function test_is_iterator()
+    /**
+     * @test
+     */
+    public function test_is_iterator(): void
     {
         $this->configurator->page('page1', 'admin.php/foo', RoutingTestController::class);
         $this->configurator->page('page2', 'admin.php/bar', RoutingTestController::class);
@@ -437,12 +481,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             $this->assertInstanceOf(AdminMenuItem::class, $item);
             $count++;
         }
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->configurator = $this->adminRouteConfigurator();
+        $this->assertSame(3, $count);
     }
 
 }

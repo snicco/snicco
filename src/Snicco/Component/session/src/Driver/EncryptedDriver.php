@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\Session\Driver;
 
 use DateTimeImmutable;
+use RuntimeException;
 use Snicco\Component\Session\SessionEncryptor;
 use Snicco\Component\Session\ValueObject\SerializedSessionData;
+
+use function is_string;
 
 /**
  * @api
@@ -37,9 +40,14 @@ final class EncryptedDriver implements SessionDriver
     {
         $data = $this->driver->read($session_id);
 
+        $arr = $data->asArray();
+        if (!isset($arr['encrypted_session_data']) || !is_string($arr['encrypted_session_data'])) {
+            throw new RuntimeException('The session data is corrupted. Does not contain key [encrypted_session_data].');
+        }
+
         return SerializedSessionData::fromSerializedString(
             $this->encryptor->decrypt(
-                $data->asArray()['encrypted_session_data'],
+                $arr['encrypted_session_data'],
             ),
             $data->lastActivity()->getTimestamp()
         );

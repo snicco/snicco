@@ -7,6 +7,7 @@ namespace Snicco\Middleware\GuestsOnly;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\ScopableWP\ScopableWP;
 
@@ -21,16 +22,16 @@ final class GuestsOnly extends AbstractMiddleware
     private string $json_message;
 
     public function __construct(
-        ScopableWP $wp,
         string $redirect_to = null,
-        string $json_message = 'You are already authenticated'
+        string $json_message = null,
+        ScopableWP $wp = null
     ) {
-        $this->wp = $wp;
         $this->redirect_to = $redirect_to;
-        $this->json_message = $json_message;
+        $this->json_message = $json_message ?: 'You are already authenticated';
+        $this->wp = $wp ?: new ScopableWP();
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (false === $this->wp->isUserLoggedIn()) {
             return $next($request);

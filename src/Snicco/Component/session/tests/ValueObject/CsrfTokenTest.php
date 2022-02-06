@@ -10,23 +10,29 @@ use Snicco\Component\Session\ValueObject\CsrfToken;
 final class CsrfTokenTest extends TestCase
 {
 
-    /** @test */
-    public function testAsString()
+    /**
+     * @test
+     */
+    public function testAsString(): void
     {
         $csrf_token = new CsrfToken('foobar');
         $this->assertSame('foobar', $csrf_token->asString());
     }
 
-    /** @test */
-    public function testAsQueryParameter()
+    /**
+     * @test
+     */
+    public function testAsQueryParameter(): void
     {
         $csrf_token = new CsrfToken('foobar');
 
         $this->assertSame('_token=foobar', $csrf_token->asQueryParameter());
     }
 
-    /** @test */
-    public function testAsInputField()
+    /**
+     * @test
+     */
+    public function testAsInputField(): void
     {
         $csrf_token = new CsrfToken('foobar');
 
@@ -36,8 +42,10 @@ final class CsrfTokenTest extends TestCase
         );
     }
 
-    /** @test */
-    public function testAsMetaProperty()
+    /**
+     * @test
+     */
+    public function testAsMetaProperty(): void
     {
         $csrf_token = new CsrfToken('foobar');
 

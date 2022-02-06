@@ -21,8 +21,10 @@ final class TestableDispatcherTest extends TestCase
 
     private TestableEventDispatcher $fake_dispatcher;
 
-    /** @test */
-    public function the_fake_dispatcher_proxies_to_the_real_dispatcher_by_default()
+    /**
+     * @test
+     */
+    public function the_fake_dispatcher_proxies_to_the_real_dispatcher_by_default(): void
     {
         $this->fake_dispatcher->listen(stdClass::class, function (stdClass $event) {
             $this->respondedToEvent(stdClass::class, 'closure1', $event->val);
@@ -36,8 +38,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertSame($event, $res);
     }
 
-    /** @test */
-    public function faked_events_will_not_be_proxied()
+    /**
+     * @test
+     */
+    public function faked_events_will_not_be_proxied(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -49,8 +53,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerNotRun('foo_event', 'closure1');
     }
 
-    /** @test */
-    public function all_events_can_be_faked()
+    /**
+     * @test
+     */
+    public function all_events_can_be_faked(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -69,8 +75,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerNotRun('bar_event', 'closure2');
     }
 
-    /** @test */
-    public function all_events_can_be_faked_as_an_alias_call()
+    /**
+     * @test
+     */
+    public function all_events_can_be_faked_as_an_alias_call(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -89,8 +97,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerNotRun('bar_event', 'closure2');
     }
 
-    /** @test */
-    public function test_faked_events_count_as_dispatched()
+    /**
+     * @test
+     */
+    public function test_faked_events_count_as_dispatched(): void
     {
         $this->fake_dispatcher->listen('foo_event', function () {
         });
@@ -102,8 +112,10 @@ final class TestableDispatcherTest extends TestCase
         $this->fake_dispatcher->assertDispatched('foo_event');
     }
 
-    /** @test */
-    public function all_but_some_specified_events_can_be_faked()
+    /**
+     * @test
+     */
+    public function all_but_some_specified_events_can_be_faked(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -122,8 +134,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerRun('bar_event', 'closure2', 'FOOBAR');
     }
 
-    /** @test */
-    public function fake_except_throws_exception_for_empty_array()
+    /**
+     * @test
+     */
+    public function fake_except_throws_exception_for_empty_array(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('cant be an empty array');
@@ -131,8 +145,10 @@ final class TestableDispatcherTest extends TestCase
         $this->fake_dispatcher->fakeExcept([]);
     }
 
-    /** @test */
-    public function the_return_type_is_correct_for_generic_object_events_if_events_are_faked()
+    /**
+     * @test
+     */
+    public function the_return_type_is_correct_for_generic_object_events_if_events_are_faked(): void
     {
         $this->fake_dispatcher->listen(stdClass::class, function (stdClass $event) {
             $this->respondedToEvent(stdClass::class, 'closure1', $event->val);
@@ -149,8 +165,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertSame($res, $event);
     }
 
-    /** @test */
-    public function the_return_type_is_correct_for_object_events()
+    /**
+     * @test
+     */
+    public function the_return_type_is_correct_for_object_events(): void
     {
         $this->fake_dispatcher->listen(EventStub::class, function ($event) {
             $this->respondedToEvent(
@@ -170,8 +188,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerNotRun(EventStub::class, 'closure1');
     }
 
-    /** @test */
-    public function events_that_are_not_faked_explicitly_are_passed_to_the_real_dispatcher()
+    /**
+     * @test
+     */
+    public function events_that_are_not_faked_explicitly_are_passed_to_the_real_dispatcher(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -191,8 +211,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerRun('bar_event', 'closure2', 'FOOBAR');
     }
 
-    /** @test */
-    public function multiple_events_can_be_faked()
+    /**
+     * @test
+     */
+    public function multiple_events_can_be_faked(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);
@@ -212,8 +234,10 @@ final class TestableDispatcherTest extends TestCase
         $this->assertListenerNotRun('bar_event', 'closure2');
     }
 
-    /** @test */
-    public function the_fake_dispatcher_can_be_reset()
+    /**
+     * @test
+     */
+    public function the_fake_dispatcher_can_be_reset(): void
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
             $this->respondedToEvent('foo_event', 'closure1', $val);

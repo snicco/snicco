@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Tests\fixtures\Email;
 
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
 
 class WelcomeEmail extends Email
 {

@@ -30,7 +30,7 @@ class AssertableWpDB
         $this->wpdb = $wpdb;
     }
 
-    public function assertRecordExists(array $column_conditions)
+    public function assertRecordExists(array $column_conditions): void
     {
         $wheres = '';
         $values = [];
@@ -78,7 +78,7 @@ class AssertableWpDB
         );
     }
 
-    public function assertRecordNotExists(array $column_conditions)
+    public function assertRecordNotExists(array $column_conditions): void
     {
         [$wheres, $values] = $this->compile($column_conditions);
 
@@ -104,7 +104,7 @@ class AssertableWpDB
         );
     }
 
-    private function compile($conditions): array
+    private function compile(array $conditions): array
     {
         $wheres = '';
         $values = [];
@@ -132,7 +132,12 @@ class AssertableWpDB
         return [$wheres, $values];
     }
 
-    public function assertRecordEquals($conditions, array $expected)
+    /**
+     * @param (int|string)[] $conditions
+     *
+     * @psalm-param array{id: 1, first_name?: 'calvin', last_name?: 'alkan', price?: 10} $conditions
+     */
+    public function assertRecordEquals(array $conditions, array $expected): void
     {
         [$wheres, $values] = $this->compile($conditions);
 
@@ -144,7 +149,7 @@ class AssertableWpDB
         PHPUnit::assertSame($expected, $record, 'The record does not exists as specified.');
     }
 
-    public function assertTotalCount(int $int)
+    public function assertTotalCount(int $int): void
     {
         $query = "SELECT COUNT(*) FROM $this->table";
 
@@ -157,7 +162,7 @@ class AssertableWpDB
         );
     }
 
-    public function assertCountWhere(array $column_conditions, int $count)
+    public function assertCountWhere(array $column_conditions, int $count): void
     {
         [$wheres, $values] = $this->compile($column_conditions);
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
@@ -81,7 +83,7 @@ final class FastRouteDispatcher
      * A multidimensional array where each HTTP Verbs contains an array of [path => route_name]
      * pairs.
      *
-     * @var array<string,array<string,string>
+     * @var array<string,array<string,string>>
      */
     private $static_route_map;
 
@@ -89,7 +91,10 @@ final class FastRouteDispatcher
      * A multidimensional array where each HTTP Verbs contains multiple arrays of route definitions.
      * pairs.
      *
-     * @var array<string,array<array<string,string>
+     * @var array<string, array< array{
+     *      regex: string,
+     *      routeMap: array<int,array{0: string, 1: array<string,string>}>
+     * }>>
      */
     private $dynamic_route_map;
 
@@ -202,7 +207,9 @@ final class FastRouteDispatcher
     }
 
     /**
-     * @return array|false
+     * @return array<string,string>|false
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function checkRouteConditions(Route $route, Request $request)
     {
@@ -231,6 +238,15 @@ final class FastRouteDispatcher
         return $args;
     }
 
+    /**
+     * @param array<array{
+     *      regex: string,
+     *      routeMap: array<int,array{0: string, 1: array<string,string>}>
+     * }> $variable_route_data
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     private function dispatchVariableRoute(array $variable_route_data, string $path, Request $request): RoutingResult
     {
         foreach ($variable_route_data as $data) {

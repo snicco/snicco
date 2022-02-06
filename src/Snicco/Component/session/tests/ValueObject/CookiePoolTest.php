@@ -10,8 +10,10 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 final class CookiePoolTest extends TestCase
 {
 
-    /** @test */
-    public function testFromArray()
+    /**
+     * @test
+     */
+    public function testFromArray(): void
     {
         $pool = new CookiePool(['foo' => 'bar']);
 
@@ -19,8 +21,10 @@ final class CookiePoolTest extends TestCase
         $this->assertSame('bar', $pool->get('foo'));
     }
 
-    /** @test */
-    public function testFromSuperGlobals()
+    /**
+     * @test
+     */
+    public function testFromSuperGlobals(): void
     {
         $cookie = $_COOKIE;
         $_COOKIE['foo'] = 'bar';

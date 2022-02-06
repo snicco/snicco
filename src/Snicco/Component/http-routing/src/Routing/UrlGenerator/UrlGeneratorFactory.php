@@ -24,9 +24,9 @@ final class UrlGeneratorFactory
         $this->encoder = $encoder;
     }
 
-    public function create(Routes $routes): InternalUrlGenerator
+    public function create(Routes $routes): UrlGenerator
     {
-        return new InternalUrlGenerator(
+        return new UrlGenerator(
             $routes,
             $this->context,
             $this->admin_dashboard,

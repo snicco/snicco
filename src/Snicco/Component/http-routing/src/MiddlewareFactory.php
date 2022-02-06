@@ -12,7 +12,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
-use function Snicco\Component\Core\Utils\isInterface;
 use function sprintf;
 
 /**
@@ -29,12 +28,16 @@ final class MiddlewareFactory
     }
 
     /**
+     * @param class-string<MiddlewareInterface> $middleware_class
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedAssignment
      */
     public function create(string $middleware_class, array $route_arguments = []): MiddlewareInterface
     {
-        if (!isInterface($middleware_class, MiddlewareInterface::class)) {
+        if (!Reflection::isInterface($middleware_class, MiddlewareInterface::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Middleware [%s] has to be an instance of [%s].',

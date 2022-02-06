@@ -6,10 +6,10 @@ namespace Snicco\Bridge\Blade;
 
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as IlluminateViewFactory;
+use Illuminate\View\View;
 use Illuminate\View\ViewName;
 use InvalidArgumentException;
 use Snicco\Component\Templating\Exception\ViewNotFound;
-use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function is_file;
@@ -22,8 +22,14 @@ final class BladeViewFactory implements ViewFactory
 
     private IlluminateViewFactory $view_factory;
 
+    /**
+     * @var string[] $view_directories
+     */
     private array $view_directories;
 
+    /**
+     * @param string[] $view_directories
+     */
     public function __construct(IlluminateViewFactory $view_factory, array $view_directories)
     {
         $this->view_factory = $view_factory;
@@ -34,13 +40,13 @@ final class BladeViewFactory implements ViewFactory
      * @interal
      * @throws ViewNotFound
      */
-    public function make(string $view): View
+    public function make(string $view): BladeView
     {
         try {
             $view = $this->view_factory->first(
                 [$this->normalizeNames($view)]
             );
-
+            /** @var View $view */
             return new BladeView($view);
         } catch (InvalidArgumentException $e) {
             throw new ViewNotFound($e->getMessage(), $e->getCode(), $e);
@@ -59,7 +65,7 @@ final class BladeViewFactory implements ViewFactory
     }
 
     // We need to do this because Blade only supports views by name relative to one of the view directories.
-    private function convertAbsolutePathToName($path): string
+    private function convertAbsolutePathToName(string $path): string
     {
         foreach ($this->view_directories as $view_directory) {
             if (Str::startsWith($path, $view_directory)) {

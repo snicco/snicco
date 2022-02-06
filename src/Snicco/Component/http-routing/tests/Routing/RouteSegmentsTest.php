@@ -11,8 +11,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class RouteSegmentsTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function url_encoded_routes_can_be_matched_by_their_decoded_path()
+    /**
+     * @test
+     */
+    public function url_encoded_routes_can_be_matched_by_their_decoded_path(): void
     {
         $this->routeConfigurator()->get(
             'city',
@@ -24,8 +26,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('dynamic:münchen', $request);
     }
 
-    /** @test */
-    public function non_ascii_routes_can_be_matched()
+    /**
+     * @test
+     */
+    public function non_ascii_routes_can_be_matched(): void
     {
         // новости = russian for news
         $this->routeConfigurator()->get('r1', 'новости', [RoutingTestController::class, 'static']);
@@ -43,8 +47,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('dynamic:новости', $request);
     }
 
-    /** @test */
-    public function routes_are_case_sensitive()
+    /**
+     * @test
+     */
+    public function routes_are_case_sensitive(): void
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
 
@@ -52,8 +58,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $this->frontendRequest('/FOO'));
     }
 
-    /** @test */
-    public function url_encoded_query_string_conditions_work()
+    /**
+     * @test
+     */
+    public function url_encoded_query_string_conditions_work(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', [RoutingTestController::class, 'dynamic'])
             ->condition(QueryStringCondition::class, ['page' => 'bayern münchen']
@@ -63,8 +71,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('dynamic:bayern münchen', $request);
     }
 
-    /** @test */
-    public function route_segments_can_contain_encoded_forward_slashes()
+    /**
+     * @test
+     */
+    public function route_segments_can_contain_encoded_forward_slashes(): void
     {
         $this->routeConfigurator()->get(
             'bands',
@@ -85,8 +95,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function urldecoded_route_definitions_can_match_url_encoded_paths()
+    /**
+     * @test
+     */
+    public function urldecoded_route_definitions_can_match_url_encoded_paths(): void
     {
         $this->routeConfigurator()->get('r1', 'münchen', RoutingTestController::class);
 
@@ -95,8 +107,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $request);
     }
 
-    /** @test */
-    public function routes_can_contain_a_plus_sign()
+    /**
+     * @test
+     */
+    public function routes_can_contain_a_plus_sign(): void
     {
         $this->routeConfigurator()->get('r1', 'foo+bar', RoutingTestController::class);
 
@@ -104,8 +118,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $request);
     }
 
-    /** @test */
-    public function regex_can_be_added_as_a_condition_as_array_syntax()
+    /**
+     * @test
+     */
+    public function regex_can_be_added_as_a_condition_as_array_syntax(): void
     {
         $this->routeConfigurator()->get(
             'users',
@@ -121,8 +137,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertEmptyBody($request);
     }
 
-    /** @test */
-    public function multiple_regex_conditions_can_be_added()
+    /**
+     * @test
+     */
+    public function multiple_regex_conditions_can_be_added(): void
     {
         $this->routeConfigurator()->get(
             'r1',
@@ -140,8 +158,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertEmptyBody($request);
     }
 
-    /** @test */
-    public function optional_parameters_work_at_the_end_of_the_url()
+    /**
+     * @test
+     */
+    public function optional_parameters_work_at_the_end_of_the_url(): void
     {
         $this->routeConfigurator()->get('r1',
             'users/{id}/{name?}',
@@ -155,8 +175,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('dynamic:1:default_user', $request);
     }
 
-    /** @test */
-    public function multiple_parameters_can_be_optional()
+    /**
+     * @test
+     */
+    public function multiple_parameters_can_be_optional(): void
     {
         $this->routeConfigurator()->post(
             'r1',
@@ -174,8 +196,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('dortmund:calvin', $response);
     }
 
-    /** @test */
-    public function multiple_parameters_can_be_optional_with_a_preceding_required_segment()
+    /**
+     * @test
+     */
+    public function multiple_parameters_can_be_optional_with_a_preceding_required_segment(): void
     {
         // Preceding group is required but not capturing
         $this->routeConfigurator()->get(
@@ -197,8 +221,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $response);
     }
 
-    /** @test */
-    public function multiple_parameters_can_be_optional_and_have_custom_regex()
+    /**
+     * @test
+     */
+    public function multiple_parameters_can_be_optional_and_have_custom_regex(): void
     {
         $this->routeConfigurator()->post(
             'r1',
@@ -224,16 +250,23 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertEmptyBody($response);
     }
 
-    /** @test */
-    public function adding_regex_can_be_done_as_a_fluent_api()
+    /**
+     * @test
+     */
+    public function adding_regex_can_be_done_as_a_fluent_api(): void
     {
         $this->routeConfigurator()->get(
             'r1',
             'users/{user_id}/{name}',
             [RoutingTestController::class, 'twoParams']
-        )
-            ->requirements(['user_id' => '[a]+'])
+        )->requirements(['user_id' => '[a]+'])
             ->requirements(['name' => 'calvin']);
+
+        $this->routeConfigurator()->get(
+            'r2',
+            'foobar',
+            [RoutingTestController::class, 'twoParams']
+        );
 
         $request = $this->frontendRequest('/users/a/calvin');
         $this->assertResponseBody('a:calvin', $request);
@@ -245,8 +278,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertEmptyBody($request);
     }
 
-    /** @test */
-    public function only_alpha_can_be_added_to_a_segment_as_a_helper_method()
+    /**
+     * @test
+     */
+    public function only_alpha_can_be_added_to_a_segment_as_a_helper_method(): void
     {
         $this->routeConfigurator()->get(
             'route1',
@@ -290,8 +325,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('FOO:a', $request);
     }
 
-    /** @test */
-    public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method()
+    /**
+     * @test
+     */
+    public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method(): void
     {
         $this->routeConfigurator()->get(
             'route1',
@@ -323,8 +360,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('dynamic:FOO', $request);
     }
 
-    /** @test */
-    public function only_number_can_be_added_to_a_segment_as_a_helper_method()
+    /**
+     * @test
+     */
+    public function only_number_can_be_added_to_a_segment_as_a_helper_method(): void
     {
         $this->routeConfigurator()->get(
             'route1',
@@ -340,15 +379,16 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertEmptyBody($request);
     }
 
-    /** @test */
-    public function only_one_of_can_be_added_to_a_segment_as_a_helper_method()
+    /**
+     * @test
+     */
+    public function only_one_of_can_be_added_to_a_segment_as_a_helper_method(): void
     {
         $this->routeConfigurator()->get(
             'route1',
             'route1/{name}',
             [RoutingTestController::class, 'dynamicInt']
-        )
-            ->requireOneOf('name', [1, 2, 3]);
+        )->requireOneOf('name', [1, 2, 3]);
 
         $request = $this->frontendRequest('/route1/1');
         $this->assertResponseBody('dynamic:1', $request);
@@ -363,8 +403,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $request);
     }
 
-    /** @test */
-    public function segments_can_be_added_before_path_segments()
+    /**
+     * @test
+     */
+    public function segments_can_be_added_before_path_segments(): void
     {
         $this->routeConfigurator()->get(
             'city',

@@ -23,12 +23,15 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\InternalUrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+
+use function call_user_func;
 
 /**
  * @api
@@ -39,23 +42,21 @@ abstract class MiddlewareTestCase extends TestCase
     use CreatesPsrRequests;
 
     private Routes $routes;
-    private ResponseFactoryInterface $response_factory;
-    private Request $request;
+    private DefaultResponseFactory $response_factory;
+
+    /**
+     * @var Closure(Response,Request):Response
+     */
     private Closure $next_middleware_response;
+    private bool $next_called = false;
+    private ?Request $received_request_by_next_middleware = null;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->next_middleware_response = function (Response $response) {
+        $this->next_middleware_response = function (Response $response): Response {
             return $response;
         };
-        $GLOBALS['test']['_next_middleware_called'] = false;
-    }
-
-    protected function tearDown(): void
-    {
-        unset($GLOBALS['test']['_next_middleware_called']);
-        parent::tearDown();
     }
 
     protected function psrServerRequestFactory(): ServerRequestFactoryInterface
@@ -68,25 +69,26 @@ abstract class MiddlewareTestCase extends TestCase
         return new Psr17Factory();
     }
 
-    final protected function withRoutes(array $routes)
+    /**
+     * @param array<Route> $routes
+     */
+    final protected function withRoutes(array $routes): void
     {
         $this->routes = new RouteCollection($routes);
     }
 
     /**
-     * Overwrite this function if you want to specify a custom response that should be returned by
-     * the next middleware.
+     * @param Closure(Response,Request):Response $closure
      */
-    final protected function withNextMiddlewareResponse(Closure $closure)
+    final protected function withNextMiddlewareResponse(Closure $closure): void
     {
         $this->next_middleware_response = $closure;
     }
 
     final protected function runMiddleware(MiddlewareInterface $middleware, Request $request): MiddlewareTestResponse
     {
-        if (isset($this->request)) {
-            unset($this->request);
-        }
+        $this->next_called = false;
+        $this->received_request_by_next_middleware = null;
 
         $pimple = new Container();
         $url = $this->newUrlGenerator(
@@ -103,43 +105,20 @@ abstract class MiddlewareTestCase extends TestCase
             if (!$pimple->offsetExists(Redirector::class)) {
                 $pimple[Redirector::class] = $response_factory;
             }
-            if (!$pimple->offsetExists(UrlGenerator::class)) {
-                $pimple[UrlGenerator::class] = $url;
+            if (!$pimple->offsetExists(UrlGeneratorInterface::class)) {
+                $pimple[UrlGeneratorInterface::class] = $url;
             }
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
 
         /** @var Response $response */
-        $response = $middleware->process($request, $this->getNext());
+        $response = $middleware->process($request, $this->next());
 
-        if (isset($response->received_request)) {
-            $this->request = $response->received_request;
-            unset($response->received_request);
-        }
+        unset($this->response_factory);
 
-        if (isset($this->response_factory)) {
-            unset($this->response_factory);
-        }
-
-        return $this->transformResponse($response);
-    }
-
-    private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGenerator
-    {
-        return new InternalUrlGenerator(
-            $routes,
-            $context,
-            WPAdminArea::fromDefaults(),
-            new RFC3986Encoder()
-        );
-    }
-
-    private function newResponseFactory(UrlGenerator $url_generator): ResponseFactory
-    {
-        return new DefaultResponseFactory(
-            $this->psrResponseFactory(),
-            $this->psrStreamFactory(),
-            $url_generator,
+        return new MiddlewareTestResponse(
+            $response,
+            $this->next_called
         );
     }
 
@@ -153,34 +132,13 @@ abstract class MiddlewareTestCase extends TestCase
         return new Psr17Factory();
     }
 
-    private function getNext(): NextMiddleware
-    {
-        return new NextMiddleware(
-            new TestDelegate($this->response_factory, $this->next_middleware_response)
-        );
-    }
-
-    private function transformResponse(ResponseInterface $response)
-    {
-        if (!$response instanceof MiddlewareTestResponse) {
-            $response = new MiddlewareTestResponse(
-                $response,
-                $GLOBALS['test']['_next_middleware_called']
-            );
-        }
-
-        $GLOBALS['test']['_next_middleware_called'] = false;
-
-        return $response;
-    }
-
     final protected function getReceivedRequest(): Request
     {
-        if (!isset($this->request)) {
+        if (!isset($this->received_request_by_next_middleware)) {
             throw new RuntimeException('The next middleware was not called.');
         }
 
-        return $this->request;
+        return $this->received_request_by_next_middleware;
     }
 
     final protected function getRedirector(): Redirector
@@ -201,6 +159,37 @@ abstract class MiddlewareTestCase extends TestCase
             );
         }
         return $this->response_factory;
+    }
+
+    private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGeneratorInterface
+    {
+        return new UrlGenerator(
+            $routes,
+            $context,
+            WPAdminArea::fromDefaults(),
+            new RFC3986Encoder()
+        );
+    }
+
+    private function newResponseFactory(UrlGeneratorInterface $url_generator): DefaultResponseFactory
+    {
+        return new DefaultResponseFactory(
+            $this->psrResponseFactory(),
+            $this->psrStreamFactory(),
+            $url_generator,
+        );
+    }
+
+    private function next(): NextMiddleware
+    {
+        $func = function (Request $request): ResponseInterface {
+            $response = call_user_func($this->next_middleware_response, $this->response_factory->make(), $request);
+            $this->received_request_by_next_middleware = $request;
+            $this->next_called = true;
+            return $response;
+        };
+
+        return new NextMiddleware($func);
     }
 
 }

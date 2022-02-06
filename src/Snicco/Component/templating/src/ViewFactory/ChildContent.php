@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\Templating\ViewFactory;
 
 use Closure;
+use RuntimeException;
+use Snicco\Component\Templating\OutputBuffer;
 
 /**
  * @internal
@@ -19,11 +21,14 @@ final class ChildContent
         $this->content = $content;
     }
 
+    /**
+     * @throws RuntimeException __toString can throw exceptions in 7.4+
+     */
     public function __toString()
     {
-        ob_start();
+        OutputBuffer::start();
         call_user_func($this->content);
-        return ob_get_clean();
+        return OutputBuffer::get();
     }
 
 }

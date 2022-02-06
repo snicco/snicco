@@ -15,19 +15,23 @@ use stdClass;
 final class CachedRouteCollectionTest extends TestCase
 {
 
-    /** @test */
-    public function test_exception_if_value_is_not_a_serialized_string()
+    /**
+     * @test
+     */
+    public function test_exception_if_value_is_not_a_serialized_string(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('can only contain serialized routes');
 
-        $routes = new CachedRouteCollection(['r1' => $r1]);
+        new CachedRouteCollection(['r1' => $r1]);
     }
 
-    /** @test */
-    public function test_exception_when_iterator_contains_non_route()
+    /**
+     * @test
+     */
+    public function test_exception_when_iterator_contains_non_route(): void
     {
         $data = ['r1' => serialize(new stdClass())];
 
@@ -44,8 +48,10 @@ final class CachedRouteCollectionTest extends TestCase
         iterator_to_array($routes);
     }
 
-    /** @test */
-    public function test_count()
+    /**
+     * @test
+     */
+    public function test_count(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -54,8 +60,10 @@ final class CachedRouteCollectionTest extends TestCase
         $this->assertSame(2, count($routes));
     }
 
-    /** @test */
-    public function test_iterator()
+    /**
+     * @test
+     */
+    public function test_iterator(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -69,8 +77,10 @@ final class CachedRouteCollectionTest extends TestCase
         $this->assertSame(2, $count);
     }
 
-    /** @test */
-    public function test_exception_for_not_found_route_name()
+    /**
+     * @test
+     */
+    public function test_exception_for_not_found_route_name(): void
     {
         $this->expectException(RouteNotFound::class);
 
@@ -81,24 +91,28 @@ final class CachedRouteCollectionTest extends TestCase
         $route = $routes->getByName('r1');
         $this->assertEquals($r1, $route);
 
-        $route = $routes->getByName('r3');
+        $routes->getByName('r3');
     }
 
-    /** @test */
-    public function test_exception_for_invalid_route_getByName()
+    /**
+     * @test
+     */
+    public function test_exception_for_invalid_route_getByName(): void
     {
-        $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
+        Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
         $routes =
             new CachedRouteCollection(['r1' => serialize(new stdClass()), 'r2' => serialize($r2)]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Your route cache seems corrupted');
-        $route = $routes->getByName('r1');
+        $routes->getByName('r1');
     }
 
-    /** @test */
-    public function test_getName_and_iterator_in_order()
+    /**
+     * @test
+     */
+    public function test_getName_and_iterator_in_order(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -115,8 +129,10 @@ final class CachedRouteCollectionTest extends TestCase
         $this->assertSame(2, $count);
     }
 
-    /** @test */
-    public function test_exception_if_route_is_stored_by_different_name()
+    /**
+     * @test
+     */
+    public function test_exception_if_route_is_stored_by_different_name(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -135,7 +151,7 @@ final class CachedRouteCollectionTest extends TestCase
         $routes = new CachedRouteCollection(['route1' => serialize($r1), 'r2' => serialize($r2)]);
 
         try {
-            $n = $routes->getByName('route1');
+            $routes->getByName('route1');
             $this->fail('Expected exception for getByName().');
         } catch (RouteNotFound $e) {
             $this->assertEquals(

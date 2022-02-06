@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\Core\Utils\PHPCacheFile;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
+use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 
 class RouteCachingTest extends HttpRunnerTestCase
 {
 
     private PHPCacheFile $route_cache_file;
 
-    /** @test */
-    public function a_route_can_be_run_when_no_cache_files_exist_yet()
+    /**
+     * @test
+     */
+    public function a_route_can_be_run_when_no_cache_files_exist_yet(): void
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
 
@@ -25,8 +27,10 @@ class RouteCachingTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function a_cache_file_is_created_after_the_routes_are_loaded_for_the_first_time()
+    /**
+     * @test
+     */
+    public function a_cache_file_is_created_after_the_routes_are_loaded_for_the_first_time(): void
     {
         $this->assertFalse($this->route_cache_file->isCreated());
 
@@ -40,8 +44,10 @@ class RouteCachingTest extends HttpRunnerTestCase
         $this->assertTrue($this->route_cache_file->isCreated());
     }
 
-    /** @test */
-    public function routes_can_be_read_from_the_cache_and_match_without_needing_to_define_them()
+    /**
+     * @test
+     */
+    public function routes_can_be_read_from_the_cache_and_match_without_needing_to_define_them(): void
     {
         $this->assertFalse($this->route_cache_file->isCreated());
 
@@ -84,8 +90,10 @@ class RouteCachingTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $request);
     }
 
-    /** @test */
-    public function reverse_routing_works_with_cached_router()
+    /**
+     * @test
+     */
+    public function reverse_routing_works_with_cached_router(): void
     {
         $this->assertFalse($this->route_cache_file->isCreated());
 
@@ -106,8 +114,10 @@ class RouteCachingTest extends HttpRunnerTestCase
         $this->assertSame('/bar', $this->generator->toRoute('bar'));
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_a_route_is_added_to_the_cached_router()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_a_route_is_added_to_the_cached_router(): void
     {
         $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
         $this->routeConfigurator()->get('bar', '/bar', RoutingTestController::class);
@@ -153,7 +163,7 @@ class RouteCachingTest extends HttpRunnerTestCase
 class Controller
 {
 
-    public function handle()
+    public function handle(): string
     {
         return 'foo';
     }

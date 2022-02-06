@@ -7,8 +7,10 @@ namespace Snicco\Bridge\Blade\Tests;
 class BladeLayoutsTest extends BladeTestCase
 {
 
-    /** @test */
-    public function layouts_and_extending_work()
+    /**
+     * @test
+     */
+    public function layouts_and_extending_work(): void
     {
         $view = $this->view_engine->make('layouts.child');
 
@@ -18,8 +20,10 @@ class BladeLayoutsTest extends BladeTestCase
         );
     }
 
-    /** @test */
-    public function stacks_work()
+    /**
+     * @test
+     */
+    public function stacks_work(): void
     {
         $view = $this->view_engine->make('layouts.stack-child');
         $content = $view->toString();

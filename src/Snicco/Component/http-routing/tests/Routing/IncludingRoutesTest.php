@@ -12,8 +12,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 final class IncludingRoutesTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function test_exception_if_no_string()
+    /**
+     * @test
+     */
+    public function test_exception_if_no_string(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('string or a closure');
@@ -21,8 +23,10 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         $this->routeConfigurator()->include(1);
     }
 
-    /** @test */
-    public function test_exception_if_unreadable_file()
+    /**
+     * @test
+     */
+    public function test_exception_if_unreadable_file(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('not readable');
@@ -30,8 +34,10 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         $this->routeConfigurator()->include($this->routes_dir . '/bogus.php');
     }
 
-    /** @test */
-    public function test_exception_if_no_closure_returned()
+    /**
+     * @test
+     */
+    public function test_exception_if_no_closure_returned(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('has to return a closure');
@@ -39,8 +45,10 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         $this->routeConfigurator()->include($this->routes_dir . '/_no_closure.php');
     }
 
-    /** @test */
-    public function routes_can_be_included_as_a_string()
+    /**
+     * @test
+     */
+    public function routes_can_be_included_as_a_string(): void
     {
         $this->withMiddlewareAlias(['partial' => FooMiddleware::class]);
         $this->routeConfigurator()->include($this->routes_dir . '/_partial.php');
@@ -51,8 +59,10 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function routes_can_be_included_as_a_closure()
+    /**
+     * @test
+     */
+    public function routes_can_be_included_as_a_closure(): void
     {
         $this->withMiddlewareAlias(['partial' => FooMiddleware::class]);
 

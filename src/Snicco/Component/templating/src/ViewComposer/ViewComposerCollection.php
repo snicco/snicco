@@ -16,14 +16,13 @@ use Snicco\Component\Templating\View\View;
 final class ViewComposerCollection
 {
 
-    private array $composers = [];
-
     private ViewComposerFactory $composer_factory;
+    private GlobalViewContext $global_view_context;
 
     /**
-     * @var GlobalViewContext The contents that will be available to every view.
+     * @var array<array{views: list<string>, handler: class-string<ViewComposer>|Closure}>
      */
-    private GlobalViewContext $global_view_context;
+    private array $composers = [];
 
     public function __construct(
         ?ViewComposerFactory $composer_factory = null,
@@ -34,8 +33,11 @@ final class ViewComposerCollection
     }
 
     /**
-     * @param string|string[] $views
-     * @param string|Closure class name or closure
+     * @param string|list<string> $views
+     * @param class-string<ViewComposer>|Closure(View) $composer
+     *
+     * @psalm-suppress DocblockTypeContradiction
+     *
      */
     public function addComposer($views, $composer): void
     {
@@ -61,7 +63,7 @@ final class ViewComposerCollection
             );
         }
 
-        if (!in_array(ViewComposer::class, class_implements($composer), true)) {
+        if (!in_array(ViewComposer::class, (array)class_implements($composer), true)) {
             throw new InvalidArgumentException(
                 sprintf('Class [%s] does not implement [%s]', $composer, ViewComposer::class)
             );
@@ -80,6 +82,8 @@ final class ViewComposerCollection
      * => local context
      *
      * @interal
+     *
+     * @psalm-suppress MixedAssignment
      */
     public function compose(View $view): void
     {
@@ -89,16 +93,17 @@ final class ViewComposerCollection
             $view->with($name, $context);
         }
 
-        $composers = $this->matchingComposers($view);
-
-        array_walk($composers, function ($composer) use ($view) {
-            $c = $this->composer_factory->create($composer);
+        foreach ($this->matchingComposers($view) as $matchingComposer) {
+            $c = $this->composer_factory->create($matchingComposer);
             $c->compose($view);
-        });
+        }
 
         $view->with($local_context);
     }
 
+    /**
+     * @return list<Closure|class-string<ViewComposer>>
+     */
     private function matchingComposers(View $view): array
     {
         $matching = [];

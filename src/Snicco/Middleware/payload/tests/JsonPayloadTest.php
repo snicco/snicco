@@ -12,8 +12,10 @@ use Snicco\Middleware\Payload\JsonPayload;
 class JsonPayloadTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function read_verbs_are_not_processed()
+    /**
+     * @test
+     */
+    public function read_verbs_are_not_processed(): void
     {
         $request = $this->jsonRequest();
         $request->getBody()->write('{"bar":"foo"}');
@@ -32,8 +34,10 @@ class JsonPayloadTest extends MiddlewareTestCase
         $this->assertSame(['bar' => 'foo'], $this->getReceivedRequest()->getParsedBody());
     }
 
-    /** @test */
-    public function nothing_is_processed_with_different_content_type_header()
+    /**
+     * @test
+     */
+    public function nothing_is_processed_with_different_content_type_header(): void
     {
         $request = $this->jsonRequest()
             ->withMethod('POST')
@@ -45,8 +49,10 @@ class JsonPayloadTest extends MiddlewareTestCase
         $this->assertSame(null, $this->getReceivedRequest()->getParsedBody());
     }
 
-    /** @test */
-    public function empty_json_input_returns_an_array()
+    /**
+     * @test
+     */
+    public function empty_json_input_returns_an_array(): void
     {
         $request = $this->jsonRequest()
             ->withMethod('POST');
@@ -57,8 +63,10 @@ class JsonPayloadTest extends MiddlewareTestCase
         $this->assertSame([], $this->getReceivedRequest()->getParsedBody());
     }
 
-    /** @test */
-    public function json_exceptions_are_caught_and_transformed()
+    /**
+     * @test
+     */
+    public function json_exceptions_are_caught_and_transformed(): void
     {
         $request = $this->jsonRequest()->withMethod('POST');
         $request->getBody()->write('{"bar":"foo",}');

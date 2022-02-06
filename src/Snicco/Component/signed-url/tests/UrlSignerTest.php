@@ -21,43 +21,65 @@ final class UrlSignerTest extends TestCase
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
 
-    /** @test */
-    public function an_exception_is_thrown_if_the_path_contains_the_expired_query_param()
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->storage = new InMemoryStorage();
+        $this->url_signer =
+            new UrlSigner($this->storage, new Sha256Hasher(Secret::generate()));
+    }
+
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_path_contains_the_expired_query_param(): void
     {
         $this->expectException(LogicException::class);
         $this->url_signer->sign('/foo?expires=100', 10);
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_the_path_contains_the_signature_query_param()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_path_contains_the_signature_query_param(): void
     {
         $this->expectException(LogicException::class);
         $this->url_signer->sign('/foo?signature=100', 10);
     }
 
-    /** @test */
-    public function test_exception_for_bad_lifetime()
+    /**
+     * @test
+     */
+    public function test_exception_for_bad_lifetime(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->url_signer->sign('/foo', -10);
     }
 
-    /** @test */
-    public function test_exception_for_empty_target()
+    /**
+     * @test
+     */
+    public function test_exception_for_empty_target(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->url_signer->sign('', 10);
     }
 
-    /** @test */
-    public function test_exception_for_bad_max_usage()
+    /**
+     * @test
+     *
+     * @psalm-suppress InvalidArgument
+     */
+    public function test_exception_for_bad_max_usage(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->url_signer->sign('/foo', 10, 0);
     }
 
-    /** @test */
-    public function testExceptionForBadPath()
+    /**
+     * @test
+     */
+    public function testExceptionForBadPath(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('/#f//sd$ is not a valid path.');
@@ -65,8 +87,10 @@ final class UrlSignerTest extends TestCase
         $this->url_signer->sign('#f//sd$', 10);
     }
 
-    /** @test */
-    public function a_magic_link_can_be_created_for_a_path()
+    /**
+     * @test
+     */
+    public function a_magic_link_can_be_created_for_a_path(): void
     {
         $magic_link = $this->url_signer->sign('foo', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -77,8 +101,10 @@ final class UrlSignerTest extends TestCase
         $this->assertSame('/foo', $magic_link->protects());
     }
 
-    /** @test */
-    public function a_magic_link_can_be_created_for_a_full_url()
+    /**
+     * @test
+     */
+    public function a_magic_link_can_be_created_for_a_full_url(): void
     {
         $magic_link = $this->url_signer->sign('https://foo.com/foo/', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -89,15 +115,19 @@ final class UrlSignerTest extends TestCase
         $this->assertSame('https://foo.com/foo/', $magic_link->protects());
     }
 
-    /** @test */
-    public function testCanBeCreatedForOnlySlash()
+    /**
+     * @test
+     */
+    public function testCanBeCreatedForOnlySlash(): void
     {
         $magic_link = $this->url_signer->sign('/', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
     }
 
-    /** @test */
-    public function testCanBeCreatedForOnlyHost()
+    /**
+     * @test
+     */
+    public function testCanBeCreatedForOnlyHost(): void
     {
         $magic_link = $this->url_signer->sign('https://foo.com', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -106,8 +136,10 @@ final class UrlSignerTest extends TestCase
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
     }
 
-    /** @test */
-    public function testCanBeCreatedWithExistingQueryParams()
+    /**
+     * @test
+     */
+    public function testCanBeCreatedWithExistingQueryParams(): void
     {
         $magic_link = $this->url_signer->sign('/web?foo=bar&baz=biz', 10);
         $this->assertStringStartsWith('/web?foo=bar&baz=biz', $magic_link->asString());
@@ -116,8 +148,10 @@ final class UrlSignerTest extends TestCase
         $this->assertSame('/web?foo=bar&baz=biz', $magic_link->protects());
     }
 
-    /** @test */
-    public function created_magic_links_are_stored()
+    /**
+     * @test
+     */
+    public function created_magic_links_are_stored(): void
     {
         $this->assertCount(0, $this->storage->all());
         $magic_link = $this->url_signer->sign('/web?foo=bar&baz=biz', 10);
@@ -126,8 +160,10 @@ final class UrlSignerTest extends TestCase
         $this->assertArrayHasKey($magic_link->identifier(), $all);
     }
 
-    /** @test */
-    public function garbage_collection_works()
+    /**
+     * @test
+     */
+    public function garbage_collection_works(): void
     {
         $storage = new InMemoryStorage($test_clock = new TestClock());
         $signer = new UrlSigner($storage, new Sha256Hasher(Secret::generate()));
@@ -145,22 +181,16 @@ final class UrlSignerTest extends TestCase
         $this->assertCount(0, $storage->all());
     }
 
-    /** @test */
-    public function max_usage_can_be_configured()
+    /**
+     * @test
+     */
+    public function max_usage_can_be_configured(): void
     {
         $link = $this->url_signer->sign('/foo', 10, 1);
         $this->assertSame(1, $link->maxUsage());
 
         $link = $this->url_signer->sign('/foo', 10, 10);
         $this->assertSame(10, $link->maxUsage());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->storage = new InMemoryStorage();
-        $this->url_signer =
-            new UrlSigner($this->storage, new Sha256Hasher(Secret::generate()));
     }
 
 }

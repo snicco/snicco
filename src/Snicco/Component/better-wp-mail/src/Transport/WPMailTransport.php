@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\Transport;
 
 use Closure;
-use PHPMailer;
+use LogicException;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
 use Snicco\Component\BetterWPMail\ScopableWP;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 use WP_Error;
 
+use function is_null;
 use function trim;
 
 /**
@@ -34,7 +38,7 @@ final class WPMailTransport implements Transport
     public function send(Email $email, Envelope $envelope): void
     {
         $failure_callable = $this->handleFailure();
-        $just_in_time_callable = $this->justInTimeConfiguration($email, $envelope);
+        $just_in_time_callable = $this->justInTimeConfiguration($email);
 
         $to = $this->getTo($email, $envelope);
 
@@ -42,7 +46,7 @@ final class WPMailTransport implements Transport
         // So we just default to using the $envelope sender. It's not required to explicitly set the
         // sender on the phpmailer instance since that will be
         // taken care of automatically by phpmailer before sending.
-        $from = $this->stringifyAddresses([$envelope->sender()], 'From:');
+        $from = $this->stringifyAddresses(new MailboxList([$envelope->sender()]), 'From:');
 
         $reply_to = $this->stringifyAddresses($email->replyTo(), 'Reply-To:');
 
@@ -58,13 +62,8 @@ final class WPMailTransport implements Transport
             $content_type = "Content-Type: text/plain; charset={$email->textCharset()}";
         }
 
-        if (is_resource($message)) {
-            $stream = $message;
-            $message = stream_get_contents($stream);
-            fclose($stream);
-            if ($message === false) {
-                throw new CantSendEmailWithWPMail('Could not read from stream.');
-            }
+        if (is_null($message)) {
+            throw new LogicException('Message cant be empty.');
         }
 
         $headers = array_merge(
@@ -73,7 +72,6 @@ final class WPMailTransport implements Transport
             $reply_to,
             $from,
             [$content_type],
-            $email->customHeaders()
         );
 
         try {
@@ -83,7 +81,7 @@ final class WPMailTransport implements Transport
             if (false === $success) {
                 throw new CantSendEmailWithWPMail('Could not sent the mail with wp_mail().');
             }
-        } catch (PHPMailer\PHPMailer\Exception $e) {
+        } catch (Exception $e) {
             throw new CantSendEmailWithWPMail('wp_mail() failure.', $e->getMessage(), $e);
         } finally {
             $this->resetPHPMailer();
@@ -99,9 +97,10 @@ final class WPMailTransport implements Transport
      */
     protected function handleFailure(): Closure
     {
-        $closure = function (WP_Error $error) {
-            throw CantSendEmailWithWPMail::becauseWPMailRaisedErrors($error);
-        };
+        $closure = /** @return never */
+            function (WP_Error $error) {
+                throw CantSendEmailWithWPMail::becauseWPMailRaisedErrors($error);
+            };
 
         $this->wp->addAction('wp_mail_failed', $closure, 99999, 1);
 
@@ -114,9 +113,9 @@ final class WPMailTransport implements Transport
      * Here we directly configure the underlying PHPMailer instance which has all the options we
      * need.
      */
-    private function justInTimeConfiguration(Email $mail, Envelope $envelope): Closure
+    private function justInTimeConfiguration(Email $mail): Closure
     {
-        $closure = function (PHPMailer $php_mailer) use ($mail, $envelope) {
+        $closure = function (PHPMailer $php_mailer) use ($mail): void {
             if (($text = $mail->textBody()) && $mail->htmlBody() !== null) {
                 $php_mailer->AltBody = $text;
             }
@@ -126,9 +125,9 @@ final class WPMailTransport implements Transport
             foreach ($mail->attachments() as $attachment) {
                 if ($attachment->disposition() === 'inline') {
                     $php_mailer->addStringEmbeddedImage(
-                        $attachment->body(),
+                        $attachment->bodyAsString(),
                         $attachment->cid(),
-                        $attachment->name() ?? '',
+                        $attachment->name(),
                         $attachment->encoding(),
                         $attachment->contentType(),
                     );
@@ -136,11 +135,14 @@ final class WPMailTransport implements Transport
                 }
 
                 $php_mailer->addStringAttachment(
-                    $attachment->body(),
-                    $attachment->name() ?? '',
+                    $attachment->bodyAsString(),
+                    $attachment->name(),
                     $attachment->encoding(),
                     $attachment->contentType(),
                 );
+            }
+            foreach ($mail->customHeaders() as $name => $value) {
+                $php_mailer->addCustomHeader($name, $value);
             }
         };
 
@@ -149,6 +151,9 @@ final class WPMailTransport implements Transport
         return $closure;
     }
 
+    /**
+     * @return string[]
+     */
     private function getTo(Email $email, Envelope $envelope): array
     {
         $merged = $email->cc()->merge($email->bcc());
@@ -160,12 +165,14 @@ final class WPMailTransport implements Transport
             }
         }
 
-        return $this->stringifyAddresses($to);
+        return $this->stringifyAddresses(new MailboxList($to));
     }
 
-    // Reset properties that wp_mail does not flush by default();
 
-    private function stringifyAddresses(iterable $addresses, string $prefix = ''): array
+    /**
+     * @return string[]
+     */
+    private function stringifyAddresses(MailboxList $addresses, string $prefix = ''): array
     {
         $stringify = [];
 
@@ -176,14 +183,20 @@ final class WPMailTransport implements Transport
         return $stringify;
     }
 
-    private function resetPHPMailer()
+    /**
+     * @psalm-suppress UnnecessaryVarAnnotation
+     */
+    private function resetPHPMailer(): void
     {
-        global $phpmailer;
-        $phpmailer->Body = '';
-        $phpmailer->AltBody = '';
-        $phpmailer->Priority = null;
-        $phpmailer->clearCustomHeaders();
-        $phpmailer->clearReplyTos();
+        // Reset properties that wp_mail does not flush by default();
+
+        /** @var PHPMailer $mailer */
+        $mailer = $GLOBALS['phpmailer'];
+        $mailer->Body = '';
+        $mailer->AltBody = '';
+        $mailer->Priority = null;
+        $mailer->clearCustomHeaders();
+        $mailer->clearReplyTos();
     }
 
 }

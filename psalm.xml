@@ -5,12 +5,49 @@
         resolveFromConfigFile="true"
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+        phpVersion="7.4"
+        strictBinaryOperands="true"
+        disableSuppressAll="true"
+        ignoreInternalFunctionFalseReturn="false"
+        ignoreInternalFunctionNullReturn="false"
+        findUnusedPsalmSuppress="true"
+        ensureArrayIntOffsetsExist="true"
+        sealAllMethods="true"
+        sealAllProperties="true"
+        autoloader="psalm/bootstrap.php"
 >
     <projectFiles>
         <directory name="src/Snicco"/>
         <ignoreFiles>
             <directory name="vendor"/>
+            <!--            Only references global WP constants -->
+            <file name="src/Snicco/Component/eloquent/src/ScopableWP.php"/>
+            <!--            This file is not our code. @see https://github.com/php-cache/integration-tests/issues/117-->
+            <file name="src/Snicco/Component/wp-object-cache-psr16/tests/wordpress/WPObjectCachePsr16Test.php"/>
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+
+        <RedundantConditionGivenDocblockType errorLevel="suppress"/>
+        <RedundantPropertyInitializationCheck errorLevel="suppress"/>
+
+        <MixedAssignment>
+            <errorLevel type="suppress">
+                <!--                Deals with mixed arguments by design -->
+                <file name="src/Snicco/Component/str-arr/tests/ArrTest.php"/>
+            </errorLevel>
+        </MixedAssignment>
+
+    </issueHandlers>
+
+    <globals>
+        <var name="GLOBALS" type="array{phpmailer: \PHPMailer\PHPMailer\PHPMailer, wpdb: wpdb}"/>
+    </globals>
+
+    <plugins>
+        <plugin filename="psalm/Plugins/TestCaseClasses.php"/>
+    </plugins>
+
 </psalm>
 

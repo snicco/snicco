@@ -25,7 +25,7 @@ class DefaultResponseFactoryTest extends TestCase
 
     private DefaultResponseFactory $factory;
 
-    public function test_make()
+    public function test_make(): void
     {
         $response = $this->factory->make(204, 'Hello');
 
@@ -35,7 +35,7 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('Hello', $response->getReasonPhrase());
     }
 
-    public function test_json()
+    public function test_json(): void
     {
         $response = $this->factory->json(['foo' => 'bar'], 401);
 
@@ -45,16 +45,20 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(json_encode(['foo' => 'bar']), (string)$response->getBody());
     }
 
-    /** @test */
-    public function test_toResponse_for_response()
+    /**
+     * @test
+     */
+    public function test_toResponse_for_response(): void
     {
         $response = $this->factory->make();
         $result = $this->factory->toResponse($response);
         $this->assertSame($result, $response);
     }
 
-    /** @test */
-    public function test_toResponse_for_psr7_response()
+    /**
+     * @test
+     */
+    public function test_toResponse_for_psr7_response(): void
     {
         $response = $this->psrResponseFactory()->createResponse();
         $result = $this->factory->toResponse($response);
@@ -62,8 +66,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertInstanceOf(Response::class, $result);
     }
 
-    /** @test */
-    public function test_toResponse_for_string()
+    /**
+     * @test
+     */
+    public function test_toResponse_for_string(): void
     {
         $response = $this->factory->toResponse('foo');
         $this->assertInstanceOf(Response::class, $response);
@@ -72,8 +78,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('foo', (string)$response->getBody());
     }
 
-    /** @test */
-    public function test_toResponse_for_array()
+    /**
+     * @test
+     */
+    public function test_toResponse_for_array(): void
     {
         $input = ['foo' => 'bar', 'bar' => 'baz'];
 
@@ -85,8 +93,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(json_encode($input), (string)$response->getBody());
     }
 
-    /** @test */
-    public function test_toResponse_for_stdclass()
+    /**
+     * @test
+     */
+    public function test_toResponse_for_stdclass(): void
     {
         $input = new stdClass();
         $input->foo = 'bar';
@@ -97,8 +107,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(json_encode(['foo' => 'bar']), $response->getBody()->__toString());
     }
 
-    /** @test */
-    public function test_toResponse_for_responseable()
+    /**
+     * @test
+     */
+    public function test_toResponse_for_responseable(): void
     {
         $class = new class implements Responsable {
 
@@ -116,15 +128,19 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('foo', (string)$response->getBody());
     }
 
-    /** @test */
-    public function toResponse_throws_an_exception_if_no_response_can_be_created()
+    /**
+     * @test
+     */
+    public function toResponse_throws_an_exception_if_no_response_can_be_created(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->toResponse(1);
     }
 
-    /** @test */
-    public function test_noContent()
+    /**
+     * @test
+     */
+    public function test_noContent(): void
     {
         $response = $this->factory->noContent();
 
@@ -132,8 +148,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(204, $response->getStatusCode());
     }
 
-    /** @test */
-    public function test_redirect()
+    /**
+     * @test
+     */
+    public function test_redirect(): void
     {
         $response = $this->factory->redirect('/foo', 307);
 
@@ -141,24 +159,30 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('/foo', $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_exception_for_status_code_that_is_to_low()
+    /**
+     * @test
+     */
+    public function test_exception_for_status_code_that_is_to_low(): void
     {
         $this->assertInstanceOf(Response::class, $this->factory->make(100));
         $this->expectException(InvalidArgumentException::class);
         $this->factory->make(99);
     }
 
-    /** @test */
-    public function test_exception_for_status_code_that_is_to_high()
+    /**
+     * @test
+     */
+    public function test_exception_for_status_code_that_is_to_high(): void
     {
         $this->assertInstanceOf(Response::class, $this->factory->make(599));
         $this->expectException(InvalidArgumentException::class);
         $this->factory->make(600);
     }
 
-    /** @test */
-    public function test_home_with_no_home_route_defaults_to_the_base_path()
+    /**
+     * @test
+     */
+    public function test_home_with_no_home_route_defaults_to_the_base_path(): void
     {
         $response = $this->factory->home(['foo' => 'bar'], 307);
 
@@ -166,8 +190,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(307, $response->getStatusCode());
     }
 
-    /** @test */
-    public function test_home_goes_to_the_home_route_if_it_exists()
+    /**
+     * @test
+     */
+    public function test_home_goes_to_the_home_route_if_it_exists(): void
     {
         $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
 
@@ -181,8 +207,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(307, $response->getStatusCode());
     }
 
-    /** @test */
-    public function test_toRoute()
+    /**
+     * @test
+     */
+    public function test_toRoute(): void
     {
         $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
 
@@ -196,8 +224,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(307, $response->getStatusCode());
     }
 
-    /** @test */
-    public function test_refresh()
+    /**
+     * @test
+     */
+    public function test_refresh(): void
     {
         $request = $this->psrServerRequestFactory()
             ->createServerRequest(
@@ -217,8 +247,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame($url, $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_back_with_referer_header_present()
+    /**
+     * @test
+     */
+    public function test_back_with_referer_header_present(): void
     {
         $request = $this->psrServerRequestFactory()
             ->createServerRequest(
@@ -238,8 +270,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('/foo/bar', $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_back_with_referer_header_missing()
+    /**
+     * @test
+     */
+    public function test_back_with_referer_header_missing(): void
     {
         $request = $this->psrServerRequestFactory()
             ->createServerRequest(
@@ -262,8 +296,10 @@ class DefaultResponseFactoryTest extends TestCase
         );
     }
 
-    /** @test */
-    public function test_to()
+    /**
+     * @test
+     */
+    public function test_to(): void
     {
         $response = $this->factory->to('foo', 307, ['bar' => 'baz']);
 
@@ -271,8 +307,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('/foo?bar=baz', $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_secure()
+    /**
+     * @test
+     */
+    public function test_secure(): void
     {
         $request = $this->psrServerRequestFactory()
             ->createServerRequest(
@@ -292,28 +330,34 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame('https://foobar.com/foo', $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_away_allows_validation_bypass()
+    /**
+     * @test
+     */
+    public function test_away_allows_validation_bypass(): void
     {
         $normal_response = $this->factory->to('/foo');
-        $this->assertFalse($normal_response->externalRedirectAllowed());
+        $this->assertFalse($normal_response->isExternalRedirectAllowed());
 
         $external = $this->factory->away('https://external.com/foo', 307);
-        $this->assertTrue($external->externalRedirectAllowed());
+        $this->assertTrue($external->isExternalRedirectAllowed());
 
         $this->assertSame(307, $external->getStatusCode());
         $this->assertSame('https://external.com/foo', $external->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_deny_throws_exception_if_query_contains_intended()
+    /**
+     * @test
+     */
+    public function test_deny_throws_exception_if_query_contains_intended(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->deny('/foo', 302, ['intended' => 'bar']);
     }
 
-    /** @test */
-    public function test_deny()
+    /**
+     * @test
+     */
+    public function test_deny(): void
     {
         $request = $this->psrServerRequestFactory()
             ->createServerRequest(
@@ -336,8 +380,10 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame($expected, $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_intended_with_intended_query_param_present()
+    /**
+     * @test
+     */
+    public function test_intended_with_intended_query_param_present(): void
     {
         $request = $this->psrServerRequestFactory()
             ->createServerRequest(
@@ -372,16 +418,20 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame($original, $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_intended_with_missing_query_param_goes_to_fallback()
+    /**
+     * @test
+     */
+    public function test_intended_with_missing_query_param_goes_to_fallback(): void
     {
         $response = $this->factory->intended('/home', 307);
         $this->assertSame(307, $response->getStatusCode());
         $this->assertSame('/home', $response->getHeaderLine('location'));
     }
 
-    /** @test */
-    public function test_delegate()
+    /**
+     * @test
+     */
+    public function test_delegate(): void
     {
         $this->assertTrue($this->factory->delegate()->shouldHeadersBeSent());
         $this->assertFalse($this->factory->delegate(false)->shouldHeadersBeSent());

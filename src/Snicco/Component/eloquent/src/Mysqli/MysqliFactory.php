@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\Eloquent\Mysqli;
 
 use Closure;
+use mysqli;
+use RuntimeException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\ScopableWP;
 
@@ -26,12 +28,15 @@ final class MysqliFactory
         );
     }
 
+    /**
+     * @return Closure():mysqli
+     */
     private function getReconnect(ScopableWP $wp): Closure
     {
         return function () use ($wp) {
             $success = $wp->wpdb()->check_connection(false);
             if (!$success) {
-                return false;
+                throw new RuntimeException('Cant reconnect to wpdb.');
             }
             return $wp->mysqli();
         };

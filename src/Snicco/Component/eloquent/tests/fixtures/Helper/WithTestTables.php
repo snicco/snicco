@@ -23,7 +23,7 @@ trait WithTestTables
         'activity_city',
     ];
 
-    protected function withNewTables()
+    protected function withNewTables(): void
     {
         if (!static::$tables_created) {
             $this->dropTables();
@@ -34,14 +34,14 @@ trait WithTestTables
         static::$tables_created = true;
     }
 
-    private function dropTables()
+    private function dropTables(): void
     {
         foreach ($this->tables as $table) {
             Schema::dropIfExists($table);
         }
     }
 
-    private function createTables()
+    private function createTables(): void
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
@@ -74,7 +74,7 @@ trait WithTestTables
         });
     }
 
-    protected function insertInitialRecords()
+    protected function insertInitialRecords(): void
     {
         DB::table('countries')->insert([
             ['name' => 'germany', 'continent' => 'europe'],

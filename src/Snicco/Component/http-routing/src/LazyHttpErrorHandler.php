@@ -6,13 +6,16 @@ namespace Snicco\Component\HttpRouting;
 
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Throwable;
 
 use function sprintf;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
 {
 
@@ -21,7 +24,7 @@ final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
 
     public function __construct(ContainerInterface $c)
     {
-        if (!isset($c[HttpErrorHandlerInterface::class])) {
+        if (!$c->has(HttpErrorHandlerInterface::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The psr container needs a service for id [%s].',
@@ -32,10 +35,11 @@ final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
         $this->psr_container = $c;
     }
 
-    public function handle(Throwable $e, RequestInterface $request): ResponseInterface
+    public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->error_handler)) {
-            $this->error_handler = $this->psr_container[HttpErrorHandlerInterface::class];
+            /** @var HttpErrorHandlerInterface error_handler */
+            $this->error_handler = $this->psr_container->get(HttpErrorHandlerInterface::class);
         }
         return $this->error_handler->handle($e, $request);
     }

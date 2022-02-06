@@ -12,8 +12,10 @@ use Snicco\Middleware\WPAuth\Authenticate;
 class AuthenticateTest extends MiddlewareTestCase
 {
 
-    /** @test */
-    public function logged_in_users_can_access_the_route()
+    /**
+     * @test
+     */
+    public function logged_in_users_can_access_the_route(): void
     {
         $middleware = new Authenticate(new WPTestDouble(true));
 
@@ -22,8 +24,10 @@ class AuthenticateTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
     }
 
-    /** @test */
-    public function the_user_id_is_added_to_the_request()
+    /**
+     * @test
+     */
+    public function the_user_id_is_added_to_the_request(): void
     {
         $middleware = new Authenticate(new WPTestDouble(true));
 
@@ -32,15 +36,17 @@ class AuthenticateTest extends MiddlewareTestCase
         $this->assertSame(1, $this->getReceivedRequest()->getAttribute('_user_id'));
     }
 
-    /** @test */
-    public function logged_out_users_cant_access_the_route()
+    /**
+     * @test
+     */
+    public function logged_out_users_cant_access_the_route(): void
     {
         $request = $this->frontendRequest('https://mysite.com/foo');
 
         $middleware = new Authenticate(new WPTestDouble(false));
 
         try {
-            $response = $this->runMiddleware(
+            $this->runMiddleware(
                 $middleware,
                 $request
             );

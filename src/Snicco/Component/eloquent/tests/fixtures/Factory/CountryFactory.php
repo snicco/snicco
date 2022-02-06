@@ -29,11 +29,13 @@ class CountryFactory extends Factory
             'South America',
             'Antarctica.',
         ];
-
-        return Arr::random($continents);
+        return Arr::random($continents)[0];
     }
 
-    public function narnia()
+    /**
+     * @return static
+     */
+    public function narnia(): self
     {
         return $this->state(function (array $attributes) {
             return [

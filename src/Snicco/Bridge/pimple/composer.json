@@ -1,6 +1,6 @@
 {
   "name": "sniccowp/pimple-brige",
-  "description": "Provides an adapter for the pimple DI container for sniccowp/core",
+  "description": "Provides an adapter for the pimple DI container for sniccowp/kernel",
   "license": "MIT",
   "authors": [
     {
@@ -11,7 +11,7 @@
   "require": {
     "php": "^7.4|^8.0",
     "pimple/pimple": "^3.4",
-    "sniccowp/core": "dev-master"
+    "sniccowp/kernel": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13"

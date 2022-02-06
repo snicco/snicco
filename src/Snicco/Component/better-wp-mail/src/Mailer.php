@@ -15,14 +15,13 @@ use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
 use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 use Snicco\Component\BetterWPMail\Transport\Transport;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
-use Snicco\Component\BetterWPMail\ValueObjects\Email;
-use Snicco\Component\BetterWPMail\ValueObjects\Envelope;
-use Snicco\Component\BetterWPMail\ValueObjects\Mailbox;
-use Snicco\Component\BetterWPMail\ValueObjects\MailboxList;
-use Snicco\Component\BetterWPMail\ValueObjects\MailDefaults;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\ValueObject\Envelope;
+use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
+use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
+use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
 
 use function count;
-use function iterator_to_array;
 
 /**
  * @api
@@ -99,7 +98,6 @@ final class Mailer
     }
 
     // This has to be mutable in order to allow other third-party developers to customize the email.
-
     private function validate(Email $mail): void
     {
         if (
@@ -121,15 +119,16 @@ final class Mailer
 
     // We make a clone of the objects so that no hooked listener can modify them and event other
     // listeners that might fire later.
-
-    private function determineSender(Email $mail): ?Mailbox
+    private function determineSender(Email $mail): Mailbox
     {
         if ($sender = $mail->sender()) {
             return $sender;
         }
 
-        if (!empty($from = $mail->from())) {
-            return iterator_to_array($from)[0];
+        $from = $mail->from()->toArray();
+
+        if (count($from)) {
+            return $from[0];
         }
 
         if ($return = $mail->returnPath()) {
@@ -146,7 +145,7 @@ final class Mailer
             ->merge($mail->bcc());
     }
 
-    private function fireSentEvent(Email $email, Envelope $envelope)
+    private function fireSentEvent(Email $email, Envelope $envelope): void
     {
         $this->event_dispatcher->fireSent(new EmailWasSent($email, $envelope));
     }

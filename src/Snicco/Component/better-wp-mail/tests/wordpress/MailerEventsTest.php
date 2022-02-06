@@ -19,8 +19,10 @@ use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 final class MailerEventsTest extends WPTestCase
 {
 
-    /** @test */
-    public function an_event_is_dispatched_before_an_email_is_sent()
+    /**
+     * @test
+     */
+    public function an_event_is_dispatched_before_an_email_is_sent(): void
     {
         $count = 0;
 
@@ -62,8 +64,10 @@ final class MailerEventsTest extends WPTestCase
         return $phpmailer->mock_sent;
     }
 
-    /** @test */
-    public function the_mail_can_be_customized()
+    /**
+     * @test
+     */
+    public function the_mail_can_be_customized(): void
     {
         add_filter(
             WelcomeEmail::class,
@@ -84,13 +88,15 @@ final class MailerEventsTest extends WPTestCase
         $mailer->send($email);
 
         $data = $this->getSentMails()[0];
-        $header = $data['header'];
+        $data['header'];
 
         $this->assertStringContainsString('Custom Html', $data['body']);
     }
 
-    /** @test */
-    public function an_event_is_dispatched_after_an_email_is_sent()
+    /**
+     * @test
+     */
+    public function an_event_is_dispatched_after_an_email_is_sent(): void
     {
         $count = 0;
         add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count) {

@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Middleware\Redirect;
 
 use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
-use Snicco\Component\StrArr\Arr;
 
 use function implode;
 use function in_array;
-use function is_int;
 use function ltrim;
+use function sprintf;
 use function strpos;
-use function trim;
 
 /**
  * @api
@@ -25,52 +25,55 @@ final class Redirect extends AbstractMiddleware
 {
 
     /**
-     * @var array<int,array>
+     * @var  array<string,array{to: string, status: positive-int}>
      */
     private array $redirects;
 
+    /**
+     * @param array<positive-int,array<string,string>> $redirects
+     */
     public function __construct(array $redirects)
     {
-        $this->normalize($redirects);
+        $this->redirects = $this->normalize($redirects);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        $path_redirect = Arr::get($this->redirects, $request->path());
-
-        if ($path_redirect) {
+        if (isset($this->redirects[$request->path()])) {
             return $this->respond()->redirect(
-                $path_redirect['to'],
-                $path_redirect['status']
+                $this->redirects[$request->path()]['to'],
+                $this->redirects[$request->path()]['status']
             );
         }
 
         $path_qs = $request->path() . '?' . $request->queryString();
-        $query_string_redirect = Arr::get($this->redirects, trim($path_qs));
 
-        if ($query_string_redirect) {
+        if (isset($this->redirects[$path_qs])) {
             return $this->respond()->redirect(
-                $query_string_redirect['to'],
-                $query_string_redirect['status']
+                $this->redirects[$path_qs]['to'],
+                $this->redirects[$path_qs]['status']
             );
         }
 
         return $next($request);
     }
 
-    private function normalize(array $redirects): void
+    /**
+     * @param array<positive-int,array<string,string>> $redirects
+     * @return array<string,array{to: string, status: positive-int}>
+     */
+    private function normalize(array $redirects): array
     {
         $arr = [301, 302, 303, 307, 308];
+        $_r = [];
         foreach ($redirects as $status => $redirect) {
-            if (!is_int($status)) {
-                throw new InvalidArgumentException(
-                    'Redirects must be keyed by their HTTP status code.'
-                );
-            }
-
             if (!in_array($status, $arr, true)) {
                 throw new InvalidArgumentException(
-                    '$status must be one of [%s].', implode(',', $arr)
+                    sprintf('$status must be one of [%s].', implode(',', $arr))
                 );
             }
 
@@ -81,9 +84,10 @@ final class Redirect extends AbstractMiddleware
                     ? $to
                     : '/' . ltrim($to, '/');
 
-                $this->redirects[$from] = ['to' => $to, 'status' => $status,];
+                $_r[$from] = ['to' => $to, 'status' => $status,];
             }
         }
+        return $_r;
     }
 
 }

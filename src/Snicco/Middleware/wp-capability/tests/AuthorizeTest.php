@@ -12,16 +12,23 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Middleware\WPCap\Authorize;
 
-use function array_merge;
-use function call_user_func_array;
+use function array_values;
 
 class AuthorizeTest extends MiddlewareTestCase
 {
 
     private Request $request;
 
-    /** @test */
-    public function a_user_with_given_capabilities_can_access_the_route()
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->request = $this->frontendRequest('/foo');
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_with_given_capabilities_can_access_the_route(): void
     {
         $wp = new AuthorizeTestScopableWp(function (string $cap) {
             if ($cap !== 'manage_options') {
@@ -37,13 +44,10 @@ class AuthorizeTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
     }
 
-    private function newMiddleware(ScopableWP $wp, string $cap, $id = null): Authorize
-    {
-        return new Authorize($wp, $cap, $id);
-    }
-
-    /** @test */
-    public function a_user_without_authorisation_to_the_route_will_throw_an_exception()
+    /**
+     * @test
+     */
+    public function a_user_without_authorisation_to_the_route_will_throw_an_exception(): void
     {
         $wp = new AuthorizeTestScopableWp(function (string $cap) {
             if ($cap !== 'manage_options') {
@@ -55,7 +59,7 @@ class AuthorizeTest extends MiddlewareTestCase
         $m = $this->newMiddleware($wp, 'manage_options');
 
         try {
-            $response = $this->runMiddleware($m, $this->request);
+            $this->runMiddleware($m, $this->request);
             $this->fail('An Exception should have been thrown.');
         } catch (HttpException $e) {
             $this->assertSame(403, $e->statusCode());
@@ -66,8 +70,10 @@ class AuthorizeTest extends MiddlewareTestCase
         }
     }
 
-    /** @test */
-    public function the_user_can_be_authorized_against_a_resource()
+    /**
+     * @test
+     */
+    public function the_user_can_be_authorized_against_a_resource(): void
     {
         $wp = new AuthorizeTestScopableWp(function (string $cap, int $resource_id) {
             if ($cap !== 'manage_options') {
@@ -84,7 +90,7 @@ class AuthorizeTest extends MiddlewareTestCase
         $m = $this->newMiddleware($wp, 'manage_options', 10);
 
         try {
-            $response = $this->runMiddleware($m, $this->request);
+            $this->runMiddleware($m, $this->request);
             $this->fail('An Exception should have been thrown.');
         } catch (HttpException $e) {
             $this->assertSame(403, $e->statusCode());
@@ -95,10 +101,9 @@ class AuthorizeTest extends MiddlewareTestCase
         }
     }
 
-    protected function setUp(): void
+    private function newMiddleware(ScopableWP $wp, string $cap, ?int $id = null): Authorize
     {
-        parent::setUp();
-        $this->request = $this->frontendRequest('/foo');
+        return new Authorize($cap, $id, $wp);
     }
 
 }
@@ -106,8 +111,14 @@ class AuthorizeTest extends MiddlewareTestCase
 class AuthorizeTestScopableWp extends ScopableWP
 {
 
+    /**
+     * @var Closure(string, mixed...):bool $user_can
+     */
     private Closure $user_can;
 
+    /**
+     * @param Closure(string, mixed...):bool $user_can
+     */
     public function __construct(Closure $user_can)
     {
         $this->user_can = $user_can;
@@ -115,7 +126,7 @@ class AuthorizeTestScopableWp extends ScopableWP
 
     public function currentUserCan(string $capability, ...$args): bool
     {
-        return call_user_func_array($this->user_can, array_merge([$capability], $args));
+        return call_user_func($this->user_can, $capability, ...array_values($args));
     }
 
 }

@@ -20,14 +20,20 @@ final class SessionStorageTestUsingArray extends TestCase
 
     use SignedUrlStorageTests;
 
-    /** @test */
-    public function the_storage_array_is_passed_by_reference()
+    /**
+     * @test
+     *
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress PossiblyNullArrayOffset
+     */
+    public function the_storage_array_is_passed_by_reference(): void
     {
         $arr = [];
         $storage = new SessionStorage($arr);
 
         $signer = new UrlSigner($storage, new Sha256Hasher(Secret::generate()));
 
+        /** @var array $arr */
         $this->assertCount(0, $arr);
 
         $signer->sign('/foo', 10);

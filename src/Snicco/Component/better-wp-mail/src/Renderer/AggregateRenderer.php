@@ -20,25 +20,16 @@ final class AggregateRenderer implements MailRenderer
     /**
      * @var array<string,MailRenderer>
      */
-    private $renderer_cache;
+    private $renderer_cache = [];
 
     public function __construct(MailRenderer ...$renderers)
     {
-        foreach ($renderers as $renderer) {
-            $this->addRenderer($renderer);
-        }
-    }
-
-    private function addRenderer(MailRenderer $renderer): void
-    {
-        $this->renderers[] = $renderer;
+        $this->renderers = $renderers;
     }
 
     /**
-     * @param string $template_name
-     * @param array $context
+     * @param array<string,mixed> $context
      *
-     * @return string|resource
      * @throws CantRenderMailContent
      */
     public function getMailContent(string $template_name, array $context = []): string

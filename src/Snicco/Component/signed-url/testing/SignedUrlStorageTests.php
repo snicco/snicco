@@ -14,8 +14,10 @@ use Snicco\Component\TestableClock\TestClock;
 trait SignedUrlStorageTests
 {
 
-    /** @test */
-    final public function garbage_collection_works()
+    /**
+     * @test
+     */
+    final public function garbage_collection_works(): void
     {
         $storage = $this->createStorage($clock = new TestClock());
 
@@ -63,28 +65,10 @@ trait SignedUrlStorageTests
         }
     }
 
-    protected function createSignedUrl(
-        string $link_target,
-        string $signature,
-        int $expires_in = 10,
-        $max_usage = 1
-    ): SignedUrl {
-        return SignedUrl::create(
-            $link_target,
-            $link_target,
-            $signature,
-            time() + $expires_in,
-            $max_usage
-        );
-    }
-
-    protected function advanceTime(int $seconds, TestClock $clock)
-    {
-        $clock->travelIntoFuture($seconds);
-    }
-
-    /** @test */
-    final function the_url_is_removed_from_storage_after_the_last_max_usages()
+    /**
+     * @test
+     */
+    final function the_url_is_removed_from_storage_after_the_last_max_usages(): void
     {
         $storage = $this->createStorage(new TestClock());
 
@@ -92,9 +76,10 @@ trait SignedUrlStorageTests
             $signed = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3)
         );
 
-        $storage->consume($id = $signed->identifier());
-        $storage->consume($id = $signed->identifier());
-        $storage->consume($id = $signed->identifier());
+        $id = $signed->identifier();
+        $storage->consume($id);
+        $storage->consume($id);
+        $storage->consume($id);
 
         try {
             $storage->consume($id);
@@ -107,10 +92,12 @@ trait SignedUrlStorageTests
         }
     }
 
-    /** @test */
-    final function decrementing_a_missing_signature_throws_an_exception()
+    /**
+     * @test
+     */
+    final function decrementing_a_missing_signature_throws_an_exception(): void
     {
-        $storage = $this->createStorage($clock = new TestClock());
+        $storage = $this->createStorage(new TestClock());
 
         $storage->store(
             $link = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3)
@@ -127,6 +114,29 @@ trait SignedUrlStorageTests
                 $e->getMessage()
             );
         }
+    }
+
+    protected function createSignedUrl(
+        string $link_target,
+        string $signature,
+        int $expires_in = 10,
+        int $max_usage = 1
+    ): SignedUrl {
+        return SignedUrl::create(
+            $link_target,
+            $link_target,
+            $signature,
+            time() + $expires_in,
+            $max_usage
+        );
+    }
+
+    /**
+     * @param positive-int $seconds
+     */
+    protected function advanceTime(int $seconds, TestClock $clock): void
+    {
+        $clock->travelIntoFuture($seconds);
     }
 
     abstract protected function createStorage(Clock $clock): SignedUrlStorage;

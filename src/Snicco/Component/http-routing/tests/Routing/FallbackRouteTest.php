@@ -11,8 +11,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class FallbackRouteTest extends HttpRunnerTestCase
 {
 
-    /** @test */
-    public function users_can_create_a_custom_fallback_web_route()
+    /**
+     * @test
+     */
+    public function users_can_create_a_custom_fallback_web_route(): void
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
 
@@ -23,8 +25,10 @@ class FallbackRouteTest extends HttpRunnerTestCase
         $this->assertResponseBody('fallback:bar/baz', $request);
     }
 
-    /** @test */
-    public function throws_an_exception_if_a_route_is_created_after_the_fallback_route()
+    /**
+     * @test
+     */
+    public function throws_an_exception_if_a_route_is_created_after_the_fallback_route(): void
     {
         $this->expectExceptionMessage(LogicException::class);
         $this->expectExceptionMessage(
@@ -35,8 +39,10 @@ class FallbackRouteTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('route1', '/foo');
     }
 
-    /** @test */
-    public function the_fallback_route_does_not_match_admin_requests()
+    /**
+     * @test
+     */
+    public function the_fallback_route_does_not_match_admin_requests(): void
     {
         $this->routeConfigurator()->fallback(RoutingTestController::class);
 
@@ -44,8 +50,10 @@ class FallbackRouteTest extends HttpRunnerTestCase
         $response->assertDelegated();
     }
 
-    /** @test */
-    public function the_fallback_route_will_not_match_for_requests_that_are_specified_in_the_exclusion_list()
+    /**
+     * @test
+     */
+    public function the_fallback_route_will_not_match_for_requests_that_are_specified_in_the_exclusion_list(): void
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
 
@@ -60,8 +68,10 @@ class FallbackRouteTest extends HttpRunnerTestCase
         $this->assertEmptyBody($this->frontendRequest('/sitemap.xml'));
     }
 
-    /** @test */
-    public function custom_exclusions_words_can_be_specified()
+    /**
+     * @test
+     */
+    public function custom_exclusions_words_can_be_specified(): void
     {
         $this->routeConfigurator()
             ->fallback([RoutingTestController::class, 'fallback'], ['foo', 'bar']);
@@ -86,8 +96,10 @@ class FallbackRouteTest extends HttpRunnerTestCase
         );
     }
 
-    /** @test */
-    public function an_exception_is_thrown_for_non_string_exclusions()
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_for_non_string_exclusions(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('All fallback excludes have to be strings.');
@@ -95,8 +107,10 @@ class FallbackRouteTest extends HttpRunnerTestCase
             ->fallback([RoutingTestController::class, 'fallback'], ['foo', 1]);
     }
 
-    /** @test */
-    public function the_pipe_symbol_can_be_passed()
+    /**
+     * @test
+     */
+    public function the_pipe_symbol_can_be_passed(): void
     {
         $this->routeConfigurator()
             ->fallback([RoutingTestController::class, 'fallback'], ['foo|bar', 'baz']);
@@ -117,16 +131,20 @@ class FallbackRouteTest extends HttpRunnerTestCase
         $this->assertResponseBody('fallback:biz', $this->frontendRequest('/biz'));
     }
 
-    /** @test */
-    public function fallback_routes_dont_match_requests_starting_with_wp_admin()
+    /**
+     * @test
+     */
+    public function fallback_routes_dont_match_requests_starting_with_wp_admin(): void
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
 
         $this->runKernel($this->frontendRequest('/wp-admin/foo'))->assertDelegated();
     }
 
-    /** @test */
-    public function the_fallback_route_will_match_trailing_slashes()
+    /**
+     * @test
+     */
+    public function the_fallback_route_will_match_trailing_slashes(): void
     {
         $this->routeConfigurator()->fallback([RoutingTestController::class, 'fallback']);
 

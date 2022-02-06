@@ -11,13 +11,12 @@ final class CookiePool
 {
 
     /**
-     * @var array
+     * @var array<string,string>
      */
-    private $cookies;
+    private array $cookies;
 
     /**
      * @param array<string,string> $cookies
-     *
      * @api
      */
     public function __construct(array $cookies)
@@ -27,6 +26,7 @@ final class CookiePool
 
     /**
      * @api
+     * @psalm-suppress MixedArgumentTypeCoercion
      */
     public static function fromSuperGlobals(): CookiePool
     {
@@ -35,6 +35,7 @@ final class CookiePool
 
     /**
      * @interal
+     * @psalm-internal Snicco\Component\Session
      */
     public function has(string $cookie_name): bool
     {
@@ -43,6 +44,7 @@ final class CookiePool
 
     /**
      * @interal
+     * @psalm-internal Snicco\Component\Session
      */
     public function get(string $cookie_name): ?string
     {

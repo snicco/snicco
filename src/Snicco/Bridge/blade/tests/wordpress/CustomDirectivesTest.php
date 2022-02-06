@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\Assert as PHPUnit;
+use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Component\Templating\GlobalViewContext;
@@ -34,82 +35,9 @@ class CustomDirectivesTest extends WPTestCase
     protected GlobalViewContext $global_view_context;
     protected BladeStandalone $blade;
 
-    /** @test */
-    public function custom_auth_user_directive_works()
-    {
-        $this->blade->bindWordPressDirectives(new ScopableWP());
-
-        $user = $this->factory()->user->create_and_get();
-        wp_set_current_user($user->ID);
-
-        $view = $this->view('auth');
-        $content = $view->toString();
-        $this->assertViewContent('AUTHENTICATED', $content);
-
-        wp_logout();
-
-        $view = $this->view('auth');
-        $content = $view->toString();
-        $this->assertViewContent('', $content);
-    }
-
-    private function view(string $view): View
-    {
-        return $this->view_engine->make('blade-features.' . $view);
-    }
-
-    protected function assertViewContent(string $expected, $actual)
-    {
-        $actual = ($actual instanceof View) ? $actual->toString() : $actual;
-
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
-
-        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
-    }
-
-    /** @test */
-    public function custom_guest_user_directive_works()
-    {
-        $this->blade->bindWordPressDirectives(new ScopableWP());
-
-        $view = $this->view('guest');
-        $content = $view->toString();
-        $this->assertViewContent('YOU ARE A GUEST', $content);
-
-        wp_set_current_user($this->factory()->user->create_and_get()->ID);
-
-        $view = $this->view('guest');
-        $content = $view->toString();
-        $this->assertViewContent('', $content);
-    }
-
-    /** @test */
-    public function custom_wp_role_directives_work()
-    {
-        $this->blade->bindWordPressDirectives(new ScopableWP());
-
-        $admin = $this->factory()->user->create_and_get(['role' => 'administrator']);
-        wp_set_current_user($admin->ID);
-
-        $view = $this->view('role');
-        $content = $view->toString();
-        $this->assertViewContent('ADMIN', $content);
-
-        $editor = $this->factory()->user->create_and_get(['role' => 'editor']);
-        wp_set_current_user($editor->ID);
-
-        $view = $this->view('role');
-        $content = $view->toString();
-        $this->assertViewContent('EDITOR', $content);
-
-        $author = $this->factory()->user->create_and_get(['role' => 'author']);
-        wp_set_current_user($author->ID);
-
-        $view = $this->view('role');
-        $content = $view->toString();
-        $this->assertViewContent('', $content);
-    }
-
+    /**
+     * @psalm-suppress NullArgument
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -139,7 +67,97 @@ class CustomDirectivesTest extends WPTestCase
         $this->clearCache();
     }
 
-    private function clearCache()
+    protected function tearDown(): void
+    {
+        $this->clearCache();
+        parent::tearDown();
+    }
+
+    /**
+     * @test
+     */
+    public function custom_auth_user_directive_works(): void
+    {
+        $this->blade->bindWordPressDirectives(new ScopableWP());
+
+        $user = $this->factory()->user->create_and_get();
+        wp_set_current_user($user->ID);
+
+        $view = $this->view('auth');
+        $content = $view->toString();
+        $this->assertViewContent('AUTHENTICATED', $content);
+
+        wp_logout();
+
+        $view = $this->view('auth');
+        $content = $view->toString();
+        $this->assertViewContent('', $content);
+    }
+
+    /**
+     * @test
+     */
+    public function custom_guest_user_directive_works(): void
+    {
+        $this->blade->bindWordPressDirectives(new ScopableWP());
+
+        $view = $this->view('guest');
+        $content = $view->toString();
+        $this->assertViewContent('YOU ARE A GUEST', $content);
+
+        wp_set_current_user($this->factory()->user->create_and_get()->ID);
+
+        $view = $this->view('guest');
+        $content = $view->toString();
+        $this->assertViewContent('', $content);
+    }
+
+    /**
+     * @test
+     */
+    public function custom_wp_role_directives_work(): void
+    {
+        $this->blade->bindWordPressDirectives(new ScopableWP());
+
+        $admin = $this->factory()->user->create_and_get(['role' => 'administrator']);
+        wp_set_current_user($admin->ID);
+
+        $view = $this->view('role');
+        $content = $view->toString();
+        $this->assertViewContent('ADMIN', $content);
+
+        $editor = $this->factory()->user->create_and_get(['role' => 'editor']);
+        wp_set_current_user($editor->ID);
+
+        $view = $this->view('role');
+        $content = $view->toString();
+        $this->assertViewContent('EDITOR', $content);
+
+        $author = $this->factory()->user->create_and_get(['role' => 'author']);
+        wp_set_current_user($author->ID);
+
+        $view = $this->view('role');
+        $content = $view->toString();
+        $this->assertViewContent('', $content);
+    }
+
+    protected function assertViewContent(string $expected, string $actual): void
+    {
+        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+
+        if (null === $actual) {
+            throw new RuntimeException('preg_replcae failed in test case.');
+        }
+
+        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
+    }
+
+    private function view(string $view): View
+    {
+        return $this->view_engine->make('blade-features.' . $view);
+    }
+
+    private function clearCache(): void
     {
         $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
         foreach ($files as $file) {

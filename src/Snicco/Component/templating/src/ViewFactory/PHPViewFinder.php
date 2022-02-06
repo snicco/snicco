@@ -6,6 +6,7 @@ namespace Snicco\Component\Templating\ViewFactory;
 
 use Snicco\Component\Templating\Exception\ViewNotFound;
 
+use function array_map;
 use function rtrim;
 
 use const DIRECTORY_SEPARATOR;
@@ -17,22 +18,25 @@ final class PHPViewFinder
 {
 
     /**
-     * Directories in which we search for views.
-     *
-     * @param string[] $directories
+     * @var list<string> $directories
      */
     private array $directories;
 
+    /**
+     * @param list<string> $directories
+     */
     public function __construct(array $directories = [])
     {
         $this->directories = $this->normalize($directories);
     }
 
+    /**
+     * @param list<string> $directories
+     * @return list<string>
+     */
     private function normalize(array $directories): array
     {
-        return array_filter(
-            array_map(fn(string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories)
-        );
+        return array_map(fn(string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     /**
@@ -58,7 +62,7 @@ final class PHPViewFinder
         throw new ViewNotFound("No file can be found for view name [$view_name].");
     }
 
-    private function normalizeViewName(string $view_name)
+    private function normalizeViewName(string $view_name): string
     {
         $name = strstr($view_name, '.php', true);
         $name = ($name === false) ? $view_name : $name;
@@ -67,12 +71,15 @@ final class PHPViewFinder
         return str_replace('.', '/', $name);
     }
 
-    public function includeFile(string $path, array $context)
+    /**
+     * @psalm-suppress UnresolvableInclude
+     */
+    public function includeFile(string $path, array $context): void
     {
-        return (static function () use ($path, $context) {
+        (static function () use ($path, $context): void {
             extract($context, EXTR_SKIP);
             unset($context);
-            return require $path;
+            require $path;
         })();
     }
 

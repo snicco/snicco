@@ -31,8 +31,10 @@ class TransactionsTest extends WPTestCase
      */
     private mysqli $verification_connection;
 
-    /** @test */
-    public function a_basic_manual_transaction_works()
+    /**
+     * @test
+     */
+    public function a_basic_manual_transaction_works(): void
     {
         DB::beginTransaction();
 
@@ -54,7 +56,7 @@ class TransactionsTest extends WPTestCase
         $this->assertTeamExists('FC Barcelona');
     }
 
-    private function assertTeamNotExists(string $team_name)
+    private function assertTeamNotExists(string $team_name): void
     {
         $result = $this->verification_connection->query(
             "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
@@ -64,7 +66,7 @@ class TransactionsTest extends WPTestCase
         $this->assertSame('0', $count, 'The team: ' . $team_name . ' was found.');
     }
 
-    private function assertTeamExists(string $team_name)
+    private function assertTeamExists(string $team_name): void
     {
         $result = $this->verification_connection->query(
             "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
@@ -74,8 +76,10 @@ class TransactionsTest extends WPTestCase
         $this->assertSame('1', $count, "The team [$team_name] was not found.");
     }
 
-    /** @test */
-    public function a_manual_transaction_can_be_rolled_back()
+    /**
+     * @test
+     */
+    public function a_manual_transaction_can_be_rolled_back(): void
     {
         DB::beginTransaction();
 
@@ -99,8 +103,10 @@ class TransactionsTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function nested_transactions_work()
+    /**
+     * @test
+     */
+    public function nested_transactions_work(): void
     {
         try {
             DB::transaction(function () {
@@ -118,8 +124,10 @@ class TransactionsTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function automatic_transactions_work_when_no_errors_occur()
+    /**
+     * @test
+     */
+    public function automatic_transactions_work_when_no_errors_occur(): void
     {
         DB::transaction(function (MysqliConnection $connection) {
             $connection->table('football_teams')->insert([
@@ -134,8 +142,10 @@ class TransactionsTest extends WPTestCase
         $this->assertTeamExists('Arsenal');
     }
 
-    /** @test */
-    public function automatic_transactions_get_rolled_back_when_a_sql_error_occurs()
+    /**
+     * @test
+     */
+    public function automatic_transactions_get_rolled_back_when_a_sql_error_occurs(): void
     {
         try {
             DB::transaction(function (MysqliConnection $connection) {
@@ -164,8 +174,10 @@ class TransactionsTest extends WPTestCase
         }
     }
 
-    /** @test */
-    public function any_exception_will_cause_the_transaction_to_be_rolled_back()
+    /**
+     * @test
+     */
+    public function any_exception_will_cause_the_transaction_to_be_rolled_back(): void
     {
         try {
             DB::transaction(function (MysqliConnection $connection) {
@@ -209,7 +221,7 @@ class TransactionsTest extends WPTestCase
         $this->createInitialTable();
     }
 
-    private function createInitialTable()
+    private function createInitialTable(): void
     {
         if (!Schema::hasTable('football_teams')) {
             Schema::create('football_teams', function (Blueprint $table) {
@@ -232,7 +244,7 @@ class TransactionsTest extends WPTestCase
         parent::tearDown();
     }
 
-    private function dropInitialTable()
+    private function dropInitialTable(): void
     {
         if (Schema::hasTable('football_teams')) {
             Schema::drop('football_teams');
