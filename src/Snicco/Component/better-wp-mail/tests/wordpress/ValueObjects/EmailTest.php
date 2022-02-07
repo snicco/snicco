@@ -17,6 +17,12 @@ use function fopen;
 final class EmailTest extends WPTestCase
 {
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->attachment_dir = dirname(__DIR__, 2) . '/fixtures';
+    }
+
     /**
      * @test
      */
@@ -50,6 +56,9 @@ final class EmailTest extends WPTestCase
         $this->assertCount(2, $cc = $email->to());
         $this->assertTrue($cc->has('marlon@web.de'));
         $this->assertTrue($cc->has('jon@web.de'));
+
+        $email = $email->withTo([]);
+        $this->assertCount(0, $email->to());
     }
 
     /**
@@ -426,6 +435,9 @@ final class EmailTest extends WPTestCase
         $email = $email->addContext('bar', 'biz');
 
         $this->assertSame(['foo' => 'baz', 'bar' => 'biz'], $email->context());
+
+        $email = $email->withContext(['new' => 'foo']);
+        $this->assertSame(['new' => 'foo'], $email->context());
     }
 
     /**
@@ -444,6 +456,9 @@ final class EmailTest extends WPTestCase
         $email = $email->addCustomHeaders(['X-BAZ' => 'BIZ']);
 
         $this->assertSame(['X-FOO' => 'BAR', 'X-BAZ' => 'BIZ'], $email->customHeaders());
+
+        $email = $email->withCustomHeaders(['X-NEW' => 'FOO']);
+        $this->assertSame(['X-NEW' => 'FOO'], $email->customHeaders());
     }
 
     /**
@@ -484,12 +499,6 @@ final class EmailTest extends WPTestCase
         $this->expectExceptionMessage('[images] is a reserved context key');
 
         $email->addContext('images', 'foo');
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->attachment_dir = dirname(__DIR__, 2) . '/fixtures';
     }
 
 }

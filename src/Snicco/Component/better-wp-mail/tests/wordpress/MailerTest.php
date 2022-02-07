@@ -23,12 +23,18 @@ use WP_User;
 use function array_merge;
 use function dirname;
 use function file_get_contents;
+use function sprintf;
 use function str_replace;
+use function wp_mail;
 
+/**
+ * @psalm-suppress PossiblyUndefinedIntArrayOffset
+ */
 final class MailerTest extends WPTestCase
 {
 
     private string $fixtures_dir;
+    private MockPHPMailer $php_mailer;
 
     protected function setUp(): void
     {
@@ -38,6 +44,7 @@ final class MailerTest extends WPTestCase
         $phpmailer = new MockPHPMailer(true);
         $phpmailer->mock_sent = [];
         $this->fixtures_dir = dirname(__DIR__) . '/fixtures';
+        $this->php_mailer = $phpmailer;
     }
 
     /**
@@ -411,9 +418,10 @@ final class MailerTest extends WPTestCase
     /**
      * @test
      */
-    public function testCustomRendererChain(): void
+    public function test_with_custom_renderer_chain(): void
     {
         $chain = new AggregateRenderer(
+            new FilesystemRenderer(),
             new NamedViewRenderer(),
         );
 
@@ -427,6 +435,31 @@ final class MailerTest extends WPTestCase
         $mailer->send($email);
 
         $this->assertCount(1, $this->getSentMails());
+        $this->assertStringContainsString($this->fixtures_dir . '/mail.foobar-mail', $this->getSentMails()[0]['body']);
+    }
+
+    /**
+     * @test
+     */
+    public function test_with_custom_renderer_does_work_with_multiple_calls(): void
+    {
+        $chain = new AggregateRenderer(
+            new FilesystemRenderer(),
+            new NamedViewRenderer(),
+        );
+
+        $mailer = new Mailer(new WPMailTransport(), $chain);
+
+        $email = new Email();
+        $email = $email->withHtmlTemplate($this->fixtures_dir . '/mail.foobar-mail')
+            ->withTo('calvin@web.de');
+
+        $mailer->send($email);
+        $mailer->send($email);
+
+        $this->assertCount(2, $this->getSentMails());
+        $this->assertStringContainsString($this->fixtures_dir . '/mail.foobar-mail', $this->getSentMails()[0]['body']);
+        $this->assertStringContainsString($this->fixtures_dir . '/mail.foobar-mail', $this->getSentMails()[1]['body']);
     }
 
     /**
@@ -894,6 +927,98 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
     }
 
+    /**
+     * @test
+     */
+    public function test_exception_if_mail_has_no_to_cc_and_bcc_headers(): void
+    {
+        $mailer = new Mailer();
+
+        $email = new TestMail();
+        $email = $email->withTo('c@web.de')->withTextBody('text');
+
+        $mailer->send($email);
+
+        $email = new TestMail();
+        $email = $email->withCc('c@web.de')->withTextBody('text');
+
+        $mailer->send($email);
+
+        $email = new TestMail();
+        $email = $email->withBcc('c@web.de')->withTextBody('text');
+
+        $mailer->send($email);
+
+        $this->assertCount(3, $this->getSentMails());
+
+        $email = new TestMail();
+        $email = $email->withTextBody('text');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('An email must have a "To", "Cc", or "Bcc" header.');
+        $mailer->send($email);
+    }
+
+    /**
+     * @test
+     */
+    public function a_mail_with_just_attachments_can_be_sent(): void
+    {
+        $mailer = new Mailer(new WPMailTransport());
+
+        $email = (new Email())->withTo('c@web.de')->addAttachment(
+            $this->fixtures_dir . '/php-elephant.jpg',
+            'my-elephant',
+            'image/jpeg'
+        );
+
+        $mailer->send($email);
+
+        $this->assertCount(1, $mails = $this->getSentMails());
+
+        $first = $mails[0];
+
+        $body = $first['body'];
+        $this->assertStringContainsString('name=my-elephant', $body);
+
+        // phpmailer reset, normal mails cant send empty emails.
+        $this->assertFalse(wp_mail('calvin@web.de', 'subject', ''));
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_renderer_does_not_support_html_template(): void
+    {
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer());
+
+        $email = (new Email())->withHtmlTemplate(__DIR__ . '/test.md');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            sprintf('The mail template renderer does not support html template [%s]', __DIR__ . '/test.md')
+        );
+
+        $mailer->send($email);
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_the_renderer_does_not_support_text_template(): void
+    {
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer());
+
+        $email = (new Email())->withTextTemplate(__DIR__ . '/test.md');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            sprintf('The mail template renderer does not support text template [%s]', __DIR__ . '/test.md')
+        );
+
+        $mailer->send($email);
+    }
+
     private function createAdmin(array $data): WP_User
     {
         return $this->factory()->user->create_and_get(
@@ -901,10 +1026,14 @@ final class MailerTest extends WPTestCase
         );
     }
 
+    /**
+     * @return list<array{header: string, body:string, subject:string}>
+     */
     private function getSentMails(): array
     {
-        global $phpmailer;
-        return $phpmailer->mock_sent;
+        /** @var list<array{header: string, body:string, subject:string}> $mails */
+        $mails = $this->php_mailer->mock_sent;
+        return $mails;
     }
 
 }
