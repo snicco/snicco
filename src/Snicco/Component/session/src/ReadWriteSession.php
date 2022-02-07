@@ -172,7 +172,7 @@ final class ReadWriteSession implements Session
         $array = $this->get($key, []);
 
         if (!is_array($array)) {
-            throw new RuntimeException("Value for key [$key] is not an array.");
+            throw new LogicException("Value for key [$key] is not an array.");
         }
 
         $array[] = $value;

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\ParameterBag\Tests;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\ParameterBag\ParameterPag;
+use Snicco\Component\ParameterBag\ParameterBag;
 
 final class ParameterBagTest extends TestCase
 {
@@ -15,7 +16,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testHas(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'foo' => [
                 'bar' => ['baz' => 'biz'],
                 'boo' => 'bam',
@@ -35,7 +36,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testGet(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'foo' => [
                 'bar' => ['baz' => 'biz'],
                 'boo' => 'bam',
@@ -59,7 +60,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testAdd(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'foo' => [
                 'bar' => ['baz' => 'biz'],
                 'boo' => 'bam',
@@ -77,7 +78,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testSet(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'foo' => [
                 'bar' => ['baz' => 'biz'],
                 'boo' => 'bam',
@@ -94,7 +95,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testPrepend(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'users' => [
                 'names' => [
                     'calvin',
@@ -117,7 +118,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testAppend(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'users' => [
                 'names' => [
                     'calvin',
@@ -140,7 +141,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testRemove(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'foo' => [
                 'bar' => ['baz' => 'biz'],
                 'boo' => 'bam',
@@ -160,7 +161,7 @@ final class ParameterBagTest extends TestCase
      */
     public function testToArray(): void
     {
-        $bag = new ParameterPag(
+        $bag = new ParameterBag(
             $arr = [
                 'foo' => [
                     'bar' => ['baz' => 'biz'],
@@ -177,7 +178,7 @@ final class ParameterBagTest extends TestCase
      */
     public function test_arrayAccess(): void
     {
-        $bag = new ParameterPag([
+        $bag = new ParameterBag([
             'foo' => [
                 'bar' => ['baz' => 'biz'],
                 'boo' => 'bam',
@@ -195,6 +196,34 @@ final class ParameterBagTest extends TestCase
         unset($bag['foo.bar.baz']);
 
         $this->assertEquals([], $bag->get('foo.bar'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_prepend_throws_exception_for_non_array(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('not an array');
+
+        $bag = new ParameterBag();
+        $bag->set('foo', 'bar');
+
+        $bag->prepend('foo', 'baz');
+    }
+
+    /**
+     * @test
+     */
+    public function test_append_throws_exception_for_non_array(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('not an array');
+
+        $bag = new ParameterBag();
+        $bag->set('foo', 'bar');
+
+        $bag->append('foo', 'baz');
     }
 
 }
