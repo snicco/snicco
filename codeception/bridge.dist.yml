@@ -1,0 +1,10 @@
+include:
+  - ../src/Snicco/Bridge/*
+paths:
+  output: ../_output
+  tests: ../tests
+  data: ../tests/_data
+  support: ../tests/_support
+settings:
+  colors: true
+bootstrap: bootstrap.php
