@@ -29,6 +29,24 @@ final class WPObjectCachePsr16Test extends WPTestCase
 
     private CacheInterface $cache;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        global $wp_object_cache;
+
+        if (!$wp_object_cache instanceof WP_Object_Cache) {
+            throw new RuntimeException('wp object cache not setup.');
+        }
+
+        if (!method_exists($wp_object_cache, 'redis_status')) {
+            throw new RuntimeException('wp object cache does not have method redis_status');
+        }
+
+        if (false === $wp_object_cache->redis_status()) {
+            throw new RuntimeException('Redis not running.');
+        }
+    }
+
     /**
      * Data provider for invalid cache keys.
      *
@@ -842,24 +860,6 @@ final class WPObjectCachePsr16Test extends WPTestCase
             $cacheObject->foo,
             'Object in cache should not have their values changed.'
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        global $wp_object_cache;
-
-        if (!$wp_object_cache instanceof WP_Object_Cache) {
-            throw new RuntimeException('wp object cache not setup.');
-        }
-
-        if (!method_exists($wp_object_cache, 'redis_status')) {
-            throw new RuntimeException('wp object cache does not have method redis_status');
-        }
-
-        if (false === $wp_object_cache->redis_status()) {
-            throw new RuntimeException('Redis not running.');
-        }
     }
 
 }
