@@ -20,6 +20,8 @@ use function current_user_can;
 use function do_action;
 use function error_reporting;
 use function get_current_user_id;
+use function get_option;
+use function update_option;
 use function wp_cache_get;
 use function wp_cache_set;
 use function wp_set_current_user;
@@ -28,7 +30,7 @@ use const E_ALL;
 use const E_USER_NOTICE;
 
 /**
- * @api integration tests that load WordPress code.
+ * @psalm-suppress UndefinedMagicMethod
  */
 final class ScopableWPTest extends WPTestCase
 {
@@ -114,6 +116,35 @@ final class ScopableWPTest extends WPTestCase
 
         $this->assertSame(false, wp_cache_get('foo'));
         $this->assertSame(false, wp_cache_get('baz'));
+    }
+
+    /**
+     * @test
+     */
+    public function if_the_wp_prefix_does_not_exist_the_global_namespace_is_tried(): void
+    {
+        update_option('foo', 'bar');
+
+        $this->assertSame('bar', get_option('foo'));
+
+        $wp_api = new TestWPApi();
+
+        $this->assertSame('bar', $wp_api->getOption('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function a_proxied_function_can_be_called_twice_and_method_name_converting_is_cached(): void
+    {
+        update_option('foo', 'bar');
+
+        $this->assertSame('bar', get_option('foo'));
+
+        $wp_api = new TestWPApi();
+
+        $this->assertSame('bar', $wp_api->getOption('foo'));
+        $this->assertSame('bar', $wp_api->getOption('foo'));
     }
 
     /**
