@@ -132,7 +132,9 @@ final class Str
         if ($encoding === null) {
             $encoding = mb_internal_encoding();
             if (!is_string($encoding)) {
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException('Internal multi-byte encoding not set.');
+                // @codeCoverageIgnoreEnd
             }
         }
         return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_substr(
@@ -171,7 +173,9 @@ final class Str
 
         $res = substr($subject, $position + strlen($search));
         if (false === $res) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("substr returned false for subject [$subject].");
+            // @codeCoverageIgnoreEnd
         }
         return $res;
     }

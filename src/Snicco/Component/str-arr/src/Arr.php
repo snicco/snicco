@@ -78,7 +78,7 @@ final class Arr
         foreach ($array as $value) {
             return $value;
         }
-        
+
         /** @var TVal|null $default */
         return $default;
     }
@@ -86,20 +86,25 @@ final class Arr
     /**
      * Get one or a specified number of random values from an array.
      *
-     * @param positive-int $number
-     * @param non-empty-array<array-key,mixed> $array
+     * @template T
      *
-     * @return list<mixed>
+     * @param positive-int $number
+     * @param array<T> $array
+     *
+     * @return T|non-empty-list<T>
+     * @psalm-return ($number is 1 ? T : list<T>)
+     *
      * @throws InvalidArgumentException If the requested count is greater than the number of array elements
      *
      * @psalm-suppress TypeDoesNotContainType
      * @psalm-suppress MixedAssignment
+     * @psalm-suppress DocblockTypeContradiction
      */
-    public static function random(array $array, int $number = 1): array
+    public static function random(array $array, int $number = 1)
     {
         $count = count($array);
 
-        if ($count === 0) {
+        if (empty($array)) {
             throw new InvalidArgumentException('$array cant be empty.');
         }
 
@@ -118,6 +123,9 @@ final class Arr
         $results = [];
 
         foreach ((array)$keys as $key) {
+            if ($number === 1) {
+                return $array[$key];
+            }
             $results[] = $array[$key];
         }
 
@@ -285,15 +293,15 @@ final class Arr
      * Determine if any of the keys exist in an array using "dot" notation.
      *
      * @param ArrayAccess|array $array
-     * @param string|string[] $keys
+     * @param string|non-empty-array<string> $keys
      */
     public static function hasAny($array, $keys): bool
     {
         self::checkIsArray($array, 'hasAny');
-        $keys = is_string($keys) ? [$keys] : $keys;
+        $keys = self::toArray($keys);
         self::checkAllStringKeys($keys, 'hasAny');
 
-        if ($keys === [] || $array === []) {
+        if ([] === $array) {
             return false;
         }
 
@@ -427,11 +435,7 @@ final class Arr
      */
     public static function dataGet($target, $key, $default = null)
     {
-        if (!is_string($key) && !is_array($key)) {
-            throw new InvalidArgumentException(
-                sprintf('$key has to be string or array. Got [%s]', gettype($key))
-            );
-        }
+        self::checkAllStringKeys(self::toArray($key), 'dataGet');
 
         $keys = is_array($key) ? $key : explode('.', $key);
 
