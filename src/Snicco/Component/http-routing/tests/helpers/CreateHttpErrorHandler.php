@@ -17,7 +17,7 @@ use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 
-trait  CreateHttpErrorHandler
+trait CreateHttpErrorHandler
 {
 
     public function createHttpErrorHandler(ResponseFactoryInterface $response_factory): HttpErrorHandlerInterface
