@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\OpenRedirectProtection\Tests;
 
+use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
@@ -222,6 +223,16 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
         $response->psr()->assertRedirect('/?intended_redirect=https://paypal.com/pay');
+    }
+
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_for_an_invalid_host(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid host [bogus].');
+        new OpenRedirectProtection('bogus');
     }
 
     /**
