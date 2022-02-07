@@ -36,8 +36,7 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
                 );
             }
         }
-
-        throw new BadViewComposer('A view composer has to be a class name or a closure.');
+        throw new BadViewComposer('A view composer has to be a class-string or a closure.');
     }
 
 }

@@ -6,11 +6,10 @@ namespace Snicco\Component\Templating\ViewFactory;
 
 use RuntimeException;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
+use Snicco\Component\Templating\OutputBuffer;
 use Snicco\Component\Templating\View\PHPView;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Throwable;
-
-use function ob_get_clean;
 
 /**
  * @api
@@ -45,7 +44,7 @@ final class PHPViewFactory implements ViewFactory
     {
         $ob_level = ob_get_level();
 
-        ob_start();
+        OutputBuffer::start();
 
         try {
             $this->render($view);
@@ -53,13 +52,7 @@ final class PHPViewFactory implements ViewFactory
             $this->handleViewException($e, $ob_level, $view);
         }
 
-        $output = ob_get_clean();
-
-        if (false === $output) {
-            throw new RuntimeException('Output buffering was not enabled. This should not be happen.');
-        }
-
-        return ltrim($output);
+        return ltrim(OutputBuffer::get());
     }
 
     private function render(PHPView $view): void
@@ -104,7 +97,7 @@ final class PHPViewFactory implements ViewFactory
     private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
     {
         while (ob_get_level() > $ob_level) {
-            ob_end_clean();
+            OutputBuffer::remove();
         }
 
         throw ViewCantBeRendered::fromPrevious($view->name(), $e);
