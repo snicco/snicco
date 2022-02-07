@@ -11,8 +11,10 @@ use LogicException;
 use function bin2hex;
 use function fopen;
 use function fseek;
+use function gettype;
 use function is_resource;
 use function is_string;
+use function sprintf;
 use function stream_get_meta_data;
 
 use const SEEK_CUR;
@@ -48,15 +50,10 @@ final class Attachment
 
     /**
      * @param resource|string $body
-     * @psalm-suppress DocblockTypeContradiction
      * @throws Exception random bytes can't be generated for the content id
      */
     private function __construct($body, string $filename, string $content_type = null, bool $inline = false)
     {
-        if (!is_string($body) && !is_resource($body)) {
-            throw new InvalidArgumentException('The body of must be a string or a resource.');
-        }
-
         $this->content_type = ($content_type === null) ? 'application/octet-stream' : $content_type;
         $this->filename = $filename;
         $this->disposition = $inline ? 'inline' : 'attachment';
@@ -79,7 +76,9 @@ final class Attachment
         }
         $stream = @fopen($path, 'r');
         if (false === $stream) {
+            // @codeCoverageIgnoreStart
             throw new InvalidArgumentException(sprintf('Unable to open path "%s".', $path));
+            // @codeCoverageIgnoreEnd
         }
 
         return new self($stream, $name ?? basename($path), $content_type, $inline);
@@ -87,6 +86,8 @@ final class Attachment
 
     /**
      * @param resource|string $data
+     *
+     * @psalm-suppress DocblockTypeContradiction
      */
     public static function fromData(
         $data,
@@ -94,6 +95,12 @@ final class Attachment
         string $content_type = null,
         bool $inline = false
     ): Attachment {
+        if (!is_string($data) && !is_resource($data)) {
+            throw new InvalidArgumentException(
+                sprintf("\$data must be string or resource.\nGot [%s].", gettype($data))
+            );
+        }
+
         return new self($data, $filename, $content_type, $inline);
     }
 
@@ -140,7 +147,7 @@ final class Attachment
     public function cid(): string
     {
         if ('inline' !== $this->disposition) {
-            throw new LogicException('Attachment is not embedded an has no cid.');
+            throw new LogicException('Attachment is not embedded and has no cid.');
         }
         return $this->cid;
     }

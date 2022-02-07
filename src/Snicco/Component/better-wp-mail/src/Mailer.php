@@ -22,6 +22,8 @@ use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
 
 use function count;
+use function get_class;
+use function sprintf;
 
 /**
  * @api
@@ -54,8 +56,7 @@ final class Mailer
         $this->fireSendingEvent($event = new SendingEmail($mail));
 
         $mail = $event->email;
-        $mail = $this->prepare($mail);
-        $this->validate($mail);
+        $mail = $this->prepareAndValidate($mail);
 
         $envelope = new Envelope(
             $this->determineSender($mail),
@@ -72,14 +73,27 @@ final class Mailer
         $this->event_dispatcher->fireSending($event);
     }
 
-    private function prepare(Email $mail): Email
+    private function prepareAndValidate(Email $mail): Email
     {
-        if ($html_template = $mail->htmlTemplate()) {
+        $html_template = $mail->htmlTemplate();
+        if ($html_template) {
+            if (!$this->mail_renderer->supports($html_template)) {
+                throw new LogicException(
+                    sprintf('The mail template renderer does not support html template [%s]', $html_template)
+                );
+            }
+
             $html = $this->mail_renderer->getMailContent($html_template, $mail->context());
             $mail = $mail->withHtmlBody($html);
         }
 
-        if ($text_template = $mail->textTemplate()) {
+        $text_template = $mail->textTemplate();
+        if ($text_template) {
+            if (!$this->mail_renderer->supports($text_template)) {
+                throw new LogicException(
+                    sprintf('The mail template renderer does not support text template [%s]', $text_template)
+                );
+            }
             $text = $this->mail_renderer->getMailContent($text_template, $mail->context());
             $mail = $mail->withTextBody($text);
         }
@@ -94,17 +108,7 @@ final class Mailer
             $mail = $mail->withReplyTo($reply_to);
         }
 
-        return $mail;
-    }
-
-    // This has to be mutable in order to allow other third-party developers to customize the email.
-    private function validate(Email $mail): void
-    {
-        if (
-            null === $mail->textBody()
-            && null === $mail->htmlBody()
-            && !count($mail->attachments())
-        ) {
+        if (null === $mail->textBody() && null === $mail->htmlBody() && !count($mail->attachments())) {
             throw new LogicException('An email must have a text or an HTML body or attachments.');
         }
 
@@ -112,9 +116,8 @@ final class Mailer
             throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
         }
 
-        if (!count($mail->from()) && null === $mail->sender()) {
-            throw new LogicException('An email must have a "From" or a "Sender" header.');
-        }
+
+        return $mail;
     }
 
     // We make a clone of the objects so that no hooked listener can modify them and event other
@@ -131,11 +134,9 @@ final class Mailer
             return $from[0];
         }
 
-        if ($return = $mail->returnPath()) {
-            return $return;
-        }
-
-        return $this->default_config->getFrom();
+        // @codeCoverageIgnoreStart
+        throw new LogicException(sprintf('Cant determine sender for mail [%s].', get_class($mail)));
+        // @codeCoverageIgnoreEnd
     }
 
     private function mergeRecipientsFromHeaders(Email $mail): MailboxList

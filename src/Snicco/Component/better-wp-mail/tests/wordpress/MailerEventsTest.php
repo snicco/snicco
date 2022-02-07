@@ -19,6 +19,15 @@ use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 final class MailerEventsTest extends WPTestCase
 {
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        global $phpmailer;
+
+        $phpmailer = new MockPHPMailer(true);
+        $phpmailer->mock_sent = [];
+    }
+
     /**
      * @test
      */
@@ -51,17 +60,6 @@ final class MailerEventsTest extends WPTestCase
         $header = $data['header'];
 
         $this->assertStringContainsString('To: c@web.de', $header);
-    }
-
-    private function getEventDispatcher(): MailEvents
-    {
-        return new MailEventsUsingWPHooks(new ScopableWP());
-    }
-
-    private function getSentMails(): array
-    {
-        global $phpmailer;
-        return $phpmailer->mock_sent;
     }
 
     /**
@@ -101,6 +99,7 @@ final class MailerEventsTest extends WPTestCase
         $count = 0;
         add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count) {
             $this->assertSame('foo', $sent_email->email()->htmlBody());
+            $this->assertTrue($sent_email->envelope()->recipients()->has('c@web.de'));
             $count++;
         });
 
@@ -123,13 +122,15 @@ final class MailerEventsTest extends WPTestCase
         $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
     }
 
-    protected function setUp(): void
+    private function getEventDispatcher(): MailEvents
     {
-        parent::setUp();
-        global $phpmailer;
+        return new MailEventsUsingWPHooks(new ScopableWP());
+    }
 
-        $phpmailer = new MockPHPMailer(true);
-        $phpmailer->mock_sent = [];
+    private function getSentMails(): array
+    {
+        global $phpmailer;
+        return $phpmailer->mock_sent;
     }
 
 }

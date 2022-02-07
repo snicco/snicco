@@ -29,7 +29,7 @@ final class Mailbox
     private const PATTERN = '/^(?<name>\w+\s?\w+)?\s*<(?<address>[^>]+)>$/';
 
     /**
-     * @var callable|null
+     * @var callable(string):bool|null
      */
     public static $email_validator;
     private string $address;
@@ -51,15 +51,6 @@ final class Mailbox
 
         $this->address = $address;
         $this->name = ucwords(trim(str_replace(["\n", "\r"], '', $name)));
-    }
-
-    private function isEmailValid(string $address, callable $validator): bool
-    {
-        $res = call_user_func($validator, $address);
-        if (!is_bool($res)) {
-            throw new LogicException("MailBox::email_validator did not return a boolean for address [$address].");
-        }
-        return $res;
     }
 
     /**
@@ -133,6 +124,15 @@ final class Mailbox
     public function address(): string
     {
         return $this->address;
+    }
+
+    private function isEmailValid(string $address, callable $validator): bool
+    {
+        $res = call_user_func($validator, $address);
+        if (!is_bool($res)) {
+            throw new LogicException("MailBox::email_validator did not return a boolean for address [$address].");
+        }
+        return $res;
     }
 
 }
