@@ -67,6 +67,79 @@ final class BaseEventDispatcher implements EventDispatcher
         return $original_event;
     }
 
+    public function remove(string $event_name, $listener = null): void
+    {
+        $this->resetListenerCache($event_name);
+
+        if (is_null($listener)) {
+            unset($this->listeners[$event_name]);
+            return;
+        }
+
+        if (!isset($this->listeners[$event_name])) {
+            return;
+        }
+
+        $id = $this->parseListenerId($this->validatedListener($listener));
+
+        if (!isset($this->listeners[$event_name][$id])) {
+            return;
+        }
+
+        $listener = $this->listeners[$event_name][$id];
+
+        if (!$listener instanceof Closure && in_array(Unremovable::class, (array)class_implements($listener[0]))) {
+            throw CantRemove::listenerThatIsMarkedAsUnremovable(
+                $listener,
+                $event_name
+            );
+        }
+
+        unset($this->listeners[$event_name][$id]);
+    }
+
+    public function subscribe(string $event_subscriber): void
+    {
+        if (!in_array(
+            EventSubscriber::class,
+            (array)class_implements($event_subscriber),
+            true
+        )) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    '[%s] does not implement [%s].',
+                    $event_subscriber,
+                    EventSubscriber::class
+                )
+            );
+        }
+
+        /** @var array<string,string> $events */
+        $events = call_user_func([$event_subscriber, 'subscribedEvents']);
+
+        foreach ($events as $name => $method) {
+            $this->listen($name, [$event_subscriber, $method]);
+        }
+    }
+
+    public function listen($event_name, $listener = null): void
+    {
+        if ($event_name instanceof Closure) {
+            $this->listen(ClosureTypeHint::first($event_name), $event_name);
+            return;
+        } elseif (null === $listener) {
+            throw new InvalidArgumentException('$listener can not be null if first $event_name is not a closure.');
+        }
+
+        $this->resetListenerCache($event_name);
+
+        $listener = $this->validatedListener($listener);
+
+        $id = $this->parseListenerId($listener);
+
+        $this->listeners[$event_name][$id] = $listener;
+    }
+
     private function transform(object $event): Event
     {
         if ($event instanceof Event) {
@@ -143,37 +216,6 @@ final class BaseEventDispatcher implements EventDispatcher
         call_user_func_array([$instance, $listener[1]], $payload);
     }
 
-    public function remove(string $event_name, $listener = null): void
-    {
-        $this->resetListenerCache($event_name);
-
-        if (is_null($listener)) {
-            unset($this->listeners[$event_name]);
-            return;
-        }
-
-        if (!isset($this->listeners[$event_name])) {
-            return;
-        }
-
-        $id = $this->parseListenerId($this->validatedListener($listener));
-
-        if (!isset($this->listeners[$event_name][$id])) {
-            return;
-        }
-
-        $listener = $this->listeners[$event_name][$id];
-
-        if (!$listener instanceof Closure && in_array(Unremovable::class, (array)class_implements($listener[0]))) {
-            throw CantRemove::listenerThatIsMarkedAsUnremovable(
-                $listener,
-                $event_name
-            );
-        }
-
-        unset($this->listeners[$event_name][$id]);
-    }
-
     private function resetListenerCache(string $event_name): void
     {
         unset($this->listener_cache[$event_name]);
@@ -240,48 +282,6 @@ final class BaseEventDispatcher implements EventDispatcher
             throw InvalidListener::becauseProvidedClassMethodDoesntExist($listener);
         }
         return $listener;
-    }
-
-    public function subscribe(string $event_subscriber): void
-    {
-        if (!in_array(
-            EventSubscriber::class,
-            (array)class_implements($event_subscriber),
-            true
-        )) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    '[%s] does not implement [%s].',
-                    $event_subscriber,
-                    EventSubscriber::class
-                )
-            );
-        }
-
-        /** @var array<string,class-string> $events */
-        $events = call_user_func([$event_subscriber, 'subscribedEvents']);
-
-        foreach ($events as $name => $method) {
-            $this->listen($name, [$event_subscriber, $method]);
-        }
-    }
-
-    public function listen($event_name, $listener = null): void
-    {
-        if ($event_name instanceof Closure) {
-            $this->listen(ClosureTypeHint::first($event_name), $event_name);
-            return;
-        } elseif (null === $listener) {
-            throw new InvalidArgumentException('$listener can not be null if first $event_name is not a closure.');
-        }
-
-        $this->resetListenerCache($event_name);
-
-        $listener = $this->validatedListener($listener);
-
-        $id = $this->parseListenerId($listener);
-
-        $this->listeners[$event_name][$id] = $listener;
     }
 
 }
