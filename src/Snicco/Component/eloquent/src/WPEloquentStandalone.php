@@ -69,9 +69,11 @@ final class WPEloquentStandalone
         string $faker_locale = 'en_US'
     ): void {
         if (!class_exists(FakerGenerator::class)) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException(
                 'Faker is not installed. Please try running composer require fakerphp/faker --dev'
             );
+            // @codeCoverageIgnoreEnd
         }
 
         $this->illuminate_container->singletonIf(
@@ -101,14 +103,6 @@ final class WPEloquentStandalone
         $this->bindEventDispatcher($event_dispatcher);
     }
 
-    private function bindEventDispatcher(Dispatcher $event_dispatcher): void
-    {
-        $this->illuminate_container->singleton('events', function () use ($event_dispatcher) {
-            return $event_dispatcher;
-        });
-        Eloquent::setEventDispatcher($event_dispatcher);
-    }
-
     public function bootstrap(): ConnectionResolverInterface
     {
         $this->bindConfig();
@@ -121,6 +115,14 @@ final class WPEloquentStandalone
             $this->bindDBFacade($connection_resolver);
         }
         return $connection_resolver;
+    }
+
+    private function bindEventDispatcher(Dispatcher $event_dispatcher): void
+    {
+        $this->illuminate_container->singleton('events', function () use ($event_dispatcher) {
+            return $event_dispatcher;
+        });
+        Eloquent::setEventDispatcher($event_dispatcher);
     }
 
     private function bindConfig(): void
