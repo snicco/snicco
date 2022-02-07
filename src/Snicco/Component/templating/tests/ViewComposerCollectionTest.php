@@ -252,6 +252,21 @@ class ViewComposerCollectionTest extends TestCase
         $this->assertSame([], $view->context());
     }
 
+    /**
+     * @test
+     */
+    public function global_context_can_be_a_closure(): void
+    {
+        $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
+        $global_context->add('foo', fn() => 'bar');
+
+        $view = new TestView('foo_view');
+
+        $collection->compose($view);
+
+        $this->assertSame(['foo' => 'bar'], $view->context());
+    }
+
     private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewComposerCollection
     {
         return new ViewComposerCollection($this->factory, $global_view_context);
