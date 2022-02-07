@@ -13,9 +13,7 @@ interface ListenerFactory
 {
 
     /**
-     * @template T
-     * @param class-string<T> $listener_class
-     * @return  T
+     * @param class-string $listener_class
      *
      * @throws CantCreateListener
      */

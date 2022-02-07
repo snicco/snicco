@@ -14,10 +14,10 @@ class EventStub implements Event
     use ClassAsName;
     use ClassAsPayload;
 
-    public $val1;
-    public $val2;
+    public string $val1;
+    public string $val2;
 
-    public function __construct($foo, $bar)
+    public function __construct(string $foo, string $bar)
     {
         $this->val1 = $foo;
         $this->val2 = $bar;

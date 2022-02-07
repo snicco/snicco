@@ -8,7 +8,7 @@ use Closure;
 use InvalidArgumentException;
 use Psr\EventDispatcher\StoppableEventInterface as StoppablePsrEvent;
 use ReflectionClass;
-use Snicco\Component\EventDispatcher\Exception\CantRemove;
+use Snicco\Component\EventDispatcher\Exception\CantRemoveListener;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 use Snicco\Component\EventDispatcher\ListenerFactory\ListenerFactory;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
@@ -89,7 +89,7 @@ final class BaseEventDispatcher implements EventDispatcher
         $listener = $this->listeners[$event_name][$id];
 
         if (!$listener instanceof Closure && in_array(Unremovable::class, (array)class_implements($listener[0]))) {
-            throw CantRemove::listenerThatIsMarkedAsUnremovable(
+            throw CantRemoveListener::thatIsMarkedAsUnremovable(
                 $listener,
                 $event_name
             );
@@ -177,7 +177,9 @@ final class BaseEventDispatcher implements EventDispatcher
 
         $interfaces = class_implements($event_name);
         $interfaces = (false === $interfaces)
+            // @codeCoverageIgnoreStart
             ? []
+            // @codeCoverageIgnoreEnd
             : $interfaces;
 
 
@@ -230,13 +232,7 @@ final class BaseEventDispatcher implements EventDispatcher
             return spl_object_hash($validated_listener);
         }
 
-        if (is_array($validated_listener)) {
-            return implode('.', $validated_listener);
-        }
-
-        throw new InvalidArgumentException(
-            '$validated_listener has to be a closure or an class callable passed as an array.'
-        );
+        return implode('::', $validated_listener);
     }
 
     /**
@@ -272,10 +268,6 @@ final class BaseEventDispatcher implements EventDispatcher
 
         if (!class_exists($listener[0])) {
             throw InvalidListener::becauseListenerClassDoesntExist($listener[0]);
-        }
-
-        if (!isset($listener[1])) {
-            $listener[1] = '__invoke';
         }
 
         if (!method_exists($listener[0], $listener[1])) {

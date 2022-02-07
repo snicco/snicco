@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
-use Snicco\Component\EventDispatcher\Exception\CantRemove;
+use Snicco\Component\EventDispatcher\Exception\CantRemoveListener;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
@@ -35,6 +35,18 @@ class EventDispatcherTest extends TestCase
 
     use AssertListenerResponse;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->resetListenersResponses();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->resetListenersResponses();
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
@@ -49,13 +61,6 @@ class EventDispatcherTest extends TestCase
         $dispatcher->dispatch(new FooEvent('FOO'));
 
         $this->assertListenerRun(FooEvent::class, 'closure1', 'FOO');
-    }
-
-    private function getDispatcher(): EventDispatcher
-    {
-        return new BaseEventDispatcher(
-            new NewableListenerFactory()
-        );
     }
 
     /**
@@ -121,7 +126,7 @@ class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen('foo_event', function ($foo, $bar) {
+        $dispatcher->listen('foo_event', function (string $foo, string $bar) {
             $this->respondedToEvent('foo_event', 'closure1', $foo . $bar);
         });
 
@@ -154,7 +159,7 @@ class EventDispatcherTest extends TestCase
         $dispatcher = $this->getDispatcher();
 
         $dispatcher->listen(stdClass::class, function (stdClass $event) {
-            $this->respondedToEvent(stdClass::class, 'closure1', $event->foo . $event->bar);
+            $this->respondedToEvent(stdClass::class, 'closure1', (string)$event->foo . (string)$event->bar);
         });
 
         $payload = new stdClass();
@@ -198,6 +203,8 @@ class EventDispatcherTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress ArgumentTypeCoercion
      */
     public function non_existing_listener_classes_throw_exceptions(): void
     {
@@ -262,6 +269,7 @@ class EventDispatcherTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function an_exception_is_thrown_for_invalid_classes_when_passed_as_array(): void
     {
@@ -273,6 +281,22 @@ class EventDispatcherTest extends TestCase
         );
 
         $dispatcher->listen('foo_event', ['BogusClass', 'bogus']);
+    }
+
+    /**
+     * @test
+     * @psalm-suppress InvalidScalarArgument
+     */
+    public function an_exception_is_thrown_if_listener_is_not_class_or_string(): void
+    {
+        $dispatcher = $this->getDispatcher();
+
+        $this->expectException(InvalidListener::class);
+        $this->expectExceptionMessage(
+            'Listeners must be a string, array or closure.'
+        );
+
+        $dispatcher->listen('foo_event', 1);
     }
 
     /**
@@ -393,7 +417,7 @@ class EventDispatcherTest extends TestCase
 
         $dispatcher->listen(FooEvent::class, UnremovableListener::class);
 
-        $this->expectException(CantRemove::class);
+        $this->expectException(CantRemoveListener::class);
 
         $dispatcher->remove(FooEvent::class, UnremovableListener::class);
     }
@@ -509,16 +533,27 @@ class EventDispatcherTest extends TestCase
         $dispatcher->listen('my_plugin_user_created', null);
     }
 
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function test_no_exception_if_an_event_is_removed_that_does_not_exist(): void
     {
-        parent::setUp();
-        $this->resetListenersResponses();
+        $d = $this->getDispatcher();
+        $d->remove('foo_event');
+        $d->remove('foo_event', ClassListener::class);
+
+        $d->listen('bar_event', ClassListener2::class);
+
+        $d->remove('bar_event', ClassListener::class);
+
+        $this->assertTrue(true);
     }
 
-    protected function tearDown(): void
+    private function getDispatcher(): EventDispatcher
     {
-        $this->resetListenersResponses();
-        parent::tearDown();
+        return new BaseEventDispatcher(
+            new NewableListenerFactory()
+        );
     }
 
 }
