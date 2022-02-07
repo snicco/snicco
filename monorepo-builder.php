@@ -39,12 +39,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'preferred-install' => 'dist',
             'sort-packages' => true,
         ],
-        ComposerJsonSection::SCRIPTS => [
-            'merge' => [
-                'vendor/bin/monorepo-builder merge',
-                'composer dump-autoload',
-            ],
-        ],
         ComposerJsonSection::MINIMUM_STABILITY => 'dev',
     ]);
 
