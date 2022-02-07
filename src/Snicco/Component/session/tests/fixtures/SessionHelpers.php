@@ -19,7 +19,7 @@ use Snicco\Component\TestableClock\SystemClock;
 trait SessionHelpers
 {
 
-    public function newSession($id = null, array $data = [], DateTimeImmutable $now = null): Session
+    public function newSession(?SessionId $id = null, array $data = [], DateTimeImmutable $now = null): Session
     {
         return new ReadWriteSession(
             $id ?? SessionId::createFresh(),
