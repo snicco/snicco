@@ -146,7 +146,7 @@
     "phpunit:component": "vendor/bin/phpunit --testsuite component",
     "phpunit:middleware": "vendor/bin/phpunit --testsuite middleware",
     "phpunit:bridge": "vendor/bin/phpunit --testsuite bridge",
-    "codeception:all": "vendor/bin/codecept run -c codeception/all.dist.yml",
+    "codeception:all": "vendor/bin/codecept run -c codeception.dist.yml",
     "codeception:component": "vendor/bin/codecept run -c codeception/component.dist.yml",
     "codeception:bridge": "vendor/bin/codecept run -c codeception/bridge.dist.yml",
     "tests": [
