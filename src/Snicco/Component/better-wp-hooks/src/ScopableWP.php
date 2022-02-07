@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPHooks;
 
-use InvalidArgumentException;
+use RuntimeException;
 use WP_Hook;
 
 use function current_filter;
@@ -32,9 +32,9 @@ final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
             return null;
         }
         if (!$hook instanceof WP_Hook) {
-            throw new InvalidArgumentException(
+            throw new RuntimeException(
                 sprintf(
-                    "The registered hook [$hook_name] has to be an instance of WP_Hook.\nGot: %s",
+                    "The registered hook [$hook_name] has to be an instance of WP_Hook.\nGot: [%s].",
                     gettype($hook)
                 )
             );
