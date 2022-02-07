@@ -7,6 +7,9 @@ namespace Snicco\Component\SignedUrl\Exception;
 use RuntimeException;
 use Throwable;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class UnavailableStorage extends RuntimeException
 {
 

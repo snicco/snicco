@@ -40,22 +40,24 @@ final class UrlSigner
     }
 
     /**
+     * @param non-empty-string $target
+     * @param positive-int $lifetime_in_sec
      * @param positive-int $max_usage
      *
      * @throws UnavailableStorage
      * @throws Exception if random_bytes can't be generated
      */
     public function sign(
-        string $protect,
+        string $target,
         int $lifetime_in_sec,
         int $max_usage = 1,
         string $request_context = ''
     ): SignedUrl {
-        Assert::notEmpty($protect);
+        Assert::notEmpty($target);
 
-        $protect = $this->normalizeProtect($protect);
+        $target = $this->normalizeTarget($target);
 
-        $parts = $this->parseUrl($protect);
+        $parts = $this->parseUrl($target);
 
         $path = $this->getPath($parts);
         $query = $this->getQueryString($parts);
@@ -91,7 +93,7 @@ final class UrlSigner
 
         $signed_url = SignedUrl::create(
             $url,
-            $protect,
+            $target,
             $identifier,
             $expires_at,
             $max_usage
@@ -102,12 +104,13 @@ final class UrlSigner
         return $signed_url;
     }
 
-    private function normalizeProtect(string $protect): string
+    private function normalizeTarget(string $protect): string
     {
-        if (strpos($protect, 'http') !== 0) {
-            $protect = '/' . ltrim($protect, '/');
+        if (0 === strpos($protect, 'http')) {
+            return $protect;
         }
-        return $protect;
+
+        return '/' . ltrim($protect, '/');
     }
 
     private function parseUrl(string $protect): array
@@ -123,19 +126,12 @@ final class UrlSigner
         return $parts;
     }
 
-    private function validateUrlParts(array $parsed, string $protect): void
+    private function validateUrlParts(array $parsed, string $target): void
     {
-        if ($parsed['path'] === '/' && $protect !== '/' && strpos($protect, 'http') !== 0) {
+        if ($parsed['path'] === '/' && $target !== '/' && strpos($target, 'http') !== 0) {
             throw new InvalidArgumentException(
-                "$protect is not a valid path."
+                "$target is not a valid path."
             );
-        }
-
-        if (strpos($protect, '/') !== 0) {
-            // it's not a pass, so we assume it's an absolute url.
-            if (!isset($parsed['scheme']) || !isset($parsed['host'])) {
-                throw new InvalidArgumentException("$protect is not a valid url.");
-            }
         }
 
         /** @var string $qs */
@@ -166,9 +162,12 @@ final class UrlSigner
             return $parts['path'];
         }
 
+        // Should not be possible ever.
+        // @codeCoverageIgnoreStart
         throw new InvalidArgumentException(
             'Invalid path provided.'
         );
+        // @codeCoverageIgnoreEnd
     }
 
     /**

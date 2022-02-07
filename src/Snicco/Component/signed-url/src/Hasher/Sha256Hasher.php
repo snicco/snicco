@@ -18,7 +18,9 @@ final class Sha256Hasher extends Hasher
     {
         $hashed = hash_hmac('sha256', $plain_text, $this->secret->asBytes(), true);
         if (false === $hashed) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not generate a hash.');
+            // @codeCoverageIgnoreEnd
         }
         return $hashed;
     }
