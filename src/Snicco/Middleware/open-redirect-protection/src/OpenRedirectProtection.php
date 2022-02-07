@@ -13,6 +13,7 @@ use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\StrArr\Str;
 
+use function is_string;
 use function parse_url;
 
 use const PHP_URL_HOST;
@@ -41,8 +42,8 @@ final class OpenRedirectProtection extends AbstractMiddleware
     public function __construct(string $host, array $whitelist = [], string $route = 'redirect.protection')
     {
         $parsed = parse_url($host, PHP_URL_HOST);
-        if ($parsed === false || $parsed === null || $parsed === '') {
-            throw new InvalidArgumentException("Invalid host [$host]");
+        if (!is_string($parsed) || '' === $parsed) {
+            throw new InvalidArgumentException("Invalid host [$host].");
         }
         $this->host = $parsed;
         $this->route = $route;
@@ -119,10 +120,6 @@ final class OpenRedirectProtection extends AbstractMiddleware
 
     private function isWhitelisted(string $host): bool
     {
-        if (in_array($host, $this->whitelist, true)) {
-            return true;
-        }
-
         foreach ($this->whitelist as $pattern) {
             if (preg_match($pattern, $host)) {
                 return true;
