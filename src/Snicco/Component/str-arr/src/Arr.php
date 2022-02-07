@@ -96,9 +96,6 @@ final class Arr
      *
      * @throws InvalidArgumentException If the requested count is greater than the number of array elements
      *
-     * @psalm-suppress TypeDoesNotContainType
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress DocblockTypeContradiction
      */
     public static function random(array $array, int $number = 1)
     {
@@ -430,7 +427,6 @@ final class Arr
      *
      * @return array|mixed
      *
-     * @psalm-suppress DocblockTypeContradiction
      * @psalm-suppress MixedAssignment
      */
     public static function dataGet($target, $key, $default = null)
