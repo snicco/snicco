@@ -109,7 +109,9 @@ final class SignedUrlValidator
         );
 
         if (null === $qs) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("preg_replace returned null for query_string [$query_string].");
+            // @codeCoverageIgnoreEnd
         }
 
         $str = rtrim($qs, '&');

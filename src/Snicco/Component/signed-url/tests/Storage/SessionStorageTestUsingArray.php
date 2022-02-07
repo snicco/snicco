@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\SignedUrl\Tests\Storage;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
 use Snicco\Component\SignedUrl\Secret;
@@ -41,6 +42,18 @@ final class SessionStorageTestUsingArray extends TestCase
         $signer->sign('/baz', 10);
 
         $this->assertCount(3, $arr[array_key_first($arr)]);
+    }
+
+    /**
+     * @test
+     * @psalm-suppress InvalidArgument
+     */
+    public function test_exception_for_non_array_non_array_access(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$storage must be an array or instance of ArrayAccess');
+        $str = '';
+        new SessionStorage($str);
     }
 
     protected function createStorage(Clock $clock): SignedUrlStorage
