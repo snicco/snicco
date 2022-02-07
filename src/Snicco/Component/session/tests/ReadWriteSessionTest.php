@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Session\Tests;
 
 use DateTimeImmutable;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\Session\Driver\InMemoryDriver;
@@ -34,13 +35,6 @@ class ReadWriteSessionTest extends TestCase
         $this->expectException(SessionIsLocked::class);
 
         $session->put('baz', 'biz');
-    }
-
-    private function newSession(string $id = null, array $data = []): ReadWriteSession
-    {
-        $id = $id ? SessionId::fromCookieId($id) : SessionId::createFresh();
-
-        return new ReadWriteSession($id, $data, new DateTimeImmutable());
     }
 
     /**
@@ -253,6 +247,19 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
+    public function test_increment_throws_if_current_is_not_integer(): void
+    {
+        $session = $this->newSession();
+
+        $session->put('foo', 'bar');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Current value for key [foo] is not an integer.');
+        $session->increment('foo');
+    }
+
+    /**
+     * @test
+     */
     public function testDecrement(): void
     {
         $session = $this->newSession();
@@ -294,12 +301,6 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertFalse($session->has('foo'));
         $this->assertNull($session->get('foo'));
-    }
-
-    private function reloadSession(ReadWriteSession $session, SessionDriver $driver): ReadWriteSession
-    {
-        $data = $driver->read($session->id()->asHash());
-        return new ReadWriteSession($session->id(), $data->asArray(), $data->lastActivity());
     }
 
     /**
@@ -536,17 +537,6 @@ class ReadWriteSessionTest extends TestCase
         $session->put('foo', 'bar');
 
         $this->assertTrue($session->isDirty());
-    }
-
-    private function newPersistedSession(
-        string $id = null,
-        array $data = [],
-        ?InMemoryDriver $driver = null
-    ): ReadWriteSession {
-        $session = $this->newSession($id, $data);
-        $driver = $driver ?? new InMemoryDriver();
-        $session->saveUsing($driver, new DateTimeImmutable());
-        return $this->reloadSession($session, $driver);
     }
 
     /**
@@ -981,6 +971,30 @@ class ReadWriteSessionTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('corrupted');
         $session->lastRotation();
+    }
+
+    private function newSession(string $id = null, array $data = []): ReadWriteSession
+    {
+        $id = $id ? SessionId::fromCookieId($id) : SessionId::createFresh();
+
+        return new ReadWriteSession($id, $data, new DateTimeImmutable());
+    }
+
+    private function reloadSession(ReadWriteSession $session, SessionDriver $driver): ReadWriteSession
+    {
+        $data = $driver->read($session->id()->asHash());
+        return new ReadWriteSession($session->id(), $data->asArray(), $data->lastActivity());
+    }
+
+    private function newPersistedSession(
+        string $id = null,
+        array $data = [],
+        ?InMemoryDriver $driver = null
+    ): ReadWriteSession {
+        $session = $this->newSession($id, $data);
+        $driver = $driver ?? new InMemoryDriver();
+        $session->saveUsing($driver, new DateTimeImmutable());
+        return $this->reloadSession($session, $driver);
     }
 
 }
