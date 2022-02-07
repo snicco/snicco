@@ -38,7 +38,7 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run phpunit, testsuite unit
-        run: composer unit
+        run: composer phpunit:all
 
   wordpress_tests:
 
@@ -101,4 +101,4 @@ jobs:
         working-directory: /tmp
 
       - name: Run WordPress tests with codeception
-        run: composer wordpress
+        run: composer codeception:all
