@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Templating;
 
 use Closure;
-use Snicco\Component\ParameterBag\ParameterPag;
+use Snicco\Component\ParameterBag\ParameterBag;
 
 use function call_user_func;
 
@@ -26,7 +26,7 @@ final class GlobalViewContext
     public function add(string $name, $context): void
     {
         if (is_array($context)) {
-            $context = new ParameterPag($context);
+            $context = new ParameterBag($context);
         }
 
         $this->context[$name] = $context;

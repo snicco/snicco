@@ -6,7 +6,7 @@ namespace Snicco\Component\Templating\Tests;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Component\ParameterBag\ParameterPag;
+use Snicco\Component\ParameterBag\ParameterBag;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\GlobalViewContext;
@@ -177,7 +177,7 @@ class ViewEngineTest extends TestCase
 
         $this->composers->addComposer('context-priority', function (View $view) {
             $view->with([
-                'test_context' => new ParameterPag([
+                'test_context' => new ParameterBag([
                     'foo' => ['bar' => 'biz'],
                 ]),
             ]);
@@ -197,7 +197,7 @@ class ViewEngineTest extends TestCase
 
         $this->composers->addComposer('context-priority', function (View $view) {
             $view->with([
-                'test_context' => new ParameterPag([
+                'test_context' => new ParameterBag([
                     'foo' => ['bar' => 'biz'],
                 ]),
             ]);
@@ -205,7 +205,7 @@ class ViewEngineTest extends TestCase
 
         $view = $this->view_engine->make('context-priority')
             ->with([
-                'test_context' => new ParameterPag([
+                'test_context' => new ParameterBag([
                     'foo' => ['bar' => 'boom'],
                 ]),
             ]);

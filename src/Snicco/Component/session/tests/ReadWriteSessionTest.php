@@ -223,6 +223,15 @@ class ReadWriteSessionTest extends TestCase
         $session->push('foo', ['baz' => 'biz']);
 
         $this->assertSame(['bar', 'bar', ['baz' => 'biz']], $session->get('foo'));
+
+        $session->push('int', 'foo');
+        $this->assertSame(['foo'], $session->get('int'));
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Value for key [int] is not an array.');
+
+        $session->put('int', 1);
+        $session->push('int', 'foo');
     }
 
     /**
