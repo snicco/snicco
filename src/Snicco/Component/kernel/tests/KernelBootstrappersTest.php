@@ -23,7 +23,21 @@ final class KernelBootstrappersTest extends TestCase
     use CreateTestContainer;
     use WriteTestConfig;
 
-    private string $base_dir;
+    private string $fixtures_dir;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->fixtures_dir = __DIR__ . '/fixtures';
+        $this->cleanDirs([$this->fixtures_dir . '/var/cache']);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cleanDirs([$this->fixtures_dir . '/var/cache']);
+        $this->cleanDirs([$this->fixtures_dir . '/bundle_and_bootstrapper/var/cache']);
+    }
 
     /**
      * @test
@@ -33,7 +47,7 @@ final class KernelBootstrappersTest extends TestCase
         $app = new Kernel(
             $this->createContainer(),
             Environment::prod(),
-            Directories::fromDefaults($this->base_dir)
+            Directories::fromDefaults($this->fixtures_dir)
         );
 
         $this->writeConfig($app, [
@@ -58,21 +72,8 @@ final class KernelBootstrappersTest extends TestCase
         $app = new Kernel(
             $this->createContainer(),
             Environment::prod(),
-            Directories::fromDefaults($this->base_dir)
+            Directories::fromDefaults($this->fixtures_dir . '/bundle_and_bootstrapper')
         );
-
-        $this->writeConfig($app, [
-            'app' => [
-                'bootstrappers' => [
-                    Bootstrap2::class,
-                ],
-            ],
-            'bundles' => [
-                Environment::ALL => [
-                    BundleInfo::class,
-                ],
-            ],
-        ]);
 
         $app->boot();
 
@@ -91,7 +92,7 @@ final class KernelBootstrappersTest extends TestCase
         $app = new Kernel(
             $this->createContainer(),
             Environment::prod(),
-            Directories::fromDefaults($this->base_dir)
+            Directories::fromDefaults($this->fixtures_dir)
         );
 
         $this->writeConfig($app, [
@@ -108,19 +109,6 @@ final class KernelBootstrappersTest extends TestCase
         $app->boot();
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->base_dir = __DIR__ . '/fixtures';
-        $this->cleanDirs([$this->base_dir . '/var/cache']);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanDirs([$this->base_dir . '/var/cache']);
-    }
-
 }
 
 class BundleInfo implements Bundle
@@ -133,6 +121,7 @@ class BundleInfo implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
+        //
     }
 
     public function register(Kernel $kernel): void

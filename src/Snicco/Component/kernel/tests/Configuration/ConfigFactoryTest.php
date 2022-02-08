@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests\Configuration;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\Kernel\Configuration\ConfigFactory;
@@ -27,6 +28,20 @@ final class ConfigFactoryTest extends TestCase
     private string $base_dir;
     private string $cache_dir;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->base_dir = dirname(__DIR__) . '/fixtures';
+        $this->cache_dir = $this->base_dir . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache';
+        $this->cleanDirs();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cleanDirs();
+    }
+
     /**
      * @test
      */
@@ -40,7 +55,6 @@ final class ConfigFactoryTest extends TestCase
 
         $config = (new ConfigFactory())->load($app->directories()->configDir());
 
-        $this->assertIsArray($config);
         $this->assertArrayHasKey('app', $config);
         $this->assertArrayHasKey('custom-config', $config);
     }
@@ -157,7 +171,7 @@ final class ConfigFactoryTest extends TestCase
             throw new RuntimeException('cache not created in test setup');
         }
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->expectExceptionMessage(
             "The [app] key is not present in the cached config.\nUsed cache file [$file]."
@@ -169,12 +183,50 @@ final class ConfigFactoryTest extends TestCase
         );
     }
 
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function test_exception_if_config_file_does_not_return_array(): void
     {
-        parent::setUp();
-        $this->base_dir = dirname(__DIR__) . '/fixtures';
-        $this->cache_dir = $this->base_dir . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache';
-        $this->cleanDirs();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Reading the [invalid] config did not return an array');
+
+        (new ConfigFactory())->load(
+            $this->base_dir . '/config_no_array_return',
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_cached_config_does_not_return_array(): void
+    {
+        $app = new Kernel(
+            $this->createContainer(),
+            Environment::prod(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $arr = 'foo';
+
+        $success = file_put_contents(
+            $file = $this->cache_dir . DIRECTORY_SEPARATOR . 'prod.config.php',
+            '<?php return ' . var_export($arr, true) . ';'
+        );
+
+        if (false === $success) {
+            throw new RuntimeException('cache not created in test setup');
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "The cached config did not return an array.\nUsed cache file [$file]."
+        );
+
+        (new ConfigFactory())->load(
+            $app->directories()->configDir(),
+            new PHPCacheFile($app->directories()->cacheDir(), 'prod.config.php')
+        );
     }
 
     protected function cleanDirs(): void
@@ -183,12 +235,6 @@ final class ConfigFactoryTest extends TestCase
         foreach ($files as $file) {
             @unlink($file->getRealPath());
         }
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanDirs();
     }
 
 }

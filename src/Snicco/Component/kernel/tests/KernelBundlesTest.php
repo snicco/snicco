@@ -192,7 +192,9 @@ final class KernelBundlesTest extends TestCase
 
         $this->writeConfig($app1, [
             'bundles' => [
-                BundleWithCustomEnv::class => ['all' => true],
+                Environment::ALL => [
+                    BundleWithCustomEnv::class,
+                ]
             ],
         ]);
 
@@ -211,7 +213,7 @@ final class KernelBundlesTest extends TestCase
 
         $this->writeConfig($app2, [
             'bundles' => [
-                'all' => [
+                Environment::ALL => [
                     BundleWithCustomEnv::class,
                 ]
             ],
@@ -271,7 +273,7 @@ final class KernelBundlesTest extends TestCase
 
         $this->writeConfig($app, [
             'bundles' => [
-                'all' => [
+                Environment::ALL => [
                     BundleThatConfigures::class
                 ]
             ],
@@ -296,6 +298,7 @@ final class KernelBundlesTest extends TestCase
     }
 
 }
+
 
 class BundleThatConfigures implements Bundle
 {

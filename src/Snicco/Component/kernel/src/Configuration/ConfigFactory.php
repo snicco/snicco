@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Configuration;
 
+use InvalidArgumentException;
 use RuntimeException;
 use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 use Symfony\Component\Finder\Finder;
 
-use function count;
 use function file_put_contents;
 use function is_array;
 use function var_export;
@@ -20,9 +20,6 @@ use function var_export;
 final class ConfigFactory
 {
 
-    /**
-     * @throws RuntimeException If no config files are found or config cache can't be written.
-     */
     public function load(string $config_directory, ?PHPCacheFile $cache_file = null): array
     {
         if (!$cache_file) {
@@ -55,14 +52,8 @@ final class ConfigFactory
     {
         $config_files = $this->findConfigFiles($config_directory);
 
-        if (!count($config_files)) {
-            throw new RuntimeException(
-                "No configuration files found in directory [$config_directory]."
-            );
-        }
-
         if (!isset($config_files['app'])) {
-            throw new RuntimeException(
+            throw new InvalidArgumentException(
                 "The [app.php] config file was not found in the config dir [$config_directory]."
             );
         }
@@ -72,7 +63,7 @@ final class ConfigFactory
         foreach ($config_files as $name => $path) {
             $items = require $path;
             if (!is_array($items)) {
-                throw new RuntimeException("Reading the [$name] config did not return an array.");
+                throw new InvalidArgumentException("Reading the [$name] config did not return an array.");
             }
             $config[$name] = $items;
         }
@@ -100,13 +91,13 @@ final class ConfigFactory
         $items = $cached_config->require();
 
         if (!is_array($items)) {
-            throw new RuntimeException(
+            throw new InvalidArgumentException(
                 "The cached config did not return an array.\nUsed cache file [{$cached_config->realPath()}]."
             );
         }
 
         if (!isset($items['app'])) {
-            throw new RuntimeException(
+            throw new InvalidArgumentException(
                 "The [app] key is not present in the cached config.\nUsed cache file [{$cached_config->realpath()}]."
             );
         }
