@@ -7,6 +7,7 @@ namespace Snicco\Component\Kernel\Testing;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Exception\FrozenService;
@@ -373,6 +374,53 @@ trait DIContainerContractTest
         // primitive
         PHPUnit::assertSame('biz', $container['baz']);
         PHPUnit::assertSame('biz', $container['baz']);
+    }
+
+    /**
+     * @test
+     */
+    public function test_offsetUnset(): void
+    {
+        $container = $this->createContainer();
+        $container['foo'] = 'bar';
+
+        PHPUnit::assertSame('bar', $container['foo']);
+
+        unset($container['foo']);
+
+        $this->expectException(NotFoundExceptionInterface::class);
+
+        $container['foo'];
+    }
+
+    /**
+     * @test
+     */
+    public function test_offsetExists(): void
+    {
+        $container = $this->createContainer();
+        $container['foo'] = 'bar';
+
+        PHPUnit::assertSame(true, isset($container['foo']));
+
+        unset($container['foo']);
+
+        PHPUnit::assertSame(false, isset($container['foo']));
+    }
+
+    /**
+     * @test
+     */
+    public function test_has(): void
+    {
+        $container = $this->createContainer();
+        $container['foo'] = 'bar';
+
+        PHPUnit::assertSame(true, $container->has('foo'));
+
+        unset($container['foo']);
+
+        PHPUnit::assertSame(false, $container->has('foo'));
     }
 
 }
