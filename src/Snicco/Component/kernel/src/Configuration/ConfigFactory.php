@@ -32,6 +32,22 @@ final class ConfigFactory
         return $this->loadFromCache($cache_file);
     }
 
+    public function writeToCache(string $realpath, array $config): void
+    {
+        $success = file_put_contents(
+            $realpath,
+            '<?php return ' . var_export($config, true) . ';'
+        );
+
+        if (false === $success) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException(
+                "Could not write configuration to cache file [$realpath]."
+            );
+            // @codeCoverageIgnoreEnd
+        }
+    }
+
     /**
      * @psalm-suppress UnresolvableInclude
      */
@@ -96,20 +112,6 @@ final class ConfigFactory
         }
 
         return $items;
-    }
-
-    public function writeToCache(string $realpath, array $config): void
-    {
-        $success = file_put_contents(
-            $realpath,
-            '<?php return ' . var_export($config, true) . ';'
-        );
-
-        if (false === $success) {
-            throw new RuntimeException(
-                "Could not write configuration to cache file [$realpath]."
-            );
-        }
     }
 
 }

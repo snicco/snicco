@@ -22,7 +22,7 @@ use function range;
 /**
  * @api
  */
-final class WritableConfig
+final class WritableConfig extends Config
 {
 
     private ParameterBag $repository;
@@ -42,8 +42,6 @@ final class WritableConfig
      * Existing values have priority.
      *
      * @param scalar|array<scalar> $extend_with
-     *
-     * @psalm-suppress MixedAssignment
      */
     public function extend(string $key, $extend_with): void
     {
@@ -158,8 +156,7 @@ final class WritableConfig
      */
     private function mergedArrayConfig(array $extend_with, array $exiting_config): array
     {
-        if ($this->isList($extend_with)
-            && $this->isList($exiting_config)) {
+        if ($this->isList($extend_with) && $this->isList($exiting_config)) {
             return array_values(array_unique(array_merge($exiting_config, $extend_with)));
         }
 
@@ -168,10 +165,6 @@ final class WritableConfig
         foreach ($extend_with as $key => $value) {
             if (!isset($current[$key])) {
                 $current[$key] = $value;
-                continue;
-            }
-            if (is_array($current[$key])) {
-                $current[$key][] = $value;
             }
         }
         return $current;
