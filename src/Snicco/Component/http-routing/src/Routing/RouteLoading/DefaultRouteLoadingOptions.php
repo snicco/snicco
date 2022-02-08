@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
 
-use Snicco\Component\HttpRouting\Routing\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
@@ -29,7 +28,7 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
         if ($parsed_version) {
             $_name = Str::beforeFirst(
                 $file_basename,
-                RouteLoader::VERSION_FLAG
+                PHPFileRouteLoader::VERSION_FLAG
             );
             $file_basename = $_name . ".v$parsed_version";
             $prefix = (string)$this->api_base_prefix->append($_name)->append("v$parsed_version");
@@ -53,12 +52,12 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
     {
         $att = [];
 
-        if (RouteLoader::ADMIN_ROUTE_FILENAME === $file_basename) {
+        if (PHPFileRouteLoader::ADMIN_ROUTE_FILENAME === $file_basename) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::ADMIN_MIDDLEWARE];
             $att[RoutingConfigurator::NAME_KEY] = 'admin';
         }
 
-        if (RouteLoader::FRONTEND_ROUTE_FILENAME === $file_basename) {
+        if (PHPFileRouteLoader::FRONTEND_ROUTE_FILENAME === $file_basename) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::FRONTEND_MIDDLEWARE];
         }
         return $att;
