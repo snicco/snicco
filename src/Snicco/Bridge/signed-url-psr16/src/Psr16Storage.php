@@ -37,7 +37,9 @@ final class Psr16Storage implements SignedUrlStorage
             $res = $this->cache->delete($key);
 
             if (true !== $res) {
-                throw new UnavailableStorage("Could not delete cache key [$key].");
+                throw new UnavailableStorage(
+                    "Could not delete signed url with id [$identifier] from the cache.\nCache key [$key]."
+                );
             }
         } else {
             $data['left_usages'] = $new;
@@ -47,7 +49,7 @@ final class Psr16Storage implements SignedUrlStorage
             $res = $this->cache->set($key, $data, $ttl);
 
             if (true !== $res) {
-                throw new UnavailableStorage("Cant decrement usage for signed url [$identifier].");
+                throw new UnavailableStorage("Could not decrement usage for signed url.\nCache key: [$key].");
             }
         }
     }
@@ -66,7 +68,8 @@ final class Psr16Storage implements SignedUrlStorage
         $res = $this->cache->set($key, $data, $ttl);
 
         if (true !== $res) {
-            throw new UnavailableStorage("Cant save cache key [$key].");
+            $path = $signed_url->protects();
+            throw new UnavailableStorage("Could not save signed url for path [$path].\nCache key: [$key].");
         }
     }
 
@@ -91,7 +94,7 @@ final class Psr16Storage implements SignedUrlStorage
 
     /**
      * @param string $key
-     * @return array{left_usages:positive-int, expires_at:int}
+     * @return array{left_usages:positive-int, expires_at:positive-int}
      * @throws BadIdentifier
      */
     private function getData(string $key, string $identifier): array
@@ -102,11 +105,15 @@ final class Psr16Storage implements SignedUrlStorage
             throw BadIdentifier::for($identifier);
         }
 
-        if (!isset($data['left_usages']) || !is_int($data['left_usages'])) {
-            throw new RuntimeException("Cached contents for key [$identifier] are corrupted.");
+        if (!isset($data['left_usages']) || !is_int($data['left_usages']) || $data['left_usages'] <= 0) {
+            throw new RuntimeException(
+                "Cache content for signed url with cache key [$key] are corrupted.\nMissing or invalid key [left_usages]."
+            );
         }
-        if (!isset($data['expires_at']) || !is_int($data['expires_at'])) {
-            throw new RuntimeException("Cached contents for key [$identifier] are corrupted.");
+        if (!isset($data['expires_at']) || !is_int($data['expires_at']) || $data['expires_at'] <= 0) {
+            throw new RuntimeException(
+                "Cache content for signed url with cache key [$key] are corrupted.\nMissing or invalid key [expires_at]."
+            );
         }
         return $data;
     }
