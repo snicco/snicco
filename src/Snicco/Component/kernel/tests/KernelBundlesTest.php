@@ -26,6 +26,22 @@ final class KernelBundlesTest extends TestCase
     private string $base_dir;
     private string $base_dir_with_bundles;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $_SERVER['_test'] = [];
+        $this->base_dir = __DIR__ . '/fixtures';
+        $this->base_dir_with_bundles = $this->base_dir . '/base_dir_with_bundles';
+        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unset($_SERVER['_test']);
+        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
+    }
+
     /**
      * @test
      */
@@ -158,7 +174,7 @@ final class KernelBundlesTest extends TestCase
 
         $app->boot();
 
-        $this->assertTrue($app->config()['bundle_that_asserts_order.configured']);
+        $this->assertTrue($app->config()->get('bundle_that_asserts_order.configured'));
         $this->assertTrue($app->container()['bundle_that_asserts_order.registered']);
         $this->assertTrue($app->container()['bundle_that_asserts_order.bootstrapped']->val);
     }
@@ -176,7 +192,9 @@ final class KernelBundlesTest extends TestCase
 
         $this->writeConfig($app1, [
             'bundles' => [
-                BundleWithCustomEnv::class => ['all' => true],
+                Environment::ALL => [
+                    BundleWithCustomEnv::class,
+                ]
             ],
         ]);
 
@@ -195,7 +213,7 @@ final class KernelBundlesTest extends TestCase
 
         $this->writeConfig($app2, [
             'bundles' => [
-                'all' => [
+                Environment::ALL => [
                     BundleWithCustomEnv::class,
                 ]
             ],
@@ -255,7 +273,7 @@ final class KernelBundlesTest extends TestCase
 
         $this->writeConfig($app, [
             'bundles' => [
-                'all' => [
+                Environment::ALL => [
                     BundleThatConfigures::class
                 ]
             ],
@@ -279,23 +297,8 @@ final class KernelBundlesTest extends TestCase
         $this->assertTrue($app->usesBundle('bundle_that_configures'));
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $_SERVER['_test'] = [];
-        $this->base_dir = __DIR__ . '/fixtures';
-        $this->base_dir_with_bundles = $this->base_dir . '/base_dir_with_bundles';
-        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        unset($_SERVER['_test']);
-        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
-    }
-
 }
+
 
 class BundleThatConfigures implements Bundle
 {

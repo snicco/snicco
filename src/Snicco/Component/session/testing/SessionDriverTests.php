@@ -16,6 +16,8 @@ use Snicco\Component\TestableClock\TestClock;
  * @todo This should be tested with the real time() function since the psr cache interfaces
  *       don't use our clock interface. This should be refactored once we use the phpunit
  *       test runner to the symfony/phpunit-bridge
+ *
+ * @codeCoverageIgnore
  */
 trait SessionDriverTests
 {
@@ -210,6 +212,31 @@ trait SessionDriverTests
             ['foo' => 'bar'],
             $data->asArray(),
             'touching the session should not change the content.'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_touch_throws_exception_for_bad_id(): void
+    {
+        $driver = $this->createDriver($clock = new TestClock());
+
+        $driver->write(
+            'session1',
+            SerializedSessionData::fromArray(['foo' => 'bar'], $clock->currentTimestamp())
+        );
+
+        $driver->touch(
+            'session1',
+            (new DateTimeImmutable())->setTimestamp($clock->currentTimestamp() + 1)
+        );
+
+        $this->expectException(BadSessionID::class);
+
+        $driver->touch(
+            'session2',
+            (new DateTimeImmutable())->setTimestamp($clock->currentTimestamp() + 1)
         );
     }
 

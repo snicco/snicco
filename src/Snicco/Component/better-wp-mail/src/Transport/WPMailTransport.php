@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\Transport;
 
 use Closure;
-use LogicException;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
@@ -16,6 +15,7 @@ use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 use WP_Error;
 
+use function count;
 use function is_null;
 use function trim;
 
@@ -63,7 +63,7 @@ final class WPMailTransport implements Transport
         }
 
         if (is_null($message)) {
-            throw new LogicException('Message cant be empty.');
+            $message = '';
         }
 
         $headers = array_merge(
@@ -116,13 +116,23 @@ final class WPMailTransport implements Transport
     private function justInTimeConfiguration(Email $mail): Closure
     {
         $closure = function (PHPMailer $php_mailer) use ($mail): void {
-            if (($text = $mail->textBody()) && $mail->htmlBody() !== null) {
-                $php_mailer->AltBody = $text;
-            }
             if ($priority = $mail->priority()) {
                 $php_mailer->Priority = $priority;
             }
-            foreach ($mail->attachments() as $attachment) {
+
+            $text = $mail->textBody();
+            $html = $mail->htmlBody();
+            if ($text && $html) {
+                $php_mailer->AltBody = $text;
+            }
+
+            $attachments = $mail->attachments();
+
+            if (null === $text && null === $html && count($attachments)) {
+                $php_mailer->AllowEmpty = true;
+            }
+
+            foreach ($attachments as $attachment) {
                 if ($attachment->disposition() === 'inline') {
                     $php_mailer->addStringEmbeddedImage(
                         $attachment->bodyAsString(),
@@ -141,6 +151,7 @@ final class WPMailTransport implements Transport
                     $attachment->contentType(),
                 );
             }
+
             foreach ($mail->customHeaders() as $name => $value) {
                 $php_mailer->addCustomHeader($name, $value);
             }
@@ -168,7 +179,6 @@ final class WPMailTransport implements Transport
         return $this->stringifyAddresses(new MailboxList($to));
     }
 
-
     /**
      * @return string[]
      */
@@ -189,12 +199,12 @@ final class WPMailTransport implements Transport
     private function resetPHPMailer(): void
     {
         // Reset properties that wp_mail does not flush by default();
-
         /** @var PHPMailer $mailer */
         $mailer = $GLOBALS['phpmailer'];
         $mailer->Body = '';
         $mailer->AltBody = '';
         $mailer->Priority = null;
+        $mailer->AllowEmpty = false;
         $mailer->clearCustomHeaders();
         $mailer->clearReplyTos();
     }

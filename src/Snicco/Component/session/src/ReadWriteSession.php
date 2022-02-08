@@ -6,6 +6,7 @@ namespace Snicco\Component\Session;
 
 use Closure;
 use DateTimeImmutable;
+use LogicException;
 use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
@@ -92,21 +93,6 @@ final class ReadWriteSession implements Session
         }
     }
 
-    /**
-     * @throws SessionIsLocked
-     */
-    private function checkLocked(): void
-    {
-        if ($this->locked) {
-            throw new SessionIsLocked();
-        }
-    }
-
-    private function refreshCsrfToken(): void
-    {
-        $this->put('_sniccowp.csrf_token', md5($this->id->asString()));
-    }
-
     public function all(): array
     {
         return Arr::except($this->attributes, '_sniccowp');
@@ -156,7 +142,7 @@ final class ReadWriteSession implements Session
         }
         $current = $this->get($key, 0);
         if (!is_int($current)) {
-            throw new RuntimeException("Current value for key [$key] is not an integer.");
+            throw new LogicException("Current value for key [$key] is not an integer.");
         }
 
         $this->put($key, $current + $amount);
@@ -186,30 +172,12 @@ final class ReadWriteSession implements Session
         $array = $this->get($key, []);
 
         if (!is_array($array)) {
-            throw new RuntimeException("Value for key [$key] is not an array.");
+            throw new LogicException("Value for key [$key] is not an array.");
         }
 
         $array[] = $value;
 
         $this->put($key, $array);
-    }
-
-    private function removeFromOldFlashData(array $keys): void
-    {
-        $this->put('_flash.old', array_diff($this->oldFlashes(), $keys));
-    }
-
-    /**
-     * @return string[]
-     * @psalm-suppress MixedReturnTypeCoercion
-     */
-    private function oldFlashes(): array
-    {
-        $old = Arr::get($this->attributes, '_flash.old', []);
-        if (!is_array($old)) {
-            throw new RuntimeException('_flash.old must be an array of strings.');
-        }
-        return $old;
     }
 
     /**
@@ -235,7 +203,9 @@ final class ReadWriteSession implements Session
             return $old;
         }
         if (!is_array($old)) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('_old_input must be an associative array.');
+            // @codeCoverageIgnoreEnd
         }
 
         return Arr::get($old, $key, $default);
@@ -261,11 +231,6 @@ final class ReadWriteSession implements Session
         $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
     }
 
-    private function recordEvent(object $event): void
-    {
-        $this->stored_events[] = $event;
-    }
-
     /**
      * @psalm-suppress MixedAssignment
      */
@@ -286,22 +251,6 @@ final class ReadWriteSession implements Session
         $this->mergeNewFlashes($keys);
 
         $this->removeFromOldFlashData($keys);
-    }
-
-    /**
-     * @param string[] $keys
-     */
-    private function mergeNewFlashes(array $keys): void
-    {
-        $new = $this->get('_flash.new', []);
-
-        if (!is_array($new)) {
-            throw new RuntimeException('_flash.new must be an array of strings.');
-        }
-
-        $values = array_unique(array_merge($new, $keys));
-
-        $this->put('_flash.new', $values);
     }
 
     public function lastActivity(): int
@@ -409,6 +358,12 @@ final class ReadWriteSession implements Session
         $this->lock();
     }
 
+    public function forget($keys): void
+    {
+        $this->checkLocked();
+        Arr::forget($this->attributes, $keys);
+    }
+
     /**
      * @interal
      */
@@ -420,15 +375,69 @@ final class ReadWriteSession implements Session
 
         $is_dirty = $this->attributes !== $this->original_attributes;
 
-        if ($is_dirty) {
-            return true;
-        }
-
-        if ($this->invalidated_id instanceof SessionId) {
+        if ($is_dirty || $this->invalidated_id) {
             return true;
         }
 
         return count($this->oldFlashes()) > 0;
+    }
+
+    /**
+     * @throws SessionIsLocked
+     */
+    private function checkLocked(): void
+    {
+        if ($this->locked) {
+            throw new SessionIsLocked();
+        }
+    }
+
+    private function refreshCsrfToken(): void
+    {
+        $this->put('_sniccowp.csrf_token', md5($this->id->asString()));
+    }
+
+    private function removeFromOldFlashData(array $keys): void
+    {
+        $this->put('_flash.old', array_diff($this->oldFlashes(), $keys));
+    }
+
+    /**
+     * @return string[]
+     * @psalm-suppress MixedReturnTypeCoercion
+     */
+    private function oldFlashes(): array
+    {
+        $old = Arr::get($this->attributes, '_flash.old', []);
+        if (!is_array($old)) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException('_flash.old must be an array of strings.');
+            // @codeCoverageIgnoreEnd
+        }
+        return $old;
+    }
+
+    private function recordEvent(object $event): void
+    {
+        $this->stored_events[] = $event;
+    }
+
+    /**
+     * @param string[] $keys
+     */
+    private function mergeNewFlashes(array $keys): void
+    {
+        $new = $this->get('_flash.new', []);
+
+        if (!is_array($new)) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException('_flash.new must be an array of strings.');
+            // @codeCoverageIgnoreEnd
+        }
+
+        $values = array_unique(array_merge($new, $keys));
+
+        $this->put('_flash.new', $values);
     }
 
     private function ageFlashData(): void
@@ -438,12 +447,6 @@ final class ReadWriteSession implements Session
         $this->put('_flash.old', $this->get('_flash.new', []));
 
         $this->put('_flash.new', []);
-    }
-
-    public function forget($keys): void
-    {
-        $this->checkLocked();
-        Arr::forget($this->attributes, $keys);
     }
 
     private function lock(): void

@@ -12,7 +12,7 @@ use FastRoute\RouteParser\Std as RouteParser;
 use LogicException;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
@@ -21,7 +21,6 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteSyntaxConverter;
@@ -41,7 +40,8 @@ use function trim;
 use function var_export;
 
 /**
- * @api
+ * @interal
+ *
  * The Router implements and partially delegates all core parts of the Routing system.
  * This is preferred over passing around one (global) instance of {@see Routes} between different
  * objects in the service container.
@@ -53,10 +53,18 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
 {
 
     private RouteConditionFactory $condition_factory;
+
     private AdminArea $admin_area;
-    private UrlGeneratorFactory $generator_factory;
+
+    /**
+     * @var Closure(Routes):UrlGeneratorInterface
+     */
+    private Closure $generator_factory;
+
     private ?PHPCacheFile $cache_file;
+
     private CachedRouteCollection $cached_routes;
+
     private UrlGeneratorInterface $generator;
 
     /**
@@ -72,11 +80,11 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
     private array $_routes = [];
 
     /**
-     * @api
+     * @param Closure(Routes):UrlGeneratorInterface $generator_factory
      */
     public function __construct(
         RouteConditionFactory $condition_factory,
-        UrlGeneratorFactory $generator_factory,
+        Closure $generator_factory,
         AdminArea $admin_area,
         PHPCacheFile $cache_file = null
     ) {
@@ -278,7 +286,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return $path;
         }
 
-        return $path->prepend($current->prefix());
+        return $path->prepend($current->prefix);
     }
 
     private function applyGroupName(string $route_name): string
@@ -288,7 +296,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return $route_name;
         }
 
-        $g = trim($current->name(), '.');
+        $g = trim($current->name, '.');
 
         if ($g === '') {
             return $route_name;
@@ -304,7 +312,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return '';
         }
 
-        return $current->namespace();
+        return $current->namespace;
     }
 
     private function addGroupAttributes(Route $route): void
@@ -314,7 +322,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return;
         }
 
-        foreach ($current->middleware() as $middleware) {
+        foreach ($current->middleware as $middleware) {
             $route->middleware($middleware);
         }
     }
@@ -389,7 +397,8 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
     private function getGenerator(): UrlGeneratorInterface
     {
         if (!isset($this->generator)) {
-            $this->generator = $this->generator_factory->create($this->getRoutes());
+            $closure = $this->generator_factory;
+            $this->generator = $closure($this->getRoutes());
         }
 
         return $this->generator;

@@ -6,6 +6,7 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
+use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use WP_User;
 
@@ -13,6 +14,18 @@ use function array_merge;
 
 final class MailBoxTest extends WPTestCase
 {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Mailbox::$email_validator = null;
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Mailbox::$email_validator = null;
+    }
 
     /**
      * @test
@@ -27,6 +40,7 @@ final class MailBoxTest extends WPTestCase
         $address = Mailbox::create('Calvin Alkan <calvin@web.de>');
         $this->assertSame('calvin@web.de', $address->address());
         $this->assertSame('Calvin Alkan <calvin@web.de>', $address->toString());
+        $this->assertSame('Calvin Alkan <calvin@web.de>', (string )$address);
         $this->assertSame('Calvin Alkan', $address->name());
     }
 
@@ -117,13 +131,6 @@ final class MailBoxTest extends WPTestCase
         $this->assertSame('Marlon', $address->name());
     }
 
-    private function createAdmin(array $data): WP_User
-    {
-        return $this->factory()->user->create_and_get(
-            array_merge($data, ['role' => 'administrator'])
-        );
-    }
-
     /**
      * @test
      */
@@ -143,6 +150,7 @@ final class MailBoxTest extends WPTestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exception_if_no_valid_argument(): void
     {
@@ -152,6 +160,48 @@ final class MailBoxTest extends WPTestCase
         );
 
         Mailbox::create(1);
+    }
+
+    /**
+     * @test
+     */
+    public function test_custom_validation_function_can_be_set(): void
+    {
+        Mailbox::$email_validator = function (string $email): bool {
+            return $email === 'calvin@web.de';
+        };
+
+        // ok
+        Mailbox::create('calvin@web.de');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('[marlon@web.de] is not a valid email.');
+
+        Mailbox::create('marlon@web.de');
+    }
+
+    /**
+     * @test
+     * @psalm-suppress InvalidPropertyAssignmentValue
+     * @psalm-suppress MissingClosureReturnType
+     */
+    public function test_exception_if_validation_function_does_not_return_bool(): void
+    {
+        Mailbox::$email_validator = function () {
+            //
+        };
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('MailBox::email_validator did not return a boolean for address [marlon@web.de].');
+
+        Mailbox::create('marlon@web.de');
+    }
+
+    private function createAdmin(array $data): WP_User
+    {
+        return $this->factory()->user->create_and_get(
+            array_merge($data, ['role' => 'administrator'])
+        );
     }
 
 }

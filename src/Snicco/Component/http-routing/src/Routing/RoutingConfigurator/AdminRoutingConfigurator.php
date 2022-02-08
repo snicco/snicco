@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
 use Closure;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminMenu;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 

@@ -28,12 +28,14 @@ final class Envelope
     {
         // to ensure deliverability of bounce emails independent of UTF-8 capabilities of SMTP servers
         if (!preg_match('/^[^@\x80-\xFF]++@/', $sender->address())) {
+            // @codeCoverageIgnoreStart
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid sender "%s": non-ASCII characters not supported in local-part of email.',
                     $sender->address()
                 )
             );
+            // @codeCoverageIgnoreEnd
         }
 
         if (!count($recipients)) {

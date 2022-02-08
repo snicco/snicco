@@ -467,13 +467,14 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * @param string|string[] $keys
+     * @param string|non-empty-array<string> $keys
      */
     public function hasAny($keys): bool
     {
-        $keys = Arr::toArray($keys);
-
-        return Arr::hasAny($this->inputSource(), $keys);
+        return Arr::hasAny(
+            $this->inputSource(),
+            $keys
+        );
     }
 
     /**

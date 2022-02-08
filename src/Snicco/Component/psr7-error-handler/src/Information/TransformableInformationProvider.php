@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Information;
 
 use InvalidArgumentException;
-use LogicException;
 use RuntimeException;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
@@ -55,36 +54,14 @@ final class TransformableInformationProvider implements InformationProvider
         $this->identifier = $identifier;
     }
 
-    /**
-     * @param int $status_code
-     * @param array{title: string, message:string} $info
-     *
-     * @psalm-suppress DocblockTypeContradiction
-     */
-    private function addMessage(int $status_code, array $info): void
-    {
-        if ($status_code < 400) {
-            throw new LogicException('$status_code must be greater >= 400.');
-        }
-        /** @var positive-int $status_code */
-
-        if (!isset($info['title']) || !is_string($info['title'])) {
-            throw new InvalidArgumentException("title must be string for status code [$status_code].");
-        }
-        if (!isset($info['message']) || !is_string($info['message'])) {
-            throw new InvalidArgumentException(
-                "message must be string for status code [$status_code]."
-            );
-        }
-        $this->default_messages[$status_code] = $info;
-    }
-
     public static function withDefaultData(ExceptionIdentifier $identifier, ExceptionTransformer ...$transformer): self
     {
         $data = file_get_contents($f = dirname(__DIR__, 2) . '/resources/en_US.error.json');
 
         if (false === $data) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException(sprintf('Cant read file contents of file [%s]', $f));
+            // @codeCoverageIgnoreEnd
         }
 
         /** @var array<positive-int,array{title:string, message:string}> $decoded */
@@ -114,6 +91,30 @@ final class TransformableInformationProvider implements InformationProvider
             $original,
             $transformed,
         );
+    }
+
+    /**
+     * @param int $status_code
+     * @param array{title: string, message:string} $info
+     *
+     * @psalm-suppress DocblockTypeContradiction
+     */
+    private function addMessage(int $status_code, array $info): void
+    {
+        if ($status_code < 400) {
+            throw new InvalidArgumentException('$status_code must be greater >= 400.');
+        }
+        /** @var positive-int $status_code */
+
+        if (!isset($info['title']) || !is_string($info['title'])) {
+            throw new InvalidArgumentException("\$title must be string for status code [$status_code].");
+        }
+        if (!isset($info['message']) || !is_string($info['message'])) {
+            throw new InvalidArgumentException(
+                "\$message must be string for status code [$status_code]."
+            );
+        }
+        $this->default_messages[$status_code] = $info;
     }
 
     private function transform(Throwable $throwable): Throwable

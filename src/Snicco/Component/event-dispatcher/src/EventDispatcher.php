@@ -8,7 +8,7 @@ use Closure;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionException;
-use Snicco\Component\EventDispatcher\Exception\CantRemove;
+use Snicco\Component\EventDispatcher\Exception\CantRemoveListener;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 
 /**
@@ -18,7 +18,9 @@ interface EventDispatcher extends EventDispatcherInterface
 {
 
     /**
-     * @param string|Closure $event_name If the event name is a closure the event will be
+     * @template T of object
+     *
+     * @param string|Closure(T) $event_name If the event name is a closure the event will be
      * retrieved from the first typehinted parameter in the closure.
      * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
      *
@@ -36,7 +38,7 @@ interface EventDispatcher extends EventDispatcherInterface
      * @param string $event_name
      * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
      *
-     * @throws CantRemove
+     * @throws CantRemoveListener
      * @throws InvalidListener
      */
     public function remove(string $event_name, $listener = null): void;

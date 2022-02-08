@@ -274,6 +274,7 @@ final class RouteTest extends TestCase
 
         try {
             $route->condition(stdClass::class);
+            $this->fail('No exception thrown for bad route condition class.');
         } catch (InvalidArgumentException $e) {
             $this->assertStringStartsWith(
                 sprintf(

@@ -7,10 +7,6 @@ namespace Snicco\Component\EventDispatcher\ListenerFactory;
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 use Throwable;
 
-/**
- * @internal
- * @psalm-internal Snicco\Component\EventDispatcher
- */
 final class NewableListenerFactory implements ListenerFactory
 {
 

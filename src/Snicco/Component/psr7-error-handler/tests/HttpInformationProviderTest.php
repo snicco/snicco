@@ -197,6 +197,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('transformed_user_facing_message', $information->safeDetails());
     }
 
+
     private function newProvider(
         array $data = [],
         ExceptionIdentifier $identifier = null,

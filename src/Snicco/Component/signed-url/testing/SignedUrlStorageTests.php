@@ -11,6 +11,9 @@ use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\TestClock;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait SignedUrlStorageTests
 {
 

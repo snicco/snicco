@@ -7,8 +7,8 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 use InvalidArgumentException;
 use LogicException;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
-use Snicco\Component\HttpRouting\Routing\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\DefaultRouteLoadingOptions;
+use Snicco\Component\HttpRouting\Routing\RouteLoading\PHPFileRouteLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -29,7 +29,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
     public static bool $web_include_partial = false;
 
-    private RouteLoader $file_loader;
+    private PHPFileRouteLoader $file_loader;
 
     private string $base_prefix = '/sniccowp';
     private string $bad_routes;
@@ -37,7 +37,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->file_loader = new RouteLoader(
+        $this->file_loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions('')
         );
@@ -55,6 +55,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exception_if_one_route_dir_is_not_string(): void
     {
@@ -168,7 +169,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
      */
     public function all_files_in_the_api_dir_will_be_included_and_prefixed_with_the_base_prefix(): void
     {
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
@@ -189,7 +190,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
      */
     public function all_files_in_the_api_dir_have_the_file_name_as_a_route_name_prefix(): void
     {
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
@@ -216,7 +217,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
             ]
         );
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
@@ -245,7 +246,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
             ]
         );
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
@@ -272,7 +273,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
     {
         $this->withMiddlewareGroups(['partials' => [], 'rest.v1' => []]);
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new DefaultRouteLoadingOptions(
                 $this->base_prefix,
@@ -300,7 +301,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
     {
         // We did not add middleware
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new TestLoadingOptions()
         );
@@ -336,7 +337,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Middleware for api options');
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new TestLoadingOptions(true)
 
@@ -353,7 +354,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Middleware for api options has to be an array of strings.');
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new TestLoadingOptions(false, true)
         );
@@ -374,7 +375,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
             )
         );
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 RoutingConfigurator::PREFIX_KEY => 'abc',
@@ -397,7 +398,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
             )
         );
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 RoutingConfigurator::NAMESPACE_KEY => 1,
@@ -420,7 +421,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
             )
         );
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 RoutingConfigurator::NAME_KEY => 1,
@@ -440,7 +441,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
             'The option [bogus] is not supported.',
         );
 
-        $loader = new RouteLoader(
+        $loader = new PHPFileRouteLoader(
             $this->routeConfigurator(),
             new ConfigurableLoadingOptions([
                 'bogus' => 'foo',

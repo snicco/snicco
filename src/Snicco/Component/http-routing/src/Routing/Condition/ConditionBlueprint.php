@@ -5,25 +5,28 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Condition;
 
 use InvalidArgumentException;
-use Webmozart\Assert\Assert;
 
 use function array_shift;
 use function is_subclass_of;
+use function sprintf;
 
 /**
- * @interal
+ * @internal
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
+ * @psalm-immutable
  */
 final class ConditionBlueprint
 {
 
-    private bool $negated = false;
+    public bool $is_negated = false;
 
     /**
      * @var class-string<AbstractRouteCondition>
      */
-    private string $class;
+    public string $class;
 
-    private array $args;
+    public array $passed_args;
 
     /**
      * @param class-string<AbstractRouteCondition>|"!" $condition_class
@@ -33,8 +36,7 @@ final class ConditionBlueprint
         if ($condition_class === AbstractRouteCondition::NEGATE) {
             /** @var string $condition_class */
             $condition_class = array_shift($arguments);
-            Assert::stringNotEmpty($condition_class);
-            $this->negated = true;
+            $this->is_negated = true;
         }
 
         if (!is_subclass_of($condition_class, AbstractRouteCondition::class)) {
@@ -48,25 +50,7 @@ final class ConditionBlueprint
         }
 
         $this->class = $condition_class;
-        $this->args = $arguments;
-    }
-
-    /**
-     * @return class-string<AbstractRouteCondition>
-     */
-    public function class(): string
-    {
-        return $this->class;
-    }
-
-    public function passedArgs(): array
-    {
-        return $this->args;
-    }
-
-    public function isNegated(): bool
-    {
-        return $this->negated;
+        $this->passed_args = $arguments;
     }
 
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminMenuItem;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;

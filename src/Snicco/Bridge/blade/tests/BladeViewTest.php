@@ -86,4 +86,22 @@ class BladeViewTest extends BladeTestCase
         $this->assertViewContent('FOO', $view->toString());
     }
 
+    /**
+     * @test
+     */
+    public function laravels_functions_are_implemented_correctly(): void
+    {
+        /** @var BladeView $view */
+        $view = $this->view_engine->make('variables');
+
+        $this->assertArrayHasKey('view', $view->getData());
+        $this->assertArrayNotHasKey('foo', $view->getData());
+
+        $view->with('foo', 'bar');
+
+        $this->assertArrayHasKey('foo', $view->getData());
+
+        $this->assertSame(__DIR__ . '/fixtures/views/variables.blade.php', $view->path());
+    }
+
 }

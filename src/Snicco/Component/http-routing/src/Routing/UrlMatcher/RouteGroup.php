@@ -14,18 +14,19 @@ use function trim;
 
 /**
  * @interal
+ *
+ * @psalm-internal Snicco\Component\HttpRouting\Routing
+ *
+ * @psalm-immutable
  */
 final class RouteGroup
 {
 
-    private string $namespace;
-    private UrlPath $path_prefix;
-    private string $name;
-
-    /**
-     * @var string[]
-     */
-    private array $middleware;
+    public string $namespace;
+    public UrlPath $prefix;
+    public string $name;
+    /** @var string[] */
+    public array $middleware;
 
     /**
      * @param array{namespace?:string, prefix?:string|UrlPath, name?:string, middleware?: string|string[]} $attributes
@@ -35,7 +36,7 @@ final class RouteGroup
         $this->namespace = $attributes[RoutingConfigurator::NAMESPACE_KEY] ?? '';
 
         $prefix = $attributes[RoutingConfigurator::PREFIX_KEY] ?? '/';
-        $this->path_prefix = $prefix instanceof UrlPath ? $prefix : UrlPath::fromString($prefix);
+        $this->prefix = $prefix instanceof UrlPath ? $prefix : UrlPath::fromString($prefix);
 
         $this->name = $attributes[RoutingConfigurator::NAME_KEY] ?? '';
 
@@ -46,32 +47,12 @@ final class RouteGroup
 
     public function mergeWith(RouteGroup $old_group): RouteGroup
     {
-        $this->middleware = $this->mergeMiddleware($old_group->middleware);
-        $this->name = $this->mergeName($old_group->name);
-        $this->path_prefix = $this->mergePrefix($old_group);
+        $new = clone $this;
+        $new->middleware = $this->mergeMiddleware($old_group->middleware);
+        $new->name = $this->mergeName($old_group->name);
+        $new->prefix = $this->mergePrefix($old_group);
 
-        return $this;
-    }
-
-    public function prefix(): UrlPath
-    {
-        return $this->path_prefix;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
-    }
-
-    public function namespace(): string
-    {
-        return $this->namespace;
-    }
-
-    /** @return string[] */
-    public function middleware(): array
-    {
-        return $this->middleware;
+        return $new;
     }
 
     /**
@@ -103,7 +84,7 @@ final class RouteGroup
 
     private function mergePrefix(RouteGroup $old_group): UrlPath
     {
-        return $old_group->path_prefix->append($this->path_prefix);
+        return $old_group->prefix->append($this->prefix);
     }
 
 }

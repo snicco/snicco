@@ -11,6 +11,7 @@ use Snicco\Component\BetterWPHooks\Tests\fixtures\PlainObjectEvent;
 use Snicco\Component\BetterWPHooks\Tests\fixtures\StoppableEvent;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
+use Snicco\Component\EventDispatcher\EventSubscriber;
 use stdClass;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -51,13 +52,6 @@ final class WPEventDispatcherTest extends WPTestCase
 
         $this->assertSame($event, $result);
         $this->assertSame('filtered_by_wp:FOOBAR:Filter1:Filter2', $event->value);
-    }
-
-    private function getDispatcher(): WPEventDispatcher
-    {
-        return new WPEventDispatcher(
-            new BaseEventDispatcher()
-        );
     }
 
     /**
@@ -179,6 +173,78 @@ final class WPEventDispatcherTest extends WPTestCase
         $this->assertSame($event, $result);
         $this->assertNotInstanceOf(Event::class, $result);
         $this->assertSame('filtered_by_wp:FOOBAR:Filter1', $event->value);
+    }
+
+    /**
+     * @test
+     * @psalm-suppress TypeDoesNotContainType
+     * @psalm-suppress RedundantCondition
+     */
+    public function listeners_can_be_removed(): void
+    {
+        $base_dispatcher = new BaseEventDispatcher();
+
+        $std = new stdClass();
+        $std->foo = 'bar';
+
+        $base_dispatcher->listen(stdClass::class, function (stdClass $stdClass) {
+            $stdClass->foo = 'BAR';
+        });
+
+        $base_dispatcher->dispatch($std);
+        $this->assertSame('BAR', $std->foo);
+
+        $wp_dispatcher = new WPEventDispatcher($base_dispatcher);
+
+        $wp_dispatcher->remove(stdClass::class);
+
+        $std2 = new stdClass();
+        $std2->foo = 'bar';
+
+        $base_dispatcher->dispatch($std2);
+        $this->assertSame('bar', $std2->foo);
+    }
+
+    /**
+     * @test
+     * @psalm-suppress TypeDoesNotContainType
+     */
+    public function event_subscribers_can_be_registered(): void
+    {
+        $dispatcher = $this->getDispatcher();
+
+        $dispatcher->subscribe(WPDispatcherSubscriber::class);
+
+        $std = new stdClass();
+        $std->value = 'foo';
+
+        $dispatcher->dispatch($std);
+
+        $this->assertSame('bar', $std->value);
+    }
+
+    private function getDispatcher(): WPEventDispatcher
+    {
+        return new WPEventDispatcher(
+            new BaseEventDispatcher()
+        );
+    }
+
+}
+
+class WPDispatcherSubscriber implements EventSubscriber
+{
+
+    public static function subscribedEvents(): array
+    {
+        return [
+            stdClass::class => 'foo'
+        ];
+    }
+
+    public function foo(stdClass $stdClass): void
+    {
+        $stdClass->value = 'bar';
     }
 
 }

@@ -15,6 +15,7 @@ use Illuminate\Database\Schema\MySqlBuilder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Fluent;
 use RuntimeException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Illuminate\WPConnectionResolver;
@@ -25,6 +26,30 @@ final class WPEloquentStandaloneTest extends WPTestCase
 {
 
     use WPDBTestHelpers;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Eloquent::unsetEventDispatcher();
+        Eloquent::unsetConnectionResolver();
+
+        $this->withDatabaseExceptions(function () {
+            global $wpdb;
+            $wpdb->query('CREATE DATABASE IF NOT EXISTS sniccowp_2_testing');
+        });
+    }
+
+    protected function tearDown(): void
+    {
+        $this->withDatabaseExceptions(function () {
+            global $wpdb;
+            $wpdb->query('DROP DATABASE IF EXISTS sniccowp_2_testing');
+        });
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -41,6 +66,21 @@ final class WPEloquentStandaloneTest extends WPTestCase
      */
     public function eloquent_is_booted(): void
     {
+        $resolver = (new WPEloquentStandalone())->bootstrap();
+
+        $this->assertInstanceOf(WPConnectionResolver::class, $resolver);
+
+        $eloquent_resolver = Eloquent::getConnectionResolver();
+        $this->assertInstanceOf(WPConnectionResolver::class, $eloquent_resolver);
+        $this->assertSame($resolver, $eloquent_resolver);
+    }
+
+    /**
+     * @test
+     */
+    public function test_can_be_booted_with_already_existing_config_key_in_container(): void
+    {
+        Container::getInstance()->instance('config', new Fluent());
         $resolver = (new WPEloquentStandalone())->bootstrap();
 
         $this->assertInstanceOf(WPConnectionResolver::class, $resolver);
@@ -155,30 +195,6 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $schema->getConnection()->getName() === 'mysql2';
         $schema->getConnection()->getConfig('driver') === 'mysql';
         $schema->getConnection()->getConfig('database') === 'sniccowp_testing_secondary';
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Eloquent::unsetEventDispatcher();
-        Eloquent::unsetConnectionResolver();
-
-        $this->withDatabaseExceptions(function () {
-            global $wpdb;
-            $wpdb->query('CREATE DATABASE IF NOT EXISTS sniccowp_2_testing');
-        });
-    }
-
-    protected function tearDown(): void
-    {
-        $this->withDatabaseExceptions(function () {
-            global $wpdb;
-            $wpdb->query('DROP DATABASE IF EXISTS sniccowp_2_testing');
-        });
-        parent::tearDown();
     }
 
 }

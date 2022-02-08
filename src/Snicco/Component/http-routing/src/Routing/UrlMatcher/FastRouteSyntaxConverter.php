@@ -94,7 +94,9 @@ final class FastRouteSyntaxConverter
         preg_match('/(\[(.*?)])/', $url_pattern, $matches);
 
         if (!isset($matches[0])) {
+            // @codeCoverageIgnoreStart
             return;
+            // @codeCoverageIgnoreEnd
         }
 
         $first = $matches[0];

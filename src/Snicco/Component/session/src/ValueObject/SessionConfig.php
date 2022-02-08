@@ -8,7 +8,6 @@ use InvalidArgumentException;
 
 use function implode;
 use function in_array;
-use function is_int;
 use function ltrim;
 use function sprintf;
 use function strtolower;
@@ -36,6 +35,7 @@ final class SessionConfig
      *     cookie_name:string,
      *     idle_timeout_in_sec: positive-int,
      *     rotation_interval_in_sec: positive-int,
+     *     garbage_collection_percentage: positive-int,
      *     absolute_lifetime_in_sec?: positive-int,
      *     domain?: string,
      *     same_site?: 'Lax'|'Strict'|'None',
@@ -86,7 +86,7 @@ final class SessionConfig
         }
 
         $gc_percentage = $config['garbage_collection_percentage'] ?? -1;
-        if (!is_int($gc_percentage) || $gc_percentage < 0 || $gc_percentage > 100) {
+        if ($gc_percentage < 0 || $gc_percentage > 100) {
             throw new InvalidArgumentException(
                 'The garbage collection percentage has to be between 0 and 100.'
             );

@@ -19,9 +19,13 @@ use function is_int;
 use function is_string;
 use function iterator_to_array;
 use function preg_match;
+use function restore_error_handler;
 use function serialize;
+use function set_error_handler;
 use function sprintf;
 use function unserialize;
+
+use const E_NOTICE;
 
 final class WPObjectCachePsr16 implements CacheInterface
 {
@@ -78,9 +82,9 @@ final class WPObjectCachePsr16 implements CacheInterface
         foreach ($res as $key => $value) {
             if ($value === false) {
                 $values[$key] = $default;
-            } else {
-                $values[$key] = $this->validatedUnserialize($value, $key);
+                continue;
             }
+            $values[$key] = $this->validatedUnserialize($value, $key);
         }
         return $values;
     }
@@ -151,7 +155,7 @@ final class WPObjectCachePsr16 implements CacheInterface
             $expires = $end->getTimestamp() - $now->getTimestamp();
         } else {
             throw new BadTtl(
-                sprintf('$ttl must be null,integer or DateInterval. Got [%s]', gettype($ttl))
+                sprintf('$ttl must be null,integer or DateInterval. Got [%s].', gettype($ttl))
             );
         }
 
@@ -258,9 +262,19 @@ final class WPObjectCachePsr16 implements CacheInterface
             throw new RuntimeException("Cache content for key [$key] was not a serialized string.");
         }
 
+        set_error_handler(function () {
+            // do nothing
+            return true;
+        }, E_NOTICE);
+
         $parsed = unserialize($content);
+
+        restore_error_handler();
+
         if (false === $parsed && 'b:0;' !== $content) {
-            throw new RuntimeException("Cant unserialize cache content for key [$key].");
+            throw new RuntimeException(
+                "Cant unserialize cache content for key [$key].\nValue [$content] is corrupted."
+            );
         }
         return $parsed;
     }

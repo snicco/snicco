@@ -14,9 +14,9 @@ class FooEvent implements Event
     use ClassAsName;
     use ClassAsPayload;
 
-    public $val;
+    public string $val;
 
-    public function __construct($val)
+    public function __construct(string $val)
     {
         $this->val = $val;
     }

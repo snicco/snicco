@@ -40,7 +40,9 @@ final class CacheFile
         $val = file_get_contents($this->file);
 
         if (false === $val) {
-            throw new RuntimeException("Cant read cache contents of file [$this->file]");
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException("Cant read cache contents of file [$this->file].");
+            // @codeCoverageIgnoreEnd
         }
         return $val;
     }

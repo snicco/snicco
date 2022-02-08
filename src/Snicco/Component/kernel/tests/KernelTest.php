@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests;
 
+use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use RuntimeException;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Kernel;
@@ -23,6 +23,19 @@ final class KernelTest extends TestCase
     use WriteTestConfig;
 
     private string $base_dir;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->base_dir = __DIR__ . '/fixtures';
+        $this->cleanDirs([$this->base_dir . '/var/cache']);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cleanDirs([$this->base_dir . '/var/cache']);
+    }
 
     /**
      * @test
@@ -137,7 +150,7 @@ final class KernelTest extends TestCase
             Directories::fromDefaults($this->base_dir . '/base_dir_without_app_config')
         );
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $dir = $this->base_dir . '/base_dir_without_app_config/config';
 
@@ -210,19 +223,6 @@ final class KernelTest extends TestCase
         $this->expectException(ContainerIsLocked::class);
 
         unset($container['foo']);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->base_dir = __DIR__ . '/fixtures';
-        $this->cleanDirs([$this->base_dir . '/var/cache']);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanDirs([$this->base_dir . '/var/cache']);
     }
 
 }

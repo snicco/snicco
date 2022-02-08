@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\QueryStringCondition;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;

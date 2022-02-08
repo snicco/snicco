@@ -31,7 +31,7 @@ final class PHPView implements View
      * @var array<string,mixed>
      */
     private array $context = [];
-    
+
     private string $name;
 
     public function __construct(PHPViewFactory $engine, string $name, string $path)
@@ -42,62 +42,9 @@ final class PHPView implements View
         $this->parent_view = $this->parseParentView();
     }
 
-    /**
-     * Create a view instance for the given view's layout header, if any.
-     *
-     * @return PHPView|null
-     */
-    private function parseParentView(): ?PHPView
-    {
-        $parent_view_name = $this->parseExtends();
-
-        if (null === $parent_view_name) {
-            return null;
-        }
-
-        return $this->engine->make($parent_view_name);
-    }
-
-    private function parseExtends(): ?string
-    {
-        $data = file_get_contents($this->filepath, false, null, 0, 100);
-
-        if (false === $data) {
-            throw new RuntimeException("Cant read file contents of view [$this->filepath].");
-        }
-
-        $scope = Str::betweenFirst($data, '/*', '*/');
-
-        $match = preg_match('/(?:Extends:\s?)(.+)/', $scope, $matches);
-
-        if (false === $match) {
-            throw new RuntimeException("preg_match failed on string [$scope]");
-        }
-        if (0 === $match) {
-            return null;
-        }
-
-        if (!isset($matches[1])) {
-            return null;
-        }
-
-        $match = str_replace(' ', '', $matches[1]);
-
-        if ('' === $match) {
-            return null;
-        }
-
-        return $match;
-    }
-
     public function path(): string
     {
         return $this->filepath;
-    }
-
-    public function parent(): ?PHPView
-    {
-        return $this->parent_view;
     }
 
     public function name(): string
@@ -131,6 +78,67 @@ final class PHPView implements View
     public function context(): array
     {
         return $this->context;
+    }
+
+    public function parent(): ?PHPView
+    {
+        return $this->parent_view;
+    }
+
+    /**
+     * Create a view instance for the given view's layout header, if any.
+     *
+     * @return PHPView|null
+     */
+    private function parseParentView(): ?PHPView
+    {
+        $parent_view_name = $this->parseExtends();
+
+        if (null === $parent_view_name) {
+            return null;
+        }
+
+        return $this->engine->make($parent_view_name);
+    }
+
+    private function parseExtends(): ?string
+    {
+        $data = file_get_contents($this->filepath, false, null, 0, 100);
+
+        if (false === $data) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException("Cant read file contents of view [$this->filepath].");
+            // @codeCoverageIgnoreEnd
+        }
+
+        $scope = Str::betweenFirst($data, '/*', '*/');
+
+        $match = preg_match('/(?:Extends:\s?)(.+)/', $scope, $matches);
+
+        if (false === $match) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException("preg_match failed on string [$scope]");
+            // @codeCoverageIgnoreEnd
+        }
+        if (0 === $match) {
+            return null;
+        }
+
+        if (!isset($matches[1])) {
+            // @codeCoverageIgnoreStart
+            return null;
+            // @codeCoverageIgnoreEnd
+        }
+
+        $match = str_replace(' ', '', $matches[1]);
+
+        if ('' === $match) {
+            // @codeCoverageIgnoreStart
+            return null;
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $match;
     }
 
 }

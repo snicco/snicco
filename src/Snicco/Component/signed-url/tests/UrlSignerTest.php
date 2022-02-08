@@ -49,6 +49,7 @@ final class UrlSignerTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_for_bad_lifetime(): void
     {
@@ -58,6 +59,7 @@ final class UrlSignerTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_for_empty_target(): void
     {
@@ -79,13 +81,14 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
-    public function testExceptionForBadPath(): void
+    public function test_exception_for_bad_path(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('/#f//sd$ is not a valid path.');
 
         $this->url_signer->sign('#f//sd$', 10);
     }
+
 
     /**
      * @test
@@ -99,6 +102,8 @@ final class UrlSignerTest extends TestCase
         $this->assertStringContainsString('expires=', $magic_link->asString());
         $this->assertStringContainsString('signature=', $magic_link->asString());
         $this->assertSame('/foo', $magic_link->protects());
+
+        $this->assertSame($magic_link->asString(), (string)$magic_link);
     }
 
     /**
@@ -114,6 +119,7 @@ final class UrlSignerTest extends TestCase
         $this->assertStringContainsString('signature=', $magic_link->asString());
         $this->assertSame('https://foo.com/foo/', $magic_link->protects());
     }
+
 
     /**
      * @test

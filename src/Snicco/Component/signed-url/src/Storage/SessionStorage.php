@@ -29,17 +29,23 @@ final class SessionStorage implements SignedUrlStorage
     /**
      * @param array|ArrayAccess $storage
      * @param Clock|null $clock
+     *
+     * @codeCoverageIgnore
      */
     public function __construct(&$storage, Clock $clock = null)
     {
         if ($storage instanceof ArrayAccess) {
             $this->storage = $storage;
         } elseif (is_array($storage)) {
+            // @codeCoverageIgnoreStart Has a weird bug with phpunit. These branches are definitely covered
             $this->storage = &$storage;
+            // @codeCoverageIgnoreEnd
         } else {
+            // @codeCoverageIgnoreStart
             throw new InvalidArgumentException(
                 '$storage must be an array or instance of ArrayAccess'
             );
+            // @codeCoverageIgnoreEnd
         }
         $this->clock = $clock ?? new SystemClock();
     }
@@ -62,27 +68,6 @@ final class SessionStorage implements SignedUrlStorage
         }
 
         $this->storage[self::namespace] = $_temp;
-    }
-
-    private function remainingUsage(string $identifier): int
-    {
-        $stored = $this->getStored();
-
-        if (!isset($stored[$identifier])) {
-            return 0;
-        }
-
-        return intval($stored[$identifier]['left_usages'] ?? 0);
-    }
-
-    /**
-     * @return array<string,array{expires_at: positive-int, left_usages:positive-int}>
-     * @psalm-suppress MixedReturnStatement
-     * @psalm-suppress MixedInferredReturnType
-     */
-    private function getStored(): array
-    {
-        return $this->storage[self::namespace] ?? [];
     }
 
     public function store(SignedUrl $signed_url): void
@@ -109,6 +94,27 @@ final class SessionStorage implements SignedUrlStorage
                 $this->storage[self::namespace] = $_temp;
             }
         }
+    }
+
+    private function remainingUsage(string $identifier): int
+    {
+        $stored = $this->getStored();
+
+        if (!isset($stored[$identifier])) {
+            return 0;
+        }
+
+        return intval($stored[$identifier]['left_usages'] ?? 0);
+    }
+
+    /**
+     * @return array<string,array{expires_at: positive-int, left_usages:positive-int}>
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
+    private function getStored(): array
+    {
+        return $this->storage[self::namespace] ?? [];
     }
 
 }

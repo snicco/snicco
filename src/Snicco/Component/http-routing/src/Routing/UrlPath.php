@@ -11,7 +11,7 @@ use function ltrim;
 use function rtrim;
 
 /**
- * @api
+ * @psalm-immutable
  */
 final class UrlPath
 {
@@ -48,22 +48,12 @@ final class UrlPath
         return UrlPath::fromString(rtrim($path->asString(), '/') . $this->asString());
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function fromString(string $path): UrlPath
     {
         return new UrlPath(UrlPath::sanitize($path));
-    }
-
-    private static function sanitize(string $path): string
-    {
-        if ('' === $path) {
-            $path = '/';
-        }
-
-        if (Str::endsWith($path, '//')) {
-            $path = rtrim($path, '/') . '/';
-        }
-
-        return ltrim($path, '/');
     }
 
     public function asString(): string
@@ -105,6 +95,22 @@ final class UrlPath
     public function __toString(): string
     {
         return $this->asString();
+    }
+
+    /**
+     * @psalm-pure
+     */
+    private static function sanitize(string $path): string
+    {
+        if ('' === $path) {
+            $path = '/';
+        }
+
+        if (Str::endsWith($path, '//')) {
+            $path = rtrim($path, '/') . '/';
+        }
+
+        return ltrim($path, '/');
     }
 
 }

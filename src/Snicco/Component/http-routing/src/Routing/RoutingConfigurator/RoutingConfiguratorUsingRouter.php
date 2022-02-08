@@ -7,8 +7,8 @@ namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 use ArrayIterator;
 use Closure;
 use LogicException;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminDashboardPrefix;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminMenuItem;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
@@ -30,7 +30,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 {
 
     private Router $router;
-    private AdminDashboardPrefix $admin_dashboard_prefix;
+    private AdminAreaPrefix $admin_dashboard_prefix;
 
     /**
      * @var array{
@@ -53,7 +53,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 
     private ?Route $current_parent_route = null;
 
-    public function __construct(Router $router, AdminDashboardPrefix $admin_dashboard_prefix, array $config)
+    public function __construct(Router $router, AdminAreaPrefix $admin_dashboard_prefix, array $config)
     {
         $this->admin_dashboard_prefix = $admin_dashboard_prefix;
         $this->router = $router;

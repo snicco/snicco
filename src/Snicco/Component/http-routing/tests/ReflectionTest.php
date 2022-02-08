@@ -11,46 +11,11 @@ use Iterator;
 use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use ReflectionFunctionAbstract;
 use Snicco\Component\HttpRouting\Reflection;
 use Traversable;
 
 final class ReflectionTest extends TestCase
 {
-
-    /**
-     * @test
-     */
-    public function test_getReflectionFunction_with_class(): void
-    {
-        $this->assertNull(Reflection::getReflectionFunction(NoConstructor::class));
-        $reflection = Reflection::getReflectionFunction(ClassWithConstructor::class);
-        $this->assertInstanceOf(ReflectionFunctionAbstract::class, $reflection);
-        $this->assertSame('__construct', $reflection->getName());
-        $this->assertSame('foo', $reflection->getParameters()[0]->getName());
-    }
-
-    /**
-     * @test
-     */
-    public function test_getReflectionFunction_with_closure(): void
-    {
-        $closure = function ($foo): void {
-        };
-
-        $reflection = Reflection::getReflectionFunction($closure);
-        $this->assertSame('foo', $reflection->getParameters()[0]->getName());
-    }
-
-    /**
-     * @test
-     */
-    public function test_getReflectionFunction_with_class_and_method(): void
-    {
-        $reflection =
-            Reflection::getReflectionFunction([ClassWithConstructor::class, 'someMethod']);
-        $this->assertSame('someMethod', $reflection->getName());
-    }
 
     /**
      * @test
@@ -125,6 +90,28 @@ final class ReflectionTest extends TestCase
         $this->assertFalse(Reflection::isInterface(Traversable::class, Iterator::class));
     }
 
+    /**
+     * @test
+     */
+    public function test_firstParameterType_with_closure(): void
+    {
+        $this->assertSame(
+            'string',
+            Reflection::firstParameterType(function (string $foo): void {
+                //
+            })
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_firstParameterType_with_class_string_uses_constructor(): void
+    {
+        $this->assertSame('string', Reflection::firstParameterType(ClassWithConstructor::class));
+    }
+
+
 }
 
 class NoConstructor
@@ -135,7 +122,7 @@ class NoConstructor
 class ClassWithConstructor
 {
 
-    public function __construct($foo)
+    public function __construct(string $foo)
     {
     }
 
@@ -150,6 +137,7 @@ class TestSubject implements Countable
 
     public function count(): int
     {
+        return 0;
     }
 
 }
@@ -179,10 +167,12 @@ class TestTraversable implements Iterator
 
     public function valid(): bool
     {
+        return true;
     }
 
     public function rewind(): void
     {
+        //
     }
 
 }

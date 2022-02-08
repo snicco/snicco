@@ -11,10 +11,6 @@ use function intval;
 use function is_numeric;
 use function rawurldecode;
 
-/**
- * @api This class can be used to change the route parameters and perform some transformations.
- * @psalm-suppress PropertyNotSetInConstructor
- */
 final class RoutingResult
 {
 
@@ -28,7 +24,7 @@ final class RoutingResult
     /**
      * @var array<string,string|int>
      */
-    private array $decoded_segments;
+    private ?array $decoded_segments = null;
 
     /**
      * @param array<string,string> $captured_segments

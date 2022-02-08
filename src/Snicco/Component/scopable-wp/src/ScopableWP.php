@@ -82,55 +82,6 @@ class ScopableWP
         return call_user_func_array($proxy_to, $arguments);
     }
 
-    private function methodNameToSnakeCase(string $method_name): string
-    {
-        $key = $method_name;
-
-        if (isset(self::$snake_cache[$key])) {
-            return self::$snake_cache[$key];
-        }
-
-        if (!ctype_lower($method_name)) {
-            $method_name = preg_replace('/\s+/u', '', ucwords($method_name));
-
-            if (null === $method_name) {
-                throw new RuntimeException(
-                    sprintf("preg_replace returned null in [%s].\nLine: [%s]", self::class, __LINE__)
-                );
-            }
-
-            $method_name = preg_replace(
-                '/(.)(?=[A-Z])/u',
-                '$1' . '_',
-                $method_name
-            );
-
-            if (null === $method_name) {
-                throw new RuntimeException(
-                    sprintf("preg_replace returned null in [%s].\nLine: [%s]", self::class, __LINE__)
-                );
-            }
-
-            $method_name = strtolower($method_name);
-        }
-
-        return static::$snake_cache[$key] = $method_name;
-    }
-
-    private function triggerNotice(string $called_instance_method, string $proxies_to): void
-    {
-        trigger_error(
-            sprintf(
-                "Tried to call method [%s] on [%s] but its not defined. There might be an autoload conflict.\nUsed version of scopable-wp [%s].\nProxying to global function [%s].",
-                $called_instance_method,
-                static::class,
-                self::VERSION,
-                $proxies_to
-            ),
-            E_USER_NOTICE
-        );
-    }
-
     /**
      * @final
      * @return true
@@ -250,6 +201,59 @@ class ScopableWP
     public function currentUserCan(string $capability, ...$args): bool
     {
         return current_user_can($capability, ...$args);
+    }
+
+    private function methodNameToSnakeCase(string $method_name): string
+    {
+        $key = $method_name;
+
+        if (isset(self::$snake_cache[$key])) {
+            return self::$snake_cache[$key];
+        }
+
+        if (!ctype_lower($method_name)) {
+            $method_name = preg_replace('/\s+/u', '', ucwords($method_name));
+
+            if (null === $method_name) {
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException(
+                    sprintf("preg_replace returned null in [%s].\nLine: [%s]", self::class, __LINE__)
+                );
+                // @codeCoverageIgnoreEnd
+            }
+
+            $method_name = preg_replace(
+                '/(.)(?=[A-Z])/u',
+                '$1' . '_',
+                $method_name
+            );
+
+            if (null === $method_name) {
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException(
+                    sprintf("preg_replace returned null in [%s].\nLine: [%s].", self::class, __LINE__)
+                );
+                // @codeCoverageIgnoreEnd
+            }
+
+            $method_name = strtolower($method_name);
+        }
+
+        return static::$snake_cache[$key] = $method_name;
+    }
+
+    private function triggerNotice(string $called_instance_method, string $proxies_to): void
+    {
+        trigger_error(
+            sprintf(
+                "Tried to call method [%s] on [%s] but its not defined. There might be an autoload conflict.\nUsed version of scopable-wp [%s].\nProxying to global function [%s].",
+                $called_instance_method,
+                static::class,
+                self::VERSION,
+                $proxies_to
+            ),
+            E_USER_NOTICE
+        );
     }
 
 
