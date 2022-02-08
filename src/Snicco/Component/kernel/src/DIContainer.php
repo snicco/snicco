@@ -142,7 +142,6 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param string $id
      * @param scalar|array<scalar> $value
-     * @psalm-suppress DocblockTypeContradiction
      */
     final public function primitive(string $id, $value): void
     {

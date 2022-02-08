@@ -71,6 +71,8 @@ final class Str
 
     /**
      * @param string|string[] $needles
+     *
+     * @psalm-pure
      */
     public static function contains(string $haystack, $needles): bool
     {
@@ -150,6 +152,9 @@ final class Str
         return !self::endsWith($path, $string);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function endsWith(string $haystack, string $needle): bool
     {
         if ('' === $needle) {
@@ -180,6 +185,9 @@ final class Str
         return $res;
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function startsWith(string $haystack, string $needle): bool
     {
         if ('' === $needle) {
