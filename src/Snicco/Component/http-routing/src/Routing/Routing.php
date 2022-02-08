@@ -6,8 +6,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing;
 
 use Psr\Container\ContainerInterface;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\PHPFileRouteLoader;

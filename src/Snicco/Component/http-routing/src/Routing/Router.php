@@ -12,7 +12,7 @@ use FastRoute\RouteParser\Std as RouteParser;
 use LogicException;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;

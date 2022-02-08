@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
 use InvalidArgumentException;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;

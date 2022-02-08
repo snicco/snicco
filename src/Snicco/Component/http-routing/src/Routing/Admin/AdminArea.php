@@ -2,27 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\AdminDashboard;
+namespace Snicco\Component\HttpRouting\Routing\Admin;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
-/**
- * This interface represents a simple value object in order to avoid having to pass primitive
- * configuration values.
- *
- * @api
- */
 interface AdminArea
 {
 
     /**
      * Returns the url prefix that all admin routes share.
      */
-    public function urlPrefix(): AdminDashboardPrefix;
+    public function urlPrefix(): AdminAreaPrefix;
 
     /**
-     * The path relative to the root domain where users can login into the admin dashboard.
+     * The path relative to the root domain where users can log in into the admin dashboard.
      *
      * @return string
      */
