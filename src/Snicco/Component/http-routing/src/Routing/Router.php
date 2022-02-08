@@ -286,7 +286,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return $path;
         }
 
-        return $path->prepend($current->prefix());
+        return $path->prepend($current->prefix);
     }
 
     private function applyGroupName(string $route_name): string
@@ -296,7 +296,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return $route_name;
         }
 
-        $g = trim($current->name(), '.');
+        $g = trim($current->name, '.');
 
         if ($g === '') {
             return $route_name;
@@ -312,7 +312,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return '';
         }
 
-        return $current->namespace();
+        return $current->namespace;
     }
 
     private function addGroupAttributes(Route $route): void
@@ -322,7 +322,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
             return;
         }
 
-        foreach ($current->middleware() as $middleware) {
+        foreach ($current->middleware as $middleware) {
             $route->middleware($middleware);
         }
     }

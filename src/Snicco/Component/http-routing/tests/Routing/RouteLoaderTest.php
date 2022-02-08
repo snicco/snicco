@@ -55,6 +55,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exception_if_one_route_dir_is_not_string(): void
     {
