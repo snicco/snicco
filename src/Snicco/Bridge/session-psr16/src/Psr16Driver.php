@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Bridge\SessionPsr16;
 
 use DateTimeImmutable;
+use Exception;
 use Psr\SimpleCache\CacheInterface;
-use Psr\SimpleCache\InvalidArgumentException as PsrCacheInvalidArgumentException;
-use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\Session\Exception\CantDestroySession;
+use Snicco\Component\Session\Exception\CantReadSessionContent;
 use Snicco\Component\Session\Exception\CantWriteSessionContent;
 use Snicco\Component\Session\ValueObject\SerializedSessionData;
 use Throwable;
@@ -66,14 +66,12 @@ final class Psr16Driver implements SessionDriver
     {
         try {
             $res = $this->cache->deleteMultiple($session_ids);
-            if (true !== $res) {
-                throw CantDestroySession::forSessionIDs($session_ids, get_class($this->cache));
-            }
         } catch (Throwable $e) {
-            if (!$e instanceof PsrCacheInvalidArgumentException) {
-                throw $e;
-            }
             throw CantDestroySession::forSessionIDs($session_ids, get_class($this->cache), $e);
+        }
+
+        if (true !== $res) {
+            throw CantDestroySession::forSessionIDs($session_ids, get_class($this->cache));
         }
     }
 
@@ -95,51 +93,47 @@ final class Psr16Driver implements SessionDriver
     private function readParts(string $session_id): array
     {
         try {
-            /** @var mixed $val */
             $val = $this->cache->get($session_id);
-        } catch (Throwable $e) {
-            if (!$e instanceof PsrCacheInvalidArgumentException) {
-                throw $e;
-            }
+        } catch (Exception $e) {
+            throw CantReadSessionContent::forID($session_id, self::class);
+        }
+
+        if (null === $val) {
             throw BadSessionID::forId($session_id, get_class($this->cache));
         }
 
         if (!is_string($val)) {
-            throw BadSessionID::forId($session_id, get_class($this->cache));
+            throw new CantReadSessionContent("Session content for id [$session_id] is not a string.");
         }
 
-        $decoded = base64_decode($val);
+        $decoded = base64_decode($val, true);
         if (false === $decoded) {
-            throw new RuntimeException("Cant decode session contents for id [$session_id].");
+            throw new CantReadSessionContent("Cant decode session contents for id [$session_id].\nContent: [$val].");
         }
 
         $parts = explode('|', $decoded);
 
         if (count($parts) !== 2) {
-            throw BadSessionID::forId($session_id, get_class($this->cache));
+            throw new CantReadSessionContent(
+                "Session content for id [$session_id] is corrupted.\nDecoded content: [$decoded]."
+            );
         }
 
         return [(int)$parts[0], $parts[1]];
     }
 
-    /**
-     * @throws Throwable
-     * @throws CantWriteSessionContent
-     */
     private function writeParts(string $session_id, int $last_activity, string $data): void
     {
         $val = strval($last_activity) . '|' . $data;
 
         try {
             $res = $this->cache->set($session_id, base64_encode($val), $this->idle_timeout_in_seconds);
-            if (true !== $res) {
-                throw CantWriteSessionContent::forId($session_id, get_class($this->cache));
-            }
-        } catch (Throwable $e) {
-            if (!$e instanceof PsrCacheInvalidArgumentException) {
-                throw $e;
-            }
+        } catch (Exception $e) {
             throw CantWriteSessionContent::forId($session_id, get_class($this->cache), $e);
+        }
+
+        if (true !== $res) {
+            throw CantWriteSessionContent::forId($session_id, get_class($this->cache));
         }
     }
 
