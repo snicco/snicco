@@ -106,6 +106,7 @@
       "Snicco\\Component\\BetterWPMail\\Testing\\": "src/Snicco/Component/better-wp-mail/testing",
       "Snicco\\Component\\BetterWPMail\\Tests\\": "src/Snicco/Component/better-wp-mail/tests",
       "Snicco\\Component\\Eloquent\\Tests\\": "src/Snicco/Component/eloquent/tests",
+      "Snicco\\Component\\EventDispatcher\\Testing\\": "src/Snicco/Component/event-dispatcher/testing",
       "Snicco\\Component\\EventDispatcher\\Tests\\": "src/Snicco/Component/event-dispatcher/tests",
       "Snicco\\Component\\HttpRouting\\Testing\\": "src/Snicco/Component/http-routing/testing",
       "Snicco\\Component\\HttpRouting\\Tests\\": "src/Snicco/Component/http-routing/tests",

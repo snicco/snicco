@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
-use Snicco\Component\EventDispatcher\TestableEventDispatcher;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertPHPUnitFailures;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
@@ -24,6 +24,20 @@ final class TestableDispatcherAssertionsTest extends TestCase
     use AssertListenerResponse;
 
     private TestableEventDispatcher $fake_dispatcher;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->resetListenersResponses();
+        $dispatcher = new BaseEventDispatcher(new NewableListenerFactory());
+        $this->fake_dispatcher = new TestableEventDispatcher($dispatcher);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->resetListenersResponses();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -355,20 +369,6 @@ final class TestableDispatcherAssertionsTest extends TestCase
                 }
             )
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->resetListenersResponses();
-        $dispatcher = new BaseEventDispatcher(new NewableListenerFactory());
-        $this->fake_dispatcher = new TestableEventDispatcher($dispatcher);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetListenersResponses();
-        parent::tearDown();
     }
 
 }
