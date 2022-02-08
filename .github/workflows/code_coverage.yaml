@@ -39,19 +39,21 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
-      - name: Run phpunit, testsuite unit
-        run: composer unit -- --coverage-clover clover.xml
-
-      - name: Upload coverage results to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_PARALLEL: true
-          COVERALLS_FLAG_NAME: php-${{ matrix.php }}_dependencies-${{ matrix.dependencies }}_unit
+      - name: Run phpunit, testsuite component, middleware and bridge (=> testsuite unit)
         run: |
-          composer global require php-coveralls/php-coveralls
-          mkdir build/logs -p
-          mv clover.xml build/logs/
-          php-coveralls -v
+          composer component -- --coverage-clover component.xml
+          composer middleware -- --coverage-clover middleware.xml
+          composer bridge -- --coverage-clover bridge.xml
+          composer integration -- --coverage-clover integration.xml
+
+      - name: Upload Code Coverage to Codecov
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f component.xml -Z -F component
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f middleware.xml -Z -F middleware
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f bridge.xml -Z -F bridge
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f integration.xml -Z -F integration          
 
   wordpress_tests_coverage:
 
@@ -114,26 +116,10 @@ jobs:
         working-directory: /tmp
 
       - name: Run WordPress tests with codeception
-        run: composer wordpress -- --coverage-xml clover.xml
+        run: composer wordpress -- --coverage-xml wordpress.xml
 
-      - name: Upload coverage results to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_PARALLEL: true
-          COVERALLS_FLAG_NAME: php-${{ matrix.php }}_wp-${{ matrix.wp }}_dependencies-${{ matrix.dependencies }}_unit
+      - name: Upload Code Coverage to Codecov
         run: |
-          composer global require php-coveralls/php-coveralls
-          mkdir build/logs -p
-          mv _output/clover.xml build/logs/
-          php-coveralls -v
-    
-  coveralls-finish:
-    needs: [unit_tests_coverage, wordpress_tests_coverage]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f wordpress.xml -Z -F wordpress
