@@ -21,7 +21,6 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteSyntaxConverter;
@@ -54,10 +53,18 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
 {
 
     private RouteConditionFactory $condition_factory;
+
     private AdminArea $admin_area;
-    private UrlGeneratorFactory $generator_factory;
+
+    /**
+     * @var Closure(Routes):UrlGeneratorInterface
+     */
+    private Closure $generator_factory;
+
     private ?PHPCacheFile $cache_file;
+
     private CachedRouteCollection $cached_routes;
+
     private UrlGeneratorInterface $generator;
 
     /**
@@ -73,11 +80,11 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
     private array $_routes = [];
 
     /**
-     * @api
+     * @param Closure(Routes):UrlGeneratorInterface $generator_factory
      */
     public function __construct(
         RouteConditionFactory $condition_factory,
-        UrlGeneratorFactory $generator_factory,
+        Closure $generator_factory,
         AdminArea $admin_area,
         PHPCacheFile $cache_file = null
     ) {
@@ -390,7 +397,8 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
     private function getGenerator(): UrlGeneratorInterface
     {
         if (!isset($this->generator)) {
-            $this->generator = $this->generator_factory->create($this->getRoutes());
+            $closure = $this->generator_factory;
+            $this->generator = $closure($this->getRoutes());
         }
 
         return $this->generator;
