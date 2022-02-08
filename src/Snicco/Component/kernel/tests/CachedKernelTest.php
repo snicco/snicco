@@ -22,6 +22,20 @@ final class CachedKernelTest extends TestCase
     private string $base_dir;
     private string $base_dir_with_bundles;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->base_dir = __DIR__ . '/fixtures';
+        $this->base_dir_with_bundles = $this->base_dir . '/base_dir_with_bundles';
+        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
+    }
+
     /**
      * @test
      */
@@ -71,22 +85,8 @@ final class CachedKernelTest extends TestCase
 
         $config = $app->config();
 
-        $this->assertSame('bar', $config['app.foo']);
-        $this->assertSame('biz', $config['routing.baz']);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->base_dir = __DIR__ . '/fixtures';
-        $this->base_dir_with_bundles = $this->base_dir . '/base_dir_with_bundles';
-        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanDirs([$this->base_dir . '/var/cache', $this->base_dir_with_bundles . '/var/cache']);
+        $this->assertSame('bar', $config->getString('app.foo'));
+        $this->assertSame('biz', $config->getString('routing.baz'));
     }
 
 }

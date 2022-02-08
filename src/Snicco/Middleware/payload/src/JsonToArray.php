@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Middleware\Payload;
 
 use InvalidArgumentException;
-use JsonException;
 use Psr\Http\Message\StreamInterface;
+use Throwable;
 
 use function json_decode;
 use function sprintf;
 
-use const JSON_OBJECT_AS_ARRAY;
 use const JSON_THROW_ON_ERROR;
 
 /**
  * @api
  */
-final class JsonPayload extends Payload
+final class JsonToArray extends Payload
 {
 
     public function __construct()
@@ -36,7 +35,7 @@ final class JsonPayload extends Payload
             return [];
         }
         try {
-            $res = json_decode($json, true, 512, JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR);
+            $res = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
             if (!is_array($res)) {
                 throw new InvalidArgumentException('json_decoding the request body did not return an array.');
@@ -51,7 +50,7 @@ final class JsonPayload extends Payload
             }
             /** @psalm-var array<string,mixed> */
             return $res;
-        } catch (JsonException $e) {
+        } catch (Throwable $e) {
             throw new CantParseRequestBody(
                 sprintf(
                     "Cant decode json body [%s].\n[%s]",

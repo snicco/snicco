@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Kernel\Configuration;
 
 use LogicException;
-use Snicco\Component\ParameterBag\ParameterPag;
+use Snicco\Component\ParameterBag\ParameterBag;
 use Snicco\Component\StrArr\Arr;
 use Webmozart\Assert\Assert;
 
@@ -22,19 +22,19 @@ use function range;
 /**
  * @api
  */
-final class WritableConfig
+final class WritableConfig extends Config
 {
 
-    private ParameterPag $repository;
+    private ParameterBag $repository;
 
-    public function __construct(?ParameterPag $repository = null)
+    public function __construct(?ParameterBag $repository = null)
     {
-        $this->repository = $repository ?? new ParameterPag();
+        $this->repository = $repository ?? new ParameterBag();
     }
 
     public static function fromArray(array $items): self
     {
-        return new self(new ParameterPag($items));
+        return new self(new ParameterBag($items));
     }
 
     /**
@@ -42,8 +42,6 @@ final class WritableConfig
      * Existing values have priority.
      *
      * @param scalar|array<scalar> $extend_with
-     *
-     * @psalm-suppress MixedAssignment
      */
     public function extend(string $key, $extend_with): void
     {
@@ -65,45 +63,6 @@ final class WritableConfig
         $new_value = $this->mergedArrayConfig($extend_with, $existing_config);
 
         $this->repository->set($key, $new_value);
-    }
-
-    /**
-     * @param array<scalar> $extend_with
-     * @param array<scalar> $exiting_config
-     */
-    private function mergedArrayConfig(array $extend_with, array $exiting_config): array
-    {
-        if ($this->isList($extend_with)
-            && $this->isList($exiting_config)) {
-            return array_values(array_unique(array_merge($exiting_config, $extend_with)));
-        }
-
-        $current = $exiting_config;
-
-        foreach ($extend_with as $key => $value) {
-            if (!isset($current[$key])) {
-                $current[$key] = $value;
-                continue;
-            }
-            if (is_array($current[$key])) {
-                $current[$key][] = $value;
-            }
-        }
-        return $current;
-    }
-
-    /**
-     * @psalm-assert list $array
-     */
-    private function isList(array $array): bool
-    {
-        $count = count($array);
-
-        if (0 === $count) {
-            return true;
-        }
-
-        return array_keys($array) === range(0, count($array) - 1);
     }
 
     /**
@@ -189,6 +148,40 @@ final class WritableConfig
     public function toArray(): array
     {
         return $this->repository->toArray();
+    }
+
+    /**
+     * @param array<scalar> $extend_with
+     * @param array<scalar> $exiting_config
+     */
+    private function mergedArrayConfig(array $extend_with, array $exiting_config): array
+    {
+        if ($this->isList($extend_with) && $this->isList($exiting_config)) {
+            return array_values(array_unique(array_merge($exiting_config, $extend_with)));
+        }
+
+        $current = $exiting_config;
+
+        foreach ($extend_with as $key => $value) {
+            if (!isset($current[$key])) {
+                $current[$key] = $value;
+            }
+        }
+        return $current;
+    }
+
+    /**
+     * @psalm-assert list $array
+     */
+    private function isList(array $array): bool
+    {
+        $count = count($array);
+
+        if (0 === $count) {
+            return true;
+        }
+
+        return array_keys($array) === range(0, count($array) - 1);
     }
 
 }

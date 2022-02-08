@@ -77,7 +77,10 @@ final class BladeViewFactory implements ViewFactory
             }
         }
 
+        // This branch should not be possible.
+        // @codeCoverageIgnoreStart
         return $path;
+        // @codeCoverageIgnoreEnd
     }
 
 }

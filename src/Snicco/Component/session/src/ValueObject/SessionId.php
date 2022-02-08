@@ -30,12 +30,6 @@ final class SessionId
         $this->id_as_string = $id_as_string;
     }
 
-    private function newString(): string
-    {
-        $strength = max(self::$token_strength, 16);
-        return Str::random($strength);
-    }
-
     public static function fromCookieId(string $id): SessionId
     {
         return new SessionId($id);
@@ -60,7 +54,9 @@ final class SessionId
     {
         $res = hash('sha256', $this->asString());
         if (false === $res) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not create hash for session id.');
+            // @codeCoverageIgnoreEnd
         }
         return $res;
     }
@@ -68,6 +64,12 @@ final class SessionId
     public function sameAs(SessionId $id2): bool
     {
         return $id2->asString() === $this->asString();
+    }
+
+    private function newString(): string
+    {
+        $strength = max(self::$token_strength, 16);
+        return Str::random($strength);
     }
 
 }

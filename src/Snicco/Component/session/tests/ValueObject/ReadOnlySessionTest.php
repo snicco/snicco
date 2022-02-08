@@ -9,7 +9,10 @@ use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\Session;
 use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
+use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
+
+use function time;
 
 final class ReadOnlySessionTest extends TestCase
 {
@@ -19,10 +22,9 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function testImmutableStore(): void
+    public function test_is_immutable(): void
     {
         $session = $this->newSession();
-
         $store = ReadOnlySession::fromSession($session);
 
         $this->assertInstanceOf(ImmutableSession::class, $store);
@@ -30,4 +32,146 @@ final class ReadOnlySessionTest extends TestCase
         $this->assertNotInstanceOf(MutableSession::class, $store);
     }
 
+    /**
+     * @test
+     */
+    public function test_all(): void
+    {
+        $session = $this->newSession(null, ['foo' => 'bar']);
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertSame(['foo' => 'bar'], $store->all());
+    }
+
+    /**
+     * @test
+     */
+    public function test_boolean(): void
+    {
+        $session = $this->newSession(null, ['foo' => 1, 'bar' => 0]);
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertTrue($store->boolean('foo'));
+        $this->assertFalse($store->boolean('bar'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_created_at(): void
+    {
+        $session = $this->newSession(null, ['foo' => 1, 'bar' => 0]);
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertEqualsWithDelta(time(), $store->createdAt(), 1);
+    }
+
+    /**
+     * @test
+     */
+    public function test_csrf_token(): void
+    {
+        $session = $this->newSession();
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertInstanceOf(CsrfToken::class, $store->csrfToken());
+    }
+
+    /**
+     * @test
+     */
+    public function test_exists_has(): void
+    {
+        $session = $this->newSession(null, ['foo' => false, 'bar' => null, 'baz' => '']);
+        $store = ReadOnlySession::fromSession($session);
+
+        $this->assertTrue($store->exists('foo'));
+        $this->assertTrue($store->exists('baz'));
+        $this->assertTrue($store->exists('bar'));
+
+        $this->assertTrue($store->has('foo'));
+        $this->assertFalse($store->has('bar'));
+        $this->assertTrue($store->has('baz'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_hasOldInput(): void
+    {
+        $session = $this->newSession();
+        $session->flashInput(['foo' => 'bar']);
+
+        $store = ReadOnlySession::fromSession($session);
+
+        $this->assertTrue($store->hasOldInput('foo'));
+        $this->assertFalse($store->hasOldInput('bar'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_id(): void
+    {
+        $session = $this->newSession();
+
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertEquals($session->id(), $store->id());
+    }
+
+    /**
+     * @test
+     */
+    public function test_last_activity(): void
+    {
+        $session = $this->newSession();
+
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertEquals($session->lastActivity(), $store->lastActivity());
+    }
+
+    /**
+     * @test
+     */
+    public function test_last_rotation(): void
+    {
+        $session = $this->newSession();
+
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertEquals($session->lastRotation(), $store->lastRotation());
+    }
+
+    /**
+     * @test
+     */
+    public function test_missing(): void
+    {
+        $session = $this->newSession(null, ['foo' => false, 'bar' => null, 'baz' => '']);
+        $store = ReadOnlySession::fromSession($session);
+
+        $this->assertFalse($store->missing('foo'));
+        $this->assertFalse($store->missing('baz'));
+        $this->assertFalse($store->missing('bar'));
+        $this->assertTrue($store->missing('bogus'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_oldInput(): void
+    {
+        $session = $this->newSession();
+        $session->flashInput(['foo' => 'bar']);
+
+        $store = ReadOnlySession::fromSession($session);
+
+        $this->assertSame('bar', $store->oldInput('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_only(): void
+    {
+        $session = $this->newSession(null, ['foo' => false, 'bar' => null, 'baz' => '']);
+        $store = ReadOnlySession::fromSession($session);
+
+        $this->assertSame(['foo' => false, 'bar' => null], $store->only(['foo', 'bar']));
+    }
 }

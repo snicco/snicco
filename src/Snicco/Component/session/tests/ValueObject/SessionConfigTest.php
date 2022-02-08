@@ -14,6 +14,22 @@ final class SessionConfigTest extends TestCase
 
     private array $defaults;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->defaults = [
+            'path' => '/',
+            'cookie_name' => 'my_session_cookie',
+            'domain' => null,
+            'http_only' => true,
+            'secure' => true,
+            'same_site' => 'lax',
+            'idle_timeout_in_sec' => 10,
+            'rotation_interval_in_sec' => 20,
+            'garbage_collection_percentage' => 2,
+        ];
+    }
+
     /**
      * @test
      */
@@ -23,6 +39,17 @@ final class SessionConfigTest extends TestCase
 
         $this->assertInstanceOf(SessionConfig::class, $config);
         $this->assertSame('my_cookie', $config->cookieName());
+    }
+
+    /**
+     * @test
+     * @psalm-suppress MixedArgumentTypeCoercion
+     */
+    public function test_from_defaults_without_path(): void
+    {
+        unset($this->defaults['path']);
+        $config = new SessionConfig($this->defaults);
+        $this->assertSame('/', $config->cookiePath());
     }
 
     /**
@@ -181,22 +208,6 @@ final class SessionConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         unset($this->defaults['garbage_collection_percentage']);
         (new SessionConfig($this->defaults));
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->defaults = [
-            'path' => '/',
-            'cookie_name' => 'my_session_cookie',
-            'domain' => null,
-            'http_only' => true,
-            'secure' => true,
-            'same_site' => 'lax',
-            'idle_timeout_in_sec' => 10,
-            'rotation_interval_in_sec' => 20,
-            'garbage_collection_percentage' => 0,
-        ];
     }
 
 }

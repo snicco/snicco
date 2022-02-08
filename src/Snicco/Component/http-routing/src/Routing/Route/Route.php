@@ -25,9 +25,6 @@ use function preg_match_all;
 use function rtrim;
 use function sprintf;
 
-/**
- * @api
- */
 final class Route
 {
 
@@ -230,7 +227,7 @@ final class Route
             )
         );
 
-        $this->conditions[$b->class()] = $b;
+        $this->conditions[$b->class] = $b;
         return $this;
     }
 

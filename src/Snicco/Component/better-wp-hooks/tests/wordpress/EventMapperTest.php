@@ -10,6 +10,7 @@ use LogicException;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedFilter;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
+use Snicco\Component\BetterWPHooks\Exception\CantCreateMappedEvent;
 use Snicco\Component\BetterWPHooks\ScopableWP;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ClassAsName;
@@ -17,15 +18,22 @@ use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
+use stdClass;
 
 use function add_action;
 use function add_filter;
 use function apply_filters;
+use function apply_filters_ref_array;
 use function do_action;
 use function implode;
+use function sprintf;
 
+use const PHP_INT_MAX;
 use const PHP_INT_MIN;
 
+/**
+ * @psalm-suppress UnusedClosureParam
+ */
 class EventMapperTest extends WPTestCase
 {
 
@@ -72,13 +80,14 @@ class EventMapperTest extends WPTestCase
 
     /**
      * @test
+     *
      */
     public function a_wordpress_action_can_be_mapped_to_a_custom_event_and_the_event_will_dispatch(): void
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function (EmptyActionEvent $event) {
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
+            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', $event->value);
         });
 
         do_action('empty');
@@ -143,6 +152,7 @@ class EventMapperTest extends WPTestCase
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
+            /** @var int */
             $count++;
         }, 5);
 
@@ -166,6 +176,7 @@ class EventMapperTest extends WPTestCase
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
+            /** @var int */
             $count++;
         }, 5);
 
@@ -195,6 +206,7 @@ class EventMapperTest extends WPTestCase
         $count = 0;
 
         add_action(EmptyActionEvent::class, function () use (&$count) {
+            /** @var int */
             $count++;
         }, 1);
 
@@ -335,13 +347,36 @@ class EventMapperTest extends WPTestCase
     /**
      * @test
      */
-    public function test_map_first_if_another_callback_is_registered_before(): void
+    public function test_map_first_if_another_callback_is_registered_before_with_int_min(): void
     {
         $count = 0;
 
         add_action('wp_hook', function () use (&$count) {
             $count++;
         }, PHP_INT_MIN, 10);
+
+        $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
+
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
+            $this->assertSame(0, $count, 'Mapped Event did not run first.');
+            $count++;
+        });
+
+        do_action('wp_hook');
+
+        $this->assertSame(2, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function test_map_first_if_another_callback_is_registered_before(): void
+    {
+        $count = 0;
+
+        add_action('wp_hook', function () use (&$count) {
+            $count++;
+        }, 10, 1);
 
         $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
 
@@ -493,7 +528,7 @@ class EventMapperTest extends WPTestCase
     /**
      * @test
      */
-    public function cant_map_the_same_hook_twice_to_the_same_custom_event(): void
+    public function cant_map_the_same_filter_twice_to_the_same_custom_event(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -504,6 +539,40 @@ class EventMapperTest extends WPTestCase
         );
         $this->event_mapper->map('foobar', EventFilter1::class);
         $this->event_mapper->map('foobar', EventFilter1::class);
+    }
+
+    /**
+     * @test
+     */
+    public function cant_map_the_same_action_twice_to_the_same_custom_event(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                'Tried to map the event class [%s] twice to the [foobar] hook.',
+                FooActionEvent::class
+            )
+        );
+        $this->event_mapper->map('foobar', FooActionEvent::class);
+        $this->event_mapper->map('foobar', FooActionEvent::class);
+    }
+
+    /**
+     * @test
+     *
+     * @psalm-suppress UndefinedClass
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    public function cant_map_to_a_non_existing_class(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                'The event class [%s] does not exist.',
+                'Bogus'
+            )
+        );
+        $this->event_mapper->map('foobar', 'Bogus');
     }
 
     /**
@@ -552,6 +621,8 @@ class EventMapperTest extends WPTestCase
 
     /**
      * @test
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedOperand
      */
     public function conditional_actions_are_prevented_if_conditions_dont_match(): void
     {
@@ -562,7 +633,7 @@ class EventMapperTest extends WPTestCase
         });
 
         $count = 0;
-        add_action('action', function ($value) use (&$count) {
+        add_action('action', function (string $value) use (&$count) {
             $this->assertSame('PREVENT', $value);
             $count++;
         }, 10, 2);
@@ -571,6 +642,40 @@ class EventMapperTest extends WPTestCase
 
         $this->assertListenerNotRun(ConditionalAction::class, 'listener1');
         $this->assertSame(1, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_the_provided_arguments_are_invalid_for_the_mapped_event(): void
+    {
+        $this->event_mapper->map('foo_filter', EventFilter1::class);
+
+        $this->expectException(CantCreateMappedEvent::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                "The mapped event [%s] could not be instantiated with the passed received arguments from WordPress.\nReceived [string,object].",
+                EventFilter1::class
+            )
+        );
+
+        apply_filters_ref_array('foo_filter', ['foo', new stdClass()]);
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_current_filter_is_removed_for_some_reason_during_on_the_fly_mapping(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('$current_filter should never be null during mapping.');
+
+        $this->event_mapper->mapLast('foo', EmptyActionEvent::class);
+        add_action('foo', function () {
+            $GLOBALS['wp_current_filter'] = [];
+        }, 10);
+
+        do_action('foo');
     }
 
 }
@@ -635,9 +740,9 @@ class EventFilterWithNoArgs implements MappedFilter
     use ClassAsName;
     use ClassAsPayload;
 
-    public $filterable_value;
+    public string $filterable_value;
 
-    public function __construct($filterable_value)
+    public function __construct(string $filterable_value)
     {
         $this->filterable_value = $filterable_value;
     }
@@ -660,10 +765,10 @@ class EventFilter1 implements MappedFilter
     use ClassAsName;
     use ClassAsPayload;
 
-    public $foo;
-    public $bar;
+    public string $foo;
+    public string $bar;
 
-    public function __construct($foo, $bar)
+    public function __construct(string $foo, string $bar)
     {
         $this->foo = $foo;
         $this->bar = $bar;
@@ -687,10 +792,10 @@ class EventFilter2 implements MappedFilter
     use ClassAsName;
     use ClassAsPayload;
 
-    public $foo;
-    public $bar;
+    public string $foo;
+    public string $bar;
 
-    public function __construct($foo, $bar)
+    public function __construct(string $foo, string $bar)
     {
         $this->foo = $foo;
         $this->bar = $bar;
@@ -744,11 +849,11 @@ class FooActionEvent implements MappedHook
     use ClassAsName;
     use ClassAsPayload;
 
-    private $foo;
-    private $bar;
-    private $baz;
+    private string $foo;
+    private string $bar;
+    private string $baz;
 
-    public function __construct($foo, $bar, $baz)
+    public function __construct(string $foo, string $bar, string $baz)
     {
         $this->foo = $foo;
         $this->bar = $bar;
@@ -775,7 +880,10 @@ class ActionWithArrayArguments implements MappedHook
 
     public string $message;
 
-    public function __construct(array $words, $suffix)
+    /**
+     * @param string[] $words
+     */
+    public function __construct(array $words, string $suffix)
     {
         $this->message = implode('|', $words) . ':' . $suffix;
     }

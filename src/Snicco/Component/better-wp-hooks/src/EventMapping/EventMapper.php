@@ -59,6 +59,31 @@ final class EventMapper
     }
 
     /**
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE
+     * any other callbacks are run for the hook.
+     *
+     * @param class-string<MappedHook> $map_to_event_class
+     */
+    public function mapFirst(string $wordpress_hook_name, string $map_to_event_class): void
+    {
+        $this->validate($wordpress_hook_name, $map_to_event_class);
+        $this->ensureFirst($wordpress_hook_name, $map_to_event_class);
+    }
+
+    /**
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all
+     * other callbacks are run for the hook.
+     *
+     * @param class-string<MappedHook> $map_to
+     *
+     */
+    public function mapLast(string $wordpress_hook_name, string $map_to): void
+    {
+        $this->validate($wordpress_hook_name, $map_to);
+        $this->ensureLast($wordpress_hook_name, $map_to);
+    }
+
+    /**
      * @param class-string<MappedHook> $map_to
      *
      * @throws LogicException If the hook is already mapped to the same event class
@@ -164,9 +189,11 @@ final class EventMapper
             );
 
             if (!isset($args_from_wordpress_hooks[0])) {
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException(
                     "Event mapper received invalid arguments from WP for mapped hook [$event_class]."
                 );
+                // @codeCoverageIgnoreEnd
             }
 
             if (!$event->shouldDispatch()) {
@@ -174,28 +201,10 @@ final class EventMapper
                 return $args_from_wordpress_hooks[0];
             }
 
-            $payload = $this->event_dispatcher->dispatch($event);
+            $this->event_dispatcher->dispatch($event);
 
-            if (!$payload instanceof MappedFilter) {
-                throw new LogicException(
-                    "Mapped Filter [$event_class] has to return an instance of [MappedFilter]."
-                );
-            }
-
-            return $payload->filterableAttribute();
+            return $event->filterableAttribute();
         };
-    }
-
-    /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE
-     * any other callbacks are run for the hook.
-     *
-     * @param class-string<MappedHook> $map_to_event_class
-     */
-    public function mapFirst(string $wordpress_hook_name, string $map_to_event_class): void
-    {
-        $this->validate($wordpress_hook_name, $map_to_event_class);
-        $this->ensureFirst($wordpress_hook_name, $map_to_event_class);
     }
 
     /**
@@ -241,19 +250,6 @@ final class EventMapper
 
         // This is important in order to keep the relative priority.
         ksort($wp_hook->callbacks, SORT_NUMERIC);
-    }
-
-    /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all
-     * other callbacks are run for the hook.
-     *
-     * @param class-string<MappedHook> $map_to
-     *
-     */
-    public function mapLast(string $wordpress_hook_name, string $map_to): void
-    {
-        $this->validate($wordpress_hook_name, $map_to);
-        $this->ensureLast($wordpress_hook_name, $map_to);
     }
 
     /**

@@ -66,26 +66,14 @@ final class TestableEventDispatcher implements EventDispatcher
         return $original;
     }
 
-    private function shouldFakeEvent(string $event_name): bool
-    {
-        if ($this->fake_all) {
-            return true;
-        }
-
-        if (count($this->dont_fake)) {
-            return !in_array($event_name, $this->dont_fake, true);
-        }
-
-        if (in_array($event_name, $this->events_to_fake, true)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function remove(string $event_name, $listener = null): void
     {
         $this->real_dispatcher->remove($event_name, $listener);
+    }
+
+    public function subscribe(string $event_subscriber): void
+    {
+        $this->real_dispatcher->subscribe($event_subscriber);
     }
 
     /**
@@ -158,39 +146,6 @@ final class TestableEventDispatcher implements EventDispatcher
     }
 
     /**
-     *
-     * @return list<Event>
-     *
-     * @psalm-suppress MixedAssignment
-     */
-    private function getDispatched(string $event_name, Closure $callback_condition = null): array
-    {
-        $passed = [];
-
-        foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
-            if (!$callback_condition) {
-                $passed[] = $event;
-                continue;
-            }
-
-            $payload = $event->payload();
-
-            $payload = is_array($payload) ? $payload : [$payload];
-
-            $res = call_user_func_array($callback_condition, $payload);
-
-            if (!is_bool($res)) {
-                throw new LogicException('Test closure that asserts events did not return boolean.');
-            }
-            if ($res) {
-                $passed[] = $event;
-            }
-        }
-
-        return $passed;
-    }
-
-    /**
      * @param string|Closure $event_name
      * @param Closure|null $condition
      *
@@ -227,7 +182,7 @@ final class TestableEventDispatcher implements EventDispatcher
         );
     }
 
-    public function reset(): void
+    public function resetDispatchedEvents(): void
     {
         $this->events_to_fake = [];
         $this->fake_all = false;
@@ -235,9 +190,54 @@ final class TestableEventDispatcher implements EventDispatcher
         $this->dispatched_events = [];
     }
 
-    public function subscribe(string $event_subscriber): void
+    private function shouldFakeEvent(string $event_name): bool
     {
-        $this->real_dispatcher->subscribe($event_subscriber);
+        if ($this->fake_all) {
+            return true;
+        }
+
+        if (count($this->dont_fake)) {
+            return !in_array($event_name, $this->dont_fake, true);
+        }
+
+        if (in_array($event_name, $this->events_to_fake, true)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @return list<Event>
+     *
+     * @psalm-suppress MixedAssignment
+     */
+    private function getDispatched(string $event_name, Closure $callback_condition = null): array
+    {
+        $passed = [];
+
+        foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
+            if (!$callback_condition) {
+                $passed[] = $event;
+                continue;
+            }
+
+            $payload = $event->payload();
+
+            $payload = is_array($payload) ? $payload : [$payload];
+
+            $res = call_user_func_array($callback_condition, $payload);
+
+            if (!is_bool($res)) {
+                throw new LogicException('Test closure that asserts events did not return boolean.');
+            }
+            if ($res) {
+                $passed[] = $event;
+            }
+        }
+
+        return $passed;
     }
 
 }

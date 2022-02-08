@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\AdminDashboard;
+namespace Snicco\Component\HttpRouting\Routing\Admin;
 
 use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -14,9 +14,6 @@ use function ltrim;
 use function rtrim;
 use function trim;
 
-/**
- * @interal
- */
 final class WPAdminArea implements AdminArea
 {
 
@@ -35,9 +32,9 @@ final class WPAdminArea implements AdminArea
         return new self('/wp-admin', '/wp-login.php');
     }
 
-    public function urlPrefix(): AdminDashboardPrefix
+    public function urlPrefix(): AdminAreaPrefix
     {
-        return AdminDashboardPrefix::fromString($this->prefix);
+        return AdminAreaPrefix::fromString($this->prefix);
     }
 
     public function rewriteForUrlGeneration(string $route_pattern): array

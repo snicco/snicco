@@ -41,10 +41,6 @@ final class ClosureTypeHint
             throw InvalidListener::becauseTheClosureDoesntHaveATypeHintedObject();
         }
 
-        if (empty($name = $type->getName())) {
-            throw InvalidListener::becauseTheClosureDoesntHaveATypeHintedObject();
-        }
-
-        return $name;
+        return $type->getName();
     }
 }

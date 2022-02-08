@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\AdminDashboard;
+namespace Snicco\Component\HttpRouting\Routing\Admin;
 
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Webmozart\Assert\Assert;
 
-/**
- * @api
- */
-final class AdminDashboardPrefix
+final class AdminAreaPrefix
 {
 
     private string $prefix;
@@ -22,7 +19,7 @@ final class AdminDashboardPrefix
         $this->prefix = $prefix;
     }
 
-    public static function fromString(string $prefix): AdminDashboardPrefix
+    public static function fromString(string $prefix): AdminAreaPrefix
     {
         return new self('/' . trim($prefix, '/'));
     }

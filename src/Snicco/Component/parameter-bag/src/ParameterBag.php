@@ -14,7 +14,7 @@ use function is_array;
 /**
  * @api
  */
-final class ParameterPag implements ArrayAccess
+final class ParameterBag implements ArrayAccess
 {
 
     private array $items;
@@ -112,11 +112,6 @@ final class ParameterPag implements ArrayAccess
         return $this->has($offset);
     }
 
-    public function has(string $key): bool
-    {
-        return Arr::has($this->items, $key);
-    }
-
     /**
      * @param string $offset
      * @param mixed $value
@@ -132,6 +127,11 @@ final class ParameterPag implements ArrayAccess
     public function offsetUnset($offset): void
     {
         $this->remove($offset);
+    }
+
+    public function has(string $key): bool
+    {
+        return Arr::has($this->items, $key);
     }
 
     public function remove(string $key): void

@@ -69,11 +69,14 @@ class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
             $mysqli = $this->wpdb()->dbh;
             return $mysqli;
         } catch (Throwable $e) {
+            // @codeCoverageIgnoreStart
+
             // This will work for sure if WordPress where ever
             // to delete magic method accessors, which tbh will probably never happen.
             return (function () {
                 return $this->dbh;
             })->call($wpdb);
+            // @codeCoverageIgnoreEnd
         }
     }
 

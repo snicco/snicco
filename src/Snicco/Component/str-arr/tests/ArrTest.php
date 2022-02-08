@@ -32,6 +32,9 @@ final class ArrTest extends TestCase
      */
     public function test_get(): void
     {
+        $this->assertSame('bar', Arr::get(['foo' => 'bar'], 'foo'));
+        $this->assertSame('default', Arr::get(['foo' => 'bar'], 'bogus', 'default'));
+
         $array = ['products.desk' => ['price' => 100]];
         $this->assertEquals(['price' => 100], Arr::get($array, 'products.desk'));
 
@@ -265,8 +268,7 @@ final class ArrTest extends TestCase
     public function test_random(): void
     {
         $random = Arr::random(['foo', 'bar', 'baz']);
-        $this->assertCount(1, $random);
-        $this->assertContains($random[0], ['foo', 'bar', 'baz']);
+        $this->assertContains($random, ['foo', 'bar', 'baz']);
 
         $random = Arr::random(['foo', 'bar', 'baz'], 2);
         $this->assertCount(2, $random);
@@ -279,6 +281,16 @@ final class ArrTest extends TestCase
             'You requested [4] items, but there are only [3] items available.'
         );
         Arr::random(['foo', 'bar', 'baz'], 4);
+    }
+
+    /**
+     * @test
+     */
+    public function test_random_throws_for_empty_array(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$array cant be empty.');
+        Arr::random([]);
     }
 
     /**
@@ -401,7 +413,11 @@ final class ArrTest extends TestCase
     {
         // Flat arrays are unaffected
         $array = ['#foo', '#bar', '#baz'];
-        $this->assertEquals(['#foo', '#bar', '#baz'], Arr::flatten($array));
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arr::flatten($array, 1));
+
+        $array = ['#foo', '#bar', '#baz'];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arr::flatten($array, 5000));
+
 
         // Nested arrays are flattened with existing flat items
         $array = [['#foo', '#bar'], '#baz'];
@@ -579,6 +595,8 @@ final class ArrTest extends TestCase
         $this->assertTrue(Arr::hasAny($array, 'foo.baz'));
         $this->assertFalse(Arr::hasAny($array, 'foo.bax'));
         $this->assertTrue(Arr::hasAny($array, ['foo.bax', 'foo.baz']));
+
+        $this->assertFalse(Arr::hasAny([], ['foo', 'bar']));
     }
 
     /**
@@ -620,6 +638,7 @@ final class ArrTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidScalarArgument
      */
     public function testDataGet(): void
     {
@@ -657,6 +676,12 @@ final class ArrTest extends TestCase
         $this->assertNull(Arr::dataGet($arrayAccess, 'foo'));
         $this->assertNull(Arr::dataGet($arrayAccess, 'user.foo'));
         $this->assertNull(Arr::dataGet($arrayAccess, 'email', 'Not found'));
+
+        $this->expectException(InvalidArgumentException::class);
+        Arr::dataGet([], ['foo', 1]);
+        $this->expectExceptionMessage(
+            '$keys has to be a string or an array of string when calling [Snicco\Component\StrArr\Arr::dataGet()]'
+        );
     }
 
     /**

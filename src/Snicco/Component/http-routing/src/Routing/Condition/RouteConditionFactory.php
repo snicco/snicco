@@ -33,8 +33,8 @@ final class RouteConditionFactory
      */
     public function create(ConditionBlueprint $blueprint): AbstractRouteCondition
     {
-        $class = $blueprint->class();
-        $args = $blueprint->passedArgs();
+        $class = $blueprint->class;
+        $args = $blueprint->passed_args;
 
         try {
             $instance = $this->container->get($class);
@@ -56,7 +56,7 @@ final class RouteConditionFactory
             $instance = (new ReflectionClass($class))->newInstanceArgs(array_values($args));
         }
 
-        if ($blueprint->isNegated()) {
+        if ($blueprint->is_negated) {
             return new NegatedRouteCondition($instance);
         }
 

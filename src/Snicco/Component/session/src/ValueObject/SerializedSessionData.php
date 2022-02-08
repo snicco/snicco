@@ -40,11 +40,6 @@ final class SerializedSessionData
         );
     }
 
-    private static function isSerializedString(string $data): bool
-    {
-        return @unserialize($data) !== false;
-    }
-
     public static function fromArray(array $data, int $last_activity_as_timestamp): SerializedSessionData
     {
         return new self(
@@ -56,11 +51,6 @@ final class SerializedSessionData
     public function lastActivity(): DateTimeImmutable
     {
         return $this->last_activity;
-    }
-
-    public function __toString()
-    {
-        return $this->asString();
     }
 
     public function asString(): string
@@ -79,6 +69,11 @@ final class SerializedSessionData
         }
 
         return $data;
+    }
+
+    private static function isSerializedString(string $data): bool
+    {
+        return @unserialize($data) !== false;
     }
 
 }

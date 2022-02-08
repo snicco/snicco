@@ -6,20 +6,17 @@ namespace Snicco\Component\Kernel;
 
 use ArrayAccess;
 use Closure;
-use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface as PsrContainer;
 use Psr\Container\NotFoundExceptionInterface;
 use ReturnTypeWillChange;
 use Snicco\Component\Kernel\Exception\FrozenService;
+use Webmozart\Assert\Assert;
 
 use function class_exists;
-use function gettype;
 use function interface_exists;
-use function is_array;
 use function is_scalar;
-use function sprintf;
 
 /**
  * The DependencyInjection(DI) container takes care of lazily constructing and loading services
@@ -119,7 +116,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * MUST be run and return the service defined in the closure. NOT the closure itself.
      *
      * @param string $id
-     * @param Closure $service When trying to overwrite an already resolved singleton.
+     * @param Closure $service
      *
      * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
@@ -129,7 +126,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * Store the passed service as is in the container.
      *
      * @param string $id
-     * @param object $service When trying to overwrite an already resolved singleton.
+     * @param object $service
      *
      * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
@@ -145,14 +142,12 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param string $id
      * @param scalar|array<scalar> $value
-     * @psalm-suppress DocblockTypeContradiction
      */
     final public function primitive(string $id, $value): void
     {
-        if (!is_scalar($value) && !is_array($value)) {
-            throw new InvalidArgumentException(
-                sprintf('$value must be a scalar or an array of scalars. Got [%s].', gettype($value))
-            );
+        if (!is_scalar($value)) {
+            Assert::isArray($value, '$value must be a scalar or an array of scalars. Got [%s].');
+            Assert::allScalar($value, '$value must be a scalar or an array of scalars. Got [%s].');
         }
         $this->singleton($id, fn() => $value);
     }

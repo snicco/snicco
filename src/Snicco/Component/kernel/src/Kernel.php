@@ -101,6 +101,56 @@ final class Kernel
         return $this->config_cache->isCreated();
     }
 
+    public function env(): Environment
+    {
+        return $this->env;
+    }
+
+    public function container(): DIContainer
+    {
+        return $this->container;
+    }
+
+    public function directories(): Directories
+    {
+        return $this->dirs;
+    }
+
+    public function config(): ReadOnlyConfig
+    {
+        if (!isset($this->read_only_config)) {
+            throw new LogicException(
+                'The applications config can only be accessed after bootstrapping.'
+            );
+        }
+        return $this->read_only_config;
+    }
+
+    public function usesBundle(string $alias): bool
+    {
+        return isset($this->bundles[$alias]);
+    }
+
+    protected function registerBundles(): void
+    {
+        foreach ($this->bundles as $bundle) {
+            $bundle->register($this);
+        }
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper->register($this);
+        }
+    }
+
+    protected function bootBundles(): void
+    {
+        foreach ($this->bundles as $bundle) {
+            $bundle->bootstrap($this);
+        }
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper->bootstrap($this);
+        }
+    }
+
     private function loadConfiguration(ConfigFactory $config_factory, ?PHPCacheFile $cache_file = null): array
     {
         return $config_factory->load(
@@ -182,56 +232,6 @@ final class Kernel
             $this->config_cache->realPath(),
             $this->read_only_config->toArray()
         );
-    }
-
-    public function env(): Environment
-    {
-        return $this->env;
-    }
-
-    protected function registerBundles(): void
-    {
-        foreach ($this->bundles as $bundle) {
-            $bundle->register($this);
-        }
-        foreach ($this->bootstrappers as $bootstrapper) {
-            $bootstrapper->register($this);
-        }
-    }
-
-    protected function bootBundles(): void
-    {
-        foreach ($this->bundles as $bundle) {
-            $bundle->bootstrap($this);
-        }
-        foreach ($this->bootstrappers as $bootstrapper) {
-            $bootstrapper->bootstrap($this);
-        }
-    }
-
-    public function container(): DIContainer
-    {
-        return $this->container;
-    }
-
-    public function directories(): Directories
-    {
-        return $this->dirs;
-    }
-
-    public function config(): ReadOnlyConfig
-    {
-        if (!isset($this->read_only_config)) {
-            throw new LogicException(
-                'The applications config can only be accessed after bootstrapping.'
-            );
-        }
-        return $this->read_only_config;
-    }
-
-    public function usesBundle(string $alias): bool
-    {
-        return isset($this->bundles[$alias]);
     }
 
 }

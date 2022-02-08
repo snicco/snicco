@@ -46,6 +46,7 @@ interface SessionDriver
      * Update the last activity of the session
      *
      * @throws BadSessionID
+     * @throws CantWriteSessionContent
      */
     public function touch(string $session_id, DateTimeImmutable $now): void;
 

@@ -21,12 +21,13 @@ use Snicco\Component\HttpRouting\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\MiddlewareStack;
 use Snicco\Component\HttpRouting\PrepareResponse;
 use Snicco\Component\HttpRouting\RouteRunner;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminArea;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\WPAdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
+use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -34,7 +35,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorFactory;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
@@ -107,11 +108,14 @@ class HttpRunnerTestCase extends TestCase
 
         $this->router = new Router(
             new RouteConditionFactory($this->container),
-            new UrlGeneratorFactory(
-                $context,
-                $this->admin_area,
-                new RFC3986Encoder(),
-            ),
+            function (Routes $routes) use ($context) {
+                return new UrlGenerator(
+                    $routes,
+                    $context,
+                    $this->admin_area,
+                    new RFC3986Encoder()
+                );
+            },
             $this->admin_area,
             $cache_file
         );

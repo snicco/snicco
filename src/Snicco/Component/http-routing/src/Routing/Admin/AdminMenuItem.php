@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\AdminDashboard;
+namespace Snicco\Component\HttpRouting\Routing\Admin;
 
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
@@ -11,10 +11,7 @@ use Webmozart\Assert\Assert;
 
 use function mb_convert_case;
 
-/**
- * @api
- */
-class AdminMenuItem
+final class AdminMenuItem
 {
 
     const PAGE_TITLE = 'page_title';

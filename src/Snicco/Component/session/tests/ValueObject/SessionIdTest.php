@@ -35,6 +35,7 @@ final class SessionIdTest extends TestCase
         $session_id = SessionId::fromCookieId($id_as_string);
 
         $this->assertSame($id_as_string, $session_id->asString());
+        $this->assertSame($id_as_string, (string)$session_id);
     }
 
     /**
