@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting;
 
 use Closure;
 use InvalidArgumentException;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -23,21 +22,11 @@ use function is_object;
 use function is_string;
 
 /**
- * @psalm-internal Snicco
+ * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class Reflection
 {
-
-    public static function getParameterClassName(ReflectionParameter $parameter): ?string
-    {
-        $type = $parameter->getType();
-
-        if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-            return null;
-        }
-
-        return self::getTypeName($parameter, $type);
-    }
 
     /**
      * @param object|string $class_or_object
@@ -77,11 +66,7 @@ final class Reflection
      */
     public static function firstParameterType($callable): ?string
     {
-        $reflection = self::getReflectionFunction($callable);
-
-        if (null === $reflection) {
-            return null;
-        }
+        $reflection = self::reflectionFunction($callable);
 
         $parameters = $reflection->getParameters();
 
@@ -97,63 +82,19 @@ final class Reflection
     }
 
     /**
-     * @param Closure|array{0: class-string, 1: string}|class-string $callable A string will be interpreted as [string::class,__construct]
-     *
+     * @param Closure|array{0: class-string, 1: string}|class-string $callable
      * @throws ReflectionException
-     * @psalm-suppress DocblockTypeContradiction
      */
-    public static function getReflectionFunction($callable): ?ReflectionFunctionAbstract
+    private static function reflectionFunction($callable): ReflectionFunctionAbstract
     {
-        if (is_string($callable) && class_exists($callable)) {
-            return (new ReflectionClass($callable))->getConstructor();
-        }
-
         if ($callable instanceof Closure) {
             return new ReflectionFunction($callable);
         }
-
-        if (!is_array($callable)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    '$callback_or_class_name has to be one of [string,array,closure]. Got [%s].',
-                    gettype($callable)
-                )
-            );
-        }
-
-        if ('__construct' === $callable[1] || 'construct' === $callable[1]) {
-            return (new ReflectionClass($callable[0]))->getConstructor();
-        }
-
-        if (!isset($callable[0]) || !is_string($callable[0])) {
-            throw new InvalidArgumentException(
-                'The first key in $callback_or_class_name is expected to be a non-empty string.'
-            );
-        }
-        if (!isset($callable[1]) || !is_string($callable[1])) {
-            throw new InvalidArgumentException(
-                'The second key in $callback_or_class_name is expected to be a non-empty string.'
-            );
+        if (is_string($callable)) {
+            return new ReflectionMethod($callable, '__construct');
         }
 
         return new ReflectionMethod($callable[0], $callable[1]);
-    }
-
-    private static function getTypeName(ReflectionParameter $parameter, ReflectionNamedType $type): string
-    {
-        $name = $type->getName();
-
-        if (!is_null($class = $parameter->getDeclaringClass())) {
-            if ($name === 'self') {
-                return $class->getName();
-            }
-
-            if ($name === 'parent' && $parent = $class->getParentClass()) {
-                return $parent->getName();
-            }
-        }
-
-        return $name;
     }
 
 }

@@ -10,9 +10,6 @@ use Webmozart\Assert\Assert;
 use function ltrim;
 use function rtrim;
 
-/**
- * @api
- */
 final class UrlPath
 {
 
@@ -51,19 +48,6 @@ final class UrlPath
     public static function fromString(string $path): UrlPath
     {
         return new UrlPath(UrlPath::sanitize($path));
-    }
-
-    private static function sanitize(string $path): string
-    {
-        if ('' === $path) {
-            $path = '/';
-        }
-
-        if (Str::endsWith($path, '//')) {
-            $path = rtrim($path, '/') . '/';
-        }
-
-        return ltrim($path, '/');
     }
 
     public function asString(): string
@@ -105,6 +89,19 @@ final class UrlPath
     public function __toString(): string
     {
         return $this->asString();
+    }
+
+    private static function sanitize(string $path): string
+    {
+        if ('' === $path) {
+            $path = '/';
+        }
+
+        if (Str::endsWith($path, '//')) {
+            $path = rtrim($path, '/') . '/';
+        }
+
+        return ltrim($path, '/');
     }
 
 }

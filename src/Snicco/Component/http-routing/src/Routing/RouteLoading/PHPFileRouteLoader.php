@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing;
+namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
 
 use Closure;
 use InvalidArgumentException;
@@ -13,7 +13,6 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use Snicco\Component\HttpRouting\Reflection;
 use Snicco\Component\HttpRouting\Routing\Exception\InvalidRouteClosureReturned;
-use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
@@ -26,7 +25,7 @@ use Webmozart\Assert\Assert;
 /**
  * @api
  */
-final class RouteLoader
+final class PHPFileRouteLoader implements RouteLoader
 {
 
     public const VERSION_FLAG = '-v';
@@ -54,10 +53,10 @@ final class RouteLoader
     /**
      * @throws ReflectionException
      */
-    public function loadRoutesIn(array $route_directories): void
+    public function loadRoutesIn(array $directories): void
     {
         $frontend_routes = null;
-        $finder = $this->getFiles($route_directories);
+        $finder = $this->getFiles($directories);
         foreach ($finder as $file) {
             $name = $file->getFilenameWithoutExtension();
 
@@ -82,9 +81,9 @@ final class RouteLoader
     /**
      * @throws ReflectionException
      */
-    public function loadApiRoutesIn(array $api_directories): void
+    public function loadApiRoutesIn(array $directories): void
     {
-        foreach ($this->getFiles($api_directories) as $file) {
+        foreach ($this->getFiles($directories) as $file) {
             $name = $file->getFilenameWithoutExtension();
 
             Assert::notSame(
