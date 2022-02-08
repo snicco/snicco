@@ -19,7 +19,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlEncoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorFactory;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
@@ -100,14 +100,17 @@ final class Routing
             $condition_factory = new RouteConditionFactory(
                 $this->psr_container
             );
-            $generator_factory = new UrlGeneratorFactory(
-                $this->context,
-                $this->admin_area,
-                $this->url_encoder
-            );
+
             $this->router = new Router(
                 $condition_factory,
-                $generator_factory,
+                function (Routes $routes) {
+                    return new UrlGenerator(
+                        $routes,
+                        $this->context,
+                        $this->admin_area,
+                        $this->url_encoder
+                    );
+                },
                 $this->admin_area,
                 $this->cache_file,
             );
