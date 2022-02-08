@@ -11,7 +11,7 @@ use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventSubscriber;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
-use Snicco\Component\EventDispatcher\TestableEventDispatcher;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 use stdClass;
