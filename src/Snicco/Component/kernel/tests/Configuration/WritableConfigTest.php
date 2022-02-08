@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests\Configuration;
 
+use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
@@ -18,6 +19,13 @@ class WritableConfigTest extends TestCase
         parent::setUp();
 
         $this->config = new WritableConfig();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($this->config);
     }
 
     /**
@@ -424,11 +432,173 @@ class WritableConfigTest extends TestCase
         $config->prepend('routing.definitions', 'foo');
     }
 
-    protected function tearDown(): void
+    /**
+     * @test
+     */
+    public function test_merge_if_current_is_empty_array(): void
     {
-        parent::tearDown();
+        $config = [
+            'routing' => [],
+            'foo' => []
+        ];
 
-        unset($this->config);
+        $config = WritableConfig::fromArray($config);
+        $config->extend('routing', 'foo');
+        $this->assertSame(['foo'], $config->get('routing'));
+
+        $config->extend('foo', ['bar']);
+        $this->assertSame(['bar'], $config->get('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_getString(): void
+    {
+        $config = WritableConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
+
+        $this->assertSame('bar', $config->getString('foo'));
+        $this->assertSame('default', $config->getString('bogus', 'default'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected a string for config key [baz]');
+
+        $config->getString('baz');
+    }
+
+    /**
+     * @test
+     */
+    public function test_getInteger(): void
+    {
+        $config = WritableConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
+
+        $this->assertSame(1, $config->getInteger('baz'));
+        $this->assertSame(2, $config->getInteger('bogus', 2));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected an integer for config key [foo]');
+
+        $config->getInteger('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function test_getBoolean(): void
+    {
+        $config = WritableConfig::fromArray(['foo' => true, 'baz' => 1]);
+
+        $this->assertSame(true, $config->getBoolean('foo'));
+        $this->assertSame(false, $config->getBoolean('bogus', false));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected a boolean for config key [baz]');
+
+        $config->getBoolean('baz');
+    }
+
+    /**
+     * @test
+     */
+    public function test_getListOfString(): void
+    {
+        $config = WritableConfig::fromArray([
+            'routes' => [
+                'route1',
+                'route2',
+                'route3'
+            ],
+            'bad_routes' => [
+                'route1',
+                'route2',
+                1
+            ],
+            'associative_routes' => [
+                'routes' => [
+                    'foo' => 'route1',
+                    'route2',
+                    'route3'
+                ],
+            ]
+        ]);
+
+        $res = $config->getListOfStrings('routes');
+
+        $this->assertSame([
+            'route1',
+            'route2',
+            'route3'
+        ], $res);
+
+        try {
+            $config->getListOfStrings('bad_routes');
+            $this->fail('No exception thrown.');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringStartsWith(
+                'Config value for key [bad_routes] is not a list of strings.',
+                $e->getMessage()
+            );
+        }
+
+        try {
+            $config->getListOfStrings('associative_routes');
+            $this->fail('No exception thrown.');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringStartsWith(
+                'Config value for key [associative_routes] is not a list of strings.',
+                $e->getMessage()
+            );
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function test_getArray(): void
+    {
+        $config = WritableConfig::fromArray([
+            'routes' => [
+                'route1',
+                'route2',
+                'route3'
+            ],
+            'bad_routes' => [
+                'route1',
+                'route2',
+                1
+            ],
+            'associative_routes' => [
+                'foo' => 'route1',
+                'route2',
+                'route3'
+            ],
+            'foo' => 'string'
+        ]);
+
+        $res = $config->getArray('routes');
+
+        $this->assertSame([
+            'route1',
+            'route2',
+            'route3'
+        ], $res);
+
+        $this->assertSame([
+            'route1',
+            'route2',
+            1
+        ], $config->getArray('bad_routes'));
+
+        $this->assertSame([
+            'foo' => 'route1',
+            'route2',
+            'route3'
+        ], $config->getArray('associative_routes'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('string');
+        $config->getArray('foo');
     }
 
 }
