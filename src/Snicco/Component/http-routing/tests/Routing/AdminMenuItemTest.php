@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Routing\AdminDashboard\AdminMenuItem;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
@@ -51,7 +51,8 @@ final class AdminMenuItemTest extends TestCase
     /**
      * @test
      */
-    public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route(): void
+    public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route(
+    ): void
     {
         $route = Route::create(
             '/wp-admin/admin.php/foo',
@@ -120,15 +121,6 @@ final class AdminMenuItemTest extends TestCase
         AdminMenuItem::fromRoute($route, [
             AdminMenuItem::PAGE_TITLE => '',
         ]);
-    }
-
-    private function getRoute(): Route
-    {
-        return Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
     }
 
     /**
@@ -216,6 +208,15 @@ final class AdminMenuItemTest extends TestCase
         $item = AdminMenuItem::fromRoute($route, [], 'parent_slug');
 
         $this->assertSame('/parent_slug', $item->parentSlug()->asString());
+    }
+
+    private function getRoute(): Route
+    {
+        return Route::create(
+            '/wp-admin/admin.php/foo',
+            RoutingTestController::class,
+            'admin.my_page'
+        );
     }
 
 }
