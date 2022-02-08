@@ -2,13 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\EventDispatcher;
+namespace Snicco\Component\EventDispatcher\Testing;
 
 use Closure;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use ReflectionException;
+use Snicco\Component\EventDispatcher\ClosureTypeHint;
+use Snicco\Component\EventDispatcher\Event;
+use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\GenericEvent;
 
 use function call_user_func_array;
 use function count;
@@ -208,10 +212,7 @@ final class TestableEventDispatcher implements EventDispatcher
     }
 
     /**
-     *
-     * @return list<Event>
-     *
-     * @psalm-suppress MixedAssignment
+     * @return Event[]
      */
     private function getDispatched(string $event_name, Closure $callback_condition = null): array
     {
@@ -223,6 +224,7 @@ final class TestableEventDispatcher implements EventDispatcher
                 continue;
             }
 
+            /** @var mixed $payload */
             $payload = $event->payload();
 
             $payload = is_array($payload) ? $payload : [$payload];

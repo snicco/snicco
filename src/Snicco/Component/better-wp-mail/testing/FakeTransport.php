@@ -42,102 +42,18 @@ final class FakeTransport implements Transport
         $this->recordMail($email, $envelope);
     }
 
-    private function recordMail(Email $email, Envelope $envelope): void
-    {
-        $class = get_class($email);
-
-        $this->sent_mails[$class][] = [$email, $envelope,];
-    }
-
     public function interceptWordPressEmails(): void
     {
         $this->wp->addFilter('pre_wp_mail', /** @psalm-suppress MixedArgumentTypeCoercion */ function (): bool {
             $args = func_get_args();
             if (!isset($args[1]) || !is_array($args[1])) {
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException('pre_wp_mail did not receive correct arguments');
+                // @codeCoverageIgnoreEnd
             }
             $this->recordWPMail($args[1]);
             return false;
         }, PHP_INT_MAX, 1000);
-    }
-
-    /**
-     * @param array{to: string|string[], headers:string|string[], subject:string, message:string, attachments: string|string[]} $attributes
-     * @return void
-     */
-    private function recordWPMail(array $attributes): void
-    {
-        $to = [];
-        foreach ((array)$attributes['to'] as $recipient) {
-            $to[] = Mailbox::create($recipient);
-        }
-
-        $headers = (array)$attributes['headers'];
-        $carbon_copies = [];
-        $blind_carbon_copies = [];
-
-        $reply_to = [];
-        $attachments = $attributes['attachments'] ?? [];
-        $site_name = parse_url($this->wp->siteUrl(), PHP_URL_HOST);
-        if (!is_string($site_name)) {
-            throw new RuntimeException("Cant parse site name [$site_name].");
-        }
-        if ('www.' === substr($site_name, 0, 4)) {
-            $site_name = substr($site_name, 4);
-        }
-        $from = 'wordpress@' . (strval($site_name));
-
-        foreach (($headers) as $header) {
-            if (strpos($header, 'Cc:') !== false) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $carbon_copies[] = Mailbox::create($matches['value']);
-            }
-            if (strpos($header, 'Bcc:') !== false) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $blind_carbon_copies[] = Mailbox::create($matches['value']);
-            }
-
-            if (strpos($header, 'From:') !== false) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $from = $matches['value'];
-            }
-            if (strpos($header, 'Reply-To:') !== false) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
-                $reply_to[] = Mailbox::create($matches['value']);
-            }
-        }
-
-        $from = $this->wp->applyFiltersStrict('wp_mail_from', $from);
-        $from = Mailbox::create($from);
-
-        $wp_mail = new WPMail();
-
-        $wp_mail = $wp_mail->withTo($to)
-            ->withSubject($attributes['subject'])
-            ->withHtmlBody($attributes['message'])
-            ->withFrom($from);
-
-        $recipients = new MailboxList($to);
-
-        if (count($carbon_copies)) {
-            $wp_mail = $wp_mail->withCc($carbon_copies);
-            $recipients = $recipients->merge($carbon_copies);
-        }
-        if (count($blind_carbon_copies)) {
-            $wp_mail = $wp_mail->withBcc($blind_carbon_copies);
-            $recipients = $recipients->merge($blind_carbon_copies);
-        }
-        if (count($reply_to)) {
-            $wp_mail = $wp_mail->withReplyTo($reply_to);
-        }
-
-        foreach ((array)$attachments as $attachment) {
-            $wp_mail->addAttachment(
-                $attachment
-            );
-        }
-
-        $this->recordMail($wp_mail, new Envelope($from, $recipients));
     }
 
     public function reset(): void
@@ -159,29 +75,6 @@ final class FakeTransport implements Transport
                 $times > 1 ? 'times' : 'time'
             )
         );
-    }
-
-    /**
-     * @param string $email_class
-     * @param Closure $condition
-     *
-     * @return Email[]
-     */
-    private function sentEmailsThatMatchCondition(string $email_class, Closure $condition): array
-    {
-        $matching = [];
-
-        if (!isset($this->sent_mails[$email_class])) {
-            return [];
-        }
-
-        foreach ($this->sent_mails[$email_class] as $mail_data) {
-            if ($condition($mail_data[0], $mail_data[1]) === true) {
-                $matching[] = $mail_data[0];
-            }
-        }
-
-        return $matching;
     }
 
     public function assertSentTimes(string $mailable_class, int $expected): void
@@ -249,11 +142,6 @@ final class FakeTransport implements Transport
         }
     }
 
-    private function wasSent(string $mailable_class): bool
-    {
-        return isset($this->sent_mails[$mailable_class]);
-    }
-
     /**
      * @param string $recipient
      * @param class-string<Email> $email_class
@@ -282,6 +170,121 @@ final class FakeTransport implements Transport
                 $expected_recipient->toString()
             )
         );
+    }
+
+    private function recordMail(Email $email, Envelope $envelope): void
+    {
+        $class = get_class($email);
+
+        $this->sent_mails[$class][] = [$email, $envelope,];
+    }
+
+    /**
+     * @param array{to: string|string[], headers:string|string[], subject:string, message:string, attachments: string|string[]} $attributes
+     * @return void
+     */
+    private function recordWPMail(array $attributes): void
+    {
+        $to = [];
+        foreach ((array)$attributes['to'] as $recipient) {
+            $to[] = Mailbox::create($recipient);
+        }
+
+        $headers = (array)$attributes['headers'];
+        $carbon_copies = [];
+        $blind_carbon_copies = [];
+
+        $reply_to = [];
+        $attachments = $attributes['attachments'] ?? [];
+        $site_url = $this->wp->siteUrl();
+        $site_name = parse_url($site_url, PHP_URL_HOST);
+        if (!is_string($site_name)) {
+            throw new RuntimeException("Cant parse site url [$site_url].");
+        }
+        if ('www.' === substr($site_name, 0, 4)) {
+            $site_name = substr($site_name, 4);
+        }
+        $from = 'wordpress@' . (strval($site_name));
+
+        foreach (($headers) as $header) {
+            if (strpos($header, 'Cc:') !== false) {
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $carbon_copies[] = Mailbox::create($matches['value']);
+            }
+            if (strpos($header, 'Bcc:') !== false) {
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $blind_carbon_copies[] = Mailbox::create($matches['value']);
+            }
+
+            if (strpos($header, 'From:') !== false) {
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $from = $matches['value'];
+            }
+            if (strpos($header, 'Reply-To:') !== false) {
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $reply_to[] = Mailbox::create($matches['value']);
+            }
+        }
+
+        $from = $this->wp->applyFiltersStrict('wp_mail_from', $from);
+        $from = Mailbox::create($from);
+
+        $wp_mail = new WPMail();
+
+        $wp_mail = $wp_mail->withTo($to)
+            ->withSubject($attributes['subject'])
+            ->withHtmlBody($attributes['message'])
+            ->withFrom($from);
+
+        $recipients = new MailboxList($to);
+
+        if (count($carbon_copies)) {
+            $wp_mail = $wp_mail->withCc($carbon_copies);
+            $recipients = $recipients->merge($carbon_copies);
+        }
+        if (count($blind_carbon_copies)) {
+            $wp_mail = $wp_mail->withBcc($blind_carbon_copies);
+            $recipients = $recipients->merge($blind_carbon_copies);
+        }
+        if (count($reply_to)) {
+            $wp_mail = $wp_mail->withReplyTo($reply_to);
+        }
+
+        foreach ((array)$attachments as $attachment) {
+            $wp_mail = $wp_mail->addAttachment(
+                $attachment
+            );
+        }
+
+        $this->recordMail($wp_mail, new Envelope($from, $recipients));
+    }
+
+    /**
+     * @param string $email_class
+     * @param Closure $condition
+     *
+     * @return Email[]
+     */
+    private function sentEmailsThatMatchCondition(string $email_class, Closure $condition): array
+    {
+        $matching = [];
+
+        if (!isset($this->sent_mails[$email_class])) {
+            return [];
+        }
+
+        foreach ($this->sent_mails[$email_class] as $mail_data) {
+            if ($condition($mail_data[0], $mail_data[1]) === true) {
+                $matching[] = $mail_data[0];
+            }
+        }
+
+        return $matching;
+    }
+
+    private function wasSent(string $mailable_class): bool
+    {
+        return isset($this->sent_mails[$mailable_class]);
     }
 
 }
