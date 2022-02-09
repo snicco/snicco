@@ -60,7 +60,7 @@ final class Reflection
     }
 
     /**
-     * @param Closure|array{0: class-string, 1: string}|class-string $callable
+     * @param Closure|class-string|array{0: class-string|object, 1: string} $callable
      *
      * @throws ReflectionException
      */
@@ -82,7 +82,7 @@ final class Reflection
     }
 
     /**
-     * @param Closure|array{0: class-string, 1: string}|class-string $callable
+     * @param Closure|class-string|array{0: class-string|object, 1: string} $callable
      * @throws ReflectionException
      */
     private static function reflectionFunction($callable): ReflectionFunctionAbstract

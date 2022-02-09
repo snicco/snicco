@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use ReflectionClass;
 use ReflectionException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -17,80 +18,51 @@ use function call_user_func_array;
 
 /**
  * @interal
- * @psalm-suppress PropertyNotSetInConstructor
  */
 final class ControllerAction
 {
 
-    private ContainerInterface $container;
-
-    /**
-     * @var array{0: class-string, 1:string} $class_callable
-     */
-    private array $class_callable;
-
     private object $controller_instance;
+    private string $controller_method;
 
     /**
      * @param array{0: class-string, 1:string} $class_callable
+     *
+     * @throws ReflectionException
+     * @throws ContainerExceptionInterface
      */
     public function __construct(array $class_callable, ContainerInterface $container)
     {
-        $this->class_callable = $class_callable;
-        $this->container = $container;
+        [$class, $method] = $class_callable;
+        $this->controller_instance = $this->instantiateController($class, $container);
+        $this->controller_method = $method;
     }
 
     /**
      * @return mixed
-     *
      * @throws ReflectionException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function execute(Request $request, array $captured_args_decoded)
     {
-        $controller = $this->controller_instance ?? $this->resolveControllerMiddleware();
+        $callable = [$this->controller_instance, $this->controller_method];
 
-        if ($controller instanceof AbstractController) {
-            $controller->setContainer($this->container);
-        }
-
-        if (Reflection::firstParameterType($this->class_callable) === Request::class) {
+        if (Reflection::firstParameterType($callable) === Request::class) {
             array_unshift($captured_args_decoded, $request);
         }
 
-        return call_user_func_array(
-            [$controller, $this->class_callable[1]],
-            array_values($captured_args_decoded)
-        );
+        return call_user_func_array($callable, array_values($captured_args_decoded));
     }
 
     /**
-     * @return string[]
-     *
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @return class-string<MiddlewareInterface>[]
      */
     public function middleware(): array
     {
-        return $this->resolveControllerMiddleware();
-    }
-
-    /**
-     * @return string[]
-     * @throws ReflectionException
-     *
-     * @throws ContainerExceptionInterface
-     */
-    private function resolveControllerMiddleware(): array
-    {
-        $this->controller_instance = $this->instantiateController($this->class_callable[0]);
-
         if (!$this->controller_instance instanceof AbstractController) {
             return [];
         }
 
-        return $this->controller_instance->middleware($this->class_callable[1]);
+        return $this->controller_instance->middleware($this->controller_method);
     }
 
     /**
@@ -98,17 +70,20 @@ final class ControllerAction
      *
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
-     *
-     * @psalm-suppress MixedReturnStatement
-     * @psalm-suppress MixedInferredReturnType
      */
-    private function instantiateController(string $class): object
+    private function instantiateController(string $class, ContainerInterface $container): object
     {
         try {
-            return $this->container->get($class);
+            /** @var object $instance */
+            $instance = $container->get($class);
         } catch (NotFoundExceptionInterface $e) {
-            return (new ReflectionClass($class))->newInstance();
+            $instance = (new ReflectionClass($class))->newInstance();
         }
+
+        if ($instance instanceof AbstractController) {
+            $instance->setContainer($container);
+        }
+        return $instance;
     }
 
 }
