@@ -38,7 +38,7 @@ final class MiddlewareBlueprint
     /**
      * @param class-string<MiddlewareInterface> $class
      */
-    public static function create(string $class, array $arguments = []): MiddlewareBlueprint
+    public static function from(string $class, array $arguments = []): MiddlewareBlueprint
     {
         return new self($class, $arguments);
     }

@@ -25,16 +25,16 @@ abstract class AbstractMiddleware implements MiddlewareInterface
 
     private ContainerInterface $container;
 
-    public function setContainer(ContainerInterface $container): void
+    final public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    abstract public function handle(Request $request, NextMiddleware $next): ResponseInterface;
+
+    final public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$request instanceof Request) {
-            $request = Request::fromPsr($request);
-        }
+        $request = Request::fromPsr($request);
 
         if (!$handler instanceof NextMiddleware) {
             $handler = new NextMiddleware(function (Request $request) use ($handler) {
@@ -45,30 +45,26 @@ abstract class AbstractMiddleware implements MiddlewareInterface
         return $this->handle($request, $handler);
     }
 
-    abstract public function handle(Request $request, NextMiddleware $next): ResponseInterface;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     final protected function redirect(): Redirector
     {
-        return $this->container->get(Redirector::class);
+        /** @var Redirector $r */
+        $r = $this->container->get(Redirector::class);
+        return $r;
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     final protected function url(): UrlGeneratorInterface
     {
-        return $this->container->get(UrlGeneratorInterface::class);
+        /** @var UrlGeneratorInterface $url */
+        $url = $this->container->get(UrlGeneratorInterface::class);
+        return $url;
     }
 
     /**
@@ -86,13 +82,12 @@ abstract class AbstractMiddleware implements MiddlewareInterface
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     final protected function respond(): ResponseFactory
     {
-        return $this->container->get(ResponseFactory::class);
+        /** @var ResponseFactory $response */
+        $response = $this->container->get(ResponseFactory::class);
+        return $response;
     }
 
 }

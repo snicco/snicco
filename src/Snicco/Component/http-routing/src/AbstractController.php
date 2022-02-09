@@ -26,14 +26,14 @@ abstract class AbstractController
      * @var ControllerMiddleware[]
      */
     private array $middleware = [];
-    
+
     private ContainerInterface $container;
 
     /**
      * @interal
      * @return class-string<MiddlewareInterface>[]
      */
-    public function middleware(string $controller_method): array
+    final public function middleware(string $controller_method): array
     {
         $middleware = array_filter(
             $this->middleware,
@@ -55,7 +55,7 @@ abstract class AbstractController
     /**
      * @interal
      */
-    public function setContainer(ContainerInterface $container): void
+    final public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }
@@ -63,25 +63,23 @@ abstract class AbstractController
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     final protected function redirect(): Redirector
     {
-        return $this->container->get(Redirector::class);
+        /** @var Redirector $r */
+        $r = $this->container->get(Redirector::class);
+        return $r;
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     final protected function url(): UrlGeneratorInterface
     {
-        return $this->container->get(UrlGeneratorInterface::class);
+        /** @var UrlGeneratorInterface $url */
+        $url = $this->container->get(UrlGeneratorInterface::class);
+        return $url;
     }
 
     /**
@@ -99,13 +97,12 @@ abstract class AbstractController
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     final protected function respond(): ResponseFactory
     {
-        return $this->container->get(ResponseFactory::class);
+        /** @var ResponseFactory $response */
+        $response = $this->container->get(ResponseFactory::class);
+        return $response;
     }
 
     /**

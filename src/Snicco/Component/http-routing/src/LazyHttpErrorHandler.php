@@ -14,6 +14,7 @@ use Throwable;
 use function sprintf;
 
 /**
+ * @internal
  * @psalm-suppress PropertyNotSetInConstructor
  */
 final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
