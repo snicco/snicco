@@ -52,6 +52,30 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
         $response->assertSeeText('foo:foo_middleware:foobar_middleware');
     }
 
+    /**
+     * @test
+     */
+    public function middleware_can_be_added_as_an_array(): void
+    {
+        $this->routeConfigurator()->get('handle', '/handle', [ArrayMiddlewareController::class, 'handle']);
+        $response = $this->runKernel($this->frontendRequest('/handle'));
+        $response->assertSeeText('handle:bar_middleware:foo_middleware');
+    }
+}
+
+class ArrayMiddlewareController extends AbstractController
+{
+
+    public function __construct()
+    {
+        $this->addMiddleware([FooMiddleware::class, BarMiddleware::class]);
+    }
+
+    public function handle(): string
+    {
+        return 'handle';
+    }
+
 }
 
 class MiddlewareController extends AbstractController
@@ -59,9 +83,9 @@ class MiddlewareController extends AbstractController
 
     public function __construct()
     {
-        $this->middleware(FoobarMiddleware::class);
-        $this->middleware(FooMiddleware::class)->except(['bar', 'all']);
-        $this->middleware(BarMiddleware::class)->only('bar');
+        $this->addMiddleware(FoobarMiddleware::class);
+        $this->addMiddleware(FooMiddleware::class)->exceptForMethods(['bar', 'all']);
+        $this->addMiddleware(BarMiddleware::class)->toMethods('bar');
     }
 
     public function foo(): string

@@ -13,13 +13,12 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\StrArr\Arr;
 use Webmozart\Assert\Assert;
 
-/**
- * @api
- *
- *
- */
+use function array_filter;
+use function array_merge;
+
 abstract class AbstractController
 {
 
@@ -27,26 +26,30 @@ abstract class AbstractController
      * @var ControllerMiddleware[]
      */
     private array $middleware = [];
-
+    
     private ContainerInterface $container;
 
     /**
      * @interal
-     * @return string[]
+     * @return class-string<MiddlewareInterface>[]
      */
-    public function getMiddleware(string $controller_method = null): array
+    public function middleware(string $controller_method): array
     {
         $middleware = array_filter(
             $this->middleware,
-            function (ControllerMiddleware $controller_middleware) use ($controller_method) {
-                return $controller_middleware->appliesTo($controller_method);
-            }
+            fn(ControllerMiddleware $m) => $m->appliesTo($controller_method)
         );
-        return array_values(
-            array_map(function (ControllerMiddleware $middleware) {
-                return $middleware->name();
-            }, $middleware)
-        );
+
+        $middleware_for_method = [];
+
+        foreach ($middleware as $controller_middleware) {
+            $middleware_for_method = array_merge(
+                $middleware_for_method,
+                $controller_middleware->toArray()
+            );
+        }
+
+        return $middleware_for_method;
     }
 
     /**
@@ -106,11 +109,11 @@ abstract class AbstractController
     }
 
     /**
-     * @param class-string<MiddlewareInterface> $middleware_name
+     * @param class-string<MiddlewareInterface>|class-string<MiddlewareInterface>[] $middleware_names
      */
-    final protected function middleware(string $middleware_name): ControllerMiddleware
+    final protected function addMiddleware($middleware_names): ControllerMiddleware
     {
-        $middleware = new ControllerMiddleware($middleware_name);
+        $middleware = new ControllerMiddleware(Arr::toArray($middleware_names));
         $this->middleware[] = $middleware;
         return $middleware;
     }

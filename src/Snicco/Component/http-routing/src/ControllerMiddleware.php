@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting;
 
-use LogicException;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\StrArr\Arr;
 
@@ -12,9 +11,9 @@ final class ControllerMiddleware
 {
 
     /**
-     * @var class-string<MiddlewareInterface>
+     * @var class-string<MiddlewareInterface>[]
      */
-    private string $middleware_class;
+    private array $middleware_classes;
 
     /**
      * Methods the middleware applies to.
@@ -31,53 +30,27 @@ final class ControllerMiddleware
     private array $blacklist = [];
 
     /**
-     * @param class-string<MiddlewareInterface> $middleware
+     * @param class-string<MiddlewareInterface>[] $middleware
      */
-    public function __construct(string $middleware)
+    public function __construct(array $middleware)
     {
-        $this->middleware_class = $middleware;
+        $this->middleware_classes = $middleware;
     }
 
     /**
-     * Set methods the middleware should apply to.
-     *
      * @param string|string[] $methods
-     *
-     * @throws LogicException
      */
-    public function only($methods): void
+    public function toMethods($methods): void
     {
-        if (!empty($this->blacklist)) {
-            throw new LogicException(
-                'The only() method cant be combined with the except() method for one middleware'
-            );
-        }
         $this->whitelist = Arr::toArray($methods);
     }
 
     /**
-     * Set methods the middleware should not apply to.
-     *
-     * @param string|string[] $methods
-     *
-     * @throws LogicException
-     */
-    public function except($methods): void
-    {
-        if (!empty($this->whitelist)) {
-            throw new LogicException(
-                'The only() method cant be combined with the except() method for one middleware'
-            );
-        }
-
-        $this->blacklist = Arr::toArray($methods);
-    }
-
-    /**
-     * @psalm-mutation-free
      * @interal
+     *
+     * @psalm-mutation-free
      */
-    public function appliesTo(string $method = null): bool
+    public function appliesTo(string $method): bool
     {
         if (in_array($method, $this->blacklist, true)) {
             return false;
@@ -90,9 +63,22 @@ final class ControllerMiddleware
         return in_array($method, $this->whitelist, true);
     }
 
-    public function name(): string
+    /**
+     * @param string|string[] $methods
+     */
+    public function exceptForMethods($methods): void
     {
-        return $this->middleware_class;
+        $this->blacklist = Arr::toArray($methods);
+    }
+
+    /**
+     * @interal
+     *
+     * @return class-string<MiddlewareInterface>[]
+     */
+    public function toArray(): array
+    {
+        return $this->middleware_classes;
     }
 
 }
