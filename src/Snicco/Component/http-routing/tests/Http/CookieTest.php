@@ -32,12 +32,12 @@ class CookieTest extends TestCase
 
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => null,
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax',
+            'http_only' => true,
+            'same_site' => 'Lax',
         ], $cookie->properties);
 
         $this->assertSame('bar', $cookie->value);
@@ -51,12 +51,12 @@ class CookieTest extends TestCase
 
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => null,
             'secure' => true,
-            'httponly' => false,
-            'samesite' => 'Lax',
+            'http_only' => false,
+            'same_site' => 'Lax',
         ], $cookie->properties);
     }
 
@@ -67,12 +67,12 @@ class CookieTest extends TestCase
 
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => null,
             'secure' => false,
-            'httponly' => true,
-            'samesite' => 'Lax',
+            'http_only' => true,
+            'same_site' => 'Lax',
         ], $cookie->properties);
     }
 
@@ -82,34 +82,34 @@ class CookieTest extends TestCase
         $cookie = $cookie->withSameSite('strict');
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => null,
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Strict',
+            'http_only' => true,
+            'same_site' => 'Strict',
         ], $cookie->properties);
 
         $cookie = $cookie->withSameSite('lax');
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => null,
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax',
+            'http_only' => true,
+            'same_site' => 'Lax',
         ], $cookie->properties);
 
         $cookie = $cookie->withSameSite('none');
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => null,
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'None',
+            'http_only' => true,
+            'same_site' => 'None',
         ], $cookie->properties);
 
         $this->expectException(LogicException::class);
@@ -123,12 +123,12 @@ class CookieTest extends TestCase
         $cookie = $cookie->withExpiryTimestamp(1000);
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => 1000,
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax',
+            'http_only' => true,
+            'same_site' => 'Lax',
         ], $cookie->properties);
     }
 
@@ -142,12 +142,12 @@ class CookieTest extends TestCase
 
         $this->assertSame([
             'domain' => null,
-            'hostonly' => true,
+            'host_only' => true,
             'path' => '/',
             'expires' => $date->getTimestamp(),
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax',
+            'http_only' => true,
+            'same_site' => 'Lax',
         ], $cookie->properties);
     }
 
