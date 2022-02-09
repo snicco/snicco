@@ -10,12 +10,10 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
-use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 
-/**
- * @api
- */
+use function rtrim;
+
 final class TrailingSlash extends AbstractMiddleware
 {
 
@@ -32,21 +30,25 @@ final class TrailingSlash extends AbstractMiddleware
      */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        $path = UrlPath::fromString($request->path());
+        $path = $request->path();
+
+        if ('/' === $path) {
+            return $next($request);
+        }
 
         $accept_request = $this->trailing_slash
-            ? Str::endsWith($path->asString(), '/')
-            : Str::doesNotEndWith($path->asString(), '/');
+            ? Str::endsWith($path, '/')
+            : Str::doesNotEndWith($path, '/');
 
-        if ($accept_request || $path->equals('/')) {
+        if ($accept_request) {
             return $next($request);
         }
 
         $redirect_to = $this->trailing_slash
-            ? $path->withTrailingSlash()
-            : $path->withoutTrailingSlash();
+            ? $path . '/'
+            : rtrim($path, '/');
 
-        return $this->redirect()->to($redirect_to->asString(), 301);
+        return $this->redirect()->to($redirect_to, 301);
     }
 
 }
