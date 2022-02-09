@@ -44,6 +44,9 @@ final class Request implements ServerRequestInterface
 
     public static function fromPsr(ServerRequestInterface $psr_request): Request
     {
+        if ($psr_request instanceof self) {
+            return $psr_request;
+        }
         return new self($psr_request);
     }
 

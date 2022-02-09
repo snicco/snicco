@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting;
 
 use Closure;
-use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -19,15 +17,10 @@ use Throwable;
 use Webmozart\Assert\Assert;
 
 use function array_map;
-use function gettype;
+use function call_user_func;
 use function is_string;
 use function strtolower;
 
-/**
- * @interal
- *
- * @psalm-suppress PropertyNotSetInConstructor
- */
 final class MiddlewarePipeline
 {
 
@@ -39,16 +32,15 @@ final class MiddlewarePipeline
      * @var array<MiddlewareInterface|MiddlewareBlueprint>
      */
     private array $middleware = [];
-    
-    private Request $current_request;
+
+    private ?Request $current_request = null;
 
     /**
      * @var Closure(Request):ResponseInterface $request_handler
      * @psalm-var Closure(Request=):ResponseInterface $request_handler
+     * @psalm-suppress PropertyNotSetInConstructor
      */
     private Closure $request_handler;
-
-    private bool $exhausted = false;
 
     public function __construct(ContainerInterface $container, HttpErrorHandlerInterface $error_handler)
     {
@@ -88,8 +80,9 @@ final class MiddlewarePipeline
      */
     public function then(Closure $request_handler): Response
     {
-        $this->request_handler = $request_handler;
-        return $this->run();
+        $new = clone $this;
+        $new->request_handler = $request_handler;
+        return $new->run();
     }
 
     private function run(): Response
@@ -100,75 +93,57 @@ final class MiddlewarePipeline
             );
         }
 
-        $stack = $this->buildMiddlewareStack();
+        $stack = $this->lazyNext();
 
         $response = $stack($this->current_request);
+
         unset($this->current_request);
+
         return $response;
     }
 
-    private function buildMiddlewareStack(): NextMiddleware
+    private function lazyNext(): NextMiddleware
     {
-        return $this->nextMiddleware();
-    }
-
-    private function nextMiddleware(): NextMiddleware
-    {
-        if ($this->exhausted) {
-            throw new LogicException('The middleware pipeline is exhausted.');
-        }
-
-        if ($this->middleware === []) {
-            $this->exhausted = true;
-
-            return new NextMiddleware(function (ServerRequestInterface $request): ResponseInterface {
-                try {
-                    return call_user_func($this->request_handler, $request);
-                } catch (Throwable $e) {
-                    return $this->exceptionToHttpResponse($e, $request);
-                }
-            });
-        }
-
-        return new NextMiddleware(function (ServerRequestInterface $request) {
+        return new NextMiddleware(function (Request $request) {
             try {
-                return $this->runNextMiddleware($request);
+                return $this->runNext($request);
             } catch (Throwable $e) {
                 return $this->exceptionToHttpResponse($e, $request);
             }
         });
     }
 
-    private function exceptionToHttpResponse(Throwable $e, ServerRequestInterface $request): Response
+    private function exceptionToHttpResponse(Throwable $e, Request $request): Response
     {
-        $psr_7_response = $this->error_handler->handle($e, $request);
-        return $psr_7_response instanceof Response
-            ? $psr_7_response
-            : new Response($psr_7_response);
+        return Response::fromPsr(
+            $this->error_handler->handle($e, $request)
+        );
     }
 
-    private function runNextMiddleware(ServerRequestInterface $request): ResponseInterface
+    private function runNext(Request $request): ResponseInterface
     {
         $middleware = array_shift($this->middleware);
 
-        if ($middleware instanceof MiddlewareInterface) {
-            if ($middleware instanceof AbstractMiddleware) {
-                $middleware->setContainer($this->container);
-            }
-            $instance = $middleware;
-        } elseif ($middleware instanceof MiddlewareBlueprint) {
-            $instance = $this->middleware_factory->create(
+        if (null === $middleware) {
+            return call_user_func($this->request_handler, $request);
+        }
+
+        $next = $this->lazyNext();
+
+        if ($middleware instanceof MiddlewareBlueprint) {
+            $middleware = $this->middleware_factory->create(
                 $middleware->class(),
                 $this->convertStrings($middleware->arguments())
             );
-        } else {
-            throw new InvalidArgumentException(
-                '$middleware must be of type MiddlewareInterface or MiddlewareBlueprint. Got: '
-                . gettype($middleware)
-            );
+
+            return $middleware->process($request, $next);
         }
 
-        return $instance->process($request, $this->nextMiddleware());
+        if ($middleware instanceof AbstractMiddleware) {
+            $middleware->setContainer($this->container);
+        }
+
+        return $middleware->process($request, $next);
     }
 
     private function convertStrings(array $constructor_args): array

@@ -9,7 +9,7 @@ final class Foo
 
     public string $value;
 
-    public function __construct($value = 'foo')
+    public function __construct(string $value = 'foo')
     {
         $this->value = $value;
     }

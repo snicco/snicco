@@ -41,6 +41,18 @@ class Response implements ResponseInterface
             : new Cookies();
     }
 
+    /**
+     * @return static
+     */
+    public static function fromPsr(ResponseInterface $psr7_response)
+    {
+        if ($psr7_response instanceof static) {
+            return $psr7_response;
+        }
+
+        return new static($psr7_response);
+    }
+
     final public function cookies(): Cookies
     {
         return $this->cookies;

@@ -9,7 +9,7 @@ final class Bar
 
     public string $value;
 
-    public function __construct($value = 'bar')
+    public function __construct(string $value = 'bar')
     {
         $this->value = $value;
     }

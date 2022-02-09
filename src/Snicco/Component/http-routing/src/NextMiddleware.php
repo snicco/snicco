@@ -13,9 +13,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 use function call_user_func;
 
-/**
- * @api
- */
 final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterface
 {
 
@@ -38,17 +35,6 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
         return $this->delegate($request);
     }
 
-    private function delegate(PsrRequest $request): Response
-    {
-        $request = $request instanceof Request ? $request : Request::fromPsr($request);
-
-        $psr_response = call_user_func($this->callback, $request);
-        if (!$psr_response instanceof Response) {
-            $psr_response = new Response($psr_response);
-        }
-        return $psr_response;
-    }
-
     public function __invoke(PsrRequest $request): Response
     {
         return $this->delegate($request);
@@ -57,6 +43,16 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
     public function handle(PsrRequest $request): PsrResponse
     {
         return $this->delegate($request);
+    }
+
+    private function delegate(PsrRequest $request): Response
+    {
+        $psr_response = call_user_func(
+            $this->callback,
+            Request::fromPsr($request)
+        );
+
+        return Response::fromPsr($psr_response);
     }
 
 }
