@@ -12,6 +12,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
+use const JSON_THROW_ON_ERROR;
+
 class ResponseTest extends TestCase
 {
 
@@ -21,6 +23,13 @@ class ResponseTest extends TestCase
     private ResponseFactory $factory;
 
     private Response $response;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
+        $this->response = $this->factory->make();
+    }
 
     public function testIsPsrResponse(): void
     {
@@ -66,7 +75,7 @@ class ResponseTest extends TestCase
 
     public function testJson(): void
     {
-        $stream = $this->factory->createStream(json_encode(['foo' => 'bar']));
+        $stream = $this->factory->createStream(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
 
         $response = $this->factory->make()->json($stream);
 
@@ -305,13 +314,6 @@ class ResponseTest extends TestCase
         $response = $this->response->withErrors(['foo' => 'bar'], 'namespace1');
         $this->assertSame(['namespace1' => ['foo' => ['bar']]], $response->errors());
         $this->assertSame([], $this->response->errors());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
-        $this->response = $this->factory->make();
     }
 
 }

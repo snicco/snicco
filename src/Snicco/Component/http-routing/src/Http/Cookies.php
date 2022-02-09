@@ -10,7 +10,6 @@ use function is_string;
 use function urlencode;
 
 /**
- * @api
  * @psalm-immutable
  */
 final class Cookies

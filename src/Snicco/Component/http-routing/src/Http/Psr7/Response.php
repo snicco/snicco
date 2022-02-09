@@ -46,6 +46,82 @@ class Response implements ResponseInterface
         return $this->cookies;
     }
 
+    final public function withAddedHeader($name, $value)
+    {
+        return $this->new(
+            $this->psr7_response->withAddedHeader($name, $value)
+        );
+    }
+
+    final public function withHeader($name, $value)
+    {
+        return $this->new($this->psr7_response->withHeader($name, $value));
+    }
+
+    final public function withBody(StreamInterface $body)
+    {
+        return $this->new($this->psr7_response->withBody($body));
+    }
+
+    final public function getStatusCode(): int
+    {
+        return $this->psr7_response->getStatusCode();
+    }
+
+    final public function getHeader($name): array
+    {
+        return $this->psr7_response->getHeader($name);
+    }
+
+    final public function getBody(): StreamInterface
+    {
+        return $this->psr7_response->getBody();
+    }
+
+    final public function withProtocolVersion($version)
+    {
+        return $this->new($this->psr7_response->withProtocolVersion($version));
+    }
+
+    final public function withoutHeader($name)
+    {
+        return $this->new($this->psr7_response->withoutHeader($name));
+    }
+
+    final public function withStatus($code, $reasonPhrase = '')
+    {
+        return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
+    }
+
+    final public function getProtocolVersion(): string
+    {
+        return $this->psr7_response->getProtocolVersion();
+    }
+
+    /**
+     * @return array<string, string[]>
+     * @psalm-suppress MixedReturnTypeCoercion
+     */
+    final public function getHeaders(): array
+    {
+        return $this->psr7_response->getHeaders();
+    }
+
+    final public function hasHeader($name): bool
+    {
+        return $this->psr7_response->hasHeader($name);
+    }
+
+    final public function getHeaderLine($name): string
+    {
+        return $this->psr7_response->getHeaderLine($name);
+    }
+
+    final public function getReasonPhrase(): string
+    {
+        return $this->psr7_response->getReasonPhrase();
+    }
+
     /**
      * @return static
      */
@@ -54,23 +130,6 @@ class Response implements ResponseInterface
         $value = $bot ? $bot . ': noindex' : 'noindex';
 
         return $this->withAddedHeader('X-Robots-Tag', $value);
-    }
-
-    final public function withAddedHeader($name, $value)
-    {
-        return $this->new(
-            $this->psr7_response->withAddedHeader($name, $value)
-        );
-    }
-
-    /**
-     * @return static
-     */
-    final protected function new(ResponseInterface $new_psr_response)
-    {
-        $new = clone $this;
-        $new->psr7_response = $new_psr_response;
-        return $new;
     }
 
     /**
@@ -109,11 +168,6 @@ class Response implements ResponseInterface
     final public function withContentType(string $content_type)
     {
         return $this->withHeader('content-type', $content_type);
-    }
-
-    final public function withHeader($name, $value)
-    {
-        return $this->new($this->psr7_response->withHeader($name, $value));
     }
 
     /**
@@ -204,11 +258,6 @@ class Response implements ResponseInterface
             ->withBody($html);
     }
 
-    final public function withBody(StreamInterface $body)
-    {
-        return $this->new($this->psr7_response->withBody($body));
-    }
-
     /**
      * @param StreamInterface $json
      * @return static
@@ -222,16 +271,6 @@ class Response implements ResponseInterface
     {
         return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308])
             && (null === $location || $location == $this->getHeader('Location'));
-    }
-
-    final public function getStatusCode(): int
-    {
-        return $this->psr7_response->getStatusCode();
-    }
-
-    final public function getHeader($name): array
-    {
-        return $this->psr7_response->getHeader($name);
     }
 
     final public function isSuccessful(): bool
@@ -287,11 +326,6 @@ class Response implements ResponseInterface
         return (intval($this->getBody()->getSize())) === 0;
     }
 
-    final public function getBody(): StreamInterface
-    {
-        return $this->psr7_response->getBody();
-    }
-
     final public function flashMessages(): array
     {
         return $this->flash_messages;
@@ -307,48 +341,14 @@ class Response implements ResponseInterface
         return $this->errors;
     }
 
-    final public function withProtocolVersion($version)
-    {
-        return $this->new($this->psr7_response->withProtocolVersion($version));
-    }
-
-    final public function withoutHeader($name)
-    {
-        return $this->new($this->psr7_response->withoutHeader($name));
-    }
-
-    final public function withStatus($code, $reasonPhrase = '')
-    {
-        return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
-    }
-
-    final public function getProtocolVersion(): string
-    {
-        return $this->psr7_response->getProtocolVersion();
-    }
-
     /**
-     * @return array<string, string[]>
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @return static
      */
-    final public function getHeaders(): array
+    final protected function new(ResponseInterface $new_psr_response)
     {
-        return $this->psr7_response->getHeaders();
-    }
-
-    final public function hasHeader($name): bool
-    {
-        return $this->psr7_response->hasHeader($name);
-    }
-
-    final public function getHeaderLine($name): string
-    {
-        return $this->psr7_response->getHeaderLine($name);
-    }
-
-    final public function getReasonPhrase(): string
-    {
-        return $this->psr7_response->getReasonPhrase();
+        $new = clone $this;
+        $new->psr7_response = $new_psr_response;
+        return $new;
     }
 
 }
