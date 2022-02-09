@@ -7,9 +7,6 @@ namespace Snicco\Component\HttpRouting;
 use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
-/**
- * @api
- */
 final class MiddlewareBlueprint
 {
 

@@ -20,7 +20,7 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 trait CreateTestPsr17Factories
 {
 
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments)
     {
         return static::{$name}($arguments);
     }
