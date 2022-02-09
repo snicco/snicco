@@ -9,12 +9,12 @@ use DateTimeInterface;
 use InvalidArgumentException;
 use LogicException;
 
+use function array_replace;
 use function in_array;
 use function is_int;
 use function ucwords;
 
 /**
- * @api
  * @psalm-immutable
  */
 final class Cookie
@@ -22,43 +22,59 @@ final class Cookie
     /**
      * @var array{
      *     domain: null|string,
-     *     hostonly: bool,
+     *     host_only: bool,
      *     path: string,
      *     expires: null|positive-int,
-     *     httponly: bool,
-     *     samesite: 'Lax'|'Strict'|'None',
+     *     http_only: bool,
+     *     same_site: 'Lax'|'Strict'|'None',
      *     secure: bool
      * }
      */
-    public array $properties = [
-        'domain' => null,
-        'hostonly' => true,
-        'path' => '/',
-        'expires' => null,
-        'secure' => true,
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ];
+    public array $properties;
     public string $name;
     public string $value;
 
-    public function __construct(string $name, string $value)
+    /**
+     * @param null|array{
+     *    domain?: null|string,
+     *    host_only?: bool,
+     *    path?: string,
+     *    expires?: ?positive-int,
+     *    secure?: bool,
+     *    http_only?: bool,
+     *    same_site: 'Lax'|'Strict'|'None'
+     * } $properties
+     *
+     */
+    public function __construct(string $name, string $value, ?array $properties = null)
     {
         $this->name = $name;
         $this->value = $value;
+        $this->properties = array_replace(
+            [
+                'domain' => null,
+                'host_only' => true,
+                'path' => '/',
+                'expires' => null,
+                'secure' => true,
+                'http_only' => true,
+                'same_site' => 'Lax',
+            ],
+            $properties ?: []
+        );
     }
 
     public function withJsAccess(): Cookie
     {
         $cookie = clone $this;
-        $cookie->properties['httponly'] = false;
+        $cookie->properties['http_only'] = false;
         return $cookie;
     }
 
     public function withOnlyHttpAccess(): Cookie
     {
         $cookie = clone $this;
-        $cookie->properties['httponly'] = true;
+        $cookie->properties['http_only'] = true;
         return $cookie;
     }
 
@@ -106,7 +122,7 @@ final class Cookie
 
         $cookie = clone $this;
 
-        $cookie->properties['samesite'] = $same_site;
+        $cookie->properties['same_site'] = $same_site;
 
         if ($same_site === 'None') {
             $cookie->properties['secure'] = true;
