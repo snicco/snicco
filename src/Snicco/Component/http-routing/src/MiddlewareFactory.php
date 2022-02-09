@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting;
 
 use Closure;
-use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -32,25 +31,14 @@ final class MiddlewareFactory
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @psalm-suppress MixedAssignment
      */
     public function create(string $middleware_class, array $route_arguments = []): MiddlewareInterface
     {
-        if (!Reflection::isInterface($middleware_class, MiddlewareInterface::class)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Middleware [%s] has to be an instance of [%s].',
-                    $middleware_class,
-                    MiddlewareInterface::class
-                )
-            );
-        }
-
         try {
             $middleware = $this->container->get($middleware_class);
 
             if ($middleware instanceof Closure) {
+                /** @var mixed $middleware */
                 $middleware = $middleware(...array_values($route_arguments));
             }
             if (!$middleware instanceof MiddlewareInterface) {
