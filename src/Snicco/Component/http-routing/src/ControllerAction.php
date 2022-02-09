@@ -90,7 +90,7 @@ final class ControllerAction
             return [];
         }
 
-        return $this->controller_instance->getMiddleware($this->class_callable[1]);
+        return $this->controller_instance->middleware($this->class_callable[1]);
     }
 
     /**

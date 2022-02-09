@@ -17,7 +17,7 @@ class ControllerWithMiddleware extends AbstractController
 
     public function __construct(Baz $baz)
     {
-        $this->middleware(MiddlewareWithDependencies::class);
+        $this->addMiddleware(MiddlewareWithDependencies::class);
 
         $this->baz = $baz;
 
