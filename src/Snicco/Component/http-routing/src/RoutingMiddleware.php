@@ -6,6 +6,7 @@ namespace Snicco\Component\HttpRouting;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
@@ -24,6 +25,7 @@ final class RoutingMiddleware extends AbstractMiddleware
 
     /**
      * @throws MethodNotAllowed
+     * @throws BadRouteConfiguration
      */
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
