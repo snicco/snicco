@@ -53,11 +53,6 @@ class Response implements ResponseInterface
         return new static($psr7_response);
     }
 
-    final public function cookies(): Cookies
-    {
-        return $this->cookies;
-    }
-
     final public function withAddedHeader($name, $value)
     {
         return $this->new(
@@ -132,6 +127,11 @@ class Response implements ResponseInterface
     final public function getReasonPhrase(): string
     {
         return $this->psr7_response->getReasonPhrase();
+    }
+
+    final public function cookies(): Cookies
+    {
+        return $this->cookies;
     }
 
     /**

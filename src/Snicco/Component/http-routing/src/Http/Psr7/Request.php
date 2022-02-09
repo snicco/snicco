@@ -30,10 +30,10 @@ use const FILTER_VALIDATE_BOOLEAN;
 final class Request implements ServerRequestInterface
 {
 
-    const TYPE_ATTRIBUTE = '_request_type';
-    const TYPE_FRONTEND = 1;
-    const TYPE_ADMIN_AREA = 2;
-    const TYPE_API = 3;
+    public const TYPE_ATTRIBUTE = '_request_type';
+    public const TYPE_FRONTEND = 1;
+    public const TYPE_ADMIN_AREA = 2;
+    public const TYPE_API = 3;
 
     private ServerRequestInterface $psr_request;
 
@@ -50,30 +50,13 @@ final class Request implements ServerRequestInterface
         return new self($psr_request);
     }
 
-    /**
-     * @return static
-     */
-    public function withRoutingResult(RoutingResult $routing_result)
-    {
-        return $this->withAttribute('_routing_result', $routing_result);
-    }
-
     public function userAgent(): ?string
     {
-        $user_agent = substr($this->getHeaderLine('User-Agent'), 0, 500);
+        $user_agent = substr($this->getHeaderLine('user-agent'), 0, 500);
         if (false === $user_agent) {
             return null;
         }
         return $user_agent;
-    }
-
-    public function requestTargetWithFragment(): string
-    {
-        $fragment = $this->getUri()->getFragment();
-
-        return ($fragment !== '')
-            ? $this->getRequestTarget() . '#' . $fragment
-            : $this->getRequestTarget();
     }
 
     /**
@@ -94,7 +77,6 @@ final class Request implements ServerRequestInterface
      * exists.
      *
      * If multiple cookie headers have been sent for $name only the first one will be returned.
-     *
      */
     public function cookie(string $name, ?string $default = null): ?string
     {
@@ -111,20 +93,9 @@ final class Request implements ServerRequestInterface
         return $cookie;
     }
 
-    function routeIs(string $pattern): bool
+    public function routingResult(): RoutingResult
     {
-        $route = $this->routingResult()->route();
-
-        if (!$route) {
-            return false;
-        }
-
-        return Str::is($pattern, $route->getName());
-    }
-
-    function routingResult(): RoutingResult
-    {
-        $res = $this->getAttribute('_routing_result');
+        $res = $this->getAttribute(RoutingResult::class);
         if (!$res instanceof RoutingResult) {
             return RoutingResult::noMatch();
         }
@@ -152,7 +123,7 @@ final class Request implements ServerRequestInterface
         return $this->getUri()->__toString();
     }
 
-    function pathIs(string ...$patterns): bool
+    public function pathIs(string ...$patterns): bool
     {
         $path = $this->decodedPath();
 
@@ -165,20 +136,25 @@ final class Request implements ServerRequestInterface
         return false;
     }
 
-    function decodedPath(): string
+    public function decodedPath(): string
     {
         $path = $this->path();
         return implode(
             '/',
             array_map(function ($part) {
+                // Make sure that %2F stays %2F
                 return rawurldecode(strtr($part, ['%2F' => '%252F']));
             }, explode('/', $path))
         );
     }
 
-    function path(): string
+    public function path(): string
     {
-        return $this->getUri()->getPath();
+        $path = $this->getUri()->getPath();
+        if ('' === $path) {
+            $path = '/';
+        }
+        return $path;
     }
 
     /**
@@ -291,19 +267,14 @@ final class Request implements ServerRequestInterface
 
     public function isSendingJson(): bool
     {
-        return Str::contains($this->getHeaderLine('Content-Type'), ['/json', '+json']);
+        return Str::contains($this->getHeaderLine('content-type'), ['/json', '+json']);
     }
 
     public function isExpectingJson(): bool
     {
-        $accepts = $this->acceptableContentTypes();
+        $accepts = $this->getHeaderLine('accept');
 
         return Str::contains($accepts, ['/json', '+json']);
-    }
-
-    public function acceptableContentTypes(): string
-    {
-        return $this->getHeaderLine('Accept');
     }
 
     public function acceptsHtml(): bool
@@ -315,7 +286,7 @@ final class Request implements ServerRequestInterface
     {
         return $this->matchesType(
             $content_type,
-            $this->acceptableContentTypes()
+            $this->getHeaderLine('accept')
         );
     }
 
@@ -324,7 +295,7 @@ final class Request implements ServerRequestInterface
      */
     public function acceptsOneOf(array $content_types): bool
     {
-        $accepts = $this->acceptableContentTypes();
+        $accepts = $this->getHeaderLine('accept');
 
         foreach ($content_types as $content_type) {
             if ($this->matchesType($content_type, $accepts)) {
