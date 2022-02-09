@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
@@ -41,7 +42,6 @@ abstract class AbstractController
                 return $controller_middleware->appliesTo($controller_method);
             }
         );
-
         return array_values(
             array_map(function (ControllerMiddleware $middleware) {
                 return $middleware->name();
@@ -105,9 +105,14 @@ abstract class AbstractController
         return $this->container->get(ResponseFactory::class);
     }
 
+    /**
+     * @param class-string<MiddlewareInterface> $middleware_name
+     */
     final protected function middleware(string $middleware_name): ControllerMiddleware
     {
-        return $this->middleware[] = new ControllerMiddleware($middleware_name);
+        $middleware = new ControllerMiddleware($middleware_name);
+        $this->middleware[] = $middleware;
+        return $middleware;
     }
 
 }

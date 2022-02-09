@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting;
 
 use LogicException;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\StrArr\Arr;
 
 final class ControllerMiddleware
 {
 
-    private string $middleware;
+    /**
+     * @var class-string<MiddlewareInterface>
+     */
+    private string $middleware_class;
 
     /**
      * Methods the middleware applies to.
@@ -26,9 +30,12 @@ final class ControllerMiddleware
      */
     private array $blacklist = [];
 
+    /**
+     * @param class-string<MiddlewareInterface> $middleware
+     */
     public function __construct(string $middleware)
     {
-        $this->middleware = $middleware;
+        $this->middleware_class = $middleware;
     }
 
     /**
@@ -38,17 +45,14 @@ final class ControllerMiddleware
      *
      * @throws LogicException
      */
-    public function only($methods): ControllerMiddleware
+    public function only($methods): void
     {
         if (!empty($this->blacklist)) {
             throw new LogicException(
                 'The only() method cant be combined with the except() method for one middleware'
             );
         }
-
         $this->whitelist = Arr::toArray($methods);
-
-        return $this;
     }
 
     /**
@@ -58,7 +62,7 @@ final class ControllerMiddleware
      *
      * @throws LogicException
      */
-    public function except($methods): ControllerMiddleware
+    public function except($methods): void
     {
         if (!empty($this->whitelist)) {
             throw new LogicException(
@@ -67,10 +71,12 @@ final class ControllerMiddleware
         }
 
         $this->blacklist = Arr::toArray($methods);
-
-        return $this;
     }
 
+    /**
+     * @psalm-mutation-free
+     * @interal
+     */
     public function appliesTo(string $method = null): bool
     {
         if (in_array($method, $this->blacklist, true)) {
@@ -86,7 +92,7 @@ final class ControllerMiddleware
 
     public function name(): string
     {
-        return $this->middleware;
+        return $this->middleware_class;
     }
 
 }
