@@ -11,9 +11,6 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 
 use function sprintf;
 
-/**
- * @api
- */
 final class InvalidRouteClosureReturned extends InvalidArgumentException
 {
 

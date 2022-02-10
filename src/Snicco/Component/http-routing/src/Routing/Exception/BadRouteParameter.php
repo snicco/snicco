@@ -6,9 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\Exception;
 
 use RuntimeException;
 
-/**
- * @api
- */
 final class BadRouteParameter extends RuntimeException
 {
 

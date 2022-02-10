@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\fixtures\Conditions;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
+use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 
-class RouteConditionWithDependency extends AbstractRouteCondition
+class RouteConditionWithDependency extends RouteCondition
 {
 
     private bool $make_it_pass;

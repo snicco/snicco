@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
+namespace Snicco\Component\HttpRouting\Routing\RouteLoader;
 
 interface RouteLoader
 {

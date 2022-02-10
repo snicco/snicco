@@ -15,8 +15,6 @@ use function trim;
 /**
  * @interal
  *
- * @psalm-internal Snicco\Component\HttpRouting\Routing
- *
  * @psalm-immutable
  */
 final class RouteGroup

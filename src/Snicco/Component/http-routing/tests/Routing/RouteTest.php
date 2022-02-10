@@ -6,8 +6,8 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
+use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
@@ -279,7 +279,7 @@ final class RouteTest extends TestCase
             $this->assertStringStartsWith(
                 sprintf(
                     'A condition has to be an instance of [%s].',
-                    AbstractRouteCondition::class
+                    RouteCondition::class
                 ),
                 $e->getMessage()
             );

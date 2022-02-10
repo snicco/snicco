@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Routing\Condition;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
-abstract class AbstractRouteCondition
+abstract class RouteCondition
 {
 
     const NEGATE = '!';
