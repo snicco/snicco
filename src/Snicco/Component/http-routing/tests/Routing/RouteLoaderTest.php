@@ -107,10 +107,10 @@ final class RouteLoaderTest extends HttpRunnerTestCase
     {
         $this->file_loader->loadRoutesIn([$this->routes_dir]);
 
-        $this->assertSame(self::WEB_PATH, $this->generator->toRoute('web1'));
+        $this->assertSame(self::WEB_PATH, $this->generator()->toRoute('web1'));
 
         $this->expectException(RouteNotFound::class);
-        $this->generator->toRoute('frontend.web1');
+        $this->generator()->toRoute('frontend.web1');
     }
 
     /**
@@ -201,7 +201,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
         $this->assertSame(
             '/sniccowp/partials/cart',
-            $this->generator->toRoute('api.partials.cart')
+            $this->generator()->toRoute('api.partials.cart')
         );
     }
 
@@ -290,7 +290,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
         $this->assertSame(
             '/sniccowp/rest/v1/posts',
-            $this->generator->toRoute('api.rest.v1.posts')
+            $this->generator()->toRoute('api.rest.v1.posts')
         );
     }
 
@@ -315,7 +315,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
         $this->assertSame(
             '/rest/posts',
-            $this->generator->toRoute('rest.posts')
+            $this->generator()->toRoute('rest.posts')
         );
 
         $response = $this->runKernel(
@@ -325,7 +325,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
         $this->assertSame(
             '/partials/cart',
-            $this->generator->toRoute('partials.cart')
+            $this->generator()->toRoute('partials.cart')
         );
     }
 
@@ -465,7 +465,7 @@ final class RouteLoaderTest extends HttpRunnerTestCase
 
         $this->assertSame(
             '/wp-admin/admin.php?page=foo',
-            $this->generator->toRoute('admin.admin_route_1')
+            $this->generator()->toRoute('admin.admin_route_1')
         );
     }
 

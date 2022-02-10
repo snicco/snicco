@@ -84,7 +84,7 @@ class RouteGroupsTest extends HttpRunnerTestCase
         );
         $this->assertEmptyBody($this->frontendRequest('/foo'));
 
-        $this->assertSame('/foo/bar', $this->generator->toRoute('r1'));
+        $this->assertSame('/foo/bar', $this->generator()->toRoute('r1'));
     }
 
     /**
@@ -99,11 +99,11 @@ class RouteGroupsTest extends HttpRunnerTestCase
                 $router->get('route2', '/baz', RoutingTestController::class);
             });
 
-        $this->assertSame('/bar', $this->generator->toRoute('users.route1'));
-        $this->assertSame('/baz', $this->generator->toRoute('users.route2'));
+        $this->assertSame('/bar', $this->generator()->toRoute('users.route1'));
+        $this->assertSame('/baz', $this->generator()->toRoute('users.route2'));
 
         $this->expectException(RouteNotFound::class);
-        $this->generator->toRoute('route1');
+        $this->generator()->toRoute('route1');
     }
 
     /**
@@ -172,12 +172,12 @@ class RouteGroupsTest extends HttpRunnerTestCase
                 $router->get('jon', '/jon', RoutingTestController::class);
             });
 
-        $this->assertSame('/bar', $this->generator->toRoute('users.admins.calvin'));
-        $this->assertSame('/baz', $this->generator->toRoute('users.admins.marlon'));
-        $this->assertSame('/jon', $this->generator->toRoute('users.jon'));
+        $this->assertSame('/bar', $this->generator()->toRoute('users.admins.calvin'));
+        $this->assertSame('/baz', $this->generator()->toRoute('users.admins.marlon'));
+        $this->assertSame('/jon', $this->generator()->toRoute('users.jon'));
 
         $this->expectException(RouteNotFound::class);
-        $this->generator->toRoute('admins.calvin');
+        $this->generator()->toRoute('admins.calvin');
     }
 
     /**

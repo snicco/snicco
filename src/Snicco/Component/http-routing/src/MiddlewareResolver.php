@@ -64,7 +64,12 @@ final class MiddlewareResolver
     private $unfinished_group_trace = [];
 
     /**
-     * @param string[] $always_run
+     * * @param array<
+     *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
+     *     RoutingConfigurator::ADMIN_MIDDLEWARE |
+     *     RoutingConfigurator::API_MIDDLEWARE |
+     *     RoutingConfigurator::GLOBAL_MIDDLEWARE
+     * > $always_run
      * @param array<string,class-string<MiddlewareInterface>> $middleware_aliases
      * @param array<string,array<string|class-string<MiddlewareInterface>>> $middleware_groups
      * @param list<class-string<MiddlewareInterface>> $middleware_priority
@@ -225,7 +230,7 @@ final class MiddlewareResolver
             }
 
             if (!$this->isMiddlewareGroup($middleware_string)) {
-                throw new RuntimeException('Invalid middleware');
+                throw InvalidMiddleware::becauseTheAliasDoesNotExist($middleware_string);
             }
 
             if (isset($this->unfinished_group_trace[$middleware_string])) {
@@ -355,9 +360,6 @@ final class MiddlewareResolver
             if (!Reflection::isInterface($class_string, MiddlewareInterface::class)) {
                 throw new InvalidMiddleware("Alias [$key] resolves to invalid middleware class [$class_string].");
             }
-            if (isset($this->middleware_aliases[$key])) {
-                throw new InvalidMiddleware("Duplicate middleware alias [$key].");
-            }
             $this->middleware_aliases[$key] = $class_string;
         }
     }
@@ -370,10 +372,6 @@ final class MiddlewareResolver
         foreach ($middleware_groups as $name => $aliases_or_class_strings) {
             Assert::stringNotEmpty($name);
             Assert::allString($aliases_or_class_strings);
-
-            if (isset($this->user_provided_groups[$name])) {
-                throw new InvalidMiddleware("Duplicate middleware group name [$name]");
-            }
             if (isset($this->middleware_aliases[$name])) {
                 throw new InvalidMiddleware("Middleware group and alias have the same name [$name].");
             }

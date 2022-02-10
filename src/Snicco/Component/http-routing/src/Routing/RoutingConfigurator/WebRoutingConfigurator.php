@@ -18,7 +18,10 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 interface WebRoutingConfigurator extends RoutingConfigurator
 {
 
-    public function prefix(string $prefix): self;
+    /**
+     * @return static
+     */
+    public function prefix(string $prefix);
 
     /**
      * @param class-string|array{0: class-string, 1:string} $action
