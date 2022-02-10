@@ -13,9 +13,6 @@ use function in_array;
 use function is_string;
 use function strtoupper;
 
-/**
- * @api
- */
 final class MethodOverride extends AbstractMiddleware
 {
 
