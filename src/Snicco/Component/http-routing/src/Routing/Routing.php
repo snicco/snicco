@@ -24,14 +24,12 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
-use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 
 final class Routing
 {
 
     private ContainerInterface $psr_container;
     private UrlGenerationContext $context;
-    private ?PHPCacheFile $cache_file;
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
     private RouteLoadingOptions $route_loading_options;
@@ -45,7 +43,6 @@ final class Routing
         ContainerInterface $psr_container,
         UrlGenerationContext $context,
         RouteLoadingOptions $route_loading_options,
-        ?PHPCacheFile $cache_file = null,
         ?AdminArea $admin_area = null,
         ?UrlEncoder $url_encoder = null
     ) {
@@ -54,7 +51,6 @@ final class Routing
         $this->route_loading_options = $route_loading_options;
         $this->admin_area = $admin_area ?: WPAdminArea::fromDefaults();
         $this->url_encoder = $url_encoder ?: new RFC3986Encoder();
-        $this->cache_file = $cache_file;
     }
 
     public function webConfigurator(): WebRoutingConfigurator
@@ -131,7 +127,6 @@ final class Routing
             $this->routing_configurator = new RoutingConfiguratorUsingRouter(
                 $this->router(),
                 $this->admin_area->urlPrefix(),
-                []
             );
         }
         return $this->routing_configurator;

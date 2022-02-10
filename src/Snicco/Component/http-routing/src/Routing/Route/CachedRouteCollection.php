@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use ArrayIterator;
+use BadMethodCallException;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Traversable;
 use Webmozart\Assert\Assert;
@@ -12,10 +13,7 @@ use Webmozart\Assert\Assert;
 use function count;
 use function unserialize;
 
-/**
- * @interal
- */
-final class CachedRouteCollection implements Routes
+final class CachedRouteCollection extends RouteCollection
 {
 
     /**
@@ -33,11 +31,6 @@ final class CachedRouteCollection implements Routes
      */
     public function __construct(array $serialized_routes)
     {
-        Assert::allString(
-            $serialized_routes,
-            'The cached route collection can only contain serialized routes.'
-        );
-
         $this->serialized_routes = $serialized_routes;
         $this->hydrated_routes = [];
     }
@@ -83,6 +76,11 @@ final class CachedRouteCollection implements Routes
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->toArray());
+    }
+
+    public function add(Route $route): void
+    {
+        throw new BadMethodCallException('Routes cant be added to a cached route collection.');
     }
 
     private function isFullyHydrated(): bool
