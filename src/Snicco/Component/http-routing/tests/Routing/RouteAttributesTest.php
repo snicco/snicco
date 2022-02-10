@@ -290,46 +290,6 @@ class RouteAttributesTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
 
-    /**
-     * @test
-     */
-    public function config_values_can_be_accessed(): void
-    {
-//        $config = ['route_path' => '/foo'];
-//
-//        $this->refreshRouter(null, null, $config);
-//
-//        $this->routeConfigurator()->group(function (WebRoutingConfigurator $router) {
-//            $path = $router->configValue('route_path');
-//
-//            $router->get('r1', $path, RoutingTestController::class);
-//        });
-//
-//        $this->assertResponseBody(
-//            RoutingTestController::static,
-//            $this->frontendRequest('/foo')
-//        );
-    }
-
-    /**
-     * @test
-     */
-    public function an_exception_is_thrown_when_config_values_dont_exist(): void
-    {
-//        $config = ['route_path' => '/foo'];
-//
-//        $this->refreshRouter(null, null, $config);
-//
-//        $this->expectException(InvalidArgumentException::class);
-//        $this->expectExceptionMessage('bogus');
-//
-//        $this->routeConfigurator()->group(function (WebRoutingConfigurator $router) {
-//            $path = $router->configValue('bogus');
-//
-//            $router->get('r1', $path, RoutingTestController::class);
-//        });
-    }
-
 }
 
 

@@ -53,11 +53,10 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 
     private ?Route $current_parent_route = null;
 
-    public function __construct(Router $router, AdminAreaPrefix $admin_dashboard_prefix, array $config)
+    public function __construct(Router $router, AdminAreaPrefix $admin_dashboard_prefix)
     {
         $this->admin_dashboard_prefix = $admin_dashboard_prefix;
         $this->router = $router;
-        $this->config = $config;
     }
 
     public function page(
@@ -199,12 +198,6 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
             'arguments' => $arguments,
             'status' => $status,
         ]);
-    }
-
-    public function configValue(string $key)
-    {
-        Assert::keyExists($this->config, $key);
-        return $this->config[$key];
     }
 
     /**

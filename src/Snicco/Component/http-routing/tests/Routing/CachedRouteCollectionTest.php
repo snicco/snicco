@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -14,19 +15,6 @@ use stdClass;
 
 final class CachedRouteCollectionTest extends TestCase
 {
-
-    /**
-     * @test
-     */
-    public function test_exception_if_value_is_not_a_serialized_string(): void
-    {
-        $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('can only contain serialized routes');
-
-        new CachedRouteCollection(['r1' => $r1]);
-    }
 
     /**
      * @test
@@ -159,6 +147,20 @@ final class CachedRouteCollectionTest extends TestCase
                 $e->getMessage()
             );
         }
+    }
+
+    /**
+     * @test
+     */
+    public function test_add_throws_bad_method_call(): void
+    {
+        $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
+        $routes = new CachedRouteCollection([]);
+
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Routes cant be added to a cached route collection.');
+
+        $routes->add($r1);
     }
 
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
 use Closure;
-use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
@@ -51,16 +50,6 @@ interface RoutingConfigurator
      *
      */
     public function group(Closure $create_routes, array $extra_attributes = []): void;
-
-    /**
-     * Retrieves a configuration value.
-     *
-     * @return mixed
-     * @throws InvalidArgumentException If the key does not exist.
-     *
-     * @todo should this exist?
-     */
-    public function configValue(string $key);
 
     /**
      * @param string|Closure($this):void $file_or_closure Either the full path to route file that will

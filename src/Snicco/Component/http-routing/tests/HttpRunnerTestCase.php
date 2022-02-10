@@ -124,7 +124,6 @@ class HttpRunnerTestCase extends TestCase
             $this->container,
             $context,
             new DefaultRouteLoadingOptions('/api'),
-            null,
             WPAdminArea::fromDefaults(),
             new RFC3986Encoder(),
         );
