@@ -79,7 +79,7 @@ final class RouteRunner extends Middleware
         $middleware = $this->middleware_stack->resolveForRequestWithoutRoute($request);
 
         if (!count($middleware)) {
-            return $this->respond()->delegate(true);
+            return $this->respond()->delegate();
         }
 
         return $this->pipeline

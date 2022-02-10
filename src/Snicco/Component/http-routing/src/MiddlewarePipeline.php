@@ -132,8 +132,8 @@ final class MiddlewarePipeline
 
         if ($middleware instanceof MiddlewareBlueprint) {
             $middleware = $this->middleware_factory->create(
-                $middleware->class(),
-                $this->convertStrings($middleware->arguments())
+                $middleware->class,
+                $this->convertStrings($middleware->arguments)
             );
 
             return $middleware->process($request, $next);

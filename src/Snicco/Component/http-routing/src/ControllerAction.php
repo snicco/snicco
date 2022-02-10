@@ -54,6 +54,8 @@ final class ControllerAction
     }
 
     /**
+     * @psalm-mutation-free
+     *
      * @return class-string<MiddlewareInterface>[]
      */
     public function middleware(): array
