@@ -189,7 +189,6 @@ final class UrlGenerator implements UrlGeneratorInterface
 
         $path = $this->formatPath($path);
 
-
         $extra_fragment = '';
         if (isset($extra[self::FRAGMENT_KEY])) {
             $extra_fragment = trim($extra[self::FRAGMENT_KEY], '#');

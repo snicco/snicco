@@ -18,7 +18,7 @@ class UrlPathTest extends TestCase
      *
      * @test
      */
-    public function testFromString($path, $expected): void
+    public function testFromString(string $path, string $expected): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame($expected, $path->asString());
@@ -29,7 +29,7 @@ class UrlPathTest extends TestCase
      *
      * @dataProvider providePath
      */
-    public function testWithTrailingSlash($path): void
+    public function testWithTrailingSlash(string $path): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame('/foo/', $path->withTrailingSlash()->asString());
@@ -40,7 +40,7 @@ class UrlPathTest extends TestCase
      *
      * @dataProvider providePath
      */
-    public function testWithoutTrailingSlash($path): void
+    public function testWithoutTrailingSlash(string $path): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame('/foo', $path->withoutTrailingSlash()->asString());
@@ -73,7 +73,7 @@ class UrlPathTest extends TestCase
      *
      * @dataProvider prependProvider
      */
-    public function testPrepend($prepend): void
+    public function testPrepend(string $prepend): void
     {
         $path = UrlPath::fromString('/foo');
         $this->assertSame('/' . trim($prepend, '/') . '/foo', $path->prepend($prepend)->asString());
@@ -84,7 +84,7 @@ class UrlPathTest extends TestCase
      *
      * @dataProvider prependProvider
      */
-    public function testAppend($append_path): void
+    public function testAppend(string $append_path): void
     {
         $expected = Str::endsWith($append_path, '/')
             ? trim($append_path, '/') . '/'

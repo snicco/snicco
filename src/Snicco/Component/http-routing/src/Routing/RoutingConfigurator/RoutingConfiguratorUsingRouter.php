@@ -15,13 +15,19 @@ use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\Router;
+use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
+use Snicco\Component\HttpRouting\Routing\UrlMatcher\RouteGroup;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
 use function array_merge;
+use function array_pop;
+use function array_reverse;
+use function count;
+use function trim;
 
 /**
  * @interal
@@ -29,7 +35,11 @@ use function array_merge;
 final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, AdminRoutingConfigurator
 {
 
-    private Router $router;
+    /**
+     * @var list<RouteGroup>
+     */
+    private array $group_stack = [];
+
     private AdminAreaPrefix $admin_dashboard_prefix;
 
     /**
@@ -51,10 +61,14 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 
     private ?Route $current_parent_route = null;
 
-    public function __construct(Router $router, AdminAreaPrefix $admin_dashboard_prefix)
+    /**
+     * @var array<string,Route>
+     */
+    private array $routes = [];
+
+    public function __construct(AdminAreaPrefix $admin_dashboard_prefix)
     {
         $this->admin_dashboard_prefix = $admin_dashboard_prefix;
-        $this->router = $router;
     }
 
     public function page(
@@ -68,11 +82,13 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 
         $this->validateThatNoAdminPrefixesAreSet($path, $name);
 
-        $route = $this->router->registerAdminRoute(
+        $route = $this->createRoute(
             $name,
             $this->admin_dashboard_prefix->appendPath($path),
+            ['GET'],
             $action
         );
+        $route->condition(IsAdminDashboardRequest::class);
 
         $this->validateThatAdminRouteHasNoSegments($route);
 
@@ -113,11 +129,12 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     {
         $attributes = array_merge($this->delegate_attributes, $extra_attributes);
         $this->delegate_attributes = [];
-        $this->router->createInGroup(
-            $this,
-            $create_routes,
-            $attributes
-        );
+
+        $this->updateGroupStack(new RouteGroup($attributes));
+
+        $create_routes($this);
+
+        $this->deleteCurrentGroup();
     }
 
     public function middleware($middleware)
@@ -231,6 +248,11 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
     public function items(): array
     {
         return array_values($this->menu_items);
+    }
+
+    public function configuredRoutes(): Routes
+    {
+        return new RuntimeRouteCollection($this->routes);
     }
 
     public function get(string $name, string $path, $action = Route::DELEGATE): Route
@@ -470,12 +492,111 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
             throw BadRouteConfiguration::becauseWebRouteHasAdminPrefix($name);
         }
 
-        return $this->router->registerWebRoute($name, $path, $methods, $action);
+        return $this->createRoute($name, $path, $methods, $action);
     }
 
     private function redirectRouteName(string $from, string $to): string
     {
         return "redirect_route:$from:$to";
+    }
+
+    /**
+     * @param string|class-string|array{0: class-string, 1: string} $controller
+     * @param string[] $methods
+     */
+    private function createRoute(string $name, string $path, array $methods, $controller): Route
+    {
+        // Quick check to see if the developer swapped the arguments by accident.
+        Assert::notStartsWith($name, '/');
+
+        $path = $this->applyGroupPrefix(UrlPath::fromString($path));
+        $name = $this->applyGroupName($name);
+        $namespace = $this->applyGroupNamespace();
+
+        $route = Route::create(
+            $path->asString(),
+            $controller,
+            $name,
+            $methods,
+            $namespace
+        );
+
+        $this->addGroupAttributes($route);
+
+        $this->routes[$route->getName()] = $route;
+
+        return $route;
+    }
+
+    private function applyGroupPrefix(UrlPath $path): UrlPath
+    {
+        $current = $this->currentGroup();
+        if (!$current) {
+            return $path;
+        }
+
+        return $path->prepend($current->prefix);
+    }
+
+    private function applyGroupName(string $route_name): string
+    {
+        $current = $this->currentGroup();
+        if (!$current) {
+            return $route_name;
+        }
+
+        $g = trim($current->name, '.');
+
+        if ($g === '') {
+            return $route_name;
+        }
+
+        return "$g.$route_name";
+    }
+
+    private function applyGroupNamespace(): string
+    {
+        $current = $this->currentGroup();
+        if (!$current) {
+            return '';
+        }
+
+        return $current->namespace;
+    }
+
+    private function addGroupAttributes(Route $route): void
+    {
+        $current = $this->currentGroup();
+        if (!$current) {
+            return;
+        }
+
+        foreach ($current->middleware as $middleware) {
+            $route->middleware($middleware);
+        }
+    }
+
+    private function updateGroupStack(RouteGroup $group): void
+    {
+        $current = $this->currentGroup();
+        if ($current) {
+            $group = $group->mergeWith($current);
+        }
+
+        $this->group_stack[] = $group;
+    }
+
+    private function currentGroup(): ?RouteGroup
+    {
+        if (!count($this->group_stack)) {
+            return null;
+        }
+        return array_reverse($this->group_stack)[0];
+    }
+
+    private function deleteCurrentGroup(): void
+    {
+        array_pop($this->group_stack);
     }
 
 }

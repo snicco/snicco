@@ -16,7 +16,15 @@ final class RuntimeRouteCollection extends RouteCollection
     /**
      * @var array<string,Route>
      */
-    private array $routes = [];
+    private array $routes;
+
+    /**
+     * @param array<string,Route> $routes
+     */
+    public function __construct(array $routes)
+    {
+        $this->routes = $routes;
+    }
 
     public function getByName(string $name): Route
     {
@@ -41,8 +49,4 @@ final class RuntimeRouteCollection extends RouteCollection
         return new ArrayIterator($this->toArray());
     }
 
-    public function add(Route $route): void
-    {
-        $this->routes[$route->getName()] = $route;
-    }
 }

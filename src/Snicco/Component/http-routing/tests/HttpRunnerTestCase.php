@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -26,6 +27,7 @@ use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\NullLoader;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\Routing;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -48,6 +50,7 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\Kernel\DIContainer;
 
 use function array_merge;
+use function call_user_func;
 
 /**
  * @interal
@@ -103,8 +106,6 @@ class HttpRunnerTestCase extends TestCase
 
         $this->container = $this->createContainer();
 
-        $this->routing = $this->newRoutingFacade();
-
         // internal controllers
         $this->container->instance(FallBackController::class, new FallBackController());
         $this->container->instance(ViewController::class, new ViewController(new FileTemplateRenderer()));
@@ -114,29 +115,6 @@ class HttpRunnerTestCase extends TestCase
         $this->container[RoutingTestController::class] = new RoutingTestController();
 
         $this->routes_dir = __DIR__ . '/fixtures/routes';
-    }
-
-    final protected function newRoutingFacade(UrlGenerationContext $context = null): Routing
-    {
-        $context = $context ?: UrlGenerationContext::forConsole($this->app_domain);
-
-        $routing = new Routing(
-            $this->container,
-            $context,
-            function () {
-                return new NullLoader();
-            },
-            WPAdminArea::fromDefaults(),
-            new RFC3986Encoder(),
-        );
-
-        $this->container->instance(UrlGeneratorInterface::class, $routing->urlGenerator());
-        $rf = $this->createResponseFactory($routing->urlGenerator());
-        $this->container->instance(ResponseFactory::class, $rf);
-        $this->container->instance(Redirector::class, $rf);
-        $this->container->instance(StreamFactoryInterface::class, $rf);
-
-        return $routing;
     }
 
     final protected function assertEmptyBody(Request $request): void
@@ -193,25 +171,38 @@ class HttpRunnerTestCase extends TestCase
         $this->middleware_priority = $priority;
     }
 
-    final protected function routeConfigurator(): WebRoutingConfigurator
+    final protected function generator(UrlGenerationContext $context = null): UrlGeneratorInterface
     {
-        return $this->routing->webConfigurator();
-    }
-
-    final protected function adminRouteConfigurator(): AdminRoutingConfigurator
-    {
-        return $this->routing->adminConfigurator();
-    }
-
-    final protected function newUrlGenerator(UrlGenerationContext $context = null): UrlGeneratorInterface
-    {
-        $this->routing = $this->newRoutingFacade($context);
+        $this->routing = $this->newRoutingFacade(null, $context);
         return $this->routing->urlGenerator();
     }
 
-    final protected function generator(): UrlGeneratorInterface
+    /**
+     * @param Closure(WebRoutingConfigurator) $loader
+     */
+    protected function webRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
     {
-        return $this->routing->urlGenerator();
+        $on_the_fly_loader = new class($loader) implements RouteLoader {
+
+            private Closure $loader;
+
+            public function __construct(Closure $loader)
+            {
+                $this->loader = $loader;
+            }
+
+            public function loadWebRoutes(WebRoutingConfigurator $configurator): void
+            {
+                call_user_func($this->loader, $configurator);
+            }
+
+            public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
+            {
+                //
+            }
+        };
+
+        return $this->newRoutingFacade($on_the_fly_loader, $context);
     }
 
     /**
@@ -225,6 +216,27 @@ class HttpRunnerTestCase extends TestCase
     protected function alwaysRun(array $group_names): void
     {
         $this->always_run = $group_names;
+    }
+
+    private function newRoutingFacade(RouteLoader $loader = null, UrlGenerationContext $context = null): Routing
+    {
+        $routing = new Routing(
+            $this->container,
+            $context ?: UrlGenerationContext::forConsole($this->app_domain),
+            $loader ?: new NullLoader(),
+            WPAdminArea::fromDefaults(),
+            new RFC3986Encoder(),
+        );
+
+        $this->container->instance(UrlGeneratorInterface::class, $routing->urlGenerator());
+        $rf = $this->createResponseFactory($routing->urlGenerator());
+        $this->container->instance(ResponseFactory::class, $rf);
+        $this->container->instance(Redirector::class, $rf);
+        $this->container->instance(StreamFactoryInterface::class, $rf);
+
+        $this->routing = $routing;
+
+        return $routing;
     }
 
     private function newKernel(): HttpKernel
@@ -250,7 +262,7 @@ class HttpRunnerTestCase extends TestCase
             new NegotiateContent(['en']),
             new PrepareResponse(new ResponsePreparation($this->psrStreamFactory())),
             new MethodOverride(),
-            new RoutingMiddleware($this->routing->urlMatcher(),),
+            new RoutingMiddleware($this->routing->urlMatcher()),
             $route_runner
         );
 
