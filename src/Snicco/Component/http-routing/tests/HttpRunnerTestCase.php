@@ -8,6 +8,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Http\MethodOverride;
 use Snicco\Component\HttpRouting\Http\NegotiateContent;
@@ -18,7 +19,7 @@ use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\HttpKernel;
 use Snicco\Component\HttpRouting\KernelMiddleware;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
-use Snicco\Component\HttpRouting\MiddlewareStack;
+use Snicco\Component\HttpRouting\MiddlewareResolver;
 use Snicco\Component\HttpRouting\PrepareResponse;
 use Snicco\Component\HttpRouting\RouteRunner;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
@@ -75,7 +76,7 @@ class HttpRunnerTestCase extends TestCase
     private HttpKernel $kernel;
     private AdminArea $admin_area;
     private UrlGenerationContext $request_context;
-    private MiddlewareStack $middleware_stack;
+    private MiddlewareResolver $middleware_resolver;
     private RoutingConfiguratorUsingRouter $routing_configurator;
     private HttpErrorHandlerInterface $error_handler;
 
@@ -153,15 +154,16 @@ class HttpRunnerTestCase extends TestCase
 
     final protected function runKernel(Request $request): AssertableResponse
     {
-        $this->withMiddlewareAlias($this->defaultMiddlewareAliases());
-
         $response = $this->kernel->handle($request);
         return new AssertableResponse($response);
     }
 
+    /**
+     * @param array<string,class-string<MiddlewareInterface>> $aliases
+     */
     final protected function withMiddlewareAlias(array $aliases): void
     {
-        $this->middleware_stack->middlewareAliases($aliases);
+        $this->middleware_resolver = new MiddlewareResolver([], $aliases);
     }
 
     final protected function withGlobalMiddleware(array $middleware): void
@@ -174,20 +176,27 @@ class HttpRunnerTestCase extends TestCase
      */
     final protected function withMiddlewareGroups(array $middlewares): void
     {
-        foreach ($middlewares as $name => $middleware) {
-            $this->middleware_stack->withMiddlewareGroup($name, $middleware);
-        }
+        $this->middleware_resolver = new MiddlewareResolver(
+            [],
+            $this->defaultMiddlewareAliases(),
+            $middlewares
+        );
     }
 
-    final protected function withNewMiddlewareStack(MiddlewareStack $middleware_stack): void
+    final protected function withNewMiddlewareStack(MiddlewareResolver $middleware_stack): void
     {
-        $this->middleware_stack = $middleware_stack;
+        $this->middleware_resolver = $middleware_stack;
         $this->refreshRouter();
     }
 
-    final protected function withMiddlewarePriority(array $array): void
+    /**
+     * @param list<class-string<MiddlewareInterface>> $priority
+     */
+    final protected function withMiddlewarePriority(array $priority): void
     {
-        $this->middleware_stack->middlewarePriority($array);
+        $this->middleware_resolver = new MiddlewareResolver(
+            [], $this->defaultMiddlewareAliases(), [], $priority
+        );
     }
 
     final protected function routeConfigurator(): WebRoutingConfigurator
@@ -236,7 +245,10 @@ class HttpRunnerTestCase extends TestCase
         $this->container[AdminArea::class] = $this->admin_area;
 
         $this->error_handler = new NullErrorHandler();
-        $this->middleware_stack = new MiddlewareStack();
+        $this->middleware_resolver = new MiddlewareResolver(
+            [],
+            $this->defaultMiddlewareAliases()
+        );
 
         $this->refreshRouter();
 
@@ -282,12 +294,15 @@ class HttpRunnerTestCase extends TestCase
                     $this->container,
                     $this->error_handler,
                 ),
-                $this->middleware_stack,
+                $this->middleware_resolver,
                 $this->container,
             )
         );
     }
 
+    /**
+     * @return array<string,class-string<MiddlewareInterface>>
+     */
     private function defaultMiddlewareAliases(): array
     {
         return [

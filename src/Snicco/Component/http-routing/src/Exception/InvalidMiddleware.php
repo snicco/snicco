@@ -7,6 +7,8 @@ namespace Snicco\Component\HttpRouting\Exception;
 use LogicException;
 use Psr\Http\Server\MiddlewareInterface;
 
+use function implode;
+
 final class InvalidMiddleware extends LogicException
 {
 
@@ -29,6 +31,16 @@ final class InvalidMiddleware extends LogicException
                 $alias,
             )
         );
+    }
+
+    /**
+     * @param array<string> $build_trace
+     */
+    public static function becauseRecursionWasDetected(array $build_trace, string $first_duplicate): InvalidMiddleware
+    {
+        $collapsed = implode('->', $build_trace) . '->' . $first_duplicate;
+
+        return new self("Detected middleware recursion: $collapsed");
     }
 
 }

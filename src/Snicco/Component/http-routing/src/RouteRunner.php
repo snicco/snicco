@@ -18,12 +18,12 @@ final class RouteRunner extends AbstractMiddleware
 {
 
     private MiddlewarePipeline $pipeline;
-    private MiddlewareStack $middleware_stack;
+    private MiddlewareResolver $middleware_stack;
     private ContainerInterface $container;
 
     public function __construct(
         MiddlewarePipeline $pipeline,
-        MiddlewareStack $middleware_stack,
+        MiddlewareResolver $middleware_stack,
         ContainerInterface $container
     ) {
         $this->pipeline = $pipeline;

@@ -70,7 +70,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     public function duplicate_middleware_is_filtered_out(): void
     {
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)->middleware(
-            'foobar'
+            'group'
         );
 
         $this->withMiddlewareGroups(
@@ -79,7 +79,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
                     FooMiddleware::class,
                     BarMiddleware::class,
                 ],
-                'foobar' => [
+                'group' => [
                     FooMiddleware::class,
                     BarMiddleware::class,
                 ],
@@ -93,6 +93,13 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             RoutingTestController::static . ':bar_middleware:foo_middleware',
             $request
         );
+    }
+
+    /**
+     * @test
+     */
+    public function an_exception_is_thrown_if_alias_and_middleware_group_have_the_same_name(): void
+    {
     }
 
     /**
