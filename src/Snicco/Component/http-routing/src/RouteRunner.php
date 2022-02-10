@@ -52,9 +52,7 @@ final class RouteRunner extends AbstractMiddleware
             $this->container,
         );
 
-        $route_middleware = array_merge($route->getMiddleware(), $action->middleware());
-
-        $middleware = $this->middleware_stack->createWithRouteMiddleware($route_middleware);
+        $middleware = $this->middleware_stack->resolveForRoute($route, $action);
 
         return $this->pipeline
             ->send($request)
@@ -78,7 +76,7 @@ final class RouteRunner extends AbstractMiddleware
 
     private function delegate(Request $request): Response
     {
-        $middleware = $this->middleware_stack->createForRequestWithoutRoute($request);
+        $middleware = $this->middleware_stack->resolveForRequestWithoutRoute($request);
 
         if (!count($middleware)) {
             return $this->respond()->delegate(true);

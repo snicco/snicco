@@ -4,22 +4,26 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting;
 
+use LogicException;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
+use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Webmozart\Assert\Assert;
 
 use function array_keys;
 use function array_merge;
 use function array_reverse;
-use function class_exists;
+use function array_search;
+use function array_unique;
+use function array_values;
 use function explode;
 
-/**
- * @todo All the resolving of route middleware should maybe be done before the routes get compiled into the cache.
- */
+use const SORT_REGULAR;
+
 final class MiddlewareResolver
 {
 
@@ -27,19 +31,14 @@ final class MiddlewareResolver
     public const ARGUMENT_SEPARATOR = ',';
 
     /**
-     * @var array<string,string[]>
+     * @var array<string, list<MiddlewareBlueprint>>
      */
-    private const SPECIAL_GROUPS = [
+    private array $middleware_groups = [
         RoutingConfigurator::FRONTEND_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
         RoutingConfigurator::GLOBAL_MIDDLEWARE => [],
     ];
-
-    /**
-     * @var array<string,string[]>
-     */
-    private array $user_provided_groups = [];
 
     /**
      * @var array<string, class-string<MiddlewareInterface>>
@@ -52,76 +51,126 @@ final class MiddlewareResolver
     private array $middleware_by_increasing_priority = [];
 
     /**
-     * @var string[]
+     * @var array<'admin'|'frontend'|'api'|'global',bool>
      */
-    private array $run_always_on_mismatch = [];
-
-    private bool $middleware_disabled = false;
+    private array $always_run_if_no_route_matches = [
+        RoutingConfigurator::GLOBAL_MIDDLEWARE => false,
+        RoutingConfigurator::FRONTEND_MIDDLEWARE => false,
+        RoutingConfigurator::ADMIN_MIDDLEWARE => false,
+        RoutingConfigurator::API_MIDDLEWARE => false,
+    ];
 
     /**
      * @var array<string,true>
      */
     private $unfinished_group_trace = [];
 
+    private bool $is_cached = false;
+
     /**
-     * * @param array<
+     * @var array<string, array< array{class: class-string<MiddlewareInterface>, args: array<scalar>}>>
+     */
+    private array $route_map = [];
+
+    /**
+     * @var array<'admin'|'frontend'|'api'|'global', array<array{class: class-string<MiddlewareInterface>, args: array<scalar>}>> $request_type_map
+     */
+    private array $request_map = [];
+
+    /**
+     * @param array<
      *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
      *     RoutingConfigurator::ADMIN_MIDDLEWARE |
      *     RoutingConfigurator::API_MIDDLEWARE |
      *     RoutingConfigurator::GLOBAL_MIDDLEWARE
-     * > $always_run
+     * > $always_run_if_no_route_matches
      * @param array<string,class-string<MiddlewareInterface>> $middleware_aliases
      * @param array<string,array<string|class-string<MiddlewareInterface>>> $middleware_groups
      * @param list<class-string<MiddlewareInterface>> $middleware_priority
      */
     public function __construct(
-        array $always_run = [],
+        array $always_run_if_no_route_matches = [],
         array $middleware_aliases = [],
         array $middleware_groups = [],
         array $middleware_priority = []
     ) {
-        $this->addAlwaysRun($always_run);
+        $this->addAlwaysRun($always_run_if_no_route_matches);
         $this->addAliases($middleware_aliases);
         $this->addMiddlewareGroups($middleware_groups);
         $this->addMiddlewarePriority($middleware_priority);
     }
 
     /**
-     * @param string[] $route_middleware
+     * @param array<string, array< array{class: class-string<MiddlewareInterface>, args: array<scalar>}>> $route_map
+     *
+     * @param array<'admin'|'frontend'|'api'|'global', array< array{class: class-string<MiddlewareInterface>, args: array<scalar>}>> $request_type_map
+     */
+    public static function fromCache(array $route_map, array $request_type_map): self
+    {
+        $resolver = new self();
+        $resolver->is_cached = true;
+        $resolver->route_map = $route_map;
+        $resolver->request_map = $request_type_map;
+        return $resolver;
+    }
+
+    /**
      * @return MiddlewareBlueprint[]
      */
-    public function createWithRouteMiddleware(array $route_middleware): array
+    public function resolveForRoute(Route $route, ControllerAction $controller_action): array
     {
-        if ($this->middleware_disabled) {
+        if ($this->is_cached) {
+            $map = $this->route_map[$route->getName()] ?? null;
+            if (null === $map) {
+                throw new LogicException(
+                    "The middleware resolver is cached but has no entry for route [{$route->getName()}]."
+                );
+            }
+            return $this->hydrateBlueprints($map);
+        }
+
+        $route_middleware = array_merge(
+            $route->getMiddleware(),
+            $controller_action->middleware()
+        );
+
+        if (false !== ($key = array_search('global', $route_middleware))) {
+            unset($route_middleware[$key]);
+        }
+
+        array_unshift($route_middleware, 'global');
+
+        return $this->resolve($route_middleware);
+    }
+
+    /**
+     * @return MiddlewareBlueprint[]
+     */
+    public function resolveForRequestWithoutRoute(Request $request): array
+    {
+        if ($this->is_cached) {
+            return $this->resolveForCachedRequest($request);
+        }
+
+        $middleware = [];
+
+        if ($this->always_run_if_no_route_matches['global']) {
+            $middleware = ['global'];
+        }
+
+        if ($request->isToApiEndpoint() && $this->always_run_if_no_route_matches['api']) {
+            $middleware[] = 'api';
+        } elseif ($request->isToFrontend() && $this->always_run_if_no_route_matches['frontend']) {
+            $middleware[] = 'frontend';
+        } elseif ($request->isToAdminArea() && $this->always_run_if_no_route_matches['admin']) {
+            $middleware[] = 'admin';
+        }
+
+        if ([] === $middleware) {
             return [];
         }
 
-        $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
-
-        $middleware = array_merge($middleware, $route_middleware);
-
-        return $this->create($middleware);
-    }
-
-    /**
-     * @return MiddlewareBlueprint[]
-     */
-    public function createForRequestWithoutRoute(Request $request): array
-    {
-        return $this->create($this->middlewareForNonMatchingRequest($request));
-    }
-
-    private function isMiddlewareGroup(string $alias_or_class): bool
-    {
-        return isset($this->middlewareGroups()[$alias_or_class]);
-    }
-
-    /**
-     * @return array<string,string[]>
-     */
-    private function middlewareGroups(): array
-    {
-        return array_merge(self::SPECIAL_GROUPS, $this->user_provided_groups);
+        return $this->resolve($middleware);
     }
 
     /**
@@ -129,37 +178,90 @@ final class MiddlewareResolver
      *
      * @return MiddlewareBlueprint[]
      */
-    private function create(array $middleware = []): array
+    private function resolve(array $middleware = []): array
     {
         // Split out the global middleware since global middleware should always run first
         // independently of priority.
         $prepend = [];
-        if (false !== ($key = array_search(RoutingConfigurator::GLOBAL_MIDDLEWARE, $middleware))) {
+        if (false !== ($key = array_search('global', $middleware))) {
             unset($middleware[$key]);
-            $prepend = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
+            $prepend = ['global'];
         }
 
-        $middleware = $this->sort(
-            $this->parseAliasesAndArguments($middleware)
-        );
+        $blueprints = $this->parse($middleware, $this->middleware_groups);
 
-        $middleware = array_merge(
-            $this->parseAliasesAndArguments($prepend),
-            $middleware
-        );
+        $blueprints = $this->sort($blueprints);
 
-        return $this->unique($middleware);
+        if (!empty($prepend)) {
+            $blueprints = array_merge(
+                $this->parse($prepend, $this->middleware_groups),
+                $blueprints
+            );
+        }
+
+        return array_values(array_unique($blueprints, SORT_REGULAR));
     }
 
     /**
-     * @note Middleware with the highest priority comes first in the array
+     * @param array<string>|list<MiddlewareBlueprint> $middleware
+     * @param array<string,string[]>|array<string,MiddlewareBlueprint[]> $groups
      *
+     * @return list<MiddlewareBlueprint>
+     * @throws InvalidMiddleware
+     */
+    private function parse(array $middleware, array $groups): array
+    {
+        $blueprints = [];
+
+        foreach ($middleware as $middleware_string) {
+            if ($middleware_string instanceof MiddlewareBlueprint) {
+                $blueprints[] = $middleware_string;
+                continue;
+            }
+
+            /** @var array{0:string, 1?: string} $pieces */
+            $pieces = explode(':', $middleware_string, 2);
+
+            $middleware_id = $pieces[0];
+            $replaced = $this->resolveAlias($middleware_id);
+
+            if ($replaced) {
+                $blueprints[] = new MiddlewareBlueprint(
+                    $replaced,
+                    isset($pieces[1]) ? explode(',', $pieces[1]) : []
+                );
+                continue;
+            }
+
+            if (!isset($groups[$middleware_id])) {
+                throw InvalidMiddleware::becauseItsNotAnAliasOrGroup($middleware_string);
+            }
+
+            if (isset($this->unfinished_group_trace[$middleware_id])) {
+                throw MiddlewareRecursion::becauseRecursionWasDetected(
+                    array_keys($this->unfinished_group_trace),
+                    $middleware_id
+                );
+            }
+
+            $this->unfinished_group_trace[$middleware_id] = true;
+
+            $group_middleware = $groups[$middleware_id];
+
+            $blueprints = array_merge($blueprints, $this->parse($group_middleware, $groups));
+
+            unset($this->unfinished_group_trace[$middleware_string]);
+        }
+
+        return $blueprints;
+    }
+
+    /**
      * @param list<MiddlewareBlueprint> $middleware
      *
      * @return list<MiddlewareBlueprint>
      *
      * @psalm-suppress PossiblyFalseOperand
-     *
      */
     private function sort(array $middleware): array
     {
@@ -179,7 +281,7 @@ final class MiddlewareResolver
         });
 
         if (!$success) {
-            throw new RuntimeException('middleware could not be sorted');
+            throw new RuntimeException('middleware could not be sorted.');
         }
 
         return $sorted;
@@ -193,171 +295,47 @@ final class MiddlewareResolver
     }
 
     /**
-     * @param string[] $middleware
-     *
-     * @return list<MiddlewareBlueprint>
-     * @throws InvalidMiddleware
-     *
-     * @psalm-suppress PossiblyFalseArgument
-     */
-    private function parseAliasesAndArguments(array $middleware): array
-    {
-        $blueprints = [];
-
-        foreach ($middleware as $middleware_string) {
-            /** @var array{0:string, 1?: string} $pieces */
-            $pieces = explode(self::MIDDLEWARE_DELIMITER, $middleware_string, 2);
-
-            if (isset($pieces[1])) {
-                $args = explode(self::ARGUMENT_SEPARATOR, $pieces[1]);
-
-                $blueprints[] = new MiddlewareBlueprint(
-                    $this->replaceMiddlewareAlias($pieces[0]),
-                    $args
-                );
-
-                continue;
-            }
-
-            if (isset($this->middleware_aliases[$middleware_string])) {
-                $blueprints[] = new MiddlewareBlueprint($this->middleware_aliases[$middleware_string]);
-                continue;
-            }
-
-            if (Reflection::isInterface($middleware_string, MiddlewareInterface::class)) {
-                $blueprints[] = new MiddlewareBlueprint($middleware_string);
-                continue;
-            }
-
-            if (!$this->isMiddlewareGroup($middleware_string)) {
-                throw InvalidMiddleware::becauseTheAliasDoesNotExist($middleware_string);
-            }
-
-            if (isset($this->unfinished_group_trace[$middleware_string])) {
-                throw InvalidMiddleware::becauseRecursionWasDetected(
-                    array_keys($this->unfinished_group_trace),
-                    $middleware_string
-                );
-            }
-
-            $this->unfinished_group_trace[$middleware_string] = true;
-
-            $group_middleware = $this->middlewareGroups()[$middleware_string];
-
-            $blueprints = array_merge($blueprints, $this->parseAliasesAndArguments($group_middleware));
-
-            unset($this->unfinished_group_trace[$middleware_string]);
-        }
-
-        return $blueprints;
-    }
-
-    /**
      * @param string $middleware
-     * @return class-string<MiddlewareInterface>
+     * @return class-string<MiddlewareInterface>|null
      */
-    private function replaceMiddlewareAlias(string $middleware): string
+    private function resolveAlias(string $middleware): ?string
     {
-        if (class_exists($middleware) && Reflection::isInterface($middleware, MiddlewareInterface::class)) {
-            /** @var class-string<MiddlewareInterface> $middleware */
+        if (Reflection::isInterfaceString($middleware, MiddlewareInterface::class)) {
             return $middleware;
         }
 
-        if (isset($this->middleware_aliases[$middleware])) {
-            $middleware = $this->middleware_aliases[$middleware];
-            if (Reflection::isInterface($middleware, MiddlewareInterface::class)) {
-                return $middleware;
-            }
-            throw InvalidMiddleware::incorrectInterface($middleware);
-        }
-
-        throw InvalidMiddleware::becauseTheAliasDoesNotExist($middleware);
+        return $this->middleware_aliases[$middleware] ?? null;
     }
 
     /**
-     * @param MiddlewareBlueprint[] $middleware
-     *
-     * @return MiddlewareBlueprint[]
+     * @param array<
+     *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
+     *     RoutingConfigurator::ADMIN_MIDDLEWARE |
+     *     RoutingConfigurator::API_MIDDLEWARE |
+     *     RoutingConfigurator::GLOBAL_MIDDLEWARE
+     * > $always_run
      */
-    private function unique(array $middleware): array
-    {
-        return array_values(array_unique($middleware, SORT_REGULAR));
-    }
-
-    /**
-     * @return string[]
-     */
-    private function middlewareForNonMatchingRequest(Request $request): array
-    {
-        if ($this->middleware_disabled) {
-            return [];
-        }
-
-        $middleware = [];
-
-        if (in_array(RoutingConfigurator::GLOBAL_MIDDLEWARE, $this->run_always_on_mismatch, true)) {
-            $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
-        }
-
-        if ($request->isToApiEndpoint()) {
-            if (in_array(
-                RoutingConfigurator::API_MIDDLEWARE,
-                $this->run_always_on_mismatch,
-                true
-            )) {
-                return array_merge($middleware, [RoutingConfigurator::API_MIDDLEWARE]);
-            }
-
-            return $middleware;
-        }
-
-        if ($request->isToFrontend()) {
-            if (in_array(
-                RoutingConfigurator::FRONTEND_MIDDLEWARE,
-                $this->run_always_on_mismatch,
-                true
-            )) {
-                return array_merge($middleware, [RoutingConfigurator::FRONTEND_MIDDLEWARE]);
-            }
-
-            return $middleware;
-        }
-
-        if ($request->isToAdminArea()) {
-            if (in_array(
-                RoutingConfigurator::ADMIN_MIDDLEWARE,
-                $this->run_always_on_mismatch,
-                true
-            )) {
-                return array_merge($middleware, [RoutingConfigurator::ADMIN_MIDDLEWARE]);
-            }
-
-            return $middleware;
-        }
-
-        return $middleware;
-    }
-
     private function addAlwaysRun(array $always_run): void
     {
         Assert::allString($always_run);
+        $allowed = array_keys($this->always_run_if_no_route_matches);
         foreach ($always_run as $middleware) {
-            Assert::keyExists(
-                self::SPECIAL_GROUPS,
+            Assert::oneOf(
                 $middleware,
+                $allowed,
                 '[%s] can not be used as middleware that is always run for non matching routes.'
             );
-            $this->run_always_on_mismatch[$middleware] = $middleware;
+            $this->always_run_if_no_route_matches[$middleware] = true;
         }
     }
 
     /**
-     * @param array<string,class-string<MiddlewareInterface>> $middleware_aliases
+     * @param array<string,string> $middleware_aliases
      */
     private function addAliases(array $middleware_aliases): void
     {
         foreach ($middleware_aliases as $key => $class_string) {
-            if (!Reflection::isInterface($class_string, MiddlewareInterface::class)) {
+            if (!Reflection::isInterfaceString($class_string, MiddlewareInterface::class)) {
                 throw new InvalidMiddleware("Alias [$key] resolves to invalid middleware class [$class_string].");
             }
             $this->middleware_aliases[$key] = $class_string;
@@ -375,7 +353,16 @@ final class MiddlewareResolver
             if (isset($this->middleware_aliases[$name])) {
                 throw new InvalidMiddleware("Middleware group and alias have the same name [$name].");
             }
-            $this->user_provided_groups[$name] = $aliases_or_class_strings;
+        }
+        foreach ($middleware_groups as $name => $aliases_or_class_strings) {
+            try {
+                $this->middleware_groups[$name] = $this->parse(
+                    $aliases_or_class_strings,
+                    $middleware_groups
+                );
+            } catch (MiddlewareRecursion $e) {
+                throw $e->withFirstMiddleware($name);
+            }
         }
     }
 
@@ -386,6 +373,45 @@ final class MiddlewareResolver
     {
         Assert::allString($middleware_priority);
         $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
+    }
+
+    /**
+     * @param array<array{class: class-string<MiddlewareInterface>, args: array<scalar>}> $blueprints
+     * @return MiddlewareBlueprint[]
+     */
+    private function hydrateBlueprints(array $blueprints): array
+    {
+        $b = [];
+        foreach ($blueprints as $blueprint) {
+            $b[] = MiddlewareBlueprint::from($blueprint['class'], $blueprint['args']);
+        }
+        return $b;
+    }
+
+    /**
+     * @return MiddlewareBlueprint[]
+     */
+    private function resolveForCachedRequest(Request $request): array
+    {
+        $blueprints = $this->hydrateBlueprints($this->request_map['global'] ?? []);
+
+        if ($request->isToApiEndpoint()) {
+            $blueprints = array_merge(
+                $blueprints,
+                $this->hydrateBlueprints($this->request_map['api'] ?? [])
+            );
+        } elseif ($request->isToFrontend()) {
+            $blueprints = array_merge(
+                $blueprints,
+                $this->hydrateBlueprints($this->request_map['frontend'] ?? [])
+            );
+        } elseif ($request->isToAdminArea()) {
+            $blueprints = array_merge(
+                $blueprints,
+                $this->hydrateBlueprints($this->request_map['admin'] ?? [])
+            );
+        }
+        return $blueprints;
     }
 
 }

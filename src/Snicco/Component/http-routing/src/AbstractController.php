@@ -30,10 +30,13 @@ abstract class AbstractController
     private ContainerInterface $container;
 
     /**
+     * @psalm-mutation-free
+     *
      * @interal
+     *
      * @return class-string<MiddlewareInterface>[]
      */
-    final public function middleware(string $controller_method): array
+    final public function getMiddleware(string $controller_method): array
     {
         $middleware = array_filter(
             $this->middleware,

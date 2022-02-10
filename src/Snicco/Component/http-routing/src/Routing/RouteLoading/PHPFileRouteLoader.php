@@ -262,7 +262,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $name = $type->getName();
 
-        if (Reflection::isInterface($name, RoutingConfigurator::class)) {
+        if (Reflection::isInterfaceString($name, RoutingConfigurator::class)) {
             return $name;
         }
 
@@ -275,14 +275,14 @@ final class PHPFileRouteLoader implements RouteLoader
     private function validateAdminRoutingUsage(string $used_interface, bool $is_admin_file, string $filepath)
     {
         if ($is_admin_file) {
-            if (Reflection::isInterface($used_interface, WebRoutingConfigurator::class)) {
+            if (Reflection::isInterfaceString($used_interface, WebRoutingConfigurator::class)) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
 
             return;
         }
 
-        if (Reflection::isInterface($used_interface, AdminRoutingConfigurator::class)) {
+        if (Reflection::isInterfaceString($used_interface, AdminRoutingConfigurator::class)) {
             throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
         }
     }

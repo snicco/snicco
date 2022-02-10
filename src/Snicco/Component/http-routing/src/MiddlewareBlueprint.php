@@ -15,14 +15,20 @@ final class MiddlewareBlueprint
      */
     private string $class;
 
+    /**
+     * @var array<scalar>
+     */
     private array $arguments;
 
     /**
      * @param class-string<MiddlewareInterface> $class
+     * @param array<scalar> $arguments
+     *
+     * @psalm-suppress DocblockTypeContradiction
      */
     public function __construct(string $class, array $arguments = [])
     {
-        if (!Reflection::isInterface($class, MiddlewareInterface::class)) {
+        if (!Reflection::isInterfaceString($class, MiddlewareInterface::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected $class to implement interface [%s]. Got: [%s]',
@@ -37,10 +43,22 @@ final class MiddlewareBlueprint
 
     /**
      * @param class-string<MiddlewareInterface> $class
+     * @param array<scalar> $arguments
      */
     public static function from(string $class, array $arguments = []): MiddlewareBlueprint
     {
         return new self($class, $arguments);
+    }
+
+    /**
+     * @return array{class: class-string<MiddlewareInterface>, args: array<scalar>}
+     */
+    public function asArray(): array
+    {
+        return [
+            'class' => $this->class,
+            'args' => $this->arguments
+        ];
     }
 
     /**
@@ -51,6 +69,9 @@ final class MiddlewareBlueprint
         return $this->class;
     }
 
+    /**
+     * @return array<scalar>
+     */
     public function arguments(): array
     {
         return $this->arguments;
