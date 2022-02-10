@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\MiddlewareStack;
+use Snicco\Component\HttpRouting\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
@@ -456,7 +456,7 @@ final class Route
 
     private function addMiddleware(string $m): void
     {
-        $middleware_id = Str::beforeFirst($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
+        $middleware_id = Str::beforeFirst($m, MiddlewareResolver::MIDDLEWARE_DELIMITER);
         Assert::keyNotExists(
             $this->middleware,
             $middleware_id,

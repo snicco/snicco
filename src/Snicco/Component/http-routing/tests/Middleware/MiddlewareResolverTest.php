@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\MiddlewareStack;
+use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
+use Snicco\Component\HttpRouting\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\GlobalMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-final class MiddlewareStackTest extends HttpRunnerTestCase
+final class MiddlewareResolverTest extends HttpRunnerTestCase
 {
 
     /**
@@ -22,7 +24,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
      */
     public function global_middleware_is_always_run_when_a_route_matches(): void
     {
-        $this->withNewMiddlewareStack(new MiddlewareStack());
+        $this->withNewMiddlewareStack(new MiddlewareResolver());
         $this->withGlobalMiddleware([FooMiddleware::class, BarMiddleware::class]);
 
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
@@ -58,7 +60,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
     public function global_middleware_can_be_configured_to_run_for_even_for_non_matching_requests(): void
     {
         $this->withNewMiddlewareStack(
-            new MiddlewareStack([
+            new MiddlewareResolver([
                 RoutingConfigurator::GLOBAL_MIDDLEWARE,
             ])
         );
@@ -80,7 +82,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
     public function web_middleware_can_be_configured_to_always_run_for_non_matching_requests(): void
     {
         $this->withNewMiddlewareStack(
-            new MiddlewareStack([
+            new MiddlewareResolver([
                 RoutingConfigurator::FRONTEND_MIDDLEWARE,
             ])
         );
@@ -109,7 +111,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
     public function running_web_middleware_always_is_has_no_effect_on_admin_requests(): void
     {
         $this->withNewMiddlewareStack(
-            new MiddlewareStack([
+            new MiddlewareResolver([
                 RoutingConfigurator::FRONTEND_MIDDLEWARE,
             ])
         );
@@ -143,7 +145,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
     public function admin_middleware_can_be_configured_to_always_run_for_non_matching_requests(): void
     {
         $this->withNewMiddlewareStack(
-            new MiddlewareStack([
+            new MiddlewareResolver([
                 RoutingConfigurator::ADMIN_MIDDLEWARE,
             ])
         );
@@ -183,7 +185,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
     public function running_admin_middleware_always_has_no_effect_on_non_matching_web_requests(): void
     {
         $this->withNewMiddlewareStack(
-            new MiddlewareStack([
+            new MiddlewareResolver([
                 RoutingConfigurator::ADMIN_MIDDLEWARE,
             ])
         );
@@ -209,7 +211,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('can not be used as middleware that is always');
 
-        new MiddlewareStack([
+        new MiddlewareResolver([
             FooMiddleware::class,
         ]);
     }
@@ -219,7 +221,7 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
      */
     public function no_middleware_is_run_if_middleware_is_disabled(): void
     {
-        $m = new MiddlewareStack([
+        $m = new MiddlewareResolver([
             RoutingConfigurator::FRONTEND_MIDDLEWARE,
             RoutingConfigurator::GLOBAL_MIDDLEWARE,
             RoutingConfigurator::ADMIN_MIDDLEWARE,
@@ -261,6 +263,58 @@ final class MiddlewareStackTest extends HttpRunnerTestCase
 
         // nothing run for non-matching route.
         $this->assertResponseBody('', $this->frontendRequest('/bogus'));
+    }
+
+    /**
+     * @test
+     */
+    public function recursion_is_detected(): void
+    {
+        $middleware_resolver = new MiddlewareResolver();
+
+        $middleware_resolver->withMiddlewareGroup('foo', ['bar']);
+        $middleware_resolver->withMiddlewareGroup('bar', ['foo']);
+
+        $this->expectException(InvalidMiddleware::class);
+        $this->expectExceptionMessage('Detected middleware recursion: foo->bar->foo');
+
+        $middleware_resolver->createWithRouteMiddleware(['foo']);
+    }
+
+    /**
+     * @test
+     */
+    public function recursion_is_detected_recursively(): void
+    {
+        $middleware_resolver = new MiddlewareResolver();
+
+        $middleware_resolver->withMiddlewareGroup('foo', ['bar']);
+        $middleware_resolver->withMiddlewareGroup('bar', ['baz']);
+        $middleware_resolver->withMiddlewareGroup('baz', ['foo']);
+
+        $this->expectException(InvalidMiddleware::class);
+        $this->expectExceptionMessage('Detected middleware recursion: foo->bar->baz->foo');
+
+        $middleware_resolver->createWithRouteMiddleware(['foo']);
+    }
+
+    /**
+     * @test
+     */
+    public function recursion_is_detected_if_the_middleware_is_not_the_first_in_the_group(): void
+    {
+        $middleware_resolver = new MiddlewareResolver();
+
+        $middleware_resolver->withMiddlewareGroup('correct_group1', [FooMiddleware::class]);
+        $middleware_resolver->withMiddlewareGroup('correct_group2', [GlobalMiddleware::class]);
+        $middleware_resolver->withMiddlewareGroup('foo', ['correct_group1', 'bar']);
+        $middleware_resolver->withMiddlewareGroup('bar', ['correct_group2', 'baz']);
+        $middleware_resolver->withMiddlewareGroup('baz', [FoobarMiddleware::class, 'foo']);
+
+        $this->expectException(InvalidMiddleware::class);
+        $this->expectExceptionMessage('Detected middleware recursion: foo->bar->baz->foo');
+
+        $middleware_resolver->createWithRouteMiddleware(['foo']);
     }
 
 }

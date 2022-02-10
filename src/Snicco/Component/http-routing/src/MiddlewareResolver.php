@@ -11,34 +11,25 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Webmozart\Assert\Assert;
 
+use function array_keys;
 use function array_merge;
+use function array_reverse;
 use function class_exists;
 use function explode;
 
 /**
- * The middleware stack is responsible for parsing and normalized all middleware for a request.
- *
- * @internal
- * @psalm-internal Snicco\Component\HttpRouting
  * @todo All the resolving of route middleware should maybe be done before the routes get compiled into the cache.
  */
-final class MiddlewareStack
+final class MiddlewareResolver
 {
 
-    /**
-     * @api
-     */
-    const MIDDLEWARE_DELIMITER = ':';
-
-    /**
-     * @api
-     */
-    const ARGUMENT_SEPARATOR = ',';
+    public const MIDDLEWARE_DELIMITER = ':';
+    public const ARGUMENT_SEPARATOR = ',';
 
     /**
      * @var array<string,string[]>
      */
-    private const CORE_GROUPS = [
+    private const SPECIAL_GROUPS = [
         RoutingConfigurator::FRONTEND_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
@@ -68,19 +59,26 @@ final class MiddlewareStack
     private bool $middleware_disabled = false;
 
     /**
-     * @param string[]|class-string<MiddlewareInterface>[] $middleware_to_always_run_on_non_route_match
+     * @var array<string,true>
      */
-    public function __construct(array $middleware_to_always_run_on_non_route_match = [])
-    {
-        Assert::allString($middleware_to_always_run_on_non_route_match);
-        foreach ($middleware_to_always_run_on_non_route_match as $middleware) {
-            Assert::keyExists(
-                self::CORE_GROUPS,
-                $middleware,
-                '[%s] can not be used as middleware that is always run for non matching routes.'
-            );
-            $this->run_always_on_mismatch[$middleware] = $middleware;
-        }
+    private $unfinished_group_trace = [];
+
+    /**
+     * @param string[] $always_run
+     * @param array<string,class-string<MiddlewareInterface>> $middleware_aliases
+     * @param array<string,array<string|class-string<MiddlewareInterface>>> $middleware_groups
+     * @param list<class-string<MiddlewareInterface>> $middleware_priority
+     */
+    public function __construct(
+        array $always_run = [],
+        array $middleware_aliases = [],
+        array $middleware_groups = [],
+        array $middleware_priority = []
+    ) {
+        $this->addAlwaysRun($always_run);
+        $this->addAliases($middleware_aliases);
+        $this->addMiddlewareGroups($middleware_groups);
+        $this->addMiddlewarePriority($middleware_priority);
     }
 
     /**
@@ -95,14 +93,7 @@ final class MiddlewareStack
 
         $middleware = [RoutingConfigurator::GLOBAL_MIDDLEWARE];
 
-        foreach ($route_middleware as $index => $name) {
-            if ($this->isMiddlewareGroup($name)) {
-                unset($route_middleware[$index]);
-                $middleware = array_merge($middleware, $this->middlewareGroups()[$name]);
-            } else {
-                $middleware[] = $name;
-            }
-        }
+        $middleware = array_merge($middleware, $route_middleware);
 
         return $this->create($middleware);
     }
@@ -115,42 +106,6 @@ final class MiddlewareStack
         return $this->create($this->middlewareForNonMatchingRequest($request));
     }
 
-    /**
-     * @param string $group
-     * @param string[] $middlewares
-     */
-    public function withMiddlewareGroup(string $group, array $middlewares): void
-    {
-        $this->user_provided_groups[$group] = array_merge(
-            $this->user_provided_groups[$group] ?? [],
-            $middlewares
-        );
-    }
-
-    /**
-     * @param list<class-string<MiddlewareInterface>> $middleware_priority
-     */
-    public function middlewarePriority(array $middleware_priority): void
-    {
-        $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
-    }
-
-    /**
-     * @param array<string, class-string<MiddlewareInterface> > $route_middleware_aliases
-     */
-    public function middlewareAliases(array $route_middleware_aliases): void
-    {
-        $this->middleware_aliases = array_merge(
-            $this->middleware_aliases,
-            $route_middleware_aliases
-        );
-    }
-
-    public function disableAllMiddleware(): void
-    {
-        $this->middleware_disabled = true;
-    }
-
     private function isMiddlewareGroup(string $alias_or_class): bool
     {
         return isset($this->middlewareGroups()[$alias_or_class]);
@@ -161,7 +116,7 @@ final class MiddlewareStack
      */
     private function middlewareGroups(): array
     {
-        return array_merge(self::CORE_GROUPS, $this->user_provided_groups);
+        return array_merge(self::SPECIAL_GROUPS, $this->user_provided_groups);
     }
 
     /**
@@ -259,17 +214,34 @@ final class MiddlewareStack
                 continue;
             }
 
-            if ($this->isMiddlewareGroup($pieces[0])) {
-                $blueprints = array_merge(
-                    $blueprints,
-                    $this->parseAliasesAndArguments($this->middlewareGroups()[$pieces[0]])
-                );
+            if (isset($this->middleware_aliases[$middleware_string])) {
+                $blueprints[] = new MiddlewareBlueprint($this->middleware_aliases[$middleware_string]);
                 continue;
             }
 
-            $blueprints[] = new MiddlewareBlueprint(
-                $this->replaceMiddlewareAlias($pieces[0])
-            );
+            if (Reflection::isInterface($middleware_string, MiddlewareInterface::class)) {
+                $blueprints[] = new MiddlewareBlueprint($middleware_string);
+                continue;
+            }
+
+            if (!$this->isMiddlewareGroup($middleware_string)) {
+                throw new RuntimeException('Invalid middleware');
+            }
+
+            if (isset($this->unfinished_group_trace[$middleware_string])) {
+                throw InvalidMiddleware::becauseRecursionWasDetected(
+                    array_keys($this->unfinished_group_trace),
+                    $middleware_string
+                );
+            }
+
+            $this->unfinished_group_trace[$middleware_string] = true;
+
+            $group_middleware = $this->middlewareGroups()[$middleware_string];
+
+            $blueprints = array_merge($blueprints, $this->parseAliasesAndArguments($group_middleware));
+
+            unset($this->unfinished_group_trace[$middleware_string]);
         }
 
         return $blueprints;
@@ -359,6 +331,63 @@ final class MiddlewareStack
         }
 
         return $middleware;
+    }
+
+    private function addAlwaysRun(array $always_run): void
+    {
+        Assert::allString($always_run);
+        foreach ($always_run as $middleware) {
+            Assert::keyExists(
+                self::SPECIAL_GROUPS,
+                $middleware,
+                '[%s] can not be used as middleware that is always run for non matching routes.'
+            );
+            $this->run_always_on_mismatch[$middleware] = $middleware;
+        }
+    }
+
+    /**
+     * @param array<string,class-string<MiddlewareInterface>> $middleware_aliases
+     */
+    private function addAliases(array $middleware_aliases): void
+    {
+        foreach ($middleware_aliases as $key => $class_string) {
+            if (!Reflection::isInterface($class_string, MiddlewareInterface::class)) {
+                throw new InvalidMiddleware("Alias [$key] resolves to invalid middleware class [$class_string].");
+            }
+            if (isset($this->middleware_aliases[$key])) {
+                throw new InvalidMiddleware("Duplicate middleware alias [$key].");
+            }
+            $this->middleware_aliases[$key] = $class_string;
+        }
+    }
+
+    /**
+     * @param array<string,string[]> $middleware_groups
+     */
+    private function addMiddlewareGroups(array $middleware_groups): void
+    {
+        foreach ($middleware_groups as $name => $aliases_or_class_strings) {
+            Assert::stringNotEmpty($name);
+            Assert::allString($aliases_or_class_strings);
+
+            if (isset($this->user_provided_groups[$name])) {
+                throw new InvalidMiddleware("Duplicate middleware group name [$name]");
+            }
+            if (isset($this->middleware_aliases[$name])) {
+                throw new InvalidMiddleware("Middleware group and alias have the same name [$name].");
+            }
+            $this->user_provided_groups[$name] = $aliases_or_class_strings;
+        }
+    }
+
+    /**
+     * @param list<class-string<MiddlewareInterface>> $middleware_priority
+     */
+    private function addMiddlewarePriority(array $middleware_priority): void
+    {
+        Assert::allString($middleware_priority);
+        $this->middleware_by_increasing_priority = array_reverse($middleware_priority);
     }
 
 }

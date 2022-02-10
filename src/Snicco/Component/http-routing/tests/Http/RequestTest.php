@@ -8,8 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
@@ -20,6 +18,14 @@ class RequestTest extends TestCase
     private ServerRequestInterface $psr_request;
     use CreatesPsrRequests;
     use CreateTestPsr17Factories;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->request = $this->frontendRequest('/foo');
+        $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
+    }
 
     public function testIsImmutable(): void
     {
@@ -52,27 +58,9 @@ class RequestTest extends TestCase
 
         $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/', $request->path());
-    }
 
-    public function testGetFullPath(): void
-    {
-        $request = $this->frontendRequest('/foo/bar');
-        $this->assertSame('/foo/bar', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('/foo/bar/');
-        $this->assertSame('/foo/bar/', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('/');
-        $this->assertSame('/', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
-        $this->assertSame('/foo/bar?baz=biz', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
-        $this->assertSame('/foo/bar/?baz=biz', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz#section');
-        $this->assertSame('/foo/bar?baz=biz#section', $request->requestTargetWithFragment());
+        $request = Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', ''));
+        $this->assertSame('/', $request->path());
     }
 
     public function testGetUrl(): void
@@ -121,19 +109,6 @@ class RequestTest extends TestCase
 
         $request = $this->request->withCookieParams(['foo' => ['bar', 'baz']]);
         $this->assertSame('bar', $request->cookie('foo'));
-    }
-
-    public function testRouteIs(): void
-    {
-        $route = Route::create('/foo', Route::DELEGATE, 'foobar', ['GET']);
-
-        $request = $this->request->withRoutingResult(RoutingResult::match($route));
-
-        $this->assertFalse($request->routeIs('bar'));
-        $this->assertTrue($request->routeIs('foobar'));
-        $this->assertFalse($request->routeIs('foo'));
-
-        $this->assertTrue($request->routeIs('foo*'));
     }
 
     public function testFullUrlIs(): void
@@ -346,14 +321,6 @@ class RequestTest extends TestCase
 
         $this->assertSame('/foo', $request->path());
         $this->assertSame('GET', $request->getMethod());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->request = $this->frontendRequest('/foo');
-        $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
     }
 
 }

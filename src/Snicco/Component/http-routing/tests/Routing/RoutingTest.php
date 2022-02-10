@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Psr11\Container;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoader;
@@ -90,6 +91,16 @@ final class RoutingTest extends TestCase
         $r1 = $this->routing->routeLoader();
         $this->assertInstanceOf(RouteLoader::class, $r1);
         $this->assertSame($r1, $this->routing->routeLoader());
+    }
+
+    /**
+     * @test
+     */
+    public function test_admin_menu(): void
+    {
+        $admin_menu = $this->routing->adminMenu();
+        $this->assertInstanceOf(AdminMenu::class, $admin_menu);
+        $this->assertSame($admin_menu, $this->routing->adminMenu());
     }
 
 }
