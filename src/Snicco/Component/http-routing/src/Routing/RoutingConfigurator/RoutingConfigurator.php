@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 use Closure;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Route\Routes;
 
 interface RoutingConfigurator
 {
@@ -89,5 +90,7 @@ interface RoutingConfigurator
      * @param array<string,string|int> $arguments
      */
     public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302): Route;
+
+    public function configuredRoutes(): Routes;
 
 }
