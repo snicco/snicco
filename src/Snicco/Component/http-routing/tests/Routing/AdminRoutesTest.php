@@ -16,6 +16,12 @@ class AdminRoutesTest extends HttpRunnerTestCase
 
     private AdminRoutingConfigurator $admin_configurator;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->admin_configurator = $this->adminRouteConfigurator();
+    }
+
     /**
      * @test
      */
@@ -174,7 +180,7 @@ class AdminRoutesTest extends HttpRunnerTestCase
             null
         );
 
-        $url = $this->generator->toRoute('r1', ['bar' => 'baz']);
+        $url = $this->generator()->toRoute('r1', ['bar' => 'baz']);
         $this->assertSame('/wp-admin/admin.php?bar=baz&page=foo', $url);
     }
 
@@ -253,12 +259,6 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $response = $this->runKernel($request);
 
         $response->assertNotDelegated()->assertRedirect('/foobar', 302);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->admin_configurator = $this->adminRouteConfigurator();
     }
 
 }

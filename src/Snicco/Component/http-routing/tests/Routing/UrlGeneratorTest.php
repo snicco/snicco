@@ -21,7 +21,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function absolute_paths_are_used_by_default(): void
     {
-        $url = $this->generator->to('foo');
+        $url = $this->generator()->to('foo');
         $this->assertSame('/foo', $url);
     }
 
@@ -30,10 +30,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function a_valid_absolute_url_will_be_returned_as_is(): void
     {
-        $url = $this->generator->to('https://foobar.com/foo');
+        $url = $this->generator()->to('https://foobar.com/foo');
         $this->assertSame('https://foobar.com/foo', $url);
 
-        $url = $this->generator->to('mailto:calvin@web.de');
+        $url = $this->generator()->to('mailto:calvin@web.de');
         $this->assertSame('mailto:calvin@web.de', $url);
     }
 
@@ -42,7 +42,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function absolute_urls_can_be_used(): void
     {
-        $url = $this->generator->to('foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generator()->to('foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
 
@@ -51,10 +51,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function query_arguments_can_be_added(): void
     {
-        $url = $this->generator->to('foo', ['bar' => 'baz']);
+        $url = $this->generator()->to('foo', ['bar' => 'baz']);
         $this->assertSame('/foo?bar=baz', $url);
 
-        $url = $this->generator->to(
+        $url = $this->generator()->to(
             '/foo',
             ['bar' => 'baz'],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -67,10 +67,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function existing_query_arguments_are_preserved(): void
     {
-        $url = $this->generator->to('foo?boom=bam', ['bar' => 'baz']);
+        $url = $this->generator()->to('foo?boom=bam', ['bar' => 'baz']);
         $this->assertSame('/foo?boom=bam&bar=baz', $url);
 
-        $url = $this->generator->to(
+        $url = $this->generator()->to(
             'foo?boom=bam',
             ['bar' => 'baz'],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -86,10 +86,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $m = rawurlencode('münchen');
         $expected = '/foo?city=' . $m . '&bar=baz';
 
-        $url = $this->generator->to('foo?city=münchen', ['bar' => 'baz']);
+        $url = $this->generator()->to('foo?city=münchen', ['bar' => 'baz']);
         $this->assertSame($expected, $url);
 
-        $url = $this->generator->to(
+        $url = $this->generator()->to(
             'foo?city=münchen',
             ['bar' => 'baz'],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -102,10 +102,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function an_existing_fragment_is_preserved(): void
     {
-        $url = $this->generator->to('foo#section1', ['bar' => 'baz']);
+        $url = $this->generator()->to('foo#section1', ['bar' => 'baz']);
         $this->assertSame('/foo?bar=baz#section1', $url);
 
-        $url = $this->generator->to(
+        $url = $this->generator()->to(
             'foo#section1',
             ['bar' => 'baz'],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -118,7 +118,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function an_existing_fragment_is_url_encoded(): void
     {
-        $url = $this->generator->to('foo#münchen');
+        $url = $this->generator()->to('foo#münchen');
         $this->assertSame('/foo#' . rawurlencode('münchen'), $url);
     }
 
@@ -127,10 +127,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function fragments_can_be_added_as_an_argument(): void
     {
-        $url = $this->generator->to('foo', ['bar' => 'baz', '_fragment' => 'section1']);
+        $url = $this->generator()->to('foo', ['bar' => 'baz', '_fragment' => 'section1']);
         $this->assertSame('/foo?bar=baz#section1', $url);
 
-        $url = $this->generator->to(
+        $url = $this->generator()->to(
             'foo',
             ['bar' => 'baz', '_fragment' => 'section1'],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -143,7 +143,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function an_existing_fragment_is_overwritten_by_a_provided_fragment(): void
     {
-        $url = $this->generator->to('foo#section1', ['_fragment' => 'section2']);
+        $url = $this->generator()->to('foo#section1', ['_fragment' => 'section2']);
         $this->assertSame('/foo#section2', $url);
     }
 
@@ -155,7 +155,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('https://foo.com'),
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertSame('https://foo.com/foo', $url);
@@ -163,7 +163,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('http://foo.com'),
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertSame('http://foo.com/foo', $url);
@@ -177,7 +177,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('https://foo.com')
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL, false);
         $this->assertSame('http://foo.com/foo', $url);
@@ -185,7 +185,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('http://foo.com')
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL, true);
         $this->assertSame('https://foo.com/foo', $url);
@@ -201,7 +201,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
             true
         );
 
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertSame('https://foo.com/foo', $url);
@@ -217,7 +217,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
             true
         );
 
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_URL, false);
         $this->assertSame('http://foo.com/foo', $url);
@@ -232,7 +232,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('http://foo.com')
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_PATH, true);
         $this->assertSame('https://foo.com/foo', $url);
@@ -242,7 +242,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
             true
         );
 
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_PATH);
         $this->assertSame('https://foo.com/foo', $url);
     }
@@ -255,7 +255,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('https://foo.com')
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $url = $generator->to('/foo', [], UrlGeneratorInterface::ABSOLUTE_PATH, true);
         $this->assertSame('/foo', $url);
@@ -266,7 +266,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function if_trailing_slashes_are_used_generated_urls_end_with_a_trailing_trash(): void
     {
-        $generator = $this->refreshUrlGenerator(
+        $generator = $this->newUrlGenerator(
             UrlGenerationContext::fromRequest(
                 $this->frontendRequest('https://foo.com')
             ),
@@ -290,10 +290,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function trailing_slashes_are_not_added_for_urls_that_go_to_a_file(): void
     {
-        $generator = $this->refreshUrlGenerator(null, true);
+        $generator = $this->newUrlGenerator(null, true);
 
         $path = '/wp-admin/index.php';
-        $url = $this->generator->to($path);
+        $url = $this->generator()->to($path);
         $this->assertSame('/wp-admin/index.php', $url);
 
         $this->assertSame(
@@ -307,7 +307,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function query_arguments_will_be_encoded(): void
     {
-        $url = $this->generator->to('/bands', ['s' => 'AC DC']);
+        $url = $this->generator()->to('/bands', ['s' => 'AC DC']);
 
         $this->assertSame('/bands?s=AC%20DC', $url);
     }
@@ -320,7 +320,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $m = rawurlencode('münchen');
         $d = rawurlencode('düsseldorf');
 
-        $this->assertSame("/$m/$d", $this->generator->to('münchen/düsseldorf'));
+        $this->assertSame("/$m/$d", $this->generator()->to('münchen/düsseldorf'));
     }
 
     /**
@@ -331,14 +331,14 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('https://foo.com')
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $this->assertSame('https://foo.com/foo', $generator->secure('foo'));
 
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('http://foo.com')
         );
-        $generator = $this->refreshUrlGenerator($context);
+        $generator = $this->newUrlGenerator($context);
 
         $this->assertSame(
             'https://foo.com/foo?foo=bar',
@@ -354,7 +354,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('https://foo.com:4000')
         );
-        $g = $this->refreshUrlGenerator($context);
+        $g = $this->newUrlGenerator($context);
 
         $this->assertSame('/foo', $g->to('foo'));
         $this->assertSame(
@@ -371,7 +371,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $context = UrlGenerationContext::fromRequest(
             $this->frontendRequest('http://foo.com:8080')
         );
-        $g = $this->refreshUrlGenerator($context);
+        $g = $this->newUrlGenerator($context);
 
         $this->assertSame('/foo', $g->to('foo'));
         $this->assertSame(
@@ -390,12 +390,12 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $r2 = $request->withAddedHeader('referer', '/foo');
 
         $context = UrlGenerationContext::fromRequest($r1);
-        $g = $this->refreshUrlGenerator($context);
+        $g = $this->newUrlGenerator($context);
 
         $this->assertSame('https://other-site.com', $g->previous());
 
         $context = UrlGenerationContext::fromRequest($r2);
-        $g = $this->refreshUrlGenerator($context);
+        $g = $this->newUrlGenerator($context);
 
         $this->assertSame('/foo', $g->previous());
     }
@@ -405,7 +405,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function the_fallback_url_is_used_if_no_previous_url_exists(): void
     {
-        $this->assertSame('https://foobar.com/fallback', $this->generator->previous('fallback'));
+        $this->assertSame('https://foobar.com/fallback', $this->generator()->previous('fallback'));
     }
 
     /**
@@ -415,7 +415,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $r = $this->frontendRequest('https://foobar.com/foo/bar');
 
-        $g = $this->refreshUrlGenerator(
+        $g = $this->newUrlGenerator(
             UrlGenerationContext::fromRequest($r)
         );
 
@@ -428,7 +428,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     public function the_canonical_stays_url_encoded_and_is_not_double_url_encoded(): void
     {
         $r = $this->frontendRequest('https://foobar.com/münchen');
-        $g = $this->refreshUrlGenerator(
+        $g = $this->newUrlGenerator(
             UrlGenerationContext::fromRequest($r)
         );
         $this->assertSame('https://foobar.com/' . rawurlencode('münchen'), $g->canonical());
@@ -441,7 +441,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $r = $this->frontendRequest('http://foobar.com:8080/foo/bar?city=münchen#section1');
 
-        $g = $this->refreshUrlGenerator(
+        $g = $this->newUrlGenerator(
             UrlGenerationContext::fromRequest($r)
         );
 
@@ -463,10 +463,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('foo_route', '/foo');
         $this->routeConfigurator()->post('bar_route', '/bar');
 
-        $url = $this->generator->toRoute('foo_route');
+        $url = $this->generator()->toRoute('foo_route');
         $this->assertSame('/foo', $url);
 
-        $url = $this->generator->toRoute('bar_route');
+        $url = $this->generator()->toRoute('bar_route');
         $this->assertSame('/bar', $url);
     }
 
@@ -487,7 +487,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->routeConfigurator()->get('foo_route', '/foo');
 
-        $url = $this->generator->toRoute('foo_route', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generator()->toRoute('foo_route', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
 
@@ -505,12 +505,12 @@ class UrlGeneratorTest extends HttpRunnerTestCase
                 $this->routeConfigurator()->get('biz', '/biz');
             });
 
-        $this->assertSame('/baz', $this->generator->toRoute('foo.bar.baz'));
-        $this->assertSame('/biz', $this->generator->toRoute('foo.biz'));
+        $this->assertSame('/baz', $this->generator()->toRoute('foo.bar.baz'));
+        $this->assertSame('/biz', $this->generator()->toRoute('foo.biz'));
 
         $this->expectExceptionMessage('no route with name [foo.bar.biz]');
 
-        $this->assertSame('/baz', $this->generator->toRoute('foo.bar.biz'));
+        $this->assertSame('/baz', $this->generator()->toRoute('foo.bar.biz'));
     }
 
     /**
@@ -526,9 +526,9 @@ class UrlGeneratorTest extends HttpRunnerTestCase
                 $this->routeConfigurator()->get('biz', '/biz');
             });
 
-        $this->assertSame('/bar', $this->generator->toRoute('foo.bar'));
-        $this->assertSame('/baz', $this->generator->toRoute('foo.baz'));
-        $this->assertSame('/biz', $this->generator->toRoute('foo.biz'));
+        $this->assertSame('/bar', $this->generator()->toRoute('foo.bar'));
+        $this->assertSame('/baz', $this->generator()->toRoute('foo.baz'));
+        $this->assertSame('/biz', $this->generator()->toRoute('foo.biz'));
     }
 
     /**
@@ -538,7 +538,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->routeConfigurator()->get('foo', '/foo/{required}');
 
-        $url = $this->generator->toRoute('foo', ['required' => 'bar']);
+        $url = $this->generator()->toRoute('foo', ['required' => 'bar']);
         $this->assertSame('/foo/bar', $url);
     }
 
@@ -550,23 +550,23 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('foo', 'foo/{required}/{optional?}');
         $this->routeConfigurator()->get('bar', 'bar/{required}/{optional?}/');
 
-        $url = $this->generator->toRoute('foo', [
+        $url = $this->generator()->toRoute('foo', [
             'required' => 'bar',
         ]);
         $this->assertSame('/foo/bar', $url);
 
-        $url = $this->generator->toRoute('bar', [
+        $url = $this->generator()->toRoute('bar', [
             'required' => 'baz',
         ]);
         $this->assertSame('/bar/baz/', $url);
 
-        $url = $this->generator->toRoute('foo', [
+        $url = $this->generator()->toRoute('foo', [
             'required' => 'bar',
             'optional' => 'baz',
         ]);
         $this->assertSame('/foo/bar/baz', $url);
 
-        $url = $this->generator->toRoute('bar', [
+        $url = $this->generator()->toRoute('bar', [
             'required' => 'baz',
             'optional' => 'biz',
         ]);
@@ -579,7 +579,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     public function optional_segments_can_be_created_after_fixed_segments(): void
     {
         $this->routeConfigurator()->get('foo', 'foo/{optional?}');
-        $url = $this->generator->toRoute('foo', ['optional' => 'bar']);
+        $url = $this->generator()->toRoute('foo', ['optional' => 'bar']);
         $this->assertSame('/foo/bar', $url);
     }
 
@@ -591,10 +591,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('foo', 'foo/{opt1?}/{opt2?}/');
         $this->routeConfigurator()->get('bar', 'bar/{required}/{opt1?}/{opt2?}');
 
-        $url = $this->generator->toRoute('foo', ['opt1' => 'bar', 'opt2' => 'baz']);
+        $url = $this->generator()->toRoute('foo', ['opt1' => 'bar', 'opt2' => 'baz']);
         $this->assertSame('/foo/bar/baz/', $url);
 
-        $url = $this->generator->toRoute('bar', [
+        $url = $this->generator()->toRoute('bar', [
             'required' => 'biz',
             'opt1' => 'bar',
             'opt2' => 'baz',
@@ -610,14 +610,14 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('foo', '/foo/{required}')
             ->requirements(['required' => '[a]+']);
 
-        $url = $this->generator->toRoute('foo', ['required' => 'aaa']);
+        $url = $this->generator()->toRoute('foo', ['required' => 'aaa']);
         $this->assertSame('/foo/aaa', $url);
 
         $this->expectExceptionMessage(
             'Parameter [required] for route [foo] must match [[a]+] to generate an URL. Given [bbb].'
         );
 
-        $this->generator->toRoute('foo', ['required' => 'bbb']);
+        $this->generator()->toRoute('foo', ['required' => 'bbb']);
     }
 
     /**
@@ -629,11 +629,11 @@ class UrlGeneratorTest extends HttpRunnerTestCase
             ->requirements(['optional' => '[a]+']);
 
         // without param
-        $url = $this->generator->toRoute('foo');
+        $url = $this->generator()->toRoute('foo');
         $this->assertSame('/foo', $url);
 
         // regex is good
-        $url = $this->generator->toRoute('foo', ['optional' => 'aa']);
+        $url = $this->generator()->toRoute('foo', ['optional' => 'aa']);
         $this->assertSame('/foo/aa', $url);
 
         // regex is bad
@@ -641,7 +641,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
             'Parameter [optional] for route [foo] must match [[a]+] to generate an URL. Given [bb].'
         );
 
-        $this->generator->toRoute('foo', ['optional' => 'bb']);
+        $this->generator()->toRoute('foo', ['optional' => 'bb']);
     }
 
     /**
@@ -665,16 +665,16 @@ class UrlGeneratorTest extends HttpRunnerTestCase
                 'optional2' => '\w+',
             ]);
 
-        $url = $this->generator->toRoute('foo', ['required' => 'bar']);
+        $url = $this->generator()->toRoute('foo', ['required' => 'bar']);
         $this->assertSame('/foo/bar', $url);
 
-        $url = $this->generator->toRoute('bar', [
+        $url = $this->generator()->toRoute('bar', [
             'required' => 'baz',
             'optional' => 'biz',
         ]);
         $this->assertSame('/bar/baz/biz', $url);
 
-        $url = $this->generator->toRoute('foobar', [
+        $url = $this->generator()->toRoute('foobar', [
             'required' => 'bar',
             'optional1' => 'boo',
             'optional2' => 'biz',
@@ -691,7 +691,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         $this->routeConfigurator()->get('foo', 'foo/{required}');
 
-        $this->generator->toRoute('foo');
+        $this->generator()->toRoute('foo');
     }
 
     /**
@@ -700,7 +700,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     public function exceptions_are_thrown_for_missing_route_names(): void
     {
         $this->expectException(RouteNotFound::class);
-        $this->generator->toRoute('foo');
+        $this->generator()->toRoute('foo');
     }
 
     /**
@@ -711,7 +711,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('route1', 'foo');
         $this->routeConfigurator()->get('route1', 'bar');
 
-        $url = $this->generator->toRoute('route1');
+        $url = $this->generator()->toRoute('route1');
         $this->assertSame('/bar', $url);
     }
 
@@ -723,16 +723,16 @@ class UrlGeneratorTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('static', '/static');
         $this->routeConfigurator()->get('foo', '/foo/{required}');
 
-        $url = $this->generator->toRoute('static');
+        $url = $this->generator()->toRoute('static');
         $this->assertSame('/static', $url);
 
-        $url = $this->generator->toRoute('static');
+        $url = $this->generator()->toRoute('static');
         $this->assertSame('/static', $url);
 
-        $url = $this->generator->toRoute('foo', ['required' => 'bar']);
+        $url = $this->generator()->toRoute('foo', ['required' => 'bar']);
         $this->assertSame('/foo/bar', $url);
 
-        $url = $this->generator->toRoute('foo', ['required' => 'baz']);
+        $url = $this->generator()->toRoute('foo', ['required' => 'baz']);
         $this->assertSame('/foo/baz', $url);
     }
 
@@ -748,7 +748,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
                 'player' => 'a{2,}calvin',
             ]);
 
-        $url = $this->generator->toRoute('teams', [
+        $url = $this->generator()->toRoute('teams', [
             'team' => 'manchesterunitedx',
             'player' => 'aacalvin',
         ]);
@@ -756,7 +756,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         // Fails because not starting with m.
         try {
-            $this->generator->toRoute('teams', [
+            $this->generator()->toRoute('teams', [
                 'team' => 'lanchesterunited',
                 'player' => 'aacalvin',
             ]);
@@ -770,7 +770,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         // Fails because not using united.
         try {
-            $this->generator->toRoute('teams', [
+            $this->generator()->toRoute('teams', [
                 'team' => 'manchestercityx',
                 'player' => 'aacalvin',
             ]);
@@ -784,7 +784,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         // Fails because not using x or y at the end.
         try {
-            $this->generator->toRoute('teams', [
+            $this->generator()->toRoute('teams', [
                 'team' => 'manchesterunitedz',
                 'player' => 'aacalvin',
             ]);
@@ -798,7 +798,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         // Fails because optional parameter is present but doesn't match regex, uses only one a
         try {
-            $this->generator->toRoute('teams', [
+            $this->generator()->toRoute('teams', [
                 'team' => 'manchesterunitedx',
                 'player' => 'acalvin',
             ]);
@@ -818,7 +818,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->routeConfigurator()->get('teams', '/{team}/{player}');
 
-        $url = $this->generator->toRoute(
+        $url = $this->generator()->toRoute(
             'teams',
             [
                 'team' => 'bayernmünchen',
@@ -845,10 +845,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->routeConfigurator()->get('login', '/login');
 
-        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame('/login?foo=bar', $this->generator()->toLogin(['foo' => 'bar']));
         $this->assertSame(
             'https://foobar.com/login?foo=bar',
-            $this->generator->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
+            $this->generator()->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
         );
     }
 
@@ -859,10 +859,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->routeConfigurator()->get('auth.login', '/login');
 
-        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame('/login?foo=bar', $this->generator()->toLogin(['foo' => 'bar']));
         $this->assertSame(
             'https://foobar.com/login?foo=bar',
-            $this->generator->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
+            $this->generator()->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
         );
     }
 
@@ -873,10 +873,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->routeConfigurator()->get('framework.auth.login', '/login');
 
-        $this->assertSame('/login?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame('/login?foo=bar', $this->generator()->toLogin(['foo' => 'bar']));
         $this->assertSame(
             'https://foobar.com/login?foo=bar',
-            $this->generator->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
+            $this->generator()->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
         );
     }
 
@@ -885,10 +885,10 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function if_no_login_route_matches_the_admin_dashboard_default_is_used(): void
     {
-        $this->assertSame('/wp-login.php?foo=bar', $this->generator->toLogin(['foo' => 'bar']));
+        $this->assertSame('/wp-login.php?foo=bar', $this->generator()->toLogin(['foo' => 'bar']));
         $this->assertSame(
             'https://foobar.com/wp-login.php?foo=bar',
-            $this->generator->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
+            $this->generator()->toLogin(['foo' => 'bar'], UrlGeneratorInterface::ABSOLUTE_URL)
         );
     }
 
@@ -902,7 +902,7 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         $this->routeConfigurator()->get('foo', 'foo/{required}');
 
-        $this->generator->toRoute('foo', ['required' => []]);
+        $this->generator()->toRoute('foo', ['required' => []]);
     }
 
 }

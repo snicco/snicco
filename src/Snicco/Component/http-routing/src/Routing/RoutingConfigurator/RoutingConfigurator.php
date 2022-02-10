@@ -26,12 +26,21 @@ interface RoutingConfigurator
 
     /**
      * @param string|string[] $middleware
+     * @return static
      */
-    public function middleware($middleware): self;
+    public function middleware($middleware);
 
-    public function name(string $name): self;
+    /**
+     * @param string $name
+     * @return static
+     */
+    public function name(string $name);
 
-    public function namespace(string $namespace): self;
+    /**
+     * @param string $namespace
+     * @return static
+     */
+    public function namespace(string $namespace);
 
     /**
      * @param Closure($this):void $create_routes
@@ -42,6 +51,7 @@ interface RoutingConfigurator
      *     name?:string,
      *     middleware?: string[]
      * } $extra_attributes
+     *
      */
     public function group(Closure $create_routes, array $extra_attributes = []): void;
 
@@ -50,6 +60,8 @@ interface RoutingConfigurator
      *
      * @return mixed
      * @throws InvalidArgumentException If the key does not exist.
+     *
+     * @todo should this exist?
      */
     public function configValue(string $key);
 

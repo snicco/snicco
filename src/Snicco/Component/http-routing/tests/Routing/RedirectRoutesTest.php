@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -107,15 +106,6 @@ class RedirectRoutesTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('base/biz');
         $response = $this->runKernel($request);
         $response->assertOk()->assertSeeText(RoutingTestController::static);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->container->instance(
-            RedirectController::class,
-            new RedirectController()
-        );
     }
 
 }

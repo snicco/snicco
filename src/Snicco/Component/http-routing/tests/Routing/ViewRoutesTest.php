@@ -11,6 +11,12 @@ use function dirname;
 class ViewRoutesTest extends HttpRunnerTestCase
 {
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->view = dirname(__DIR__) . '/fixtures/templates/greeting.php';
+    }
+
     /**
      * @test
      */
@@ -28,7 +34,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $response->assertSeeHtml('Hello World');
         $response->assertIsHtml();
 
-        $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
+        $this->assertSame('/foo', $this->generator()->toRoute('view:greeting.php'));
     }
 
     /**
@@ -52,13 +58,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $response->assertIsHtml();
         $response->assertHeader('X-FOO', 'BAR');
 
-        $this->assertSame('/foo', $this->generator->toRoute('view:greeting.php'));
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->view = dirname(__DIR__) . '/fixtures/templates/greeting.php';
+        $this->assertSame('/foo', $this->generator()->toRoute('view:greeting.php'));
     }
 
 }

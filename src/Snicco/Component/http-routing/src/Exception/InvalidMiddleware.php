@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Exception;
 
-use LogicException;
+use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
 use function implode;
 
-final class InvalidMiddleware extends LogicException
+final class InvalidMiddleware extends InvalidArgumentException
 {
 
     public static function incorrectInterface(string $name): InvalidMiddleware
