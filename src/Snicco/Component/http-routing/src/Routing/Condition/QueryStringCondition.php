@@ -7,10 +7,7 @@ namespace Snicco\Component\HttpRouting\Routing\Condition;
 use BadMethodCallException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
-/**
- * @api
- */
-class QueryStringCondition extends AbstractRouteCondition
+final class QueryStringCondition extends RouteCondition
 {
 
     /**

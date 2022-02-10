@@ -9,9 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Webmozart\Assert\Assert;
 
-/**
- * @interal
- */
 final class UrlGenerationContext
 {
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
+namespace Snicco\Component\HttpRouting\Routing\RouteLoader;
 
 use Closure;
 use InvalidArgumentException;
@@ -22,9 +22,6 @@ use Symfony\Component\Finder\SplFileInfo;
 use Webmozart\Assert\Assert;
 
 
-/**
- * @api
- */
 final class PHPFileRouteLoader implements RouteLoader
 {
 

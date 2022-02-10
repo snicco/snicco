@@ -12,7 +12,6 @@ use function sprintf;
 
 /**
  * @internal
- * @psalm-internal Snicco\Component\HttpRouting
  *
  * @psalm-immutable
  */
@@ -22,28 +21,28 @@ final class ConditionBlueprint
     public bool $is_negated = false;
 
     /**
-     * @var class-string<AbstractRouteCondition>
+     * @var class-string<RouteCondition>
      */
     public string $class;
 
     public array $passed_args;
 
     /**
-     * @param class-string<AbstractRouteCondition>|"!" $condition_class
+     * @param class-string<RouteCondition>|"!" $condition_class
      */
     public function __construct(string $condition_class, array $arguments = [])
     {
-        if ($condition_class === AbstractRouteCondition::NEGATE) {
+        if ($condition_class === RouteCondition::NEGATE) {
             /** @var string $condition_class */
             $condition_class = array_shift($arguments);
             $this->is_negated = true;
         }
 
-        if (!is_subclass_of($condition_class, AbstractRouteCondition::class)) {
+        if (!is_subclass_of($condition_class, RouteCondition::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "A condition has to be an instance of [%s].\nGot [%s].",
-                    AbstractRouteCondition::class,
+                    RouteCondition::class,
                     $condition_class
                 )
             );

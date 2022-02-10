@@ -9,9 +9,6 @@ use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
-/**
- * @api
- */
 interface RoutingConfigurator
 {
 

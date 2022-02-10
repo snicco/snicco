@@ -9,8 +9,8 @@ use Closure;
 use LogicException;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
-use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
+use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
@@ -123,19 +123,19 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         );
     }
 
-    public function middleware($middleware): self
+    public function middleware($middleware)
     {
         $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::toArray($middleware);
         return $this;
     }
 
-    public function name(string $name): self
+    public function name(string $name)
     {
         $this->delegate_attributes[RoutingConfigurator::NAME_KEY] = $name;
         return $this;
     }
 
-    public function namespace(string $namespace): self
+    public function namespace(string $namespace)
     {
         $this->delegate_attributes[RoutingConfigurator::NAMESPACE_KEY] = $namespace;
         return $this;
@@ -272,7 +272,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         return $this->addWebRoute($name, $path, ['OPTIONS'], $action);
     }
 
-    public function prefix(string $prefix): self
+    public function prefix(string $prefix)
     {
         $this->delegate_attributes[RoutingConfigurator::PREFIX_KEY] = UrlPath::fromString($prefix);
         return $this;
@@ -297,7 +297,7 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 
         $route = $this->any(Route::FALLBACK_NAME, '/{path}', $fallback_action)
             ->requirements(['path' => $regex])
-            ->condition(AbstractRouteCondition::NEGATE, IsAdminDashboardRequest::class);
+            ->condition(RouteCondition::NEGATE, IsAdminDashboardRequest::class);
 
         $this->locked = true;
 

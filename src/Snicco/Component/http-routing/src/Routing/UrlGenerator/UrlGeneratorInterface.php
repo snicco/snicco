@@ -7,9 +7,6 @@ namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
-/**
- * @api
- */
 interface UrlGeneratorInterface
 {
 

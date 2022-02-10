@@ -8,9 +8,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 
-/**
- * @api
- */
 interface UrlMatcher
 {
 

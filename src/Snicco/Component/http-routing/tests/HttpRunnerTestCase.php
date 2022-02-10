@@ -25,7 +25,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
-use Snicco\Component\HttpRouting\Routing\RouteLoading\DefaultRouteLoadingOptions;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\Routing;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;

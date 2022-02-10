@@ -8,9 +8,6 @@ use LogicException;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Throwable;
 
-/**
- * @api
- */
 final class BadRouteConfiguration extends LogicException
 {
 

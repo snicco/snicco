@@ -31,7 +31,7 @@ final class RouteConditionFactory
      * @throws ReflectionException
      * @psalm-suppress MixedAssignment
      */
-    public function create(ConditionBlueprint $blueprint): AbstractRouteCondition
+    public function create(ConditionBlueprint $blueprint): RouteCondition
     {
         $class = $blueprint->class;
         $args = $blueprint->passed_args;
@@ -41,11 +41,11 @@ final class RouteConditionFactory
             if ($instance instanceof Closure) {
                 $instance = $instance(...array_values($args));
             }
-            if (!$instance instanceof AbstractRouteCondition) {
+            if (!$instance instanceof RouteCondition) {
                 throw new LogicException(
                     sprintf(
                         "Resolving a route condition from the container must return an instance of [%s].\nGot [%s]",
-                        AbstractRouteCondition::class,
+                        RouteCondition::class,
                         is_object($instance) ? get_class($instance) : gettype($instance)
                     )
                 );

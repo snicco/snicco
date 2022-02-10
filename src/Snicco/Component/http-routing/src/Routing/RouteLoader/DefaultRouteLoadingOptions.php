@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\RouteLoading;
+namespace Snicco\Component\HttpRouting\Routing\RouteLoader;
 
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 
-/**
- * @api
- */
 final class DefaultRouteLoadingOptions implements RouteLoadingOptions
 {
 

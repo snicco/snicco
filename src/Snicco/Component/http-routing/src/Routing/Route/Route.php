@@ -6,8 +6,8 @@ namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use InvalidArgumentException;
 use Snicco\Component\HttpRouting\MiddlewareResolver;
-use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
+use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
@@ -29,13 +29,13 @@ final class Route
 {
 
     /** @interal */
-    const DELEGATE = [FallBackController::class, 'delegate'];
+    public const DELEGATE = [FallBackController::class, 'delegate'];
 
     /** @interal */
-    const FALLBACK_NAME = 'sniccowp_fallback_route';
+    public const FALLBACK_NAME = 'sniccowp_fallback_route';
 
     /** @interal */
-    const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
+    public const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
 
     /**
      * @var string[]
@@ -210,7 +210,7 @@ final class Route
     }
 
     /**
-     * @param class-string<AbstractRouteCondition>|'!' $condition
+     * @param class-string<RouteCondition>|'!' $condition
      * @param mixed $args
      */
     public function condition(string $condition, ...$args): Route

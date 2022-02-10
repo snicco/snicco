@@ -9,9 +9,6 @@ use IteratorAggregate;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Traversable;
 
-/**
- * @api
- */
 interface Routes extends Countable, IteratorAggregate
 {
 
@@ -21,8 +18,7 @@ interface Routes extends Countable, IteratorAggregate
     public function getByName(string $name): Route;
 
     /**
-     * @return array<string,Route> This MUST ALWAYS be an array where the key is the route name and
-     *                             the value an instance of {@see Route}
+     * @return array<string,Route>
      */
     public function toArray(): array;
 

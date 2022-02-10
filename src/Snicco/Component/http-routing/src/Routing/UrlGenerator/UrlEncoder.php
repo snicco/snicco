@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
-/**
- * @interal
- */
 interface UrlEncoder
 {
 

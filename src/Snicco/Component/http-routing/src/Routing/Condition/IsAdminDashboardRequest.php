@@ -9,7 +9,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 /**
  * @interal
  */
-final class IsAdminDashboardRequest extends AbstractRouteCondition
+final class IsAdminDashboardRequest extends RouteCondition
 {
 
     public function isSatisfied(Request $request): bool

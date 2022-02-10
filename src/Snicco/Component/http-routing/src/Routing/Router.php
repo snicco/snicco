@@ -44,7 +44,7 @@ use function var_export;
  *
  * The Router implements and partially delegates all core parts of the Routing system.
  * This is preferred over passing around one (global) instance of {@see Routes} between different
- * objects in the service container.
+ * objects.
  *
  * @psalm-suppress PropertyNotSetInConstructor
  *
