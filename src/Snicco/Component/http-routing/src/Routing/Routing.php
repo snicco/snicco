@@ -11,6 +11,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoadingOptions;
@@ -118,7 +119,7 @@ final class Routing
                     );
                 },
                 $this->admin_area,
-                $this->cache_file,
+                new RuntimeRouteCollection(),
             );
         }
         return $this->router;

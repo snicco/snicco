@@ -15,17 +15,17 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -74,7 +74,7 @@ abstract class MiddlewareTestCase extends TestCase
      */
     final protected function withRoutes(array $routes): void
     {
-        $this->routes = new RouteCollection($routes);
+        $this->routes = new RuntimeRouteCollection($routes);
     }
 
     /**
@@ -92,7 +92,7 @@ abstract class MiddlewareTestCase extends TestCase
 
         $pimple = new Container();
         $url = $this->newUrlGenerator(
-            $this->routes ?? new RouteCollection([]),
+            $this->routes ?? new RuntimeRouteCollection([]),
             UrlGenerationContext::fromRequest($request)
         );
         $response_factory = $this->newResponseFactory($url);
