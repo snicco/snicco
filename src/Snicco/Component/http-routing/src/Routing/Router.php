@@ -9,14 +9,11 @@ use FastRoute\BadRouteException;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
-use LogicException;
-use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
-use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
@@ -27,17 +24,13 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteSyntaxConverter;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RouteGroup;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
-use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 use Traversable;
 use Webmozart\Assert\Assert;
 
 use function array_pop;
 use function array_reverse;
 use function count;
-use function file_put_contents;
-use function serialize;
 use function trim;
-use function var_export;
 
 /**
  * @interal
@@ -45,15 +38,11 @@ use function var_export;
  * The Router implements and partially delegates all core parts of the Routing system.
  * This is preferred over passing around one (global) instance of {@see Routes} between different
  * objects.
- *
- * @psalm-suppress PropertyNotSetInConstructor
- *
  */
 final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
 {
 
     private RouteConditionFactory $condition_factory;
-
     private AdminArea $admin_area;
 
     /**
@@ -61,23 +50,14 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
      */
     private Closure $generator_factory;
 
-    private ?PHPCacheFile $cache_file;
-
-    private CachedRouteCollection $cached_routes;
-
-    private UrlGeneratorInterface $generator;
-
     /**
      * @var list<RouteGroup>
      */
     private array $group_stack = [];
 
-    private array $fast_route_cache = [];
+    private RouteCollection $route_collection;
 
-    /**
-     * @var array<string,Route>
-     */
-    private array $_routes = [];
+    private ?UrlGeneratorInterface $generator = null;
 
     /**
      * @param Closure(Routes):UrlGeneratorInterface $generator_factory
@@ -86,26 +66,12 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
         RouteConditionFactory $condition_factory,
         Closure $generator_factory,
         AdminArea $admin_area,
-        PHPCacheFile $cache_file = null
+        RouteCollection $route_collection
     ) {
-        $this->cache_file = $cache_file;
         $this->condition_factory = $condition_factory;
         $this->admin_area = $admin_area;
-
-        if ($this->cache_file && $this->cache_file->isCreated()) {
-            $cache = $this->cache_file->require();
-            Assert::isArray($cache);
-            Assert::keyExists($cache, 'route_collection');
-            Assert::keyExists($cache, 'fast_route');
-            Assert::isArray($cache['fast_route']);
-            Assert::isArray($cache['route_collection']);
-            $this->fast_route_cache = $cache['fast_route'];
-            /** @var array<string,string> $routes */
-            $routes = $cache['route_collection'];
-            $this->cached_routes = new CachedRouteCollection($routes);
-        }
-
         $this->generator_factory = $generator_factory;
+        $this->route_collection = $route_collection;
     }
 
     /**
@@ -151,10 +117,6 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
     public function dispatch(Request $request): RoutingResult
     {
         $data = $this->getFastRouteData();
-
-        if ($this->cache_file && !$this->cache_file->isCreated()) {
-            $this->createCache($data);
-        }
 
         $request = $this->allowMatchingAdminDashboardRequests($request);
 
@@ -251,12 +213,6 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
      */
     private function createRoute(string $name, string $path, array $methods, $controller): Route
     {
-        if ($this->cache_file && $this->cache_file->isCreated()) {
-            throw new LogicException(
-                "The route [$name] cant be added because the Router is already cached."
-            );
-        }
-
         // Quick check to see if the developer swapped the arguments by accident.
         Assert::notStartsWith($name, '/');
 
@@ -274,7 +230,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
 
         $this->addGroupAttributes($route);
 
-        $this->_routes[$route->getName()] = $route;
+        $this->route_collection->add($route);
 
         return $route;
     }
@@ -329,10 +285,6 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
 
     private function getFastRouteData(): array
     {
-        if (count($this->fast_route_cache)) {
-            return $this->fast_route_cache;
-        }
-
         $collector = new RouteCollector(new RouteParser(), new DataGenerator());
         $syntax = new FastRouteSyntaxConverter();
 
@@ -352,30 +304,7 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
 
     private function getRoutes(): Routes
     {
-        return $this->cached_routes ?? new RouteCollection($this->_routes);
-    }
-
-    /** @psalm-suppress PossiblyNullReference */
-    private function createCache(array $fast_route_data): void
-    {
-        $_r = [];
-
-        foreach ($this->getRoutes() as $name => $route) {
-            $_r[$name] = serialize($route);
-        }
-
-        $arr = [
-            'route_collection' => $_r,
-            'fast_route' => $fast_route_data,
-        ];
-        $res = file_put_contents(
-            $this->cache_file->realPath(),
-            '<?php return ' . var_export($arr, true) . ';'
-        );
-
-        if ($res === false) {
-            throw new RuntimeException('Could not write route cache file.');
-        }
+        return $this->route_collection;
     }
 
     private function allowMatchingAdminDashboardRequests(Request $request): Request

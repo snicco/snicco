@@ -11,7 +11,7 @@ use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
@@ -135,7 +135,7 @@ final class CreatesPsrRequestsTests extends TestCase
     protected function urlGenerator(): UrlGeneratorInterface
     {
         return new UrlGenerator(
-            new RouteCollection([]),
+            new RuntimeRouteCollection([]),
             UrlGenerationContext::forConsole($this->host),
             $this->adminArea()
         );

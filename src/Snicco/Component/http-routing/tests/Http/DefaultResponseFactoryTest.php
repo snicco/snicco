@@ -11,7 +11,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
@@ -24,6 +24,19 @@ class DefaultResponseFactoryTest extends TestCase
     use CreateUrlGenerator;
 
     private DefaultResponseFactory $factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->app_domain = 'foo.com';
+        $this->routes = new RuntimeRouteCollection([]);
+        $this->factory = $this->createResponseFactory(
+            $this->createUrlGenerator(
+                UrlGenerationContext::forConsole($this->app_domain),
+                $this->routes
+            ),
+        );
+    }
 
     public function test_make(): void
     {
@@ -197,8 +210,11 @@ class DefaultResponseFactoryTest extends TestCase
     {
         $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
 
+        $routes = new RuntimeRouteCollection();
+        $routes->add($home_route);
+
         $factory = $this->createResponseFactory(
-            $this->createUrlGenerator(null, new RouteCollection([$home_route]))
+            $this->createUrlGenerator(null, $routes)
         );
 
         $response = $factory->home(['user_id' => 1, 'foo' => 'bar'], 307);
@@ -214,8 +230,11 @@ class DefaultResponseFactoryTest extends TestCase
     {
         $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
 
+        $routes = new RuntimeRouteCollection();
+        $routes->add($route);
+
         $factory = $this->createResponseFactory(
-            $this->createUrlGenerator(null, new RouteCollection([$route]))
+            $this->createUrlGenerator(null, $routes)
         );
 
         $response = $factory->toRoute('r1', ['param' => 1, 'foo' => 'bar'], 307);
@@ -435,19 +454,6 @@ class DefaultResponseFactoryTest extends TestCase
     {
         $this->assertTrue($this->factory->delegate()->shouldHeadersBeSent());
         $this->assertFalse($this->factory->delegate(false)->shouldHeadersBeSent());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->app_domain = 'foo.com';
-        $this->routes = new RouteCollection([]);
-        $this->factory = $this->createResponseFactory(
-            $this->createUrlGenerator(
-                UrlGenerationContext::forConsole($this->app_domain),
-                $this->routes
-            ),
-        );
     }
 
 }

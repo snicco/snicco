@@ -4,42 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
-use stdClass;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 
-final class RouteCollectionTest extends TestCase
+final class RuntimeRouteCollectionTest extends TestCase
 {
-
-    /**
-     * @test
-     */
-    public function test_exception_if_constructed_with_bad_route(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        /** @noinspection PhpParamsInspection */
-        new RouteCollection([new stdClass()]);
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_route_with_duplicate_name_added(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf('Duplicate route with name [r1] while create [%s].', RouteCollection::class)
-        );
-
-        $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
-        $r2 = Route::create('/bar', Route::DELEGATE, 'r1');
-
-        new RouteCollection([$r1, $r2]);
-    }
-
     /**
      * @test
      */
@@ -48,7 +19,9 @@ final class RouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RouteCollection([$r1, $r2]);
+        $routes = new RuntimeRouteCollection();
+        $routes->add($r1);
+        $routes->add($r2);
 
         $this->assertSame(2, count($routes));
     }
@@ -61,7 +34,9 @@ final class RouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RouteCollection([$r1, $r2]);
+        $routes = new RuntimeRouteCollection();
+        $routes->add($r1);
+        $routes->add($r2);
 
         $count = 0;
         foreach ($routes as $route) {
@@ -76,16 +51,18 @@ final class RouteCollectionTest extends TestCase
      */
     public function test_exception_for_bad_route_name(): void
     {
-        $this->expectException(RouteNotFound::class);
-
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RouteCollection([$r1, $r2]);
+        $routes = new RuntimeRouteCollection();
+        $routes->add($r1);
+        $routes->add($r2);
 
         $route = $routes->getByName('r1');
         $this->assertEquals($r1, $route);
 
+        $this->expectException(RouteNotFound::class);
+        $this->expectExceptionMessage('r3');
         $routes->getByName('r3');
     }
 

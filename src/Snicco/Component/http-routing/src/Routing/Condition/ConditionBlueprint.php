@@ -25,10 +25,14 @@ final class ConditionBlueprint
      */
     public string $class;
 
+    /**
+     * @var array<scalar>
+     */
     public array $passed_args;
 
     /**
      * @param class-string<RouteCondition>|"!" $condition_class
+     * @param array<scalar> $arguments
      */
     public function __construct(string $condition_class, array $arguments = [])
     {
