@@ -8,7 +8,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\MiddlewareFactory;
 use Snicco\Component\HttpRouting\NextMiddleware;
@@ -147,7 +147,7 @@ final class MiddlewareFactoryTest extends TestCase
 
 }
 
-class MiddlewareWithContextualAndRuntimeArgs extends AbstractMiddleware
+class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 {
 
     public string $bar;

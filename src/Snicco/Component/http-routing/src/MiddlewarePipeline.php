@@ -139,7 +139,7 @@ final class MiddlewarePipeline
             return $middleware->process($request, $next);
         }
 
-        if ($middleware instanceof AbstractMiddleware) {
+        if ($middleware instanceof Middleware) {
             $middleware->setContainer($this->container);
         }
 

@@ -13,7 +13,7 @@ use function headers_list;
 /**
  * @internal
  */
-final class PrepareResponse extends AbstractMiddleware
+final class PrepareResponse extends Middleware
 {
 
     private ResponsePreparation $response_preparation;

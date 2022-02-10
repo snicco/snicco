@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
@@ -325,7 +325,7 @@ class MiddlewarePipelineTest extends TestCase
 
 }
 
-class ThrowExceptionMiddleware extends AbstractMiddleware
+class ThrowExceptionMiddleware extends Middleware
 {
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -335,7 +335,7 @@ class ThrowExceptionMiddleware extends AbstractMiddleware
 
 }
 
-class StopMiddleware extends AbstractMiddleware
+class StopMiddleware extends Middleware
 {
 
     const ATTR = 'stop_middleware';
@@ -347,7 +347,7 @@ class StopMiddleware extends AbstractMiddleware
 
 }
 
-class PipelineTestMiddleware1 extends AbstractMiddleware
+class PipelineTestMiddleware1 extends Middleware
 {
 
     const ATTRIBUTE = 'pipeline1';
@@ -367,7 +367,7 @@ class PipelineTestMiddleware1 extends AbstractMiddleware
 
 }
 
-class PipelineTestMiddleware2 extends AbstractMiddleware
+class PipelineTestMiddleware2 extends Middleware
 {
 
     const ATTRIBUTE = 'pipeline2';

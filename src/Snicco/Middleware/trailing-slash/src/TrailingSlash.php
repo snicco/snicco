@@ -7,14 +7,14 @@ namespace Snicco\Middleware\TrailingSlash;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\StrArr\Str;
 
 use function rtrim;
 
-final class TrailingSlash extends AbstractMiddleware
+final class TrailingSlash extends Middleware
 {
 
     private bool $trailing_slash;

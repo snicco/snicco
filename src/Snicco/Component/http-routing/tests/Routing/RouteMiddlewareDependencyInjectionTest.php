@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithMiddleware;
@@ -19,6 +19,20 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 {
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->container->instance(
+            MiddlewareWithDependencies::class,
+            new MiddlewareWithDependencies(new Foo(), new Bar())
+        );
+
+        $this->container->singleton(ControllerWithMiddleware::class, function () {
+            return new ControllerWithMiddleware(new Baz());
+        });
+    }
 
     /**
      * @test
@@ -132,27 +146,13 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->container->instance(
-            MiddlewareWithDependencies::class,
-            new MiddlewareWithDependencies(new Foo(), new Bar())
-        );
-
-        $this->container->singleton(ControllerWithMiddleware::class, function () {
-            return new ControllerWithMiddleware(new Baz());
-        });
-    }
-
     private function assertRouteActionConstructedTimes(int $times, $class): void
     {
     }
 
 }
 
-class MiddlewareWithClassAndParamDependencies extends AbstractMiddleware
+class MiddlewareWithClassAndParamDependencies extends Middleware
 {
 
     private Foo $foo;
@@ -176,7 +176,7 @@ class MiddlewareWithClassAndParamDependencies extends AbstractMiddleware
 
 }
 
-class MiddlewareWithTypedDefault extends AbstractMiddleware
+class MiddlewareWithTypedDefault extends Middleware
 {
 
     private ?Foo $foo;

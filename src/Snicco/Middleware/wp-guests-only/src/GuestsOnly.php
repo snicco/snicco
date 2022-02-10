@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Middleware\GuestsOnly;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
@@ -14,7 +14,7 @@ use Snicco\Component\ScopableWP\ScopableWP;
 /**
  * @api
  */
-final class GuestsOnly extends AbstractMiddleware
+final class GuestsOnly extends Middleware
 {
 
     private ScopableWP $wp;

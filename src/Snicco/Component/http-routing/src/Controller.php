@@ -19,7 +19,7 @@ use Webmozart\Assert\Assert;
 use function array_filter;
 use function array_merge;
 
-abstract class AbstractController
+abstract class Controller
 {
 
     /**

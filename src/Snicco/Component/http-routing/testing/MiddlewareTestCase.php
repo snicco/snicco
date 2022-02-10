@@ -15,7 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -98,7 +98,7 @@ abstract class MiddlewareTestCase extends TestCase
         $response_factory = $this->newResponseFactory($url);
         $this->response_factory = $response_factory;
 
-        if ($middleware instanceof AbstractMiddleware) {
+        if ($middleware instanceof Middleware) {
             if (!$pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $response_factory;
             }
