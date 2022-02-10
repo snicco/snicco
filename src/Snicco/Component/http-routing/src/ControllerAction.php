@@ -62,7 +62,7 @@ final class ControllerAction
             return [];
         }
 
-        return $this->controller_instance->middleware($this->controller_method);
+        return $this->controller_instance->getMiddleware($this->controller_method);
     }
 
     /**

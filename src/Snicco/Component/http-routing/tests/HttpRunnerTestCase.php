@@ -88,7 +88,12 @@ class HttpRunnerTestCase extends TestCase
     ];
 
     /**
-     * @var string[]
+     * @var array<
+     *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
+     *     RoutingConfigurator::ADMIN_MIDDLEWARE |
+     *     RoutingConfigurator::API_MIDDLEWARE |
+     *     RoutingConfigurator::GLOBAL_MIDDLEWARE
+     * > $group_names
      */
     private array $always_run = [];
 

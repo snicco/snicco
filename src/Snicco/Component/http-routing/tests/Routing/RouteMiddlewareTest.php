@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
+use Snicco\Component\HttpRouting\AbstractController;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
+use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
@@ -221,7 +223,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function unknown_middleware_aliases_throw_an_exception(): void
     {
-        $this->expectExceptionMessage('The middleware alias [abc] does not exist.');
+        $this->expectExceptionMessage('The middleware [abc] is not an alias or group name.');
 
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware('abc');
@@ -620,7 +622,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware('group1');
 
-        $this->expectException(InvalidMiddleware::class);
+        $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: group1->group2->group1');
 
         $this->runKernel($this->frontendRequest('/foo'));
@@ -640,7 +642,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware('group1');
 
-        $this->expectException(InvalidMiddleware::class);
+        $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: group1->group2->group3->group1');
 
         $this->runKernel($this->frontendRequest('/foo'));
@@ -662,11 +664,55 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class)
             ->middleware('group1');
 
-        $this->expectException(InvalidMiddleware::class);
+        $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: group1->group2->group3->group1');
 
         $this->runKernel($this->frontendRequest('/foo'));
     }
 
+    /**
+     * @test
+     */
+    public function recursion_is_detected_in_the_special_middleware_groups_before_a_matching_route_is_run(): void
+    {
+        $this->withMiddlewareGroups([
+            'correct_1' => [FooMiddleware::class],
+            'correct_2' => [BarMiddleware::class],
+            RoutingConfigurator::GLOBAL_MIDDLEWARE => ['correct_1', 'group2'],
+            'group2' => ['correct_2', 'group3'],
+            'group3' => [BazMiddleware::class, 'group2']
+        ]);
 
+        $this->expectException(MiddlewareRecursion::class);
+        $this->expectExceptionMessage('Detected middleware recursion: global->group2->group3->group2');
+
+        $this->runKernel($this->frontendRequest());
+    }
+
+    /**
+     * @test
+     */
+    public function controller_middleware_is_after_route_middleware(): void
+    {
+        $this->routeConfigurator()->get('r1', '/foo', ControllerWithBarMiddleware::class)
+            ->middleware(FooMiddleware::class);
+
+        $response = $this->runKernel($this->frontendRequest('/foo'));
+        $this->assertSame('controller:bar_middleware:foo_middleware', $response->body());
+    }
+
+}
+
+class ControllerWithBarMiddleware extends AbstractController
+{
+
+    public function __construct()
+    {
+        $this->addMiddleware(BarMiddleware::class);
+    }
+
+    public function __invoke()
+    {
+        return 'controller';
+    }
 }
