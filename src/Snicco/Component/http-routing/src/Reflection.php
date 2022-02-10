@@ -15,10 +15,8 @@ use ReflectionParameter;
 
 use function class_exists;
 use function class_implements;
-use function get_class;
 use function in_array;
 use function interface_exists;
-use function is_object;
 use function is_string;
 
 /**
@@ -29,32 +27,33 @@ final class Reflection
 {
 
     /**
-     * @param object|string $class_or_object
-     * @param class-string $interface
+     * @template Interface
+     *
+     * @psalm-assert-if-true class-string<Interface> $class_string
+     *
+     * @param string|class-string $class_string
+     * @param class-string<Interface> $interface
      *
      * @throws InvalidArgumentException if the interface does not exist
      */
-    public static function isInterface($class_or_object, string $interface): bool
+    public static function isInterfaceString(string $class_string, string $interface): bool
     {
-        $class = is_object($class_or_object)
-            ? get_class($class_or_object)
-            : $class_or_object;
-
+        $class_exists = class_exists($class_string);
         $interface_exists = interface_exists($interface);
 
         if (false === $interface_exists) {
             throw new InvalidArgumentException("Interface [$interface] does not exist.");
         }
 
-        if ($interface === $class) {
+        if ($interface === $class_string) {
             return true;
         }
 
-        if (!class_exists($class) && !interface_exists($class)) {
+        if (!$class_exists && !interface_exists($class_string)) {
             return false;
         }
 
-        $implements = (array)class_implements($class);
+        $implements = (array)class_implements($class_string);
 
         return in_array($interface, $implements, true);
     }
