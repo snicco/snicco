@@ -11,12 +11,15 @@ use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Cache\RouteCacheInterface;
 use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
+use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher;
@@ -30,6 +33,7 @@ use Webmozart\Assert\Assert;
 use function array_pop;
 use function array_reverse;
 use function count;
+use function is_array;
 use function trim;
 
 /**
@@ -55,9 +59,9 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
      */
     private array $group_stack = [];
 
-    private RouteCollection $route_collection;
-
     private ?UrlGeneratorInterface $generator = null;
+    private RouteCacheInterface $cache;
+    private RouteCollection $route_collection;
 
     /**
      * @param Closure(Routes):UrlGeneratorInterface $generator_factory
@@ -66,12 +70,21 @@ final class Router implements UrlMatcher, UrlGeneratorInterface, Routes
         RouteConditionFactory $condition_factory,
         Closure $generator_factory,
         AdminArea $admin_area,
-        RouteCollection $route_collection
+        RouteCacheInterface $cache
     ) {
         $this->condition_factory = $condition_factory;
         $this->admin_area = $admin_area;
         $this->generator_factory = $generator_factory;
-        $this->route_collection = $route_collection;
+        $this->cache = $cache;
+
+        $data = $this->cache->get();
+
+        if (is_array($data)) {
+            $this->route_collection = new CachedRouteCollection($data['route_collection']);
+            $this->fast_route_data = $data['fast_route'];
+        } else {
+            $this->route_collection = new RuntimeRouteCollection();
+        }
     }
 
     /**

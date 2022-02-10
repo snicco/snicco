@@ -42,8 +42,6 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
      */
     private array $delegate_attributes = [];
 
-    private array $config;
-
     private bool $locked = false;
 
     /**
