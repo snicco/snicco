@@ -11,7 +11,6 @@ use function ltrim;
 use function rtrim;
 
 /**
- * @internal
  * @psalm-immutable
  */
 final class UrlPath
