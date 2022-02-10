@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Routing;
 
 use Psr\Container\ContainerInterface;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
@@ -92,6 +93,11 @@ final class Routing
             );
         }
         return $this->route_loader;
+    }
+
+    public function adminMenu(): AdminMenu
+    {
+        return $this->routingConfigurator();
     }
 
     private function router(): Router
