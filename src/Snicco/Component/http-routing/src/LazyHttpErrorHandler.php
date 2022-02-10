@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting;
 
 use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
@@ -13,14 +15,12 @@ use Throwable;
 
 use function sprintf;
 
-/**
- * @internal
- * @psalm-suppress PropertyNotSetInConstructor
- */
 final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
 {
 
     private ContainerInterface $psr_container;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
     private HttpErrorHandlerInterface $error_handler;
 
     public function __construct(ContainerInterface $c)
@@ -36,6 +36,10 @@ final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
         $this->psr_container = $c;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->error_handler)) {
