@@ -20,6 +20,8 @@ use function ucwords;
 final class Cookie
 {
     /**
+     * @interal
+     *
      * @var array{
      *     domain: null|string,
      *     host_only: bool,
@@ -31,7 +33,15 @@ final class Cookie
      * }
      */
     public array $properties;
+
+    /**
+     * @interal
+     */
     public string $name;
+
+    /**
+     * @interal
+     */
     public string $value;
 
     /**
@@ -50,6 +60,7 @@ final class Cookie
     {
         $this->name = $name;
         $this->value = $value;
+
         $this->properties = array_replace(
             [
                 'domain' => null,
