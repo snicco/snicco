@@ -14,7 +14,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 /**
  * @internal
  */
-final class RouteRunner extends AbstractMiddleware
+final class RouteRunner extends Middleware
 {
 
     private MiddlewarePipeline $pipeline;

@@ -6,7 +6,7 @@ namespace Snicco\Middleware\OpenRedirectProtection;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\NextMiddleware;
@@ -24,7 +24,7 @@ use const PHP_URL_HOST;
  *       The only way we could prevent this is to sign all outgoing urls with a HMAC and then strip
  *       that from the query string before the redirect.
  */
-final class OpenRedirectProtection extends AbstractMiddleware
+final class OpenRedirectProtection extends Middleware
 {
 
     private string $route;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\AbstractController;
+use Snicco\Component\HttpRouting\Controller;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
@@ -63,7 +63,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
     }
 }
 
-class ArrayMiddlewareController extends AbstractController
+class ArrayMiddlewareController extends Controller
 {
 
     public function __construct()
@@ -78,7 +78,7 @@ class ArrayMiddlewareController extends AbstractController
 
 }
 
-class MiddlewareController extends AbstractController
+class MiddlewareController extends Controller
 {
 
     public function __construct()

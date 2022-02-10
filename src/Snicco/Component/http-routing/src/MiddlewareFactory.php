@@ -56,7 +56,7 @@ final class MiddlewareFactory
             $middleware = new $middleware_class(...array_values($route_arguments));
         }
 
-        if ($middleware instanceof AbstractMiddleware) {
+        if ($middleware instanceof Middleware) {
             $middleware->setContainer($this->container);
         }
         return $middleware;

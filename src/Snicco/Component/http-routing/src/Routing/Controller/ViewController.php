@@ -6,14 +6,14 @@ namespace Snicco\Component\HttpRouting\Routing\Controller;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Component\HttpRouting\AbstractController;
+use Snicco\Component\HttpRouting\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 
 /**
  * @interal
  */
-final class ViewController extends AbstractController
+final class ViewController extends Controller
 {
 
     private TemplateRenderer $creates_views;

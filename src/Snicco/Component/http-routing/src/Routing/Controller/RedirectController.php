@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Routing\Controller;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Component\HttpRouting\AbstractController;
+use Snicco\Component\HttpRouting\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
@@ -15,7 +15,7 @@ use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
  * @interal
  * @psalm-suppress MixedArgument
  */
-final class RedirectController extends AbstractController
+final class RedirectController extends Controller
 {
 
     /**

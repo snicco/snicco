@@ -58,7 +58,7 @@ final class ControllerAction
      */
     public function middleware(): array
     {
-        if (!$this->controller_instance instanceof AbstractController) {
+        if (!$this->controller_instance instanceof Controller) {
             return [];
         }
 
@@ -80,7 +80,7 @@ final class ControllerAction
             $instance = (new ReflectionClass($class))->newInstance();
         }
 
-        if ($instance instanceof AbstractController) {
+        if ($instance instanceof Controller) {
             $instance->setContainer($container);
         }
         return $instance;

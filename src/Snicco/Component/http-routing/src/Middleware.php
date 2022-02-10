@@ -19,8 +19,7 @@ use Snicco\Component\HttpRouting\Http\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Webmozart\Assert\Assert;
 
-
-abstract class AbstractMiddleware implements MiddlewareInterface
+abstract class Middleware implements MiddlewareInterface
 {
 
     private ContainerInterface $container;

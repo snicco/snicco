@@ -14,7 +14,7 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 /**
  * @internal
  */
-final class RoutingMiddleware extends AbstractMiddleware
+final class RoutingMiddleware extends Middleware
 {
 
     private UrlMatcher $url_matcher;

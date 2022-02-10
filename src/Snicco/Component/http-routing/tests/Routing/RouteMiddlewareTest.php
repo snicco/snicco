@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\AbstractController;
+use Snicco\Component\HttpRouting\Controller;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -703,7 +703,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
 }
 
-class ControllerWithBarMiddleware extends AbstractController
+class ControllerWithBarMiddleware extends Controller
 {
 
     public function __construct()

@@ -7,13 +7,13 @@ namespace Snicco\Component\HttpRouting\Http;
 use Middlewares\ContentLanguage;
 use Middlewares\ContentType;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Webmozart\Assert\Assert;
 
-final class NegotiateContent extends AbstractMiddleware
+final class NegotiateContent extends Middleware
 {
 
     private array $content_types;
@@ -45,6 +45,24 @@ final class NegotiateContent extends AbstractMiddleware
         $this->content_types = $content_types ?: $this->defaultConfiguration();
     }
 
+    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    {
+        $content_type = new ContentType($this->content_types);
+        $content_type->charsets($this->charsets);
+        $content_type->errorResponse($this->respond());
+        $content_type->nosniff(true);
+        $language = new ContentLanguage($this->languages);
+
+        $response = $content_type->process($request, $this->next($language, $next));
+
+        if (406 === $response->getStatusCode()) {
+            throw new HttpException(
+                406, "Failed content negotiation for path [{$request->path()}]."
+            );
+        }
+        return $response;
+    }
+
     private function defaultConfiguration(): array
     {
         return [
@@ -64,24 +82,6 @@ final class NegotiateContent extends AbstractMiddleware
                 'charset' => true,
             ],
         ];
-    }
-
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
-    {
-        $content_type = new ContentType($this->content_types);
-        $content_type->charsets($this->charsets);
-        $content_type->errorResponse($this->respond());
-        $content_type->nosniff(true);
-        $language = new ContentLanguage($this->languages);
-
-        $response = $content_type->process($request, $this->next($language, $next));
-
-        if (406 === $response->getStatusCode()) {
-            throw new HttpException(
-                406, "Failed content negotiation for path [{$request->path()}]."
-            );
-        }
-        return $response;
     }
 
     private function next(ContentLanguage $language, NextMiddleware $next): NextMiddleware
