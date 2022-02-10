@@ -289,7 +289,7 @@ final class MiddlewareResolver
 
     private function priorityForMiddleware(MiddlewareBlueprint $blueprint): int
     {
-        $priority = array_search($blueprint->class(), $this->middleware_by_increasing_priority);
+        $priority = array_search($blueprint->class, $this->middleware_by_increasing_priority);
 
         return $priority !== false ? $priority : -1;
     }
