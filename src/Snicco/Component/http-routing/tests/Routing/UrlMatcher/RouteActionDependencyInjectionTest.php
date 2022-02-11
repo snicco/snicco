@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
@@ -22,11 +23,13 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
     {
         $this->assertFalse($this->container->has(Request::class));
 
-        $this->routeConfigurator()->get(
-            'route1',
-            '/foo',
-            [RoutingTestController::class, 'onlyRequest']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'route1',
+                '/foo',
+                [RoutingTestController::class, 'onlyRequest']
+            );
+        });
 
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
@@ -37,11 +40,13 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function its_not_required_to_have_class_dependencies(): void
     {
-        $this->routeConfigurator()->get(
-            'r1',
-            'teams/{team}/{player}',
-            [RoutingTestController::class, 'twoParams']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                'teams/{team}/{player}',
+                [RoutingTestController::class, 'twoParams']
+            );
+        });
 
         $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin', $request);
@@ -52,11 +57,13 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function the_request_can_be_required_together_with_params(): void
     {
-        $this->routeConfigurator()->get(
-            'r1',
-            'teams/{team}/{player}',
-            [RoutingTestController::class, 'twoParamsWithRequest']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                'teams/{team}/{player}',
+                [RoutingTestController::class, 'twoParamsWithRequest']
+            );
+        });
 
         $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin', $request);
@@ -73,7 +80,9 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 
         $this->container[ControllerWithDependencies::class] = new ControllerWithDependencies($foo);
 
-        $this->routeConfigurator()->get('r1', '/foo', ControllerWithDependencies::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', ControllerWithDependencies::class);
+        });
 
         $request = $this->frontendRequest('foo');
         $this->assertResponseBody('FOO_controller', $request);
@@ -95,11 +104,13 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
             );
         });
 
-        $this->routeConfigurator()->get(
-            'r1',
-            'teams/{team}/{player}',
-            [RoutingTestController::class, 'requestParamsConditionArgs']
-        )->condition(RouteConditionWithDependency::class, true);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                'teams/{team}/{player}',
+                [RoutingTestController::class, 'requestParamsConditionArgs']
+            )->condition(RouteConditionWithDependency::class, true);
+        });
 
         $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin:FOO_CONFIG', $request);

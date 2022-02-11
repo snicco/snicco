@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -15,7 +16,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_redirect_route_can_be_created(): void
     {
-        $this->routeConfigurator()->redirect('/foo', '/bar', 307, ['baz' => 'biz']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->redirect('/foo', '/bar', 307, ['baz' => 'biz']);
+        });
 
         $request = $this->frontendRequest('/foo');
 
@@ -30,7 +33,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_permanent_redirect_can_be_created(): void
     {
-        $this->routeConfigurator()->permanentRedirect('/foo', '/bar', ['baz' => 'biz']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->permanentRedirect('/foo', '/bar', ['baz' => 'biz']);
+        });
 
         $request = $this->frontendRequest('/foo');
 
@@ -44,7 +49,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_temporary_redirect_can_be_created(): void
     {
-        $this->routeConfigurator()->temporaryRedirect('/foo', '/bar', ['baz' => 'biz']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->temporaryRedirect('/foo', '/bar', ['baz' => 'biz']);
+        });
 
         $request = $this->frontendRequest('/foo');
 
@@ -58,7 +65,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_redirect_to_an_external_url_can_be_created(): void
     {
-        $this->routeConfigurator()->redirectAway('/foo', 'https://foobar.com', 301);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->redirectAway('/foo', 'https://foobar.com', 301);
+        });
 
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('', $request);
@@ -73,8 +82,10 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_redirect_to_a_route_can_be_created(): void
     {
-        $this->routeConfigurator()->get('route1', '/base/{param}');
-        $this->routeConfigurator()->redirectToRoute('/foo', 'route1', ['param' => 'baz'], 303);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('route1', '/base/{param}');
+            $configurator->redirectToRoute('/foo', 'route1', ['param' => 'baz'], 303);
+        });
 
         $request = $this->frontendRequest('/foo');
 
@@ -89,11 +100,12 @@ class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function regex_based_redirects_works(): void
     {
-        $this->routeConfigurator()
-            ->redirect('base/{slug}', 'base/new')
-            ->requireOneOf('slug', ['foo', 'bar']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->redirect('base/{slug}', 'base/new')
+                ->requireOneOf('slug', ['foo', 'bar']);
 
-        $this->routeConfigurator()->get('r1', 'base/biz', RoutingTestController::class);
+            $configurator->get('r1', 'base/biz', RoutingTestController::class);
+        });
 
         $request = $this->frontendRequest('base/foo');
         $response = $this->runKernel($request);

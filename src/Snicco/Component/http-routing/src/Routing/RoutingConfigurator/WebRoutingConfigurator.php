@@ -20,42 +20,42 @@ interface WebRoutingConfigurator extends RoutingConfigurator
     public function prefix(string $prefix);
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function get(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function post(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function put(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function patch(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function delete(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function options(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      */
     public function any(string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * @param class-string|array{0: class-string, 1:string} $action
+     * @param class-string|array{0: class-string, 1:string}|string $action
      * @param string[] $verbs
      */
     public function match(array $verbs, string $name, string $path, $action = Route::DELEGATE): Route;
@@ -81,5 +81,38 @@ interface WebRoutingConfigurator extends RoutingConfigurator
             'sitemap',
         ]
     ): Route;
+
+    /**
+     * @param string $view
+     * The template identifier. Can be an absolute path or if supported, just the file name.
+     *
+     * @param array<string,scalar> $data
+     * @param array<string,string> $headers
+     *
+     * @see TemplateRenderer::render()
+     */
+    public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []): Route;
+
+    /**
+     * @param array<string,string|int> $query
+     */
+    public function redirect(string $from_path, string $to_path, int $status = 302, array $query = []): Route;
+
+    /**
+     * @param array<string,string|int> $query
+     */
+    public function permanentRedirect(string $from_path, string $to_path, array $query = []): Route;
+
+    /**
+     * @param array<string,string|int> $query
+     */
+    public function temporaryRedirect(string $from_path, string $to_path, array $query = [], int $status = 307): Route;
+
+    public function redirectAway(string $from_path, string $location, int $status = 302): Route;
+
+    /**
+     * @param array<string,string|int> $arguments
+     */
+    public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302): Route;
 
 }

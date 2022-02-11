@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\FalseRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
@@ -20,13 +21,13 @@ class RouteConditionsTest extends HttpRunnerTestCase
      */
     public function custom_conditions_can_be_added_as_a_full_namespace(): void
     {
-        $this->routeConfigurator()
-            ->get('r1', '/foo', RoutingTestController::class)
-            ->condition(MaybeRouteCondition::class, true);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class)
+                ->condition(MaybeRouteCondition::class, true);
 
-        $this->routeConfigurator()
-            ->get('r2', '/bar', RoutingTestController::class)
-            ->condition(MaybeRouteCondition::class, false);
+            $configurator->get('r2', '/bar', RoutingTestController::class)
+                ->condition(MaybeRouteCondition::class, false);
+        });
 
         $request = $this->frontendRequest('/foo');
         $this->runKernel($request)->assertOk()->assertSeeText(RoutingTestController::static);
@@ -40,13 +41,13 @@ class RouteConditionsTest extends HttpRunnerTestCase
      */
     public function the_route_does_not_match_if_the_path_matches_but_the_condition_does_not(): void
     {
-        $this->routeConfigurator()
-            ->get('r1', '/foo/bar', RoutingTestController::class)
-            ->condition(MaybeRouteCondition::class, false);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo/bar', RoutingTestController::class)
+                ->condition(MaybeRouteCondition::class, false);
 
-        $this->routeConfigurator()
-            ->get('r2', '/foo/{param}', [RoutingTestController::class, 'dynamic'])
-            ->condition(MaybeRouteCondition::class, true);
+            $configurator->get('r2', '/foo/{param}', [RoutingTestController::class, 'dynamic'])
+                ->condition(MaybeRouteCondition::class, true);
+        });
 
         $request = $this->frontendRequest('/foo/bar');
 
@@ -56,20 +57,22 @@ class RouteConditionsTest extends HttpRunnerTestCase
 
     /**
      * @test
+     * @psalm-suppress TypeDoesNotContainType
+     * @psalm-suppress DocblockTypeContradiction
      */
     public function multiple_conditions_can_be_combined_and_all_conditions_have_to_pass(): void
     {
         $GLOBALS['test']['maybe_condition_run'] = 0;
 
-        $this->routeConfigurator()
-            ->post('r1', '/foo', RoutingTestController::class)
-            ->condition(MaybeRouteCondition::class, true)
-            ->condition(FalseRouteCondition::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->post('r1', '/foo', RoutingTestController::class)
+                ->condition(MaybeRouteCondition::class, true)
+                ->condition(FalseRouteCondition::class);
 
-        $this->routeConfigurator()
-            ->post('r2', '/bar', RoutingTestController::class)
-            ->condition(MaybeRouteCondition::class, true)
-            ->condition(TrueRouteCondition::class);
+            $configurator->post('r2', '/bar', RoutingTestController::class)
+                ->condition(MaybeRouteCondition::class, true)
+                ->condition(TrueRouteCondition::class);
+        });
 
         $request = $this->frontendRequest('/foo', [], 'POST');
         $this->runKernel($request)->assertDelegated();
@@ -91,33 +94,27 @@ class RouteConditionsTest extends HttpRunnerTestCase
         $this->container[WritableConfig::class] = $config;
         $config->set('foo', 'FOO_CONFIG');
 
-        $this->container->instance(RouteConditionWithDependency::class, function ($pass) {
+        $this->container->instance(RouteConditionWithDependency::class, function (bool $pass) {
             return new RouteConditionWithDependency(
                 $this->container[WritableConfig::class],
                 $pass
             );
         });
 
-        $this->routeConfigurator()->get(
-            'r1',
-            '/foo/{param}',
-            [RoutingTestController::class, 'twoParams']
-        )->condition(
-            RouteConditionWithDependency::class,
-            false
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                '/foo/{param}',
+                [RoutingTestController::class, 'twoParams']
+            )->condition(RouteConditionWithDependency::class, false);
 
-        $this->routeConfigurator()->get(
-            'r2',
-            '/bar/{param}',
-            [RoutingTestController::class, 'twoParams']
-        )
-            ->condition
-            (
-                '!',
-                RouteConditionWithDependency::class,
-                false
-            );
+            $configurator->get(
+                'r2',
+                '/bar/{param}',
+                [RoutingTestController::class, 'twoParams']
+            )->condition('!', RouteConditionWithDependency::class, false);
+        });
+
 
         $response = $this->runKernel($this->frontendRequest('/foo/bar'));
         $response->assertDelegated();

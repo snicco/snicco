@@ -10,7 +10,11 @@ use Traversable;
 
 use function count;
 
-final class RuntimeRouteCollection extends RouteCollection
+/**
+ * @interal
+ * @psalm-immutable
+ */
+final class RuntimeRouteCollection implements Routes
 {
 
     /**

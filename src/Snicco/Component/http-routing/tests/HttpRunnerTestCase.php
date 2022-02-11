@@ -180,7 +180,7 @@ class HttpRunnerTestCase extends TestCase
     /**
      * @param Closure(WebRoutingConfigurator) $loader
      */
-    protected function webRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
+    final protected function webRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
     {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
@@ -204,6 +204,35 @@ class HttpRunnerTestCase extends TestCase
 
         return $this->newRoutingFacade($on_the_fly_loader, $context);
     }
+
+    /**
+     * @param Closure(AdminRoutingConfigurator) $loader
+     */
+    final protected function adminRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
+    {
+        $on_the_fly_loader = new class($loader) implements RouteLoader {
+
+            private Closure $loader;
+
+            public function __construct(Closure $loader)
+            {
+                $this->loader = $loader;
+            }
+
+            public function loadWebRoutes(WebRoutingConfigurator $configurator): void
+            {
+                //
+            }
+
+            public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
+            {
+                call_user_func($this->loader, $configurator);
+            }
+        };
+
+        return $this->newRoutingFacade($on_the_fly_loader, $context);
+    }
+
 
     /**
      * @param array<

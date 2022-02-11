@@ -19,13 +19,13 @@ use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfiguratorUsingRouter;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlEncoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\HttpRouting\Routing\UrlMatcher\AdminRouteMatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteSyntaxConverter;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
@@ -40,12 +40,13 @@ final class Routing
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
     private ?RoutingConfiguratorUsingRouter $routing_configurator = null;
-    private ?Router $router = null;
     private RouteLoader $route_loader;
 
     /**
-     * @param callable(RoutingConfigurator):RouteLoader $route_loader_factory
+     * @var ?array{fast_route:array, route_collection:array<string,string>}
      */
+    private ?array $route_data = null;
+
     public function __construct(
         ContainerInterface $psr_container,
         UrlGenerationContext $context,
@@ -62,17 +63,28 @@ final class Routing
 
     public function urlMatcher(): UrlMatcher
     {
-        return $this->router();
+        return new AdminRouteMatcher(
+            new FastRouteDispatcher(
+                $this->routes(),
+                $this->routeData()['fast_route'],
+                new RouteConditionFactory($this->psr_container)
+            ), $this->admin_area
+        );
     }
 
     public function urlGenerator(): UrlGeneratorInterface
     {
-        return $this->router();
+        return new UrlGenerator(
+            $this->routes(),
+            $this->context,
+            $this->admin_area,
+            $this->url_encoder,
+        );
     }
 
     public function routes(): Routes
     {
-        return $this->router();
+        return new CachedRouteCollection($this->routeData()['route_collection']);
     }
 
     public function adminMenu(): AdminMenu
@@ -80,16 +92,25 @@ final class Routing
         return $this->routingConfigurator();
     }
 
-
-    private function router(): Router
+    private function routingConfigurator(): RoutingConfiguratorUsingRouter
     {
-        if (!isset($this->router)) {
-            $condition_factory = new RouteConditionFactory(
-                $this->psr_container
+        if (!isset($this->routing_configurator)) {
+            $this->routing_configurator = new RoutingConfiguratorUsingRouter(
+                $this->admin_area->urlPrefix(),
             );
+        }
+        return $this->routing_configurator;
+    }
 
+    /**
+     * @return array{fast_route: array, route_collection: array<string,string>}
+     */
+    private function routeData(): array
+    {
+        if (!isset($this->route_data)) {
             $cache = new NullCache();
 
+            /** @var array{fast_route: array, route_collection: array<string,string>} $data */
             $data = $cache->get('foo', function () {
                 $configurator = $this->routingConfigurator();
                 $this->route_loader->loadWebRoutes($configurator);
@@ -118,35 +139,10 @@ final class Routing
                 ];
             });
 
-            $this->router = new Router(
-                $routes = new CachedRouteCollection($data['route_collection']),
-                function (Routes $routes) {
-                    return new UrlGenerator(
-                        $routes,
-                        $this->context,
-                        $this->admin_area,
-                        $this->url_encoder,
-                    );
-                },
-                $this->admin_area,
-                new FastRouteDispatcher(
-                    $routes,
-                    $data['fast_route'],
-                    $condition_factory,
-                )
-            );
+            $this->route_data = $data;
         }
-        return $this->router;
-    }
 
-    private function routingConfigurator(): RoutingConfiguratorUsingRouter
-    {
-        if (!isset($this->routing_configurator)) {
-            $this->routing_configurator = new RoutingConfiguratorUsingRouter(
-                $this->admin_area->urlPrefix(),
-            );
-        }
-        return $this->routing_configurator;
+        return $this->route_data;
     }
 
 }

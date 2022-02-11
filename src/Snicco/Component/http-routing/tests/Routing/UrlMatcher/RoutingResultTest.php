@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
@@ -23,11 +23,6 @@ class RoutingResultTest extends TestCase
 
         $this->assertSame($route, $result->route());
         $this->assertSame($arr, $result->capturedSegments());
-    }
-
-    private function route(): Route
-    {
-        return Route::create('/foo', Route::DELEGATE, 'foo');
     }
 
     /**
@@ -66,6 +61,11 @@ class RoutingResultTest extends TestCase
         $this->assertNull($res->route());
         $this->assertSame([], $res->capturedSegments());
         $this->assertSame([], $res->decodedSegments());
+    }
+
+    private function route(): Route
+    {
+        return Route::create('/foo', Route::DELEGATE, 'foo');
     }
 
 }

@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
+namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
 use RuntimeException;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Webmozart\Assert\Assert;
 

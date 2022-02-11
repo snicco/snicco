@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Routing\Condition\QueryStringCondition;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -16,11 +17,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function url_encoded_routes_can_be_matched_by_their_decoded_path(): void
     {
-        $this->routeConfigurator()->get(
-            'city',
-            '/german-city/{city}',
-            [RoutingTestController::class, 'dynamic']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'city',
+                '/german-city/{city}',
+                [RoutingTestController::class, 'dynamic']
+            );
+        });
 
         $request = $this->frontendRequest('/german-city/münchen');
         $this->assertResponseBody('dynamic:münchen', $request);
@@ -31,14 +34,15 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function non_ascii_routes_can_be_matched(): void
     {
-        // новости = russian for news
-        $this->routeConfigurator()->get('r1', 'новости', [RoutingTestController::class, 'static']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', 'новости', [RoutingTestController::class, 'static']);
+            $configurator->get(
+                'r2',
+                '/foo/{bar}',
+                [RoutingTestController::class, 'dynamic']
+            );
+        });
 
-        $this->routeConfigurator()->get(
-            'r2',
-            '/foo/{bar}',
-            [RoutingTestController::class, 'dynamic']
-        );
 
         $request = $this->frontendRequest(rawurlencode('новости'));
         $this->assertResponseBody('static', $request);
@@ -52,7 +56,9 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function routes_are_case_sensitive(): void
     {
-        $this->routeConfigurator()->get('foo', '/foo', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('foo', '/foo', RoutingTestController::class);
+        });
 
         $this->assertResponseBody('static', $this->frontendRequest('/foo'));
         $this->assertResponseBody('', $this->frontendRequest('/FOO'));
@@ -63,9 +69,11 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function url_encoded_query_string_conditions_work(): void
     {
-        $this->routeConfigurator()->get('r1', '/foo', [RoutingTestController::class, 'dynamic'])
-            ->condition(QueryStringCondition::class, ['page' => 'bayern münchen']
-            );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', [RoutingTestController::class, 'dynamic'])
+                ->condition(QueryStringCondition::class, ['page' => 'bayern münchen']
+                );
+        });
 
         $request = $this->frontendRequest('/foo?page=bayern münchen');
         $this->assertResponseBody('dynamic:bayern münchen', $request);
@@ -76,11 +84,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function route_segments_can_contain_encoded_forward_slashes(): void
     {
-        $this->routeConfigurator()->get(
-            'bands',
-            '/bands/{band}/{song?}',
-            [RoutingTestController::class, 'bandSong']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'bands',
+                '/bands/{band}/{song?}',
+                [RoutingTestController::class, 'bandSong']
+            );
+        });
 
         $request = $this->frontendRequest('https://music.com/bands/AC%2FDC/foo_song');
         $this->assertResponseBody(
@@ -100,7 +110,9 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function urldecoded_route_definitions_can_match_url_encoded_paths(): void
     {
-        $this->routeConfigurator()->get('r1', 'münchen', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', 'münchen', RoutingTestController::class);
+        });
 
         $request = $this->frontendRequest('münchen');
 
@@ -112,7 +124,9 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function routes_can_contain_a_plus_sign(): void
     {
-        $this->routeConfigurator()->get('r1', 'foo+bar', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', 'foo+bar', RoutingTestController::class);
+        });
 
         $request = $this->frontendRequest('/foo+bar');
         $this->assertResponseBody('static', $request);
@@ -123,12 +137,14 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function regex_can_be_added_as_a_condition_as_array_syntax(): void
     {
-        $this->routeConfigurator()->get(
-            'users',
-            'users/{user}',
-            [RoutingTestController::class, 'dynamic']
-        )
-            ->requirements(['user' => '[a]+']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'users',
+                'users/{user}',
+                [RoutingTestController::class, 'dynamic']
+            )
+                ->requirements(['user' => '[a]+']);
+        });
 
         $request = $this->frontendRequest('/users/a');
         $this->assertResponseBody('dynamic:a', $request);
@@ -142,11 +158,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_regex_conditions_can_be_added(): void
     {
-        $this->routeConfigurator()->get(
-            'r1',
-            '/user/{id}/{name}',
-            [RoutingTestController::class, 'twoParams']
-        )->requirements(['id' => '[a]+', 'name' => '[a-z]+']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                '/user/{id}/{name}',
+                [RoutingTestController::class, 'twoParams']
+            )->requirements(['id' => '[a]+', 'name' => '[a-z]+']);
+        });
 
         $request = $this->frontendRequest('/user/a/calvin');
         $this->assertResponseBody('a:calvin', $request);
@@ -163,10 +181,12 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function optional_parameters_work_at_the_end_of_the_url(): void
     {
-        $this->routeConfigurator()->get('r1',
-            'users/{id}/{name?}',
-            [RoutingTestController::class, 'users']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1',
+                'users/{id}/{name?}',
+                [RoutingTestController::class, 'users']
+            );
+        });
 
         $request = $this->frontendRequest('/users/1/calvin');
         $this->assertResponseBody('dynamic:1:calvin', $request);
@@ -180,11 +200,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_parameters_can_be_optional(): void
     {
-        $this->routeConfigurator()->post(
-            'r1',
-            '/team/{name?}/{player?}',
-            [RoutingTestController::class, 'twoOptional']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->post(
+                'r1',
+                '/team/{name?}/{player?}',
+                [RoutingTestController::class, 'twoOptional']
+            );
+        });
 
         $response = $this->frontendRequest('/team', [], 'POST');
         $this->assertResponseBody('default1:default2', $response);
@@ -201,12 +223,14 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_parameters_can_be_optional_with_a_preceding_required_segment(): void
     {
-        // Preceding group is required but not capturing
-        $this->routeConfigurator()->get(
-            'r1',
-            '/static/{name}/{gender?}/{age?}',
-            [RoutingTestController::class, 'requiredAndOptional']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            // Preceding group is required but not capturing
+            $configurator->get(
+                'r1',
+                '/static/{name}/{gender?}/{age?}',
+                [RoutingTestController::class, 'requiredAndOptional']
+            );
+        });
 
         $response = $this->frontendRequest('/static/foo');
         $this->assertResponseBody('foo:default1:default2', $response);
@@ -226,11 +250,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_parameters_can_be_optional_and_have_custom_regex(): void
     {
-        $this->routeConfigurator()->post(
-            'r1',
-            '/team/{id?}/{name?}',
-            [RoutingTestController::class, 'twoOptional']
-        )->requirements(['name' => '[a-z]+', 'id' => '\d+']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->post(
+                'r1',
+                '/team/{id?}/{name?}',
+                [RoutingTestController::class, 'twoOptional']
+            )->requirements(['name' => '[a-z]+', 'id' => '\d+']);
+        });
 
         $response = $this->frontendRequest('/team', [], 'POST');
         $this->assertResponseBody('default1:default2', $response);
@@ -255,18 +281,21 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function adding_regex_can_be_done_as_a_fluent_api(): void
     {
-        $this->routeConfigurator()->get(
-            'r1',
-            'users/{user_id}/{name}',
-            [RoutingTestController::class, 'twoParams']
-        )->requirements(['user_id' => '[a]+'])
-            ->requirements(['name' => 'calvin']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                'users/{user_id}/{name}',
+                [RoutingTestController::class, 'twoParams']
+            )
+                ->requirements(['user_id' => '[a]+'])
+                ->requirements(['name' => 'calvin']);
 
-        $this->routeConfigurator()->get(
-            'r2',
-            'foobar',
-            [RoutingTestController::class, 'twoParams']
-        );
+            $configurator->get(
+                'r2',
+                'foobar',
+                [RoutingTestController::class, 'twoParams']
+            );
+        });
 
         $request = $this->frontendRequest('/users/a/calvin');
         $this->assertResponseBody('a:calvin', $request);
@@ -283,23 +312,23 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_alpha_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->routeConfigurator()->get(
-            'route1',
-            '/route1/{param1}/{param2}',
-            [RoutingTestController::class, 'twoParams']
-        )->requireAlpha('param1');
-
-        $this->routeConfigurator()->get(
-            'route2',
-            'route2/{param1}/{param2}',
-            [RoutingTestController::class, 'twoParams']
-        )->requireAlpha(['param1', 'param2']);
-
-        $this->routeConfigurator()->get(
-            'route3',
-            '/route3/{param1}/{param2}',
-            [RoutingTestController::class, 'twoParams']
-        )->requireAlpha('param1', true);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'route1',
+                '/route1/{param1}/{param2}',
+                [RoutingTestController::class, 'twoParams']
+            )->requireAlpha('param1');
+            $configurator->get(
+                'route2',
+                'route2/{param1}/{param2}',
+                [RoutingTestController::class, 'twoParams']
+            )->requireAlpha(['param1', 'param2']);
+            $configurator->get(
+                'route3',
+                '/route3/{param1}/{param2}',
+                [RoutingTestController::class, 'twoParams']
+            )->requireAlpha('param1', true);
+        });
 
         $request = $this->frontendRequest('/route1/foo/a');
         $this->assertResponseBody('foo:a', $request);
@@ -330,19 +359,21 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->routeConfigurator()->get(
-            'route1',
-            'route1/{name}',
-            [RoutingTestController::class, 'dynamic']
-        )
-            ->requireAlphaNum('name');
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'route1',
+                'route1/{name}',
+                [RoutingTestController::class, 'dynamic']
+            )
+                ->requireAlphaNum('name');
 
-        $this->routeConfigurator()->get(
-            'route2',
-            'route2/{name}',
-            [RoutingTestController::class, 'dynamic']
-        )
-            ->requireAlphaNum('name', true);
+            $configurator->get(
+                'route2',
+                'route2/{name}',
+                [RoutingTestController::class, 'dynamic']
+            )
+                ->requireAlphaNum('name', true);
+        });
 
         $request = $this->frontendRequest('/route1/foo');
         $this->assertResponseBody('dynamic:foo', $request);
@@ -365,12 +396,14 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_number_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->routeConfigurator()->get(
-            'route1',
-            'route1/{name}',
-            [RoutingTestController::class, 'dynamicInt']
-        )
-            ->requireNum('name');
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'route1',
+                'route1/{name}',
+                [RoutingTestController::class, 'dynamicInt']
+            )
+                ->requireNum('name');
+        });
 
         $request = $this->frontendRequest('/route1/1');
         $this->assertResponseBody('dynamic:1', $request);
@@ -384,11 +417,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_one_of_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->routeConfigurator()->get(
-            'route1',
-            'route1/{name}',
-            [RoutingTestController::class, 'dynamicInt']
-        )->requireOneOf('name', [1, 2, 3]);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'route1',
+                'route1/{name}',
+                [RoutingTestController::class, 'dynamicInt']
+            )->requireOneOf('name', [1, 2, 3]);
+        });
 
         $request = $this->frontendRequest('/route1/1');
         $this->assertResponseBody('dynamic:1', $request);
@@ -408,11 +443,13 @@ class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function segments_can_be_added_before_path_segments(): void
     {
-        $this->routeConfigurator()->get(
-            'city',
-            '{language}/foo/{page}',
-            [RoutingTestController::class, 'twoParams']
-        );
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'city',
+                '{language}/foo/{page}',
+                [RoutingTestController::class, 'twoParams']
+            );
+        });
 
         $request = $this->frontendRequest('/en/foo/bar');
         $this->assertResponseBody('en:bar', $request);

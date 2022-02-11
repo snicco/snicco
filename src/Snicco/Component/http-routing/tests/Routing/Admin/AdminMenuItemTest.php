@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\Admin;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;

@@ -17,7 +17,6 @@ use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
-use Snicco\Component\HttpRouting\Routing\UrlMatcher\RouteGroup;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
@@ -92,12 +91,12 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
 
         $this->validateThatAdminRouteHasNoSegments($route);
 
-        // Route handling is delegated, we don't need a menu item.
-        if (Route::DELEGATE === $action) {
-            return $route;
+        // It makes no sense to have a menu item without a dedicated action to handle it.
+        if (Route::DELEGATE === $action && !empty($menu_attributes)) {
+            throw new BadRouteConfiguration("Route [$name] can not have an admin menu item without an action.");
         }
-        // A menu item should explicitly not be added
-        if (null === $menu_attributes) {
+        // A menu item should explicitly not be added.
+        if (null === $menu_attributes || Route::DELEGATE === $action) {
             return $route;
         }
 
@@ -155,19 +154,44 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         return $this;
     }
 
-    public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []): Route
+    /**
+     * @psalm-suppress UnresolvableInclude
+     * @psalm-suppress MixedAssignment
+     */
+    public function include($file_or_closure): void
     {
-        $name = 'view:' . Str::afterLast($view, '/');
+        $routes = $file_or_closure;
+        if (!$routes instanceof Closure) {
+            Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
+            Assert::readable($file_or_closure, "The file $file_or_closure is not readable.");
+            Assert::isInstanceOf(
+                $routes = require $file_or_closure,
+                Closure::class,
+                sprintf(
+                    "Requiring the file [%s] has to return a closure.\nGot: [%s]",
+                    $file_or_closure,
+                    gettype($file_or_closure)
+                )
+            );
+        }
 
-        $route = $this->match(['GET', 'HEAD'], $name, $path, [ViewController::class, 'handle']);
-        $route->defaults([
-            'view' => $view,
-            'data' => $data,
-            'status' => $status,
-            'headers' => $headers,
-        ]);
+        /** @var Closure(self):void $routes */
+        $this->group($routes);
+    }
 
-        return $route;
+    public function getIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->items());
+    }
+
+    public function items(): array
+    {
+        return array_values($this->menu_items);
+    }
+
+    public function configuredRoutes(): Routes
+    {
+        return new RuntimeRouteCollection($this->routes);
     }
 
     public function permanentRedirect(string $from_path, string $to_path, array $query = []): Route
@@ -215,44 +239,19 @@ final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, Ad
         ]);
     }
 
-    /**
-     * @psalm-suppress UnresolvableInclude
-     * @psalm-suppress MixedAssignment
-     */
-    public function include($file_or_closure): void
+    public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []): Route
     {
-        $routes = $file_or_closure;
-        if (!$routes instanceof Closure) {
-            Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
-            Assert::readable($file_or_closure, "The file $file_or_closure is not readable.");
-            Assert::isInstanceOf(
-                $routes = require $file_or_closure,
-                Closure::class,
-                sprintf(
-                    "Requiring the file [%s] has to return a closure.\nGot: [%s]",
-                    $file_or_closure,
-                    gettype($file_or_closure)
-                )
-            );
-        }
+        $name = 'view:' . Str::afterLast($view, '/');
 
-        /** @var Closure(self):void $routes */
-        $this->group($routes);
-    }
+        $route = $this->match(['GET', 'HEAD'], $name, $path, [ViewController::class, 'handle']);
+        $route->defaults([
+            'view' => $view,
+            'data' => $data,
+            'status' => $status,
+            'headers' => $headers,
+        ]);
 
-    public function getIterator(): ArrayIterator
-    {
-        return new ArrayIterator($this->items());
-    }
-
-    public function items(): array
-    {
-        return array_values($this->menu_items);
-    }
-
-    public function configuredRoutes(): Routes
-    {
-        return new RuntimeRouteCollection($this->routes);
+        return $route;
     }
 
     public function get(string $name, string $path, $action = Route::DELEGATE): Route

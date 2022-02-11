@@ -72,7 +72,7 @@ use function preg_match;
  *
  * @interal
  */
-final class FastRouteDispatcher
+final class FastRouteDispatcher implements UrlMatcher
 {
 
     private Routes $routes;
@@ -98,8 +98,11 @@ final class FastRouteDispatcher
      */
     private $dynamic_route_map;
 
-    public function __construct(Routes $routes, array $data, RouteConditionFactory $condition_factory)
-    {
+    public function __construct(
+        Routes $routes,
+        array $data,
+        RouteConditionFactory $condition_factory
+    ) {
         $this->routes = $routes;
         [$this->static_route_map, $this->dynamic_route_map] = $data;
         Assert::isArray($this->static_route_map);

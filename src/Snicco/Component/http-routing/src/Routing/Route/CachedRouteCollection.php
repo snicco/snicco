@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use ArrayIterator;
-use BadMethodCallException;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Traversable;
 use Webmozart\Assert\Assert;
@@ -13,7 +12,10 @@ use Webmozart\Assert\Assert;
 use function count;
 use function unserialize;
 
-final class CachedRouteCollection extends RouteCollection
+/**
+ * @psalm-external-mutation-free
+ */
+final class CachedRouteCollection implements Routes
 {
 
     /**
@@ -76,11 +78,6 @@ final class CachedRouteCollection extends RouteCollection
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->toArray());
-    }
-
-    public function add(Route $route): void
-    {
-        throw new BadMethodCallException('Routes cant be added to a cached route collection.');
     }
 
     private function isFullyHydrated(): bool

@@ -9,6 +9,9 @@ use IteratorAggregate;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Traversable;
 
+/**
+ * @psalm-external-mutation-free
+ */
 interface Routes extends Countable, IteratorAggregate
 {
 

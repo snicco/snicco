@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
@@ -17,7 +17,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->view = dirname(__DIR__) . '/fixtures/templates/greeting.php';
+        $this->view = dirname(__DIR__, 2) . '/fixtures/templates/greeting.php';
     }
 
     /**
@@ -25,7 +25,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
      */
     public function view_routes_work(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->view(
                 '/foo',
                 $this->view
@@ -39,7 +39,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $response->assertSeeHtml('Hello World');
         $response->assertIsHtml();
 
-        $this->assertSame('/foo', $this->generator()->toRoute('view:greeting.php'));
+        $this->assertSame('/foo', $routing->urlGenerator()->toRoute('view:greeting.php'));
     }
 
     /**
@@ -47,7 +47,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
      */
     public function the_default_values_can_be_customized_for_view_routes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->view(
                 '/foo',
                 $this->view,
@@ -65,7 +65,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $response->assertIsHtml();
         $response->assertHeader('X-FOO', 'BAR');
 
-        $this->assertSame('/foo', $this->generator()->toRoute('view:greeting.php'));
+        $this->assertSame('/foo', $routing->urlGenerator()->toRoute('view:greeting.php'));
     }
 
 }
