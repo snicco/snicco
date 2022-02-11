@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Http;
 
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 interface Redirector
 {
@@ -22,7 +22,7 @@ interface Redirector
     /**
      * @param array<string,string|int> $arguments
      * @throws RouteNotFound
-     * @see UrlGeneratorInterface::toRoute()
+     * @see UrlGenerator::toRoute()
      */
     public function toRoute(string $name, array $arguments = [], int $status_code = 302): RedirectResponse;
 
@@ -59,7 +59,7 @@ interface Redirector
      *
      * @param array<string,string|int> $query
      *
-     * @see UrlGeneratorInterface::to()
+     * @see UrlGenerator::to()
      */
     public function to(string $path, int $status_code = 302, array $query = []): RedirectResponse;
 

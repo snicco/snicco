@@ -12,9 +12,9 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 
 final class CreatesPsrRequestsTests extends TestCase
@@ -132,9 +132,9 @@ final class CreatesPsrRequestsTests extends TestCase
         return 'foo.com';
     }
 
-    protected function urlGenerator(): UrlGeneratorInterface
+    protected function urlGenerator(): UrlGenerator
     {
-        return new UrlGenerator(
+        return new Generator(
             new RuntimeRouteCollection([]),
             UrlGenerationContext::forConsole($this->host),
             $this->adminArea()
