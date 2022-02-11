@@ -255,7 +255,7 @@ class HttpRunnerTestCase extends TestCase
         $this->always_run = $group_names;
     }
 
-    private function newRoutingFacade(
+    protected function newRoutingFacade(
         RouteLoader $loader,
         ?RouteCache $cache = null,
         UrlGenerationContext $context = null

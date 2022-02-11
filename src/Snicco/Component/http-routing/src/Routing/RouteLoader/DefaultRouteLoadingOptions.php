@@ -33,7 +33,7 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
             $prefix = $this->api_base_prefix->append($file_basename)->asString();
         }
 
-        $api_middleware = ['api'];
+        $api_middleware = [RoutingConfigurator::API_MIDDLEWARE];
         if ($this->add_middleware_for_api_files) {
             $api_middleware[] = $file_basename;
         }

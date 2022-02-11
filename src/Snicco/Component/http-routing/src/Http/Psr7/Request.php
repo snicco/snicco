@@ -65,11 +65,7 @@ final class Request implements ServerRequestInterface
     public function url(): string
     {
         $full = (string)$this->getUri();
-        $res = preg_replace('/\?.*/', '', $full);
-        if (null === $res) {
-            throw new RuntimeException("preg_replace_threw an error for url [$res].");
-        }
-        return $res;
+        return Str::pregReplace('/\?.*/', '', $full);
     }
 
     /**

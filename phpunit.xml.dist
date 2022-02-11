@@ -47,7 +47,7 @@
         </testsuite>
     </testsuites>
 
-    <coverage includeUncoveredFiles="true">
+    <coverage includeUncoveredFiles="true" processUncoveredFiles="true">
         <include>
             <directory>./src/Snicco/*</directory>
         </include>

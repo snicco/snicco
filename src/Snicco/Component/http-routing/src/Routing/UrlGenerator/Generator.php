@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
 use InvalidArgumentException;
-use RuntimeException;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteParameter;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\StrArr\Str;
-use Webmozart\Assert\Assert;
 
 use function array_diff_key;
 use function array_key_exists;
@@ -24,7 +22,6 @@ use function preg_match;
 use function rtrim;
 use function str_replace;
 use function strpos;
-use function substr;
 use function trim;
 
 final class Generator implements UrlGenerator
@@ -212,9 +209,7 @@ final class Generator implements UrlGenerator
 
         $scheme = $this->requiredScheme($secure);
 
-        Assert::notContains($scheme, '://');
-
-        return $scheme . '://' . $this->formatType($target, $type, $scheme);
+        return $scheme . '://' . $this->withHostAndPort($target, $scheme);
     }
 
     /**
@@ -230,23 +225,19 @@ final class Generator implements UrlGenerator
         $fragment = '';
 
         if ($query_pos !== false) {
-            $path = substr($path_with_query_and_fragment, 0, $query_pos);
-            $query_string = substr($path_with_query_and_fragment, $query_pos + 1);
+            $path = Str::substr($path_with_query_and_fragment, 0, $query_pos);
+            $query_string = Str::substr($path_with_query_and_fragment, $query_pos + 1);
         }
 
         if ($fragment_pos !== false) {
-            $path = substr($path_with_query_and_fragment, 0, $fragment_pos);
-            $fragment = substr($path_with_query_and_fragment, $fragment_pos + 1);
-        }
-
-        if (false === $path) {
-            throw new RuntimeException("Could not parse path segment from string [$path_with_query_and_fragment].");
+            $path = Str::substr($path_with_query_and_fragment, 0, $fragment_pos);
+            $fragment = Str::substr($path_with_query_and_fragment, $fragment_pos + 1);
         }
 
         return [
             $path,
-            ($query_string === false) ? '' : $query_string,
-            ($fragment === false) ? '' : $fragment,
+            $query_string,
+            $fragment,
         ];
     }
 
@@ -315,20 +306,11 @@ final class Generator implements UrlGenerator
             return 'https';
         }
 
-        $scheme = $this->context->currentScheme();
-
-        if (false === strpos($scheme, 'http')) {
-            return 'https';
-        }
-        return $scheme;
+        return $this->context->currentScheme();
     }
 
-    private function formatType(string $valid_url_or_path, int $type, string $scheme): string
+    private function withHostAndPort(string $valid_url_or_path, string $scheme): string
     {
-        if ($type === self::ABSOLUTE_PATH) {
-            return $valid_url_or_path;
-        }
-
         $port = '';
 
         if ($scheme === 'https') {

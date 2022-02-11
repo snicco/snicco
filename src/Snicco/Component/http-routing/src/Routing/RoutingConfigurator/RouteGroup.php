@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
-use RuntimeException;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
+use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
-use function preg_replace;
 use function trim;
 
 /**
@@ -66,15 +65,8 @@ final class RouteGroup
     private function mergeName(string $old): string
     {
         // Remove leading and trailing dots.
-        $new = preg_replace('/^\.+|\.+$/', '', $this->name);
-        $_old = preg_replace('/^\.+|\.+$/', '', $old);
-
-        if (null === $new) {
-            throw new RuntimeException("preg_replace failed for string [{$this->name}}].");
-        }
-        if (null === $_old) {
-            throw new RuntimeException("preg_replace failed for string [$old].");
-        }
+        $new = Str::pregReplace('/^\.+|\.+$/', '', $this->name);
+        $_old = Str::pregReplace('/^\.+|\.+$/', '', $old);
 
         return trim($_old . '.' . $new, '.');
     }

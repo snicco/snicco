@@ -42,7 +42,11 @@ final class Routing
     private UrlEncoder $url_encoder;
     private RouteCache $cache;
     private RouteLoader $route_loader;
+
     private ?Configurator $routing_configurator = null;
+    private ?UrlMatcher $url_matcher = null;
+    private ?UrlGenerator $url_generator = null;
+    private ?Routes $routes = null;
 
     /**
      * @var ?array{url_matcher:array, route_collection:array<string,string>}
@@ -67,28 +71,37 @@ final class Routing
 
     public function urlMatcher(): UrlMatcher
     {
-        return new AdminRouteMatcher(
-            new FastRouteDispatcher(
-                $this->routes(),
-                $this->routeData()['url_matcher'],
-                new RouteConditionFactory($this->psr_container)
-            ), $this->admin_area
-        );
+        if (!isset($this->url_matcher)) {
+            $this->url_matcher = new AdminRouteMatcher(
+                new FastRouteDispatcher(
+                    $this->routes(),
+                    $this->routeData()['url_matcher'],
+                    new RouteConditionFactory($this->psr_container)
+                ), $this->admin_area
+            );
+        }
+        return $this->url_matcher;
     }
 
     public function urlGenerator(): UrlGenerator
     {
-        return new Generator(
-            $this->routes(),
-            $this->context,
-            $this->admin_area,
-            $this->url_encoder,
-        );
+        if (!isset($this->url_generator)) {
+            $this->url_generator = new Generator(
+                $this->routes(),
+                $this->context,
+                $this->admin_area,
+                $this->url_encoder,
+            );
+        }
+        return $this->url_generator;
     }
 
     public function routes(): Routes
     {
-        return new CachedRouteCollection($this->routeData()['route_collection']);
+        if (!isset($this->routes)) {
+            $this->routes = new CachedRouteCollection($this->routeData()['route_collection']);
+        }
+        return $this->routes;
     }
 
     public function adminMenu(): AdminMenu

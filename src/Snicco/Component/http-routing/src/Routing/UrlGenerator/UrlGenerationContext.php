@@ -13,7 +13,12 @@ final class UrlGenerationContext
 {
 
     private string $host;
+
+    /**
+     * @var string "http"|"https"
+     */
     private string $current_scheme;
+
     private string $current_uri_as_string;
     private int $https_port;
     private int $http_port;
@@ -133,6 +138,9 @@ final class UrlGenerationContext
         return $this->host;
     }
 
+    /**
+     * @return string "http"|"https"
+     */
     public function currentScheme(): string
     {
         return $this->current_scheme;

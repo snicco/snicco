@@ -12,7 +12,7 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class UrlGeneratorTest extends HttpRunnerTestCase
+class GeneratorTest extends HttpRunnerTestCase
 {
 
     protected string $app_domain = 'foobar.com';
@@ -77,6 +77,9 @@ class UrlGeneratorTest extends HttpRunnerTestCase
             UrlGenerator::ABSOLUTE_URL
         );
         $this->assertSame('https://foobar.com/foo?boom=bam&bar=baz', $url);
+
+        $url = $this->generator()->to('foo?', ['bar' => 'baz']);
+        $this->assertSame('/foo?bar=baz', $url);
     }
 
     /**
@@ -222,6 +225,9 @@ class UrlGeneratorTest extends HttpRunnerTestCase
 
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
         $this->assertSame('http://foo.com/foo', $url);
+
+        $url = $generator->to('/foo', ['bar' => 'baz'], UrlGenerator::ABSOLUTE_PATH, false);
+        $this->assertSame('/foo?bar=baz', $url);
     }
 
     /**

@@ -103,13 +103,17 @@ final class FastRouteSyntaxConverter
 
         $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
             if (!isset($match[0])) {
+                // @codeCoverageIgnoreStart
                 return $regex;
+                // @codeCoverageIgnoreEnd
             }
             return $match[0] . ':' . $regex;
         }, $url, 1);
 
         if (null == $url) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("preg_replace_callback returned an error for url [$url].");
+            // @codeCoverageIgnoreEnd
         }
 
         return rtrim($url, '/');

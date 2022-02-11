@@ -52,6 +52,15 @@ final class RFC3986EncoderTest extends TestCase
     /**
      * @test
      */
+    public function test_encode_empty_array_return_empty_string(): void
+    {
+        $res = (new RFC3986Encoder())->encodeQuery([]);
+        $this->assertSame('', $res);
+    }
+
+    /**
+     * @test
+     */
     public function test_encodeFragment(): void
     {
         $allowed = array_keys(RFC3986Encoder::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA);
