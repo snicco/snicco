@@ -38,7 +38,7 @@ final class StrTest extends TestCase
         $this->assertSame('ГДЖ', Str::substr('БГДЖИЛЁ', 1, 3));
         $this->assertSame('БГДЖ', Str::substr('БГДЖИЛЁ', 0, 4));
         $this->assertSame('Ё', Str::substr('БГДЖИЛЁ', -1, 1));
-        $this->assertEmpty(Str::substr('Б', 2));
+        $this->assertSame('', Str::substr('Б', 2));
     }
 
     /**
@@ -365,6 +365,19 @@ final class StrTest extends TestCase
         // Test for multibyte string support
         $this->assertSame('Jxxxnköping Malmö', Str::replaceFirst('ö', 'xxx', 'Jönköping Malmö'));
         $this->assertSame('Jönköping Malmö', Str::replaceFirst('', 'yyy', 'Jönköping Malmö'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_pregReplace(): void
+    {
+        $str = '.....foo.....';
+
+        $this->assertSame('foo', Str::pregReplace('/^\.+|\.+$/', '', $str));
+
+        $this->assertSame('Malmo', Str::pregReplace('/[ö].+/', 'o', 'Malmööö'));
+        $this->assertSame('Malmooo', Str::pregReplace('/[ö]/', 'o', 'Malmööö'));
     }
 
 }

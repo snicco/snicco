@@ -211,7 +211,7 @@ final class Route
 
     /**
      * @param class-string<RouteCondition>|'!' $condition
-     * @param mixed $args
+     * @param scalar $args
      */
     public function condition(string $condition, ...$args): Route
     {

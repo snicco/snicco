@@ -35,8 +35,10 @@ use function mb_strpos;
 use function mb_strrpos;
 use function mb_strtoupper;
 use function mb_substr;
+use function preg_last_error;
 use function preg_match;
 use function preg_quote;
+use function preg_replace;
 use function random_bytes;
 use function str_replace;
 use function strlen;
@@ -47,7 +49,13 @@ use function strstr;
 use function substr;
 use function substr_replace;
 
-final class Str
+use const PREG_BACKTRACK_LIMIT_ERROR;
+use const PREG_BAD_UTF8_ERROR;
+use const PREG_BAD_UTF8_OFFSET_ERROR;
+use const PREG_INTERNAL_ERROR;
+use const PREG_RECURSION_LIMIT_ERROR;
+
+class Str
 {
 
     /**
@@ -298,6 +306,43 @@ final class Str
         }
 
         return $subject;
+    }
+
+    /**
+     * @psalm-pure
+     * @psalm-suppress ImpureFunctionCall We analyse with PHP7.4
+     */
+    public static function pregReplace(string $pattern, string $replace, string $subject): string
+    {
+        $res = preg_replace($pattern . 'u', $replace, $subject);
+        if (null === $res) {
+            $code = preg_last_error();
+
+            switch ($code) {
+                case PREG_INTERNAL_ERROR:
+                    $message = 'Internal Error';
+                    break;
+                case PREG_BACKTRACK_LIMIT_ERROR:
+                    $message = 'Backtrack limit was exhausted';
+                    break;
+                case PREG_RECURSION_LIMIT_ERROR:
+                    $message = 'Recursion limit was exhausted';
+                    break;
+                case PREG_BAD_UTF8_ERROR:
+                    $message = 'Malformed UTF-8 data';
+                    break;
+                case PREG_BAD_UTF8_OFFSET_ERROR:
+                    $message = 'Offset didn\'t correspond to the begin of a valid UTF-8 code point';
+                    break;
+                default:
+                    $message = 'Unknown Error';
+            }
+
+            throw new RuntimeException(
+                "preg_replace failed. $message\nPattern: [$pattern]\nReplacement: [$pattern].\nSubject: [$subject]."
+            );
+        }
+        return $res;
     }
 
 }

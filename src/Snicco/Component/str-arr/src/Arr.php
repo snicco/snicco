@@ -40,7 +40,7 @@ use function is_string;
 use function sprintf;
 use function strpos;
 
-final class Arr
+class Arr
 {
 
     /**

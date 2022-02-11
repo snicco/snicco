@@ -38,7 +38,7 @@ interface RoutingConfigurator
     public function namespace(string $namespace);
 
     /**
-     * @param Closure($this):void $create_routes
+     * @param Closure(static) $create_routes
      *
      * @param array{
      *     namespace?:string,
@@ -51,7 +51,7 @@ interface RoutingConfigurator
     public function group(Closure $create_routes, array $extra_attributes = []): void;
 
     /**
-     * @param string|Closure($this) $file_or_closure Either the full path to route file that will
+     * @param string|Closure(static) $file_or_closure Either the full path to route file that will
      *                                                  return a closure or the closure itself
      */
     public function include($file_or_closure): void;

@@ -61,10 +61,22 @@ class RouteAttributesTest extends HttpRunnerTestCase
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('foo', '/foo', RoutingTestController::class);
+            $configurator->get('bar', '/foo/{param}', [RoutingTestController::class, 'dynamic']);
         });
 
-        $request = $this->frontendRequest('/foo', [], 'HEAD');
+        $request = $this->frontendRequest('/foo', [], 'GET');
+        $response = $this->runKernel($request);
+        $response->assertOk()->assertBodyExact(RoutingTestController::static);
 
+        $request = $this->frontendRequest('/foo', [], 'HEAD');
+        $response = $this->runKernel($request);
+        $response->assertOk()->assertBodyExact('');
+
+        $request = $this->frontendRequest('/foo/bar', [], 'GET');
+        $response = $this->runKernel($request);
+        $response->assertOk()->assertBodyExact('dynamic:bar');
+
+        $request = $this->frontendRequest('/foo/bar', [], 'HEAD');
         $response = $this->runKernel($request);
         $response->assertOk()->assertBodyExact('');
     }

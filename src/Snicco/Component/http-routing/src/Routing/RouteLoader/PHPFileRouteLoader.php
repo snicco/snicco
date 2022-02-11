@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\RouteLoader;
 
 use Closure;
 use InvalidArgumentException;
-use LogicException;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
@@ -21,40 +20,58 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Webmozart\Assert\Assert;
 
+use function iterator_to_array;
+
 
 final class PHPFileRouteLoader implements RouteLoader
 {
 
     public const VERSION_FLAG = '-v';
-
     public const FRONTEND_ROUTE_FILENAME = 'frontend';
-
     public const ADMIN_ROUTE_FILENAME = 'admin';
 
     // Match all files that end with ".php" and don't start with an underscore.
     // https://regexr.com/691di
     private const SEARCH_PATTERN = '/^[^_].+\.php$/';
 
-    private RoutingConfigurator $routing_configurator;
-
     private RouteLoadingOptions $options;
 
-    public function __construct(RoutingConfigurator $routing_configurator, RouteLoadingOptions $options)
+    /**
+     * @var string[]
+     */
+    private array $route_directories;
+
+    /**
+     * @var string[]
+     */
+    private array $api_route_directories;
+
+    /**
+     * @param string[] $route_directories
+     * @param string[] $api_route_directories
+     * @param RouteLoadingOptions $options
+     */
+    public function __construct(array $route_directories, array $api_route_directories, RouteLoadingOptions $options)
     {
-        Assert::isInstanceOf($routing_configurator, WebRoutingConfigurator::class);
-        Assert::isInstanceOf($routing_configurator, AdminRoutingConfigurator::class);
-        $this->routing_configurator = $routing_configurator;
+        Assert::allString($route_directories, '$route_directories has to be a list of readable directory paths.');
+        Assert::allReadable($route_directories, '$route_directories has to be a list of readable directory paths.');
+        Assert::allString($api_route_directories, '$api_route_directories has to be a list of valid directory paths.');
+        Assert::allReadable(
+            $api_route_directories,
+            '$api_route_directories has to be a list of valid directory paths.'
+        );
+        $this->route_directories = $route_directories;
+        $this->api_route_directories = $api_route_directories;
         $this->options = $options;
     }
 
-    /**
-     * @throws ReflectionException
-     */
-    public function loadRoutesIn(array $directories): void
+    public function loadWebRoutes(WebRoutingConfigurator $configurator): void
     {
+        $this->loadApiRoutesIn($configurator);
+
         $frontend_routes = null;
-        $finder = $this->getFiles($directories);
-        foreach ($finder as $file) {
+        $files = $this->getFiles($this->route_directories);
+        foreach ($files as $file) {
             $name = $file->getFilenameWithoutExtension();
 
             // Make sure that the frontend.php file is always loaded last
@@ -66,24 +83,45 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getRouteAttributes($name);
 
-            $this->requireFile($file, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
+            /** @var Closure(WebRoutingConfigurator) $closure */
+            $closure = $this->requireFile($file, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
+
+            $configurator->group($closure, $attributes);
         }
 
         if ($frontend_routes) {
             $attributes = $this->options->getRouteAttributes(self::FRONTEND_ROUTE_FILENAME);
-            $this->requireFile($frontend_routes, $attributes);
+            $closure = $this->requireFile($frontend_routes, $attributes);
+            /** @var Closure(WebRoutingConfigurator) $closure */
+            $configurator->group($closure, $attributes);
         }
     }
 
-    /**
-     * @throws ReflectionException
-     */
-    public function loadApiRoutesIn(array $directories): void
+    public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
     {
-        foreach ($this->getFiles($directories) as $file) {
+        $finder = $this->getFiles($this->route_directories);
+        foreach ($finder as $file) {
             $name = $file->getFilenameWithoutExtension();
 
-            Assert::notSame(
+            if (self::ADMIN_ROUTE_FILENAME !== $name) {
+                continue;
+            }
+
+            $attributes = $this->options->getRouteAttributes($name);
+
+            $closure = $this->requireFile($file, $attributes, true);
+
+            /** @var Closure(AdminRoutingConfigurator) $closure */
+            $configurator->group($closure, $attributes);
+        }
+    }
+
+    private function loadApiRoutesIn(WebRoutingConfigurator $configurator): void
+    {
+        foreach ($this->getFiles($this->api_route_directories) as $file) {
+            $name = $file->getFilenameWithoutExtension();
+
+            Assert::notEq(
                 $name,
                 self::FRONTEND_ROUTE_FILENAME,
                 sprintf(
@@ -91,12 +129,23 @@ final class PHPFileRouteLoader implements RouteLoader
                     self::FRONTEND_ROUTE_FILENAME . '.php'
                 )
             );
+            Assert::notEq(
+                $name,
+                self::ADMIN_ROUTE_FILENAME,
+                sprintf(
+                    '[%s] is a reserved filename and can not be loaded as an API file.',
+                    self::ADMIN_ROUTE_FILENAME . '.php'
+                )
+            );
 
             [$name, $version] = $this->parseNameAndVersion($name);
 
             $attributes = $this->options->getApiRouteAttributes($name, $version);
 
-            $this->requireFile($file, $attributes);
+            $closure = $this->requireFile($file, $attributes);
+
+            /** @var Closure(WebRoutingConfigurator) $closure */
+            $configurator->group($closure, $attributes);
         }
     }
 
@@ -109,19 +158,12 @@ final class PHPFileRouteLoader implements RouteLoader
      * } $attributes
      *
      * @throws ReflectionException
-     *
      * @psalm-suppress UnresolvableInclude
      *
      */
-    private function requireFile(SplFileInfo $file, array $attributes = [], bool $is_admin_file = false): void
+    private function requireFile(SplFileInfo $file, array $attributes = [], bool $is_admin_file = false): Closure
     {
         $this->validateAttributes($attributes);
-
-        if (!$file->isReadable()) {
-            throw new LogicException(
-                "Route file [{$file->getRealPath()}] is not readable."
-            );
-        }
 
         $closure = require $file;
 
@@ -137,17 +179,18 @@ final class PHPFileRouteLoader implements RouteLoader
             $is_admin_file
         );
 
-        /** @var Closure(RoutingConfigurator):void $closure */
-        $this->routing_configurator->group(
-            $closure,
-            $attributes
-        );
+        return $closure;
     }
 
-    private function getFiles(array $route_directories): Finder
+    /**
+     * @param string[] $route_directories
+     * @return SplFileInfo[]
+     */
+    private function getFiles(array $route_directories): array
     {
-        Assert::allString($route_directories);
-        Assert::allReadable($route_directories);
+        if (empty($route_directories)) {
+            return [];
+        }
 
         $finder = new Finder();
         $finder->in($route_directories)
@@ -155,7 +198,7 @@ final class PHPFileRouteLoader implements RouteLoader
             ->files()
             ->name(self::SEARCH_PATTERN);
 
-        return $finder;
+        return iterator_to_array($finder);
     }
 
     /**
@@ -173,11 +216,11 @@ final class PHPFileRouteLoader implements RouteLoader
                 case RoutingConfigurator::MIDDLEWARE_KEY:
                     Assert::isArray(
                         $value,
-                        'Middleware for api options has to be an array of strings.'
+                        'Middleware for route-loading options has to be an array of strings.'
                     );
                     Assert::allString(
                         $value,
-                        'Middleware for api options has to be an array of strings.'
+                        'Middleware for route-loading options has to be an array of strings.'
                     );
                     break;
                 case RoutingConfigurator::PREFIX_KEY:
@@ -216,9 +259,8 @@ final class PHPFileRouteLoader implements RouteLoader
     }
 
     /**
-     * @throws ReflectionException
-     *
      * @psalm-suppress PossiblyUndefinedIntArrayOffset
+     * @throws ReflectionException
      */
     private function validateClosureTypeHint(Closure $closure, string $filepath, bool $is_admin_file = false): void
     {
@@ -301,5 +343,4 @@ final class PHPFileRouteLoader implements RouteLoader
         }
         return [$filename, null];
     }
-
 }

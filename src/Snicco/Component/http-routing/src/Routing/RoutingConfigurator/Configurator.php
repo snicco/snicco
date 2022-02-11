@@ -111,7 +111,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             throw new BadRouteConfiguration(
                 sprintf(
                     'Nested calls to [%s] are not possible.',
-                    implode('::', [AdminRoutingConfigurator::class, 'subPages'])
+                    __METHOD__
                 )
             );
         }
@@ -124,6 +124,9 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         unset($this->current_parent_route);
     }
 
+    /**
+     * @psalm-suppress ArgumentTypeCoercion {@see https://github.com/vimeo/psalm/issues/7644}
+     */
     public function group(Closure $create_routes, array $extra_attributes = []): void
     {
         $attributes = array_merge($this->delegate_attributes, $extra_attributes);
@@ -256,7 +259,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     public function get(string $name, string $path, $action = Route::DELEGATE): Route
     {
-        return $this->addWebRoute($name, $path, ['GET', 'HEAD'], $action);
+        return $this->addWebRoute($name, $path, ['GET'], $action);
     }
 
     public function post(string $name, string $path, $action = Route::DELEGATE): Route
