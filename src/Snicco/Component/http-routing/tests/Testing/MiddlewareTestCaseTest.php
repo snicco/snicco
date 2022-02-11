@@ -7,19 +7,17 @@ namespace Snicco\Component\HttpRouting\Tests\Testing;
 use PHPUnit\Framework\ExpectationFailedException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 
 class MiddlewareTestCaseTest extends MiddlewareTestCase
 {
 
     use CreateTestPsr17Factories;
-    use CreateTestPsrContainer;
 
     /**
      * @test

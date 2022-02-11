@@ -99,8 +99,6 @@ parameters:
     http_routing:
       - psr7_error_handler
       - str_arr
-      - pimple # test only
-      - kernel # test only
 
     session:
       - str_arr
