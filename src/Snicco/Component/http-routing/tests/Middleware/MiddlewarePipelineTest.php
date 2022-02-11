@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use PHPUnit\Framework\TestCase;
+use Pimple\Container;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -23,15 +25,12 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
-use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
 class MiddlewarePipelineTest extends TestCase
 {
 
-    use CreateTestPsrContainer;
     use CreateTestPsr17Factories;
     use CreateHttpErrorHandler;
     use CreateUrlGenerator;
@@ -39,20 +38,29 @@ class MiddlewarePipelineTest extends TestCase
     private MiddlewarePipeline $pipeline;
     private Request $request;
     private ResponseFactory $response_factory;
-    private DIContainer $container;
+    private Container $pimple;
+    private ContainerInterface $pimple_psr;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->container = $this->createContainer();
-        $this->container[HttpErrorHandlerInterface::class] = $this->createHttpErrorHandler(
-            $this->response_factory = $this->createResponseFactory($this->createUrlGenerator())
-        );
-        $this->container[ResponseFactory::class] = $this->response_factory;
+        $this->pimple = new Container();
+        $this->pimple_psr = new \Pimple\Psr11\Container($this->pimple);
+        $this->response_factory = $this->createResponseFactory($this->createUrlGenerator());
+
+        $this->pimple[HttpErrorHandlerInterface::class] = function (): HttpErrorHandlerInterface {
+            return $this->createHttpErrorHandler(
+                $this->response_factory
+            );
+        };
+
+        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
+            return $this->response_factory;
+        };
 
         $this->pipeline = new MiddlewarePipeline(
-            $this->container,
+            $this->pimple_psr,
             new NullErrorHandler(),
         );
         $this->request = new Request(
@@ -164,10 +172,12 @@ class MiddlewarePipelineTest extends TestCase
      */
     public function middleware_can_be_resolved_from_the_container(): void
     {
-        $this->container->instance(
-            MiddlewareWithDependencies::class,
-            new MiddlewareWithDependencies(new Foo('FOO'), new Bar('BAR'))
-        );
+        $this->pimple[MiddlewareWithDependencies::class] = function (): MiddlewareWithDependencies {
+            return new MiddlewareWithDependencies(
+                new Foo('FOO'),
+                new Bar('BAR')
+            );
+        };
 
         $response = $this->pipeline
             ->send($this->request)
@@ -210,8 +220,8 @@ class MiddlewarePipelineTest extends TestCase
     public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline(): void
     {
         $pipeline = new MiddlewarePipeline(
-            $this->container,
-            new LazyHttpErrorHandler($this->container)
+            $this->pimple_psr,
+            new LazyHttpErrorHandler($this->pimple_psr)
         );
 
         $middleware = array_map([MiddlewareBlueprint::class, 'from'], [
@@ -239,8 +249,8 @@ class MiddlewarePipelineTest extends TestCase
     public function exceptions_in_the_request_handler_get_handled_without_breaking_other_middleware(): void
     {
         $pipeline = new MiddlewarePipeline(
-            $this->container,
-            new LazyHttpErrorHandler($this->container)
+            $this->pimple_psr,
+            new LazyHttpErrorHandler($this->pimple_psr)
         );
 
         $middleware = array_map([MiddlewareBlueprint::class, 'from'], [
@@ -322,7 +332,6 @@ class MiddlewarePipelineTest extends TestCase
     }
 
 }
-
 
 class ThrowExceptionMiddleware extends Middleware
 {

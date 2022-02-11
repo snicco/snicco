@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithDepende
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
-use Snicco\Component\Kernel\Configuration\WritableConfig;
 
 class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 {
@@ -21,7 +20,7 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function the_request_does_not_have_to_be_bound_in_the_container(): void
     {
-        $this->assertFalse($this->container->has(Request::class));
+        $this->assertFalse($this->psr_container->has(Request::class));
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get(
@@ -75,10 +74,12 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
     public function controllers_are_resolved_from_the_container(): void
     {
         $foo = new Foo();
-        $this->container[Foo::class] = $foo;
+        $this->pimple[Foo::class] = $foo;
         $foo->value = 'FOO';
 
-        $this->container[ControllerWithDependencies::class] = new ControllerWithDependencies($foo);
+        $this->pimple[ControllerWithDependencies::class] = function () use ($foo): ControllerWithDependencies {
+            return new ControllerWithDependencies($foo);
+        };
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', ControllerWithDependencies::class);
@@ -90,19 +91,22 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 
     /**
      * @test
+     * @psalm-suppress MixedArgument
      */
     public function arguments_from_conditions_are_passed_after_class_dependencies(): void
     {
-        $config = new WritableConfig();
-        $this->container[WritableConfig::class] = $config;
-        $config->set('foo', 'FOO_CONFIG');
+        $foo = new Foo();
+        $foo->value = 'FOO_CONFIG';
+        $this->pimple[Foo::class] = fn(): Foo => $foo;
 
-        $this->container->instance(RouteConditionWithDependency::class, function (bool $pass) {
-            return new RouteConditionWithDependency(
-                $this->container[WritableConfig::class],
-                $pass
-            );
-        });
+        $this->pimple[RouteConditionWithDependency::class] = $this->pimple->protect(
+            function (bool $pass): RouteConditionWithDependency {
+                return new RouteConditionWithDependency(
+                    $this->pimple[Foo::class],
+                    $pass
+                );
+            }
+        );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get(

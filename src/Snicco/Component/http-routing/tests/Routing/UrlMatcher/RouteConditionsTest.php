@@ -10,8 +10,8 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
+use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
-use Snicco\Component\Kernel\Configuration\WritableConfig;
 
 class RouteConditionsTest extends HttpRunnerTestCase
 {
@@ -87,16 +87,17 @@ class RouteConditionsTest extends HttpRunnerTestCase
 
     /**
      * @test
+     * @psalm-suppress MixedArgument
      */
     public function a_condition_can_be_negated(): void
     {
-        $config = new WritableConfig();
-        $this->container[WritableConfig::class] = $config;
-        $config->set('foo', 'FOO_CONFIG');
+        $foo = new Foo();
+        $foo->value = 'FOO_CONFIG';
+        $this->pimple[Foo::class] = fn(): Foo => $foo;
 
-        $this->container->instance(RouteConditionWithDependency::class, function (bool $pass) {
+        $this->pimple[RouteConditionWithDependency::class] = $this->pimple->protect(function (bool $pass) {
             return new RouteConditionWithDependency(
-                $this->container[WritableConfig::class],
+                $this->pimple[Foo::class],
                 $pass
             );
         });
@@ -114,7 +115,6 @@ class RouteConditionsTest extends HttpRunnerTestCase
                 [RoutingTestController::class, 'twoParams']
             )->condition('!', RouteConditionWithDependency::class, false);
         });
-
 
         $response = $this->runKernel($this->frontendRequest('/foo/bar'));
         $response->assertDelegated();

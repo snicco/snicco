@@ -6,8 +6,9 @@ namespace Snicco\Component\HttpRouting\Tests;
 
 use Closure;
 use PHPUnit\Framework\TestCase;
+use Pimple\Container;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Http\MethodOverride;
@@ -48,8 +49,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
-use Snicco\Component\Kernel\DIContainer;
 
 use function array_merge;
 use function call_user_func;
@@ -62,15 +61,15 @@ class HttpRunnerTestCase extends TestCase
 
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
-    use CreateTestPsrContainer;
     use CreateHttpErrorHandler;
 
     const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
 
     protected string $app_domain = 'foobar.com';
     protected string $routes_dir;
-    protected Routing $routing;
-    protected DIContainer $container;
+    protected Container $pimple;
+    protected ContainerInterface $psr_container;
+    private Routing $routing;
 
     /**
      * @var list<class-string<MiddlewareInterface>>
@@ -106,15 +105,17 @@ class HttpRunnerTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->container = $this->createContainer();
+        $this->pimple = new Container();
+        $this->psr_container = new \Pimple\Psr11\Container($this->pimple);
 
         // internal controllers
-        $this->container->instance(FallBackController::class, new FallBackController());
-        $this->container->instance(ViewController::class, new ViewController(new FileTemplateRenderer()));
-        $this->container->instance(RedirectController::class, new RedirectController());
+        $this->pimple[FallBackController::class] = new FallBackController();
+        $this->pimple[ViewController::class] = new ViewController(new FileTemplateRenderer());
+        $this->pimple[RedirectController::class] = new RedirectController();
 
         // TestController
-        $this->container[RoutingTestController::class] = new RoutingTestController();
+        $controller = new RoutingTestController();
+        $this->pimple[RoutingTestController::class] = fn() => $controller;
 
         $this->routes_dir = __DIR__ . '/fixtures/routes';
     }
@@ -241,7 +242,6 @@ class HttpRunnerTestCase extends TestCase
         return $this->newRoutingFacade($on_the_fly_loader, null, $context);
     }
 
-
     /**
      * @param array<
      *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
@@ -261,7 +261,7 @@ class HttpRunnerTestCase extends TestCase
         UrlGenerationContext $context = null
     ): Routing {
         $routing = new Routing(
-            $this->container,
+            $this->psr_container,
             $context ?: UrlGenerationContext::forConsole($this->app_domain),
             $loader,
             $cache ?: new NullCache(),
@@ -269,11 +269,10 @@ class HttpRunnerTestCase extends TestCase
             new RFC3986Encoder(),
         );
 
-        $this->container->instance(UrlGeneratorInterface::class, $routing->urlGenerator());
+        $this->pimple[UrlGeneratorInterface::class] = $routing->urlGenerator();
         $rf = $this->createResponseFactory($routing->urlGenerator());
-        $this->container->instance(ResponseFactory::class, $rf);
-        $this->container->instance(Redirector::class, $rf);
-        $this->container->instance(StreamFactoryInterface::class, $rf);
+        $this->pimple[ResponseFactory::class] = $rf;
+        $this->pimple[Redirector::class] = $rf;
 
         $this->routing = $routing;
 
@@ -286,7 +285,7 @@ class HttpRunnerTestCase extends TestCase
 
         $route_runner = new RouteRunner(
             new MiddlewarePipeline(
-                $this->container,
+                $this->psr_container,
                 $error_handler,
             ),
             new MiddlewareResolver(
@@ -295,7 +294,7 @@ class HttpRunnerTestCase extends TestCase
                 $this->middleware_groups,
                 $this->middleware_priority
             ),
-            $this->container
+            $this->psr_container
         );
 
 
@@ -310,7 +309,7 @@ class HttpRunnerTestCase extends TestCase
         return new HttpKernel(
             $kernel_middleware,
             new MiddlewarePipeline(
-                $this->container,
+                $this->psr_container,
                 $error_handler,
             ),
             new class implements EventDispatcherInterface {

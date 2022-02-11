@@ -27,14 +27,11 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
     {
         parent::setUp();
 
-        $this->container->instance(
-            MiddlewareWithDependencies::class,
-            new MiddlewareWithDependencies(new Foo(), new Bar())
-        );
+        $this->pimple[MiddlewareWithDependencies::class] = fn() => new MiddlewareWithDependencies(new Foo(), new Bar());
 
-        $this->container->singleton(ControllerWithMiddleware::class, function () {
+        $this->pimple[ControllerWithMiddleware::class] = function () {
             return new ControllerWithMiddleware(new Baz());
-        });
+        };
     }
 
     /**
@@ -48,10 +45,7 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->container->instance(
-            MiddlewareWithDependencies::class,
-            new MiddlewareWithDependencies($foo, $bar)
-        );
+        $this->pimple[MiddlewareWithDependencies::class] = fn() => new MiddlewareWithDependencies($foo, $bar);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
@@ -68,11 +62,11 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function controller_middleware_is_resolved_from_the_service_container(): void
     {
-        $this->container->singleton(ControllerWithMiddleware::class, function () {
+        $this->pimple[ControllerWithMiddleware::class] = function () {
             $baz = new Baz();
             $baz->value = 'BAZ';
             return new ControllerWithMiddleware($baz);
-        });
+        };
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', ControllerWithMiddleware::class . '@handle');
@@ -93,20 +87,20 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->container->instance(Foo::class, $foo);
-        $this->container->instance(Bar::class, $bar);
+        $this->pimple[Foo::class] = fn() => $foo;
+        $this->pimple[Bar::class] = fn() => $bar;
 
-        $this->container->instance(
-            MiddlewareWithClassAndParamDependencies::class,
+        $this->pimple[MiddlewareWithClassAndParamDependencies::class] = $this->pimple->protect(
             function (string $foo, string $bar) {
                 return new MiddlewareWithClassAndParamDependencies(
-                    $this->container[Foo::class],
-                    $this->container[Bar::class],
+                    $this->pimple[Foo::class],
+                    $this->pimple[Bar::class],
                     $foo,
                     $bar
                 );
             }
         );
+
 
         $this->withMiddlewareAlias([
             'm' => MiddlewareWithClassAndParamDependencies::class,

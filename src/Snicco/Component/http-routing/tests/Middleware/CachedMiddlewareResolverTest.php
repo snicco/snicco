@@ -36,7 +36,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 
         $route = Route::create('/', Route::DELEGATE, 'r1');
         $route->middleware(BazMiddleware::class);
-        $controller_action = new ControllerAction(Route::DELEGATE, $this->container);
+        $controller_action = new ControllerAction(Route::DELEGATE, $this->psr_container);
 
         // BazMiddleware is not present since It's loaded from cache.
         $this->assertEquals(
@@ -81,7 +81,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The middleware resolver is cached but has no entry for route [r1].');
-        $resolver->resolveForRoute($route, new ControllerAction(Route::DELEGATE, $this->container));
+        $resolver->resolveForRoute($route, new ControllerAction(Route::DELEGATE, $this->psr_container));
     }
 
 }
