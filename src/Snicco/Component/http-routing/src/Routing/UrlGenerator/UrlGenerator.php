@@ -21,6 +21,7 @@ use function is_null;
 use function ltrim;
 use function parse_str;
 use function preg_match;
+use function rtrim;
 use function str_replace;
 use function strpos;
 use function substr;
@@ -134,6 +135,7 @@ final class UrlGenerator implements UrlGeneratorInterface
         // All arguments that are not route segments will be used as query arguments.
         $extra = array_diff_key($arguments, array_flip($route->getSegmentNames()));
 
+        // Replace required segments
         $route_path = $this->replaceSegments(
             $required_segments,
             $requirements,
@@ -141,6 +143,8 @@ final class UrlGenerator implements UrlGeneratorInterface
             $route_path,
             $name,
         );
+
+        // Replace optional segments
         $route_path = $this->replaceSegments(
             $optional_segments,
             $requirements,
@@ -150,13 +154,11 @@ final class UrlGenerator implements UrlGeneratorInterface
             true
         );
 
-        $path = $this->generate($route_path, $extra, $type, $secure);
-
         if ($trailing) {
-            return rtrim($path, '/') . '/';
+            $route_path = rtrim($route_path, '/') . '/';
         }
 
-        return rtrim($path, '/');
+        return $this->generate($route_path, $extra, $type, $secure);
     }
 
     private function isValidUrl(string $path): bool
@@ -385,7 +387,8 @@ final class UrlGenerator implements UrlGeneratorInterface
             $route_path = str_replace($search, $replacement, $route_path);
         }
 
-        return $route_path;
+        // Make sure there are no left over trailing slashes for blank optional values.
+        return rtrim($route_path, '/');
     }
 
     /**
