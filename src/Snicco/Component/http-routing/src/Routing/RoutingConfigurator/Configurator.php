@@ -31,7 +31,7 @@ use function trim;
 /**
  * @interal
  */
-final class RoutingConfiguratorUsingRouter implements WebRoutingConfigurator, AdminRoutingConfigurator
+final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigurator
 {
 
     /**

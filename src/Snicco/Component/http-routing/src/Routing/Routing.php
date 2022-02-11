@@ -20,7 +20,7 @@ use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfiguratorUsingRouter;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlEncoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
@@ -41,9 +41,8 @@ final class Routing
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
     private RouteCache $cache;
-
-    private ?RoutingConfiguratorUsingRouter $routing_configurator = null;
     private RouteLoader $route_loader;
+    private ?Configurator $routing_configurator = null;
 
     /**
      * @var ?array{url_matcher:array, route_collection:array<string,string>}
@@ -97,10 +96,10 @@ final class Routing
         return $this->routingConfigurator();
     }
 
-    private function routingConfigurator(): RoutingConfiguratorUsingRouter
+    private function routingConfigurator(): Configurator
     {
         if (!isset($this->routing_configurator)) {
-            $this->routing_configurator = new RoutingConfiguratorUsingRouter(
+            $this->routing_configurator = new Configurator(
                 $this->admin_area->urlPrefix(),
             );
         }
