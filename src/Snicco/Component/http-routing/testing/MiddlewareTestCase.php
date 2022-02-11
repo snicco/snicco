@@ -26,10 +26,10 @@ use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 
 use function call_user_func;
 
@@ -105,8 +105,8 @@ abstract class MiddlewareTestCase extends TestCase
             if (!$pimple->offsetExists(Redirector::class)) {
                 $pimple[Redirector::class] = $response_factory;
             }
-            if (!$pimple->offsetExists(UrlGeneratorInterface::class)) {
-                $pimple[UrlGeneratorInterface::class] = $url;
+            if (!$pimple->offsetExists(UrlGenerator::class)) {
+                $pimple[UrlGenerator::class] = $url;
             }
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
@@ -161,9 +161,9 @@ abstract class MiddlewareTestCase extends TestCase
         return $this->response_factory;
     }
 
-    private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGeneratorInterface
+    private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGenerator
     {
-        return new UrlGenerator(
+        return new Generator(
             $routes,
             $context,
             WPAdminArea::fromDefaults(),
@@ -171,7 +171,7 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
 
-    private function newResponseFactory(UrlGeneratorInterface $url_generator): DefaultResponseFactory
+    private function newResponseFactory(UrlGenerator $url_generator): DefaultResponseFactory
     {
         return new DefaultResponseFactory(
             $this->psrResponseFactory(),

@@ -16,7 +16,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\TemplateRenderer;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Webmozart\Assert\Assert;
 
 abstract class Middleware implements MiddlewareInterface
@@ -59,10 +59,10 @@ abstract class Middleware implements MiddlewareInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    final protected function url(): UrlGeneratorInterface
+    final protected function url(): UrlGenerator
     {
-        /** @var UrlGeneratorInterface $url */
-        $url = $this->container->get(UrlGeneratorInterface::class);
+        /** @var UrlGenerator $url */
+        $url = $this->container->get(UrlGenerator::class);
         return $url;
     }
 

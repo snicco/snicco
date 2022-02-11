@@ -21,11 +21,11 @@ use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlEncoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\AdminRouteMatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteSyntaxConverter;
@@ -76,9 +76,9 @@ final class Routing
         );
     }
 
-    public function urlGenerator(): UrlGeneratorInterface
+    public function urlGenerator(): UrlGenerator
     {
-        return new UrlGenerator(
+        return new Generator(
             $this->routes(),
             $this->context,
             $this->admin_area,

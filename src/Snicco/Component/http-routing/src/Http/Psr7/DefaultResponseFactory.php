@@ -16,7 +16,7 @@ use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use stdClass;
 use Webmozart\Assert\Assert;
 
@@ -36,9 +36,9 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
 
     private Psr17ResponseFactory $psr_response;
     private Psr17StreamFactory $psr_stream;
-    private UrlGeneratorInterface $url;
+    private UrlGenerator $url;
 
-    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGeneratorInterface $url)
+    public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream, UrlGenerator $url)
     {
         $this->psr_response = $response;
         $this->psr_stream = $stream;

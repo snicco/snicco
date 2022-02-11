@@ -37,7 +37,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
@@ -177,7 +177,7 @@ class HttpRunnerTestCase extends TestCase
         $this->middleware_priority = $priority;
     }
 
-    final protected function generator(UrlGenerationContext $context = null): UrlGeneratorInterface
+    final protected function generator(UrlGenerationContext $context = null): UrlGenerator
     {
         $this->routing = $this->newRoutingFacade(new NullLoader(), null, $context);
         return $this->routing->urlGenerator();
@@ -269,7 +269,7 @@ class HttpRunnerTestCase extends TestCase
             new RFC3986Encoder(),
         );
 
-        $this->pimple[UrlGeneratorInterface::class] = $routing->urlGenerator();
+        $this->pimple[UrlGenerator::class] = $routing->urlGenerator();
         $rf = $this->createResponseFactory($routing->urlGenerator());
         $this->pimple[ResponseFactory::class] = $rf;
         $this->pimple[Redirector::class] = $rf;
