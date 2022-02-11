@@ -14,6 +14,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
+use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
@@ -39,11 +40,13 @@ final class Routing
     private UrlGenerationContext $context;
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
+    private RouteCache $cache;
+
     private ?RoutingConfiguratorUsingRouter $routing_configurator = null;
     private RouteLoader $route_loader;
 
     /**
-     * @var ?array{fast_route:array, route_collection:array<string,string>}
+     * @var ?array{url_matcher:array, route_collection:array<string,string>}
      */
     private ?array $route_data = null;
 
@@ -51,6 +54,7 @@ final class Routing
         ContainerInterface $psr_container,
         UrlGenerationContext $context,
         RouteLoader $loader,
+        ?RouteCache $cache = null,
         ?AdminArea $admin_area = null,
         ?UrlEncoder $url_encoder = null
     ) {
@@ -59,6 +63,7 @@ final class Routing
         $this->route_loader = $loader;
         $this->admin_area = $admin_area ?: WPAdminArea::fromDefaults();
         $this->url_encoder = $url_encoder ?: new RFC3986Encoder();
+        $this->cache = $cache ?: new NullCache();
     }
 
     public function urlMatcher(): UrlMatcher
@@ -66,7 +71,7 @@ final class Routing
         return new AdminRouteMatcher(
             new FastRouteDispatcher(
                 $this->routes(),
-                $this->routeData()['fast_route'],
+                $this->routeData()['url_matcher'],
                 new RouteConditionFactory($this->psr_container)
             ), $this->admin_area
         );
@@ -103,46 +108,51 @@ final class Routing
     }
 
     /**
-     * @return array{fast_route: array, route_collection: array<string,string>}
+     * @return array{url_matcher: array, route_collection: array<string,string>}
      */
     private function routeData(): array
     {
         if (!isset($this->route_data)) {
-            $cache = new NullCache();
-
-            /** @var array{fast_route: array, route_collection: array<string,string>} $data */
-            $data = $cache->get('foo', function () {
-                $configurator = $this->routingConfigurator();
-                $this->route_loader->loadWebRoutes($configurator);
-                $this->route_loader->loadAdminRoutes($configurator);
-
-                $routes = $configurator->configuredRoutes();
-
-                $collector = new RouteCollector(new RouteParser(), new DataGenerator());
-                $syntax = new FastRouteSyntaxConverter();
-
-                $collection = [];
-
-                foreach ($routes as $route) {
-                    $collection[$route->getName()] = serialize($route);
-                    $path = $syntax->convert($route);
-                    try {
-                        $collector->addRoute($route->getMethods(), $path, $route->getName());
-                    } catch (BadRouteException $e) {
-                        throw BadRouteConfiguration::fromPrevious($e);
-                    }
-                }
-
-                return [
-                    'route_collection' => $collection,
-                    'fast_route' => $collector->getData()
-                ];
+            $data = $this->cache->get(function () {
+                return $this->loadRoutes();
             });
 
             $this->route_data = $data;
         }
 
         return $this->route_data;
+    }
+
+    /**
+     * @return array{url_matcher: array, route_collection: array<string,string>}
+     */
+    private function loadRoutes(): array
+    {
+        $configurator = $this->routingConfigurator();
+        $this->route_loader->loadWebRoutes($configurator);
+        $this->route_loader->loadAdminRoutes($configurator);
+
+        $routes = $configurator->configuredRoutes();
+
+        $collector = new RouteCollector(new RouteParser(), new DataGenerator());
+        $syntax = new FastRouteSyntaxConverter();
+
+        $collection = [];
+
+        foreach ($routes as $route) {
+            $collection[$route->getName()] = serialize($route);
+            $path = $syntax->convert($route);
+            try {
+                $collector->addRoute($route->getMethods(), $path, $route->getName());
+            } catch (BadRouteException $e) {
+                throw BadRouteConfiguration::fromPrevious($e);
+            }
+        }
+
+        return [
+            'route_collection' => $collection,
+            'url_matcher' => $collector->getData()
+        ];
     }
 
 }

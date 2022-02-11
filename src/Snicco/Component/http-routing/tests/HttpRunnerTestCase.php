@@ -23,6 +23,8 @@ use Snicco\Component\HttpRouting\MiddlewareResolver;
 use Snicco\Component\HttpRouting\PrepareResponse;
 use Snicco\Component\HttpRouting\RouteRunner;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
+use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
+use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
 use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
@@ -134,6 +136,9 @@ class HttpRunnerTestCase extends TestCase
 
     final protected function runKernel(Request $request): AssertableResponse
     {
+        if (!isset($this->routing)) {
+            $this->routing = $this->newRoutingFacade(new NullLoader());
+        }
         $kernel = $this->newKernel();
         $response = $kernel->handle($request);
         return new AssertableResponse($response);
@@ -173,15 +178,18 @@ class HttpRunnerTestCase extends TestCase
 
     final protected function generator(UrlGenerationContext $context = null): UrlGeneratorInterface
     {
-        $this->routing = $this->newRoutingFacade(null, $context);
+        $this->routing = $this->newRoutingFacade(new NullLoader(), null, $context);
         return $this->routing->urlGenerator();
     }
 
     /**
      * @param Closure(WebRoutingConfigurator) $loader
      */
-    final protected function webRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
-    {
+    final protected function webRouting(
+        Closure $loader,
+        ?RouteCache $cache = null,
+        ?UrlGenerationContext $context = null
+    ): Routing {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
             private Closure $loader;
@@ -202,7 +210,7 @@ class HttpRunnerTestCase extends TestCase
             }
         };
 
-        return $this->newRoutingFacade($on_the_fly_loader, $context);
+        return $this->newRoutingFacade($on_the_fly_loader, $cache, $context);
     }
 
     /**
@@ -230,7 +238,7 @@ class HttpRunnerTestCase extends TestCase
             }
         };
 
-        return $this->newRoutingFacade($on_the_fly_loader, $context);
+        return $this->newRoutingFacade($on_the_fly_loader, null, $context);
     }
 
 
@@ -247,12 +255,16 @@ class HttpRunnerTestCase extends TestCase
         $this->always_run = $group_names;
     }
 
-    private function newRoutingFacade(RouteLoader $loader = null, UrlGenerationContext $context = null): Routing
-    {
+    private function newRoutingFacade(
+        RouteLoader $loader,
+        ?RouteCache $cache = null,
+        UrlGenerationContext $context = null
+    ): Routing {
         $routing = new Routing(
             $this->container,
             $context ?: UrlGenerationContext::forConsole($this->app_domain),
-            $loader ?: new NullLoader(),
+            $loader,
+            $cache ?: new NullCache(),
             WPAdminArea::fromDefaults(),
             new RFC3986Encoder(),
         );

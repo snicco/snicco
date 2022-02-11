@@ -6,12 +6,10 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Cache;
 
 
-use Closure;
-
-class NullCache implements RouteCacheInterface
+class NullCache implements RouteCache
 {
 
-    public function get(string $key, Closure $loader): ?array
+    public function get(callable $loader): array
     {
         return $loader();
     }

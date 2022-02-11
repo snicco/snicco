@@ -9,6 +9,7 @@ use Snicco\Component\HttpRouting\Http\MethodOverride;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -36,7 +37,9 @@ class HttpKernelTest extends HttpRunnerTestCase
      */
     public function a_delegate_response_is_returned_by_default_if_no_route_matches(): void
     {
-        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class);
+        });
         $test_response = $this->runKernel($this->frontendRequest('/bar'));
 
         $this->assertInstanceOf(DelegatedResponse::class, $test_response->getPsrResponse());
@@ -47,7 +50,9 @@ class HttpKernelTest extends HttpRunnerTestCase
      */
     public function a_normal_response_will_be_returned_for_matching_routes(): void
     {
-        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class);
+        });
 
         $test_response = $this->runKernel($this->frontendRequest('/foo'));
 
@@ -62,7 +67,9 @@ class HttpKernelTest extends HttpRunnerTestCase
      */
     public function methods_can_be_overwritten(): void
     {
-        $this->routeConfigurator()->put('r1', '/foo', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->put('r1', '/foo', RoutingTestController::class);
+        });
 
         $test_response = $this->runKernel(
             $this->frontendRequest('/foo', [], 'POST')->withHeader(MethodOverride::HEADER, 'PUT')
@@ -77,7 +84,11 @@ class HttpKernelTest extends HttpRunnerTestCase
     public function the_response_is_prepared_and_fixed_for_common_mistakes(): void
     {
         // We only verify that the corresponding middleware gets called
-        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class);
+        });
+
         $test_response = $this->runKernel($this->frontendRequest('/foo'));
 
         $test_response->assertHeader('content-length', (string)strlen(RoutingTestController::static));
@@ -88,7 +99,9 @@ class HttpKernelTest extends HttpRunnerTestCase
      */
     public function content_negotiation_will_be_performed(): void
     {
-        $this->routeConfigurator()->get('r1', '/foo', RoutingTestController::class);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class);
+        });
 
         $test_response = $this->runKernel(
             $this->frontendRequest('/foo')->withHeader(
