@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\MiddlewareBlueprint;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\NextMiddleware;
@@ -27,8 +27,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
-
-use function array_map;
 
 class MiddlewarePipelineTest extends TestCase
 {
@@ -324,6 +322,7 @@ class MiddlewarePipelineTest extends TestCase
     }
 
 }
+
 
 class ThrowExceptionMiddleware extends Middleware
 {

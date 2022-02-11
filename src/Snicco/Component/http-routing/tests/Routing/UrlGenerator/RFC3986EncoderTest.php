@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlGenerator;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;

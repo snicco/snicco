@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlGenerator;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +18,13 @@ final class UrlGenerationContextTest extends TestCase
     use CreatesPsrRequests;
 
     private ServerRequestInterface $base_request;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->base_request = $this->psrServerRequestFactory()
+            ->createServerRequest('GET', 'https://foo.com');
+    }
 
     /**
      * @test
@@ -202,13 +209,6 @@ final class UrlGenerationContextTest extends TestCase
         );
 
         $this->assertTrue($context->isSecure());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->base_request = $this->psrServerRequestFactory()
-            ->createServerRequest('GET', 'https://foo.com');
     }
 
 }

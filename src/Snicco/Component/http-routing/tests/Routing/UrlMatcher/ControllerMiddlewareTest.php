@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Controller;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
@@ -19,7 +19,9 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_can_apply_to_all_methods(): void
     {
-        $this->routeConfigurator()->get('all', '/all', [MiddlewareController::class, 'all']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('all', '/all', [MiddlewareController::class, 'all']);
+        });
 
         $response = $this->runKernel($this->frontendRequest('/all'));
 
@@ -31,7 +33,9 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_can_apply_to_a_single_method(): void
     {
-        $this->routeConfigurator()->get('all', '/bar', [MiddlewareController::class, 'bar']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('all', '/bar', [MiddlewareController::class, 'bar']);
+        });
 
         $response = $this->runKernel($this->frontendRequest('/bar'));
 
@@ -43,11 +47,13 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_can_be_applied_to_all_but_some_methods(): void
     {
-        $this->routeConfigurator()->get('baz', '/baz', [MiddlewareController::class, 'baz']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('baz', '/baz', [MiddlewareController::class, 'baz']);
+            $configurator->get('foo', '/foo', [MiddlewareController::class, 'foo']);
+        });
         $response = $this->runKernel($this->frontendRequest('/baz'));
         $response->assertSeeText('baz:foo_middleware:foobar_middleware');
 
-        $this->routeConfigurator()->get('foo', '/foo', [MiddlewareController::class, 'foo']);
         $response = $this->runKernel($this->frontendRequest('/foo'));
         $response->assertSeeText('foo:foo_middleware:foobar_middleware');
     }
@@ -57,11 +63,14 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_can_be_added_as_an_array(): void
     {
-        $this->routeConfigurator()->get('handle', '/handle', [ArrayMiddlewareController::class, 'handle']);
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('handle', '/handle', [ArrayMiddlewareController::class, 'handle']);
+        });
         $response = $this->runKernel($this->frontendRequest('/handle'));
         $response->assertSeeText('handle:bar_middleware:foo_middleware');
     }
 }
+
 
 class ArrayMiddlewareController extends Controller
 {

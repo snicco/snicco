@@ -419,13 +419,15 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function a_route_can_be_named(): void
     {
-        $this->routeConfigurator()->get('foo_route', '/foo');
-        $this->routeConfigurator()->post('bar_route', '/bar');
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('foo_route', '/foo');
+            $configurator->post('bar_route', '/bar');
+        });
 
-        $url = $this->generator()->toRoute('foo_route');
+        $url = $routing->urlGenerator()->toRoute('foo_route');
         $this->assertSame('/foo', $url);
 
-        $url = $this->generator()->toRoute('bar_route');
+        $url = $routing->urlGenerator()->toRoute('bar_route');
         $this->assertSame('/bar', $url);
     }
 
@@ -436,7 +438,9 @@ class UrlGeneratorTest extends HttpRunnerTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->routeConfigurator()->get('/foo_route', '/foo');
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('/foo_route', '/foo');
+        });
     }
 
     /**
@@ -444,9 +448,11 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function an_absolute_url_can_be_created(): void
     {
-        $this->routeConfigurator()->get('foo_route', '/foo');
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('foo_route', '/foo');
+        });
 
-        $url = $this->generator()->toRoute('foo_route', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $routing->urlGenerator()->toRoute('foo_route', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
 
@@ -455,21 +461,23 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function route_names_are_merged_on_multiple_levels(): void
     {
-        $this->routeConfigurator()
-            ->name('foo')
-            ->group(function () {
-                $this->routeConfigurator()->name('bar')->group(function () {
-                    $this->routeConfigurator()->get('baz', '/baz');
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->name('foo')
+                ->group(function (WebRoutingConfigurator $configurator) {
+                    $configurator->name('bar')->group(function (WebRoutingConfigurator $configurator) {
+                        $configurator->get('baz', '/baz');
+                    });
+                    $configurator->get('biz', '/biz');
                 });
-                $this->routeConfigurator()->get('biz', '/biz');
-            });
+        });
 
-        $this->assertSame('/baz', $this->generator()->toRoute('foo.bar.baz'));
-        $this->assertSame('/biz', $this->generator()->toRoute('foo.biz'));
+
+        $this->assertSame('/baz', $routing->urlGenerator()->toRoute('foo.bar.baz'));
+        $this->assertSame('/biz', $routing->urlGenerator()->toRoute('foo.biz'));
 
         $this->expectExceptionMessage('no route with name [foo.bar.biz]');
 
-        $this->assertSame('/baz', $this->generator()->toRoute('foo.bar.biz'));
+        $this->assertSame('/baz', $routing->urlGenerator()->toRoute('foo.bar.biz'));
     }
 
     /**
@@ -477,17 +485,18 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function group_names_are_applied_to_child_routes(): void
     {
-        $this->routeConfigurator()
-            ->name('foo')
-            ->group(function () {
-                $this->routeConfigurator()->get('bar', '/bar');
-                $this->routeConfigurator()->get('baz', '/baz');
-                $this->routeConfigurator()->get('biz', '/biz');
-            });
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->name('foo')
+                ->group(function (WebRoutingConfigurator $configurator) {
+                    $configurator->get('bar', '/bar');
+                    $configurator->get('baz', '/baz');
+                    $configurator->get('biz', '/biz');
+                });
+        });
 
-        $this->assertSame('/bar', $this->generator()->toRoute('foo.bar'));
-        $this->assertSame('/baz', $this->generator()->toRoute('foo.baz'));
-        $this->assertSame('/biz', $this->generator()->toRoute('foo.biz'));
+        $this->assertSame('/bar', $routing->urlGenerator()->toRoute('foo.bar'));
+        $this->assertSame('/baz', $routing->urlGenerator()->toRoute('foo.baz'));
+        $this->assertSame('/biz', $routing->urlGenerator()->toRoute('foo.biz'));
     }
 
     /**
@@ -495,9 +504,11 @@ class UrlGeneratorTest extends HttpRunnerTestCase
      */
     public function urls_for_routes_with_required_segments_can_be_generated(): void
     {
-        $this->routeConfigurator()->get('foo', '/foo/{required}');
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('foo', '/foo/{required}');
+        });
 
-        $url = $this->generator()->toRoute('foo', ['required' => 'bar']);
+        $url = $routing->urlGenerator()->toRoute('foo', ['required' => 'bar']);
         $this->assertSame('/foo/bar', $url);
     }
 
@@ -788,6 +799,20 @@ class UrlGeneratorTest extends HttpRunnerTestCase
                 $e->getMessage()
             );
         }
+    }
+
+    /**
+     * @test
+     */
+    public function test_with_optional_segments_where_no_value_is_provided(): void
+    {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo/{bar?}/{baz?}');
+        });
+
+        $url = $routing->urlGenerator()->toRoute('r1', ['param1' => 'foo']);
+
+        $this->assertEquals('/foo?param1=foo', $url);
     }
 
     /**

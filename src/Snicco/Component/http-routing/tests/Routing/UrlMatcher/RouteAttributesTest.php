@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\Route;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;

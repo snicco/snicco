@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Routing;
+namespace Snicco\Component\HttpRouting\Tests\Routing\Route;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
@@ -19,9 +19,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RuntimeRouteCollection();
-        $routes->add($r1);
-        $routes->add($r2);
+        $routes = new RuntimeRouteCollection(['r1' => $r1, 'r2' => $r2]);
 
         $this->assertSame(2, count($routes));
     }
@@ -34,9 +32,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RuntimeRouteCollection();
-        $routes->add($r1);
-        $routes->add($r2);
+        $routes = new RuntimeRouteCollection(['r1' => $r1, 'r2' => $r2]);
 
         $count = 0;
         foreach ($routes as $route) {
@@ -54,9 +50,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RuntimeRouteCollection();
-        $routes->add($r1);
-        $routes->add($r2);
+        $routes = new RuntimeRouteCollection(['r1' => $r1, 'r2' => $r2]);
 
         $route = $routes->getByName('r1');
         $this->assertEquals($r1, $route);

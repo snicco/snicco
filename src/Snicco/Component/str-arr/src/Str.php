@@ -164,6 +164,9 @@ final class Str
         return substr($haystack, -strlen($needle)) === $needle;
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function afterLast(string $subject, string $search): string
     {
         if ('' === $search) {
@@ -245,6 +248,9 @@ final class Str
         return self::beforeFirst(self::afterFirst($subject, $from), $to);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function beforeFirst(string $subject, string $search): string
     {
         if ('' === $search) {
