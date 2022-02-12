@@ -1,6 +1,6 @@
 parameters:
   paths:
-    - ./..//src/Snicco/Middleware
+    - ./../src/Snicco/Middleware
 
   layers:
     - name: default_headers
@@ -13,10 +13,20 @@ parameters:
         - type: className
           regex: Snicco\\Middleware\\HttpsOnly\\.*
 
+    - name: method_override
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\MethodOverride\\.*
+
     - name: must_match_route
       collectors:
         - type: className
           regex: Snicco\\Middleware\\MustMatchRoute\\.*
+
+    - name: negotiation
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\Negotiation\\.*
 
     - name: no_robots
       collectors:
@@ -71,7 +81,14 @@ parameters:
     https_only:
       - http_routing
 
+    method_override:
+      - http_routing
+
     must_match_route:
+      - http_routing
+      - psr7_error_handler
+
+    negotiation:
       - http_routing
       - psr7_error_handler
 
