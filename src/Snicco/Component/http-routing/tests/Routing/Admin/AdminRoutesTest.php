@@ -25,9 +25,10 @@ class AdminRoutesTest extends HttpRunnerTestCase
             "Admin routes can not define route parameters.\nViolating route [admin1]."
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
             $configurator->page('admin1', 'admin.php/foo/{bar}');
         });
+        $routing->urlMatcher();
     }
 
     /**
