@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http;
 
+use Snicco\Component\HttpRouting\Exception\CouldNotRenderTemplate;
+
 interface TemplateRenderer
 {
 
     /**
-     * @todo add dedicated exception class for the interface
+     * @throws CouldNotRenderTemplate
      */
     public function render(string $template_name, array $data = []): string;
 
