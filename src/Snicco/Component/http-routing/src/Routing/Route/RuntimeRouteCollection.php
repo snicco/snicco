@@ -25,7 +25,7 @@ final class RuntimeRouteCollection implements Routes
     /**
      * @param array<string,Route> $routes
      */
-    public function __construct(array $routes)
+    public function __construct(array $routes = [])
     {
         $this->routes = $routes;
     }

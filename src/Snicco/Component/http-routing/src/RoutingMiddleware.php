@@ -11,9 +11,6 @@ use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
-/**
- * @internal
- */
 final class RoutingMiddleware extends Middleware
 {
 

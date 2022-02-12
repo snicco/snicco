@@ -11,23 +11,20 @@ use ReflectionException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
-/**
- * @internal
- */
 final class RouteRunner extends Middleware
 {
 
     private MiddlewarePipeline $pipeline;
-    private MiddlewareResolver $middleware_stack;
+    private MiddlewareResolver $middleware_resolver;
     private ContainerInterface $container;
 
     public function __construct(
         MiddlewarePipeline $pipeline,
-        MiddlewareResolver $middleware_stack,
+        MiddlewareResolver $middleware_resolver,
         ContainerInterface $container
     ) {
         $this->pipeline = $pipeline;
-        $this->middleware_stack = $middleware_stack;
+        $this->middleware_resolver = $middleware_resolver;
         $this->container = $container;
     }
 
@@ -52,7 +49,7 @@ final class RouteRunner extends Middleware
             $this->container,
         );
 
-        $middleware = $this->middleware_stack->resolveForRoute($route, $action);
+        $middleware = $this->middleware_resolver->resolveForRoute($route, $action);
 
         return $this->pipeline
             ->send($request)
@@ -76,7 +73,7 @@ final class RouteRunner extends Middleware
 
     private function delegate(Request $request): Response
     {
-        $middleware = $this->middleware_stack->resolveForRequestWithoutRoute($request);
+        $middleware = $this->middleware_resolver->resolveForRequestWithoutRoute($request);
 
         if (!count($middleware)) {
             return $this->respond()->delegate();

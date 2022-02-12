@@ -132,7 +132,7 @@ abstract class HttpRunnerTestCase extends TestCase
     final protected function runNewPipeline(Request $request): AssertableResponse
     {
         if (!isset($this->routing)) {
-            $this->routing = $this->newRoutingFacade(new NullLoader());
+            $this->routing = $this->newRoutingFacade();
         }
         $pipeline = $this->newPipeline();
         $response = $pipeline->send($request)->then(function () {
@@ -175,7 +175,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
     final protected function generator(UrlGenerationContext $context = null): UrlGenerator
     {
-        $this->routing = $this->newRoutingFacade(new NullLoader(), null, $context);
+        $this->routing = $this->newRoutingFacade(null, null, $context);
         return $this->routing->urlGenerator();
     }
 
@@ -252,14 +252,14 @@ abstract class HttpRunnerTestCase extends TestCase
     }
 
     protected function newRoutingFacade(
-        RouteLoader $loader,
+        RouteLoader $loader = null,
         ?RouteCache $cache = null,
         UrlGenerationContext $context = null
     ): Routing {
         $routing = new Routing(
             $this->psr_container,
             $context ?: UrlGenerationContext::forConsole($this->app_domain),
-            $loader,
+            $loader ?: $this->nullLoader(),
             $cache ?: new NullCache(),
             WPAdminArea::fromDefaults(),
             new RFC3986Encoder(),
@@ -270,6 +270,10 @@ abstract class HttpRunnerTestCase extends TestCase
         $this->pimple[ResponseFactory::class] = $rf;
         $this->pimple[Redirector::class] = $rf;
 
+        // Fetch one service from the routing facade in order to trigger Exceptions.
+        // If we don't do this we need to fetch an extra service in every test case where we assert Exceptions
+        // since everything is lazy by default
+        $routing->urlMatcher();
         $this->routing = $routing;
 
         return $routing;
@@ -306,6 +310,22 @@ abstract class HttpRunnerTestCase extends TestCase
             RoutingMiddleware::class,
             RouteRunner::class,
         ]);
+    }
+
+    private function nullLoader(): RouteLoader
+    {
+        return new class implements RouteLoader {
+
+            public function loadWebRoutes(WebRoutingConfigurator $configurator): void
+            {
+                //
+            }
+
+            public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
+            {
+                //
+            }
+        };
     }
 
 }

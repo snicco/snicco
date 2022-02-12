@@ -22,6 +22,7 @@ use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\LazyGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlEncoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
@@ -86,12 +87,14 @@ final class Routing
     public function urlGenerator(): UrlGenerator
     {
         if (!isset($this->url_generator)) {
-            $this->url_generator = new Generator(
-                $this->routes(),
-                $this->context,
-                $this->admin_area,
-                $this->url_encoder,
-            );
+            $this->url_generator = new LazyGenerator(function () {
+                return new Generator(
+                    $this->routes(),
+                    $this->context,
+                    $this->admin_area,
+                    $this->url_encoder,
+                );
+            });
         }
         return $this->url_generator;
     }
