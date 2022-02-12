@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use BadMethodCallException;
+use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -14,6 +15,7 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
 use stdClass;
+use Webmozart\Assert\Assert;
 
 use function filter_var;
 use function in_array;
@@ -30,24 +32,43 @@ use const FILTER_VALIDATE_BOOLEAN;
 final class Request implements ServerRequestInterface
 {
 
-    public const TYPE_ATTRIBUTE = '_request_type';
-    public const TYPE_FRONTEND = 1;
-    public const TYPE_ADMIN_AREA = 2;
-    public const TYPE_API = 3;
+    public const TYPE_FRONTEND = 'frontend';
+    public const TYPE_ADMIN_AREA = 'admin';
+    public const TYPE_API = 'api';
 
     private ServerRequestInterface $psr_request;
 
-    public function __construct(ServerRequestInterface $psr_request)
+    /**
+     * @var "frontend"|"admin"|"api"
+     */
+    private string $type;
+
+    /**
+     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     */
+    public function __construct(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND)
     {
+        Assert::oneOf($type, [self::TYPE_FRONTEND, self::TYPE_ADMIN_AREA, self::TYPE_API]);
+
+        if ($psr_request instanceof Request && $psr_request->type !== $type) {
+            throw new LogicException(
+                sprintf('Cant change request type from [%s] to [%s].', $psr_request->type, $type)
+            );
+        }
+
         $this->psr_request = $psr_request;
+        $this->type = $type;
     }
 
-    public static function fromPsr(ServerRequestInterface $psr_request): Request
+    /**
+     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     */
+    public static function fromPsr(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND): Request
     {
-        if ($psr_request instanceof self) {
+        if ($psr_request instanceof Request) {
             return $psr_request;
         }
-        return new self($psr_request);
+        return new self($psr_request, $type);
     }
 
     public function userAgent(): ?string
@@ -170,7 +191,7 @@ final class Request implements ServerRequestInterface
      */
     public function isToFrontend(): bool
     {
-        return self::TYPE_FRONTEND === $this->getType();
+        return self::TYPE_FRONTEND === $this->type;
     }
 
     /**
@@ -178,7 +199,7 @@ final class Request implements ServerRequestInterface
      */
     public function isToAdminArea(): bool
     {
-        return self::TYPE_ADMIN_AREA === $this->getType();
+        return self::TYPE_ADMIN_AREA === $this->type;
     }
 
     /**
@@ -186,7 +207,7 @@ final class Request implements ServerRequestInterface
      */
     public function isToApiEndpoint(): bool
     {
-        return self::TYPE_API === $this->getType();
+        return self::TYPE_API === $this->type;
     }
 
     public function ip(): ?string
@@ -623,25 +644,7 @@ final class Request implements ServerRequestInterface
      */
     protected function new(ServerRequestInterface $new_psr_request)
     {
-        return new self($new_psr_request);
-    }
-
-    /**
-     * @throws RequestHasNoType
-     */
-    private function getType(): int
-    {
-        $type = $this->getAttribute(self::TYPE_ATTRIBUTE, false);
-
-        if (!is_int($type)) {
-            throw RequestHasNoType::becauseTheTypeIsNotAnInteger($type);
-        }
-
-        if ($type < 1 || $type > 3) {
-            throw RequestHasNoType::becauseTheRangeIsNotCorrect($type);
-        }
-
-        return $type;
+        return new self($new_psr_request, $this->type);
     }
 
     private function isMethod(string $method): bool

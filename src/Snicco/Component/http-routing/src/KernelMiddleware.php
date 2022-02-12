@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Http\NegotiateContent;
 final class KernelMiddleware
 {
 
-    private PrepareResponse $prepare_response;
     private RoutingMiddleware $routing;
     private RouteRunner $route_runner;
     private MethodOverride $method_override;
@@ -19,13 +18,11 @@ final class KernelMiddleware
 
     public function __construct(
         NegotiateContent $negotiate_content,
-        PrepareResponse $prepare_response,
         MethodOverride $method_override,
         RoutingMiddleware $routing,
         RouteRunner $route_runner
     ) {
         $this->negotiate_content = $negotiate_content;
-        $this->prepare_response = $prepare_response;
         $this->method_override = $method_override;
         $this->routing = $routing;
         $this->route_runner = $route_runner;
@@ -38,7 +35,6 @@ final class KernelMiddleware
     {
         return [
             $this->negotiate_content,
-            $this->prepare_response,
             $this->method_override,
             $this->routing,
             $this->route_runner,

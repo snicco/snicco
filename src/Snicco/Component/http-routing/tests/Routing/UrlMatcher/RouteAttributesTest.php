@@ -70,7 +70,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo', [], 'HEAD');
         $response = $this->runKernel($request);
-        $response->assertOk()->assertBodyExact('');
+        $response->assertOk()->assertNotDelegated();
 
         $request = $this->frontendRequest('/foo/bar', [], 'GET');
         $response = $this->runKernel($request);
@@ -78,7 +78,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo/bar', [], 'HEAD');
         $response = $this->runKernel($request);
-        $response->assertOk()->assertBodyExact('');
+        $response->assertOk()->assertNotDelegated();
     }
 
     /**

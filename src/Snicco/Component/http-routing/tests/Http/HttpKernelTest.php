@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use LogicException;
 use Snicco\Component\HttpRouting\Http\MethodOverride;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
@@ -16,21 +14,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 class HttpKernelTest extends HttpRunnerTestCase
 {
 
-    /**
-     * @test
-     */
-    public function the_kernel_throws_an_exception_if_a_request_has_no_type_specified(): void
-    {
-        $psr = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
-        $request = new Request($psr);
-
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage(
-            'The HttpKernel tried to handle a request without a declared type. This is not allowed.'
-        );
-
-        $this->runKernel($request);
-    }
 
     /**
      * @test
@@ -76,22 +59,6 @@ class HttpKernelTest extends HttpRunnerTestCase
         );
 
         $this->assertSame(RoutingTestController::static, $test_response->body());
-    }
-
-    /**
-     * @test
-     */
-    public function the_response_is_prepared_and_fixed_for_common_mistakes(): void
-    {
-        // We only verify that the corresponding middleware gets called
-
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class);
-        });
-
-        $test_response = $this->runKernel($this->frontendRequest('/foo'));
-
-        $test_response->assertHeader('content-length', (string)strlen(RoutingTestController::static));
     }
 
     /**
