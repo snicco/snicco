@@ -37,6 +37,9 @@ trait CreatesPsrRequests
 
     abstract protected function psrServerRequestFactory(): ServerRequestFactoryInterface;
 
+    /**
+     * @param Request::TYPE_FRONTEND|Request::TYPE_ADMIN_AREA|Request::TYPE_API $type
+     */
     private function newRequest(string $path, array $server, string $method, string $type): Request
     {
         if (false === strpos($path, 'http')) {

@@ -269,7 +269,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             });
         });
 
-        $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=sub1'))
+        $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=sub1'))
             ->assertOk()
             ->assertSeeText(RoutingTestController::static);
     }
@@ -292,7 +292,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             });
         });
 
-        $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=sub1'))
+        $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=sub1'))
             ->assertOk()
             ->assertSeeText(RoutingTestController::static . ':foo_middleware');
     }
@@ -321,7 +321,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         });
 
 
-        $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=sub1'))
+        $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=sub1'))
             ->assertOk()
             ->assertSeeText(RoutingTestController::static . ':bar_middleware:foo_middleware:foobar_middleware');
     }

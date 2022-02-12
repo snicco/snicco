@@ -8,19 +8,14 @@ use Closure;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use RuntimeException;
 use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
-use Snicco\Component\HttpRouting\Http\MethodOverride;
-use Snicco\Component\HttpRouting\Http\NegotiateContent;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\HttpKernel;
-use Snicco\Component\HttpRouting\KernelMiddleware;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\MiddlewareResolver;
-use Snicco\Component\HttpRouting\PrepareResponse;
 use Snicco\Component\HttpRouting\RouteRunner;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
@@ -55,14 +50,14 @@ use function call_user_func;
 /**
  * @interal
  */
-class HttpRunnerTestCase extends TestCase
+abstract class HttpRunnerTestCase extends TestCase
 {
 
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
     use CreateHttpErrorHandler;
 
-    const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
+    public const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
 
     protected string $app_domain = 'foobar.com';
     protected string $routes_dir;
@@ -114,7 +109,7 @@ class HttpRunnerTestCase extends TestCase
 
         // TestController
         $controller = new RoutingTestController();
-        $this->pimple[RoutingTestController::class] = fn() => $controller;
+        $this->pimple[RoutingTestController::class] = fn(): RoutingTestController => $controller;
 
         $this->routes_dir = __DIR__ . '/fixtures/routes';
     }
@@ -126,7 +121,7 @@ class HttpRunnerTestCase extends TestCase
 
     final protected function assertResponseBody(string $expected, Request $request): void
     {
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $this->assertSame(
             $expected,
             $b = $response->body(),
@@ -134,13 +129,15 @@ class HttpRunnerTestCase extends TestCase
         );
     }
 
-    final protected function runKernel(Request $request): AssertableResponse
+    final protected function runNewPipeline(Request $request): AssertableResponse
     {
         if (!isset($this->routing)) {
             $this->routing = $this->newRoutingFacade(new NullLoader());
         }
-        $kernel = $this->newKernel();
-        $response = $kernel->handle($request);
+        $pipeline = $this->newPipeline();
+        $response = $pipeline->send($request)->then(function () {
+            throw new RuntimeException('Middleware pipeline exhausted.');
+        });
         return new AssertableResponse($response);
     }
 
@@ -278,47 +275,37 @@ class HttpRunnerTestCase extends TestCase
         return $routing;
     }
 
-    private function newKernel(): HttpKernel
+    private function newPipeline(): MiddlewarePipeline
     {
         $error_handler = new NullErrorHandler();
 
-        $route_runner = new RouteRunner(
-            new MiddlewarePipeline(
-                $this->psr_container,
-                $error_handler,
-            ),
-            new MiddlewareResolver(
-                $this->always_run,
-                $this->middleware_aliases,
-                $this->middleware_groups,
-                $this->middleware_priority
-            ),
-            $this->psr_container
-        );
+        unset($this->pimple[RoutingMiddleware::class]);
+        unset($this->pimple[RouteRunner::class]);
 
+        $this->pimple[RoutingMiddleware::class] = function (): RoutingMiddleware {
+            return new RoutingMiddleware($this->routing->urlMatcher());
+        };
 
-        $kernel_middleware = new KernelMiddleware(
-            new NegotiateContent(['en']),
-            new MethodOverride(),
-            new RoutingMiddleware($this->routing->urlMatcher()),
-            $route_runner
-        );
+        $this->pimple[RouteRunner::class] = function () use ($error_handler): RouteRunner {
+            return new RouteRunner(
+                new MiddlewarePipeline(
+                    $this->psr_container,
+                    $error_handler,
+                ),
+                new MiddlewareResolver(
+                    $this->always_run,
+                    $this->middleware_aliases,
+                    $this->middleware_groups,
+                    $this->middleware_priority
+                ),
+                $this->psr_container
+            );
+        };
 
-        return new HttpKernel(
-            $kernel_middleware,
-            new MiddlewarePipeline(
-                $this->psr_container,
-                $error_handler,
-            ),
-            new class implements EventDispatcherInterface {
-
-                public function dispatch(object $event): void
-                {
-                    //
-                }
-
-            }
-        );
+        return (new MiddlewarePipeline($this->psr_container, $error_handler))->through([
+            RoutingMiddleware::class,
+            RouteRunner::class,
+        ]);
     }
 
 }

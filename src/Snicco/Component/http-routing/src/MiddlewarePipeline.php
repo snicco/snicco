@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting;
 
 use Closure;
+use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,13 +13,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
-use Snicco\Component\StrArr\Arr;
 use Throwable;
-use Webmozart\Assert\Assert;
 
 use function array_map;
 use function call_user_func;
+use function gettype;
 use function is_string;
+use function sprintf;
 use function strtolower;
 
 final class MiddlewarePipeline
@@ -29,7 +30,7 @@ final class MiddlewarePipeline
     private ContainerInterface $container;
 
     /**
-     * @var array<MiddlewareInterface|MiddlewareBlueprint>
+     * @var array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>>
      */
     private array $middleware = [];
 
@@ -57,18 +58,23 @@ final class MiddlewarePipeline
     }
 
     /**
-     * @param MiddlewareInterface|MiddlewareInterface[]|MiddlewareBlueprint|MiddlewareBlueprint[] $middleware
+     * @param array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>> $middleware
+     * @psalm-suppress RedundantCondition
      */
-    public function through($middleware): MiddlewarePipeline
+    public function through(array $middleware): MiddlewarePipeline
     {
         $new = clone $this;
-        $middleware = Arr::toArray($middleware);
 
         foreach ($middleware as $m) {
-            if ($m instanceof MiddlewareInterface) {
+            if ($m instanceof MiddlewareInterface || $m instanceof MiddlewareBlueprint) {
                 continue;
             }
-            Assert::isInstanceOf($m, MiddlewareBlueprint::class);
+            if (is_string($m) && Reflection::isInterfaceString($m, MiddlewareInterface::class)) {
+                continue;
+            }
+            throw new InvalidArgumentException(
+                sprintf('Invalid middleware [%s].', gettype($m))
+            );
         }
         $new->middleware = $middleware;
         return $new;
@@ -135,8 +141,8 @@ final class MiddlewarePipeline
                 $middleware->class,
                 $this->convertStrings($middleware->arguments)
             );
-
-            return $middleware->process($request, $next);
+        } elseif (is_string($middleware)) {
+            $middleware = $this->middleware_factory->create($middleware);
         }
 
         if ($middleware instanceof Middleware) {

@@ -34,7 +34,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk();
         $response->assertSeeHtml('Hello World');
         $response->assertIsHtml();
@@ -59,7 +59,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk();
         $response->assertSeeHtml('Hello Calvin');
         $response->assertIsHtml();

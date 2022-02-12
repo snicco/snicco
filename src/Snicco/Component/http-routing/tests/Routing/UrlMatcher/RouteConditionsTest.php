@@ -30,10 +30,10 @@ class RouteConditionsTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo');
-        $this->runKernel($request)->assertOk()->assertSeeText(RoutingTestController::static);
+        $this->runNewPipeline($request)->assertOk()->assertSeeText(RoutingTestController::static);
 
         $request = $this->frontendRequest('/bar');
-        $this->runKernel($request)->assertDelegated();
+        $this->runNewPipeline($request)->assertDelegated();
     }
 
     /**
@@ -52,7 +52,7 @@ class RouteConditionsTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/foo/bar');
 
         // The static route does not match due to the failing condition.
-        $this->runKernel($request)->assertSeeText('dynamic:bar');
+        $this->runNewPipeline($request)->assertSeeText('dynamic:bar');
     }
 
     /**
@@ -75,12 +75,12 @@ class RouteConditionsTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo', [], 'POST');
-        $this->runKernel($request)->assertDelegated();
+        $this->runNewPipeline($request)->assertDelegated();
 
         $this->assertSame(1, $GLOBALS['test']['maybe_condition_run']);
 
         $request = $this->frontendRequest('/bar', [], 'POST');
-        $this->runKernel($request)->assertOk();
+        $this->runNewPipeline($request)->assertOk();
 
         $this->assertSame(2, $GLOBALS['test']['maybe_condition_run']);
     }
@@ -116,10 +116,10 @@ class RouteConditionsTest extends HttpRunnerTestCase
             )->condition('!', RouteConditionWithDependency::class, false);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/foo/bar'));
+        $response = $this->runNewPipeline($this->frontendRequest('/foo/bar'));
         $response->assertDelegated();
 
-        $response = $this->runKernel($this->frontendRequest('/bar/baz'));
+        $response = $this->runNewPipeline($this->frontendRequest('/bar/baz'));
         $response->assertOk()->assertSeeText('baz:FOO_CONFIG');
     }
 

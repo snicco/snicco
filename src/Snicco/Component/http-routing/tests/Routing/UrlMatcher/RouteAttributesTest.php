@@ -39,7 +39,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo', [], 'POST');
         try {
-            $this->runKernel($request);
+            $this->runNewPipeline($request);
             $this->fail('Expected exception.');
         } catch (MethodNotAllowed $e) {
             $this->assertStringContainsString('/foo', $e->getMessage());
@@ -47,7 +47,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo/bar', [], 'POST');
         try {
-            $this->runKernel($request);
+            $this->runNewPipeline($request);
             $this->fail('Expected exception.');
         } catch (MethodNotAllowed $e) {
             $this->assertStringContainsString('/foo/bar', $e->getMessage());
@@ -65,19 +65,19 @@ class RouteAttributesTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo', [], 'GET');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk()->assertBodyExact(RoutingTestController::static);
 
         $request = $this->frontendRequest('/foo', [], 'HEAD');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk()->assertNotDelegated();
 
         $request = $this->frontendRequest('/foo/bar', [], 'GET');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk()->assertBodyExact('dynamic:bar');
 
         $request = $this->frontendRequest('/foo/bar', [], 'HEAD');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk()->assertNotDelegated();
     }
 
@@ -195,7 +195,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo', [], 'PUT');
         $this->expectException(MethodNotAllowed::class);
-        $this->runKernel($request);
+        $this->runNewPipeline($request);
     }
 
     /**

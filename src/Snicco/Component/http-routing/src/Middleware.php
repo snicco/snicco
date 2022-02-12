@@ -33,9 +33,7 @@ abstract class Middleware implements MiddlewareInterface
 
     final public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$request instanceof Request) {
-            $request = Request::fromPsr($request);
-        }
+        $request = Request::fromPsr($request);
 
         if (!$handler instanceof NextMiddleware) {
             $handler = new NextMiddleware(function (Request $request) use ($handler) {
