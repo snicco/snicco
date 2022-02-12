@@ -238,8 +238,6 @@ final class Route
 
     /**
      * @param string|array<string> $middleware
-     *
-     * @todo Bad Middleware is currently only detected at when the route matches.
      */
     public function middleware($middleware): Route
     {
