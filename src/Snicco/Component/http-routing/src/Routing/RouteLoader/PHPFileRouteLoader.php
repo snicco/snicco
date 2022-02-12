@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\RouteLoader;
 
 use Closure;
+use FilesystemIterator;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionFunction;
@@ -16,11 +17,13 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigu
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\StrArr\Str;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
+use SplFileInfo;
 use Webmozart\Assert\Assert;
 
-use function iterator_to_array;
+use function pathinfo;
+use function preg_match;
+
+use const PATHINFO_FILENAME;
 
 
 final class PHPFileRouteLoader implements RouteLoader
@@ -71,20 +74,18 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $frontend_routes = null;
         $files = $this->getFiles($this->route_directories);
-        foreach ($files as $file) {
-            $name = $file->getFilenameWithoutExtension();
-
+        foreach ($files as $name => $path) {
             // Make sure that the frontend.php file is always loaded last
             // because users are expected to register the fallback route there.
             if (self::FRONTEND_ROUTE_FILENAME === $name) {
-                $frontend_routes = $file;
+                $frontend_routes = $path;
                 continue;
             }
 
             $attributes = $this->options->getRouteAttributes($name);
 
             /** @var Closure(WebRoutingConfigurator) $closure */
-            $closure = $this->requireFile($file, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
+            $closure = $this->requireFile($path, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
 
             $configurator->group($closure, $attributes);
         }
@@ -100,16 +101,14 @@ final class PHPFileRouteLoader implements RouteLoader
     public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
     {
         $finder = $this->getFiles($this->route_directories);
-        foreach ($finder as $file) {
-            $name = $file->getFilenameWithoutExtension();
-
+        foreach ($finder as $name => $path) {
             if (self::ADMIN_ROUTE_FILENAME !== $name) {
                 continue;
             }
 
             $attributes = $this->options->getRouteAttributes($name);
 
-            $closure = $this->requireFile($file, $attributes, true);
+            $closure = $this->requireFile($path, $attributes, true);
 
             /** @var Closure(AdminRoutingConfigurator) $closure */
             $configurator->group($closure, $attributes);
@@ -118,9 +117,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
     private function loadApiRoutesIn(WebRoutingConfigurator $configurator): void
     {
-        foreach ($this->getFiles($this->api_route_directories) as $file) {
-            $name = $file->getFilenameWithoutExtension();
-
+        foreach ($this->getFiles($this->api_route_directories) as $name => $path) {
             Assert::notEq(
                 $name,
                 self::FRONTEND_ROUTE_FILENAME,
@@ -142,7 +139,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getApiRouteAttributes($name, $version);
 
-            $closure = $this->requireFile($file, $attributes);
+            $closure = $this->requireFile($path, $attributes);
 
             /** @var Closure(WebRoutingConfigurator) $closure */
             $configurator->group($closure, $attributes);
@@ -161,7 +158,7 @@ final class PHPFileRouteLoader implements RouteLoader
      * @psalm-suppress UnresolvableInclude
      *
      */
-    private function requireFile(SplFileInfo $file, array $attributes = [], bool $is_admin_file = false): Closure
+    private function requireFile(string $file, array $attributes = [], bool $is_admin_file = false): Closure
     {
         $this->validateAttributes($attributes);
 
@@ -170,12 +167,12 @@ final class PHPFileRouteLoader implements RouteLoader
         Assert::isInstanceOf(
             $closure,
             Closure::class,
-            "Route file [{$file->getRealPath()}] did not return a closure."
+            "Route file [$file] did not return a closure."
         );
 
         $this->validateClosureTypeHint(
             $closure,
-            $file->getRealPath(),
+            $file,
             $is_admin_file
         );
 
@@ -184,7 +181,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
     /**
      * @param string[] $route_directories
-     * @return SplFileInfo[]
+     * @return array<string,string>
      */
     private function getFiles(array $route_directories): array
     {
@@ -192,13 +189,24 @@ final class PHPFileRouteLoader implements RouteLoader
             return [];
         }
 
-        $finder = new Finder();
-        $finder->in($route_directories)
-            ->depth(0)
-            ->files()
-            ->name(self::SEARCH_PATTERN);
+        $files = [];
 
-        return iterator_to_array($finder);
+        foreach ($route_directories as $route_directory) {
+            $file_infos = new FilesystemIterator($route_directory);
+
+            /** @var SplFileInfo $file_info */
+            foreach ($file_infos as $file_info) {
+                if (
+                    $file_info->isFile()
+                    && $file_info->isReadable()
+                    && preg_match(self::SEARCH_PATTERN, $file_info->getFilename())
+                ) {
+                    $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
+                }
+            }
+        }
+
+        return $files;
     }
 
     /**
