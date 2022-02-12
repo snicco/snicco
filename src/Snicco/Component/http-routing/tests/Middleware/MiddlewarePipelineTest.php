@@ -89,7 +89,7 @@ class MiddlewarePipelineTest extends TestCase
     {
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::from(PipelineTestMiddleware1::class))
+            ->through([MiddlewareBlueprint::from(PipelineTestMiddleware1::class)])
             ->then(function (ServerRequestInterface $request) {
                 return $this->response_factory->html(
                     (string)$request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE)
@@ -110,10 +110,32 @@ class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([
-                    $foo,
-                    MiddlewareBlueprint::from(BarMiddleware::class, ['BAR']),
-                ]
-            )
+                $foo,
+                MiddlewareBlueprint::from(BarMiddleware::class, ['BAR']),
+            ])
+            ->then(function () {
+                return $this->response_factory->html('handler');
+            });
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame('handler:BAR:FOO', $response->getBody()->__toString());
+    }
+
+    /**
+     * @test
+     */
+    public function class_names_can_be_used_if_bound_in_the_container(): void
+    {
+        $this->pimple[FooMiddleware::class] = function (): FooMiddleware {
+            return new FooMiddleware('FOO');
+        };
+
+        $response = $this->pipeline
+            ->send($this->request)
+            ->through([
+                FooMiddleware::class,
+                MiddlewareBlueprint::from(BarMiddleware::class, ['BAR']),
+            ])
             ->then(function () {
                 return $this->response_factory->html('handler');
             });
@@ -181,7 +203,7 @@ class MiddlewarePipelineTest extends TestCase
 
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::from(MiddlewareWithDependencies::class))
+            ->through([MiddlewareWithDependencies::class])
             ->then(function () {
                 return $this->response_factory->html('handler');
             });
@@ -197,7 +219,7 @@ class MiddlewarePipelineTest extends TestCase
     {
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::from(FooMiddleware::class, ['FOO_M']))
+            ->through([MiddlewareBlueprint::from(FooMiddleware::class, ['FOO_M'])])
             ->then(function () {
                 return $this->response_factory->html('foo_handler');
             });
@@ -206,7 +228,7 @@ class MiddlewarePipelineTest extends TestCase
 
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::from(FooMiddleware::class, ['FOO_M_DIFFERENT']))
+            ->through([MiddlewareBlueprint::from(FooMiddleware::class, ['FOO_M_DIFFERENT'])])
             ->then(function () {
                 return $this->response_factory->html('foo_handler');
             });
@@ -314,7 +336,7 @@ class MiddlewarePipelineTest extends TestCase
     {
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::from(FooMiddleware::class))
+            ->through([MiddlewareBlueprint::from(FooMiddleware::class)])
             ->then(function () {
                 return $this->response_factory->html('foo');
             });
@@ -323,7 +345,7 @@ class MiddlewarePipelineTest extends TestCase
 
         $response = $this->pipeline
             ->send($this->request)
-            ->through(MiddlewareBlueprint::from(BarMiddleware::class))
+            ->through([MiddlewareBlueprint::from(BarMiddleware::class)])
             ->then(function () {
                 return $this->response_factory->html('foo');
             });

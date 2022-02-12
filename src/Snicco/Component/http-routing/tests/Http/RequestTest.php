@@ -257,7 +257,33 @@ class RequestTest extends TestCase
 
         $this->assertSame('/foo', $request->path());
         $this->assertSame('GET', $request->getMethod());
+        $this->assertTrue($request->isToFrontend());
+
+        $request = Request::fromPsr(
+            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            Request::TYPE_ADMIN_AREA
+        );
+
+        $this->assertTrue($request->isToAdminArea());
     }
+
+    /**
+     * @test
+     */
+    public function test_from_psr_does_not_change_type(): void
+    {
+        $request = Request::fromPsr(
+            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            Request::TYPE_ADMIN_AREA
+        );
+
+        $new = Request::fromPsr($request, Request::TYPE_FRONTEND);
+
+        $this->assertTrue($new->isToAdminArea());
+        $this->assertFalse($new->isToFrontend());
+        $this->assertTrue($request->isToAdminArea());
+    }
+
 
     /**
      * @test

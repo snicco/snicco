@@ -155,7 +155,7 @@ class AdminRoutesTest extends HttpRunnerTestCase
 
         $request = $this->adminRequest('/wp-admin/admin.php?page=foo')->withMethod('POST');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertDelegated();
     }
 
@@ -241,7 +241,7 @@ class AdminRoutesTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/wp-admin/options.php/foo');
-        $this->runKernel($request)->assertDelegated();
+        $this->runNewPipeline($request)->assertDelegated();
 
         $request = $this->adminRequest('/wp-admin/options.php?page=foo');
         $this->assertResponseBody(RoutingTestController::static, $request);

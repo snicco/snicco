@@ -83,7 +83,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 
         $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel($this->frontendRequest(self::WEB_PATH));
+        $response = $this->runNewPipeline($this->frontendRequest(self::WEB_PATH));
         $response->assertOk()->assertNotDelegated();
     }
 
@@ -138,7 +138,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 
         $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel($this->frontendRequest(self::PARTIAL_PATH));
+        $response = $this->runNewPipeline($this->frontendRequest(self::PARTIAL_PATH));
 
         // Not the partial route but the fallback route in web.php
         $this->assertSame('fallback:partial:foo_middleware', $response->body());
@@ -158,10 +158,10 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel($this->frontendRequest(self::WEB_PATH));
+        $response = $this->runNewPipeline($this->frontendRequest(self::WEB_PATH));
         $response->assertOk()->assertNotDelegated();
 
-        $response = $this->runKernel($this->frontendRequest(self::PARTIAL_PATH));
+        $response = $this->runNewPipeline($this->frontendRequest(self::PARTIAL_PATH));
         $response->assertOk()->assertNotDelegated();
     }
 
@@ -219,7 +219,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel(
+        $response = $this->runNewPipeline(
             $this->frontendRequest($this->base_prefix . '/partials/cart')
         );
 
@@ -263,7 +263,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel(
+        $response = $this->runNewPipeline(
             $this->frontendRequest($this->base_prefix . '/partials/cart')
         );
 
@@ -283,7 +283,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         );
         $routing = $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel(
+        $response = $this->runNewPipeline(
             $this->frontendRequest($this->base_prefix . '/rest/v1/posts')
         );
 
@@ -308,7 +308,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel(
+        $response = $this->runNewPipeline(
             $this->frontendRequest($this->base_prefix . '/rest/v1/posts')
         );
 
@@ -328,7 +328,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $routing = $this->newRoutingFacade($loader);
 
         // The version flag is not added.
-        $response = $this->runKernel(
+        $response = $this->runNewPipeline(
             $this->frontendRequest('/rest/posts')
         );
         $response->assertSeeText(RoutingTestController::static);
@@ -339,7 +339,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
             $routing->urlGenerator()->toRoute('rest.posts')
         );
 
-        $response = $this->runKernel(
+        $response = $this->runNewPipeline(
             $this->frontendRequest('/partials/cart')
         );
         $response->assertSeeText(RoutingTestController::static);
@@ -513,7 +513,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 
         $routing = $this->newRoutingFacade($loader);
 
-        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
+        $response = $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=foo'));
         $response->assertOk()->assertNotDelegated();
         $this->assertSame(RoutingTestController::static . ':foo_middleware', $response->body());
 
@@ -632,7 +632,9 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 
         $this->newRoutingFacade($loader);
 
-        $this->runKernel($this->frontendRequest('/first'))->assertOk()->assertSeeText(RoutingTestController::static);
+        $this->runNewPipeline($this->frontendRequest('/first'))->assertOk()->assertSeeText(
+            RoutingTestController::static
+        );
     }
 
     /**

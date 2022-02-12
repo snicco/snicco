@@ -23,7 +23,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
             $configurator->get('all', '/all', [MiddlewareController::class, 'all']);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/all'));
+        $response = $this->runNewPipeline($this->frontendRequest('/all'));
 
         $response->assertSeeText('all:foobar_middleware');
     }
@@ -37,7 +37,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
             $configurator->get('all', '/bar', [MiddlewareController::class, 'bar']);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/bar'));
+        $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
         $response->assertSeeText('bar:bar_middleware:foobar_middleware');
     }
@@ -51,10 +51,10 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
             $configurator->get('baz', '/baz', [MiddlewareController::class, 'baz']);
             $configurator->get('foo', '/foo', [MiddlewareController::class, 'foo']);
         });
-        $response = $this->runKernel($this->frontendRequest('/baz'));
+        $response = $this->runNewPipeline($this->frontendRequest('/baz'));
         $response->assertSeeText('baz:foo_middleware:foobar_middleware');
 
-        $response = $this->runKernel($this->frontendRequest('/foo'));
+        $response = $this->runNewPipeline($this->frontendRequest('/foo'));
         $response->assertSeeText('foo:foo_middleware:foobar_middleware');
     }
 
@@ -66,7 +66,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('handle', '/handle', [ArrayMiddlewareController::class, 'handle']);
         });
-        $response = $this->runKernel($this->frontendRequest('/handle'));
+        $response = $this->runNewPipeline($this->frontendRequest('/handle'));
         $response->assertSeeText('handle:bar_middleware:foo_middleware');
     }
 }

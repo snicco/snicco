@@ -22,7 +22,7 @@ class RedirectRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
 
         $response->assertStatus(307)
             ->assertLocation('/bar?baz=biz');
@@ -39,7 +39,7 @@ class RedirectRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
 
         $response->assertStatus(301)->assertLocation('/bar?baz=biz');
     }
@@ -55,7 +55,7 @@ class RedirectRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
 
         $response->assertStatus(307)->assertLocation('/bar?baz=biz');
     }
@@ -72,7 +72,7 @@ class RedirectRoutesTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody('', $request);
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
 
         $response->assertRedirect('https://foobar.com', 301);
     }
@@ -89,7 +89,7 @@ class RedirectRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
 
         $response->assertStatus(303);
         $response->assertLocation('/base/baz');
@@ -108,15 +108,15 @@ class RedirectRoutesTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('base/foo');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertRedirect('/base/new');
 
         $request = $this->frontendRequest('base/bar');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertRedirect('/base/new');
 
         $request = $this->frontendRequest('base/biz');
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk()->assertSeeText(RoutingTestController::static);
     }
 

@@ -33,7 +33,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $this->expectException(InvalidMiddleware::class);
         $this->expectExceptionMessage('Middleware group and alias have the same name [alias].');
-        $this->runKernel($this->frontendRequest());
+        $this->runNewPipeline($this->frontendRequest());
     }
 
     /**
@@ -47,7 +47,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $this->expectException(InvalidMiddleware::class);
         $this->expectExceptionMessage('Alias [alias1] resolves to invalid middleware class [stdClass].');
-        $this->runKernel($this->frontendRequest());
+        $this->runNewPipeline($this->frontendRequest());
     }
 
     /**
@@ -131,7 +131,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $response->assertOk()->assertBodyExact(
             RoutingTestController::static . ':baz_middleware:bar_middleware:foo_middleware'
         );
@@ -245,7 +245,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
                 ->middleware('abc');
         });
 
-        $this->runKernel($this->frontendRequest('foo'));
+        $this->runNewPipeline($this->frontendRequest('foo'));
     }
 
     /**
@@ -495,7 +495,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/bar'));
+        $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
         $this->assertSame(
             '',
@@ -517,7 +517,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/bar'));
+        $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
         $this->assertSame(
             ':bar_middleware:foo_middleware',
@@ -546,7 +546,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/bar'));
+        $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
         $this->assertSame(
             ':bar_middleware:foo_middleware',
@@ -580,10 +580,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             );
         });
 
-        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
+        $response = $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=foo'));
         $this->assertSame(RoutingTestController::static, $response->body());
 
-        $response = $this->runKernel($this->adminRequest('/bar'));
+        $response = $this->runNewPipeline($this->adminRequest('/bar'));
         $this->assertSame('', $response->body());
     }
 
@@ -607,7 +607,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             );
         });
 
-        $response = $this->runKernel($this->adminRequest('/bar'));
+        $response = $this->runNewPipeline($this->adminRequest('/bar'));
 
         $this->assertSame(
             ':bar_middleware:foo_middleware',
@@ -635,7 +635,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             );
         });
 
-        $response = $this->runKernel($this->frontendRequest('/bar'));
+        $response = $this->runNewPipeline($this->frontendRequest('/bar'));
         $this->assertSame('', $response->body());
     }
 
@@ -652,7 +652,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             FooMiddleware::class
         ]);
 
-        $this->runKernel($this->frontendRequest());
+        $this->runNewPipeline($this->frontendRequest());
     }
 
     /**
@@ -673,7 +673,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: group1->group2->group1');
 
-        $this->runKernel($this->frontendRequest('/foo'));
+        $this->runNewPipeline($this->frontendRequest('/foo'));
     }
 
     /**
@@ -695,7 +695,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: group1->group2->group3->group1');
 
-        $this->runKernel($this->frontendRequest('/foo'));
+        $this->runNewPipeline($this->frontendRequest('/foo'));
     }
 
     /**
@@ -719,7 +719,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: group1->group2->group3->group1');
 
-        $this->runKernel($this->frontendRequest('/foo'));
+        $this->runNewPipeline($this->frontendRequest('/foo'));
     }
 
     /**
@@ -738,7 +738,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->expectException(MiddlewareRecursion::class);
         $this->expectExceptionMessage('Detected middleware recursion: global->group2->group3->group2');
 
-        $this->runKernel($this->frontendRequest());
+        $this->runNewPipeline($this->frontendRequest());
     }
 
     /**
@@ -751,7 +751,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
                 ->middleware(FooMiddleware::class);
         });
 
-        $response = $this->runKernel($this->frontendRequest('/foo'));
+        $response = $this->runNewPipeline($this->frontendRequest('/foo'));
         $this->assertSame('controller:bar_middleware:foo_middleware', $response->body());
     }
 

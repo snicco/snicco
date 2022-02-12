@@ -53,7 +53,7 @@ class FallbackRouteTest extends HttpRunnerTestCase
             $configurator->fallback(RoutingTestController::class);
         });
 
-        $response = $this->runKernel($this->adminRequest('/wp-admin/admin.php?page=foo'));
+        $response = $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=foo'));
         $response->assertDelegated();
     }
 
@@ -154,7 +154,7 @@ class FallbackRouteTest extends HttpRunnerTestCase
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 
-        $this->runKernel($this->frontendRequest('/wp-admin/foo'))->assertDelegated();
+        $this->runNewPipeline($this->frontendRequest('/wp-admin/foo'))->assertDelegated();
     }
 
     /**
