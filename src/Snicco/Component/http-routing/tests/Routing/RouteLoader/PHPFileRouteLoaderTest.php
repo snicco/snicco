@@ -356,7 +356,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     public function test_exception_if_api_options_has_middleware_but_not_as_an_array(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Middleware for api options');
+        $this->expectExceptionMessage('Middleware for route-loading options');
 
         $loader = new PHPFileRouteLoader(
             [],
@@ -372,7 +372,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     public function test_exception_if_api_options_has_middleware_but_not_all_string(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Middleware for api options has to be an array of strings.');
+        $this->expectExceptionMessage('Middleware for route-loading options has to be an array of strings.');
 
         $loader = new PHPFileRouteLoader(
             [],
