@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Http;
+namespace Snicco\Middleware\MethodOverride\Tests;
 
-use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
+use Snicco\Middleware\MethodOverride\MethodOverride;
 
 class MethodOverrideTest extends MiddlewareTestCase
 {

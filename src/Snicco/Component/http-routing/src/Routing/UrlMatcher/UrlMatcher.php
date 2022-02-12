@@ -14,8 +14,6 @@ interface UrlMatcher
     /**
      * @throws MethodNotAllowed
      * @throws BadRouteConfiguration
-     * @todo bad routes are only found when dispatching. We might need a validate method on the
-     *       UrlMatcher interface.
      */
     public function dispatch(Request $request): RoutingResult;
 
