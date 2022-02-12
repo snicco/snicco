@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Webmozart\Assert\Assert;
 
 final class NegotiateContent extends Middleware
 {
@@ -39,7 +38,6 @@ final class NegotiateContent extends Middleware
      */
     public function __construct(array $languages, array $content_types = null, array $charsets = null)
     {
-        Assert::allString($languages);
         $this->languages = $languages;
         $this->charsets = $charsets ?: ['UTF-8'];
         $this->content_types = $content_types ?: $this->defaultConfiguration();
