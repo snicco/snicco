@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\Admin;
 
+use LogicException;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
@@ -145,7 +146,6 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     /**
      * @test
-     * @psalm-suppress PossiblyNullReference
      */
     public function sub_menu_items_can_be_added_by_passing_in_another_route(): void
     {
@@ -171,13 +171,14 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
         $this->assertCount(2, $items);
 
-        $this->assertSame(null, $items[0]->parentSlug());
         $this->assertSame('/wp-admin/admin.php/parent', $items[1]->parentSlug()->asString());
+
+        $this->expectException(LogicException::class);
+        $items[0]->parentSlug();
     }
 
     /**
      * @test
-     * @psalm-suppress PossiblyNullReference
      */
     public function sub_menu_items_can_be_added_in_a_parent_scope_closure(): void
     {
@@ -199,9 +200,11 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
         $this->assertCount(3, $items);
 
-        $this->assertSame(null, $items[0]->parentSlug());
         $this->assertSame('/wp-admin/admin.php/parent', $items[1]->parentSlug()->asString());
         $this->assertSame('/wp-admin/admin.php/parent', $items[2]->parentSlug()->asString());
+
+        $this->expectException(LogicException::class);
+        $items[0]->parentSlug();
     }
 
     /**
@@ -328,7 +331,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     /**
      * @test
-     * @psalm-suppress PossiblyNullReference
+     *
      */
     public function parent_pages_can_be_added_by_slug_only(): void
     {
@@ -488,7 +491,6 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     /**
      * @test
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_exception_if_parent_page_is_not_string_or_route(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\Admin;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
@@ -208,6 +209,30 @@ final class AdminMenuItemTest extends TestCase
         $item = AdminMenuItem::fromRoute($route, [], 'parent_slug');
 
         $this->assertSame('/parent_slug', $item->parentSlug()->asString());
+    }
+
+    /**
+     * @test
+     */
+    public function test_is_child(): void
+    {
+        $route = $this->getRoute();
+        $item = AdminMenuItem::fromRoute($route, [], 'parent_slug');
+        $item2 = AdminMenuItem::fromRoute($route, []);
+
+        $this->assertTrue($item->isChild());
+        $this->assertFalse($item2->isChild());
+    }
+
+    /**
+     * @test
+     */
+    public function test_parent_slug_will_throw_for_non_child_items(): void
+    {
+        $this->expectException(LogicException::class);
+        $route = $this->getRoute();
+        $item = AdminMenuItem::fromRoute($route, [],);
+        $item->parentSlug();
     }
 
     private function getRoute(): Route

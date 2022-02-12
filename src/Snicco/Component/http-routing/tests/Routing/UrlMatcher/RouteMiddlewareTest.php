@@ -39,7 +39,6 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     /**
      * @test
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress MixedArgumentTypeCoercion
      */
     public function an_exception_is_thrown_if_a_middleware_alias_does_not_resolve_to_a_valid_middleware_class(): void
     {

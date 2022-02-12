@@ -391,8 +391,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         }
 
         if ($parent_slug instanceof AdminMenuItem) {
-            $_p = $parent_slug->parentSlug();
-            if (null !== $_p) {
+            if ($parent_slug->isChild()) {
                 /** @var Route $parent_route */
                 $parent_name = $parent_route->getName();
                 throw new BadRouteConfiguration(
@@ -401,7 +400,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
                         $parent_name,
                         $route->getName(),
                         $parent_name,
-                        (string)$_p
+                        (string)$parent_slug->parentSlug()
                     )
                 );
             }

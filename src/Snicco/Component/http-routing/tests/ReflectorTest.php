@@ -54,6 +54,8 @@ final class ReflectorTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress UndefinedClass
      */
     public function test_exception_for_bad_interface(): void
     {

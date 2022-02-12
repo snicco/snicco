@@ -27,9 +27,11 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
     {
         parent::setUp();
 
-        $this->pimple[MiddlewareWithDependencies::class] = fn() => new MiddlewareWithDependencies(new Foo(), new Bar());
+        $this->pimple[MiddlewareWithDependencies::class] = function (): MiddlewareWithDependencies {
+            return new MiddlewareWithDependencies(new Foo(), new Bar());
+        };
 
-        $this->pimple[ControllerWithMiddleware::class] = function () {
+        $this->pimple[ControllerWithMiddleware::class] = function (): ControllerWithMiddleware {
             return new ControllerWithMiddleware(new Baz());
         };
     }
@@ -45,7 +47,9 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->pimple[MiddlewareWithDependencies::class] = fn() => new MiddlewareWithDependencies($foo, $bar);
+        $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
+            return new MiddlewareWithDependencies($foo, $bar);
+        };
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
@@ -62,7 +66,7 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function controller_middleware_is_resolved_from_the_service_container(): void
     {
-        $this->pimple[ControllerWithMiddleware::class] = function () {
+        $this->pimple[ControllerWithMiddleware::class] = function (): ControllerWithMiddleware {
             $baz = new Baz();
             $baz->value = 'BAZ';
             return new ControllerWithMiddleware($baz);
@@ -78,6 +82,7 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 
     /**
      * @test
+     * @psalm-suppress MixedArgument
      */
     public function middleware_arguments_are_passed_after_any_class_dependencies(): void
     {
@@ -87,8 +92,8 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->pimple[Foo::class] = fn() => $foo;
-        $this->pimple[Bar::class] = fn() => $bar;
+        $this->pimple[Foo::class] = fn(): Foo => $foo;
+        $this->pimple[Bar::class] = fn(): Bar => $bar;
 
         $this->pimple[MiddlewareWithClassAndParamDependencies::class] = $this->pimple->protect(
             function (string $foo, string $bar) {
