@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\NextMiddleware;
 
 use function in_array;
@@ -16,7 +16,7 @@ use function strtoupper;
 final class MethodOverride extends Middleware
 {
 
-    const HEADER = 'X-HTTP-Method-Override';
+    public const HEADER = 'X-HTTP-Method-Override';
 
     /**
      * @psalm-suppress MixedAssignment

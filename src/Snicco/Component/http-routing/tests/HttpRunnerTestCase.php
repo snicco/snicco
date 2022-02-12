@@ -16,7 +16,6 @@ use Snicco\Component\HttpRouting\Http\NegotiateContent;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\HttpKernel;
 use Snicco\Component\HttpRouting\KernelMiddleware;
 use Snicco\Component\HttpRouting\MiddlewarePipeline;
@@ -300,7 +299,6 @@ class HttpRunnerTestCase extends TestCase
 
         $kernel_middleware = new KernelMiddleware(
             new NegotiateContent(['en']),
-            new PrepareResponse(new ResponsePreparation($this->psrStreamFactory())),
             new MethodOverride(),
             new RoutingMiddleware($this->routing->urlMatcher()),
             $route_runner

@@ -47,6 +47,10 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
 
     private function delegate(PsrRequest $request): Response
     {
+        if (!$request instanceof Request) {
+            $request = Request::fromPsr($request);
+        }
+
         $psr_response = call_user_func(
             $this->callback,
             Request::fromPsr($request)

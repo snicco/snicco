@@ -7,7 +7,6 @@ namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use LogicException;
 use Snicco\Component\HttpRouting\ControllerAction;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\MiddlewareBlueprint;
 use Snicco\Component\HttpRouting\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
@@ -57,7 +56,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $this->assertEquals(
             [$blueprint1],
             $resolver->resolveForRequestWithoutRoute(
-                $this->frontendRequest()->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_API)
+                $this->adminRequest('/foo')
             )
         );
     }
