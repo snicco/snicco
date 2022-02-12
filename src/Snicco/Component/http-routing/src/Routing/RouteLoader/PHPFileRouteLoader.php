@@ -11,7 +11,6 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
 use ReflectionParameter;
-use Snicco\Component\HttpRouting\IsInterfaceString;
 use Snicco\Component\HttpRouting\Routing\Exception\InvalidRouteClosureReturned;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -20,6 +19,7 @@ use Snicco\Component\StrArr\Str;
 use SplFileInfo;
 use Webmozart\Assert\Assert;
 
+use function count;
 use function pathinfo;
 use function preg_match;
 
@@ -267,70 +267,37 @@ final class PHPFileRouteLoader implements RouteLoader
     }
 
     /**
-     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      * @throws ReflectionException
      */
     private function validateClosureTypeHint(Closure $closure, string $filepath, bool $is_admin_file = false): void
     {
-        $parameters = (new ReflectionFunction($closure))->getParameters();
+        $params = (new ReflectionFunction($closure))->getParameters();
 
-        $this->validateParameterCount($parameters, $filepath);
-
-        $used_interface = $this->validateCorrectInterface($parameters[0], $filepath);
-
-        $this->validateAdminRoutingUsage($used_interface, $is_admin_file, $filepath);
-    }
-
-    private function validateParameterCount(array $parameters, string $path): void
-    {
-        $count = count($parameters);
-
-        if (1 === $count) {
-            return;
+        if (1 !== count($params)) {
+            throw InvalidRouteClosureReturned::becauseArgumentCountMismatch($filepath, count($params));
         }
 
-        if (0 === $count) {
-            throw InvalidRouteClosureReturned::becauseTheRouteClosureAcceptsNoArguments($path);
-        }
+        $param = $params[0] ?? null;
 
-        throw InvalidRouteClosureReturned::becauseTheRouteClosureAcceptsMoreThanOneArguments(
-            $path,
-            $count
-        );
-    }
-
-    private function validateCorrectInterface(ReflectionParameter $param, string $filepath): string
-    {
-        $type = $param->getType();
-
-        if (!$type instanceof ReflectionNamedType) {
+        if (!$param instanceof ReflectionParameter || !$param->getType() instanceof ReflectionNamedType) {
             throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
         }
 
-        $name = $type->getName();
+        $name = $param->getType()->getName();
 
-        if (IsInterfaceString::check($name, RoutingConfigurator::class)) {
-            return $name;
-        }
+        Assert::oneOf(
+            $name,
+            [RoutingConfigurator::class, AdminRoutingConfigurator::class, WebRoutingConfigurator::class]
+        );
 
-        throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
-    }
-
-    /**
-     * @return void
-     */
-    private function validateAdminRoutingUsage(string $used_interface, bool $is_admin_file, string $filepath)
-    {
         if ($is_admin_file) {
-            if (IsInterfaceString::check($used_interface, WebRoutingConfigurator::class)) {
+            if ($name === WebRoutingConfigurator::class) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
-
-            return;
-        }
-
-        if (IsInterfaceString::check($used_interface, AdminRoutingConfigurator::class)) {
-            throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
+        } else {
+            if ($name === AdminRoutingConfigurator::class) {
+                throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
+            }
         }
     }
 

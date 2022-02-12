@@ -45,8 +45,10 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     {
         $this->withMiddlewareAlias(['alias1' => stdClass::class]);
 
-        $this->expectException(InvalidMiddleware::class);
-        $this->expectExceptionMessage('Alias [alias1] resolves to invalid middleware class [stdClass].');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Alias [alias1] resolves to invalid middleware class-string [stdClass].\nExpected: [Psr\Http\Server\MiddlewareInterface]"
+        );
         $this->runNewPipeline($this->frontendRequest());
     }
 

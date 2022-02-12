@@ -545,7 +545,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
      */
     public function a_returned_closure_without_parameters_will_throw_an_exception(): void
     {
-        $this->expectExceptionMessage('needs to have an instance of');
+        $this->expectExceptionMessage('required [0] parameters');
         $this->expectException(InvalidArgumentException::class);
 
         $loader = new PHPFileRouteLoader(
@@ -562,7 +562,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
      */
     public function a_returned_closure_with_two_params_will_throw_an_exception(): void
     {
-        $this->expectExceptionMessage('will only receive');
+        $this->expectExceptionMessage('[2] parameters');
         $this->expectException(InvalidArgumentException::class);
 
         $loader = new PHPFileRouteLoader(

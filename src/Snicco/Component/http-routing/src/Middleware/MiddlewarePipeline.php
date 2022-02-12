@@ -5,22 +5,19 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Middleware;
 
 use Closure;
-use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\IsInterfaceString;
+use Snicco\Component\HttpRouting\Reflector;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Throwable;
 
 use function array_map;
 use function call_user_func;
-use function gettype;
 use function is_string;
-use function sprintf;
 use function strtolower;
 
 final class MiddlewarePipeline
@@ -60,23 +57,17 @@ final class MiddlewarePipeline
 
     /**
      * @param array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>> $middleware
-     * @psalm-suppress RedundantCondition
      */
     public function through(array $middleware): MiddlewarePipeline
     {
-        $new = clone $this;
-
         foreach ($middleware as $m) {
             if ($m instanceof MiddlewareInterface || $m instanceof MiddlewareBlueprint) {
                 continue;
             }
-            if (is_string($m) && IsInterfaceString::check($m, MiddlewareInterface::class)) {
-                continue;
-            }
-            throw new InvalidArgumentException(
-                sprintf('Invalid middleware [%s].', gettype($m))
-            );
+            Reflector::assertInterfaceString($m, MiddlewareInterface::class);
         }
+        
+        $new = clone $this;
         $new->middleware = $middleware;
         return $new;
     }
