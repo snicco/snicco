@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
-use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\StrArr\Str;
 
 use function is_string;
@@ -26,9 +25,6 @@ use const PHP_URL_HOST;
  */
 final class OpenRedirectProtection extends Middleware
 {
-
-    private string $route;
-
     /**
      * @var string[]
      */
@@ -36,17 +32,19 @@ final class OpenRedirectProtection extends Middleware
 
     private string $host;
 
+    private string $exit_path;
+
     /**
      * @param string[] $whitelist
      */
-    public function __construct(string $host, array $whitelist = [], string $route = 'redirect.protection')
+    public function __construct(string $host, string $exit_path, array $whitelist = [])
     {
         $parsed = parse_url($host, PHP_URL_HOST);
         if (!is_string($parsed) || '' === $parsed) {
             throw new InvalidArgumentException("Invalid host [$host].");
         }
         $this->host = $parsed;
-        $this->route = $route;
+        $this->exit_path = $exit_path;
         $this->whitelist = $this->formatWhiteList($whitelist);
         $this->whitelist[] = $this->allSubdomainsOfApplication();
     }
@@ -131,12 +129,7 @@ final class OpenRedirectProtection extends Middleware
 
     private function forbiddenRedirect(string $location): RedirectResponse
     {
-        try {
-            return $this->redirect()
-                ->toRoute($this->route, ['intended_redirect' => $location]);
-        } catch (RouteNotFound $e) {
-            return $this->redirect()->home(['intended_redirect' => $location]);
-        }
+        return $this->redirect()->to($this->exit_path, 302, ['intended_redirect' => $location]);
     }
 
 }

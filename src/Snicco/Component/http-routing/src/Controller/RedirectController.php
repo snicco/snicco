@@ -6,9 +6,7 @@ namespace Snicco\Component\HttpRouting\Controller;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
-use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 /**
  * @interal
@@ -51,24 +49,6 @@ final class RedirectController extends Controller
         [$route, $arguments, $status_code] = array_slice($args, -3);
 
         return $this->redirect()->toRoute($route, $arguments, $status_code);
-    }
-
-    /**
-     * @todo remove this method here and add a template to the open redirect protection middleware.
-     */
-    public function exit(Request $request): void
-    {
-        $home_url = '/';
-        try {
-            $home_url = $this->url()->toRoute('home');
-        } catch (RouteNotFound $e) {
-            //
-        }
-
-        $this->render('framework.redirect-protection', [
-            'untrusted_url' => $request->query('intended_redirect'),
-            'home_url' => $home_url,
-        ]);
     }
 
 }
