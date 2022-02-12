@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting;
+namespace Snicco\Component\HttpRouting\Middleware;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionException;
+use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Routing;
 
 final class RouteRunner extends Middleware
 {

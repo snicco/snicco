@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting;
+namespace Snicco\Component\HttpRouting\Middleware;
 
 use Closure;
 use InvalidArgumentException;
@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\IsInterfaceString;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Throwable;
 
@@ -69,7 +70,7 @@ final class MiddlewarePipeline
             if ($m instanceof MiddlewareInterface || $m instanceof MiddlewareBlueprint) {
                 continue;
             }
-            if (is_string($m) && Reflection::isInterfaceString($m, MiddlewareInterface::class)) {
+            if (is_string($m) && IsInterfaceString::check($m, MiddlewareInterface::class)) {
                 continue;
             }
             throw new InvalidArgumentException(

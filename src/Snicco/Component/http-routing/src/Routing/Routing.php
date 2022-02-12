@@ -34,6 +34,9 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
 use function serialize;
 
+/**
+ * The Routing class is a Facade that glues together all parts of the Routing system.
+ */
 final class Routing
 {
 
@@ -41,7 +44,7 @@ final class Routing
     private UrlGenerationContext $context;
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
-    private RouteCache $cache;
+    private RouteCache $route_cache;
     private RouteLoader $route_loader;
 
     private ?Configurator $routing_configurator = null;
@@ -67,7 +70,7 @@ final class Routing
         $this->route_loader = $loader;
         $this->admin_area = $admin_area ?: WPAdminArea::fromDefaults();
         $this->url_encoder = $url_encoder ?: new RFC3986Encoder();
-        $this->cache = $cache ?: new NullCache();
+        $this->route_cache = $cache ?: new NullCache();
     }
 
     public function urlMatcher(): UrlMatcher
@@ -128,7 +131,7 @@ final class Routing
     private function routeData(): array
     {
         if (!isset($this->route_data)) {
-            $data = $this->cache->get(function () {
+            $data = $this->route_cache->get(function () {
                 return $this->loadRoutes();
             });
 
@@ -152,10 +155,10 @@ final class Routing
         $collector = new RouteCollector(new RouteParser(), new DataGenerator());
         $syntax = new FastRouteSyntaxConverter();
 
-        $collection = [];
+        $serialized_routes = [];
 
         foreach ($routes as $route) {
-            $collection[$route->getName()] = serialize($route);
+            $serialized_routes[$route->getName()] = serialize($route);
             $path = $syntax->convert($route);
             try {
                 $collector->addRoute($route->getMethods(), $path, $route->getName());
@@ -163,9 +166,8 @@ final class Routing
                 throw BadRouteConfiguration::fromPrevious($e);
             }
         }
-
         return [
-            'route_collection' => $collection,
+            'route_collection' => $serialized_routes,
             'url_matcher' => $collector->getData()
         ];
     }

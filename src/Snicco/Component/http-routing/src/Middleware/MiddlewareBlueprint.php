@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting;
+namespace Snicco\Component\HttpRouting\Middleware;
 
 use Psr\Http\Server\MiddlewareInterface;
 

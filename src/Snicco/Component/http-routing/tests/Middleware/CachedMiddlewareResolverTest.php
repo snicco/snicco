@@ -6,9 +6,9 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use LogicException;
-use Snicco\Component\HttpRouting\ControllerAction;
-use Snicco\Component\HttpRouting\MiddlewareBlueprint;
-use Snicco\Component\HttpRouting\MiddlewareResolver;
+use Snicco\Component\HttpRouting\Controller\ControllerAction;
+use Snicco\Component\HttpRouting\Middleware\MiddlewareBlueprint;
+use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;

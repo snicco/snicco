@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting;
+namespace Snicco\Component\HttpRouting\Controller;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -11,6 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use ReflectionClass;
 use ReflectionException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\IsInterfaceString;
 
 use function array_unshift;
 use function array_values;
@@ -46,7 +47,7 @@ final class ControllerAction
     {
         $callable = [$this->controller_instance, $this->controller_method];
 
-        if (Reflection::firstParameterType($callable) === Request::class) {
+        if (IsInterfaceString::firstParameterType($callable) === Request::class) {
             array_unshift($captured_args_decoded, $request);
         }
 

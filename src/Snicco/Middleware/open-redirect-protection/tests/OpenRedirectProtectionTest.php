@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Middleware\OpenRedirectProtection\Tests;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
+use Snicco\Component\HttpRouting\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
