@@ -8,21 +8,29 @@ namespace Snicco\Component\HttpRouting\Routing\Cache;
 use Closure;
 use RuntimeException;
 
+use function file_put_contents;
+use function rename;
+use function trigger_error;
 use function var_export;
+
+use const E_USER_WARNING;
+use const LOCK_EX;
 
 final class FileRouteCache implements RouteCache
 {
-    private const DIRECTORY_PERMISSIONS = 0775;
-    private const FILE_PERMISSIONS = 0664;
 
     private Closure $empty_error_handler;
     private string $path;
+    private int $directory_permission;
+    private int $file_permission;
 
-    public function __construct(string $cache_path)
+    public function __construct(string $cache_path, int $directory_permission = 0755, int $file_permission = 0644)
     {
         $this->path = $cache_path;
         $this->empty_error_handler = function (): void {
         };
+        $this->directory_permission = $directory_permission;
+        $this->file_permission = $file_permission;
     }
 
     public function get(callable $loader): array
@@ -70,15 +78,24 @@ final class FileRouteCache implements RouteCache
 
         $tmp_file = $path . '.tmp';
 
-        if (false === file_put_contents($tmp_file, $content, LOCK_EX)) {
+        $success = file_put_contents($tmp_file, $content, LOCK_EX);
+
+        if (false === $success) {
             restore_error_handler();
+            trigger_error("Could not write cache file to path [$tmp_file].", E_USER_WARNING);
+            // @codeCoverageIgnoreStart
             return;
+            // @codeCoverageIgnoreEnd
         }
 
-        chmod($tmp_file, self::FILE_PERMISSIONS);
+        chmod($tmp_file, $this->file_permission);
 
-        if (!rename($tmp_file, $path)) {
+        $renamed = rename($tmp_file, $path);
+        if (!$renamed) {
+            // @codeCoverageIgnoreStart
+            trigger_error("Could not rename cache file [$tmp_file] to [$path].", E_USER_WARNING);
             unlink($tmp_file);
+            // @codeCoverageIgnoreEnd
         }
 
         restore_error_handler();
@@ -91,10 +108,10 @@ final class FileRouteCache implements RouteCache
         }
 
         set_error_handler($this->empty_error_handler);
-        $created = mkdir($directory, self::DIRECTORY_PERMISSIONS, true);
+        $created = mkdir($directory, $this->directory_permission, true);
         restore_error_handler();
 
-        return $created || is_dir($directory);
+        return $created;
     }
 
 }
