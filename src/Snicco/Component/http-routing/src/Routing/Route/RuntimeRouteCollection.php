@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use ArrayIterator;
+use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Traversable;
 
@@ -20,14 +21,20 @@ final class RuntimeRouteCollection implements Routes
     /**
      * @var array<string,Route>
      */
-    private array $routes;
+    private array $routes = [];
 
     /**
-     * @param array<string,Route> $routes
+     * @param Route[] $routes
      */
     public function __construct(array $routes = [])
     {
-        $this->routes = $routes;
+        foreach ($routes as $route) {
+            $name = $route->getName();
+            if (isset($this->routes[$name])) {
+                throw new InvalidArgumentException("Duplicate route name [$name].");
+            }
+            $this->routes[$name] = $route;
+        }
     }
 
     public function getByName(string $name): Route
