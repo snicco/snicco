@@ -74,13 +74,13 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
         );
     }
 
-    public static function becauseTheRouteClosureAcceptsMoreThanOneArguments(
+    public static function becauseArgumentCountMismatch(
         string $path,
         int $count
     ): InvalidRouteClosureReturned {
         return new self(
             sprintf(
-                "The returned closure from the route file\n[%s]\nwill only receive an instance of [%s] but required [%s] parameters.",
+                "The returned closure from the route file\n[%s]\nwill must receive an instance of [%s] but required [%s] parameters.",
                 $path,
                 RoutingConfigurator::class,
                 $count

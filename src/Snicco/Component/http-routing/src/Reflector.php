@@ -18,44 +18,60 @@ use function class_implements;
 use function in_array;
 use function interface_exists;
 use function is_string;
+use function sprintf;
 
 /**
  * @interal
  * @psalm-internal Snicco\Component\HttpRouting
  */
-final class IsInterfaceString
+final class Reflector
 {
 
     /**
      * @template Interface
      *
-     * @psalm-assert-if-true class-string<Interface> $class_string
+     * @psalm-assert class-string<Interface> $class_string
      *
      * @param string|class-string $class_string
-     * @param class-string<Interface> $interface
+     * @param class-string<Interface> $expected_interface
      *
-     * @throws InvalidArgumentException if the interface does not exist
+     * @throws InvalidArgumentException
      */
-    public static function check(string $class_string, string $interface): bool
-    {
+    public static function assertInterfaceString(
+        string $class_string,
+        string $expected_interface,
+        string $message = null
+    ): void {
         $class_exists = class_exists($class_string);
-        $interface_exists = interface_exists($interface);
+        $interface_exists = interface_exists($expected_interface);
 
         if (false === $interface_exists) {
-            throw new InvalidArgumentException("Interface [$interface] does not exist.");
+            throw new InvalidArgumentException("Interface [$expected_interface] does not exist.");
         }
 
-        if ($interface === $class_string) {
-            return true;
-        }
-
-        if (!$class_exists && !interface_exists($class_string)) {
-            return false;
+        if (!$class_exists) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    $message ?: "Expected class-string<%s>\nGot: [%s].",
+                    $expected_interface,
+                    $class_string
+                )
+            );
         }
 
         $implements = (array)class_implements($class_string);
 
-        return in_array($interface, $implements, true);
+        if (in_array($expected_interface, $implements, true)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                $message ?: "Expected class-string<%s>\nGot: [%s].",
+                $expected_interface,
+                $class_string
+            )
+        );
     }
 
     /**

@@ -10,11 +10,10 @@ use InvalidArgumentException;
 use Iterator;
 use JsonSerializable;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
-use Snicco\Component\HttpRouting\IsInterfaceString;
+use Snicco\Component\HttpRouting\Reflector;
 use Traversable;
 
-final class ReflectionTest extends TestCase
+final class ReflectorTest extends TestCase
 {
 
 
@@ -23,9 +22,13 @@ final class ReflectionTest extends TestCase
      */
     public function test_is_interface_with_class_string(): void
     {
-        $this->assertTrue(IsInterfaceString::check(TestSubject::class, Countable::class));
+        Reflector::assertInterfaceString(TestSubject::class, Countable::class);
 
-        $this->assertFalse(IsInterfaceString::check(TestSubject::class, JsonSerializable::class));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            sprintf("Expected class-string<%s>\nGot: [%s].", JsonSerializable::class, TestSubject::class)
+        );
+        Reflector::assertInterfaceString(TestSubject::class, JsonSerializable::class);
     }
 
     /**
@@ -33,18 +36,11 @@ final class ReflectionTest extends TestCase
      */
     public function test_with_extended_interface(): void
     {
-        $this->assertTrue(IsInterfaceString::check(TestTraversable::class, Iterator::class));
-        $this->assertFalse(IsInterfaceString::check(TestTraversable::class, ArrayAccess::class));
-        $this->assertTrue(IsInterfaceString::check(TestTraversable::class, Traversable::class));
-    }
+        Reflector::assertInterfaceString(TestTraversable::class, Iterator::class);
+        Reflector::assertInterfaceString(TestTraversable::class, Traversable::class);
 
-    /**
-     * @test
-     */
-    public function test_true_with_interface_string(): void
-    {
-        $this->assertTrue(IsInterfaceString::check(ContainerInterface::class, ContainerInterface::class));
-        $this->assertFalse(IsInterfaceString::check(ContainerInterface::class, ArrayAccess::class));
+        $this->expectException(InvalidArgumentException::class);
+        Reflector::assertInterfaceString(TestTraversable::class, ArrayAccess::class);
     }
 
     /**
@@ -52,7 +48,8 @@ final class ReflectionTest extends TestCase
      */
     public function test_false_for_missing_class(): void
     {
-        $this->assertFalse(IsInterfaceString::check('Foo', ArrayAccess::class));
+        $this->expectException(InvalidArgumentException::class);
+        Reflector::assertInterfaceString('Foo', ArrayAccess::class);
     }
 
     /**
@@ -63,16 +60,7 @@ final class ReflectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Interface [Foo] does not exist.');
 
-        IsInterfaceString::check(TestTraversable::class, 'Foo');
-    }
-
-    /**
-     * @test
-     */
-    public function test_with_child_interface_as_string(): void
-    {
-        $this->assertTrue(IsInterfaceString::check(Iterator::class, Traversable::class));
-        $this->assertFalse(IsInterfaceString::check(Traversable::class, Iterator::class));
+        Reflector::assertInterfaceString(TestTraversable::class, 'Foo');
     }
 
     /**
@@ -83,7 +71,7 @@ final class ReflectionTest extends TestCase
     {
         $this->assertSame(
             'string',
-            IsInterfaceString::firstParameterType(function (string $foo): void {
+            Reflector::firstParameterType(function (string $foo): void {
                 //
             })
         );
@@ -94,7 +82,7 @@ final class ReflectionTest extends TestCase
      */
     public function test_firstParameterType_with_class_string_uses_constructor(): void
     {
-        $this->assertSame('string', IsInterfaceString::firstParameterType(ClassWithConstructor::class));
+        $this->assertSame('string', Reflector::firstParameterType(ClassWithConstructor::class));
     }
 
 
