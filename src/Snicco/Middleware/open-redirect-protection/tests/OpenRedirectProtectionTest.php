@@ -5,27 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Middleware\OpenRedirectProtection\Tests;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Controller\RedirectController;
-use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
 
 class OpenRedirectProtectionTest extends MiddlewareTestCase
 {
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $route = Route::create(
-            '/redirect/exit',
-            [RedirectController::class, 'exit'],
-            'redirect.protection',
-            ['GET']
-        );
-        $this->withRoutes([$route]);
-    }
 
     /**
      * @test
@@ -87,7 +71,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertForbiddenRedirect($response->psr(), 'https://bar.com/foo');
+        $response->psr()->assertLocation('/exit?intended_redirect=https://bar.com/foo');
     }
 
     /**
@@ -103,7 +87,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertForbiddenRedirect($response->psr(), '//bar.com:80/path/info');
+        $response->psr()->assertLocation('/exit?intended_redirect=//bar.com:80/path/info');
     }
 
     /**
@@ -136,7 +120,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertForbiddenRedirect($response->psr(), 'https://paypal.com/pay');
+        $response->psr()->assertLocation('/exit?intended_redirect=https://paypal.com/pay');
     }
 
     /**
@@ -209,7 +193,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function if_the_route_does_not_exist_the_user_is_redirect_to_the_homepage(): void
+    public function the_exit_page_path_can_be_customized(): void
     {
         $this->withRoutes([]);
 
@@ -219,10 +203,10 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
 
         $request = $this->frontendRequest('https://foo.com/foo');
 
-        $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
+        $response = $this->runMiddleware($this->newMiddleware(['stripe.com'], '/exit_page/'), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('/?intended_redirect=https://paypal.com/pay');
+        $response->psr()->assertRedirect('/exit_page/?intended_redirect=https://paypal.com/pay');
     }
 
     /**
@@ -232,27 +216,15 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid host [bogus].');
-        new OpenRedirectProtection('bogus');
+        new OpenRedirectProtection('bogus', '/exit');
     }
 
     /**
      * @param string[] $whitelist
      */
-    private function newMiddleware(array $whitelist = []): OpenRedirectProtection
+    private function newMiddleware(array $whitelist = [], string $exit_path = '/exit'): OpenRedirectProtection
     {
-        return new OpenRedirectProtection('https://foo.com', $whitelist);
-    }
-
-    private function assertForbiddenRedirect(AssertableResponse $response, string $intended): void
-    {
-        $this->assertStringStartsWith(
-            '/redirect/exit',
-            $response->getPsrResponse()->getHeaderLine('Location')
-        );
-        $this->assertStringContainsString(
-            '?intended_redirect=' . $intended,
-            $response->getPsrResponse()->getHeaderLine('Location')
-        );
+        return new OpenRedirectProtection('https://foo.com', $exit_path, $whitelist);
     }
 
 }
