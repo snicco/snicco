@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Admin;
 
+use LogicException;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
@@ -148,9 +149,17 @@ final class AdminMenuItem
         return $this->icon;
     }
 
-    public function parentSlug(): ?UrlPath
+    public function parentSlug(): UrlPath
     {
-        return $this->parent_slug ? UrlPath::fromString($this->parent_slug) : null;
+        if (!$this->parent_slug) {
+            throw new LogicException("Menu item [$this->menu_slug] does not have a parent item.");
+        }
+        return UrlPath::fromString($this->parent_slug);
+    }
+
+    public function isChild(): bool
+    {
+        return null !== $this->parent_slug;
     }
 
     private static function stringToHeadline(string $route_name): string

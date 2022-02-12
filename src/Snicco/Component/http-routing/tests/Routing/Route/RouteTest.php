@@ -22,6 +22,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_if_path_does_not_start_with_forward_slash(): void
     {
@@ -55,6 +56,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_if_controller_array_is_missing_method(): void
     {
@@ -65,6 +67,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_controller_class_is_not_a_string(): void
     {
@@ -75,6 +78,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_controller_method_is_not_a_string(): void
     {
@@ -85,6 +89,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_if_controller_class_does_not_exist(): void
     {
@@ -252,6 +257,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_defaults_throws_exception_for_non_primitives(): void
     {
@@ -265,6 +271,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_conditions_throws_exceptions_for_bad_class(): void
     {
@@ -328,6 +335,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_middleware_throws_exceptions_for_non_strings(): void
     {
