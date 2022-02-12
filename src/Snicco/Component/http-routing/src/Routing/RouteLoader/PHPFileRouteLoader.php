@@ -11,7 +11,7 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
 use ReflectionParameter;
-use Snicco\Component\HttpRouting\Reflection;
+use Snicco\Component\HttpRouting\IsInterfaceString;
 use Snicco\Component\HttpRouting\Routing\Exception\InvalidRouteClosureReturned;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
@@ -309,7 +309,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $name = $type->getName();
 
-        if (Reflection::isInterfaceString($name, RoutingConfigurator::class)) {
+        if (IsInterfaceString::check($name, RoutingConfigurator::class)) {
             return $name;
         }
 
@@ -322,14 +322,14 @@ final class PHPFileRouteLoader implements RouteLoader
     private function validateAdminRoutingUsage(string $used_interface, bool $is_admin_file, string $filepath)
     {
         if ($is_admin_file) {
-            if (Reflection::isInterfaceString($used_interface, WebRoutingConfigurator::class)) {
+            if (IsInterfaceString::check($used_interface, WebRoutingConfigurator::class)) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
 
             return;
         }
 
-        if (Reflection::isInterfaceString($used_interface, AdminRoutingConfigurator::class)) {
+        if (IsInterfaceString::check($used_interface, AdminRoutingConfigurator::class)) {
             throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
         }
     }

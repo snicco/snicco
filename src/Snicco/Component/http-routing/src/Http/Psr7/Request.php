@@ -10,7 +10,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
@@ -186,25 +185,16 @@ final class Request implements ServerRequestInterface
         return 'https' === $this->getUri()->getScheme();
     }
 
-    /**
-     * @throws RequestHasNoType
-     */
     public function isToFrontend(): bool
     {
         return self::TYPE_FRONTEND === $this->type;
     }
 
-    /**
-     * @throws RequestHasNoType
-     */
     public function isToAdminArea(): bool
     {
         return self::TYPE_ADMIN_AREA === $this->type;
     }
 
-    /**
-     * @throws RequestHasNoType
-     */
     public function isToApiEndpoint(): bool
     {
         return self::TYPE_API === $this->type;

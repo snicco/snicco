@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use Snicco\Component\HttpRouting\Http\NegotiateContent;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Middleware\NegotiateContent;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 

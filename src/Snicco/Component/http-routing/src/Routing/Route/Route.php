@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\MiddlewareResolver;
+use Snicco\Component\HttpRouting\Controller\FallBackController;
+use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
-use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 

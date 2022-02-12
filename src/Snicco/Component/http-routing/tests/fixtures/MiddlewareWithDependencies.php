@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\fixtures;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Snicco\Component\HttpRouting\Middleware\Middleware;
+use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 

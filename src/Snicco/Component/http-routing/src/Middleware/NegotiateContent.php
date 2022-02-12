@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http;
+namespace Snicco\Component\HttpRouting\Middleware;
 
 use Middlewares\ContentLanguage;
 use Middlewares\ContentType;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\Middleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\NextMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Webmozart\Assert\Assert;
 

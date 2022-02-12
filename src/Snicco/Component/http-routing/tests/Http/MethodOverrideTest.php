@@ -4,13 +4,19 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use Snicco\Component\HttpRouting\Http\MethodOverride;
+use Snicco\Component\HttpRouting\Middleware\MethodOverride;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
 class MethodOverrideTest extends MiddlewareTestCase
 {
 
     private MethodOverride $middleware;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->middleware = new MethodOverride();
+    }
 
     /**
      * @test
@@ -62,12 +68,6 @@ class MethodOverrideTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
         $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->middleware = new MethodOverride();
     }
 
 }

@@ -23,7 +23,7 @@ use function is_string;
  * @interal
  * @psalm-internal Snicco\Component\HttpRouting
  */
-final class Reflection
+final class IsInterfaceString
 {
 
     /**
@@ -36,7 +36,7 @@ final class Reflection
      *
      * @throws InvalidArgumentException if the interface does not exist
      */
-    public static function isInterfaceString(string $class_string, string $interface): bool
+    public static function check(string $class_string, string $interface): bool
     {
         $class_exists = class_exists($class_string);
         $interface_exists = interface_exists($interface);

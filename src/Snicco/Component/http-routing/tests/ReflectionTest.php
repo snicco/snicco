@@ -11,7 +11,7 @@ use Iterator;
 use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Snicco\Component\HttpRouting\Reflection;
+use Snicco\Component\HttpRouting\IsInterfaceString;
 use Traversable;
 
 final class ReflectionTest extends TestCase
@@ -23,9 +23,9 @@ final class ReflectionTest extends TestCase
      */
     public function test_is_interface_with_class_string(): void
     {
-        $this->assertTrue(Reflection::isInterfaceString(TestSubject::class, Countable::class));
+        $this->assertTrue(IsInterfaceString::check(TestSubject::class, Countable::class));
 
-        $this->assertFalse(Reflection::isInterfaceString(TestSubject::class, JsonSerializable::class));
+        $this->assertFalse(IsInterfaceString::check(TestSubject::class, JsonSerializable::class));
     }
 
     /**
@@ -33,9 +33,9 @@ final class ReflectionTest extends TestCase
      */
     public function test_with_extended_interface(): void
     {
-        $this->assertTrue(Reflection::isInterfaceString(TestTraversable::class, Iterator::class));
-        $this->assertFalse(Reflection::isInterfaceString(TestTraversable::class, ArrayAccess::class));
-        $this->assertTrue(Reflection::isInterfaceString(TestTraversable::class, Traversable::class));
+        $this->assertTrue(IsInterfaceString::check(TestTraversable::class, Iterator::class));
+        $this->assertFalse(IsInterfaceString::check(TestTraversable::class, ArrayAccess::class));
+        $this->assertTrue(IsInterfaceString::check(TestTraversable::class, Traversable::class));
     }
 
     /**
@@ -43,8 +43,8 @@ final class ReflectionTest extends TestCase
      */
     public function test_true_with_interface_string(): void
     {
-        $this->assertTrue(Reflection::isInterfaceString(ContainerInterface::class, ContainerInterface::class));
-        $this->assertFalse(Reflection::isInterfaceString(ContainerInterface::class, ArrayAccess::class));
+        $this->assertTrue(IsInterfaceString::check(ContainerInterface::class, ContainerInterface::class));
+        $this->assertFalse(IsInterfaceString::check(ContainerInterface::class, ArrayAccess::class));
     }
 
     /**
@@ -52,7 +52,7 @@ final class ReflectionTest extends TestCase
      */
     public function test_false_for_missing_class(): void
     {
-        $this->assertFalse(Reflection::isInterfaceString('Foo', ArrayAccess::class));
+        $this->assertFalse(IsInterfaceString::check('Foo', ArrayAccess::class));
     }
 
     /**
@@ -63,7 +63,7 @@ final class ReflectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Interface [Foo] does not exist.');
 
-        Reflection::isInterfaceString(TestTraversable::class, 'Foo');
+        IsInterfaceString::check(TestTraversable::class, 'Foo');
     }
 
     /**
@@ -71,8 +71,8 @@ final class ReflectionTest extends TestCase
      */
     public function test_with_child_interface_as_string(): void
     {
-        $this->assertTrue(Reflection::isInterfaceString(Iterator::class, Traversable::class));
-        $this->assertFalse(Reflection::isInterfaceString(Traversable::class, Iterator::class));
+        $this->assertTrue(IsInterfaceString::check(Iterator::class, Traversable::class));
+        $this->assertFalse(IsInterfaceString::check(Traversable::class, Iterator::class));
     }
 
     /**
@@ -83,7 +83,7 @@ final class ReflectionTest extends TestCase
     {
         $this->assertSame(
             'string',
-            Reflection::firstParameterType(function (string $foo): void {
+            IsInterfaceString::firstParameterType(function (string $foo): void {
                 //
             })
         );
@@ -94,7 +94,7 @@ final class ReflectionTest extends TestCase
      */
     public function test_firstParameterType_with_class_string_uses_constructor(): void
     {
-        $this->assertSame('string', Reflection::firstParameterType(ClassWithConstructor::class));
+        $this->assertSame('string', IsInterfaceString::firstParameterType(ClassWithConstructor::class));
     }
 
 

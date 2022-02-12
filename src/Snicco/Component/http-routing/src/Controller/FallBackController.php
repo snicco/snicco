@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Routing\Controller;
+namespace Snicco\Component\HttpRouting\Controller;
 
-use Snicco\Component\HttpRouting\Controller;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 
 /**

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Controller;
+use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;

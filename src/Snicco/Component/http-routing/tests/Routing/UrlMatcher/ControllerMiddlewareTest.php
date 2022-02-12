@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
-use Snicco\Component\HttpRouting\Controller;
+use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;

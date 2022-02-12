@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting;
+namespace Snicco\Component\HttpRouting\Middleware;
 
 use LogicException;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
+use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\IsInterfaceString;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Webmozart\Assert\Assert;
@@ -203,10 +205,10 @@ final class MiddlewareResolver
     }
 
     /**
-     * @param array<string>|list<MiddlewareBlueprint> $middleware
+     * @param array<string>|MiddlewareBlueprint $middleware
      * @param array<string,string[]>|array<string,MiddlewareBlueprint[]> $groups
      *
-     * @return list<MiddlewareBlueprint>
+     * @return MiddlewareBlueprint
      * @throws InvalidMiddleware
      */
     private function parse(array $middleware, array $groups): array
@@ -257,9 +259,9 @@ final class MiddlewareResolver
     }
 
     /**
-     * @param list<MiddlewareBlueprint> $middleware
+     * @param MiddlewareBlueprint $middleware
      *
-     * @return list<MiddlewareBlueprint>
+     * @return MiddlewareBlueprint
      *
      * @psalm-suppress PossiblyFalseOperand
      */
@@ -300,7 +302,7 @@ final class MiddlewareResolver
      */
     private function resolveAlias(string $middleware): ?string
     {
-        if (Reflection::isInterfaceString($middleware, MiddlewareInterface::class)) {
+        if (IsInterfaceString::check($middleware, MiddlewareInterface::class)) {
             return $middleware;
         }
 
@@ -335,7 +337,7 @@ final class MiddlewareResolver
     private function addAliases(array $middleware_aliases): void
     {
         foreach ($middleware_aliases as $key => $class_string) {
-            if (!Reflection::isInterfaceString($class_string, MiddlewareInterface::class)) {
+            if (!IsInterfaceString::check($class_string, MiddlewareInterface::class)) {
                 throw new InvalidMiddleware("Alias [$key] resolves to invalid middleware class [$class_string].");
             }
             $this->middleware_aliases[$key] = $class_string;
