@@ -70,7 +70,7 @@ abstract class MiddlewareTestCase extends TestCase
     }
 
     /**
-     * @param array<Route> $routes
+     * @param array<string, Route> $routes
      */
     final protected function withRoutes(array $routes): void
     {

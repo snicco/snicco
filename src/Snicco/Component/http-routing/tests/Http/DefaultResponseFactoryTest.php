@@ -210,7 +210,7 @@ class DefaultResponseFactoryTest extends TestCase
     {
         $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
 
-        $routes = new RuntimeRouteCollection(['home' => $home_route]);
+        $routes = new RuntimeRouteCollection([$home_route]);
 
         $factory = $this->createResponseFactory(
             $this->createUrlGenerator(null, $routes)
@@ -229,7 +229,7 @@ class DefaultResponseFactoryTest extends TestCase
     {
         $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
 
-        $routes = new RuntimeRouteCollection(['r1' => $route]);
+        $routes = new RuntimeRouteCollection([$route]);
 
         $factory = $this->createResponseFactory(
             $this->createUrlGenerator(null, $routes)

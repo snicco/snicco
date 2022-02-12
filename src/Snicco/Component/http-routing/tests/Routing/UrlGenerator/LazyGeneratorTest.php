@@ -74,7 +74,7 @@ final class LazyGeneratorTest extends TestCase
             $route = Route::create('/foo', Route::DELEGATE, 'foo');
 
             return new Generator(
-                new RuntimeRouteCollection(['foo' => $route]),
+                new RuntimeRouteCollection([$route]),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\Route;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
@@ -19,7 +20,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RuntimeRouteCollection(['r1' => $r1, 'r2' => $r2]);
+        $routes = new RuntimeRouteCollection([$r1, $r2]);
 
         $this->assertSame(2, count($routes));
     }
@@ -32,7 +33,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RuntimeRouteCollection(['r1' => $r1, 'r2' => $r2]);
+        $routes = new RuntimeRouteCollection([$r1, $r2]);
 
         $count = 0;
         foreach ($routes as $route) {
@@ -50,7 +51,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
 
-        $routes = new RuntimeRouteCollection(['r1' => $r1, 'r2' => $r2]);
+        $routes = new RuntimeRouteCollection([$r1, $r2]);
 
         $route = $routes->getByName('r1');
         $this->assertEquals($r1, $route);
@@ -58,6 +59,20 @@ final class RuntimeRouteCollectionTest extends TestCase
         $this->expectException(RouteNotFound::class);
         $this->expectExceptionMessage('r3');
         $routes->getByName('r3');
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_for_duplicate_route(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Duplicate route name [foo].');
+
+        $r1 = Route::create('/foo', Route::DELEGATE, 'foo');
+        $r2 = Route::create('/foo2', Route::DELEGATE, 'foo');
+
+        new RuntimeRouteCollection([$r1, $r2]);
     }
 
 }

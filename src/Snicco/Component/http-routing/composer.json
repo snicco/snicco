@@ -26,6 +26,9 @@
     "nyholm/psr7": "^1.0.0",
     "pimple/pimple": "^3.4"
   },
+  "suggest": {
+    "nyholm/psr7": "To use as a fast PSR7 implementation."
+  },
   "autoload": {
     "psr-4": {
       "Snicco\\Component\\HttpRouting\\": "src"
