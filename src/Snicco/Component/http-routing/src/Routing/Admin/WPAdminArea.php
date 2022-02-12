@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Admin;
 
-use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Webmozart\Assert\Assert;
 
@@ -41,17 +40,16 @@ final class WPAdminArea implements AdminArea
     {
         $parts = explode('.php/', $route_pattern);
 
-        if (!isset($parts[0]) || !isset($parts[1])) {
-            throw new InvalidArgumentException("Invalid route pattern [$route_pattern] for url rewriting.");
-        }
+        $path = $parts[0] ?? '';
+        $page = $parts[1] ?? '';
 
-        Assert::stringNotEmpty($parts[0]);
-        Assert::stringNotEmpty($parts[1]);
+        Assert::stringNotEmpty($path);
+        Assert::stringNotEmpty($page);
 
         return [
-            $parts[0] . '.php',
+            $path . '.php',
             [
-                'page' => trim($parts[1], '/'),
+                'page' => trim($page, '/'),
             ],
         ];
     }
