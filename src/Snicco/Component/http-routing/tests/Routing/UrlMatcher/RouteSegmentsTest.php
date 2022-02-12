@@ -64,20 +64,6 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('', $this->frontendRequest('/FOO'));
     }
 
-    /**
-     * @test
-     */
-    public function url_encoded_query_string_conditions_work(): void
-    {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', [RoutingTestController::class, 'dynamic'])
-                ->condition(QueryStringCondition::class, ['page' => 'bayern münchen']
-                );
-        });
-
-        $request = $this->frontendRequest('/foo?page=bayern münchen');
-        $this->assertResponseBody('dynamic:bayern münchen', $request);
-    }
 
     /**
      * @test
