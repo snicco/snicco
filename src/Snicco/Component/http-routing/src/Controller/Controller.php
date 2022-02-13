@@ -11,7 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\TemplateRenderer;
+use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\StrArr\Arr;
 use Webmozart\Assert\Assert;

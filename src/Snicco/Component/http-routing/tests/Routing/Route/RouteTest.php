@@ -78,6 +78,16 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     */
+    public function test_exception_bad_controller_array(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected controller array to have a class and a method.');
+        Route::create('/foo', ['class' => RoutingTestController::class]);
+    }
+
+    /**
+     * @test
      * @psalm-suppress InvalidArgument
      */
     public function test_exception_controller_method_is_not_a_string(): void

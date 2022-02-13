@@ -17,6 +17,9 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 use stdClass;
 
+use function dirname;
+use function fopen;
+
 class DefaultResponseFactoryTest extends TestCase
 {
 
@@ -452,6 +455,28 @@ class DefaultResponseFactoryTest extends TestCase
     {
         $this->assertTrue($this->factory->delegate()->shouldHeadersBeSent());
         $this->assertFalse($this->factory->delegate(false)->shouldHeadersBeSent());
+    }
+
+    /**
+     * @test
+     */
+    public function test_createStreamFromFile(): void
+    {
+        $stream = $this->factory->createStreamFromFile(dirname(__DIR__) . '/fixtures/stream/foo.txt');
+        $this->assertSame(3, $stream->getSize());
+        $this->assertSame('foo', $stream->getContents());
+    }
+
+    /**
+     * @test
+     */
+    public function test_createStreamFromResource(): void
+    {
+        $file = dirname(__DIR__) . '/fixtures/stream/foo.txt';
+        /** @psalm-suppress PossiblyFalseArgument */
+        $stream = $this->factory->createStreamFromResource(fopen($file, 'r'));
+        $this->assertSame(3, $stream->getSize());
+        $this->assertSame('foo', $stream->getContents());
     }
 
 }

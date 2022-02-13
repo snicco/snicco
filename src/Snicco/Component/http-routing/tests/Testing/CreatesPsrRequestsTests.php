@@ -9,12 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
-use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 
 final class CreatesPsrRequestsTests extends TestCase
@@ -117,6 +111,28 @@ final class CreatesPsrRequestsTests extends TestCase
         $this->assertTrue($request->isToAdminArea());
     }
 
+    /**
+     * @test
+     */
+    public function test_api_request(): void
+    {
+        $request = $this->apiRequest(
+            '/foo/bar?page=foo&city=foo bar',
+            ['X-FOO' => 'BAR']
+        );
+
+        $this->assertInstanceOf(Request::class, $request);
+        $this->assertEquals(
+            'https://foo.com/foo/bar?page=foo&city=foo%20bar',
+            (string)$request->getUri()
+        );
+        $this->assertEquals(['city' => 'foo bar', 'page' => 'foo'], $request->getQueryParams());
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('GET', $request->server('REQUEST_METHOD'));
+        $this->assertSame('BAR', $request->server('X-FOO'));
+        $this->assertTrue($request->isToApiEndpoint());
+    }
+
     public function psrServerRequestFactory(): ServerRequestFactoryInterface
     {
         return new Psr17Factory();
@@ -130,20 +146,6 @@ final class CreatesPsrRequestsTests extends TestCase
     protected function host(): string
     {
         return 'foo.com';
-    }
-
-    protected function urlGenerator(): UrlGenerator
-    {
-        return new Generator(
-            new RuntimeRouteCollection([]),
-            UrlGenerationContext::forConsole($this->host),
-            $this->adminArea()
-        );
-    }
-
-    protected function adminArea(): AdminArea
-    {
-        return WPAdminArea::fromDefaults();
     }
 
 }

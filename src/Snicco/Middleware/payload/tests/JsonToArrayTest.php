@@ -28,7 +28,7 @@ class JsonToArrayTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(null, $this->getReceivedRequest()->getParsedBody());
+        $this->assertSame(null, $this->receivedRequest()->getParsedBody());
 
         $request = $this->jsonRequest('POST');
         $request->getBody()->write('{"bar":"foo"}');
@@ -36,7 +36,7 @@ class JsonToArrayTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(['bar' => 'foo'], $this->getReceivedRequest()->getParsedBody());
+        $this->assertSame(['bar' => 'foo'], $this->receivedRequest()->getParsedBody());
     }
 
     /**
@@ -51,7 +51,7 @@ class JsonToArrayTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(null, $this->getReceivedRequest()->getParsedBody());
+        $this->assertSame(null, $this->receivedRequest()->getParsedBody());
     }
 
     /**
@@ -65,7 +65,7 @@ class JsonToArrayTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame([], $this->getReceivedRequest()->getParsedBody());
+        $this->assertSame([], $this->receivedRequest()->getParsedBody());
     }
 
     /**
@@ -103,7 +103,7 @@ class JsonToArrayTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(['foo' => 'bar'], $this->getReceivedRequest()->getParsedBody());
+        $this->assertSame(['foo' => 'bar'], $this->receivedRequest()->getParsedBody());
     }
 
     /**

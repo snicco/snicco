@@ -284,7 +284,9 @@ final class MiddlewareResolver
         });
 
         if (!$success) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('middleware could not be sorted.');
+            // @codeCoverageIgnoreEnd
         }
 
         return $sorted;

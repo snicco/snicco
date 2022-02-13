@@ -10,10 +10,9 @@ use Pimple\Container;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Controller\FallBackController;
+use Snicco\Component\HttpRouting\Controller\DelegateResponseController;
 use Snicco\Component\HttpRouting\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Controller\ViewController;
-use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
@@ -21,6 +20,7 @@ use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
+use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
@@ -38,6 +38,7 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
+use Snicco\Component\HttpRouting\Tests\fixtures\Controller\TestViewController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
@@ -103,9 +104,15 @@ abstract class HttpRunnerTestCase extends TestCase
         $this->psr_container = new \Pimple\Psr11\Container($this->pimple);
 
         // internal controllers
-        $this->pimple[FallBackController::class] = new FallBackController();
-        $this->pimple[ViewController::class] = new ViewController(new FileTemplateRenderer());
-        $this->pimple[RedirectController::class] = new RedirectController();
+        $this->pimple[DelegateResponseController::class] = function (): DelegateResponseController {
+            return new DelegateResponseController();
+        };
+        $this->pimple[ViewController::class] = function (): ViewController {
+            return new ViewController(new FileTemplateRenderer());
+        };
+        $this->pimple[RedirectController::class] = function (): RedirectController {
+            return new RedirectController();
+        };
 
         // TestController
         $controller = new RoutingTestController();

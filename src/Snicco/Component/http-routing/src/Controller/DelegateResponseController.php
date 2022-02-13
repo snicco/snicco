@@ -9,10 +9,10 @@ use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 /**
  * @interal
  */
-final class FallBackController extends Controller
+final class DelegateResponseController extends Controller
 {
 
-    public function delegate(): DelegatedResponse
+    public function __invoke(): DelegatedResponse
     {
         return $this->respond()->delegate(true);
     }

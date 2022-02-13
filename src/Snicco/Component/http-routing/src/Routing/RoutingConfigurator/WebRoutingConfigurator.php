@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
+use Snicco\Component\HttpRouting\Controller\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
@@ -89,7 +90,7 @@ interface WebRoutingConfigurator extends RoutingConfigurator
      * @param array<string,scalar> $data
      * @param array<string,string> $headers
      *
-     * @see TemplateRenderer::render()
+     * @see \Snicco\Component\HttpRouting\Renderer\TemplateRenderer::render()
      */
     public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []): Route;
 

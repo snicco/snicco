@@ -10,7 +10,6 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\StreamInterface as Psr7Stream;
-use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
@@ -112,7 +111,7 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
     public function html(string $html, int $status_code = 200): Response
     {
         return $this->make($status_code)
-            ->html($this->psr_stream->createStream($html));
+            ->withHtml($this->psr_stream->createStream($html));
     }
 
     public function createStream(string $content = ''): Psr7Stream
@@ -124,7 +123,7 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
     public function json($content, int $status_code = 200): Response
     {
         return $this->make($status_code)
-            ->json($this->createStream(json_encode($content, JSON_THROW_ON_ERROR)));
+            ->withJson($this->createStream(json_encode($content, JSON_THROW_ON_ERROR)));
     }
 
     public function redirect(string $location, int $status_code = 302): RedirectResponse
@@ -180,9 +179,7 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         $current = $this->url->full();
         $query = parse_url($current, PHP_URL_QUERY);
 
-        if (false === $query) {
-            throw new RuntimeException("Current url [$current] can not be parsed.");
-        } elseif (null === $query) {
+        if (!$query) {
             $query = '';
         }
 

@@ -410,7 +410,7 @@ class PipelineTestMiddleware2 extends Middleware
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
+        $response = $next->process($request->withAttribute(self::ATTRIBUTE, $this->value_to_add), $next);
         $response->getBody()->write(':pm2');
         return $response;
     }

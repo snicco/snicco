@@ -23,6 +23,11 @@ trait CreatesPsrRequests
         return $this->newRequest($path, $server, 'GET', Request::TYPE_ADMIN_AREA);
     }
 
+    final protected function apiRequest(string $path = '/', array $server = [], string $method = 'GET'): Request
+    {
+        return $this->newRequest($path, $server, $method, Request::TYPE_API);
+    }
+
     final protected function frontendRequest(string $path = '/', array $server = [], string $method = 'GET'): Request
     {
         return $this->newRequest($path, $server, $method, Request::TYPE_FRONTEND);

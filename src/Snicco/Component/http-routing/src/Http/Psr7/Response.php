@@ -264,7 +264,7 @@ class Response implements ResponseInterface
         return $response;
     }
 
-    final public function html(StreamInterface $html): self
+    final public function withHtml(StreamInterface $html): self
     {
         return $this->withHeader('Content-Type', 'text/html; charset=UTF-8')
             ->withBody($html);
@@ -274,7 +274,7 @@ class Response implements ResponseInterface
      * @param StreamInterface $json
      * @return static
      */
-    final public function json(StreamInterface $json)
+    final public function withJson(StreamInterface $json)
     {
         return $this->withHeader('Content-Type', 'application/json')->withBody($json);
     }
@@ -282,7 +282,7 @@ class Response implements ResponseInterface
     final public function isRedirect(string $location = null): bool
     {
         return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308])
-            && (null === $location || $location == $this->getHeader('Location'));
+            && (null === $location || $location == $this->getHeaderLine('Location'));
     }
 
     final public function isSuccessful(): bool
@@ -356,7 +356,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final protected function new(ResponseInterface $new_psr_response)
+    private function new(ResponseInterface $new_psr_response)
     {
         $new = clone $this;
         $new->psr7_response = $new_psr_response;
