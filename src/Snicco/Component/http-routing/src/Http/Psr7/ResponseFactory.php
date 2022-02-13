@@ -114,12 +114,16 @@ final class ResponseFactory implements Redirector, Psr17ResponseFactory, Psr17St
     }
 
     /**
-     * @param mixed $content
-     * @todo This should use a dedicated json response class.
+     * @param mixed $data
+     * @throws JsonException
      */
-    public function json($content, int $status_code = 200): Response
+    public function json($data, int $status_code = 200, int $options = JSON_THROW_ON_ERROR, int $depth = 512): Response
     {
-        $stream = json_encode($content, JSON_THROW_ON_ERROR);
+        $stream = json_encode($data, $options, $depth);
+
+        if (json_last_error() !== JSON_ERROR_NONE || false === $stream) {
+            throw new JsonException(json_last_error_msg(), json_last_error());
+        }
 
         return $this->createResponse($status_code)->withJson(
             $this->createStream($stream)
