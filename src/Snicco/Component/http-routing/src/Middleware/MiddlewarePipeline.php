@@ -66,7 +66,7 @@ final class MiddlewarePipeline
             }
             Reflector::assertInterfaceString($m, MiddlewareInterface::class);
         }
-        
+
         $new = clone $this;
         $new->middleware = $middleware;
         return $new;
@@ -144,13 +144,12 @@ final class MiddlewarePipeline
         return $middleware->process($request, $next);
     }
 
+    /**
+     * @param array<string> $constructor_args
+     */
     private function convertStrings(array $constructor_args): array
     {
         return array_map(function ($value) {
-            if (!is_string($value)) {
-                return $value;
-            }
-
             if (strtolower($value) === 'true') {
                 return true;
             }

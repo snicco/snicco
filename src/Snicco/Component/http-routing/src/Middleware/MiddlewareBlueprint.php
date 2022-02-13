@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Middleware;
 
 use Psr\Http\Server\MiddlewareInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * @interal
@@ -20,23 +21,24 @@ final class MiddlewareBlueprint
     public string $class;
 
     /**
-     * @var array<scalar>
+     * @var array<string>
      */
     public array $arguments;
 
     /**
      * @param class-string<MiddlewareInterface> $class
-     * @param array<scalar> $arguments
+     * @param array<string> $arguments
      */
     public function __construct(string $class, array $arguments = [])
     {
         $this->class = $class;
+        Assert::allString($arguments);
         $this->arguments = $arguments;
     }
 
     /**
      * @param class-string<MiddlewareInterface> $class
-     * @param array<scalar> $arguments
+     * @param array<string> $arguments
      */
     public static function from(string $class, array $arguments = []): MiddlewareBlueprint
     {
@@ -44,7 +46,7 @@ final class MiddlewareBlueprint
     }
 
     /**
-     * @return array{class: class-string<MiddlewareInterface>, args: array<scalar>}
+     * @return array{class: class-string<MiddlewareInterface>, args: array<string>}
      */
     public function asArray(): array
     {

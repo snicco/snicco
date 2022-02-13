@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Http;
+namespace Snicco\Component\HttpRouting\Renderer;
 
 use Snicco\Component\HttpRouting\Exception\CouldNotRenderTemplate;
 

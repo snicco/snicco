@@ -17,6 +17,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\BooleanMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\IntegerMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use stdClass;
 
@@ -298,6 +299,20 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     /**
      * @test
      */
+    public function numeric_values_are_converted(): void
+    {
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class)
+                ->middleware(IntegerMiddleware::class . ':1');
+        });
+
+        $request = $this->frontendRequest('/foo');
+        $this->assertResponseBody(RoutingTestController::static . ':integer_1', $request);
+    }
+
+    /**
+     * @test
+     */
     public function a_middleware_group_can_point_to_a_middleware_alias(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -424,6 +439,27 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->assertResponseBody(
             RoutingTestController::static
             . ':baz_middleware:bar_middleware:foo_middleware:foobar_middleware',
+            $request
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function global_middleware_will_be_run_first_even_if_set_on_route(): void
+    {
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get('r1', '/foo', RoutingTestController::class)
+                ->middleware([FooMiddleware::class, 'global']);
+        });
+
+        // The global middleware will be run last even tho it has no priority.
+        $this->withGlobalMiddleware([BarMiddleware::class]);
+
+        $request = $this->frontendRequest('/foo');
+        $this->assertResponseBody(
+            RoutingTestController::static
+            . ':foo_middleware:bar_middleware',
             $request
         );
     }
@@ -638,6 +674,39 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($this->frontendRequest('/bar'));
         $this->assertSame('', $response->body());
+    }
+
+    /**
+     * @test
+     */
+    public function api_middleware_can_be_always_run(): void
+    {
+        $this->alwaysRun([
+            RoutingConfigurator::API_MIDDLEWARE,
+        ]);
+        $this->withMiddlewareGroups(
+            [RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
+        );
+
+        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+            $configurator->get(
+                'r1',
+                'foo',
+                RoutingTestController::class,
+            );
+        });
+
+        $response = $this->runNewPipeline($this->apiRequest('/bar'));
+        $this->assertSame(
+            ':bar_middleware:foo_middleware',
+            $response->body()
+        );
+
+        $response = $this->runNewPipeline($this->frontendRequest('/bar'));
+        $this->assertSame(
+            '',
+            $response->body()
+        );
     }
 
     /**

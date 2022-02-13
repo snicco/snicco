@@ -64,6 +64,37 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
     /**
      * @test
      */
+    public function middleware_for_api_requests_can_be_loaded_from_cache(): void
+    {
+        $blueprint1 = MiddlewareBlueprint::from(FooMiddleware::class, ['bar', 'baz']);
+        $blueprint2 = MiddlewareBlueprint::from(BarMiddleware::class, ['biz']);
+
+        $resolver = MiddlewareResolver::fromCache([], [
+            RoutingConfigurator::GLOBAL_MIDDLEWARE => [$blueprint1->asArray()],
+            RoutingConfigurator::API_MIDDLEWARE => [$blueprint2->asArray()]
+        ]);
+
+        $this->assertEquals(
+            [$blueprint1, $blueprint2],
+            $resolver->resolveForRequestWithoutRoute($this->apiRequest())
+        );
+
+        $this->assertEquals(
+            [$blueprint1],
+            $resolver->resolveForRequestWithoutRoute($this->adminRequest('/foo'))
+        );
+
+        $this->assertEquals(
+            [$blueprint1],
+            $resolver->resolveForRequestWithoutRoute(
+                $this->frontendRequest('/foo')
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
     public function test_exception_if_a_route_is_not_in_cache(): void
     {
         $blueprint1 = MiddlewareBlueprint::from(FooMiddleware::class, ['bar', 'baz']);

@@ -16,13 +16,19 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 use function json_encode;
 
-final class TestResponseTest extends TestCase
+final class AssertableResponseTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
     private ResponseFactory $response_factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->response_factory = $this->createResponseFactory($this->createUrlGenerator());
+    }
 
     /**
      * @test
@@ -77,18 +83,6 @@ final class TestResponseTest extends TestCase
             'Expected response to be instance of',
             fn() => $response->assertDelegated()
         );
-    }
-
-    private function expectFailureWithMessageContaining(string $message, Closure $test): void
-    {
-        try {
-            $test();
-            $this->fail('Test assertion should have failed but it passed.');
-        } catch (ExpectationFailedException $e) {
-            $this->assertStringContainsString($message, $e->getMessage());
-        }
-
-        $this->assertTrue(true);
     }
 
     /**
@@ -877,7 +871,7 @@ final class TestResponseTest extends TestCase
         $response = new AssertableResponse($this->response_factory->json(['foo' => 'bar']));
 
         $this->expectFailureWithMessageContaining(
-            'Response json body does not match expected [' . json_encode(['foo' => 'baz']) . '].',
+            'Response json body does not match expected [' . (string)json_encode(['foo' => 'baz']) . '].',
             fn() => $response->assertExactJson(['foo' => 'baz'])
         );
     }
@@ -892,10 +886,28 @@ final class TestResponseTest extends TestCase
         $this->assertSame($real, $response->getPsrResponse());
     }
 
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function test_getHeader(): void
     {
-        parent::setUp();
-        $this->response_factory = $this->createResponseFactory($this->createUrlGenerator());
+        $response = new AssertableResponse($real = $this->response_factory->make()->withHeader('foo', 'bar'));
+
+        $this->assertSame([
+            'bar'
+        ], $response->getHeader('foo'));
+    }
+
+    private function expectFailureWithMessageContaining(string $message, Closure $test): void
+    {
+        try {
+            $test();
+            $this->fail('Test assertion should have failed but it passed.');
+        } catch (ExpectationFailedException $e) {
+            $this->assertStringContainsString($message, $e->getMessage());
+        }
+
+        $this->assertTrue(true);
     }
 
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Testing;
 
 use Closure;
+use LogicException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
@@ -33,9 +34,6 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 use function call_user_func;
 
-/**
- * @api
- */
 abstract class MiddlewareTestCase extends TestCase
 {
 
@@ -59,6 +57,14 @@ abstract class MiddlewareTestCase extends TestCase
         };
     }
 
+    /**
+     * @param Route[] $routes
+     */
+    final protected function withRoutes(array $routes): void
+    {
+        $this->routes = new RuntimeRouteCollection($routes);
+    }
+
     protected function psrServerRequestFactory(): ServerRequestFactoryInterface
     {
         return new Psr17Factory();
@@ -67,14 +73,6 @@ abstract class MiddlewareTestCase extends TestCase
     protected function psrUriFactory(): UriFactoryInterface
     {
         return new Psr17Factory();
-    }
-
-    /**
-     * @param Route[] $routes
-     */
-    final protected function withRoutes(array $routes): void
-    {
-        $this->routes = new RuntimeRouteCollection($routes);
     }
 
     /**
@@ -132,7 +130,7 @@ abstract class MiddlewareTestCase extends TestCase
         return new Psr17Factory();
     }
 
-    final protected function getReceivedRequest(): Request
+    final protected function receivedRequest(): Request
     {
         if (!isset($this->received_request_by_next_middleware)) {
             throw new RuntimeException('The next middleware was not called.');
@@ -141,20 +139,20 @@ abstract class MiddlewareTestCase extends TestCase
         return $this->received_request_by_next_middleware;
     }
 
-    final protected function getRedirector(): Redirector
+    final protected function redirector(): Redirector
     {
         if (!isset($this->response_factory)) {
-            throw new RuntimeException(
+            throw new LogicException(
                 'You can only retrieve the redirector from inside the next_response closure'
             );
         }
         return $this->response_factory;
     }
 
-    final protected function getResponseFactory(): ResponseFactory
+    final protected function responseFactory(): ResponseFactory
     {
         if (!isset($this->response_factory)) {
-            throw new RuntimeException(
+            throw new LogicException(
                 'You can only retrieve the response factory from inside the next_response closure'
             );
         }

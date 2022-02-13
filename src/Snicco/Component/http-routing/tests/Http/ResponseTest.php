@@ -67,7 +67,7 @@ class ResponseTest extends TestCase
     {
         $stream = $this->factory->createStream('foo');
 
-        $response = $this->factory->make()->html($stream);
+        $response = $this->factory->make()->withHtml($stream);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
@@ -77,7 +77,7 @@ class ResponseTest extends TestCase
     {
         $stream = $this->factory->createStream(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
 
-        $response = $this->factory->make()->json($stream);
+        $response = $this->factory->make()->withJson($stream);
 
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->__toString(), true));
@@ -314,6 +314,113 @@ class ResponseTest extends TestCase
         $response = $this->response->withErrors(['foo' => 'bar'], 'namespace1');
         $this->assertSame(['namespace1' => ['foo' => ['bar']]], $response->errors());
         $this->assertSame([], $this->response->errors());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getProtocolVersion(): void
+    {
+        $this->assertSame('1.1', $this->response->getProtocolVersion());
+        $response = $this->response->withProtocolVersion('1.0');
+        $this->assertSame('1.0', $response->getProtocolVersion());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getHeaders(): void
+    {
+        $response = $this->response
+            ->withHeader('foo', 'bar1')
+            ->withAddedHeader('foo', 'bar2')
+            ->withHeader('baz', 'biz');
+
+        $this->assertSame([
+            'foo' => [
+                'bar1',
+                'bar2'
+            ],
+            'baz' => [
+                'biz'
+            ]
+        ], $response->getHeaders());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isRedirect(): void
+    {
+        $response = $this->response->withStatus(301);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(302);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(303);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(307);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(308);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(301)->withHeader('location', '/foo');
+        $this->assertTrue($response->isRedirect('/foo'));
+        $this->assertFalse($response->isRedirect('/bar'));
+
+        $response = $this->response->withStatus(200);
+        $this->assertFalse($response->isRedirect());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isOk(): void
+    {
+        $response = $this->response->withStatus(201);
+        $this->assertFalse($response->isOk());
+
+        $response = $this->response->withStatus(200);
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isNotFound(): void
+    {
+        $response = $this->response->withStatus(403);
+        $this->assertFalse($response->isNotFound());
+
+        $response = $this->response->withStatus(404);
+        $this->assertTrue($response->isNotFound());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isForbidden(): void
+    {
+        $response = $this->response->withStatus(404);
+        $this->assertFalse($response->isForbidden());
+
+        $response = $this->response->withStatus(403);
+        $this->assertTrue($response->isForbidden());
+    }
+
+    /**
+     * @test
+     */
+    public function test_from_psr(): void
+    {
+        $response = Response::fromPsr($this->response);
+        $this->assertInstanceOf(Response::class, $response);
+
+        $response = Response::fromPsr($this->psrResponseFactory()->createResponse());
+        $this->assertInstanceOf(Response::class, $response);
     }
 
 }

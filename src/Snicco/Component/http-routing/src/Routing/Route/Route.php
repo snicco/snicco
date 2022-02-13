@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Controller\FallBackController;
+use Snicco\Component\HttpRouting\Controller\DelegateResponseController;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
@@ -29,7 +29,7 @@ final class Route
 {
 
     /** @interal */
-    public const DELEGATE = [FallBackController::class, 'delegate'];
+    public const DELEGATE = [DelegateResponseController::class, '__invoke'];
 
     /** @interal */
     public const FALLBACK_NAME = 'sniccowp_fallback_route';

@@ -12,6 +12,8 @@ use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use stdClass;
 
+use function serialize;
+
 final class CachedRouteCollectionTest extends TestCase
 {
 
@@ -62,6 +64,27 @@ final class CachedRouteCollectionTest extends TestCase
             $count++;
         }
         $this->assertSame(2, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function test_to_array(): void
+    {
+        $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
+        $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
+        $routes = new CachedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
+
+        $this->assertEquals([
+            'r1' => $r1,
+            'r2' => $r2
+        ], $routes->toArray());
+
+        // Two times to proof that hydration works correctly for multiple calls.
+        $this->assertEquals([
+            'r1' => $r1,
+            'r2' => $r2
+        ], $routes->toArray());
     }
 
     /**

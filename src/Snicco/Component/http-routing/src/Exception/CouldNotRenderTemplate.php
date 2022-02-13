@@ -10,7 +10,7 @@ use Throwable;
 
 final class CouldNotRenderTemplate extends RuntimeException
 {
-    public static function fromPrevious(Throwable $e)
+    public static function fromPrevious(Throwable $e): CouldNotRenderTemplate
     {
         return new self($e->getMessage(), (int)$e->getCode(), $e);
     }

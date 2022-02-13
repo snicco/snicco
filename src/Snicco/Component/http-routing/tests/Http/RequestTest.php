@@ -8,9 +8,11 @@ use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
+use stdClass;
 
 class RequestTest extends TestCase
 {
@@ -284,7 +286,6 @@ class RequestTest extends TestCase
         $this->assertTrue($request->isToAdminArea());
     }
 
-
     /**
      * @test
      */
@@ -298,6 +299,159 @@ class RequestTest extends TestCase
 
         $this->assertSame('bar', $request->getAttribute('foo'));
         $this->assertTrue($request->isToAdminArea());
+    }
+
+    /**
+     * @test
+     */
+    public function test_userAgent(): void
+    {
+        $this->assertNull($this->request->userAgent());
+
+        $request = $this->request->withHeader('user-agent', '');
+        $this->assertNull($request->userAgent());
+
+        $request = $this->request->withHeader('user-agent', 'foobar');
+        $this->assertSame('foobar', $request->userAgent());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getRequestTarget(): void
+    {
+        $request = $this->frontendRequest('https://foobar.com/baz?biz=boo#section1');
+
+        $this->assertSame('/baz?biz=boo', $request->getRequestTarget());
+
+        $request = $request->withRequestTarget('/baz');
+        $this->assertSame('/baz', $request->getRequestTarget());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getHeader(): void
+    {
+        $request = $this->request->withHeader('foo', 'bar');
+
+        $this->assertSame(['bar'], $request->getHeader('foo'));
+        $this->assertSame([], $request->getHeader('bogus'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_protocol_version(): void
+    {
+        $this->assertSame('1.1', $this->request->getProtocolVersion());
+        $request = $this->request->withProtocolVersion('1.0');
+        $this->assertSame('1.0', $request->getProtocolVersion());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getHeaders(): void
+    {
+        $request = $this->request
+            ->withAddedHeader('foo', 'bar1')
+            ->withAddedHeader('foo', 'bar2')
+            ->withAddedHeader('baz', 'biz');
+
+        $this->assertSame([
+            // default headers, header case is preserved
+            'Host' => [
+                '127.0.0.1'
+            ],
+            'foo' => [
+                'bar1',
+                'bar2'
+            ],
+            'baz' => [
+                'biz'
+            ]
+        ], $request->getHeaders());
+    }
+
+    /**
+     * @test
+     */
+    public function test_hasHeader(): void
+    {
+        $request = $this->request->withHeader('foo', 'bar');
+        $this->assertTrue($request->hasHeader('foo'));
+        $this->assertFalse($request->hasHeader('bogus'));
+        $request = $request->withoutHeader('foo');
+        $this->assertFalse($request->hasHeader('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_getBody(): void
+    {
+        $this->assertSame('', (string)$this->request->getBody());
+
+        $body = $this->psrStreamFactory()->createStream('foo');
+        $request = $this->request->withBody($body);
+
+        $this->assertSame('foo', (string)$request->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getUploadedFiles(): void
+    {
+        $this->assertSame([], $this->request->getUploadedFiles());
+
+        $stream = $this->psrStreamFactory()->createStream('foo');
+        $request = $this->request->withUploadedFiles([
+            $file = $this->psrUploadedFileFactory()->createUploadedFile($stream)
+        ]);
+
+        $this->assertSame([
+            $file
+        ], $request->getUploadedFiles());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getAttributes(): void
+    {
+        $this->assertSame([], $this->request->getAttributes());
+        $request = $this->request
+            ->withAttribute('foo', 'bar')
+            ->withAttribute('baz', 'biz');
+
+        $this->assertSame([
+            'foo' => 'bar',
+            'baz' => 'biz'
+        ], $request->getAttributes());
+
+        $request = $request->withoutAttribute('foo');
+
+        $this->assertSame([
+            'baz' => 'biz'
+        ], $request->getAttributes());
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_throws_exception_for_input_source_not_being_an_array(): void
+    {
+        $std = new stdClass();
+        $std->foo = 'bar';
+
+        $request = $this->frontendRequest('', [], 'POST')->withParsedBody($std)->withMethod('POST');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('inputSource');
+
+        $request->boolean('foo');
     }
 
 }

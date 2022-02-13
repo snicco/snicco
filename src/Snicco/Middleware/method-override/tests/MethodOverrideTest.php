@@ -30,7 +30,7 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('PUT', $this->getReceivedRequest()->getMethod());
+        $this->assertSame('PUT', $this->receivedRequest()->getMethod());
     }
 
     /**
@@ -45,7 +45,7 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
+        $this->assertSame('GET', $this->receivedRequest()->getMethod());
     }
 
     /**
@@ -59,7 +59,7 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('PUT', $this->getReceivedRequest()->getMethod());
+        $this->assertSame('PUT', $this->receivedRequest()->getMethod());
 
         $request = $this->frontendRequest('/foo')
             ->withHeader('X-HTTP-Method-Override', 'PUT');
@@ -67,7 +67,7 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame('GET', $this->getReceivedRequest()->getMethod());
+        $this->assertSame('GET', $this->receivedRequest()->getMethod());
     }
 
 }

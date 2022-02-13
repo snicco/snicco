@@ -11,11 +11,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Snicco\Component\HttpRouting\Exception\CouldNotRenderTemplate;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\TemplateRenderer;
+use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Webmozart\Assert\Assert;
 
@@ -69,6 +70,7 @@ abstract class Middleware implements MiddlewareInterface
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws CouldNotRenderTemplate
      */
     final protected function render(string $template_identifier, array $data = []): Response
     {

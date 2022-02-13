@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
-use BadMethodCallException;
 use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -73,7 +72,7 @@ final class Request implements ServerRequestInterface
     public function userAgent(): ?string
     {
         $user_agent = substr($this->getHeaderLine('user-agent'), 0, 500);
-        if (false === $user_agent) {
+        if (false === $user_agent || '' === $user_agent) {
             return null;
         }
         return $user_agent;
@@ -347,6 +346,8 @@ final class Request implements ServerRequestInterface
      *
      * @param mixed $default
      * @return mixed
+     *
+     * @throws RuntimeException If parsed body is not an array.
      */
     public function post(?string $key = null, $default = null)
     {
@@ -357,7 +358,7 @@ final class Request implements ServerRequestInterface
         }
 
         if (!is_array($parsed_body)) {
-            throw new BadMethodCallException('Request::post() can not be used if parsed body is not an array.');
+            throw new RuntimeException(sprintf('%s can not be used if parsed body is not an array.', __METHOD__));
         }
 
         if (null === $key) {
@@ -651,7 +652,9 @@ final class Request implements ServerRequestInterface
         $tok = strtok($match_against, '/');
 
         if (false == $tok) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not parse accept header [$match_against].");
+            // @codeCoverageIgnoreEnd
         }
 
         if ($accept_header === $tok . '/*') {
@@ -669,7 +672,7 @@ final class Request implements ServerRequestInterface
 
         if (!is_array($input)) {
             throw new RuntimeException(
-                sprintf('%s::inputSource() can only be used if the parsed body is an array.', self::class)
+                sprintf('%s can only be used if the parsed body is an array.', __METHOD__)
             );
         }
 

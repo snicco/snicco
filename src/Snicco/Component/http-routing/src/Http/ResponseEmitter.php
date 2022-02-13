@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Modified Version of Slims Response Emitter class.
+ * https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
+ * Copyright (c) 2011-2022 Josh Lockhart
+ * License: MIT, https://github.com/slimphp/Slim/blob/4.x/LICENSE.md
+ */
+
+
 declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http;
@@ -15,11 +23,9 @@ use function strlen;
 use function strtolower;
 
 /**
- * Modified Version of Slims Response Emitter. We expose methods to send some parts of a psr
- * response separately because we need this for legacy CMSs where we don't have full control over
- * the request-response cycle.
- *
- * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
+ * @codeCoverageIgnore This class has the exact same logic of Slims Response Emitter. The only thing we changed is
+ *                     splitting up emit, emitHeaders, emitBody, emitCookies into separate public methods to give us
+ *                     more control with legacy CMS systems.
  */
 final class ResponseEmitter
 {
@@ -33,15 +39,48 @@ final class ResponseEmitter
 
     public function emit(Response $response): void
     {
-        $isEmpty = $this->isResponseEmpty($response);
+        $is_empty = $this->isResponseEmpty($response);
 
         if ($headers_not_sent = headers_sent() === false) {
-            $this->emitStatusLine($response);
             $this->emitHeaders($response);
+
+            // Set the status _after_ the headers, because of PHP's "helpful" behavior with location headers.
+            // See https://github.com/slimphp/Slim/issues/1730
+            $this->emitStatusLine($response);
         }
 
-        if (!$isEmpty && $headers_not_sent) {
+        if (!$is_empty && $headers_not_sent) {
             $this->emitBody($response);
+        }
+    }
+
+    public function emitHeaders(Response $response): void
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        foreach ($response->getHeaders() as $name => $values) {
+            $replace = strtolower($name) !== 'set-cookie';
+            foreach ($values as $value) {
+                $header = sprintf('%s: %s', $name, $value);
+                header($header, $replace);
+                $replace = false;
+            }
+        }
+    }
+
+    public function emitCookies(Cookies $cookies): void
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        $cookies = $cookies->toHeaders();
+
+        foreach ($cookies as $cookie) {
+            $header = sprintf('%s: %s', 'Set-Cookie', $cookie);
+            header($header, false);
         }
     }
 
@@ -68,22 +107,6 @@ final class ResponseEmitter
             $response->getReasonPhrase()
         );
         header($statusLine, true, $response->getStatusCode());
-    }
-
-    public function emitHeaders(Response $response): void
-    {
-        if (headers_sent()) {
-            return;
-        }
-
-        foreach ($response->getHeaders() as $name => $values) {
-            $replace = strtolower($name) !== 'set-cookie';
-            foreach ($values as $value) {
-                $header = sprintf('%s: %s', $name, $value);
-                header($header, $replace);
-                $replace = false;
-            }
-        }
     }
 
     private function emitBody(Response $response): void
@@ -118,20 +141,6 @@ final class ResponseEmitter
                     break;
                 }
             }
-        }
-    }
-
-    public function emitCookies(Cookies $cookies): void
-    {
-        if (headers_sent()) {
-            return;
-        }
-
-        $cookies = $cookies->toHeaders();
-
-        foreach ($cookies as $cookie) {
-            $header = sprintf('%s: %s', 'Set-Cookie', $cookie);
-            header($header, false);
         }
     }
 
