@@ -71,12 +71,12 @@ final class MiddlewareResolver
     private bool $is_cached = false;
 
     /**
-     * @var array<string, array< array{class: class-string<MiddlewareInterface>, args: array<scalar>}>>
+     * @var array<string, array< array{class: class-string<MiddlewareInterface>, args: array<string>}>>
      */
     private array $route_map = [];
 
     /**
-     * @var array<'admin'|'frontend'|'api'|'global', array<array{class: class-string<MiddlewareInterface>, args: array<scalar>}>> $request_type_map
+     * @var array<'admin'|'frontend'|'api'|'global', array<array{class: class-string<MiddlewareInterface>, args: array<string>}>> $request_type_map
      */
     private array $request_map = [];
 
@@ -104,9 +104,9 @@ final class MiddlewareResolver
     }
 
     /**
-     * @param array<string, array< array{class: class-string<MiddlewareInterface>, args: array<scalar>}>> $route_map
+     * @param array<string, array< array{class: class-string<MiddlewareInterface>, args: array<string>}>> $route_map
      *
-     * @param array<'admin'|'frontend'|'api'|'global', array< array{class: class-string<MiddlewareInterface>, args: array<scalar>}>> $request_type_map
+     * @param array<'admin'|'frontend'|'api'|'global', array< array{class: class-string<MiddlewareInterface>, args: array<string>}>> $request_type_map
      */
     public static function fromCache(array $route_map, array $request_type_map): self
     {
@@ -386,7 +386,7 @@ final class MiddlewareResolver
     }
 
     /**
-     * @param array<array{class: class-string<MiddlewareInterface>, args: array<scalar>}> $blueprints
+     * @param array<array{class: class-string<MiddlewareInterface>, args: array<string>}> $blueprints
      * @return MiddlewareBlueprint[]
      */
     private function hydrateBlueprints(array $blueprints): array

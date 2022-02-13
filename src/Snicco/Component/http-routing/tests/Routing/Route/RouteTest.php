@@ -78,6 +78,7 @@ final class RouteTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
     public function test_exception_bad_controller_array(): void
     {

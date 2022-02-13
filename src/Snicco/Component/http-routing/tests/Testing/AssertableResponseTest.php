@@ -891,7 +891,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_getHeader(): void
     {
-        $response = new AssertableResponse($real = $this->response_factory->make()->withHeader('foo', 'bar'));
+        $response = new AssertableResponse($this->response_factory->make()->withHeader('foo', 'bar'));
 
         $this->assertSame([
             'bar'
