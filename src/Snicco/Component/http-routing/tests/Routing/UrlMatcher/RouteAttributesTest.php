@@ -8,7 +8,7 @@ use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
-use Snicco\Component\HttpRouting\Tests\fixtures\GlobalMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteAttributesTest extends HttpRunnerTestCase
@@ -275,17 +275,13 @@ class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function a_route_can_be_set_to_not_handle_anything_but_only_run_middleware(): void
     {
-        $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
-
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('foo', '/foo')
-                ->middleware(GlobalMiddleware::class);
+                ->middleware(FooMiddleware::class);
         });
 
         $request = $this->frontendRequest('/foo');
-        $this->assertResponseBody('', $request);
-
-        $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
+        $this->assertResponseBody(':foo_middleware', $request);
     }
 
     /**

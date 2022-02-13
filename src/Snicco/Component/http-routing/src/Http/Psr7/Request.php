@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
+use BadMethodCallException;
 use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -67,6 +68,17 @@ final class Request implements ServerRequestInterface
             return $psr_request;
         }
         return new self($psr_request, $type);
+    }
+
+    /**
+     * @param mixed $value
+     * @return never
+     */
+    final public function __set(string $name, $value)
+    {
+        throw new BadMethodCallException(
+            sprintf("Cannot set undefined property [$name] on immutable class [%s]", self::class)
+        );
     }
 
     public function userAgent(): ?string

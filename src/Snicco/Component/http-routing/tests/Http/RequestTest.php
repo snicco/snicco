@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -452,6 +453,18 @@ class RequestTest extends TestCase
         $this->expectExceptionMessage('inputSource');
 
         $request->boolean('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function test_magic_set_throws_exception(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Cannot set undefined property [foo]');
+
+        /** @psalm-suppress UndefinedPropertyAssignment */
+        $this->request->foo = 'bar';
     }
 
 }

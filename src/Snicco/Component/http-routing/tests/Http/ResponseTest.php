@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
@@ -48,19 +49,15 @@ class ResponseTest extends TestCase
         $this->assertFalse($response1->hasHeader('foo'));
     }
 
-    public function testNonPsrAttributesAreCopiedForNewInstances(): void
+    public function test_magic_set_throws_exception(): void
     {
         $response1 = $this->factory->createResponse();
+
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Cannot set undefined property [foo]');
+
+        /** @psalm-suppress UndefinedPropertyAssignment */
         $response1->foo = 'bar';
-
-        $response2 = $response1->withHeader('foo', 'bar');
-
-        $this->assertNotSame($response1, $response2);
-        $this->assertTrue($response2->hasHeader('foo'));
-        $this->assertFalse($response1->hasHeader('foo'));
-
-        $this->assertSame('bar', $response1->foo);
-        $this->assertSame('bar', $response2->foo);
     }
 
     public function testHtml(): void
@@ -213,6 +210,7 @@ class ResponseTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     public function cookies_are_not_reset_in_nested_responses(): void
     {
