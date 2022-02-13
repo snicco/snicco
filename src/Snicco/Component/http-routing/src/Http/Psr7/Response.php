@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
+use BadMethodCallException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Cookies;
+
+use function sprintf;
 
 /**
  * @final
@@ -51,6 +54,17 @@ class Response implements ResponseInterface
         }
 
         return new static($psr7_response);
+    }
+
+    /**
+     * @param mixed $value
+     * @return never
+     */
+    final public function __set(string $name, $value)
+    {
+        throw new BadMethodCallException(
+            sprintf("Cannot set undefined property [$name] on immutable class [%s]", static::class)
+        );
     }
 
     final public function withAddedHeader($name, $value)
