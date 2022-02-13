@@ -27,7 +27,7 @@ use function parse_url;
 use const JSON_THROW_ON_ERROR;
 use const PHP_URL_QUERY;
 
-final class DefaultResponseFactory implements Redirector, Psr17ResponseFactory, Psr17StreamFactory
+final class ResponseFactory implements Redirector, Psr17ResponseFactory, Psr17StreamFactory
 {
 
     private Psr17ResponseFactory $psr_response;
@@ -119,8 +119,11 @@ final class DefaultResponseFactory implements Redirector, Psr17ResponseFactory, 
      */
     public function json($content, int $status_code = 200): Response
     {
-        return $this->createResponse($status_code)
-            ->withJson($this->createStream(json_encode($content, JSON_THROW_ON_ERROR)));
+        $stream = json_encode($content, JSON_THROW_ON_ERROR);
+
+        return $this->createResponse($status_code)->withJson(
+            $this->createStream($stream)
+        );
     }
 
     public function redirect(string $location, int $status_code = 302): RedirectResponse

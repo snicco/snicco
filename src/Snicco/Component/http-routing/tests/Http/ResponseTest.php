@@ -8,8 +8,8 @@ use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
@@ -21,7 +21,7 @@ class ResponseTest extends TestCase
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
-    private DefaultResponseFactory $factory;
+    private ResponseFactory $factory;
 
     private Response $response;
 

@@ -11,8 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
@@ -58,7 +58,7 @@ final class MiddlewareTest extends TestCase
             }
         };
         $middleware->setContainer($this->pimple_psr);
-        $this->pimple[DefaultResponseFactory::class] = function (): DefaultResponseFactory {
+        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
         $this->pimple[Redirector::class] = function (): Redirector {
@@ -83,7 +83,7 @@ final class MiddlewareTest extends TestCase
             }
         };
         $middleware->setContainer($this->pimple_psr);
-        $this->pimple[DefaultResponseFactory::class] = function (): DefaultResponseFactory {
+        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
         $this->pimple[UrlGenerator::class] = function (): UrlGenerator {
@@ -112,7 +112,7 @@ final class MiddlewareTest extends TestCase
             }
         };
         $middleware->setContainer($this->pimple_psr);
-        $this->pimple[DefaultResponseFactory::class] = function (): DefaultResponseFactory {
+        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
         $this->pimple[TemplateRenderer::class] = function (): FileTemplateRenderer {
@@ -139,7 +139,7 @@ final class MiddlewareTest extends TestCase
         };
         $middleware->setContainer($this->pimple_psr);
         $rf = $this->createResponseFactory($this->getUrLGenerator());
-        $this->pimple[DefaultResponseFactory::class] = function () use ($rf): DefaultResponseFactory {
+        $this->pimple[ResponseFactory::class] = function () use ($rf): ResponseFactory {
             return $rf;
         };
 
@@ -148,9 +148,9 @@ final class MiddlewareTest extends TestCase
             $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
             new class($rf) implements RequestHandlerInterface {
 
-                private DefaultResponseFactory $factory;
+                private ResponseFactory $factory;
 
-                public function __construct(DefaultResponseFactory $factory)
+                public function __construct(ResponseFactory $factory)
                 {
                     $this->factory = $factory;
                 }

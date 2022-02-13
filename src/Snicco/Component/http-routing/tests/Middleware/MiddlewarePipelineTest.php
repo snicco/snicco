@@ -10,8 +10,8 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareBlueprint;
@@ -37,7 +37,7 @@ class MiddlewarePipelineTest extends TestCase
 
     private MiddlewarePipeline $pipeline;
     private Request $request;
-    private DefaultResponseFactory $response_factory;
+    private ResponseFactory $response_factory;
     private Container $pimple;
     private ContainerInterface $pimple_psr;
 
@@ -55,7 +55,7 @@ class MiddlewarePipelineTest extends TestCase
             );
         };
 
-        $this->pimple[DefaultResponseFactory::class] = function (): DefaultResponseFactory {
+        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->response_factory;
         };
 

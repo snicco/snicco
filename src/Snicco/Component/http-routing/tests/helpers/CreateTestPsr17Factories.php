@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 /**
@@ -49,9 +49,9 @@ trait CreateTestPsr17Factories
         return new Psr17Factory();
     }
 
-    public function createResponseFactory(UrlGenerator $generator): DefaultResponseFactory
+    public function createResponseFactory(UrlGenerator $generator): ResponseFactory
     {
-        return new DefaultResponseFactory(
+        return new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $generator

@@ -16,9 +16,9 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
@@ -39,7 +39,7 @@ abstract class MiddlewareTestCase extends TestCase
     use CreatesPsrRequests;
 
     private Routes $routes;
-    private DefaultResponseFactory $response_factory;
+    private ResponseFactory $response_factory;
 
     /**
      * @var Closure(Response,Request):Response
@@ -96,8 +96,8 @@ abstract class MiddlewareTestCase extends TestCase
         $this->response_factory = $response_factory;
 
         if ($middleware instanceof Middleware) {
-            if (!$pimple->offsetExists(DefaultResponseFactory::class)) {
-                $pimple[DefaultResponseFactory::class] = $response_factory;
+            if (!$pimple->offsetExists(ResponseFactory::class)) {
+                $pimple[ResponseFactory::class] = $response_factory;
             }
             if (!$pimple->offsetExists(Redirector::class)) {
                 $pimple[Redirector::class] = $response_factory;
@@ -148,7 +148,7 @@ abstract class MiddlewareTestCase extends TestCase
         return $this->response_factory;
     }
 
-    final protected function responseFactory(): DefaultResponseFactory
+    final protected function responseFactory(): ResponseFactory
     {
         if (!isset($this->response_factory)) {
             throw new LogicException(
@@ -168,9 +168,9 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
 
-    private function newResponseFactory(UrlGenerator $url_generator): DefaultResponseFactory
+    private function newResponseFactory(UrlGenerator $url_generator): ResponseFactory
     {
-        return new DefaultResponseFactory(
+        return new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $url_generator,
