@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Controller\Controller;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
@@ -73,7 +73,7 @@ final class ControllerTest extends TestCase
             }
         };
         $controller->setContainer($this->pimple_psr);
-        $this->pimple[DefaultResponseFactory::class] = function (): DefaultResponseFactory {
+        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
         $this->pimple[UrlGenerator::class] = function (): UrlGenerator {
@@ -102,7 +102,7 @@ final class ControllerTest extends TestCase
             }
         };
         $controller->setContainer($this->pimple_psr);
-        $this->pimple[DefaultResponseFactory ::class] = function (): DefaultResponseFactory {
+        $this->pimple[ResponseFactory ::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
         $this->pimple[TemplateRenderer::class] = function (): FileTemplateRenderer {

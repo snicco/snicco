@@ -8,8 +8,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -101,10 +101,10 @@ abstract class Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    final protected function respond(): DefaultResponseFactory
+    final protected function respond(): ResponseFactory
     {
-        /** @var DefaultResponseFactory $response */
-        $response = $this->container->get(DefaultResponseFactory::class);
+        /** @var ResponseFactory $response */
+        $response = $this->container->get(ResponseFactory::class);
         return $response;
     }
 

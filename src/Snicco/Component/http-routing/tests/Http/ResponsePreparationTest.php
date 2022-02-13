@@ -3,8 +3,8 @@
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
@@ -15,7 +15,7 @@ class ResponsePreparationTest extends TestCase
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
-    private DefaultResponseFactory $factory;
+    private ResponseFactory $factory;
     private ResponsePreparation $preparation;
     private Request $request;
 

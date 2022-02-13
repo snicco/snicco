@@ -13,8 +13,8 @@ use RuntimeException;
 use Snicco\Component\HttpRouting\Controller\DelegateResponseController;
 use Snicco\Component\HttpRouting\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Controller\ViewController;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
@@ -274,7 +274,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
         $this->pimple[UrlGenerator::class] = $routing->urlGenerator();
         $rf = $this->createResponseFactory($routing->urlGenerator());
-        $this->pimple[DefaultResponseFactory::class] = $rf;
+        $this->pimple[ResponseFactory::class] = $rf;
         $this->pimple[Redirector::class] = $rf;
 
         // Fetch one service from the routing facade in order to trigger Exceptions.

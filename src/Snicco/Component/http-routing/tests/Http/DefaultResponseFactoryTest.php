@@ -7,8 +7,8 @@ namespace Snicco\Component\HttpRouting\Tests\Http;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
@@ -26,7 +26,7 @@ class DefaultResponseFactoryTest extends TestCase
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
-    private DefaultResponseFactory $factory;
+    private ResponseFactory $factory;
 
     protected function setUp(): void
     {
@@ -255,7 +255,7 @@ class DefaultResponseFactoryTest extends TestCase
                 $url = 'https://foobar.com/foo?bar=baz#section1'
             );
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
@@ -278,7 +278,7 @@ class DefaultResponseFactoryTest extends TestCase
                 'https://foobar.com/foo?bar=baz#section1'
             )->withAddedHeader('referer', '/foo/bar');
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
@@ -301,7 +301,7 @@ class DefaultResponseFactoryTest extends TestCase
                 $url = 'https://foobar.com/foo?bar=baz#section1'
             );
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
@@ -338,7 +338,7 @@ class DefaultResponseFactoryTest extends TestCase
                 $url = 'http://foobar.com/'
             );
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
@@ -385,7 +385,7 @@ class DefaultResponseFactoryTest extends TestCase
                 $current = 'https://foobar.com/foo?bar=baz#section1'
             );
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
@@ -411,7 +411,7 @@ class DefaultResponseFactoryTest extends TestCase
                 $original = 'https://foobar.com/foo?bar=baz#section1'
             );
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))
@@ -426,7 +426,7 @@ class DefaultResponseFactoryTest extends TestCase
                 'https://foobar.com' . $redirected_to
             );
 
-        $factory = new DefaultResponseFactory(
+        $factory = new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $this->createUrlGenerator(UrlGenerationContext::fromRequest($request))

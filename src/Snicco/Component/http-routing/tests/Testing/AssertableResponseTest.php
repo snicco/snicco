@@ -8,7 +8,7 @@ use Closure;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
@@ -22,7 +22,7 @@ final class AssertableResponseTest extends TestCase
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
-    private DefaultResponseFactory $response_factory;
+    private ResponseFactory $response_factory;
 
     protected function setUp(): void
     {
