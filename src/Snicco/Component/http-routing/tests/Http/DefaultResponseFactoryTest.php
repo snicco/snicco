@@ -43,7 +43,7 @@ class DefaultResponseFactoryTest extends TestCase
 
     public function test_make(): void
     {
-        $response = $this->factory->make(204, 'Hello');
+        $response = $this->factory->createResponse(204, 'Hello');
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertInstanceOf(ResponseInterface::class, $response);
@@ -66,7 +66,7 @@ class DefaultResponseFactoryTest extends TestCase
      */
     public function test_toResponse_for_response(): void
     {
-        $response = $this->factory->make();
+        $response = $this->factory->createResponse();
         $result = $this->factory->toResponse($response);
         $this->assertSame($result, $response);
     }
@@ -180,9 +180,9 @@ class DefaultResponseFactoryTest extends TestCase
      */
     public function test_exception_for_status_code_that_is_to_low(): void
     {
-        $this->assertInstanceOf(Response::class, $this->factory->make(100));
+        $this->assertInstanceOf(Response::class, $this->factory->createResponse(100));
         $this->expectException(InvalidArgumentException::class);
-        $this->factory->make(99);
+        $this->factory->createResponse(99);
     }
 
     /**
@@ -190,9 +190,9 @@ class DefaultResponseFactoryTest extends TestCase
      */
     public function test_exception_for_status_code_that_is_to_high(): void
     {
-        $this->assertInstanceOf(Response::class, $this->factory->make(599));
+        $this->assertInstanceOf(Response::class, $this->factory->createResponse(599));
         $this->expectException(InvalidArgumentException::class);
-        $this->factory->make(600);
+        $this->factory->createResponse(600);
     }
 
     /**

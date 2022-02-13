@@ -7,8 +7,8 @@ namespace Snicco\Component\HttpRouting\Tests\Http;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
+use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
@@ -20,7 +20,7 @@ class ResponseTest extends TestCase
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
-    private ResponseFactory $factory;
+    private DefaultResponseFactory $factory;
 
     private Response $response;
 
@@ -28,7 +28,7 @@ class ResponseTest extends TestCase
     {
         parent::setUp();
         $this->factory = $this->createResponseFactory($this->createUrlGenerator());
-        $this->response = $this->factory->make();
+        $this->response = $this->factory->createResponse();
     }
 
     public function testIsPsrResponse(): void
@@ -40,7 +40,7 @@ class ResponseTest extends TestCase
 
     public function testIsImmutable(): void
     {
-        $response1 = $this->factory->make();
+        $response1 = $this->factory->createResponse();
         $response2 = $response1->withHeader('foo', 'bar');
 
         $this->assertNotSame($response1, $response2);
@@ -67,7 +67,7 @@ class ResponseTest extends TestCase
     {
         $stream = $this->factory->createStream('foo');
 
-        $response = $this->factory->make()->withHtml($stream);
+        $response = $this->factory->createResponse()->withHtml($stream);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
@@ -77,7 +77,7 @@ class ResponseTest extends TestCase
     {
         $stream = $this->factory->createStream(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
 
-        $response = $this->factory->make()->withJson($stream);
+        $response = $this->factory->createResponse()->withJson($stream);
 
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->__toString(), true));
@@ -165,7 +165,7 @@ class ResponseTest extends TestCase
      */
     public function testHasEmptyBody(): void
     {
-        $response = $this->factory->make();
+        $response = $this->factory->createResponse();
         $this->assertTrue($response->hasEmptyBody());
 
         $response->getBody()->detach();
@@ -216,7 +216,7 @@ class ResponseTest extends TestCase
      */
     public function cookies_are_not_reset_in_nested_responses(): void
     {
-        $redirect_response = $this->factory->make()->withCookie(new Cookie('foo', 'bar'));
+        $redirect_response = $this->factory->createResponse()->withCookie(new Cookie('foo', 'bar'));
 
         $response = new Response($redirect_response);
 

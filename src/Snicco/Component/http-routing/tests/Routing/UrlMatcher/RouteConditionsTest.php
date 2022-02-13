@@ -126,7 +126,6 @@ class RouteConditionsTest extends HttpRunnerTestCase
 
     /**
      * @test
-     * @psalm-suppress MixedArgument
      */
     public function route_conditions_can_be_resolved_as_a_closure_from_the_container(): void
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use InvalidArgumentException;
+use JsonException;
 use JsonSerializable;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 use Psr\Http\Message\ResponseInterface as Psr7Response;
@@ -26,11 +27,7 @@ use function parse_url;
 use const JSON_THROW_ON_ERROR;
 use const PHP_URL_QUERY;
 
-/**
- * @interal You should never depend on this concrete response factory implementation.
- *          Always depend on the {@see ResponseFactory} interface
- */
-final class DefaultResponseFactory implements ResponseFactory, Redirector
+final class DefaultResponseFactory implements Redirector, Psr17ResponseFactory, Psr17StreamFactory
 {
 
     private Psr17ResponseFactory $psr_response;
@@ -49,23 +46,16 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         return new DelegatedResponse($should_headers_be_sent, $this->createResponse());
     }
 
-    public function createResponse(int $code = 200, string $reasonPhrase = ''): Psr7Response
+    public function createResponse(int $code = 200, string $reasonPhrase = ''): Response
     {
-        return $this->make($code, $reasonPhrase);
-    }
-
-    public function make(int $status_code = 200, string $reason_phrase = ''): Response
-    {
-        Assert::range($status_code, 100, 599);
-
-        $psr_response = $this->psr_response->createResponse($status_code, $reason_phrase);
-
+        Assert::range($code, 100, 599);
+        $psr_response = $this->psr_response->createResponse($code, $reasonPhrase);
         return new Response($psr_response);
     }
 
     public function noContent(): Response
     {
-        return $this->make(204);
+        return $this->createResponse(204);
     }
 
     public function createStreamFromFile(string $filename, string $mode = 'r'): Psr7Stream
@@ -78,6 +68,15 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
         return $this->psr_stream->createStreamFromResource($resource);
     }
 
+    public function createStream(string $content = ''): Psr7Stream
+    {
+        return $this->psr_stream->createStream($content);
+    }
+
+    /**
+     * @param string|array|Response|Psr7Response|stdClass|JsonSerializable|Responsable $response
+     * @throws JsonException
+     */
     public function toResponse($response): Response
     {
         if ($response instanceof Response) {
@@ -110,25 +109,23 @@ final class DefaultResponseFactory implements ResponseFactory, Redirector
 
     public function html(string $html, int $status_code = 200): Response
     {
-        return $this->make($status_code)
+        return $this->createResponse($status_code)
             ->withHtml($this->psr_stream->createStream($html));
     }
 
-    public function createStream(string $content = ''): Psr7Stream
-    {
-        return $this->psr_stream->createStream($content);
-    }
-
-    /** @todo This should use a dedicated json response class. */
+    /**
+     * @param mixed $content
+     * @todo This should use a dedicated json response class.
+     */
     public function json($content, int $status_code = 200): Response
     {
-        return $this->make($status_code)
+        return $this->createResponse($status_code)
             ->withJson($this->createStream(json_encode($content, JSON_THROW_ON_ERROR)));
     }
 
     public function redirect(string $location, int $status_code = 302): RedirectResponse
     {
-        $psr = $this->make($status_code);
+        $psr = $this->createResponse($status_code);
         return (new RedirectResponse($psr))->to($location);
     }
 
