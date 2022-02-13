@@ -14,6 +14,7 @@ use function sprintf;
 
 /**
  * @final
+ * @psalm-internal Snicco
  */
 class Response implements ResponseInterface
 {
@@ -47,7 +48,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    public static function fromPsr(ResponseInterface $psr7_response)
+    final public static function fromPsr(ResponseInterface $psr7_response)
     {
         if ($psr7_response instanceof static) {
             return $psr7_response;

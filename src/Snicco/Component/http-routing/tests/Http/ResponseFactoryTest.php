@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use InvalidArgumentException;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -19,14 +20,19 @@ use stdClass;
 
 use function dirname;
 use function fopen;
+use function json_encode;
 
-class DefaultResponseFactoryTest extends TestCase
+use const JSON_PRETTY_PRINT;
+
+class ResponseFactoryTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
     private ResponseFactory $factory;
+    private string $app_domain;
+    private RuntimeRouteCollection $routes;
 
     protected function setUp(): void
     {
@@ -59,6 +65,15 @@ class DefaultResponseFactoryTest extends TestCase
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode(['foo' => 'bar']), (string)$response->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function test_json_throws_even_if_not_set_as_option(): void
+    {
+        $this->expectException(JsonException::class);
+        $this->factory->json("\xB1\x31", 401, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -146,6 +161,7 @@ class DefaultResponseFactoryTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidScalarArgument
      */
     public function toResponse_throws_an_exception_if_no_response_can_be_created(): void
     {
