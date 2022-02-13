@@ -8,7 +8,7 @@ use Closure;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
@@ -22,7 +22,7 @@ final class AssertableResponseTest extends TestCase
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
-    private ResponseFactory $response_factory;
+    private DefaultResponseFactory $response_factory;
 
     protected function setUp(): void
     {
@@ -57,7 +57,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_body_with_empty_body(): void
     {
-        $response = new AssertableResponse($this->response_factory->make());
+        $response = new AssertableResponse($this->response_factory->createResponse());
 
         $this->assertSame('', $response->body());
     }
@@ -270,7 +270,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assertStatus_can_pass(): void
     {
-        $response = new AssertableResponse($this->response_factory->make(201));
+        $response = new AssertableResponse($this->response_factory->createResponse(201));
 
         $response->assertStatus(201);
     }
@@ -280,7 +280,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assertStatus_can_fail(): void
     {
-        $response = new AssertableResponse($this->response_factory->make(201));
+        $response = new AssertableResponse($this->response_factory->createResponse(201));
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [301].\nGot [201].",
@@ -415,14 +415,14 @@ final class AssertableResponseTest extends TestCase
     public function test_assertHeader_can_pass(): void
     {
         $response =
-            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+            new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
 
         $response->assertHeader('X-FOO');
         $response->assertHeader('X-FOO', 'BAR');
         $response->assertHeader('x-foo', 'BAR');
 
         $response =
-            new AssertableResponse($this->response_factory->make()->withHeader('x-foo', 'BAR'));
+            new AssertableResponse($this->response_factory->createResponse()->withHeader('x-foo', 'BAR'));
 
         $response->assertHeader('X-FOO');
         $response->assertHeader('X-FOO', 'BAR');
@@ -435,7 +435,7 @@ final class AssertableResponseTest extends TestCase
     public function test_assert_header_can_fail(): void
     {
         $response =
-            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+            new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
 
         $this->expectFailureWithMessageContaining(
             'Response does not have header [X-BAR].',
@@ -454,7 +454,7 @@ final class AssertableResponseTest extends TestCase
     public function test_assertHeaderMissing_can_pass(): void
     {
         $response =
-            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+            new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
 
         $response->assertHeaderMissing('X-BAR');
     }
@@ -465,7 +465,7 @@ final class AssertableResponseTest extends TestCase
     public function test_assertHeaderMissing_can_fail(): void
     {
         $response =
-            new AssertableResponse($this->response_factory->make()->withHeader('X-FOO', 'BAR'));
+            new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
 
         $this->expectFailureWithMessageContaining(
             'Header [X-FOO] was not expected to be in the response.',
@@ -484,7 +484,7 @@ final class AssertableResponseTest extends TestCase
     public function test_assertLocation_can_pass(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->make()->withHeader('location', '/foo/bar?baz=biz')
+            $this->response_factory->createResponse()->withHeader('location', '/foo/bar?baz=biz')
         );
 
         $response->assertLocation('/foo/bar?baz=biz');
@@ -496,7 +496,7 @@ final class AssertableResponseTest extends TestCase
     public function test_assertLocation_can_fail(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->make()->withHeader('location', '/foo/bar?baz=biz')
+            $this->response_factory->createResponse()->withHeader('location', '/foo/bar?baz=biz')
         );
 
         $this->expectFailureWithMessageContaining(
@@ -511,7 +511,7 @@ final class AssertableResponseTest extends TestCase
     public function test_getAssertableCookie_fails_if_set_cookie_header_is_not_present(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->make()
+            $this->response_factory->createResponse()
         );
 
         $this->expectFailureWithMessageContaining(
@@ -526,7 +526,7 @@ final class AssertableResponseTest extends TestCase
     public function test_getAssertableCookie_fails_if_the_cookie_is_not_present(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->make()->withAddedHeader('set-cookie', 'foo=bar')
+            $this->response_factory->createResponse()->withAddedHeader('set-cookie', 'foo=bar')
         );
 
         $this->expectFailureWithMessageContaining(
@@ -541,7 +541,7 @@ final class AssertableResponseTest extends TestCase
     public function test_getAssertableCookie_fails_if_the_cookie_present_multiple_times(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->make()
+            $this->response_factory->createResponse()
                 ->withAddedHeader('set-cookie', 'foo=bar')
                 ->withAddedHeader('set-cookie', 'foo=baz')
         );
@@ -558,7 +558,7 @@ final class AssertableResponseTest extends TestCase
     public function test_getAssertableCookie_can_pass_and_returns_assertable_cookie(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->make()
+            $this->response_factory->createResponse()
                 ->withAddedHeader('set-cookie', 'foo=bar')
         );
 
@@ -891,7 +891,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_getHeader(): void
     {
-        $response = new AssertableResponse($this->response_factory->make()->withHeader('foo', 'bar'));
+        $response = new AssertableResponse($this->response_factory->createResponse()->withHeader('foo', 'bar'));
 
         $this->assertSame([
             'bar'

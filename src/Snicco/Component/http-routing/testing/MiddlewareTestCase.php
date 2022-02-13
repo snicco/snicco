@@ -19,7 +19,6 @@ use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
@@ -97,8 +96,8 @@ abstract class MiddlewareTestCase extends TestCase
         $this->response_factory = $response_factory;
 
         if ($middleware instanceof Middleware) {
-            if (!$pimple->offsetExists(ResponseFactory::class)) {
-                $pimple[ResponseFactory::class] = $response_factory;
+            if (!$pimple->offsetExists(DefaultResponseFactory::class)) {
+                $pimple[DefaultResponseFactory::class] = $response_factory;
             }
             if (!$pimple->offsetExists(Redirector::class)) {
                 $pimple[Redirector::class] = $response_factory;
@@ -149,7 +148,7 @@ abstract class MiddlewareTestCase extends TestCase
         return $this->response_factory;
     }
 
-    final protected function responseFactory(): ResponseFactory
+    final protected function responseFactory(): DefaultResponseFactory
     {
         if (!isset($this->response_factory)) {
             throw new LogicException(
@@ -181,7 +180,11 @@ abstract class MiddlewareTestCase extends TestCase
     private function next(): NextMiddleware
     {
         $func = function (Request $request): ResponseInterface {
-            $response = call_user_func($this->next_middleware_response, $this->response_factory->make(), $request);
+            $response = call_user_func(
+                $this->next_middleware_response,
+                $this->response_factory->createResponse(),
+                $request
+            );
             $this->received_request_by_next_middleware = $request;
             $this->next_called = true;
             return $response;

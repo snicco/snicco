@@ -12,9 +12,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\HttpRouting\Exception\CouldNotRenderTemplate;
+use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -84,10 +84,10 @@ abstract class Middleware implements MiddlewareInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    final protected function respond(): ResponseFactory
+    final protected function respond(): DefaultResponseFactory
     {
-        /** @var ResponseFactory $response */
-        $response = $this->container->get(ResponseFactory::class);
+        /** @var DefaultResponseFactory $response */
+        $response = $this->container->get(DefaultResponseFactory::class);
         return $response;
     }
 
