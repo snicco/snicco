@@ -43,7 +43,11 @@ final class ResponseFactory implements Redirector, Psr17ResponseFactory, Psr17St
 
     public function delegate(bool $should_headers_be_sent = true): DelegatedResponse
     {
-        return new DelegatedResponse($should_headers_be_sent, $this->createResponse());
+        $response = new DelegatedResponse($this->createResponse());
+        if (!$should_headers_be_sent) {
+            $response = $response->withoutSendingHeaders();
+        }
+        return $response;
     }
 
     public function createResponse(int $code = 200, string $reasonPhrase = ''): Response

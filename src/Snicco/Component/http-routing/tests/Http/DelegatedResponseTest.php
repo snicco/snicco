@@ -31,8 +31,11 @@ final class DelegatedResponseTest extends TestCase
         $response = $this->factory->delegate();
         $this->assertTrue($response->shouldHeadersBeSent());
 
-        $response = $this->factory->delegate(false);
-        $this->assertFalse($response->shouldHeadersBeSent());
+        $new = $response->withoutSendingHeaders();
+        $this->assertFalse($new->shouldHeadersBeSent());
+
+        // immutable
+        $this->assertTrue($response->shouldHeadersBeSent());
     }
 
 }
