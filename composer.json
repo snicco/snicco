@@ -41,7 +41,7 @@
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.1.1",
         "psr/simple-cache": "^1.0.0",
-        "symfony/finder": "^5.0",
+        "webimpress/safe-writer": "^2.2",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
@@ -53,6 +53,7 @@
         "nyholm/psr7": "^1.0.0",
         "php-stubs/wordpress-stubs": "^5.8.0",
         "phpunit/phpunit": "9.5.13",
+        "symfony/finder": "^5.0",
         "symplify/monorepo-builder": "9.4.70",
         "vimeo/psalm": "^4.10",
         "vlucas/phpdotenv": "5.4.1"
