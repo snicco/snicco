@@ -408,16 +408,4 @@ class ResponseTest extends TestCase
         $this->assertTrue($response->isForbidden());
     }
 
-    /**
-     * @test
-     */
-    public function test_from_psr(): void
-    {
-        $response = Response::fromPsr($this->response);
-        $this->assertInstanceOf(Response::class, $response);
-
-        $response = Response::fromPsr($this->psrResponseFactory()->createResponse());
-        $this->assertInstanceOf(Response::class, $response);
-    }
-
 }

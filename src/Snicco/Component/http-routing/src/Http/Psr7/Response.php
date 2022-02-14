@@ -12,10 +12,6 @@ use Snicco\Component\HttpRouting\Http\Cookies;
 
 use function sprintf;
 
-/**
- * @final
- * @psalm-internal Snicco
- */
 class Response implements ResponseInterface
 {
 
@@ -43,18 +39,6 @@ class Response implements ResponseInterface
         $this->cookies = ($psr7_response instanceof Response)
             ? $psr7_response->cookies()
             : new Cookies();
-    }
-
-    /**
-     * @return static
-     */
-    final public static function fromPsr(ResponseInterface $psr7_response)
-    {
-        if ($psr7_response instanceof static) {
-            return $psr7_response;
-        }
-
-        return new static($psr7_response);
     }
 
     /**

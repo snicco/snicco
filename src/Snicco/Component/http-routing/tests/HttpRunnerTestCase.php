@@ -108,7 +108,7 @@ abstract class HttpRunnerTestCase extends TestCase
             return new DelegateResponseController();
         };
         $this->pimple[ViewController::class] = function (): ViewController {
-            return new ViewController(new FileTemplateRenderer());
+            return new ViewController();
         };
         $this->pimple[RedirectController::class] = function (): RedirectController {
             return new RedirectController();

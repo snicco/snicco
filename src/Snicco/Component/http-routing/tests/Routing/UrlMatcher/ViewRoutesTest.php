@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
+use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -36,10 +37,13 @@ class ViewRoutesTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($request);
         $response->assertOk();
-        $response->assertSeeHtml('Hello World');
         $response->assertIsHtml();
 
         $this->assertSame('/foo', $routing->urlGenerator()->toRoute('view:greeting.php'));
+
+        $psr = $response->getPsrResponse();
+        $this->assertInstanceOf(ViewResponse::class, $psr);
+        $this->assertSame($this->view, $psr->view());
     }
 
     /**
@@ -61,11 +65,15 @@ class ViewRoutesTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($request);
         $response->assertOk();
-        $response->assertSeeHtml('Hello Calvin');
         $response->assertIsHtml();
         $response->assertHeader('X-FOO', 'BAR');
 
         $this->assertSame('/foo', $routing->urlGenerator()->toRoute('view:greeting.php'));
+
+        $psr = $response->getPsrResponse();
+        $this->assertInstanceOf(ViewResponse::class, $psr);
+        $this->assertSame($this->view, $psr->view());
+        $this->assertSame(['greet' => 'Calvin'], $psr->viewData());
     }
 
 }
