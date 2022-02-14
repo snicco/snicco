@@ -15,11 +15,13 @@ use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
+use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use stdClass;
 use Webmozart\Assert\Assert;
 
+use function array_keys;
 use function is_string;
 use function json_encode;
 use function parse_url;
@@ -111,6 +113,16 @@ final class ResponseFactory implements Redirector, Psr17ResponseFactory, Psr17St
         throw new InvalidArgumentException('Invalid response returned by a route.');
     }
 
+    public function view(string $view, array $data): ViewResponse
+    {
+        Assert::allString(array_keys($data));
+
+        /** @var array<string,mixed> $data */
+
+        $response = new ViewResponse($view, $this->createResponse());
+        return $response->withViewData($data);
+    }
+
     public function html(string $html, int $status_code = 200): Response
     {
         return $this->createResponse($status_code)
@@ -125,7 +137,7 @@ final class ResponseFactory implements Redirector, Psr17ResponseFactory, Psr17St
     {
         /** @var string $stream */
         $stream = json_encode($data, $options | JSON_THROW_ON_ERROR, $depth);
-        
+
         return $this->createResponse($status_code)->withJson(
             $this->createStream($stream)
         );

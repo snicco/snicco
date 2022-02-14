@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
+use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
@@ -105,14 +106,14 @@ final class ControllerTest extends TestCase
         $this->pimple[ResponseFactory ::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
-        $this->pimple[TemplateRenderer::class] = function (): FileTemplateRenderer {
-            return new FileTemplateRenderer();
-        };
 
         $response = $controller->handle();
 
         $this->assertSame('bar', $response->getHeaderLine('foo'));
-        $this->assertSame('Hello Calvin', (string)$response->getBody());
+
+        $this->assertInstanceOf(ViewResponse::class, $response);
+        $this->assertSame(dirname(__DIR__, 1) . '/fixtures/templates/greeting.php', $response->view());
+        $this->assertSame(['greet' => 'Calvin'], $response->viewData());
     }
 
     private function getUrLGenerator(): UrlGenerator

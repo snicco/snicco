@@ -113,9 +113,9 @@ final class MiddlewarePipeline
 
     private function exceptionToHttpResponse(Throwable $e, Request $request): Response
     {
-        return Response::fromPsr(
-            $this->error_handler->handle($e, $request)
-        );
+        $psr_response = $this->error_handler->handle($e, $request);
+
+        return $psr_response instanceof Response ? $psr_response : new Response($psr_response);
     }
 
     private function runNext(Request $request): ResponseInterface

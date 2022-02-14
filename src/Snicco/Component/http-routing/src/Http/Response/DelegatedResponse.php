@@ -6,7 +6,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 /**
  * @psalm-internal Snicco
- * @psalm-suppress InvalidExtendClass
  */
 final class DelegatedResponse extends Response
 {
