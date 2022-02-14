@@ -56,7 +56,6 @@ class ResponseTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Cannot set undefined property [foo]');
 
-        /** @psalm-suppress UndefinedPropertyAssignment */
         $response1->foo = 'bar';
     }
 

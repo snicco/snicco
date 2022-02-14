@@ -271,7 +271,6 @@ class RouteAttributesTest extends HttpRunnerTestCase
 
     /**
      * @test
-     * @psalm-suppress TypeDoesNotContainType
      */
     public function a_route_can_be_set_to_not_handle_anything_but_only_run_middleware(): void
     {
