@@ -11,9 +11,6 @@ use Snicco\Component\StrArr\Arr;
 
 use function is_array;
 
-/**
- * @api
- */
 final class ParameterBag implements ArrayAccess
 {
 

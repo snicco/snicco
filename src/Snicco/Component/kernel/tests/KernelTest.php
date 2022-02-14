@@ -11,8 +11,8 @@ use Psr\Container\ContainerInterface;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
-use Snicco\Component\Kernel\Tests\helpers\WriteTestConfig;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
@@ -20,7 +20,7 @@ final class KernelTest extends TestCase
 {
 
     use CreateTestContainer;
-    use WriteTestConfig;
+    use CleanDirs;
 
     private string $base_dir;
 
@@ -71,7 +71,7 @@ final class KernelTest extends TestCase
     {
         new Kernel(
             $container = $this->createContainer(),
-            $env = Environment::testing(),
+            Environment::testing(),
             Directories::fromDefaults($this->base_dir)
         );
 
@@ -123,10 +123,10 @@ final class KernelTest extends TestCase
     /**
      * @test
      */
-    public function the_application_cant_be_bootstrapped_twice(): void
+    public function the_kernel_cant_be_bootstrapped_twice(): void
     {
         $app = new Kernel(
-            $container = $this->createContainer(),
+            $this->createContainer(),
             Environment::testing(),
             Directories::fromDefaults($this->base_dir)
         );
@@ -134,7 +134,7 @@ final class KernelTest extends TestCase
         $app->boot();
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('The application cant be booted twice.');
+        $this->expectExceptionMessage('The kernel cant be booted twice.');
 
         $app->boot();
     }

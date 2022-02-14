@@ -10,8 +10,9 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Exception\MissingConfigKey;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
-use Snicco\Component\Kernel\Tests\helpers\WriteTestConfig;
+use Snicco\Component\Kernel\Tests\helpers\FixedConfigCache;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
@@ -21,7 +22,7 @@ final class KernelBundlesTest extends TestCase
 {
 
     use CreateTestContainer;
-    use WriteTestConfig;
+    use CleanDirs;
 
     private string $base_dir;
     private string $base_dir_with_bundles;
@@ -50,7 +51,7 @@ final class KernelBundlesTest extends TestCase
         $app1 = new Kernel(
             $this->createContainer(),
             Environment::prod(),
-            Directories::fromDefaults($this->base_dir)
+            Directories::fromDefaults($this->base_dir),
         );
 
         $app1->boot();
@@ -101,7 +102,7 @@ final class KernelBundlesTest extends TestCase
         $app1 = new Kernel(
             $this->createContainer(),
             Environment::dev(),
-            Directories::fromDefaults($this->base_dir_with_bundles)
+            Directories::fromDefaults($this->base_dir_with_bundles),
         );
 
         $app1->boot();
@@ -119,20 +120,16 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
+            new FixedConfigCache([
+                'bundles' => [
+                    Environment::PROD => [stdClass::class]
+                ],
+            ])
         );
-
-        $this->writeConfig($app, [
-            'app' => [
-
-            ],
-            'bundles' => [
-                Environment::PROD => [stdClass::class]
-            ],
-        ]);
 
         try {
             $app->boot();
-            $this->fail('no exception thrown');
+            $this->fail('no exception thrown when expected.');
         } catch (Throwable $e) {
             $this->assertStringContainsString("Snicco\\Component\\Kernel\\Bundle", $e->getMessage());
             $this->assertStringContainsString('stdClass', $e->getMessage());
@@ -188,15 +185,14 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
+            new FixedConfigCache([
+                'bundles' => [
+                    Environment::ALL => [
+                        BundleWithCustomEnv::class,
+                    ]
+                ],
+            ])
         );
-
-        $this->writeConfig($app1, [
-            'bundles' => [
-                Environment::ALL => [
-                    BundleWithCustomEnv::class,
-                ]
-            ],
-        ]);
 
         $app1->boot();
 
@@ -209,16 +205,16 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
+            new FixedConfigCache([
+                'bundles' => [
+                    Environment::ALL => [
+                        BundleWithCustomEnv::class,
+                    ]
+                ]
+            ])
         );
 
-        $this->writeConfig($app2, [
-            'bundles' => [
-                Environment::ALL => [
-                    BundleWithCustomEnv::class,
-                ]
-            ],
-        ]);
-
+        /** @psalm-suppress MixedArrayAssignment */
         $_SERVER['_test']['custom_env_bundle_should_run'] = true;
 
         $app2->boot();
@@ -246,16 +242,15 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
+            new FixedConfigCache([
+                'bundles' => [
+                    Environment::ALL => [
+                        BundleDuplicate1::class,
+                        BundleDuplicate2::class
+                    ]
+                ],
+            ])
         );
-
-        $this->writeConfig($app, [
-            'bundles' => [
-                Environment::ALL => [
-                    BundleDuplicate1::class,
-                    BundleDuplicate2::class
-                ]
-            ],
-        ]);
 
         $app->boot();
     }
@@ -263,21 +258,20 @@ final class KernelBundlesTest extends TestCase
     /**
      * @test
      */
-    public function the_configure_method_will_not_called_if_the_configuration_is_cached(): void
+    public function the_configure_method_will_not_be_called_if_the_configuration_is_cached(): void
     {
         $app = new Kernel(
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
+            new FixedConfigCache([
+                'bundles' => [
+                    Environment::ALL => [
+                        BundleThatConfigures::class
+                    ]
+                ],
+            ])
         );
-
-        $this->writeConfig($app, [
-            'bundles' => [
-                Environment::ALL => [
-                    BundleThatConfigures::class
-                ]
-            ],
-        ]);
 
         $app->boot();
 
@@ -298,7 +292,6 @@ final class KernelBundlesTest extends TestCase
     }
 
 }
-
 
 class BundleThatConfigures implements Bundle
 {

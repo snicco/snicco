@@ -11,8 +11,9 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
-use Snicco\Component\Kernel\Tests\helpers\WriteTestConfig;
+use Snicco\Component\Kernel\Tests\helpers\FixedConfigCache;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
@@ -21,7 +22,7 @@ final class KernelBootstrappersTest extends TestCase
 {
 
     use CreateTestContainer;
-    use WriteTestConfig;
+    use CleanDirs;
 
     private string $fixtures_dir;
 
@@ -47,16 +48,15 @@ final class KernelBootstrappersTest extends TestCase
         $app = new Kernel(
             $this->createContainer(),
             Environment::prod(),
-            Directories::fromDefaults($this->fixtures_dir)
-        );
-
-        $this->writeConfig($app, [
-            'app' => [
-                'bootstrappers' => [
-                    Bootstrap1::class,
+            Directories::fromDefaults($this->fixtures_dir),
+            new FixedConfigCache([
+                'app' => [
+                    'bootstrappers' => [
+                        Bootstrap1::class,
+                    ],
                 ],
-            ],
-        ]);
+            ])
+        );
 
         $app->boot();
 
@@ -92,17 +92,15 @@ final class KernelBootstrappersTest extends TestCase
         $app = new Kernel(
             $this->createContainer(),
             Environment::prod(),
-            Directories::fromDefaults($this->fixtures_dir)
-        );
-
-        $this->writeConfig($app, [
-            'app' => [
-                'bootstrappers' => [
-                    BootrstrapperWithExceptionInBoostrap::class,
+            Directories::fromDefaults($this->fixtures_dir),
+            new FixedConfigCache([
+                'app' => [
+                    'bootstrappers' => [
+                        BootrstrapperWithExceptionInBoostrap::class,
+                    ],
                 ],
-            ],
-
-        ]);
+            ])
+        );
 
         $this->expectException(ContainerIsLocked::class);
         $this->expectExceptionMessage('id [foo]');
