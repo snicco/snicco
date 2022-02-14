@@ -1,1 +1,2 @@
 [![codecov](https://codecov.io/gh/sniccowp/sniccowp/branch/master/graph/badge.svg?token=4W8R6FZ948)](https://codecov.io/gh/sniccowp/sniccowp)
+[type-coverage](https://shepherd.dev/github/calvinalkan/sniccowp/coverage.svg)
