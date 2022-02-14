@@ -92,15 +92,15 @@ class TestConfigCache implements ConfigCache
      * @psalm-suppress MixedReturnStatement
      * @psalm-suppress MixedInferredReturnType
      */
-    public function get(string $file, callable $loader): array
+    public function get(string $key, callable $loader): array
     {
-        if (is_file($file)) {
-            return require $file;
+        if (is_file($key)) {
+            return require $key;
         }
 
         $data = $loader();
 
-        file_put_contents($file, '<?php return ' . var_export($data, true) . ';');
+        file_put_contents($key, '<?php return ' . var_export($data, true) . ';');
 
         return $data;
     }
