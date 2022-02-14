@@ -41,7 +41,7 @@ jobs:
             run: composer validate
 
           - name: 'Psalm'
-            run: composer psalm
+            run: composer psalm -- --shepherd --stats
 
     steps:
       - name: 'Checkout repo'
