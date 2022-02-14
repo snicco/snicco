@@ -4,28 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Exception;
 
-use LogicException;
-use Psr\Http\Server\MiddlewareInterface;
+use InvalidArgumentException;
 
-final class InvalidMiddleware extends LogicException
+final class InvalidMiddleware extends InvalidArgumentException
 {
 
-    public static function incorrectInterface(string $name): InvalidMiddleware
+    public static function becauseItsNotAnAliasOrGroup(string $alias): InvalidMiddleware
     {
         return new self(
             sprintf(
-                'The middleware [%s] does not implement [%s]',
-                $name,
-                MiddlewareInterface::class
-            )
-        );
-    }
-
-    public static function becauseTheAliasDoesNotExist(string $alias): InvalidMiddleware
-    {
-        return new self(
-            sprintf(
-                'The middleware alias [%s] does not exist.',
+                'The middleware [%s] is not an alias or group name.',
                 $alias,
             )
         );

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Middleware\NoRobots;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Snicco\Component\HttpRouting\Middleware\Middleware;
+use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 /**
  * @api
  */
-final class NoRobots extends AbstractMiddleware
+final class NoRobots extends Middleware
 {
 
     private bool $noarchive;

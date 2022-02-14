@@ -6,9 +6,9 @@ namespace Snicco\Middleware\Payload;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Snicco\Component\HttpRouting\Middleware\Middleware;
+use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Webmozart\Assert\Assert;
 
 use function strpos;
@@ -16,7 +16,7 @@ use function strpos;
 /**
  * @api
  */
-abstract class Payload extends AbstractMiddleware
+abstract class Payload extends Middleware
 {
 
     /**

@@ -79,7 +79,7 @@ final class UrlPath
 
     public function contains(string $path): bool
     {
-        $path = trim($path, '/');
+        $path = '/' . ltrim($path, '/');
         return Str::contains($this->asString(), $path);
     }
 

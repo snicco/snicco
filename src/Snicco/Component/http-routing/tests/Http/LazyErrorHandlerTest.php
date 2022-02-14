@@ -8,29 +8,40 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Throwable;
 
 final class LazyErrorHandlerTest extends TestCase
 {
 
-    use CreateTestPsrContainer;
     use CreateTestPsr17Factories;
+
+    private Container $pimple;
+    private \Pimple\Psr11\Container $psr_container;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->pimple = new Container();
+        $this->psr_container = new \Pimple\Psr11\Container($this->pimple);
+    }
 
     /**
      * @test
      */
     public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to(): void
     {
-        $c = $this->createContainer();
-        $c[HttpErrorHandlerInterface::class] = new TestableErrorHandler(function () {
-        });
-        $lazy_handler = new LazyHttpErrorHandler($c);
+        $this->pimple[HttpErrorHandlerInterface::class] = fn(): TestableErrorHandler => new TestableErrorHandler(
+            function () {
+                throw new Exception('Should never be called');
+            }
+        );
+        $lazy_handler = new LazyHttpErrorHandler($this->psr_container);
 
         $this->assertInstanceOf(HttpErrorHandlerInterface::class, $lazy_handler);
     }
@@ -46,30 +57,33 @@ final class LazyErrorHandlerTest extends TestCase
             'The psr container needs a service for id [' . HttpErrorHandlerInterface::class . '].'
         );
 
-        new LazyHttpErrorHandler($c = $this->createContainer());
+        new LazyHttpErrorHandler($this->psr_container);
     }
 
     /**
      * @test
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedOperand
      */
     public function calls_are_proxies_to_the_real_handler(): void
     {
         $count = 0;
-        $c = $this->createContainer();
 
-        $real_handler =
-            new TestableErrorHandler(function (Throwable $e, ServerRequestInterface $request) {
-                $response = $this->psrResponseFactory()->createResponse(500);
-                $response->getBody()->write('foo error');
-                return $response;
-            });
-
-        $c->singleton(HttpErrorHandlerInterface::class, function () use (&$count, $real_handler) {
-            $count++;
-            return $real_handler;
+        $real_handler = new TestableErrorHandler(function () {
+            $response = $this->psrResponseFactory()->createResponse(500);
+            $response->getBody()->write('foo error');
+            return $response;
         });
 
-        $lazy_handler = new LazyHttpErrorHandler($c);
+        $this->pimple[HttpErrorHandlerInterface::class] = function () use (
+            &$count,
+            $real_handler
+        ): TestableErrorHandler {
+            $count++;
+            return $real_handler;
+        };
+
+        $lazy_handler = new LazyHttpErrorHandler($this->psr_container);
 
         $response = $lazy_handler->handle(
             new Exception('secret stuff'),
@@ -85,8 +99,14 @@ final class LazyErrorHandlerTest extends TestCase
 class TestableErrorHandler implements HttpErrorHandlerInterface
 {
 
+    /**
+     * @var Closure(Throwable, ServerRequestInterface) :ResponseInterface
+     */
     private Closure $return;
 
+    /**
+     * @param Closure(Throwable, ServerRequestInterface) :ResponseInterface $return
+     */
     public function __construct(Closure $return)
     {
         $this->return = $return;

@@ -9,9 +9,6 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
-/**
- * @api
- */
 interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
 {
 

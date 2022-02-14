@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use BadMethodCallException;
+use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
 use stdClass;
+use Webmozart\Assert\Assert;
 
 use function filter_var;
 use function in_array;
@@ -30,47 +31,63 @@ use const FILTER_VALIDATE_BOOLEAN;
 final class Request implements ServerRequestInterface
 {
 
-    const TYPE_ATTRIBUTE = '_request_type';
-    const TYPE_FRONTEND = 1;
-    const TYPE_ADMIN_AREA = 2;
-    const TYPE_API = 3;
+    public const TYPE_FRONTEND = 'frontend';
+    public const TYPE_ADMIN_AREA = 'admin';
+    public const TYPE_API = 'api';
 
     private ServerRequestInterface $psr_request;
 
-    public function __construct(ServerRequestInterface $psr_request)
-    {
-        $this->psr_request = $psr_request;
-    }
+    /**
+     * @var "frontend"|"admin"|"api"
+     */
+    private string $type;
 
-    public static function fromPsr(ServerRequestInterface $psr_request): Request
+    /**
+     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     */
+    public function __construct(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND)
     {
-        return new self($psr_request);
+        Assert::oneOf($type, [self::TYPE_FRONTEND, self::TYPE_ADMIN_AREA, self::TYPE_API]);
+
+        if ($psr_request instanceof Request && $psr_request->type !== $type) {
+            throw new LogicException(
+                sprintf('Cant change request type from [%s] to [%s].', $psr_request->type, $type)
+            );
+        }
+
+        $this->psr_request = $psr_request;
+        $this->type = $type;
     }
 
     /**
-     * @return static
+     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
      */
-    public function withRoutingResult(RoutingResult $routing_result)
+    public static function fromPsr(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND): Request
     {
-        return $this->withAttribute('_routing_result', $routing_result);
+        if ($psr_request instanceof Request) {
+            return $psr_request;
+        }
+        return new self($psr_request, $type);
+    }
+
+    /**
+     * @param mixed $value
+     * @return never
+     */
+    final public function __set(string $name, $value)
+    {
+        throw new BadMethodCallException(
+            sprintf("Cannot set undefined property [$name] on immutable class [%s]", self::class)
+        );
     }
 
     public function userAgent(): ?string
     {
-        $user_agent = substr($this->getHeaderLine('User-Agent'), 0, 500);
-        if (false === $user_agent) {
+        $user_agent = substr($this->getHeaderLine('user-agent'), 0, 500);
+        if (false === $user_agent || '' === $user_agent) {
             return null;
         }
         return $user_agent;
-    }
-
-    public function requestTargetWithFragment(): string
-    {
-        $fragment = $this->getUri()->getFragment();
-
-        return ($fragment !== '')
-            ? $this->getRequestTarget() . '#' . $fragment
-            : $this->getRequestTarget();
     }
 
     /**
@@ -79,11 +96,7 @@ final class Request implements ServerRequestInterface
     public function url(): string
     {
         $full = (string)$this->getUri();
-        $res = preg_replace('/\?.*/', '', $full);
-        if (null === $res) {
-            throw new RuntimeException("preg_replace_threw an error for url [$res].");
-        }
-        return $res;
+        return Str::pregReplace($full, '/\?.*/', '');
     }
 
     /**
@@ -91,7 +104,6 @@ final class Request implements ServerRequestInterface
      * exists.
      *
      * If multiple cookie headers have been sent for $name only the first one will be returned.
-     *
      */
     public function cookie(string $name, ?string $default = null): ?string
     {
@@ -108,20 +120,9 @@ final class Request implements ServerRequestInterface
         return $cookie;
     }
 
-    function routeIs(string $pattern): bool
+    public function routingResult(): RoutingResult
     {
-        $route = $this->routingResult()->route();
-
-        if (!$route) {
-            return false;
-        }
-
-        return Str::is($pattern, $route->getName());
-    }
-
-    function routingResult(): RoutingResult
-    {
-        $res = $this->getAttribute('_routing_result');
+        $res = $this->getAttribute(RoutingResult::class);
         if (!$res instanceof RoutingResult) {
             return RoutingResult::noMatch();
         }
@@ -136,7 +137,7 @@ final class Request implements ServerRequestInterface
         $url = $this->fullUrl();
 
         foreach ($patterns as $pattern) {
-            if (Str::is($pattern, $url)) {
+            if (Str::is($url, $pattern)) {
                 return true;
             }
         }
@@ -149,12 +150,12 @@ final class Request implements ServerRequestInterface
         return $this->getUri()->__toString();
     }
 
-    function pathIs(string ...$patterns): bool
+    public function pathIs(string ...$patterns): bool
     {
         $path = $this->decodedPath();
 
         foreach ($patterns as $pattern) {
-            if (Str::is('/' . ltrim($pattern, '/'), $path)) {
+            if (Str::is($path, '/' . ltrim($pattern, '/'))) {
                 return true;
             }
         }
@@ -162,20 +163,25 @@ final class Request implements ServerRequestInterface
         return false;
     }
 
-    function decodedPath(): string
+    public function decodedPath(): string
     {
         $path = $this->path();
         return implode(
             '/',
             array_map(function ($part) {
+                // Make sure that %2F stays %2F
                 return rawurldecode(strtr($part, ['%2F' => '%252F']));
             }, explode('/', $path))
         );
     }
 
-    function path(): string
+    public function path(): string
     {
-        return $this->getUri()->getPath();
+        $path = $this->getUri()->getPath();
+        if ('' === $path) {
+            $path = '/';
+        }
+        return $path;
     }
 
     /**
@@ -190,28 +196,19 @@ final class Request implements ServerRequestInterface
         return 'https' === $this->getUri()->getScheme();
     }
 
-    /**
-     * @throws RequestHasNoType
-     */
     public function isToFrontend(): bool
     {
-        return self::TYPE_FRONTEND === $this->getType();
+        return self::TYPE_FRONTEND === $this->type;
     }
 
-    /**
-     * @throws RequestHasNoType
-     */
     public function isToAdminArea(): bool
     {
-        return self::TYPE_ADMIN_AREA === $this->getType();
+        return self::TYPE_ADMIN_AREA === $this->type;
     }
 
-    /**
-     * @throws RequestHasNoType
-     */
     public function isToApiEndpoint(): bool
     {
-        return self::TYPE_API === $this->getType();
+        return self::TYPE_API === $this->type;
     }
 
     public function ip(): ?string
@@ -288,19 +285,14 @@ final class Request implements ServerRequestInterface
 
     public function isSendingJson(): bool
     {
-        return Str::contains($this->getHeaderLine('Content-Type'), ['/json', '+json']);
+        return Str::contains($this->getHeaderLine('content-type'), ['/json', '+json']);
     }
 
     public function isExpectingJson(): bool
     {
-        $accepts = $this->acceptableContentTypes();
+        $accepts = $this->getHeaderLine('accept');
 
         return Str::contains($accepts, ['/json', '+json']);
-    }
-
-    public function acceptableContentTypes(): string
-    {
-        return $this->getHeaderLine('Accept');
     }
 
     public function acceptsHtml(): bool
@@ -312,7 +304,7 @@ final class Request implements ServerRequestInterface
     {
         return $this->matchesType(
             $content_type,
-            $this->acceptableContentTypes()
+            $this->getHeaderLine('accept')
         );
     }
 
@@ -321,7 +313,7 @@ final class Request implements ServerRequestInterface
      */
     public function acceptsOneOf(array $content_types): bool
     {
-        $accepts = $this->acceptableContentTypes();
+        $accepts = $this->getHeaderLine('accept');
 
         foreach ($content_types as $content_type) {
             if ($this->matchesType($content_type, $accepts)) {
@@ -366,6 +358,8 @@ final class Request implements ServerRequestInterface
      *
      * @param mixed $default
      * @return mixed
+     *
+     * @throws RuntimeException If parsed body is not an array.
      */
     public function post(?string $key = null, $default = null)
     {
@@ -376,7 +370,7 @@ final class Request implements ServerRequestInterface
         }
 
         if (!is_array($parsed_body)) {
-            throw new BadMethodCallException('Request::post() can not be used if parsed body is not an array.');
+            throw new RuntimeException(sprintf('%s can not be used if parsed body is not an array.', __METHOD__));
         }
 
         if (null === $key) {
@@ -653,25 +647,7 @@ final class Request implements ServerRequestInterface
      */
     protected function new(ServerRequestInterface $new_psr_request)
     {
-        return new self($new_psr_request);
-    }
-
-    /**
-     * @throws RequestHasNoType
-     */
-    private function getType(): int
-    {
-        $type = $this->getAttribute(self::TYPE_ATTRIBUTE, false);
-
-        if (!is_int($type)) {
-            throw RequestHasNoType::becauseTheTypeIsNotAnInteger($type);
-        }
-
-        if ($type < 1 || $type > 3) {
-            throw RequestHasNoType::becauseTheRangeIsNotCorrect($type);
-        }
-
-        return $type;
+        return new self($new_psr_request, $this->type);
     }
 
     private function isMethod(string $method): bool
@@ -688,7 +664,9 @@ final class Request implements ServerRequestInterface
         $tok = strtok($match_against, '/');
 
         if (false == $tok) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not parse accept header [$match_against].");
+            // @codeCoverageIgnoreEnd
         }
 
         if ($accept_header === $tok . '/*') {
@@ -706,7 +684,7 @@ final class Request implements ServerRequestInterface
 
         if (!is_array($input)) {
             throw new RuntimeException(
-                sprintf('%s::inputSource() can only be used if the parsed body is an array.', self::class)
+                sprintf('%s can only be used if the parsed body is an array.', __METHOD__)
             );
         }
 

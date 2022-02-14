@@ -5,129 +5,171 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing;
 
+use FastRoute\BadRouteException;
+use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
+use FastRoute\RouteCollector;
+use FastRoute\RouteParser\Std as RouteParser;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
+use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
+use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
+use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\RouteLoading\PHPFileRouteLoader;
-use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoader;
-use Snicco\Component\HttpRouting\Routing\RouteLoading\RouteLoadingOptions;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfiguratorUsingRouter;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
+use Snicco\Component\HttpRouting\Routing\Route\SerializedRouteCollection;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\LazyGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlEncoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
+use Snicco\Component\HttpRouting\Routing\UrlMatcher\AdminRouteMatcher;
+use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher;
+use Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteSyntaxConverter;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
-use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 
+use function serialize;
+
+/**
+ * The Routing class is a Facade that glues together all parts of the Routing system.
+ */
 final class Routing
 {
 
     private ContainerInterface $psr_container;
     private UrlGenerationContext $context;
-    private ?PHPCacheFile $cache_file;
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
-    private RouteLoadingOptions $route_loading_options;
+    private RouteCache $route_cache;
+    private RouteLoader $route_loader;
 
-    private ?RoutingConfiguratorUsingRouter $routing_configurator = null;
+    private ?Configurator $routing_configurator = null;
     private ?UrlMatcher $url_matcher = null;
-    private ?Router $router = null;
-    private ?PHPFileRouteLoader $route_loader = null;
+    private ?UrlGenerator $url_generator = null;
+    private ?Routes $routes = null;
+
+    /**
+     * @var ?array{url_matcher:array, route_collection:array<string,string>}
+     */
+    private ?array $route_data = null;
 
     public function __construct(
         ContainerInterface $psr_container,
         UrlGenerationContext $context,
-        RouteLoadingOptions $route_loading_options,
-        ?PHPCacheFile $cache_file = null,
+        RouteLoader $loader,
+        ?RouteCache $cache = null,
         ?AdminArea $admin_area = null,
         ?UrlEncoder $url_encoder = null
     ) {
         $this->psr_container = $psr_container;
         $this->context = $context;
-        $this->route_loading_options = $route_loading_options;
+        $this->route_loader = $loader;
         $this->admin_area = $admin_area ?: WPAdminArea::fromDefaults();
         $this->url_encoder = $url_encoder ?: new RFC3986Encoder();
-        $this->cache_file = $cache_file;
-    }
-
-    public function webConfigurator(): WebRoutingConfigurator
-    {
-        return $this->routingConfigurator();
+        $this->route_cache = $cache ?: new NullCache();
     }
 
     public function urlMatcher(): UrlMatcher
     {
         if (!isset($this->url_matcher)) {
-            $this->url_matcher = $this->router();
+            $this->url_matcher = new AdminRouteMatcher(
+                new FastRouteDispatcher(
+                    $this->routes(),
+                    $this->routeData()['url_matcher'],
+                    new RouteConditionFactory($this->psr_container)
+                ), $this->admin_area
+            );
         }
         return $this->url_matcher;
     }
 
-    public function urlGenerator(): UrlGeneratorInterface
+    public function urlGenerator(): UrlGenerator
     {
-        return $this->router();
+        if (!isset($this->url_generator)) {
+            $this->url_generator = new LazyGenerator(function () {
+                return new Generator(
+                    $this->routes(),
+                    $this->context,
+                    $this->admin_area,
+                    $this->url_encoder,
+                );
+            });
+        }
+        return $this->url_generator;
     }
 
     public function routes(): Routes
     {
-        return $this->router();
+        if (!isset($this->routes)) {
+            $this->routes = new SerializedRouteCollection($this->routeData()['route_collection']);
+        }
+        return $this->routes;
     }
 
-    public function adminConfigurator(): AdminRoutingConfigurator
+    public function adminMenu(): AdminMenu
     {
         return $this->routingConfigurator();
     }
 
-    public function routeLoader(): RouteLoader
-    {
-        if (!isset($this->route_loader)) {
-            $this->route_loader = new PHPFileRouteLoader(
-                $this->routingConfigurator(),
-                $this->route_loading_options
-            );
-        }
-        return $this->route_loader;
-    }
-
-    private function router(): Router
-    {
-        if (!isset($this->router)) {
-            $condition_factory = new RouteConditionFactory(
-                $this->psr_container
-            );
-
-            $this->router = new Router(
-                $condition_factory,
-                function (Routes $routes) {
-                    return new UrlGenerator(
-                        $routes,
-                        $this->context,
-                        $this->admin_area,
-                        $this->url_encoder
-                    );
-                },
-                $this->admin_area,
-                $this->cache_file,
-            );
-        }
-        return $this->router;
-    }
-
-    private function routingConfigurator(): RoutingConfiguratorUsingRouter
+    private function routingConfigurator(): Configurator
     {
         if (!isset($this->routing_configurator)) {
-            $this->routing_configurator = new RoutingConfiguratorUsingRouter(
-                $this->router(),
+            $this->routing_configurator = new Configurator(
                 $this->admin_area->urlPrefix(),
-                []
             );
         }
         return $this->routing_configurator;
+    }
+
+    /**
+     * @return array{url_matcher: array, route_collection: array<string,string>}
+     */
+    private function routeData(): array
+    {
+        if (!isset($this->route_data)) {
+            $data = $this->route_cache->get(function () {
+                return $this->loadRoutes();
+            });
+
+            $this->route_data = $data;
+        }
+
+        return $this->route_data;
+    }
+
+    /**
+     * @return array{url_matcher: array, route_collection: array<string,string>}
+     */
+    private function loadRoutes(): array
+    {
+        $configurator = $this->routingConfigurator();
+        $this->route_loader->loadWebRoutes($configurator);
+        $this->route_loader->loadAdminRoutes($configurator);
+
+        $routes = $configurator->configuredRoutes();
+
+        $collector = new RouteCollector(new RouteParser(), new DataGenerator());
+        $syntax = new FastRouteSyntaxConverter();
+
+        $serialized_routes = [];
+
+        foreach ($routes as $route) {
+            $serialized_routes[$route->getName()] = serialize($route);
+            $path = $syntax->convert($route);
+            try {
+                $collector->addRoute($route->getMethods(), $path, $route->getName());
+            } catch (BadRouteException $e) {
+                throw BadRouteConfiguration::fromPrevious($e);
+            }
+        }
+        return [
+            'route_collection' => $serialized_routes,
+            'url_matcher' => $collector->getData()
+        ];
     }
 
 }

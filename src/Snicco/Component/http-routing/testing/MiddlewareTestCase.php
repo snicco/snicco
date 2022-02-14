@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Testing;
 
 use Closure;
+use LogicException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
@@ -15,34 +16,30 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
-use Snicco\Component\HttpRouting\Http\Psr7\DefaultResponseFactory;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Snicco\Component\HttpRouting\Middleware\Middleware;
+use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
 
 use function call_user_func;
 
-/**
- * @api
- */
 abstract class MiddlewareTestCase extends TestCase
 {
 
     use CreatesPsrRequests;
 
     private Routes $routes;
-    private DefaultResponseFactory $response_factory;
+    private ResponseFactory $response_factory;
 
     /**
      * @var Closure(Response,Request):Response
@@ -59,6 +56,14 @@ abstract class MiddlewareTestCase extends TestCase
         };
     }
 
+    /**
+     * @param Route[] $routes
+     */
+    final protected function withRoutes(array $routes): void
+    {
+        $this->routes = new RouteCollection($routes);
+    }
+
     protected function psrServerRequestFactory(): ServerRequestFactoryInterface
     {
         return new Psr17Factory();
@@ -67,14 +72,6 @@ abstract class MiddlewareTestCase extends TestCase
     protected function psrUriFactory(): UriFactoryInterface
     {
         return new Psr17Factory();
-    }
-
-    /**
-     * @param array<Route> $routes
-     */
-    final protected function withRoutes(array $routes): void
-    {
-        $this->routes = new RouteCollection($routes);
     }
 
     /**
@@ -98,15 +95,15 @@ abstract class MiddlewareTestCase extends TestCase
         $response_factory = $this->newResponseFactory($url);
         $this->response_factory = $response_factory;
 
-        if ($middleware instanceof AbstractMiddleware) {
+        if ($middleware instanceof Middleware) {
             if (!$pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $response_factory;
             }
             if (!$pimple->offsetExists(Redirector::class)) {
                 $pimple[Redirector::class] = $response_factory;
             }
-            if (!$pimple->offsetExists(UrlGeneratorInterface::class)) {
-                $pimple[UrlGeneratorInterface::class] = $url;
+            if (!$pimple->offsetExists(UrlGenerator::class)) {
+                $pimple[UrlGenerator::class] = $url;
             }
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
@@ -132,7 +129,7 @@ abstract class MiddlewareTestCase extends TestCase
         return new Psr17Factory();
     }
 
-    final protected function getReceivedRequest(): Request
+    final protected function receivedRequest(): Request
     {
         if (!isset($this->received_request_by_next_middleware)) {
             throw new RuntimeException('The next middleware was not called.');
@@ -141,29 +138,29 @@ abstract class MiddlewareTestCase extends TestCase
         return $this->received_request_by_next_middleware;
     }
 
-    final protected function getRedirector(): Redirector
+    final protected function redirector(): Redirector
     {
         if (!isset($this->response_factory)) {
-            throw new RuntimeException(
+            throw new LogicException(
                 'You can only retrieve the redirector from inside the next_response closure'
             );
         }
         return $this->response_factory;
     }
 
-    final protected function getResponseFactory(): ResponseFactory
+    final protected function responseFactory(): ResponseFactory
     {
         if (!isset($this->response_factory)) {
-            throw new RuntimeException(
+            throw new LogicException(
                 'You can only retrieve the response factory from inside the next_response closure'
             );
         }
         return $this->response_factory;
     }
 
-    private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGeneratorInterface
+    private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGenerator
     {
-        return new UrlGenerator(
+        return new Generator(
             $routes,
             $context,
             WPAdminArea::fromDefaults(),
@@ -171,9 +168,9 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
 
-    private function newResponseFactory(UrlGeneratorInterface $url_generator): DefaultResponseFactory
+    private function newResponseFactory(UrlGenerator $url_generator): ResponseFactory
     {
-        return new DefaultResponseFactory(
+        return new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             $url_generator,
@@ -183,7 +180,11 @@ abstract class MiddlewareTestCase extends TestCase
     private function next(): NextMiddleware
     {
         $func = function (Request $request): ResponseInterface {
-            $response = call_user_func($this->next_middleware_response, $this->response_factory->make(), $request);
+            $response = call_user_func(
+                $this->next_middleware_response,
+                $this->response_factory->createResponse(),
+                $request
+            );
             $this->received_request_by_next_middleware = $request;
             $this->next_called = true;
             return $response;

@@ -9,12 +9,12 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 /**
  * @interal
  */
-final class NegatedRouteCondition extends AbstractRouteCondition
+final class NegatedRouteCondition extends RouteCondition
 {
 
-    private AbstractRouteCondition $condition;
+    private RouteCondition $condition;
 
-    public function __construct(AbstractRouteCondition $condition)
+    public function __construct(RouteCondition $condition)
     {
         $this->condition = $condition;
     }

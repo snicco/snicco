@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
@@ -11,6 +12,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
+
+use const JSON_THROW_ON_ERROR;
 
 class ResponseTest extends TestCase
 {
@@ -22,6 +25,13 @@ class ResponseTest extends TestCase
 
     private Response $response;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
+        $this->response = $this->factory->createResponse();
+    }
+
     public function testIsPsrResponse(): void
     {
         $response = $this->factory->createResponse();
@@ -31,7 +41,7 @@ class ResponseTest extends TestCase
 
     public function testIsImmutable(): void
     {
-        $response1 = $this->factory->make();
+        $response1 = $this->factory->createResponse();
         $response2 = $response1->withHeader('foo', 'bar');
 
         $this->assertNotSame($response1, $response2);
@@ -39,26 +49,21 @@ class ResponseTest extends TestCase
         $this->assertFalse($response1->hasHeader('foo'));
     }
 
-    public function testNonPsrAttributesAreCopiedForNewInstances(): void
+    public function test_magic_set_throws_exception(): void
     {
         $response1 = $this->factory->createResponse();
+
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Cannot set undefined property [foo]');
+
         $response1->foo = 'bar';
-
-        $response2 = $response1->withHeader('foo', 'bar');
-
-        $this->assertNotSame($response1, $response2);
-        $this->assertTrue($response2->hasHeader('foo'));
-        $this->assertFalse($response1->hasHeader('foo'));
-
-        $this->assertSame('bar', $response1->foo);
-        $this->assertSame('bar', $response2->foo);
     }
 
     public function testHtml(): void
     {
         $stream = $this->factory->createStream('foo');
 
-        $response = $this->factory->make()->html($stream);
+        $response = $this->factory->createResponse()->withHtml($stream);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
@@ -66,9 +71,9 @@ class ResponseTest extends TestCase
 
     public function testJson(): void
     {
-        $stream = $this->factory->createStream(json_encode(['foo' => 'bar']));
+        $stream = $this->factory->createStream(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
 
-        $response = $this->factory->make()->json($stream);
+        $response = $this->factory->createResponse()->withJson($stream);
 
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->__toString(), true));
@@ -156,7 +161,7 @@ class ResponseTest extends TestCase
      */
     public function testHasEmptyBody(): void
     {
-        $response = $this->factory->make();
+        $response = $this->factory->createResponse();
         $this->assertTrue($response->hasEmptyBody());
 
         $response->getBody()->detach();
@@ -204,10 +209,11 @@ class ResponseTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     public function cookies_are_not_reset_in_nested_responses(): void
     {
-        $redirect_response = $this->factory->make()->withCookie(new Cookie('foo', 'bar'));
+        $redirect_response = $this->factory->createResponse()->withCookie(new Cookie('foo', 'bar'));
 
         $response = new Response($redirect_response);
 
@@ -307,11 +313,111 @@ class ResponseTest extends TestCase
         $this->assertSame([], $this->response->errors());
     }
 
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function test_getProtocolVersion(): void
     {
-        parent::setUp();
-        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
-        $this->response = $this->factory->make();
+        $this->assertSame('1.1', $this->response->getProtocolVersion());
+        $response = $this->response->withProtocolVersion('1.0');
+        $this->assertSame('1.0', $response->getProtocolVersion());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getHeaders(): void
+    {
+        $response = $this->response
+            ->withHeader('foo', 'bar1')
+            ->withAddedHeader('foo', 'bar2')
+            ->withHeader('baz', 'biz');
+
+        $this->assertSame([
+            'foo' => [
+                'bar1',
+                'bar2'
+            ],
+            'baz' => [
+                'biz'
+            ]
+        ], $response->getHeaders());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isRedirect(): void
+    {
+        $response = $this->response->withStatus(301);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(302);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(303);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(307);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(308);
+        $this->assertTrue($response->isRedirect());
+
+        $response = $this->response->withStatus(301)->withHeader('location', '/foo');
+        $this->assertTrue($response->isRedirect('/foo'));
+        $this->assertFalse($response->isRedirect('/bar'));
+
+        $response = $this->response->withStatus(200);
+        $this->assertFalse($response->isRedirect());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isOk(): void
+    {
+        $response = $this->response->withStatus(201);
+        $this->assertFalse($response->isOk());
+
+        $response = $this->response->withStatus(200);
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isNotFound(): void
+    {
+        $response = $this->response->withStatus(403);
+        $this->assertFalse($response->isNotFound());
+
+        $response = $this->response->withStatus(404);
+        $this->assertTrue($response->isNotFound());
+    }
+
+    /**
+     * @test
+     */
+    public function test_isForbidden(): void
+    {
+        $response = $this->response->withStatus(404);
+        $this->assertFalse($response->isForbidden());
+
+        $response = $this->response->withStatus(403);
+        $this->assertTrue($response->isForbidden());
+    }
+
+    /**
+     * @test
+     */
+    public function test_from_psr(): void
+    {
+        $response = Response::fromPsr($this->response);
+        $this->assertInstanceOf(Response::class, $response);
+
+        $response = Response::fromPsr($this->psrResponseFactory()->createResponse());
+        $this->assertInstanceOf(Response::class, $response);
     }
 
 }
