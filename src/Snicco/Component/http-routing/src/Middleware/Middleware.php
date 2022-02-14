@@ -11,14 +11,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Snicco\Component\HttpRouting\Exception\CouldNotRenderTemplate;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
+use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Webmozart\Assert\Assert;
 
 abstract class Middleware implements MiddlewareInterface
 {
@@ -68,16 +65,14 @@ abstract class Middleware implements MiddlewareInterface
     }
 
     /**
+     * @param array<string,mixed> $data
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws CouldNotRenderTemplate
      */
-    final protected function render(string $template_identifier, array $data = []): Response
+    final protected function render(string $template_identifier, array $data = []): ViewResponse
     {
-        /** @var TemplateRenderer $renderer */
-        $renderer = $this->container->get(TemplateRenderer::class);
-        Assert::isInstanceOf($renderer, TemplateRenderer::class);
-        return $this->respond()->html($renderer->render($template_identifier, $data));
+        return $this->respond()->view($template_identifier, $data);
     }
 
     /**

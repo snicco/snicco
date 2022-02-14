@@ -11,6 +11,9 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
+/**
+ * @interal
+ */
 trait CreateUrlGenerator
 {
 
