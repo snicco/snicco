@@ -8,8 +8,8 @@ use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
-use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Route\SerializedRouteCollection;
 use stdClass;
 
 use function serialize;
@@ -24,7 +24,7 @@ final class CachedRouteCollectionTest extends TestCase
     {
         $data = ['r1' => serialize(new stdClass())];
 
-        $routes = new CachedRouteCollection($data);
+        $routes = new SerializedRouteCollection($data);
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -44,7 +44,7 @@ final class CachedRouteCollectionTest extends TestCase
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
-        $routes = new CachedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
 
         $this->assertSame(2, count($routes));
     }
@@ -56,7 +56,7 @@ final class CachedRouteCollectionTest extends TestCase
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
-        $routes = new CachedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
 
         $count = 0;
         foreach ($routes as $route) {
@@ -73,7 +73,7 @@ final class CachedRouteCollectionTest extends TestCase
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
-        $routes = new CachedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
 
         $this->assertEquals([
             'r1' => $r1,
@@ -96,7 +96,7 @@ final class CachedRouteCollectionTest extends TestCase
 
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
-        $routes = new CachedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
 
         $route = $routes->getByName('r1');
         $this->assertEquals($r1, $route);
@@ -112,7 +112,7 @@ final class CachedRouteCollectionTest extends TestCase
         Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
         $routes =
-            new CachedRouteCollection(['r1' => serialize(new stdClass()), 'r2' => serialize($r2)]);
+            new SerializedRouteCollection(['r1' => serialize(new stdClass()), 'r2' => serialize($r2)]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Your route cache seems corrupted');
@@ -126,7 +126,7 @@ final class CachedRouteCollectionTest extends TestCase
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
-        $routes = new CachedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['r1' => serialize($r1), 'r2' => serialize($r2)]);
 
         $route = $routes->getByName('r1');
         $this->assertInstanceOf(Route::class, $route);
@@ -146,7 +146,7 @@ final class CachedRouteCollectionTest extends TestCase
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
-        $routes = new CachedRouteCollection(['route1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['route1' => serialize($r1), 'r2' => serialize($r2)]);
 
         try {
             iterator_to_array($routes);
@@ -158,7 +158,7 @@ final class CachedRouteCollectionTest extends TestCase
             );
         }
 
-        $routes = new CachedRouteCollection(['route1' => serialize($r1), 'r2' => serialize($r2)]);
+        $routes = new SerializedRouteCollection(['route1' => serialize($r1), 'r2' => serialize($r2)]);
 
         try {
             $routes->getByName('route1');

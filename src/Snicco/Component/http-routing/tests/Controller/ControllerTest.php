@@ -14,7 +14,7 @@ use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
+use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -118,7 +118,7 @@ final class ControllerTest extends TestCase
     private function getUrLGenerator(): UrlGenerator
     {
         return new Generator(
-            new RuntimeRouteCollection(),
+            new RouteCollection(),
             UrlGenerationContext::forConsole('127.0.0.0'),
             WPAdminArea::fromDefaults()
         );

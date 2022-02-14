@@ -15,7 +15,7 @@ use function unserialize;
 /**
  * @psalm-external-mutation-free
  */
-final class CachedRouteCollection implements Routes
+final class SerializedRouteCollection implements Routes
 {
 
     /**

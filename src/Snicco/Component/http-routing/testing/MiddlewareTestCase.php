@@ -24,8 +24,8 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
@@ -61,7 +61,7 @@ abstract class MiddlewareTestCase extends TestCase
      */
     final protected function withRoutes(array $routes): void
     {
-        $this->routes = new RuntimeRouteCollection($routes);
+        $this->routes = new RouteCollection($routes);
     }
 
     protected function psrServerRequestFactory(): ServerRequestFactoryInterface
@@ -89,7 +89,7 @@ abstract class MiddlewareTestCase extends TestCase
 
         $pimple = new Container();
         $url = $this->newUrlGenerator(
-            $this->routes ?? new RuntimeRouteCollection([]),
+            $this->routes ?? new RouteCollection([]),
             UrlGenerationContext::fromRequest($request)
         );
         $response_factory = $this->newResponseFactory($url);

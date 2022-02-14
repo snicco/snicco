@@ -15,8 +15,8 @@ use Snicco\Component\HttpRouting\Routing\Condition\IsAdminDashboardRequest;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
@@ -194,7 +194,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     public function configuredRoutes(): Routes
     {
-        return new RuntimeRouteCollection($this->routes);
+        return new RouteCollection($this->routes);
     }
 
     public function permanentRedirect(string $from_path, string $to_path, array $query = []): Route
