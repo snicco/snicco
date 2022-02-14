@@ -5,9 +5,21 @@ codecov:
     after_n_builds: 2 # Only send notifications after 2 builds because we upload 2 times currently (1x PHPUnit / 1x Codeception)
 
 coverage:
-  precision: 2
-  round: up
-  range: "90...100"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0.01%
+        paths:
+          - "src/Snicco/Component"
+          - "src/Snicco/Bridge"
+          - "src/Snicco/Middleware"
+        if_not_found: failure
+        if_ci_failed: error
+
+  precision: 3
+  round: nearest
+  range: "95...99"
 
 parsers:
   gcov:
@@ -20,7 +32,7 @@ parsers:
 comment:
   layout: "reach,diff,files"
   behavior: default
-  require_changes: no
+  require_changes: false
   require_head: yes
   require_base: yes
   after_n_builds: 2 # Only send notifications after 2 builds because we upload 2 times currently (1x PHPUnit / 1x Codeception)

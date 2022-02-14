@@ -30,6 +30,7 @@ final class EnvironmentTest extends TestCase
         $this->expectExceptionMessage(
             'App environment can not be constructed with an empty string.'
         );
+        /** @psalm-suppress InvalidArgument */
         Environment::fromString('');
     }
 
@@ -48,6 +49,7 @@ final class EnvironmentTest extends TestCase
             'App environment has to be one of [testing,prod,dev,staging]. Got: [local]'
         );
 
+        /** @psalm-suppress InvalidArgument */
         Environment::fromString('local');
     }
 
@@ -198,9 +200,6 @@ final class EnvironmentTest extends TestCase
     public function test_debug_is_always_disabled_when_using_named_production_constructor(): void
     {
         $env = Environment::prod();
-        $this->assertFalse($env->isDebug());
-
-        $env = Environment::prod(true);
         $this->assertFalse($env->isDebug());
     }
 
