@@ -70,4 +70,58 @@ class MethodOverrideTest extends MiddlewareTestCase
         $this->assertSame('GET', $this->receivedRequest()->getMethod());
     }
 
+    /**
+     * @test
+     */
+    public function a_post_request_without_any_overrite_stays_untouched(): void
+    {
+        $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
+            'foo' => 'bar',
+        ]);
+
+        $response = $this->runMiddleware($this->middleware, $request);
+
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('POST', $this->receivedRequest()->getMethod());
+    }
+
+    /**
+     * @test
+     */
+    public function a_post_request_can_only_be_changed_to_put_patch_and_delete(): void
+    {
+        $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
+            '_method' => 'PUT',
+        ]);
+
+        $response = $this->runMiddleware($this->middleware, $request);
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('PUT', $this->receivedRequest()->getMethod());
+
+        $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
+            '_method' => 'PATCH',
+        ]);
+
+        $response = $this->runMiddleware($this->middleware, $request);
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('PATCH', $this->receivedRequest()->getMethod());
+
+        $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
+            '_method' => 'DELETE',
+        ]);
+
+        $response = $this->runMiddleware($this->middleware, $request);
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('DELETE', $this->receivedRequest()->getMethod());
+
+        $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
+            '_method' => 'GET',
+        ]);
+
+        $response = $this->runMiddleware($this->middleware, $request);
+        $response->assertNextMiddlewareCalled();
+        $this->assertSame('POST', $this->receivedRequest()->getMethod());
+    }
+
+
 }
