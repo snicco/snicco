@@ -17,15 +17,6 @@ use function sprintf;
 final class CantDestroySession extends RuntimeException
 {
 
-    public static function forId(string $id, string $driver_identifier, Throwable $previous = null): CantDestroySession
-    {
-        return new self(
-            "Cant destroy session [$id] with the [$driver_identifier] driver.",
-            intval($previous ? $previous->getCode() : 0),
-            $previous
-        );
-    }
-
     /**
      * @param string[] $ids
      */
