@@ -66,10 +66,10 @@ class Str
     /**
      * @param list<string> $needles
      */
-    public static function containsAll(string $haystack, array $needles): bool
+    public static function containsAll(string $subject, array $needles): bool
     {
         foreach ($needles as $needle) {
-            if (!self::contains($haystack, $needle)) {
+            if (!self::contains($subject, $needle)) {
                 return false;
             }
         }
@@ -82,10 +82,10 @@ class Str
      *
      * @psalm-pure
      */
-    public static function contains(string $haystack, $needles): bool
+    public static function contains(string $subject, $needles): bool
     {
         foreach ((array)$needles as $needle) {
-            if ($needle !== '' && mb_strpos($haystack, $needle) !== false) {
+            if ($needle !== '' && mb_strpos($subject, $needle) !== false) {
                 return true;
             }
         }
@@ -96,10 +96,10 @@ class Str
     /**
      * @param list<string> $needles
      */
-    public static function containsAny(string $haystack, array $needles): bool
+    public static function containsAny(string $subject, array $needles): bool
     {
         foreach ($needles as $needle) {
-            if (self::contains($haystack, $needle)) {
+            if (self::contains($subject, $needle)) {
                 return true;
             }
         }
@@ -137,7 +137,7 @@ class Str
         return self::$studly_cache[$key] = implode('', $parts);
     }
 
-    public static function ucfirst(string $str, ?string $encoding = null): string
+    public static function ucfirst(string $subject, ?string $encoding = null): string
     {
         if ($encoding === null) {
             $encoding = mb_internal_encoding();
@@ -147,29 +147,29 @@ class Str
                 // @codeCoverageIgnoreEnd
             }
         }
-        return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_substr(
-                $str,
+        return mb_strtoupper(mb_substr($subject, 0, 1, $encoding), $encoding) . mb_substr(
+                $subject,
                 1,
                 null,
                 $encoding
             );
     }
 
-    public static function doesNotEndWith(string $path, string $string): bool
+    public static function doesNotEndWith(string $subject, string $string): bool
     {
-        return !self::endsWith($path, $string);
+        return !self::endsWith($subject, $string);
     }
 
     /**
      * @psalm-pure
      */
-    public static function endsWith(string $haystack, string $needle): bool
+    public static function endsWith(string $subject, string $needle): bool
     {
         if ('' === $needle) {
             return false;
         }
 
-        return substr($haystack, -strlen($needle)) === $needle;
+        return substr($subject, -strlen($needle)) === $needle;
     }
 
     /**
@@ -199,12 +199,12 @@ class Str
     /**
      * @psalm-pure
      */
-    public static function startsWith(string $haystack, string $needle): bool
+    public static function startsWith(string $subject, string $needle): bool
     {
         if ('' === $needle) {
             return false;
         }
-        return strncmp($haystack, $needle, strlen($needle)) === 0;
+        return strncmp($subject, $needle, strlen($needle)) === 0;
     }
 
     /**
@@ -234,9 +234,9 @@ class Str
         return self::substr($subject, 0, $pos);
     }
 
-    public static function substr(string $string, int $start, int $length = null): string
+    public static function substr(string $subject, int $start, int $length = null): string
     {
-        return mb_substr($string, $start, $length, 'UTF-8');
+        return mb_substr($subject, $start, $length, 'UTF-8');
     }
 
     public static function afterFirst(string $subject, string $search): string
@@ -270,12 +270,15 @@ class Str
         return $result === false ? $subject : $result;
     }
 
-    public static function is(string $pattern, string $value): bool
+    /**
+     * @param string $pattern For convenience foo/* will be transformed to foo.*
+     */
+    public static function is(string $subject, string $pattern): bool
     {
         // If the given value is an exact match we can of course return true right
         // from the beginning. Otherwise, we will translate asterisks and do an
         // actual pattern match against the two strings to see if they match.
-        if ($pattern == $value) {
+        if ($pattern == $subject) {
             return true;
         }
 
@@ -286,7 +289,7 @@ class Str
         // pattern such as "library/*", making any string check convenient.
         $pattern = str_replace('\*', '.*', $pattern);
 
-        if (preg_match('#^' . $pattern . '\z#u', $value) === 1) {
+        if (preg_match('#^' . $pattern . '\z#u', $subject) === 1) {
             return true;
         }
 
@@ -309,13 +312,14 @@ class Str
     }
 
     /**
+     * @param string $subject Regex delimiters will not be added.
      * @psalm-pure
-     * @psalm-suppress ImpureFunctionCall We analyse with PHP7.4
      */
-    public static function pregReplace(string $pattern, string $replace, string $subject): string
+    public static function pregReplace(string $subject, string $pattern, string $replace): string
     {
         $res = preg_replace($pattern . 'u', $replace, $subject);
         if (null === $res) {
+            /** @psalm-suppress ImpureFunctionCall | This function is pure, but we run psalm with PHP7.4, so it does not take into account PURE annotations. */
             $code = preg_last_error();
 
             switch ($code) {

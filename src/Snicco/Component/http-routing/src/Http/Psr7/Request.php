@@ -96,7 +96,7 @@ final class Request implements ServerRequestInterface
     public function url(): string
     {
         $full = (string)$this->getUri();
-        return Str::pregReplace('/\?.*/', '', $full);
+        return Str::pregReplace($full, '/\?.*/', '');
     }
 
     /**
@@ -137,7 +137,7 @@ final class Request implements ServerRequestInterface
         $url = $this->fullUrl();
 
         foreach ($patterns as $pattern) {
-            if (Str::is($pattern, $url)) {
+            if (Str::is($url, $pattern)) {
                 return true;
             }
         }
@@ -155,7 +155,7 @@ final class Request implements ServerRequestInterface
         $path = $this->decodedPath();
 
         foreach ($patterns as $pattern) {
-            if (Str::is('/' . ltrim($pattern, '/'), $path)) {
+            if (Str::is($path, '/' . ltrim($pattern, '/'))) {
                 return true;
             }
         }

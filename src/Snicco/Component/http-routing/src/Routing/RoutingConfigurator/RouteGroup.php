@@ -65,8 +65,8 @@ final class RouteGroup
     private function mergeName(string $old): string
     {
         // Remove leading and trailing dots.
-        $new = Str::pregReplace('/^\.+|\.+$/', '', $this->name);
-        $_old = Str::pregReplace('/^\.+|\.+$/', '', $old);
+        $new = Str::pregReplace($this->name, '/^\.+|\.+$/', '');
+        $_old = Str::pregReplace($old, '/^\.+|\.+$/', '');
 
         return trim($_old . '.' . $new, '.');
     }
