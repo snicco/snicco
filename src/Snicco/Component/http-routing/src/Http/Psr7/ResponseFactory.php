@@ -121,14 +121,11 @@ final class ResponseFactory implements Redirector, Psr17ResponseFactory, Psr17St
      * @param mixed $data
      * @throws JsonException
      */
-    public function json($data, int $status_code = 200, int $options = JSON_THROW_ON_ERROR, int $depth = 512): Response
+    public function json($data, int $status_code = 200, int $options = 0, int $depth = 512): Response
     {
-        $stream = json_encode($data, $options, $depth);
-
-        if (json_last_error() !== JSON_ERROR_NONE || false === $stream) {
-            throw new JsonException(json_last_error_msg(), json_last_error());
-        }
-
+        /** @var string $stream */
+        $stream = json_encode($data, $options | JSON_THROW_ON_ERROR, $depth);
+        
         return $this->createResponse($status_code)->withJson(
             $this->createStream($stream)
         );

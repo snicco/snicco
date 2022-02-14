@@ -23,6 +23,7 @@ use function fopen;
 use function json_encode;
 
 use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
 
 class ResponseFactoryTest extends TestCase
 {
@@ -75,6 +76,16 @@ class ResponseFactoryTest extends TestCase
         $this->expectException(JsonException::class);
         $this->factory->json("\xB1\x31", 401, JSON_PRETTY_PRINT);
     }
+
+    /**
+     * @test
+     */
+    public function test_json_throws_if_set_as_option(): void
+    {
+        $this->expectException(JsonException::class);
+        $this->factory->json("\xB1\x31", 401, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+    }
+
 
     /**
      * @test
