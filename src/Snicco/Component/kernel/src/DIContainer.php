@@ -23,8 +23,6 @@ use function is_scalar;
  * for your application.
  * The framework itself DOES NOT require your implementation to be capable of auto-wiring.
  * However, you are free to use a container that supports auto-wiring in your application code.
- *
- * @api
  */
 abstract class DIContainer implements ArrayAccess, PsrContainer
 {

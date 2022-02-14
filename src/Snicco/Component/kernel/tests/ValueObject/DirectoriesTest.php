@@ -2,16 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Kernel\Tests;
+namespace Snicco\Component\Kernel\Tests\ValueObject;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Kernel\ValueObject\Directories;
 
+use function dirname;
+
 final class DirectoriesTest extends TestCase
 {
 
     private string $valid_base_dir;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->valid_base_dir = dirname(__DIR__) . '/fixtures';
+    }
 
     /**
      * @test
@@ -111,12 +119,6 @@ final class DirectoriesTest extends TestCase
             $this->valid_base_dir . '/var/cache',
             __DIR__ . '/log'
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->valid_base_dir = __DIR__ . '/fixtures';
     }
 
 }

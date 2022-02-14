@@ -25,11 +25,6 @@ final class ReadOnlyConfig extends Config
         return new self($items);
     }
 
-    public static function fromWritableConfig(WritableConfig $config): ReadOnlyConfig
-    {
-        return new self($config->toArray());
-    }
-
     /**
      * @param mixed $default
      * @return mixed

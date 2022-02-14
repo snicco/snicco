@@ -86,8 +86,7 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_boolean(): void
     {
-        $config =
-            ReadOnlyConfig::fromArray(['foo' => ['bar' => true], 'baz' => false, 'biz' => 'boo']);
+        $config = ReadOnlyConfig::fromArray(['foo' => ['bar' => true], 'baz' => false, 'biz' => 'boo']);
 
         $this->assertSame(false, $config->getBoolean('baz'));
         $this->assertSame(true, $config->getBoolean('foo.bar'));

@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace Snicco\Component\Kernel;
 
 use Generator;
+use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Snicco\Component\Kernel\Configuration\ConfigFactory;
+use Snicco\Component\Kernel\Configuration\ConfigCache;
+use Snicco\Component\Kernel\Configuration\ConfigLoader;
+use Snicco\Component\Kernel\Configuration\NullCache;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
 
 use function array_merge;
 use function get_class;
@@ -21,8 +23,6 @@ use function implode;
 use function sprintf;
 
 /**
- * @api
- *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 final class Kernel
@@ -32,7 +32,7 @@ final class Kernel
     private Environment $env;
     private Directories $dirs;
     private ReadOnlyConfig $read_only_config;
-    private PHPCacheFile $config_cache;
+    private ConfigCache $config_cache;
 
     private bool $booted = false;
 
@@ -46,59 +46,47 @@ final class Kernel
      */
     private array $bootstrappers = [];
 
+    private bool $loaded_from_cache = true;
+
     public function __construct(
         DIContainer $container,
         Environment $env,
-        Directories $dirs
+        Directories $dirs,
+        ConfigCache $config_cache = null
     ) {
         $this->container = $container;
         $this->env = $env;
         $this->dirs = $dirs;
-        $this->config_cache = new PHPCacheFile(
-            $this->dirs->cacheDir(), $this->env->asString() . '.config.php'
-        );
+        $this->config_cache = $config_cache ?: new NullCache();
         $this->container[ContainerInterface::class] = $this->container;
     }
 
     public function boot(): void
     {
         if ($this->booted) {
-            throw new LogicException('The application cant be booted twice.');
+            throw new LogicException('The kernel cant be booted twice.');
         }
 
-        $is_cached = $this->isConfigurationCached();
-        $config_factory = new ConfigFactory();
+        $cached_config = $this->config_cache->get($this->configCacheFile(), function () {
+            return $this->loadAllConfigFilesFromDisk();
+        });
 
-        $loaded_config = $this->loadConfiguration(
-            $config_factory,
-            $is_cached ? $this->config_cache : null
-        );
+        $this->read_only_config = ReadOnlyConfig::fromArray($cached_config);
 
-        foreach ($this->bundles($loaded_config) as $bundle) {
-            $this->addBundle($bundle);
-        }
-
-        foreach ($this->bootstrappers($loaded_config) as $bootstrapper) {
-            $this->addBootstrapper($bootstrapper);
-        }
-
-        if (!$is_cached) {
-            $this->configureBundles($config = WritableConfig::fromArray($loaded_config));
-            $this->read_only_config = ReadOnlyConfig::fromWritableConfig($config);
-            $this->maybeCacheConfiguration($config_factory);
-        } else {
-            $this->read_only_config = ReadOnlyConfig::fromArray($loaded_config);
+        if ($this->loaded_from_cache) {
+            $this->setBundlesAndBootstrappers(
+                $this->read_only_config->getArray('bundles'),
+                $this->read_only_config->getListOfStrings('app.bootstrappers')
+            );
         }
 
         $this->registerBundles();
-        $this->container->lock();
-        $this->bootBundles();
-        $this->booted = true;
-    }
 
-    public function isConfigurationCached(): bool
-    {
-        return $this->config_cache->isCreated();
+        $this->container->lock();
+
+        $this->bootBundles();
+
+        $this->booted = true;
     }
 
     public function env(): Environment
@@ -131,7 +119,44 @@ final class Kernel
         return isset($this->bundles[$alias]);
     }
 
-    protected function registerBundles(): void
+    private function loadAllConfigFilesFromDisk(): array
+    {
+        $config_dir = $this->dirs->configDir();
+
+        $loaded_config = (new ConfigLoader())($this->dirs->configDir());
+        $writable_config = WritableConfig::fromArray($loaded_config);
+
+        if (!$writable_config->has('app')) {
+            throw new InvalidArgumentException(
+                "The [app.php] config file was not found in the config dir [$config_dir]."
+            );
+        }
+        if (!$writable_config->has('app.bootstrappers')) {
+            $writable_config->set('app.bootstrappers', []);
+        }
+        if (!$writable_config->has('bundles')) {
+            $writable_config->set('bundles', []);
+        }
+
+        $this->setBundlesAndBootstrappers(
+            $writable_config->getArray('bundles'),
+            $writable_config->getListOfStrings('app.bootstrappers')
+        );
+
+        foreach ($this->bundles as $bundle) {
+            $bundle->configure($writable_config, $this);
+        }
+
+        foreach ($this->bootstrappers as $bootstrapper) {
+            $bootstrapper->configure($writable_config, $this);
+        }
+
+        $this->loaded_from_cache = false;
+
+        return $writable_config->toArray();
+    }
+
+    private function registerBundles(): void
     {
         foreach ($this->bundles as $bundle) {
             $bundle->register($this);
@@ -141,7 +166,7 @@ final class Kernel
         }
     }
 
-    protected function bootBundles(): void
+    private function bootBundles(): void
     {
         foreach ($this->bundles as $bundle) {
             $bundle->bootstrap($this);
@@ -151,22 +176,17 @@ final class Kernel
         }
     }
 
-    private function loadConfiguration(ConfigFactory $config_factory, ?PHPCacheFile $cache_file = null): array
+    private function configCacheFile(): string
     {
-        return $config_factory->load(
-            $this->dirs->configDir(),
-            $cache_file
-        );
+        return $this->dirs->cacheDir() . '/' . $this->env->asString() . '.config.php';
     }
 
     /**
+     * @param array{all?: class-string<Bundle>[], prod?: class-string<Bundle>[], testing?: class-string<Bundle>[], dev?: class-string<Bundle>[]} $bundles
      * @psalm-return Generator<Bundle>
      */
-    private function bundles(array $configuration): Generator
+    private function bundlesInCurrentEnv(array $bundles): Generator
     {
-        /** @var array<string, list<class-string<Bundle>>> $bundles */
-        $bundles = $configuration['bundles'] ?? [];
-
         $env = $bundles[$this->env->asString()] ?? [];
         $all = $bundles[Environment::ALL] ?? [];
 
@@ -195,15 +215,16 @@ final class Kernel
     }
 
     /**
-     * @param array $loaded_config
-     * @return Generator<Bootstrapper>
+     * @param class-string<Bootstrapper>[] $bootstrappers
+     * @psalm-return Generator<Bootstrapper>
      */
-    private function bootstrappers(array $loaded_config): Generator
+    private function bootstrappersInCurrentEnv(array $bootstrappers): Generator
     {
-        /** @var list<class-string<Bootstrapper>> $boot_with */
-        $boot_with = $loaded_config['app']['bootstrappers'] ?? [];
-        foreach ($boot_with as $class) {
-            yield new $class();
+        foreach ($bootstrappers as $class) {
+            $bootstrapper = new $class();
+            if ($bootstrapper->shouldRun($this->env)) {
+                yield $bootstrapper;
+            }
         }
     }
 
@@ -212,26 +233,17 @@ final class Kernel
         $this->bootstrappers[] = $bootstrapper;
     }
 
-    private function configureBundles(WritableConfig $config): void
+    private function setBundlesAndBootstrappers(array $bundles, array $bootstrappers): void
     {
-        foreach ($this->bundles as $bundle) {
-            $bundle->configure($config, $this);
-        }
-        foreach ($this->bootstrappers as $bootstrapper) {
-            $bootstrapper->configure($config, $this);
-        }
-    }
-
-    private function maybeCacheConfiguration(ConfigFactory $config_factory): void
-    {
-        if (!$this->env->isProduction() && !$this->env()->isStaging()) {
-            return;
+        /** @var array{all?: class-string<Bundle>[], prod?: class-string<Bundle>[], testing?: class-string<Bundle>[], dev?: class-string<Bundle>[]} $bundles */
+        foreach ($this->bundlesInCurrentEnv($bundles) as $bundle) {
+            $this->addBundle($bundle);
         }
 
-        $config_factory->writeToCache(
-            $this->config_cache->realPath(),
-            $this->read_only_config->toArray()
-        );
+        /** @var class-string<Bootstrapper>[] $bootstrappers */
+        foreach ($this->bootstrappersInCurrentEnv($bootstrappers) as $bootstrapper) {
+            $this->addBootstrapper($bootstrapper);
+        }
     }
 
 }
