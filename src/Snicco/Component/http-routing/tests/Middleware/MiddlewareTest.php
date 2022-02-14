@@ -14,10 +14,9 @@ use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
+use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
-use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
-use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
@@ -115,14 +114,12 @@ final class MiddlewareTest extends TestCase
         $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->createResponseFactory($this->getUrLGenerator());
         };
-        $this->pimple[TemplateRenderer::class] = function (): FileTemplateRenderer {
-            return new FileTemplateRenderer();
-        };
 
         $response = $middleware->handle($this->frontendRequest(), $this->getNext());
 
-        $this->assertSame('bar', $response->getHeaderLine('foo'));
-        $this->assertSame('Hello Calvin', (string)$response->getBody());
+        $this->assertInstanceOf(ViewResponse::class, $response);
+        $this->assertSame(dirname(__DIR__, 1) . '/fixtures/templates/greeting.php', $response->view());
+        $this->assertSame(['greet' => 'Calvin'], $response->viewData());
     }
 
     /**

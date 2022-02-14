@@ -52,7 +52,7 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
             Request::fromPsr($request)
         );
 
-        return Response::fromPsr($psr_response);
+        return $psr_response instanceof Response ? $psr_response : new Response($psr_response);
     }
 
 }

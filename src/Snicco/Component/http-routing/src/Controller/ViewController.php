@@ -6,9 +6,8 @@ namespace Snicco\Component\HttpRouting\Controller;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Snicco\Component\HttpRouting\Exception\CouldNotRenderTemplate;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
+use Webmozart\Assert\Assert;
 
 use function array_slice;
 
@@ -18,28 +17,21 @@ use function array_slice;
 final class ViewController extends Controller
 {
 
-    private TemplateRenderer $renderer;
-
-    public function __construct(TemplateRenderer $renderer)
-    {
-        $this->renderer = $renderer;
-    }
-
     /**
      * @param mixed ...$args
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws CouldNotRenderTemplate
      */
     public function __invoke(...$args): Response
     {
         [$view, $data, $status, $headers] = array_slice($args, -4);
 
-        /** @psalm-suppress  MixedArgument */
-        $response = $this->respond()->html(
-            $this->renderer->render($view, $data),
-            $status
-        );
+        Assert::stringNotEmpty($view);
+        Assert::integer($status);
+        Assert::isArray($data);
+        Assert::isArray($headers);
+
+        $response = $this->respond()->view($view, $data);
 
         /**
          * @var array<string,string> $headers

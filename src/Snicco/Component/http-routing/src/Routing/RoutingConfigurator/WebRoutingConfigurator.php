@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
 use Snicco\Component\HttpRouting\Controller\TemplateRenderer;
+use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
@@ -84,13 +85,13 @@ interface WebRoutingConfigurator extends RoutingConfigurator
     ): Route;
 
     /**
-     * @param string $view
-     * The template identifier. Can be an absolute path or if supported, just the file name.
+     * This method will create an internal route that will return an instance of {@see ViewResponse}
+     * Its the users' responsibility when and where this response is transformed into an actual response with content.
      *
      * @param array<string,scalar> $data
      * @param array<string,string> $headers
      *
-     * @see \Snicco\Component\HttpRouting\Renderer\TemplateRenderer::render()
+     * @see ViewResponse
      */
     public function view(string $path, string $view, array $data = [], int $status = 200, array $headers = []): Route;
 
