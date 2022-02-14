@@ -12,7 +12,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Responsable;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
+use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
@@ -33,13 +33,13 @@ class ResponseFactoryTest extends TestCase
 
     private ResponseFactory $factory;
     private string $app_domain;
-    private RuntimeRouteCollection $routes;
+    private RouteCollection $routes;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->app_domain = 'foo.com';
-        $this->routes = new RuntimeRouteCollection([]);
+        $this->routes = new RouteCollection([]);
         $this->factory = $this->createResponseFactory(
             $this->createUrlGenerator(
                 UrlGenerationContext::forConsole($this->app_domain),
@@ -240,7 +240,7 @@ class ResponseFactoryTest extends TestCase
     {
         $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
 
-        $routes = new RuntimeRouteCollection([$home_route]);
+        $routes = new RouteCollection([$home_route]);
 
         $factory = $this->createResponseFactory(
             $this->createUrlGenerator(null, $routes)
@@ -259,7 +259,7 @@ class ResponseFactoryTest extends TestCase
     {
         $route = Route::create('/foo/{param}', Route::DELEGATE, 'r1');
 
-        $routes = new RuntimeRouteCollection([$route]);
+        $routes = new RouteCollection([$route]);
 
         $factory = $this->createResponseFactory(
             $this->createUrlGenerator(null, $routes)

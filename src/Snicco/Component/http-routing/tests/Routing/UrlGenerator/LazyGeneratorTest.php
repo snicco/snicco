@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\Route\RuntimeRouteCollection;
+use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\LazyGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
@@ -43,7 +43,7 @@ final class LazyGeneratorTest extends TestCase
             $this->constructed++;
 
             return new Generator(
-                new RuntimeRouteCollection([]),
+                new RouteCollection([]),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );
@@ -74,7 +74,7 @@ final class LazyGeneratorTest extends TestCase
             $route = Route::create('/foo', Route::DELEGATE, 'foo');
 
             return new Generator(
-                new RuntimeRouteCollection([$route]),
+                new RouteCollection([$route]),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );
@@ -99,7 +99,7 @@ final class LazyGeneratorTest extends TestCase
             $this->constructed++;
 
             return new Generator(
-                new RuntimeRouteCollection(),
+                new RouteCollection(),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );
@@ -121,7 +121,7 @@ final class LazyGeneratorTest extends TestCase
             $this->constructed++;
 
             return new Generator(
-                new RuntimeRouteCollection(),
+                new RouteCollection(),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );
@@ -143,7 +143,7 @@ final class LazyGeneratorTest extends TestCase
             $this->constructed++;
 
             return new Generator(
-                new RuntimeRouteCollection(),
+                new RouteCollection(),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );
@@ -165,7 +165,7 @@ final class LazyGeneratorTest extends TestCase
             $this->constructed++;
 
             return new Generator(
-                new RuntimeRouteCollection(),
+                new RouteCollection(),
                 UrlGenerationContext::forConsole('127.0.0.0'),
                 WPAdminArea::fromDefaults(),
             );
@@ -187,7 +187,7 @@ final class LazyGeneratorTest extends TestCase
             $this->constructed++;
 
             return new Generator(
-                new RuntimeRouteCollection(),
+                new RouteCollection(),
                 UrlGenerationContext::fromRequest($this->frontendRequest('/')->withHeader('referer', '/foo')),
                 WPAdminArea::fromDefaults(),
             );

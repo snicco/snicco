@@ -17,8 +17,8 @@ use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
-use Snicco\Component\HttpRouting\Routing\Route\CachedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\Route\SerializedRouteCollection;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
@@ -105,7 +105,7 @@ final class Routing
     public function routes(): Routes
     {
         if (!isset($this->routes)) {
-            $this->routes = new CachedRouteCollection($this->routeData()['route_collection']);
+            $this->routes = new SerializedRouteCollection($this->routeData()['route_collection']);
         }
         return $this->routes;
     }

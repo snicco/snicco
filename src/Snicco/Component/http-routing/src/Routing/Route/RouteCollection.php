@@ -15,7 +15,7 @@ use function count;
  * @interal
  * @psalm-immutable
  */
-final class RuntimeRouteCollection implements Routes
+final class RouteCollection implements Routes
 {
 
     /**
