@@ -84,10 +84,6 @@ final class RFC3986Encoder implements UrlEncoder
             PHP_QUERY_RFC3986
         );
 
-        if ($encoded_query === '') {
-            return '';
-        }
-
         $allowed_in_query = array_diff(
             self::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA,
             $this->query_special

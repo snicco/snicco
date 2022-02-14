@@ -6,9 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\Exception;
 
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 
-/**
- * @api
- */
 final class MethodNotAllowed extends HttpException
 {
 

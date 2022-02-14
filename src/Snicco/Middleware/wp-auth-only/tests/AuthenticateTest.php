@@ -33,7 +33,7 @@ class AuthenticateTest extends MiddlewareTestCase
 
         $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
-        $this->assertSame(1, $this->getReceivedRequest()->getAttribute('_user_id'));
+        $this->assertSame(1, $this->receivedRequest()->getAttribute('_user_id'));
     }
 
     /**

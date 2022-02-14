@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Middleware\ShareCookies;
 
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Component\HttpRouting\AbstractMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
-use Snicco\Component\HttpRouting\NextMiddleware;
+use Snicco\Component\HttpRouting\Middleware\Middleware;
+use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 /**
  * @api
  */
-final class ShareCookies extends AbstractMiddleware
+final class ShareCookies extends Middleware
 {
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface

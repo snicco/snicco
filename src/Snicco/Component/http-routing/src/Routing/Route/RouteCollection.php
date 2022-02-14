@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use ArrayIterator;
+use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Traversable;
-use Webmozart\Assert\Assert;
 
 use function count;
 
 /**
- * @internal
+ * @interal
+ * @psalm-immutable
  */
 final class RouteCollection implements Routes
 {
@@ -23,24 +24,15 @@ final class RouteCollection implements Routes
     private array $routes = [];
 
     /**
-     * @param array<Route> $routes
+     * @param Route[] $routes
      */
-    public function __construct(array $routes)
+    public function __construct(array $routes = [])
     {
         foreach ($routes as $route) {
-            Assert::isInstanceOf($route, Route::class);
-
             $name = $route->getName();
-
-            Assert::keyNotExists(
-                $this->routes,
-                $name,
-                sprintf(
-                    'Duplicate route with name [%s] while create [%s].',
-                    $name,
-                    RouteCollection::class
-                )
-            );
+            if (isset($this->routes[$name])) {
+                throw new InvalidArgumentException("Duplicate route name [$name].");
+            }
             $this->routes[$name] = $route;
         }
     }
@@ -67,4 +59,5 @@ final class RouteCollection implements Routes
     {
         return new ArrayIterator($this->toArray());
     }
+
 }

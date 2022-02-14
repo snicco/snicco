@@ -1,0 +1,34 @@
+{
+  "name": "sniccowp/content-negotiation-middleware",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/http-runner": "dev-master",
+    "sniccowp/psr7-error-handler": "dev-master",
+    "middlewares/negotiation": "^2.1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Middleware\\Negotiation\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Middleware\\Negotiation\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

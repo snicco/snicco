@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Http\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 /**
+ * @psalm-internal Snicco
  * @psalm-suppress InvalidExtendClass
  */
 final class RedirectResponse extends Response
@@ -14,9 +15,6 @@ final class RedirectResponse extends Response
 
     private bool $bypass_validation = false;
 
-    /**
-     * @api
-     */
     public function to(string $url): self
     {
         return $this->withHeader('Location', $url);

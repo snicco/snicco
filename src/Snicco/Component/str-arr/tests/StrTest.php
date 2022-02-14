@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Snicco\Component\StrArr\Tests;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\StrArr\Str;
 
 use function random_int;
@@ -38,7 +39,7 @@ final class StrTest extends TestCase
         $this->assertSame('ГДЖ', Str::substr('БГДЖИЛЁ', 1, 3));
         $this->assertSame('БГДЖ', Str::substr('БГДЖИЛЁ', 0, 4));
         $this->assertSame('Ё', Str::substr('БГДЖИЛЁ', -1, 1));
-        $this->assertEmpty(Str::substr('Б', 2));
+        $this->assertSame('', Str::substr('Б', 2));
     }
 
     /**
@@ -332,24 +333,24 @@ final class StrTest extends TestCase
     public function test_is(): void
     {
         $this->assertTrue(Str::is('/', '/'));
-        $this->assertFalse(Str::is('/', ' /'));
-        $this->assertFalse(Str::is('/', '/a'));
-        $this->assertTrue(Str::is('foo/*', 'foo/bar/baz'));
+        $this->assertFalse(Str::is(' /', '/'));
+        $this->assertFalse(Str::is('/a', '/'));
+        $this->assertTrue(Str::is('foo/bar/baz', 'foo/*'));
 
-        $this->assertTrue(Str::is('*@*', 'App\Class@method'));
-        $this->assertTrue(Str::is('*@*', 'app\Class@'));
-        $this->assertTrue(Str::is('*@*', '@method'));
+        $this->assertTrue(Str::is('App\Class@method', '*@*'));
+        $this->assertTrue(Str::is('app\Class@', '*@*'));
+        $this->assertTrue(Str::is('@method', '*@*'));
 
         // is case-sensitive
-        $this->assertFalse(Str::is('*BAZ*', 'foo/bar/baz'));
-        $this->assertFalse(Str::is('*FOO*', 'foo/bar/baz'));
-        $this->assertFalse(Str::is('A', 'a'));
+        $this->assertFalse(Str::is('foo/bar/baz', '*BAZ*'));
+        $this->assertFalse(Str::is('foo/bar/baz', '*FOO*'));
+        $this->assertFalse(Str::is('a', 'A'));
 
-        $this->assertTrue(Str::is('*/foo', 'blah/baz/foo'));
+        $this->assertTrue(Str::is('blah/baz/foo', '*/foo'));
 
         // mb
-        $this->assertTrue(Str::is('Dü*', 'Düsseldorf'));
-        $this->assertFalse(Str::is('Dü*', 'Dusseldorf'));
+        $this->assertTrue(Str::is('Düsseldorf', 'Dü*'));
+        $this->assertFalse(Str::is('Dusseldorf', 'Dü*'));
     }
 
     public function test_replaceFirst(): void
@@ -366,5 +367,34 @@ final class StrTest extends TestCase
         $this->assertSame('Jxxxnköping Malmö', Str::replaceFirst('ö', 'xxx', 'Jönköping Malmö'));
         $this->assertSame('Jönköping Malmö', Str::replaceFirst('', 'yyy', 'Jönköping Malmö'));
     }
+
+    /**
+     * @test
+     */
+    public function test_pregReplace(): void
+    {
+        $str = '.....foo.....';
+
+        $this->assertSame('foo', Str::pregReplace($str, '/^\.+|\.+$/', ''));
+
+        $this->assertSame('Malmo', Str::pregReplace('Malmööö', '/[ö].+/', 'o'));
+        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o',));
+    }
+
+    /**
+     * @test
+     */
+    public function test_pregReplace_error_for_malformed_utf8(): void
+    {
+        try {
+            Str::pregReplace("0123456789\xFF", '/\d/', 'x');
+            $this->fail('No exception thrown for bad regex.');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString('preg_replace failed', $e->getMessage());
+            $this->assertStringContainsString('Pattern: [/\d/]', $e->getMessage());
+            $this->assertStringContainsString("Subject: [0123456789\xFF]", $e->getMessage());
+        }
+    }
+
 
 }

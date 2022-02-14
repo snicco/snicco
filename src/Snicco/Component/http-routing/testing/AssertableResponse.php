@@ -7,7 +7,6 @@ namespace Snicco\Component\HttpRouting\Testing;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
-use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 
 use function array_filter;
@@ -15,6 +14,7 @@ use function array_values;
 use function count;
 use function get_class;
 use function json_encode;
+use function ltrim;
 use function sprintf;
 use function strip_tags;
 use function trim;
@@ -238,10 +238,10 @@ final class AssertableResponse
         }
 
         $location = $this->psr_response->getHeaderLine('location');
-        $path = UrlPath::fromString($path);
+        $path = '/' . ltrim($path, '/');
 
         PHPUnit::assertEquals(
-            $path->asString(),
+            $path,
             parse_url($location, PHP_URL_PATH),
             "Redirect path [$path] does not match location header [$location]."
         );

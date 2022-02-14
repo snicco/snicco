@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
+use BadMethodCallException;
+use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Component\HttpRouting\Exception\RequestHasNoType;
+use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Routing\Route\Route;
-use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
+use stdClass;
 
 class RequestTest extends TestCase
 {
@@ -20,6 +22,14 @@ class RequestTest extends TestCase
     private ServerRequestInterface $psr_request;
     use CreatesPsrRequests;
     use CreateTestPsr17Factories;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->request = $this->frontendRequest('/foo');
+        $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
+    }
 
     public function testIsImmutable(): void
     {
@@ -52,27 +62,9 @@ class RequestTest extends TestCase
 
         $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/', $request->path());
-    }
 
-    public function testGetFullPath(): void
-    {
-        $request = $this->frontendRequest('/foo/bar');
-        $this->assertSame('/foo/bar', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('/foo/bar/');
-        $this->assertSame('/foo/bar/', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('/');
-        $this->assertSame('/', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz');
-        $this->assertSame('/foo/bar?baz=biz', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('https://foo.com/foo/bar/?baz=biz');
-        $this->assertSame('/foo/bar/?baz=biz', $request->requestTargetWithFragment());
-
-        $request = $this->frontendRequest('https://foo.com/foo/bar?baz=biz#section');
-        $this->assertSame('/foo/bar?baz=biz#section', $request->requestTargetWithFragment());
+        $request = Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', ''));
+        $this->assertSame('/', $request->path());
     }
 
     public function testGetUrl(): void
@@ -121,19 +113,6 @@ class RequestTest extends TestCase
 
         $request = $this->request->withCookieParams(['foo' => ['bar', 'baz']]);
         $this->assertSame('bar', $request->cookie('foo'));
-    }
-
-    public function testRouteIs(): void
-    {
-        $route = Route::create('/foo', Route::DELEGATE, 'foobar', ['GET']);
-
-        $request = $this->request->withRoutingResult(RoutingResult::match($route));
-
-        $this->assertFalse($request->routeIs('bar'));
-        $this->assertTrue($request->routeIs('foobar'));
-        $this->assertFalse($request->routeIs('foo'));
-
-        $this->assertTrue($request->routeIs('foo*'));
     }
 
     public function testFullUrlIs(): void
@@ -193,52 +172,28 @@ class RequestTest extends TestCase
 
     /**
      * @test
+     * @psalm-suppress InvalidArgument
      */
-    public function test_isFrontend_throws_exception_if_no_type_is_set(): void
+    public function test_exception_if_constructed_with_invalid_type(): void
     {
-        $request = new Request($this->psr_request);
-        $this->expectExceptionMessage("The request's type attribute");
-        $request->isToFrontend();
+        $this->expectException(InvalidArgumentException::class);
+        new Request($this->psr_request, 'foo');
     }
 
     /**
      * @test
      */
-    public function test_isFrontend_throws_exception_if_type_is_invalid(): void
+    public function test_exception_if_decorating_a_request_with_a_different_type(): void
     {
-        $request = (new Request($this->psr_request))
-            ->withAttribute(Request::TYPE_ATTRIBUTE, 'foobar');
+        $request = new Request($this->psr_request, Request::TYPE_FRONTEND);
 
-        try {
-            $request->isToFrontend();
-            $this->fail('Excepted expected for call to $request->isFrontend()');
-        } catch (RequestHasNoType $e) {
-            $this->assertSame(
-                "The request's type attribute has to be one of [1,2,3].\nGot [string].",
-                $e->getMessage()
-            );
-        }
-    }
+        $decorated = new Request($request, Request::TYPE_FRONTEND);
+        $this->assertTrue($decorated->isToFrontend());
 
-    /**
-     * @test
-     */
-    public function test_isFrontend_throws_if_type_is_invalid_integer_range(): void
-    {
-        $request = new Request(
-            $this->psr_request
-                ->withAttribute(Request::TYPE_ATTRIBUTE, 4)
-        );
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Cant change request type from [frontend] to [admin].');
 
-        try {
-            $request->isToFrontend();
-            $this->fail('Excepted expected for call to $request->isFrontend()');
-        } catch (RequestHasNoType $e) {
-            $this->assertSame(
-                "The request's type attribute has to be one of [1,2,3].\nGot [4].",
-                $e->getMessage()
-            );
-        }
+        new Request($request, Request::TYPE_ADMIN_AREA);
     }
 
     /**
@@ -248,16 +203,11 @@ class RequestTest extends TestCase
     {
         $request = new Request(
             $this->psr_request
-                ->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_ADMIN_AREA)
         );
 
-        $this->assertFalse($request->isToFrontend());
-        $this->assertTrue($request->isToAdminArea());
-        $this->assertFalse($request->isToApiEndpoint());
-
-        $request = $this->request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND);
-
         $this->assertTrue($request->isToFrontend());
+        $this->assertFalse($request->isToAdminArea());
+        $this->assertFalse($request->isToApiEndpoint());
     }
 
     /**
@@ -265,25 +215,7 @@ class RequestTest extends TestCase
      */
     public function test_isAdminArea(): void
     {
-        try {
-            $request = new Request($this->psr_request);
-            $request->isToAdminArea();
-            $this->fail('Expected exception for isAdminArea().');
-        } catch (RequestHasNoType $e) {
-            $this->assertStringContainsString('type attribute', $e->getMessage());
-        }
-
-        $request = new Request(
-            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND)
-        );
-
-        $this->assertTrue($request->isToFrontend());
-        $this->assertFalse($request->isToApiEndpoint());
-        $this->assertFalse($request->isToAdminArea());
-
-        $request = new Request(
-            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_ADMIN_AREA)
-        );
+        $request = new Request($this->psr_request, Request::TYPE_ADMIN_AREA);
 
         $this->assertFalse($request->isToFrontend());
         $this->assertFalse($request->isToApiEndpoint());
@@ -295,25 +227,7 @@ class RequestTest extends TestCase
      */
     public function test_isApiEndpoint(): void
     {
-        try {
-            $request = new Request($this->psr_request);
-            $request->isToApiEndpoint();
-            $this->fail('Expected exception for isApiEndpoint().');
-        } catch (RequestHasNoType $e) {
-            $this->assertStringContainsString('type attribute', $e->getMessage());
-        }
-
-        $request = new Request(
-            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_FRONTEND)
-        );
-
-        $this->assertTrue($request->isToFrontend());
-        $this->assertFalse($request->isToApiEndpoint());
-        $this->assertFalse($request->isToAdminArea());
-
-        $request = new Request(
-            $this->psr_request->withAttribute(Request::TYPE_ATTRIBUTE, Request::TYPE_API)
-        );
+        $request = new Request($this->psr_request, Request::TYPE_API);
 
         $this->assertFalse($request->isToFrontend());
         $this->assertFalse($request->isToAdminArea());
@@ -346,14 +260,210 @@ class RequestTest extends TestCase
 
         $this->assertSame('/foo', $request->path());
         $this->assertSame('GET', $request->getMethod());
+        $this->assertTrue($request->isToFrontend());
+
+        $request = Request::fromPsr(
+            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            Request::TYPE_ADMIN_AREA
+        );
+
+        $this->assertTrue($request->isToAdminArea());
     }
 
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function test_from_psr_does_not_change_type(): void
     {
-        parent::setUp();
+        $request = Request::fromPsr(
+            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            Request::TYPE_ADMIN_AREA
+        );
 
-        $this->request = $this->frontendRequest('/foo');
-        $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
+        $new = Request::fromPsr($request, Request::TYPE_FRONTEND);
+
+        $this->assertTrue($new->isToAdminArea());
+        $this->assertFalse($new->isToFrontend());
+        $this->assertTrue($request->isToAdminArea());
+    }
+
+    /**
+     * @test
+     */
+    public function test_type_stays_the_same_for_psr_methods(): void
+    {
+        $request = new Request($this->psr_request, Request::TYPE_ADMIN_AREA);
+
+        $this->assertTrue($request->isToAdminArea());
+
+        $request = $request->withAttribute('foo', 'bar');
+
+        $this->assertSame('bar', $request->getAttribute('foo'));
+        $this->assertTrue($request->isToAdminArea());
+    }
+
+    /**
+     * @test
+     */
+    public function test_userAgent(): void
+    {
+        $this->assertNull($this->request->userAgent());
+
+        $request = $this->request->withHeader('user-agent', '');
+        $this->assertNull($request->userAgent());
+
+        $request = $this->request->withHeader('user-agent', 'foobar');
+        $this->assertSame('foobar', $request->userAgent());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getRequestTarget(): void
+    {
+        $request = $this->frontendRequest('https://foobar.com/baz?biz=boo#section1');
+
+        $this->assertSame('/baz?biz=boo', $request->getRequestTarget());
+
+        $request = $request->withRequestTarget('/baz');
+        $this->assertSame('/baz', $request->getRequestTarget());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getHeader(): void
+    {
+        $request = $this->request->withHeader('foo', 'bar');
+
+        $this->assertSame(['bar'], $request->getHeader('foo'));
+        $this->assertSame([], $request->getHeader('bogus'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_protocol_version(): void
+    {
+        $this->assertSame('1.1', $this->request->getProtocolVersion());
+        $request = $this->request->withProtocolVersion('1.0');
+        $this->assertSame('1.0', $request->getProtocolVersion());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getHeaders(): void
+    {
+        $request = $this->request
+            ->withAddedHeader('foo', 'bar1')
+            ->withAddedHeader('foo', 'bar2')
+            ->withAddedHeader('baz', 'biz');
+
+        $this->assertSame([
+            // default headers, header case is preserved
+            'Host' => [
+                '127.0.0.1'
+            ],
+            'foo' => [
+                'bar1',
+                'bar2'
+            ],
+            'baz' => [
+                'biz'
+            ]
+        ], $request->getHeaders());
+    }
+
+    /**
+     * @test
+     */
+    public function test_hasHeader(): void
+    {
+        $request = $this->request->withHeader('foo', 'bar');
+        $this->assertTrue($request->hasHeader('foo'));
+        $this->assertFalse($request->hasHeader('bogus'));
+        $request = $request->withoutHeader('foo');
+        $this->assertFalse($request->hasHeader('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_getBody(): void
+    {
+        $this->assertSame('', (string)$this->request->getBody());
+
+        $body = $this->psrStreamFactory()->createStream('foo');
+        $request = $this->request->withBody($body);
+
+        $this->assertSame('foo', (string)$request->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getUploadedFiles(): void
+    {
+        $this->assertSame([], $this->request->getUploadedFiles());
+
+        $stream = $this->psrStreamFactory()->createStream('foo');
+        $request = $this->request->withUploadedFiles([
+            $file = $this->psrUploadedFileFactory()->createUploadedFile($stream)
+        ]);
+
+        $this->assertSame([
+            $file
+        ], $request->getUploadedFiles());
+    }
+
+    /**
+     * @test
+     */
+    public function test_getAttributes(): void
+    {
+        $this->assertSame([], $this->request->getAttributes());
+        $request = $this->request
+            ->withAttribute('foo', 'bar')
+            ->withAttribute('baz', 'biz');
+
+        $this->assertSame([
+            'foo' => 'bar',
+            'baz' => 'biz'
+        ], $request->getAttributes());
+
+        $request = $request->withoutAttribute('foo');
+
+        $this->assertSame([
+            'baz' => 'biz'
+        ], $request->getAttributes());
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_throws_exception_for_input_source_not_being_an_array(): void
+    {
+        $std = new stdClass();
+        $std->foo = 'bar';
+
+        $request = $this->frontendRequest('', [], 'POST')->withParsedBody($std)->withMethod('POST');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('inputSource');
+
+        $request->boolean('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function test_magic_set_throws_exception(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Cannot set undefined property [foo]');
+
+        $this->request->foo = 'bar';
     }
 
 }

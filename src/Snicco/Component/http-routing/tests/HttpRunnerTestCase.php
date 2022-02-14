@@ -4,136 +4,121 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests;
 
-use LogicException;
+use Closure;
 use PHPUnit\Framework\TestCase;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\Component\HttpRouting\Http\FileTemplateRenderer;
-use Snicco\Component\HttpRouting\Http\MethodOverride;
-use Snicco\Component\HttpRouting\Http\NegotiateContent;
+use Pimple\Container;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use RuntimeException;
+use Snicco\Component\HttpRouting\Controller\DelegateResponseController;
+use Snicco\Component\HttpRouting\Controller\RedirectController;
+use Snicco\Component\HttpRouting\Controller\ViewController;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\ResponsePreparation;
-use Snicco\Component\HttpRouting\HttpKernel;
-use Snicco\Component\HttpRouting\KernelMiddleware;
-use Snicco\Component\HttpRouting\MiddlewarePipeline;
-use Snicco\Component\HttpRouting\MiddlewareStack;
-use Snicco\Component\HttpRouting\PrepareResponse;
-use Snicco\Component\HttpRouting\RouteRunner;
-use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
+use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
+use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
+use Snicco\Component\HttpRouting\Middleware\RouteRunner;
+use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
+use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
-use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
-use Snicco\Component\HttpRouting\Routing\Controller\RedirectController;
-use Snicco\Component\HttpRouting\Routing\Controller\ViewController;
-use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\Router;
+use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
+use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\NullLoader;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
+use Snicco\Component\HttpRouting\Routing\Routing;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
-use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfiguratorUsingRouter;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\RFC3986Encoder;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGeneratorInterface;
-use Snicco\Component\HttpRouting\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
+use Snicco\Component\HttpRouting\Tests\fixtures\Controller\TestViewController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsrContainer;
-use Snicco\Component\Kernel\DIContainer;
-use Snicco\Component\Kernel\ValueObject\PHPCacheFile;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+
+use function array_merge;
+use function call_user_func;
 
 /**
  * @interal
  */
-class HttpRunnerTestCase extends TestCase
+abstract class HttpRunnerTestCase extends TestCase
 {
 
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
-    use CreateTestPsrContainer;
     use CreateHttpErrorHandler;
 
-    const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
+    public const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
 
     protected string $app_domain = 'foobar.com';
     protected string $routes_dir;
-    protected DIContainer $container;
-    protected UrlGeneratorInterface $generator;
+    protected Container $pimple;
+    protected ContainerInterface $psr_container;
+    private Routing $routing;
 
-    private Router $router;
-    private HttpKernel $kernel;
-    private AdminArea $admin_area;
-    private UrlGenerationContext $request_context;
-    private MiddlewareStack $middleware_stack;
-    private RoutingConfiguratorUsingRouter $routing_configurator;
-    private HttpErrorHandlerInterface $error_handler;
+    /**
+     * @var list<class-string<MiddlewareInterface>>
+     */
+    private array $middleware_priority = [];
+
+    /**
+     * @var array<string,string[]>
+     */
+    private array $middleware_groups = [];
+
+    /**
+     * @var array<string,class-string<MiddlewareInterface>>
+     */
+    private array $middleware_aliases = [
+        'foo' => FooMiddleware::class,
+        'bar' => BarMiddleware::class,
+        'baz' => BazMiddleware::class,
+        'foobar' => FoobarMiddleware::class,
+    ];
+
+    /**
+     * @var array<
+     *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
+     *     RoutingConfigurator::ADMIN_MIDDLEWARE |
+     *     RoutingConfigurator::API_MIDDLEWARE |
+     *     RoutingConfigurator::GLOBAL_MIDDLEWARE
+     * > $group_names
+     */
+    private array $always_run = [];
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->createNeededCollaborators();
-        $this->container[RoutingTestController::class] = new RoutingTestController();
+
+        $this->pimple = new Container();
+        $this->psr_container = new \Pimple\Psr11\Container($this->pimple);
+
+        // internal controllers
+        $this->pimple[DelegateResponseController::class] = function (): DelegateResponseController {
+            return new DelegateResponseController();
+        };
+        $this->pimple[ViewController::class] = function (): ViewController {
+            return new ViewController(new FileTemplateRenderer());
+        };
+        $this->pimple[RedirectController::class] = function (): RedirectController {
+            return new RedirectController();
+        };
+
+        // TestController
+        $controller = new RoutingTestController();
+        $this->pimple[RoutingTestController::class] = fn(): RoutingTestController => $controller;
+
         $this->routes_dir = __DIR__ . '/fixtures/routes';
-    }
-
-    final protected function refreshRouter(
-        PHPCacheFile $cache_file = null,
-        UrlGenerationContext $context = null,
-        array $config = []
-    ): void {
-        unset($this->container[ResponseFactory::class]);
-        unset($this->container[UrlGeneratorInterface::class]);
-        unset($this->container[Redirector::class]);
-
-        if (is_null($context)) {
-            $context = $this->request_context ?? UrlGenerationContext::forConsole(
-                    $this->app_domain,
-                );
-        }
-
-        $this->request_context = $context;
-
-        $this->admin_area ??= WPAdminArea::fromDefaults();
-
-        $this->router = new Router(
-            new RouteConditionFactory($this->container),
-            function (Routes $routes) use ($context) {
-                return new UrlGenerator(
-                    $routes,
-                    $context,
-                    $this->admin_area,
-                    new RFC3986Encoder()
-                );
-            },
-            $this->admin_area,
-            $cache_file
-        );
-
-        $this->routing_configurator = new RoutingConfiguratorUsingRouter(
-            $this->router,
-            $this->admin_area->urlPrefix(),
-            $config
-        );
-
-        $this->generator = $this->router;
-        $this->container->instance(UrlGeneratorInterface::class, $this->router);
-        $rf = $this->createResponseFactory($this->generator);
-        $this->container->instance(ResponseFactory::class, $rf);
-        $this->container->instance(Redirector::class, $rf);
-        $this->container->instance(StreamFactoryInterface::class, $rf);
-
-        $this->kernel = $this->createKernel();
     }
 
     final protected function assertEmptyBody(Request $request): void
@@ -143,7 +128,7 @@ class HttpRunnerTestCase extends TestCase
 
     final protected function assertResponseBody(string $expected, Request $request): void
     {
-        $response = $this->runKernel($request);
+        $response = $this->runNewPipeline($request);
         $this->assertSame(
             $expected,
             $b = $response->body(),
@@ -151,22 +136,32 @@ class HttpRunnerTestCase extends TestCase
         );
     }
 
-    final protected function runKernel(Request $request): AssertableResponse
+    final protected function runNewPipeline(Request $request): AssertableResponse
     {
-        $this->withMiddlewareAlias($this->defaultMiddlewareAliases());
-
-        $response = $this->kernel->handle($request);
+        if (!isset($this->routing)) {
+            $this->routing = $this->newRoutingFacade();
+        }
+        $pipeline = $this->newPipeline();
+        $response = $pipeline->send($request)->then(function () {
+            throw new RuntimeException('Middleware pipeline exhausted.');
+        });
         return new AssertableResponse($response);
     }
 
+    /**
+     * @param array<string,class-string<MiddlewareInterface>> $aliases
+     */
     final protected function withMiddlewareAlias(array $aliases): void
     {
-        $this->middleware_stack->middlewareAliases($aliases);
+        $this->middleware_aliases = array_merge($this->middleware_aliases, $aliases);
     }
 
+    /**
+     * @param string[] $middleware
+     */
     final protected function withGlobalMiddleware(array $middleware): void
     {
-        $this->withMiddlewareGroups([RoutingConfigurator::GLOBAL_MIDDLEWARE => $middleware]);
+        $this->middleware_groups[RoutingConfigurator::GLOBAL_MIDDLEWARE] = $middleware;
     }
 
     /**
@@ -174,128 +169,170 @@ class HttpRunnerTestCase extends TestCase
      */
     final protected function withMiddlewareGroups(array $middlewares): void
     {
-        foreach ($middlewares as $name => $middleware) {
-            $this->middleware_stack->withMiddlewareGroup($name, $middleware);
-        }
+        $this->middleware_groups = array_merge($this->middleware_groups, $middlewares);
     }
 
-    final protected function withNewMiddlewareStack(MiddlewareStack $middleware_stack): void
+    /**
+     * @param list<class-string<MiddlewareInterface>> $priority
+     */
+    final protected function withMiddlewarePriority(array $priority): void
     {
-        $this->middleware_stack = $middleware_stack;
-        $this->refreshRouter();
+        $this->middleware_priority = $priority;
     }
 
-    final protected function withMiddlewarePriority(array $array): void
+    final protected function generator(UrlGenerationContext $context = null): UrlGenerator
     {
-        $this->middleware_stack->middlewarePriority($array);
+        $this->routing = $this->newRoutingFacade(null, null, $context);
+        return $this->routing->urlGenerator();
     }
 
-    final protected function routeConfigurator(): WebRoutingConfigurator
-    {
-        if (!$this->routing_configurator instanceof WebRoutingConfigurator) {
-            throw new LogicException('$routing_configurator does not implement WebRoutingConfigurator');
-        }
-        return $this->routing_configurator;
-    }
+    /**
+     * @param Closure(WebRoutingConfigurator) $loader
+     */
+    final protected function webRouting(
+        Closure $loader,
+        ?RouteCache $cache = null,
+        ?UrlGenerationContext $context = null
+    ): Routing {
+        $on_the_fly_loader = new class($loader) implements RouteLoader {
 
-    final protected function adminRouteConfigurator(): AdminRoutingConfigurator
-    {
-        if (!$this->routing_configurator instanceof AdminRoutingConfigurator) {
-            throw new LogicException('$routing_configurator does not implement AdminRoutingConfigurator');
-        }
-        return $this->routing_configurator;
-    }
+            private Closure $loader;
 
-    final protected function refreshUrlGenerator(UrlGenerationContext $context = null): UrlGeneratorInterface
-    {
-        $this->refreshRouter(null, $context);
-        return $this->generator;
-    }
-
-    protected function baseUrl(): string
-    {
-        return 'https://' . $this->app_domain;
-    }
-
-    protected function adminArea(): AdminArea
-    {
-        return $this->admin_area;
-    }
-
-    protected function urlGenerator(): UrlGeneratorInterface
-    {
-        return $this->generator;
-    }
-
-    private function createNeededCollaborators(): void
-    {
-        $this->container = $this->createContainer();
-        $this->container->instance(DIContainer::class, $this->container);
-
-        $this->admin_area = WPAdminArea::fromDefaults();
-        $this->container[AdminArea::class] = $this->admin_area;
-
-        $this->error_handler = new NullErrorHandler();
-        $this->middleware_stack = new MiddlewareStack();
-
-        $this->refreshRouter();
-
-        // internal controllers
-        $this->container->instance(FallBackController::class, new FallBackController());
-        $this->container->instance(
-            ViewController::class,
-            new ViewController(new FileTemplateRenderer())
-        );
-        $this->container->instance(RedirectController::class, new RedirectController());
-    }
-
-    private function createKernel(): HttpKernel
-    {
-        return new HttpKernel(
-            $this->createKernelMiddleware(),
-            new MiddlewarePipeline(
-                $this->container,
-                $this->error_handler,
-            ),
-            new class implements EventDispatcherInterface {
-
-                public function dispatch(object $event): void
-                {
-                    //
-                }
-
+            public function __construct(Closure $loader)
+            {
+                $this->loader = $loader;
             }
-        );
+
+            public function loadWebRoutes(WebRoutingConfigurator $configurator): void
+            {
+                call_user_func($this->loader, $configurator);
+            }
+
+            public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
+            {
+                //
+            }
+        };
+
+        return $this->newRoutingFacade($on_the_fly_loader, $cache, $context);
     }
 
-    private function createKernelMiddleware(): KernelMiddleware
+    /**
+     * @param Closure(AdminRoutingConfigurator) $loader
+     */
+    final protected function adminRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
     {
-        return new KernelMiddleware(
-            new NegotiateContent(['en']),
-            new PrepareResponse(new ResponsePreparation($this->psrStreamFactory())),
-            new MethodOverride(),
-            new RoutingMiddleware(
-                $this->router,
-            ),
-            new RouteRunner(
+        $on_the_fly_loader = new class($loader) implements RouteLoader {
+
+            private Closure $loader;
+
+            public function __construct(Closure $loader)
+            {
+                $this->loader = $loader;
+            }
+
+            public function loadWebRoutes(WebRoutingConfigurator $configurator): void
+            {
+                //
+            }
+
+            public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
+            {
+                call_user_func($this->loader, $configurator);
+            }
+        };
+
+        return $this->newRoutingFacade($on_the_fly_loader, null, $context);
+    }
+
+    /**
+     * @param array<
+     *     RoutingConfigurator::FRONTEND_MIDDLEWARE |
+     *     RoutingConfigurator::ADMIN_MIDDLEWARE |
+     *     RoutingConfigurator::API_MIDDLEWARE |
+     *     RoutingConfigurator::GLOBAL_MIDDLEWARE
+     * > $group_names
+     */
+    protected function alwaysRun(array $group_names): void
+    {
+        $this->always_run = $group_names;
+    }
+
+    protected function newRoutingFacade(
+        RouteLoader $loader = null,
+        ?RouteCache $cache = null,
+        UrlGenerationContext $context = null
+    ): Routing {
+        $routing = new Routing(
+            $this->psr_container,
+            $context ?: UrlGenerationContext::forConsole($this->app_domain),
+            $loader ?: $this->nullLoader(),
+            $cache ?: new NullCache(),
+            WPAdminArea::fromDefaults(),
+            new RFC3986Encoder(),
+        );
+
+        $this->pimple[UrlGenerator::class] = $routing->urlGenerator();
+        $rf = $this->createResponseFactory($routing->urlGenerator());
+        $this->pimple[ResponseFactory::class] = $rf;
+        $this->pimple[Redirector::class] = $rf;
+
+        // Fetch one service from the routing facade in order to trigger Exceptions.
+        // If we don't do this we need to fetch an extra service in every test case where we assert Exceptions
+        // since everything is lazy by default
+        $routing->urlMatcher();
+        $this->routing = $routing;
+
+        return $routing;
+    }
+
+    private function newPipeline(): MiddlewarePipeline
+    {
+        $error_handler = new NullErrorHandler();
+
+        unset($this->pimple[RoutingMiddleware::class]);
+        unset($this->pimple[RouteRunner::class]);
+
+        $this->pimple[RoutingMiddleware::class] = function (): RoutingMiddleware {
+            return new RoutingMiddleware($this->routing->urlMatcher());
+        };
+
+        $this->pimple[RouteRunner::class] = function () use ($error_handler): RouteRunner {
+            return new RouteRunner(
                 new MiddlewarePipeline(
-                    $this->container,
-                    $this->error_handler,
+                    $this->psr_container,
+                    $error_handler,
                 ),
-                $this->middleware_stack,
-                $this->container,
-            )
-        );
+                new MiddlewareResolver(
+                    $this->always_run,
+                    $this->middleware_aliases,
+                    $this->middleware_groups,
+                    $this->middleware_priority
+                ),
+                $this->psr_container
+            );
+        };
+
+        return (new MiddlewarePipeline($this->psr_container, $error_handler))->through([
+            RoutingMiddleware::class,
+            RouteRunner::class,
+        ]);
     }
 
-    private function defaultMiddlewareAliases(): array
+    private function nullLoader(): RouteLoader
     {
-        return [
-            'foo' => FooMiddleware::class,
-            'bar' => BarMiddleware::class,
-            'baz' => BazMiddleware::class,
-            'foobar' => FoobarMiddleware::class,
-        ];
+        return new class implements RouteLoader {
+
+            public function loadWebRoutes(WebRoutingConfigurator $configurator): void
+            {
+                //
+            }
+
+            public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
+            {
+                //
+            }
+        };
     }
 
 }

@@ -10,7 +10,6 @@ use Snicco\Component\StrArr\Str;
 
 use function count;
 use function preg_match;
-use function preg_match_all;
 use function preg_quote;
 use function preg_replace_callback;
 use function rtrim;
@@ -20,12 +19,8 @@ use function str_replace;
 use function strlen;
 
 /**
- * Converts our custom route pattern syntax to something that FastRoute understands.
- * We use our own syntax because
- * a) we are independent of FastRoute.
- * b) FastRoute is rather verbose with optional segments.
- *
  * @interal
+ * @psalm-immutable
  */
 final class FastRouteSyntaxConverter
 {
@@ -58,6 +53,8 @@ final class FastRouteSyntaxConverter
     }
 
     /**
+     * This method makes sure that /foo/{bar?}/{baz?} becomes /foo[/{bar}[/{baz}]]
+     *
      * @param string[] $optional_segment_names
      */
     private function convertOptionalSegments(
@@ -73,29 +70,20 @@ final class FastRouteSyntaxConverter
             $replace_with = $match_only_trailing ? '/[{' . $name . '}]' : '[/{' . $name . '}]';
 
             $url_pattern = str_replace('/{' . $name . '?}', $replace_with, $url_pattern);
-        }
 
-        while ($this->hasMultipleOptionalSegments(rtrim($url_pattern, '/'))) {
-            $this->combineOptionalSegments($url_pattern);
+            $url_pattern = $this->mergeOptionalSegments($url_pattern);
         }
 
         return $url_pattern;
     }
 
-    private function hasMultipleOptionalSegments(string $url_pattern): bool
-    {
-        $count = preg_match_all('/(?<=\[).*?(?=])/', $url_pattern, $matches);
-
-        return $count > 1;
-    }
-
-    private function combineOptionalSegments(string &$url_pattern): void
+    private function mergeOptionalSegments(string $url_pattern): string
     {
         preg_match('/(\[(.*?)])/', $url_pattern, $matches);
 
         if (!isset($matches[0])) {
             // @codeCoverageIgnoreStart
-            return;
+            return $url_pattern;
             // @codeCoverageIgnoreEnd
         }
 
@@ -104,7 +92,7 @@ final class FastRouteSyntaxConverter
         $before = Str::beforeFirst($url_pattern, $first);
         $after = Str::afterLast($url_pattern, $first);
 
-        $url_pattern = $before . rtrim($first, ']') . rtrim($after, '/') . ']';
+        return $before . rtrim($first, ']') . rtrim($after, '/') . ']';
     }
 
     private function addCustomRegexToSegments(string $param_name, string $pattern, string $url): string
@@ -115,13 +103,17 @@ final class FastRouteSyntaxConverter
 
         $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
             if (!isset($match[0])) {
+                // @codeCoverageIgnoreStart
                 return $regex;
+                // @codeCoverageIgnoreEnd
             }
             return $match[0] . ':' . $regex;
         }, $url, 1);
 
         if (null == $url) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("preg_replace_callback returned an error for url [$url].");
+            // @codeCoverageIgnoreEnd
         }
 
         return rtrim($url, '/');

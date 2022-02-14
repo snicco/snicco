@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
-use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
@@ -194,7 +194,7 @@ class InteractsWithInputTest extends TestCase
 
         $this->assertSame($stdClass, $request->getParsedBody());
 
-        $this->expectException(BadMethodCallException::class);
+        $this->expectException(RuntimeException::class);
         $request->post('foo');
     }
 

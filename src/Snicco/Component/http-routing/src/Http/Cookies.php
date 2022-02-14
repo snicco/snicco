@@ -10,7 +10,6 @@ use function is_string;
 use function urlencode;
 
 /**
- * @api
  * @psalm-immutable
  */
 final class Cookies
@@ -59,17 +58,17 @@ final class Cookies
             $header .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $properties['expires']);
         }
 
-        $header .= '; SameSite=' . $properties['samesite'];
+        $header .= '; SameSite=' . $properties['same_site'];
 
         if ($properties['secure']) {
             $header .= '; secure';
         }
 
-        if ($properties['hostonly']) {
+        if ($properties['host_only']) {
             $header .= '; HostOnly';
         }
 
-        if ($properties['httponly']) {
+        if ($properties['http_only']) {
             $header .= '; HttpOnly';
         }
 

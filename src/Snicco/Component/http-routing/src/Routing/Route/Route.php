@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Route;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\MiddlewareStack;
-use Snicco\Component\HttpRouting\Routing\Condition\AbstractRouteCondition;
+use Snicco\Component\HttpRouting\Controller\DelegateResponseController;
+use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Condition\ConditionBlueprint;
-use Snicco\Component\HttpRouting\Routing\Controller\FallBackController;
+use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
@@ -29,13 +29,13 @@ final class Route
 {
 
     /** @interal */
-    const DELEGATE = [FallBackController::class, 'delegate'];
+    public const DELEGATE = [DelegateResponseController::class, '__invoke'];
 
     /** @interal */
-    const FALLBACK_NAME = 'sniccowp_fallback_route';
+    public const FALLBACK_NAME = 'sniccowp_fallback_route';
 
     /** @interal */
-    const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
+    public const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
 
     /**
      * @var string[]
@@ -210,8 +210,8 @@ final class Route
     }
 
     /**
-     * @param class-string<AbstractRouteCondition>|'!' $condition
-     * @param mixed $args
+     * @param class-string<RouteCondition>|'!' $condition
+     * @param scalar $args
      */
     public function condition(string $condition, ...$args): Route
     {
@@ -238,8 +238,6 @@ final class Route
 
     /**
      * @param string|array<string> $middleware
-     *
-     * @todo Bad Middleware is currently only detected at when the route matches.
      */
     public function middleware($middleware): Route
     {
@@ -456,7 +454,7 @@ final class Route
 
     private function addMiddleware(string $m): void
     {
-        $middleware_id = Str::beforeFirst($m, MiddlewareStack::MIDDLEWARE_DELIMITER);
+        $middleware_id = Str::beforeFirst($m, MiddlewareResolver::MIDDLEWARE_DELIMITER);
         Assert::keyNotExists(
             $this->middleware,
             $middleware_id,
