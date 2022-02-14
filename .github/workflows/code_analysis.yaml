@@ -1,8 +1,10 @@
 name: Code Analysis
 
 on:
-  pull_request:
+  push:
     branches: master
+  pull_request:
+  workflow_dispatch:
 
 env:
   # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
