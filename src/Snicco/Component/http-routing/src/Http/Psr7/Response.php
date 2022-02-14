@@ -377,5 +377,4 @@ class Response implements ResponseInterface
         $new->psr7_response = $new_psr_response;
         return $new;
     }
-
 }
