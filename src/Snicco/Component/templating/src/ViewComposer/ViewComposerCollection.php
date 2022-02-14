@@ -111,7 +111,7 @@ final class ViewComposerCollection
 
         foreach ($this->composers as $composer) {
             foreach ($composer['views'] as $matches_for_view) {
-                if (Str::is($matches_for_view, $name)) {
+                if (Str::is($name, $matches_for_view)) {
                     $matching[] = $composer['handler'];
                 }
             }
