@@ -12,10 +12,11 @@ settings:
   colors: true
   disallow_test_output: true
   error_level: E_ALL
-  log_incomplete_skipped: false
-  report_useless_tests: false
+  log_incomplete_skipped: true
+  report_useless_tests: true
 
 coverage:
   enabled: true
   include:
     - src/*
+  show_uncovered: true

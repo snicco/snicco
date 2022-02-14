@@ -1,7 +1,6 @@
 name: Code Coverage
 
 on:
-  push:
   pull_request:
     branches: master
 
@@ -30,7 +29,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2
-          coverage: pcov
+          coverage: xdebug3
           ini-values: error_reporting=E_ALL
         env:
           fail-fast: true
@@ -42,17 +41,19 @@ jobs:
 
       - name: Run phpunit, testsuite component, middleware and bridge (=> testsuite unit)
         run: |
-          composer phpunit:component -- --coverage-clover component.xml
-          composer phpunit:middleware -- --coverage-clover middleware.xml
-          composer phpunit:bridge -- --coverage-clover bridge.xml
+          composer phpunit:all -- --coverage-clover coverage-phpunit.xml
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-phpunit.xml
+          path: coverage-phpunit.xml
 
       - name: Upload Code Coverage to Codecov
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f component.xml -Z -F component
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f middleware.xml -Z -F middleware
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f bridge.xml -Z -F bridge
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f coverage-phpunit.xml -Z
 
   wordpress_tests_coverage:
 
@@ -90,7 +91,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2, wp-cli
-          coverage: pcov
+          coverage: xdebug3
           ini-values: error_reporting=E_ALL
         env:
           fail-fast: true
@@ -116,12 +117,16 @@ jobs:
 
       - name: Run WordPress tests with codeception
         run: |
-          composer codeception:component -- --coverage-xml component.xml
-          composer codeception:bridge -- --coverage-xml bridge.xml
+          composer codeception:all -- --coverage-xml codeception-coverage.xml
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeception-coverage.xml
+          path: _output/codeception-coverage.xml
 
       - name: Upload Code Coverage to Codecov
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f component.xml -Z -F component
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f bridge.xml -Z -F bridge
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f codeception-coverage.xml -Z

@@ -19,3 +19,4 @@ coverage:
   enabled: true
   include:
     - src/*
+  show_uncovered: true
