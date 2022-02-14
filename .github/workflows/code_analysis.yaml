@@ -39,7 +39,6 @@ jobs:
 
           - name: 'Composer Validate'
             run: composer validate
-
           - name: 'Psalm'
             run: composer psalm -- --shepherd --stats
 
