@@ -19,7 +19,7 @@ coverage:
 
   precision: 3
   round: nearest
-  range: "90...100"
+  range: "95...99"
 
 parsers:
   gcov:
