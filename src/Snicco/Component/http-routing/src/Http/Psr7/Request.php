@@ -678,9 +678,9 @@ final class Request implements ServerRequestInterface
 
     private function inputSource(): array
     {
-        $input = in_array($this->realMethod(), ['GET', 'HEAD'])
-            ? $this->getQueryParams()
-            : $this->getParsedBody();
+        $input = in_array($this->realMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])
+            ? $this->getParsedBody()
+            : $this->getQueryParams();
 
         if (!is_array($input)) {
             throw new RuntimeException(
