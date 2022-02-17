@@ -548,14 +548,18 @@ $exists = $better_wpdb->exists('test_table', [
 
 ---
 
-Inserts a single row into the database and returns the id (if auto-incrementing primary keys are used).
+Inserts a single row into the database and returns an instance of `mysqli_stmt`
 
 ```php
-/** @var int $id */
-$id = $better_wpdb->insert('test_table', [
+/** @var mysqli_stmt $stmt */
+$stmt = $better_wpdb->insert('test_table', [
     'test_string' => 'foo',
     'test_int' => 10
 ]);
+
+var_dump($stmt->affected_rows);  // (int) 1, always
+var_dump($stmt->insert_id);  // (int) 10, assuming we had 9 previous records and auto-incrementing ids.
+
 ```
 
 ❌ Never allow user input as keys for the array.
