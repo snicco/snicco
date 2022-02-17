@@ -14,6 +14,12 @@ use stdClass;
 final class BetterWPDB_insert_Test extends BetterWPDBTestCase
 {
 
+    protected function tearDown(): void
+    {
+        $this->better_wpdb->preparedQuery('drop table if exists no_auto_incr');
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
@@ -52,6 +58,24 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
             'test_float' => 10.00,
             'test_bool' => 1
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function test_insert_with_non_auto_incrementing_id(): void
+    {
+        $this->better_wpdb->preparedQuery(
+            'CREATE TABLE IF NOT EXISTS `no_auto_incr` (
+  `id` bigint unsigned NOT NULL,
+  `test_string` varchar(30) COLLATE utf8mb4_unicode_520_ci UNIQUE NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;', []
+        );
+
+        $stmt = $this->better_wpdb->insert('no_auto_incr', ['id' => 10, 'test_string' => 'foo']);
+        $this->assertSame(1, $stmt->affected_rows);
+        $this->assertSame(0, $stmt->insert_id);
     }
 
     /**

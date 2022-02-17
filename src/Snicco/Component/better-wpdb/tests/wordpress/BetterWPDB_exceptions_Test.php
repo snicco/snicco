@@ -7,7 +7,6 @@ namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use Snicco\Component\BetterWPDB\Exception\QueryException;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
-use TypeError;
 use wpdb;
 
 use function str_repeat;
@@ -75,7 +74,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
                 [str_repeat('X', 31)]
             );
             $this->fail('No exception thrown for bad query.');
-        } catch (TypeError $e) {
+        } catch (QueryException $e) {
             $this->assertStringContainsString("Data too long for column 'test_string'", $e->getMessage());
             $this->assertStringContainsString(
                 'Query: [insert into test_table (test_string) values(?)]',
