@@ -96,7 +96,7 @@ $better_wpdb->preparedQuery('select * from `wp_users` where `id` = ?' and `test_
 
 ---
 
-The error handling in wpdb is pretty much non-existent. And if wpdb fails it does so gracefully. There is however now
+The error handling in wpdb is pretty much non-existent. And if wpdb fails it does so gracefully. However, there is no
 way to recover from a database error as your application is in unknown state, so you want your database layer
 to [fail loud and hard.](https://phpdelusions.net/articles/error_reporting)
 
