@@ -19,7 +19,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_with_empty_table_name_throws_exception(): void
     {
@@ -32,7 +31,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_empty_string_primary_key_throws_exception(): void
@@ -46,7 +44,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_throws_exception_for_non_string_array_key(): void
@@ -61,7 +58,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_throws_exception_for_empty_string_array_key(): void
     {
@@ -74,7 +70,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_throws_exception_non_string_key_change(): void
@@ -89,7 +84,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_throws_exception_for_empty_string_key_change(): void
     {
@@ -103,7 +97,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_throws_exception_for_non_scalar_changes_value(): void
     {
@@ -117,7 +110,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_updateByPrimary_throws_exception_for_empty_changes(): void
     {
@@ -189,7 +181,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_with_empty_table_name_throws_exception(): void
     {
@@ -203,7 +194,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_empty_string_condition_key(): void
     {
@@ -217,7 +207,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_empty_string_in_changes_key(): void
     {
@@ -230,7 +219,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_non_string_key_in_conditions(): void
@@ -244,7 +232,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_non_string_key_in_changes(): void
@@ -259,7 +246,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_non_scalar_in_conditions(): void
     {
@@ -273,7 +259,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_non_scalar_in_changes(): void
     {
@@ -287,7 +272,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_empty_conditions(): void
     {
@@ -301,7 +285,6 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_update_throws_exception_with_empty_changes(): void
     {
@@ -392,7 +375,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
 
         $this->assertSame(
             'update `test_table` set `test_string` = ? where `test_string` = ?',
-            $logger->queries[0]->sql
+            $logger->queries[0]->sql_with_placeholders
         );
         $this->assertSame(['bar', 'foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
@@ -414,7 +397,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
 
         $this->assertSame(
             'update `test_table` set `test_string` = ? where `id` = ?',
-            $logger->queries[0]->sql
+            $logger->queries[0]->sql_with_placeholders
         );
         $this->assertSame(['bar', 1], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);

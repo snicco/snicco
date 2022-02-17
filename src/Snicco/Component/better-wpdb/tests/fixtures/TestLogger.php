@@ -8,9 +8,6 @@ namespace Snicco\Component\BetterWPDB\Tests\fixtures;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;
 
-/**
- * @psalm-immutable
- */
 final class TestLogger implements QueryLogger
 {
 

@@ -246,7 +246,6 @@ final class BetterWPDB_reads_Test extends WPTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exists_throws_exception_for_empty_table_name(): void
     {
@@ -260,7 +259,6 @@ final class BetterWPDB_reads_Test extends WPTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exists_throws_exception_for_empty_string_condition_key(): void
     {
@@ -273,7 +271,6 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_exists_throws_exception_for_non_string_condition_key(): void
@@ -288,7 +285,6 @@ final class BetterWPDB_reads_Test extends WPTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_exists_throws_exception_for_non_scalar_condition_value(): void
     {
@@ -311,7 +307,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql);
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
@@ -329,7 +325,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql);
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
@@ -350,7 +346,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[1]));
         $this->assertCount(2, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql);
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[1]->bindings);
         $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
     }
@@ -371,7 +367,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[1]));
         $this->assertCount(2, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql);
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[1]->bindings);
         $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
     }
@@ -390,7 +386,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
         $this->assertSame(
             'select count(1) from `test_table` where `test_string` = ? and `test_int` is null limit 1',
-            $logger->queries[0]->sql
+            $logger->queries[0]->sql_with_placeholders
         );
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
