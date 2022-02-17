@@ -79,7 +79,7 @@ final class BetterWPDB
      * @throws QueryException
      * @throws InvalidArgumentException
      */
-    public function safeQuery(string $sql, array $bindings = []): mysqli_stmt
+    public function preparedQuery(string $sql, array $bindings = []): mysqli_stmt
     {
         return $this->runWithErrorHandling(function () use ($sql, $bindings): mysqli_stmt {
             $bindings = $this->convertBindings($bindings);
@@ -228,7 +228,7 @@ final class BetterWPDB
         $sql .= implode(', ', $updates);
         $sql .= ' where ' . implode(' and ', $wheres);
 
-        $stmt = $this->safeQuery($sql, array_merge($bindings, $where_bindings));
+        $stmt = $this->preparedQuery($sql, array_merge($bindings, $where_bindings));
         return $stmt->affected_rows;
     }
 
@@ -253,7 +253,7 @@ final class BetterWPDB
 
         $sql .= implode(' and ', $wheres);
 
-        $stmt = $this->safeQuery($sql, $bindings);
+        $stmt = $this->preparedQuery($sql, $bindings);
 
         return $stmt->affected_rows;
     }
@@ -267,7 +267,7 @@ final class BetterWPDB
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
-        return $this->safeQuery($sql, $bindings)->get_result();
+        return $this->preparedQuery($sql, $bindings)->get_result();
     }
 
     /**
@@ -358,7 +358,7 @@ final class BetterWPDB
 
         $sql .= implode(' and ', $wheres) . ' limit 1';
 
-        $result = $this->safeQuery($sql, $bindings);
+        $result = $this->preparedQuery($sql, $bindings);
 
         $result->bind_result($found);
         $result->fetch();
@@ -402,7 +402,7 @@ final class BetterWPDB
         $this->validateProvidedColumnNames($column_names);
 
         $sql = $this->buildInsertSql($table, $column_names);
-        return $this->safeQuery($sql, array_values($data));
+        return $this->preparedQuery($sql, array_values($data));
     }
 
     /**

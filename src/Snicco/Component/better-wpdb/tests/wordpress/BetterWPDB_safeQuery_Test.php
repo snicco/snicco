@@ -19,7 +19,7 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
      */
     public function prepared_queries_can_be_run(): void
     {
-        $stmt = $this->better_wpdb->safeQuery('insert into test_table (test_string) values (?)', ['foo']);
+        $stmt = $this->better_wpdb->preparedQuery('insert into test_table (test_string) values (?)', ['foo']);
         $this->assertSame(1, $stmt->affected_rows);
     }
 
@@ -28,9 +28,9 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
      */
     public function prepared_queries_can_be_run_without_placeholders(): void
     {
-        $this->better_wpdb->safeQuery('insert into test_table (test_string) values (?)', ['foo']);
+        $this->better_wpdb->preparedQuery('insert into test_table (test_string) values (?)', ['foo']);
 
-        $stmt = $this->better_wpdb->safeQuery('select count(*) as record_count from test_table');
+        $stmt = $this->better_wpdb->preparedQuery('select count(*) as record_count from test_table');
         $res = $stmt->get_result();
         $row = $res->fetch_array();
         $this->assertTrue(isset($row['record_count']));
@@ -43,19 +43,19 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
      */
     public function test_exception_for_non_scalar_non_null_binding(): void
     {
-        $stmt = $this->better_wpdb->safeQuery(
+        $stmt = $this->better_wpdb->preparedQuery(
             'insert into test_table (test_string, test_int) values (?,?)',
             ['foo', null]
         );
         $this->assertSame(1, $stmt->affected_rows);
 
-        $stmt = $this->better_wpdb->safeQuery('select * from test_table where `test_int` IS NULL');
+        $stmt = $this->better_wpdb->preparedQuery('select * from test_table where `test_int` IS NULL');
         $this->assertSame(1, $stmt->get_result()->num_rows);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
 
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             'insert into test_table (test_string, test_int) values (?,?)',
             ['foo', new stdClass()]
         );
@@ -69,7 +69,7 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->safeQuery('select * from test_table where test_string = ?', ['foo']);
+        $db->preparedQuery('select * from test_table where test_string = ?', ['foo']);
 
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);

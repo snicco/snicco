@@ -23,8 +23,8 @@ final class BetterWPDB_reads_Test extends WPTestCase
     protected function setUp(): void
     {
         $this->better_wpdb = BetterWPDB::fromWpdb();
-        $this->better_wpdb->safeQuery('DROP TABLE IF EXISTS test_table', []);
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery('DROP TABLE IF EXISTS test_table', []);
+        $this->better_wpdb->preparedQuery(
             'CREATE TABLE IF NOT EXISTS `test_table` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `test_string` varchar(30) COLLATE utf8mb4_unicode_520_ci UNIQUE NOT NULL,
@@ -40,7 +40,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
     protected function tearDown(): void
     {
-        $this->better_wpdb->safeQuery('DROP TABLE IF EXISTS test_table');
+        $this->better_wpdb->preparedQuery('DROP TABLE IF EXISTS test_table');
     }
 
     /**
@@ -48,13 +48,13 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_select(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string) values('foo')",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int) values('foobar', 1)",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_bool) values('baz', true)",
         );
 
@@ -84,13 +84,13 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_selectAll(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int) values('foo', 1)",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int) values('bar', 2)",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_bool, test_float, test_int) values('baz', true, 20.20, 3)",
         );
 
@@ -117,13 +117,13 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_selectLazy(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('bar', 2, 20.00, true )",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('baz', 3, 30.00, true )",
         );
 
@@ -149,7 +149,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_selectRow(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
         );
 
@@ -183,10 +183,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_selectRow_returns_first_row_for_multiple_matches(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('bar', 2, 20.00, true )",
         );
 
@@ -206,10 +206,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_selectValue(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('bar', 2, 20.00, true )",
         );
 
@@ -234,10 +234,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_exists(): void
     {
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_bool) values('foo', 1, true )",
         );
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('bar', 2, 20.00, true )",
         );
 

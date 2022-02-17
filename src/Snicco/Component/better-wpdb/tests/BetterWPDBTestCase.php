@@ -17,8 +17,8 @@ class BetterWPDBTestCase extends WPTestCase
     protected function setUp(): void
     {
         $this->better_wpdb = BetterWPDB::fromWpdb();
-        $this->better_wpdb->safeQuery('DROP TABLE IF EXISTS test_table', []);
-        $this->better_wpdb->safeQuery(
+        $this->better_wpdb->preparedQuery('DROP TABLE IF EXISTS test_table', []);
+        $this->better_wpdb->preparedQuery(
             'CREATE TABLE IF NOT EXISTS `test_table` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `test_string` varchar(30) COLLATE utf8mb4_unicode_520_ci UNIQUE NOT NULL,
@@ -34,7 +34,7 @@ class BetterWPDBTestCase extends WPTestCase
 
     protected function tearDown(): void
     {
-        $this->better_wpdb->safeQuery('DROP TABLE IF EXISTS test_table');
+        $this->better_wpdb->preparedQuery('DROP TABLE IF EXISTS test_table');
     }
 
     protected function assertRecordCount(int $expected): void
