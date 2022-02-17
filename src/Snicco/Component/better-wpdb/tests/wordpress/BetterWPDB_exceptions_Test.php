@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
-use Exception;
+use Snicco\Component\BetterWPDB\Exception\QueryException;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use wpdb;
 
@@ -38,8 +38,10 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
                 ['calvin@web.de', 1]
             );
             $this->fail('No exception thrown for bad query [apparently not a valid SQL statement].');
-        } catch (Exception $e) {
+        } catch (QueryException $e) {
             $this->assertStringContainsString('apparently not a valid SQL statement', $e->getMessage());
+            $this->assertStringContainsString('Query: [apparently not a valid SQL statement]', $e->getMessage());
+            $this->assertStringContainsString("Bindings: ['calvin@web.de', 1]", $e->getMessage());
         }
 
         // wpdb is still shitty.
@@ -72,8 +74,13 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
                 [str_repeat('X', 31)]
             );
             $this->fail('No exception thrown for bad query.');
-        } catch (Exception $e) {
+        } catch (QueryException $e) {
             $this->assertStringContainsString("Data too long for column 'test_string'", $e->getMessage());
+            $this->assertStringContainsString(
+                'Query: [insert into test_table (test_string) values(?)]',
+                $e->getMessage()
+            );
+            $this->assertStringContainsString("Bindings: ['XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX']", $e->getMessage());
         }
 
         // wpdb is still not reporting
@@ -105,6 +112,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         $this->assertSame(1, $result);
         $stored = $this->wpdb->get_results("select * from test_table where test_string = 'foo'");
         $this->assertSame('0', $stored[0]->test_int);
+        $this->assertSame('', $this->wpdb->last_error);
 
         try {
             $this->better_wpdb->safeQuery(
@@ -112,8 +120,13 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
                 ['bar', -10]
             );
             $this->fail('No exception thrown for bad query.');
-        } catch (Exception $e) {
+        } catch (QueryException $e) {
             $this->assertStringContainsString("Out of range value for column 'test_int'", $e->getMessage());
+            $this->assertStringContainsString(
+                'Query: [insert into test_table (test_string, test_int) values (?,?)]',
+                $e->getMessage()
+            );
+            $this->assertStringContainsString("Bindings: ['bar', -10]", $e->getMessage());
         }
 
         // wpdb is still wrong.
