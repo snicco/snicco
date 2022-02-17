@@ -9,7 +9,9 @@ use EmptyIterator;
 use Generator;
 use InvalidArgumentException;
 use RuntimeException;
+use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
+use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
 final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
@@ -216,6 +218,41 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         }
 
         $this->assertRecordCount(0);
+    }
+
+    /**
+     * @test
+     */
+    public function test_bulk_insert_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $db->bulkInsert('test_table', [
+                ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
+                ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+            ]
+        );
+
+        $this->assertCount(4, $logger->queries);
+        $this->assertTrue(isset($logger->queries[0]));
+        $this->assertTrue(isset($logger->queries[1]));
+        $this->assertTrue(isset($logger->queries[2]));
+        $this->assertTrue(isset($logger->queries[3]));
+
+        $this->assertSame(
+            'insert into `test_table` (`test_string`,`test_float`,`test_int`) values (?,?,?)',
+            $logger->queries[1]->sql
+        );
+        $this->assertSame(['foo', 10.00, 1], $logger->queries[1]->bindings);
+        $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
+
+        $this->assertSame(
+            'insert into `test_table` (`test_string`,`test_float`,`test_int`) values (?,?,?)',
+            $logger->queries[2]->sql
+        );
+        $this->assertSame(['bar', 20.00, 2], $logger->queries[2]->bindings);
+        $this->assertTrue($logger->queries[2]->end > $logger->queries[2]->start);
     }
 
 }

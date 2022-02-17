@@ -10,6 +10,7 @@ use Generator;
 use InvalidArgumentException;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\Exception\NoMatchingRowFound;
+use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
 use function array_keys;
@@ -295,6 +296,104 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->expectExceptionMessage('scalar');
 
         $this->better_wpdb->exists('test_table', ['test_int' => new stdClass()]);
+    }
+
+    /**
+     * @test
+     */
+    public function test_select_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $db->select('select * from test_table where test_string = ?', ['foo']);
+
+        $this->assertTrue(isset($logger->queries[0]));
+        $this->assertCount(1, $logger->queries);
+
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql);
+        $this->assertSame(['foo'], $logger->queries[0]->bindings);
+        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+    }
+
+    /**
+     * @test
+     */
+    public function test_selectAll_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $db->selectAll('select * from test_table where test_string = ?', ['foo']);
+
+        $this->assertTrue(isset($logger->queries[0]));
+        $this->assertCount(1, $logger->queries);
+
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql);
+        $this->assertSame(['foo'], $logger->queries[0]->bindings);
+        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+    }
+
+    /**
+     * @test
+     */
+    public function test_selectRow_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $db->insert('test_table', ['test_string' => 'foo']);
+
+        $db->selectRow('select * from test_table where test_string = ?', ['foo']);
+
+        $this->assertTrue(isset($logger->queries[0]));
+        $this->assertTrue(isset($logger->queries[1]));
+        $this->assertCount(2, $logger->queries);
+
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql);
+        $this->assertSame(['foo'], $logger->queries[1]->bindings);
+        $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
+    }
+
+    /**
+     * @test
+     */
+    public function test_selectValue_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $db->insert('test_table', ['test_string' => 'foo']);
+
+        $db->selectValue('select * from test_table where test_string = ?', ['foo']);
+
+        $this->assertTrue(isset($logger->queries[0]));
+        $this->assertTrue(isset($logger->queries[1]));
+        $this->assertCount(2, $logger->queries);
+
+        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql);
+        $this->assertSame(['foo'], $logger->queries[1]->bindings);
+        $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
+    }
+
+    /**
+     * @test
+     */
+    public function test_selectExists_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+        $db->exists('test_table', ['test_string' => 'foo', 'test_int' => null]);
+
+        $this->assertTrue(isset($logger->queries[0]));
+        $this->assertCount(1, $logger->queries);
+
+        $this->assertSame(
+            'select count(1) from `test_table` where `test_string` = ? and `test_int` is null limit 1',
+            $logger->queries[0]->sql
+        );
+        $this->assertSame(['foo'], $logger->queries[0]->bindings);
+        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
 
 }

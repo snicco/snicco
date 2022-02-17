@@ -47,18 +47,26 @@ final class BetterWPDB
     private ?string $original_sql_mode = null;
     private bool $in_transaction = false;
     private bool $is_handling_errors = false;
+    private QueryLogger $logger;
 
-    public function __construct(mysqli $mysqli)
+    public function __construct(mysqli $mysqli, ?QueryLogger $logger = null)
     {
         $this->mysqli = $mysqli;
+        $this->logger = $logger ?: new class implements QueryLogger {
+
+            public function log(QueryInfo $info): void
+            {
+                // do nothing
+            }
+        };
     }
 
     /**
      * @throws ReflectionException
      */
-    public static function fromWpdb(): self
+    public static function fromWpdb(?QueryLogger $logger = null): self
     {
-        return new self(MysqliFactory::fromWpdbConnection());
+        return new self(MysqliFactory::fromWpdbConnection(), $logger);
     }
 
     /**
@@ -93,15 +101,37 @@ final class BetterWPDB
         }
 
         return $this->runWithErrorHandling(function () use ($callback) {
+            $log_exception = null;
+
             try {
                 $this->in_transaction = true;
+
+                $start_begin = microtime(true);
                 $this->mysqli->begin_transaction();
+                $end_begin = microtime(true);
+
+                $this->log(new QueryInfo($start_begin, $end_begin, 'START TRANSACTION', []));
+
                 $res = $callback($this);
+
+                $start_commit = microtime(true);
                 $this->mysqli->commit();
+                $end_commit = microtime(true);
+
+                try {
+                    $this->log(new QueryInfo($start_commit, $end_commit, 'COMMIT', []));
+                } catch (Throwable $e) {
+                    /** @psalm-suppress UnusedVariable */
+                    $log_exception = $e;
+                    throw $e;
+                }
+
                 $this->in_transaction = false;
                 return $res;
             } catch (Throwable $e) {
-                $this->mysqli->rollback();
+                if (null === $log_exception) {
+                    $this->mysqli->rollback();
+                }
                 $this->in_transaction = false;
                 throw $e;
             }
@@ -155,7 +185,7 @@ final class BetterWPDB
             if (is_null($value)) {
                 $wheres[] = "$col_name is null";
             } else {
-                $wheres[] = "$col_name = ? ";
+                $wheres[] = "$col_name = ?";
                 $bindings[] = $value;
             }
         }
@@ -369,7 +399,12 @@ final class BetterWPDB
                     );
                 }
                 $stmt->bind_param($record_types, ...$bindings);
+
+                $start = microtime(true);
                 $stmt->execute();
+                $end = microtime(true);
+                
+                $this->log(new QueryInfo($start, $end, $sql, $bindings));
 
                 $inserted = $inserted + $stmt->affected_rows;
             }
@@ -495,7 +530,7 @@ final class BetterWPDB
 
     private function log(QueryInfo $query_info): void
     {
-        //
+        $this->logger->log($query_info);
     }
 
     /**
