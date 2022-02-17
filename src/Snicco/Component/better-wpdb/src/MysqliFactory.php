@@ -22,7 +22,10 @@ final class MysqliFactory
         $dbh = new ReflectionProperty($wpdb, 'dbh');
         $dbh->setAccessible(true);
 
-        /** @var mysqli $mysqli */
+        /**
+         * @var mysqli $mysqli
+         * @psalm-suppress InaccessibleProperty
+         */
         $mysqli = $wpdb->dbh;
 
         $dbh->setAccessible(false);

@@ -70,6 +70,7 @@ final class BetterWPDB
     }
 
     /**
+     * @param non-empty-string $sql
      * @param array<scalar|null> $bindings
      */
     public function safeQuery(string $sql, array $bindings = []): mysqli_stmt
@@ -101,8 +102,6 @@ final class BetterWPDB
         }
 
         return $this->runWithErrorHandling(function () use ($callback) {
-            $log_exception = null;
-
             try {
                 $this->in_transaction = true;
 
@@ -118,20 +117,12 @@ final class BetterWPDB
                 $this->mysqli->commit();
                 $end_commit = microtime(true);
 
-                try {
-                    $this->log(new QueryInfo($start_commit, $end_commit, 'COMMIT', []));
-                } catch (Throwable $e) {
-                    /** @psalm-suppress UnusedVariable */
-                    $log_exception = $e;
-                    throw $e;
-                }
+                $this->log(new QueryInfo($start_commit, $end_commit, 'COMMIT', []));
 
                 $this->in_transaction = false;
                 return $res;
             } catch (Throwable $e) {
-                if (null === $log_exception) {
-                    $this->mysqli->rollback();
-                }
+                $this->mysqli->rollback();
                 $this->in_transaction = false;
                 throw $e;
             }
@@ -231,6 +222,7 @@ final class BetterWPDB
     }
 
     /**
+     * @param non-empty-string $sql
      * @param array<scalar|null> $bindings
      */
     public function select(string $sql, array $bindings): mysqli_result
@@ -243,7 +235,9 @@ final class BetterWPDB
      * This method is preferred for small result sets.
      * For large result sets this method will cause memory issues, and it's better to use {@see BetterWPDB::selectAll()}
      *
+     * @param non-empty-string $sql
      * @param array<scalar|null> $bindings
+     *
      * @return list<array<string, string|int|float|bool|null>>
      */
     public function selectAll(string $sql, array $bindings): array
@@ -254,8 +248,11 @@ final class BetterWPDB
     }
 
     /**
+     * @param non-empty-string $sql
      * @param array<scalar|null> $bindings
+     *
      * @return array<string, string|int|float|null> Booleans are returned as (int) 1 or (int) 0
+     *
      * @throws NoMatchingRowFound
      */
     public function selectRow(string $sql, array $bindings): array
@@ -271,8 +268,11 @@ final class BetterWPDB
     }
 
     /**
+     * @param non-empty-string $sql
      * @param array<scalar|null> $bindings
+     *
      * @return mixed
+     *
      * @throws NoMatchingRowFound
      */
     public function selectValue(string $sql, array $bindings)
@@ -319,7 +319,9 @@ final class BetterWPDB
     /**
      * This method should be used if you want to iterate over a big number of records.
      *
+     * @param non-empty-string $sql
      * @param array<int,scalar|null> $bindings
+     *
      * @return Generator<array<string,string|int|float|bool|null>>
      */
     public function selectLazy(string $sql, array $bindings): Generator
@@ -403,7 +405,8 @@ final class BetterWPDB
                 $start = microtime(true);
                 $stmt->execute();
                 $end = microtime(true);
-                
+
+                /** @var array<scalar|null> $bindings */
                 $this->log(new QueryInfo($start, $end, $sql, $bindings));
 
                 $inserted = $inserted + $stmt->affected_rows;
@@ -471,6 +474,7 @@ final class BetterWPDB
     /**
      * @param non-empty-string $table
      * @param non-empty-string[] $column_names
+     * @return non-empty-string
      */
     private function buildInsertSql(string $table, array $column_names): string
     {

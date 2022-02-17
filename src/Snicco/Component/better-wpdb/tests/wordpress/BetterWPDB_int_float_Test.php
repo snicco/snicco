@@ -31,6 +31,7 @@ final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
             'test_bool' => 1
         ]);
 
+        /** @var array{test_int: int, test_float:float, test_bool:int, test_string:string} $row */
         $row = $this->better_wpdb->selectRow('select * from test_table where id = 1', []);
         $this->assertSame('foo', $row['test_string']);
         // An INTEGER
@@ -39,6 +40,7 @@ final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
         $this->assertSame(20.20, $row['test_float']);
         $this->assertSame(1, $row['test_bool']);
 
+        /** @var array{test_int: string, test_float:string, test_bool:string} $wpdb_result */
         $wpdb_result = $this->wpdb->get_row('select * from test_table where id = 1', 'ARRAY_A');
         // strings returned
         $this->assertSame('10', $wpdb_result['test_int']);

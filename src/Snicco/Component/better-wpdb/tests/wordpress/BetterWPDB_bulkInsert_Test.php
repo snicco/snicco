@@ -21,7 +21,6 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_bulkInsert_throws_exception_for_empty_table_name(): void
     {
@@ -51,7 +50,6 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_bulkInsert_throws_exception_for_non_string_record_key(): void
     {
@@ -68,7 +66,6 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_bulkInsert_throws_exception_for_empty_string_record_key(): void
     {
@@ -85,7 +82,6 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_bulkInsert_throws_exception_non_scalar_record_value(): void
     {
@@ -100,9 +96,6 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
 
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_bulkInsert_throws_exception_for_inconsistent_record_types(): void
     {
@@ -125,9 +118,6 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
 
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_bulk_delete_returns_zero_for_empty_record_iterator(): void
     {
@@ -242,14 +232,14 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
 
         $this->assertSame(
             'insert into `test_table` (`test_string`,`test_float`,`test_int`) values (?,?,?)',
-            $logger->queries[1]->sql
+            $logger->queries[1]->sql_with_placeholders
         );
         $this->assertSame(['foo', 10.00, 1], $logger->queries[1]->bindings);
         $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
 
         $this->assertSame(
             'insert into `test_table` (`test_string`,`test_float`,`test_int`) values (?,?,?)',
-            $logger->queries[2]->sql
+            $logger->queries[2]->sql_with_placeholders
         );
         $this->assertSame(['bar', 20.00, 2], $logger->queries[2]->bindings);
         $this->assertTrue($logger->queries[2]->end > $logger->queries[2]->start);

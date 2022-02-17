@@ -67,7 +67,6 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_delete_throws_exception_for_empty_table_name(): void
     {
@@ -80,7 +79,6 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_delete_throws_exception_for_empty_conditions(): void
     {
@@ -92,7 +90,6 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_delete_throws_exception_for_non_string_condition_key(): void
@@ -105,7 +102,6 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_delete_throws_exception_for_empty_string_condition_key(): void
@@ -119,7 +115,6 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
      * @test
      *
      * @psalm-suppress InvalidArgument
-     * @psalm-suppress InvalidScalarArgument
      */
     public function test_delete_throws_exception_for_non_scalar_condition_value(): void
     {
@@ -141,7 +136,10 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);
 
-        $this->assertSame('delete from `test_table` where `test_string` = ?', $logger->queries[0]->sql);
+        $this->assertSame(
+            'delete from `test_table` where `test_string` = ?',
+            $logger->queries[0]->sql_with_placeholders
+        );
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
