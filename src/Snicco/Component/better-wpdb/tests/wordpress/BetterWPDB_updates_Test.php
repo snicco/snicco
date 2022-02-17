@@ -7,7 +7,9 @@ namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use InvalidArgumentException;
 use LogicException;
+use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
+use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
 final class BetterWPDB_updates_Test extends BetterWPDBTestCase
@@ -372,6 +374,50 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             ['test_float' => 20.00]
         );
         $this->assertSame(0, $res);
+    }
+
+    /**
+     * @test
+     */
+    public function test_update_queries_are_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $this->assertCount(0, $logger->queries);
+
+        $db->update('test_table', ['test_string' => 'foo'], ['test_string' => 'bar']);
+
+        $this->assertTrue(isset($logger->queries[0]));
+
+        $this->assertSame(
+            'update `test_table` set `test_string` = ? where `test_string` = ?',
+            $logger->queries[0]->sql
+        );
+        $this->assertSame(['bar', 'foo'], $logger->queries[0]->bindings);
+        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+    }
+
+    /**
+     * @test
+     */
+    public function test_updateByPrimary_is_logged(): void
+    {
+        $logger = new TestLogger();
+        $db = BetterWPDB::fromWpdb($logger);
+
+        $this->assertCount(0, $logger->queries);
+
+        $db->updateByPrimary('test_table', 1, ['test_string' => 'bar']);
+
+        $this->assertTrue(isset($logger->queries[0]));
+
+        $this->assertSame(
+            'update `test_table` set `test_string` = ? where `id` = ?',
+            $logger->queries[0]->sql
+        );
+        $this->assertSame(['bar', 1], $logger->queries[0]->bindings);
+        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
 
 }

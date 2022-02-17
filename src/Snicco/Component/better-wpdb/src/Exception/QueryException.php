@@ -15,7 +15,7 @@ class QueryException extends RuntimeException
 
     public function __construct(string $sql, array $bindings, ?Throwable $prev = null)
     {
-        parent::__construct('', ($prev) ? (int)$prev->getCode() : 0, $prev);
+        parent::__construct('no row found', ($prev) ? (int)$prev->getCode() : 0, $prev);
         $this->sql = $sql;
         $this->bindings = $bindings;
     }
