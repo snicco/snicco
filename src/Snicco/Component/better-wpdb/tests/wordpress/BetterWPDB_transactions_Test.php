@@ -8,6 +8,7 @@ namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 use LogicException;
 use RuntimeException;
 use Snicco\Component\BetterWPDB\BetterWPDB;
+use Snicco\Component\BetterWPDB\Exception\QueryException;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
@@ -31,7 +32,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
                 $db->insert('test_table', ['test_string' => 'foo']);
             });
             $this->fail('No exception thrown for transaction.');
-        } catch (RuntimeException $e) {
+        } catch (QueryException $e) {
             $this->assertStringContainsString("Duplicate entry 'foo'", $e->getMessage());
         }
 
