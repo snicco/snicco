@@ -1,0 +1,24 @@
+{
+  "name": "sniccowp/better-wpdb",
+  "description": "Keeps you safe and sane when working with custom tables in WordPress.",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPDB\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPDB\\Tests\\": "tests"
+    }
+  }
+}

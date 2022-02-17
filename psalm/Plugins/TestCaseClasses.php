@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Psalm\Plugin\EventHandler\AfterClassLikeVisitInterface;
 use Psalm\Plugin\EventHandler\Event\AfterClassLikeVisitEvent;
 use Snicco\Bridge\Blade\Tests\BladeTestCase;
+use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -34,7 +35,8 @@ final class TestCaseClasses implements AfterClassLikeVisitInterface
             Codeception\Test\Unit::class,
             HttpRunnerTestCase::class,
             WPTestCase::class,
-            BladeTestCase::class
+            BladeTestCase::class,
+            BetterWPDBTestCase::class,
         ];
 
         if (count(array_intersect($parents, $suppress_for))) {
