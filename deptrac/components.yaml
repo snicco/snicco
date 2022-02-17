@@ -13,6 +13,11 @@ parameters:
         - type: className
           regex: Snicco\\Component\\BetterWPMail\\.*
 
+    - name: better_wpdb
+      collectors:
+        - type: className
+          regex: Snicco\\Component\\BetterWPDB\\.*
+
     - name: kernel
       collectors:
         - type: className
