@@ -710,7 +710,7 @@ $better_wpdb->transactional(function () {
 You can a second argument to the constructor of BetterWPDB.
 
 Implement the
-simple [QueryLogger](https://github.com/sniccowp/sniccowp/blob/feature/better_wpdb/src/Snicco/Component/better-wpdb/src/QueryLogger.php)
+simple [QueryLogger](https://github.com/sniccowp/sniccowp/blob/master/src/Snicco/Component/better-wpdb/src/QueryLogger.php)
 interface and start logging your database queries to your favorite profiling service.
 
 The following is pseudocode to log to new relic:
