@@ -105,6 +105,29 @@ final class BetterWPDB
     }
 
     /**
+     * @param non-empty-string $sql
+     *
+     * @return true|mysqli_result {@see mysqli::query()}
+     *
+     * @throws QueryException
+     */
+    public function unprepared(string $sql)
+    {
+        return $this->runWithErrorHandling(function () use ($sql) {
+            $start = microtime(true);
+            try {
+                /** @var true|mysqli_result $res */
+                $res = $this->mysqli->query($sql);
+            } catch (mysqli_sql_exception $e) {
+                throw QueryException::fromMysqliE($sql, [], $e);
+            }
+            $end = microtime(true);
+            $this->log(new QueryInfo($start, $end, $sql, []));
+            return $res;
+        });
+    }
+
+    /**
      * Runs the callback inside a database transaction that
      * automatically commits on success and rolls back if any errors happen.
      *
@@ -132,9 +155,11 @@ final class BetterWPDB
 
                 try {
                     $this->mysqli->begin_transaction();
-                } catch (mysqli_sql_exception $e) {
+                } // @codeCoverageIgnoreStart
+                catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('START TRANSACTION', [], $e);
                 }
+                // @codeCoverageIgnoreEnd
 
                 $end = microtime(true);
 
@@ -151,9 +176,11 @@ final class BetterWPDB
 
                 try {
                     $this->mysqli->commit();
-                } catch (mysqli_sql_exception $e) {
+                } // @codeCoverageIgnoreStart
+                catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('COMMIT', [], $e);
                 }
+                // @codeCoverageIgnoreEnd
 
                 $end = microtime(true);
 
@@ -244,7 +271,6 @@ final class BetterWPDB
     public function delete(string $table, array $conditions): int
     {
         $this->validateTableName($table);
-        $this->validateProvidedColumnNames(array_keys($conditions));
 
         $table = $this->escIdentifier($table);
         $sql = "delete from $table where ";
@@ -640,11 +666,15 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-array<scalar|null> $conditions
+     * @param array<scalar|null> $conditions
      * @return array{0: non-empty-list<string>, 1: list<scalar>}
      */
     private function buildWhereArray(array $conditions): array
     {
+        if (empty($conditions)) {
+            throw new InvalidArgumentException('Column names can not be an empty array.');
+        }
+
         $wheres = [];
         $bindings = [];
         foreach ($conditions as $col_name => $value) {
