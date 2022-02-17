@@ -41,6 +41,8 @@ class QueryException extends RuntimeException
 
     /**
      * @param array<scalar|null> $bindings
+     *
+     * @interal
      */
     public static function fromMysqliE(string $sql, array $bindings, mysqli_sql_exception $e): self
     {
