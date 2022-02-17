@@ -61,6 +61,8 @@ in your database.
 
 ### wpdb does not use prepared statements
 
+---
+
 Besides what `wpdb::prepare()` has you thinking, wpdb is **NOT** using prepared statements. Explaining the differences
 is beyond the scope of this README but as a recap:
 
@@ -91,6 +93,8 @@ $better_wpdb->preparedQuery('select * from `wp_users` where `id` = ?' and `test_
 ```
 
 ### wpdb has horrible error handling
+
+---
 
 The error handling in wpdb is pretty much non-existent. And if wpdb fails it does so gracefully. There is however now
 way to recover from a database error as your application is in unknown state, so you want your database layer
@@ -206,6 +210,8 @@ var_dump($e->getMessage()) // Out of range value for column 'test_int' at row 1
 
 ### wpdb is "slow"
 
+--- 
+
 This ties in directly to the graceful error handling.
 
 ❌ Before **every single** query wpdb will check the query against the table/column charset and collation. wpdb will also
@@ -216,6 +222,8 @@ is returned, and you will never now about it.
 ✅ Just set the charset and collation once for connection and let mysql handle what it can already handle.
 
 ### wpdb is verbose, easy to misuse and hard to debug.
+
+---
 
 The API of wpdb is needlessly verbose. Furthermore, It's hard to use correctly
 and [easy to use wrong](https://wordpress.stackexchange.com/search?q=prepare).
@@ -243,6 +251,8 @@ and [read this article by PHP core contributor Anthony Ferrara](https://blog.irc
 > It’s better to switch to a design that’s secure-by-default and make the insecure the exceptional case."
 
 ### wpdb returns everything as strings
+
+---
 
 ```php
 $wpdb->insert('test_table', [
@@ -273,6 +283,8 @@ var_dump($row['test_bool']); // (int) 1
 ```
 
 ### static analysers like psalm and phpstan have trouble understanding wpdb.
+
+---
 
 This ties into the error handling where different values are returned based on failure or success. Let's compare the
 return signature of wpdb and better_wpdb:
@@ -404,6 +416,8 @@ If you follow these three simply rules you are 100% safe from any sql-injections
 
 ### select
 
+---
+
 The most low-level select method. Returns an instance of `mysqli_result`
 
 ```php
@@ -419,6 +433,8 @@ while($row = $result->fetch_array()) {
 ```
 
 ### selectAll
+
+---
 
 Returns an array or all matching records.
 
@@ -439,6 +455,8 @@ foreach ($rows as $row) {
 ```
 
 ### selectLazy
+
+---
 
 Occasionally you will need to query a lot of records from your database to process them in some form. A typical use-case
 would be exporting 100k orders into a CSV file. If you try to use `selectAll` for this you will be out of memory
@@ -470,6 +488,8 @@ foreach ($orders as $order) {
 
 ### selectRow
 
+---
+
 Returns the first row that matches the provided query. Throws an exception if no row can be found.
 
 ```php
@@ -490,6 +510,8 @@ try {
 
 ### selectValue
 
+---
+
 Selects a single value from or throws an exception if no rows are found.
 
 ```php
@@ -504,6 +526,8 @@ try {
 ```
 
 ### exists
+
+---
 
 You can use this method to check if a record exists in the database
 
@@ -522,6 +546,8 @@ $exists = $better_wpdb->exists('test_table', [
 
 ### insert
 
+---
+
 Inserts a single row into the database and returns the id (if auto-incrementing primary keys are used).
 
 ```php
@@ -535,6 +561,8 @@ $id = $better_wpdb->insert('test_table', [
 ❌ Never allow user input as keys for the array.
 
 ### bulkInsert
+
+---
 
 A common use case is inserting multiple records at once and ensuring that either all records are inserted or none.
 
@@ -594,6 +622,8 @@ var_dump($importer_rows_count); // 100000
 
 ### updateByPrimary
 
+---
+
 Updates a record by its primary key. By default, it will be assumed that the primary key column name is `id`.
 
 ```php
@@ -614,6 +644,8 @@ Updates a record by its primary key. By default, it will be assumed that the pri
 
 ### update
 
+---
+
 A generic update method. The second argument is an array of conditions, the third argument an array of changes.
 
 ```php
@@ -631,6 +663,8 @@ A generic update method. The second argument is an array of conditions, the thir
 ## Deletes
 
 ### delete
+
+---
 
 Deletes all records that match the provided conditions.
 
