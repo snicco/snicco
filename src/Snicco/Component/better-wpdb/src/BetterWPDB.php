@@ -14,6 +14,7 @@ use mysqli_result;
 use mysqli_stmt;
 use ReflectionException;
 use RuntimeException;
+use Snicco\Component\BetterWPDB\Exception\NoMatchingRowFound;
 use Throwable;
 
 use function array_keys;
@@ -21,6 +22,7 @@ use function array_map;
 use function array_values;
 use function count;
 use function implode;
+use function intval;
 use function is_array;
 use function is_bool;
 use function is_double;
@@ -62,7 +64,7 @@ final class BetterWPDB
     /**
      * @param array<scalar|null> $bindings
      */
-    public function preparedQuery(string $sql, array $bindings = []): mysqli_stmt
+    public function safeQuery(string $sql, array $bindings = []): mysqli_stmt
     {
         return $this->runWithErrorHandling(function () use ($sql, $bindings): mysqli_stmt {
             $bindings = $this->convertBindings($bindings);
@@ -77,7 +79,7 @@ final class BetterWPDB
     }
 
     /**
-     * Runs the callback inside a transaction that
+     * Runs the callback inside a database transaction that
      * automatically commits on success and rolls back if any errors happen.
      *
      * @template T
@@ -112,11 +114,16 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $changes !!! IMPORTANT !!!
      *                                                               Keys of $data MUST never be user provided.
      */
-    public function updateByPrimaryKey(string $table, $primary_key, array $changes): mysqli_stmt
+    public function updateByPrimary(string $table, $primary_key, array $changes): int
     {
+        /** @psalm-suppress DocblockTypeContradiction */
+        if ('' === $primary_key) {
+            throw new InvalidArgumentException('$primary_key can not be an empty-string.');
+        }
+
         $primary_key = is_array($primary_key) ? $primary_key : ['id' => $primary_key];
 
-        return $this->preparedUpdate($table, $primary_key, $changes);
+        return $this->update($table, $primary_key, $changes);
     }
 
     /**
@@ -125,7 +132,7 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $changes !!! IMPORTANT !!!
      *                                                               Keys of $data MUST never be user provided.
      */
-    public function preparedUpdate(string $table, array $conditions, array $changes): mysqli_stmt
+    public function update(string $table, array $conditions, array $changes): int
     {
         $this->validateTableName($table);
         $this->validateProvidedColumnNames(array_keys($conditions));
@@ -156,30 +163,127 @@ final class BetterWPDB
         $sql .= implode(', ', $updates);
         $sql .= ' where ' . implode(' and ', $wheres);
 
-        return $this->preparedQuery($sql, $bindings);
+        $stmt = $this->safeQuery($sql, $bindings);
+        return $stmt->affected_rows;
+    }
+
+    /**
+     * @param non-empty-string $table
+     * @param non-empty-array<non-empty-string, scalar|null> $conditions
+     * @return int The number of deleted records
+     */
+    public function delete(string $table, array $conditions): int
+    {
+        $this->validateTableName($table);
+        $this->validateProvidedColumnNames(array_keys($conditions));
+
+        $table = $this->escIdentifier($table);
+        $sql = "delete from $table where ";
+
+        $bindings = [];
+        $wheres = [];
+
+        foreach ($conditions as $col_name => $value) {
+            $col_name = $this->escIdentifier($col_name);
+            if (is_null($value)) {
+                $wheres[] = "$col_name is null";
+            } else {
+                $wheres[] = "$col_name = ?";
+                $bindings[] = $value;
+            }
+        }
+
+        $sql .= implode(' and ', $wheres);
+
+        $stmt = $this->safeQuery($sql, $bindings);
+
+        return $stmt->affected_rows;
     }
 
     /**
      * @param array<scalar|null> $bindings
      */
-    public function preparedSelect(string $sql, array $bindings): mysqli_result
+    public function select(string $sql, array $bindings): mysqli_result
     {
-        return $this->preparedQuery($sql, $bindings)->get_result();
+        return $this->safeQuery($sql, $bindings)->get_result();
     }
 
     /**
      * Returns the entire result set as associative array.
      * This method is preferred for small result sets.
-     * For large result sets this method will cause memory issues, and it's better to use {@see BetterWPDB::preparedSelectAll()}
+     * For large result sets this method will cause memory issues, and it's better to use {@see BetterWPDB::selectAll()}
      *
      * @param array<scalar|null> $bindings
      * @return list<array<string, string|int|float|bool|null>>
      */
-    public function preparedSelectAll(string $sql, array $bindings): array
+    public function selectAll(string $sql, array $bindings): array
     {
         /** @var list<array<string, string|int|float|bool|null>> $val */
-        $val = $this->preparedSelect($sql, $bindings)->fetch_all(MYSQLI_ASSOC);
+        $val = $this->select($sql, $bindings)->fetch_all(MYSQLI_ASSOC);
         return $val;
+    }
+
+    /**
+     * @param array<scalar|null> $bindings
+     * @return array<string, string|int|float|null> Booleans are returned as (int) 1 or (int) 0
+     * @throws NoMatchingRowFound
+     */
+    public function selectRow(string $sql, array $bindings): array
+    {
+        $stmt = $this->select($sql, $bindings);
+
+        if ($stmt->num_rows < 1) {
+            throw new NoMatchingRowFound($sql, $bindings);
+        }
+        /** @var array<string, string|int|float|null> $res */
+        $res = $stmt->fetch_assoc();
+        return $res;
+    }
+
+    /**
+     * @param array<scalar|null> $bindings
+     * @return mixed
+     * @throws NoMatchingRowFound
+     */
+    public function selectValue(string $sql, array $bindings)
+    {
+        $res = $this->selectRow($sql, $bindings);
+        return array_values($res)[0] ?? null;
+    }
+
+    /**
+     * @param non-empty-string $table
+     * @param non-empty-array<non-empty-string,scalar|null> $conditions
+     */
+    public function exists(string $table, array $conditions): bool
+    {
+        $this->validateTableName($table);
+        $this->validateProvidedColumnNames(array_keys($conditions));
+
+        $table = $this->escIdentifier($table);
+        $sql = "select count(1) from $table where ";
+
+        $bindings = [];
+        $wheres = [];
+
+        foreach ($conditions as $col_name => $value) {
+            $col_name = $this->escIdentifier($col_name);
+            if (is_null($value)) {
+                $wheres[] = "$col_name is null";
+            } else {
+                $wheres[] = "$col_name = ?";
+                $bindings[] = $value;
+            }
+        }
+
+        $sql .= implode(' and ', $wheres) . ' limit 1';
+
+        $result = $this->safeQuery($sql, $bindings);
+
+        $result->bind_result($found);
+        $result->fetch();
+
+        return intval($found) > 0;
     }
 
     /**
@@ -188,9 +292,9 @@ final class BetterWPDB
      * @param array<int,scalar|null> $bindings
      * @return Generator<array<string,string|int|float|bool|null>>
      */
-    public function preparedSelectLazy(string $sql, array $bindings): Generator
+    public function selectLazy(string $sql, array $bindings): Generator
     {
-        $res = $this->preparedSelect($sql, $bindings);
+        $res = $this->select($sql, $bindings);
 
         while ($row = $res->fetch_assoc()) {
             yield $row;
@@ -202,7 +306,7 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $data !!! IMPORTANT !!!
      *                                                             Keys of $data MUST never be user provided.
      */
-    public function preparedInsert(string $table, array $data): mysqli_stmt
+    public function insert(string $table, array $data): mysqli_stmt
     {
         $this->validateTableName($table);
 
@@ -210,7 +314,7 @@ final class BetterWPDB
         $this->validateProvidedColumnNames($column_names);
 
         $sql = $this->buildInsertSql($table, $column_names);
-        return $this->preparedQuery($sql, array_values($data));
+        return $this->safeQuery($sql, array_values($data));
     }
 
     /**
@@ -222,7 +326,7 @@ final class BetterWPDB
      *                                                               Keys of $data MUST never be user provided.
      * @return int The number of inserted records
      */
-    public function preparedBulkInsert(string $table, iterable $records): int
+    public function bulkInsert(string $table, iterable $records): int
     {
         $this->validateTableName($table);
 
@@ -257,9 +361,10 @@ final class BetterWPDB
                 if ($expected_types !== $record_types) {
                     throw new InvalidArgumentException(
                         sprintf(
-                            "Records are not of consistent type.\nExpected: [%s] and got [%s].",
+                            "Records are not of consistent type.\nExpected: [%s] and got [%s] for record %d.",
                             rtrim(strtr($expected_types, ['s' => 'string,', 'd' => 'double,', 'i' => 'integer,']), ','),
                             rtrim(strtr($record_types, ['s' => 'string,', 'd' => 'double,', 'i' => 'integer,']), ','),
+                            $inserted + 1
                         )
                     );
                 }
@@ -278,7 +383,7 @@ final class BetterWPDB
      * @param Closure():T $run_query
      * @return T
      */
-    public function runWithErrorHandling(Closure $run_query)
+    private function runWithErrorHandling(Closure $run_query)
     {
         if ($this->is_handling_errors) {
             return $run_query();
