@@ -24,18 +24,18 @@ BetterWPDB is a small class with zero dependencies that uses the default mysql c
     1. [select](#select)
     2. [selectAll](#selectAll)
     3. [selectRow](#selectRow)
-    4. [selectValue](selectValue)
-    5. [selectLazy](selectLazy)
+    4. [selectValue](#selectvalue)
+    5. [selectLazy](#selectlazy)
     6. [exists](#exists)
 5. [Inserts](#inserts)
     1. [insert](#insert)
-    2. [bulkInsert](#bulk-insert)
+    2. [bulkInsert](#bulkinsert)
 6. [Updates](#updates)
     1. [update](#update)
-    2. [update by primary key](#update-by-primary-key)
+    2. [update by primary key](#updatebyprimary)
 7. [Deletes](#deletes)
 8. [Transactions](#transactions)
-9. [Loggins](#logging)
+9. [Logging](#logging)
 
 ## Why you should use this
 
@@ -422,7 +422,7 @@ while($row = $result->fetch_array()) {
 
 Returns an array or all matching records.
 
-This method is preferred for smaller result sets. If you need to query a lot of rows using [selectLazy](#select-lazy) is
+This method is preferred for smaller result sets. If you need to query a lot of rows using [selectLazy](#selectlazy) is
 preferred.
 
 ```php
@@ -565,6 +565,30 @@ $result = $better_wpdb->bulkInsert('test_table', [
 ```
 
 ❌ Never allow user input as keys for the array.
+
+You can pass any iterable into `bulkInsert`.
+
+This is how you import a huge CSV file into your database without running out of memory.
+
+````php
+// please don't copy-paste this code. It's just an example.
+
+$read_csv = function() :Generator{
+
+   $file = fopen('/path/to/hugh/csv/orders.csv')
+   
+   while(!feof($file)) {
+  
+    $row = fgetcsv($file, 4096);
+    yield $row
+   }
+}
+
+$importer_rows_count = $better_wpdb->bulkInsert('orders', $read_csv());
+
+var_dump($importer_rows_count); // 100000
+
+````
 
 ## Updates
 
