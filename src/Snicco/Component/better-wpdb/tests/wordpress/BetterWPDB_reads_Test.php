@@ -163,11 +163,19 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertSame(10.00, $row['test_float']);
         $this->assertSame(1, $row['test_bool']);
 
-        $this->expectException(NoMatchingRowFound::class);
-        $this->better_wpdb->selectRow(
-            'select * from test_table where test_int = ? and test_float = ?',
-            [1, 20.00]
-        );
+        try {
+            $this->better_wpdb->selectRow(
+                'select * from test_table where test_int = ? and test_float = ?',
+                [1, 20.05]
+            );
+        } catch (NoMatchingRowFound $e) {
+            $this->assertStringContainsString('No matching row found', $e->getMessage());
+            $this->assertStringContainsString(
+                'Query: [select * from test_table where test_int = ? and test_float = ?]',
+                $e->getMessage()
+            );
+            $this->assertStringContainsString('Bindings: [1, 20.05]', $e->getMessage());
+        }
     }
 
     /**

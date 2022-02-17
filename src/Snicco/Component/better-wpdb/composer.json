@@ -1,5 +1,6 @@
 {
   "name": "sniccowp/better-wpdb",
+  "description": "Keeps you safe and sane when working with custom tables in WordPress.",
   "minimum-stability": "stable",
   "authors": [
     {
