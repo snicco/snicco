@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\ValueObject;
 
-/**
- * @api
- */
 final class CookiePool
 {
 
@@ -17,7 +14,6 @@ final class CookiePool
 
     /**
      * @param array<string,string> $cookies
-     * @api
      */
     public function __construct(array $cookies)
     {
@@ -25,7 +21,6 @@ final class CookiePool
     }
 
     /**
-     * @api
      * @psalm-suppress MixedArgumentTypeCoercion
      */
     public static function fromSuperGlobals(): CookiePool

@@ -9,9 +9,6 @@ use Snicco\Component\Session\SessionManager\SessionManager;
 use function is_null;
 use function time;
 
-/**
- * @api
- */
 final class SessionCookie
 {
 

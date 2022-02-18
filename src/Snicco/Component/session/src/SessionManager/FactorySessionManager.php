@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\SessionManager;
 
+use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\EventDispatcher\NullSessionDispatcher;
 use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\ReadWriteSession;
+use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\Session;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
@@ -17,13 +19,13 @@ use Snicco\Component\Session\ValueObject\SessionCookie;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
+use Throwable;
 
+use function hash_equals;
 use function is_null;
 
 /**
  * This session manager will always return a new session object when start is being called.
- *
- * @api
  */
 final class FactorySessionManager implements SessionManager
 {
@@ -32,15 +34,18 @@ final class FactorySessionManager implements SessionManager
     private SessionDriver $driver;
     private Clock $clock;
     private SessionEventDispatcher $event_dispatcher;
+    private Serializer $serializer;
 
     public function __construct(
         SessionConfig $config,
         SessionDriver $driver,
+        Serializer $serializer,
         ?Clock $clock = null,
         ?SessionEventDispatcher $event_dispatcher = null
     ) {
         $this->config = $config;
         $this->driver = $driver;
+        $this->serializer = $serializer;
         $this->clock = $clock ?: new SystemClock();
         $this->event_dispatcher = $event_dispatcher ?: new NullSessionDispatcher();
     }
@@ -66,6 +71,41 @@ final class FactorySessionManager implements SessionManager
         return $session;
     }
 
+    public function save(Session $session): void
+    {
+        $hashed_validator = $this->hash($session->id()->validator());
+
+        $session->saveUsing(
+            $this->driver,
+            $this->serializer,
+            $hashed_validator,
+            $this->clock->currentTimestamp()
+        );
+
+        $this->event_dispatcher->dispatchAll($session->releaseEvents());
+    }
+
+    public function toCookie(ImmutableSession $session): SessionCookie
+    {
+        return new SessionCookie(
+            $this->config->cookieName(),
+            $session->id()->asString(),
+            $this->config->absoluteLifetimeInSec(),
+            $this->config->onlyHttp(),
+            $this->config->onlySecure(),
+            $this->config->cookiePath(),
+            $this->config->cookieDomain(),
+            $this->config->sameSite()
+        );
+    }
+
+    public function gc(): void
+    {
+        if ($this->config->gcLottery()->wins()) {
+            $this->driver->gc($this->config->idleTimeoutInSec());
+        }
+    }
+
     private function parseSessionId(CookiePool $cookie_pool): SessionId
     {
         $id = $cookie_pool->get($this->config->cookieName()) ?? '';
@@ -75,14 +115,31 @@ final class FactorySessionManager implements SessionManager
     private function loadSessionFromDriver(SessionId $id): ReadWriteSession
     {
         try {
-            $data = $this->driver->read($id->asHash());
-            $session = new ReadWriteSession($id, $data->asArray(), $data->lastActivity());
+            $serialized_session = $this->driver->read($id->selector());
+
+            $stored_validator = $serialized_session->hashedValidator();
+            $provided_validator = $this->hash($id->validator());
+
+            // Do we have a timing-based side-channel attack?
+            if (!hash_equals($stored_validator, $provided_validator)) {
+                try {
+                    $this->driver->destroy([$id->selector()]);
+                } // @codeCoverageIgnoreStart
+                catch (Throwable $e) {
+                    // Don't handle this exception. Its more important to let the developer know about a possible attack.
+                }
+                // @codeCoverageIgnoreEnd
+
+                throw new RuntimeException(
+                    "Possible session brute force attack.\nHashed validator did not match for session selector [{$id->selector()}]."
+                );
+            }
+
+            $data = $this->serializer->deserialize($serialized_session->data());
+
+            return new ReadWriteSession($id, $data, $serialized_session->lastActivity());
         } catch (BadSessionID $e) {
-            $session = new ReadWriteSession(
-                SessionId::createFresh(),
-                [],
-                $this->clock->currentTime()
-            );
+            $session = ReadWriteSession::empty($this->clock->currentTimestamp());
         }
         return $session;
     }
@@ -113,34 +170,14 @@ final class FactorySessionManager implements SessionManager
         return $lifetime > $this->config->absoluteLifetimeInSec();
     }
 
-    public function save(Session $session): void
+    private function hash(string $verifier): string
     {
-        $session->saveUsing($this->driver, $this->clock->currentTime());
-
-        $this->event_dispatcher->dispatchAll($session->releaseEvents());
-
-        if ($this->config->gcLottery()->wins()) {
-            $this->destroyInactiveSessions();
+        $hash = hash('sha256', $verifier);
+        if (false === $hash) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException('Could not hash session id.');
+            // @codeCoverageIgnoreEnd
         }
+        return $hash;
     }
-
-    private function destroyInactiveSessions(): void
-    {
-        $this->driver->gc($this->config->idleTimeoutInSec());
-    }
-
-    public function toCookie(ImmutableSession $session): SessionCookie
-    {
-        return new SessionCookie(
-            $this->config->cookieName(),
-            $session->id()->asString(),
-            $this->config->absoluteLifetimeInSec(),
-            $this->config->onlyHttp(),
-            $this->config->onlySecure(),
-            $this->config->cookiePath(),
-            $this->config->cookieDomain(),
-            $this->config->sameSite()
-        );
-    }
-
 }

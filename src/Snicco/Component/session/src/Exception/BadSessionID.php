@@ -12,10 +12,10 @@ use InvalidArgumentException;
 final class BadSessionID extends InvalidArgumentException
 {
 
-    public static function forId(string $id, string $driver): BadSessionID
+    public static function forSelector(string $id, string $driver): BadSessionID
     {
         return new self(
-            "The session id [$id] does not exist in the [$driver] driver."
+            "The session selector [$id] does not exist in the [$driver] driver."
         );
     }
 

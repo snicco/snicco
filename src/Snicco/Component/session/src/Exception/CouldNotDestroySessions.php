@@ -14,7 +14,7 @@ use function sprintf;
 /**
  * @api
  */
-final class CantDestroySession extends RuntimeException
+final class CouldNotDestroySessions extends RuntimeException
 {
 
     /**
@@ -24,7 +24,7 @@ final class CantDestroySession extends RuntimeException
         array $ids,
         string $driver_identifier,
         Throwable $previous = null
-    ): CantDestroySession {
+    ): CouldNotDestroySessions {
         return new self(
             sprintf(
                 'Cant destroy session ids [%s] with the [%s] driver.',
