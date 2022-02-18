@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Tests\SessionManager;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\EventDispatcher\NullSessionDispatcher;
 use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\Session\ReadWriteSession;
+use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\SessionManager\FactorySessionManager;
 use Snicco\Component\Session\Tests\fixtures\TestEventDispatcher;
 use Snicco\Component\Session\ValueObject\CookiePool;
-use Snicco\Component\Session\ValueObject\SerializedSessionData;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionCookie;
 use Snicco\Component\Session\ValueObject\SessionId;
@@ -23,15 +23,47 @@ use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
 use Snicco\Component\TestableClock\TestClock;
 
+use function explode;
+use function strlen;
+use function substr;
+use function time;
+
 final class FactorySessionManagerTest extends TestCase
 {
 
+    /**
+     * @var positive-int
+     */
     private int $absolute_lifetime = 10;
+
+    /**
+     * @var positive-int
+     */
     private int $idle_timeout = 3;
+
     private int $gc_collection_percentage = 0;
+
+    /**
+     * @var positive-int
+     */
     private int $rotation_interval = 5;
+
     private string $cookie_name = 'sniccowp_session';
+
     private InMemoryDriver $driver;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->driver = new InMemoryDriver();
+        unset($_COOKIE[$this->cookie_name]);
+    }
+
+    protected function tearDown(): void
+    {
+        unset($_COOKIE[$this->cookie_name]);
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -43,36 +75,6 @@ final class FactorySessionManagerTest extends TestCase
         $session = $manager->start(CookiePool::fromSuperGlobals());
 
         $this->assertInstanceOf(ReadWriteSession::class, $session);
-    }
-
-    private function getSessionManager(
-        Clock $clock = null,
-        array $config = null,
-        SessionEventDispatcher $event_dispatcher = null
-    ): FactorySessionManager {
-        $default = [
-            'path' => '/',
-            'cookie_name' => $this->cookie_name,
-            'domain' => 'foo.com',
-            'http_only' => true,
-            'secure' => true,
-            'same_site' => 'lax',
-            'absolute_lifetime_in_sec' => $this->absolute_lifetime,
-            'idle_timeout_in_sec' => $this->idle_timeout,
-            'rotation_interval_in_sec' => $this->rotation_interval,
-            'garbage_collection_percentage' => $this->gc_collection_percentage,
-        ];
-
-        if ($config) {
-            $default = array_merge($default, $config);
-        }
-
-        return new FactorySessionManager(
-            new SessionConfig($default),
-            $this->driver,
-            $clock ?? new SystemClock(),
-            $event_dispatcher ?? new NullSessionDispatcher()
-        );
     }
 
     /**
@@ -113,24 +115,6 @@ final class FactorySessionManagerTest extends TestCase
 
         $this->assertSame('bar', $session->all()['foo']);
         $this->assertSame($id->asString(), $session->id()->asString());
-    }
-
-    private function writeSessionWithData(array $data): SessionId
-    {
-        $manager = $this->getSessionManager();
-        $id = SessionId::createFresh();
-        $data = SerializedSessionData::fromArray($data, $this->now());
-
-        $session = new ReadWriteSession($id, $data->asArray(), $data->lastActivity());
-        $manager->save($session);
-
-        $_COOKIE[$this->cookie_name] = $id->asString();
-        return $id;
-    }
-
-    private function now(): int
-    {
-        return (new DateTimeImmutable())->getTimestamp();
     }
 
     /**
@@ -188,11 +172,15 @@ final class FactorySessionManagerTest extends TestCase
         $session->invalidate();
         $manager->save($session);
 
-        $data = $this->driver->read($session->id()->asHash())->asArray();
-        $this->assertArrayNotHasKey('foo', $data);
+        $new_session = $manager->start(new CookiePool([$this->cookie_name => $session->id()->asString()]));
+        // id stays the same
+        $this->assertTrue($new_session->id()->sameAs($session->id()));
+        // data was flashed
+        $this->assertFalse($new_session->has('foo'));
 
+        // old id is gone.
         $this->expectException(BadSessionID::class);
-        $this->driver->read($old_id->asHash());
+        $this->driver->read($old_id->selector());
     }
 
     /**
@@ -208,9 +196,10 @@ final class FactorySessionManagerTest extends TestCase
         $manager->save($session);
         $new_id = $session->id();
 
-        $this->assertNotNull($this->driver->read($new_id->asHash()));
+        $this->assertNotNull($this->driver->read($new_id->selector()));
+
         $this->expectException(BadSessionID::class);
-        $this->driver->read($old_id->asHash());
+        $this->driver->read($old_id->selector());
     }
 
     /**
@@ -325,21 +314,18 @@ final class FactorySessionManagerTest extends TestCase
         $manager->save($session);
         $old_id = $session->id();
 
-        $test_clock->travelIntoFuture($this->idle_timeout);
-        $manager = $this->getSessionManager();
-        $session = $manager->start(CookiePool::fromSuperGlobals());
+        $test_clock->travelIntoFuture($this->idle_timeout - 1);
 
-        $manager->save($session);
+        $manager->gc();
 
-        $this->assertNotNull($this->driver->read($old_id->asHash()));
+        $this->assertNotNull($this->driver->read($old_id->selector()));
 
         $test_clock->travelIntoFuture(1);
-        $manager = $this->getSessionManager($test_clock);
-        $session = $manager->start(CookiePool::fromSuperGlobals());
-        $manager->save($session);
+
+        $manager->gc();
 
         $this->expectException(BadSessionID::class);
-        $this->driver->read($old_id->asHash());
+        $this->driver->read($old_id->selector());
     }
 
     /**
@@ -350,7 +336,7 @@ final class FactorySessionManagerTest extends TestCase
         $manager = $this->getSessionManager(null, [
             'cookie_name' => 'foobar_cookie',
             'path' => '/foo',
-            'same_site' => 'lax',
+            'same_site' => 'Lax',
             'domain' => 'foo.com',
             'absolute_lifetime_in_sec' => 30,
         ]);
@@ -379,9 +365,9 @@ final class FactorySessionManagerTest extends TestCase
         // Irrelevant here
         $this->idle_timeout = 1000;
 
-        $count = 0;
-        $listener = function (SessionRotated $event) use (&$count): void {
-            $count++;
+        $listened = false;
+        $listener = function (SessionRotated $event) use (&$listened): void {
+            $listened = true;
             $this->assertSame('bar', $event->session->get('foo'));
         };
 
@@ -403,21 +389,116 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame($old_session->createdAt(), $new_session->createdAt());
         $this->assertSame($clock->currentTimestamp(), $new_session->lastRotation());
         $this->assertFalse($old_id->sameAs($new_id));
-        $this->assertSame(1, $count);
+        $this->assertSame(true, $listened);
     }
 
-    protected function setUp(): void
+    /**
+     * @test
+     */
+    public function test_exception_if_provided_and_stored_validator_dont_match(): void
     {
-        parent::setUp();
-        $this->driver = new InMemoryDriver();
-        unset($_COOKIE[$this->cookie_name]);
+        $id = $this->writeSessionWithData(['foo' => 'bar']);
+
+        /** @var array{0:string, 1:string } $parts */
+        $parts = explode('|', $id->asString());
+        $tampered = $parts[0] . '|' . 'tempered' . (string)substr($parts[1], strlen('tempered'));
+
+        $_COOKIE[$this->cookie_name] = $tampered;
+
+        try {
+            $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+            $this->fail('Invalid session validator accepted.');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString(
+                "Possible session brute force attack.\nHashed validator did not match for session selector [{$parts[0]}].",
+                $e->getMessage()
+            );
+        }
     }
 
-    protected function tearDown(): void
+    /**
+     * @test
+     */
+    public function the_selector_is_deleted_if_the_hashed_validator_does_not_match(): void
     {
-        unset($_COOKIE[$this->cookie_name]);
-        parent::tearDown();
+        $id = $this->writeSessionWithData(['foo' => 'bar']);
+
+        /** @var array{0:string, 1:string } $parts */
+        $parts = explode('|', $id->asString());
+        $tampered = $parts[0] . '|' . 'tempered' . (string)substr($parts[1], strlen('tempered'));
+
+        $_COOKIE[$this->cookie_name] = $tampered;
+
+        try {
+            $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+            $this->fail('Invalid session validator accepted.');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString(
+                "Possible session brute force attack.\nHashed validator did not match for session selector [{$parts[0]}].",
+                $e->getMessage()
+            );
+        }
+
+        $this->expectException(BadSessionID::class);
+        $this->driver->read($id->selector());
     }
+
+    /**
+     * @param null|array{
+     *     cookie_name?:string,
+     *     idle_timeout_in_sec?: positive-int,
+     *     rotation_interval_in_sec?: positive-int,
+     *     garbage_collection_percentage?: int,
+     *     absolute_lifetime_in_sec?: positive-int,
+     *     domain?: string,
+     *     same_site?: 'Lax'|'Strict'|'None',
+     *     path?:string,
+     *     http_only?: bool,
+     *     secure?: bool
+     * } $config
+     */
+    private function getSessionManager(
+        Clock $clock = null,
+        array $config = null,
+        SessionEventDispatcher $event_dispatcher = null
+    ): FactorySessionManager {
+        $default = [
+            'path' => '/',
+            'cookie_name' => $this->cookie_name,
+            'domain' => 'foo.com',
+            'http_only' => true,
+            'secure' => true,
+            'same_site' => 'Lax',
+            'absolute_lifetime_in_sec' => $this->absolute_lifetime,
+            'idle_timeout_in_sec' => $this->idle_timeout,
+            'rotation_interval_in_sec' => $this->rotation_interval,
+            'garbage_collection_percentage' => $this->gc_collection_percentage,
+        ];
+
+        if ($config) {
+            $default = array_merge($default, $config);
+        }
+
+        return new FactorySessionManager(
+            new SessionConfig($default),
+            $this->driver,
+            new JsonSerializer(),
+            $clock ?? new SystemClock(),
+            $event_dispatcher ?? new NullSessionDispatcher()
+        );
+    }
+
+    private function writeSessionWithData(array $data): SessionId
+    {
+        $manager = $this->getSessionManager();
+        $id = SessionId::new();
+        $session = new ReadWriteSession($id, $data, time());
+        $manager->save($session);
+
+        $_COOKIE[$this->cookie_name] = $id->asString();
+        return $id;
+    }
+
 
 }
 

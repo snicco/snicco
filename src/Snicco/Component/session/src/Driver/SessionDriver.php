@@ -4,41 +4,37 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Driver;
 
-use DateTimeImmutable;
 use Snicco\Component\Session\Exception\BadSessionID;
-use Snicco\Component\Session\Exception\CantDestroySession;
-use Snicco\Component\Session\Exception\CantReadSessionContent;
-use Snicco\Component\Session\Exception\CantWriteSessionContent;
-use Snicco\Component\Session\ValueObject\SerializedSessionData;
+use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
+use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
+use Snicco\Component\Session\ValueObject\SerializedSession;
 
-/**
- * @api
- */
 interface SessionDriver
 {
 
     /**
-     * Returns the data of the session with the given id.
+     * Returns the data of the session with the given selector.
      * It is NOT required to check if the session can still be considered active.
      *
      * @throws BadSessionID
-     * @throws CantReadSessionContent
+     * @throws CouldNotReadSessionContent
      */
-    public function read(string $session_id): SerializedSessionData;
+    public function read(string $selector): SerializedSession;
 
     /**
-     * @throws CantWriteSessionContent
+     * @throws CouldNotWriteSessionContent
      */
-    public function write(string $session_id, SerializedSessionData $data): void;
+    public function write(string $selector, SerializedSession $session): void;
 
     /**
-     * @param string[] $session_ids
-     * @throws CantDestroySession
+     * @param string[] $selectors
+     * @throws CouldNotDestroySessions
      */
-    public function destroy(array $session_ids): void;
+    public function destroy(array $selectors): void;
 
     /**
-     * @throws CantDestroySession
+     * @throws CouldNotDestroySessions
      */
     public function gc(int $seconds_without_activity): void;
 
@@ -46,8 +42,8 @@ interface SessionDriver
      * Update the last activity of the session
      *
      * @throws BadSessionID
-     * @throws CantWriteSessionContent
+     * @throws CouldNotWriteSessionContent
      */
-    public function touch(string $session_id, DateTimeImmutable $now): void;
+    public function touch(string $selector, int $current_timestamp): void;
 
 }

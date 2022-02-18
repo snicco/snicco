@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Tests;
 
-use DateTimeImmutable;
+use BadMethodCallException;
+use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -13,14 +14,15 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
 use Snicco\Component\Session\ReadWriteSession;
-use Snicco\Component\Session\ValueObject\SerializedSessionData;
+use Snicco\Component\Session\Serializer\JsonSerializer;
+use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\Session\ValueObject\SessionId;
 
 use function count;
+use function time;
 
 class ReadWriteSessionTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -30,7 +32,7 @@ class ReadWriteSessionTest extends TestCase
 
         $session->put('foo', 'bar');
 
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -120,6 +122,7 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertTrue($session->has('bar'));
         $this->assertFalse($session->has('foo'));
+        $this->assertFalse($session->has('baz'));
     }
 
     /**
@@ -299,14 +302,14 @@ class ReadWriteSessionTest extends TestCase
         $this->assertSame(0, $session->get('bar'));
         $this->assertSame(true, $session->get('baz'));
 
-        $session->saveUsing($driver = new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing($driver = new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->assertTrue($session->has('foo'));
         $this->assertSame('bar', $session->get('foo'));
         $this->assertEquals(0, $session->get('bar'));
 
         $session = $this->reloadSession($session, $driver);
-        $session->saveUsing($driver, new DateTimeImmutable());
+        $session->saveUsing($driver, new JsonSerializer(), 'v', time());
 
         $this->assertFalse($session->has('foo'));
         $this->assertNull($session->get('foo'));
@@ -325,7 +328,8 @@ class ReadWriteSessionTest extends TestCase
         $this->assertSame('bar', $session->get('foo'));
         $this->assertEquals(0, $session->get('bar'));
 
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
+
 
         $this->assertFalse($session->has('foo'));
         $this->assertNull($session->get('foo'));
@@ -333,6 +337,8 @@ class ReadWriteSessionTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress MixedArgument
      */
     public function testReflash(): void
     {
@@ -346,6 +352,8 @@ class ReadWriteSessionTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress MixedArgument
      */
     public function testReflashWithNow(): void
     {
@@ -370,7 +378,7 @@ class ReadWriteSessionTest extends TestCase
         $this->assertEquals(0, $session->oldInput('bar'));
         $this->assertFalse($session->hasOldInput('boom'));
 
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertSame('bar', $session->oldInput('foo'));
@@ -380,6 +388,8 @@ class ReadWriteSessionTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress MixedArgument
      */
     public function testKeep(): void
     {
@@ -487,9 +497,9 @@ class ReadWriteSessionTest extends TestCase
      */
     public function testTimestampValuesStayTheSame(): void
     {
-        $id = SessionId::createFresh();
+        $id = SessionId::new();
 
-        $session = new ReadWriteSession($id, [], new DateTimeImmutable());
+        $session = new ReadWriteSession($id, [], time());
 
         $created_at = $session->createdAt();
         $last_rotated = $session->lastRotation();
@@ -500,7 +510,7 @@ class ReadWriteSessionTest extends TestCase
         $this->assertSame(time(), $last_activity);
 
         $driver = new InMemoryDriver();
-        $session->saveUsing($driver, new DateTimeImmutable());
+        $session->saveUsing($driver, new JsonSerializer(), 'v', time());
 
         sleep(1);
 
@@ -516,9 +526,9 @@ class ReadWriteSessionTest extends TestCase
      */
     public function testLastActivityIsUpdatedOnSave(): void
     {
-        $id = SessionId::createFresh();
+        $id = SessionId::new();
 
-        $session = new ReadWriteSession($id, [], new DateTimeImmutable());
+        $session = new ReadWriteSession($id, [], time());
 
         $last_activity = $session->lastActivity();
 
@@ -527,7 +537,7 @@ class ReadWriteSessionTest extends TestCase
         sleep(1);
 
         $driver = new InMemoryDriver();
-        $session->saveUsing($driver, new DateTimeImmutable());
+        $session->saveUsing($driver, new JsonSerializer(), 'v', time());
 
         $session = $this->reloadSession($session, $driver);
 
@@ -586,17 +596,20 @@ class ReadWriteSessionTest extends TestCase
 
         $driver = new InMemoryDriver();
 
-        $old_session->saveUsing($driver, new DateTimeImmutable());
+        $old_session->saveUsing($driver, new JsonSerializer(), 'v', time());
 
         $new_session = $this->reloadSession($old_session, $driver);
 
         $this->assertTrue($new_session->isDirty());
 
-        $new_session->saveUsing($driver, new DateTimeImmutable());
+        $new_session->saveUsing($driver, $serializer = new JsonSerializer(), 'v', time());
 
-        $data = $driver->read($old_session->id()->asHash());
-        $new_session =
-            new ReadWriteSession($new_session->id(), $data->asArray(), $data->lastActivity());
+        $data = $driver->read($old_session->id()->selector());
+        $new_session = new ReadWriteSession(
+            $new_session->id(),
+            $serializer->deserialize($data->data()),
+            time()
+        );
 
         $this->assertFalse($new_session->isDirty());
     }
@@ -610,7 +623,7 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $this->assertTrue($session->isDirty());
 
-        $session->saveUsing($driver, new DateTimeImmutable());
+        $session->saveUsing($driver, new JsonSerializer(), 'v', time());
 
         $session = $this->reloadSession($session, $driver);
         $this->assertFalse($session->isDirty());
@@ -626,7 +639,7 @@ class ReadWriteSessionTest extends TestCase
 
         $session->put('foo', 'bar');
 
-        $session->saveUsing($spy_driver, new DateTimeImmutable());
+        $session->saveUsing($spy_driver, new JsonSerializer(), 'v', time());
 
         $calls = $spy_driver->written;
         $this->assertSame(1, count($calls));
@@ -643,7 +656,7 @@ class ReadWriteSessionTest extends TestCase
         $spy_driver = new SpyDriver();
         $session = $this->newPersistedSession();
 
-        $session->saveUsing($spy_driver, new DateTimeImmutable());
+        $session->saveUsing($spy_driver, new JsonSerializer(), 'v', time());
 
         $calls = $spy_driver->written;
         $this->assertSame(0, count($calls));
@@ -683,52 +696,6 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function the_csrf_token_is_present_after_construction(): void
-    {
-        $driver = new InMemoryDriver();
-        $session = $this->newPersistedSession(null, [], $driver);
-
-        $this->assertNotEmpty($token1 = $session->csrfToken());
-
-        $session_new = $this->newSession($session->id()->asString());
-        $this->assertNotEmpty($token2 = $session_new->csrfToken());
-        $this->assertSame($token1->asString(), $token2->asString());
-        $this->assertNotSame($token1->asString(), $session->id()->asString());
-        $this->assertNotSame($token1->asString(), $session->id()->asHash());
-    }
-
-    /**
-     * @test
-     */
-    public function the_csrf_token_is_rotated_after_rotating_the_session_id(): void
-    {
-        $session = $this->newSession();
-        $token_old = $session->csrfToken();
-
-        $session->rotate();
-        $token_new = $session->csrfToken();
-
-        $this->assertNotSame($token_new, $token_old);
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_csrf_token_is_not_valid(): void
-    {
-        $driver = new InMemoryDriver();
-        $session = $this->newPersistedSession(null, [], $driver);
-
-        $this->assertNotEmpty($session->csrfToken());
-        $session->remove('_sniccowp.csrf_token');
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('corrupted');
-        $session->csrfToken();
-    }
-
-    /**
-     * @test
-     */
     public function testSessionRotatedEventIsStored(): void
     {
         $session = $this->newSession();
@@ -737,8 +704,8 @@ class ReadWriteSessionTest extends TestCase
         $session->rotate();
 
         $events = $session->releaseEvents();
-        $this->assertNotEmpty($events);
         $this->assertCount(1, $events);
+        $this->assertTrue(isset($events[0]));
         $this->assertInstanceOf(SessionRotated::class, $events[0]);
 
         $this->assertEmpty($session->releaseEvents());
@@ -750,7 +717,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_invalidate_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -763,7 +730,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_rotate_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -776,7 +743,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_forget_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -789,7 +756,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_put_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -802,7 +769,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_replace_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'validator', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -815,7 +782,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_putIfMissing_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -828,7 +795,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_decrement_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -841,7 +808,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_increment_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -854,7 +821,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_push_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -867,7 +834,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_flash_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -880,7 +847,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_flashNow_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -893,7 +860,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_flashInput_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -906,7 +873,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_reflash_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -919,7 +886,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_keep_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -932,7 +899,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_flush_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -945,7 +912,7 @@ class ReadWriteSessionTest extends TestCase
     public function test_remove_throws_after_saving(): void
     {
         $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new DateTimeImmutable());
+        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
@@ -982,17 +949,63 @@ class ReadWriteSessionTest extends TestCase
         $session->lastRotation();
     }
 
+    /**
+     * @test
+     */
+    public function test_userId(): void
+    {
+        $session = $this->newSession();
+
+        $this->assertSame(null, $session->userId());
+
+        $session->setUserId(1);
+        $this->assertSame(1, $session->userId());
+
+        $session->setUserId('foo');
+        $this->assertSame('foo', $session->userId());
+    }
+
+    /**
+     * @test
+     * @psalm-suppress InvalidScalarArgument
+     */
+    public function test_exception_for_non_string_non_int_user_id(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('string or integer');
+        $this->newSession()->setUserId(true);
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_for_getting_non_string_non_int_user_id(): void
+    {
+        $session = $this->newSession();
+        $session->put('_user_id', true);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('string or integer');
+
+        $session->userId();
+    }
+
+
     private function newSession(string $id = null, array $data = []): ReadWriteSession
     {
-        $id = $id ? SessionId::fromCookieId($id) : SessionId::createFresh();
+        $id = $id ? SessionId::fromCookieId($id) : SessionId::new();
 
-        return new ReadWriteSession($id, $data, new DateTimeImmutable());
+        return new ReadWriteSession($id, $data, time());
     }
 
     private function reloadSession(ReadWriteSession $session, SessionDriver $driver): ReadWriteSession
     {
-        $data = $driver->read($session->id()->asHash());
-        return new ReadWriteSession($session->id(), $data->asArray(), $data->lastActivity());
+        $data = $driver->read($session->id()->selector());
+        return new ReadWriteSession(
+            $session->id(),
+            (new JsonSerializer())->deserialize($data->data()),
+            $data->lastActivity()
+        );
     }
 
     private function newPersistedSession(
@@ -1002,7 +1015,7 @@ class ReadWriteSessionTest extends TestCase
     ): ReadWriteSession {
         $session = $this->newSession($id, $data);
         $driver = $driver ?? new InMemoryDriver();
-        $session->saveUsing($driver, new DateTimeImmutable());
+        $session->saveUsing($driver, new JsonSerializer(), 'v', time());
         return $this->reloadSession($session, $driver);
     }
 
@@ -1014,29 +1027,29 @@ class SpyDriver implements SessionDriver
     public array $written = [];
     public array $touched = [];
 
-    public function read(string $session_id): SerializedSessionData
+    public function read(string $selector): SerializedSession
     {
-        //
+        throw new BadMethodCallException('read not implemented');
     }
 
-    public function write(string $session_id, SerializedSessionData $data): void
+    public function write(string $selector, SerializedSession $session): void
     {
-        $this->written[$session_id] = $data;
+        $this->written[$selector] = $session;
     }
 
-    public function destroy(array $session_ids): void
+    public function destroy(array $selectors): void
     {
-        //
+        throw new BadMethodCallException('destroy not implemented');
     }
 
     public function gc(int $seconds_without_activity): void
     {
-        //
+        throw new BadMethodCallException('gc not implemented');
     }
 
-    public function touch(string $session_id, DateTimeImmutable $now): void
+    public function touch(string $selector, int $current_timestamp): void
     {
-        $this->touched[$session_id] = $now;
+        $this->touched[$selector] = $current_timestamp;
     }
 
 }

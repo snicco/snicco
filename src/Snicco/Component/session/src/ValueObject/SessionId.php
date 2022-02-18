@@ -4,40 +4,36 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\ValueObject;
 
-use RuntimeException;
-use Snicco\Component\StrArr\Str;
+use ParagonIE\ConstantTime\Base64UrlSafe;
+use ParagonIE\ConstantTime\Binary;
 
-use function ctype_alnum;
-use function hash;
-use function strlen;
+use function explode;
+use function random_bytes;
 
-/**
- * @api
- */
 final class SessionId
 {
+    private string $selector;
 
-    public static int $token_strength = 32;
-    private string $id_as_string;
+    private string $validator;
 
-    private function __construct(string $id_as_string = '')
+    private function __construct(string $selector, string $verifier)
     {
-        if (!ctype_alnum($id_as_string)
-            || strlen($id_as_string) !== 2 * SessionId::$token_strength) {
-            $id_as_string = $this->newString();
+        if (24 !== Binary::safeStrlen($selector) || 24 !== Binary::safeStrlen($verifier)) {
+            [$selector, $verifier] = $this->newTokens();
         }
-
-        $this->id_as_string = $id_as_string;
+        $this->selector = $selector;
+        $this->validator = $verifier;
     }
 
-    public static function fromCookieId(string $id): SessionId
+    public static function fromCookieId(string $session_id_from_cookie): SessionId
     {
-        return new SessionId($id);
+        $parts = explode('|', $session_id_from_cookie, 2);
+        return new SessionId($parts[0] ?? '', $parts[1] ?? '');
     }
 
-    public static function createFresh(): SessionId
+    public static function new(): SessionId
     {
-        return new SessionId('');
+        return new SessionId('', '');
     }
 
     public function __toString()
@@ -47,18 +43,7 @@ final class SessionId
 
     public function asString(): string
     {
-        return $this->id_as_string;
-    }
-
-    public function asHash(): string
-    {
-        $res = hash('sha256', $this->asString());
-        if (false === $res) {
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException('Could not create hash for session id.');
-            // @codeCoverageIgnoreEnd
-        }
-        return $res;
+        return $this->selector . '|' . $this->validator;
     }
 
     public function sameAs(SessionId $id2): bool
@@ -66,10 +51,27 @@ final class SessionId
         return $id2->asString() === $this->asString();
     }
 
-    private function newString(): string
+    public function selector(): string
     {
-        $strength = max(self::$token_strength, 16);
-        return Str::random($strength);
+        return $this->selector;
+    }
+
+    public function validator(): string
+    {
+        return $this->validator;
+    }
+
+    /**
+     * @return array{0:string, 1:string}
+     */
+    private function newTokens(): array
+    {
+        $selector = Base64UrlSafe::encode(random_bytes(16));
+        $validator = Base64UrlSafe::encode(random_bytes(16));
+        return [
+            $selector,
+            $validator
+        ];
     }
 
 }

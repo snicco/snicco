@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Driver;
 
-use DateTimeImmutable;
-use RuntimeException;
+use BadMethodCallException;
 use Snicco\Component\Session\SessionEncryptor;
-use Snicco\Component\Session\ValueObject\SerializedSessionData;
+use Snicco\Component\Session\ValueObject\SerializedSession;
 
-use function is_string;
-
-/**
- * @api
- */
-final class EncryptedDriver implements SessionDriver
+final class EncryptedDriver implements UserSessionsDriver
 {
 
     private SessionDriver $driver;
@@ -26,9 +20,9 @@ final class EncryptedDriver implements SessionDriver
         $this->encryptor = $encryptor;
     }
 
-    public function destroy(array $session_ids): void
+    public function destroy(array $selectors): void
     {
-        $this->driver->destroy($session_ids);
+        $this->driver->destroy($selectors);
     }
 
     public function gc(int $seconds_without_activity): void
@@ -36,40 +30,68 @@ final class EncryptedDriver implements SessionDriver
         $this->driver->gc($seconds_without_activity);
     }
 
-    public function read(string $session_id): SerializedSessionData
+    public function read(string $selector): SerializedSession
     {
-        $data = $this->driver->read($session_id);
+        $encrypted_session = $this->driver->read($selector);
 
-        $arr = $data->asArray();
-        if (!isset($arr['encrypted_session_data']) || !is_string($arr['encrypted_session_data'])) {
-            throw new RuntimeException('The session data is corrupted. Does not contain key [encrypted_session_data].');
-        }
-
-        return SerializedSessionData::fromSerializedString(
-            $this->encryptor->decrypt(
-                $arr['encrypted_session_data'],
-            ),
-            $data->lastActivity()->getTimestamp()
+        return SerializedSession::fromString(
+            $this->encryptor->decrypt($encrypted_session->data()),
+            $encrypted_session->hashedValidator(),
+            $encrypted_session->lastActivity(),
+            $encrypted_session->userId()
         );
     }
 
-    public function touch(string $session_id, DateTimeImmutable $now): void
+    public function touch(string $selector, int $current_timestamp): void
     {
-        $this->driver->touch($session_id, $now);
+        $this->driver->touch($selector, $current_timestamp);
     }
 
-    public function write(string $session_id, SerializedSessionData $data): void
+    public function write(string $selector, SerializedSession $session): void
     {
-        $as_string = $data->asString();
-        $encrypted = $this->encryptor->encrypt($as_string);
+        $data = $session->data();
+        $encrypted_data = $this->encryptor->encrypt($data);
 
         $this->driver->write(
-            $session_id,
-            SerializedSessionData::fromArray(
-                ['encrypted_session_data' => $encrypted],
-                $data->lastActivity()->getTimestamp()
+            $selector,
+            SerializedSession::fromString(
+                $encrypted_data,
+                $session->hashedValidator(),
+                $session->lastActivity(),
+                $session->userId()
             )
         );
     }
 
+    public function destroyAll(): void
+    {
+        if (!$this->driver instanceof UserSessionsDriver) {
+            throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
+        }
+        $this->driver->destroyAll();
+    }
+
+    public function destroyAllForUserId($user_id): void
+    {
+        if (!$this->driver instanceof UserSessionsDriver) {
+            throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
+        }
+        $this->driver->destroyAllForUserId($user_id);
+    }
+
+    public function destroyAllForUserIdExcept(string $selector, $user_id): void
+    {
+        if (!$this->driver instanceof UserSessionsDriver) {
+            throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
+        }
+        $this->driver->destroyAllForUserIdExcept($selector, $user_id);
+    }
+
+    public function getAllForUserId($user_id): iterable
+    {
+        if (!$this->driver instanceof UserSessionsDriver) {
+            throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
+        }
+        return $this->driver->getAllForUserId($user_id);
+    }
 }

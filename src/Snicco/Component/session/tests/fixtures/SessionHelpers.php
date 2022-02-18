@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Tests\fixtures;
 
-use DateTimeImmutable;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 use Snicco\Component\Session\ReadWriteSession;
+use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\Session;
 use Snicco\Component\Session\SessionManager\FactorySessionManager;
 use Snicco\Component\Session\SessionManager\SessionManager;
@@ -16,15 +16,17 @@ use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\TestableClock\SystemClock;
 
+use function time;
+
 trait SessionHelpers
 {
 
-    public function newSession(?SessionId $id = null, array $data = [], DateTimeImmutable $now = null): Session
+    public function newSession(?SessionId $id = null, array $data = [], int $now = null): Session
     {
         return new ReadWriteSession(
-            $id ?? SessionId::createFresh(),
+            $id ?? SessionId::new(),
             $data,
-            $now ?? new DateTimeImmutable()
+            $now ?? time()
         );
     }
 
@@ -36,6 +38,7 @@ trait SessionHelpers
         return new FactorySessionManager(
             $config ?? SessionConfig::fromDefaults('sniccowp_test_cookie'),
             $driver ?? new InMemoryDriver(),
+            new JsonSerializer(),
             new SystemClock(),
             $dispatcher ?? new class implements SessionEventDispatcher {
 

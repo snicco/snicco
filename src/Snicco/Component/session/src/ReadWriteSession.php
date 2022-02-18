@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Snicco\Component\Session;
 
 use Closure;
-use DateTimeImmutable;
+use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
+use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\SessionManager\SessionManager;
-use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
-use Snicco\Component\Session\ValueObject\SerializedSessionData;
+use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\StrArr\Arr;
 
@@ -27,7 +27,6 @@ use function is_array;
 use function is_int;
 use function is_null;
 use function is_string;
-use function md5;
 
 /**
  * @interal Either depend on {@see MutableSession} or {@see ImmutableSession} depending on your use
@@ -37,7 +36,7 @@ final class ReadWriteSession implements Session
 {
 
     private SessionId $id;
-    private DateTimeImmutable $last_activity;
+    private int $last_activity;
     private array $attributes;
     private array $original_attributes;
     private bool $locked = false;
@@ -52,24 +51,26 @@ final class ReadWriteSession implements Session
     /**
      * @interal Sessions MUST only be started from a {@see SessionManager}
      */
-    public function __construct(SessionId $id, array $data, DateTimeImmutable $last_activity)
+    public function __construct(SessionId $id, array $data, int $last_activity)
     {
         $this->id = $id;
         $this->attributes = $data;
 
         if (!$this->has('_sniccowp.timestamps.created_at')) {
-            $this->put('_sniccowp.timestamps.created_at', $last_activity->getTimestamp());
+            $this->put('_sniccowp.timestamps.created_at', $last_activity);
             $this->is_new = true;
         }
         if (!$this->has('_sniccowp.timestamps.last_rotated')) {
-            $this->put('_sniccowp.timestamps.last_rotated', $last_activity->getTimestamp());
-        }
-        if (!$this->has('_sniccowp.csrf_token')) {
-            $this->refreshCsrfToken();
+            $this->put('_sniccowp.timestamps.last_rotated', $last_activity);
         }
 
         $this->original_attributes = $this->attributes;
         $this->last_activity = $last_activity;
+    }
+
+    public static function empty(int $last_activity): ReadWriteSession
+    {
+        return new self(SessionId::new(), [], $last_activity);
     }
 
     public function has(string $key): bool
@@ -117,17 +118,6 @@ final class ReadWriteSession implements Session
             );
         }
         return $ts;
-    }
-
-    public function csrfToken(): CsrfToken
-    {
-        $token = $this->get('_sniccowp.csrf_token');
-        if (!is_string($token)) {
-            throw new RuntimeException(
-                'The session storage seems corrupted as the value for key [_sniccowp.csrf_token] is not a string.'
-            );
-        }
-        return new CsrfToken($token);
     }
 
     public function decrement(string $key, int $amount = 1): void
@@ -226,8 +216,7 @@ final class ReadWriteSession implements Session
     {
         $this->checkLocked();
         $this->invalidated_id = $this->id;
-        $this->id = SessionId::createFresh();
-        $this->refreshCsrfToken();
+        $this->id = SessionId::new();
         $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
     }
 
@@ -255,7 +244,7 @@ final class ReadWriteSession implements Session
 
     public function lastActivity(): int
     {
-        return $this->last_activity->getTimestamp();
+        return $this->last_activity;
     }
 
     public function lastRotation(): int
@@ -332,26 +321,33 @@ final class ReadWriteSession implements Session
         $this->put($attributes);
     }
 
-    public function saveUsing(SessionDriver $driver, DateTimeImmutable $now): void
-    {
-        $this->last_activity = $now;
+    public function saveUsing(
+        SessionDriver $driver,
+        Serializer $serializer,
+        string $hashed_validator,
+        int $current_timestamp
+    ): void {
+        $this->last_activity = $current_timestamp;
 
         if (!$this->isDirty()) {
-            $driver->touch($this->id->asHash(), $now);
+            $driver->touch($this->id->selector(), $this->last_activity);
         } else {
             if ($this->invalidated_id instanceof SessionId) {
-                $driver->destroy([$this->invalidated_id->asHash()]);
-                $this->put('_sniccowp.timestamps.last_rotated', $now->getTimestamp());
+                $driver->destroy([$this->invalidated_id->selector()]);
+                $this->put('_sniccowp.timestamps.last_rotated', $this->last_activity);
             }
 
             $this->ageFlashData();
 
+            $serialized_session = SerializedSession::fromString(
+                $serializer->serialize($this->attributes),
+                $hashed_validator,
+                $this->last_activity,
+            );
+
             $driver->write(
-                $this->id->asHash(),
-                SerializedSessionData::fromArray(
-                    $this->attributes,
-                    $this->last_activity->getTimestamp(),
-                ),
+                $this->id->selector(),
+                $serialized_session
             );
         }
 
@@ -362,6 +358,27 @@ final class ReadWriteSession implements Session
     {
         $this->checkLocked();
         Arr::forget($this->attributes, $keys);
+    }
+
+    public function setUserId($user_id): void
+    {
+        /** @psalm-suppress DocblockTypeContradiction */
+        if (!is_string($user_id) && !is_int($user_id)) {
+            throw new InvalidArgumentException('$user_id must be string or integer.');
+        }
+
+        $this->put('_user_id', $user_id);
+    }
+
+    public function userId()
+    {
+        $user_id = $this->get('_user_id');
+
+        if (!is_string($user_id) && !is_int($user_id) && !is_null($user_id)) {
+            throw new InvalidArgumentException('$user_id must be string or integer.');
+        }
+
+        return $user_id;
     }
 
     /**
@@ -390,11 +407,6 @@ final class ReadWriteSession implements Session
         if ($this->locked) {
             throw new SessionIsLocked();
         }
-    }
-
-    private function refreshCsrfToken(): void
-    {
-        $this->put('_sniccowp.csrf_token', md5($this->id->asString()));
     }
 
     private function removeFromOldFlashData(array $keys): void
@@ -453,5 +465,4 @@ final class ReadWriteSession implements Session
     {
         $this->locked = true;
     }
-
 }

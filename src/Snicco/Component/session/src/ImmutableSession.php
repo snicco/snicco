@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session;
 
-use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\Session\ValueObject\SessionId;
 
-/**
- * @api
- */
 interface ImmutableSession
 {
 
     public function id(): SessionId;
+
+    /**
+     * @return string|int|null Return null if no user id has been set.
+     */
+    public function userId();
 
     /**
      * @return int UNIX timestamp
@@ -86,13 +87,5 @@ interface ImmutableSession
      */
     public function get(string $key, $default = null);
 
-    /**
-     * Returns a secure, random string that CAN be used to implement csrf protection using the
-     * token synchronizer pattern. The token is managed internally and regenerated whenever the
-     * session id is rotated/invalidated.
-     *
-     * @return CsrfToken
-     */
-    public function csrfToken(): CsrfToken;
 
 }
