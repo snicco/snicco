@@ -36,6 +36,7 @@ BetterWPDB is a small class with zero dependencies that uses the default mysql c
 7. [Deletes](#deletes)
 8. [Transactions](#transactions)
 9. [Logging](#logging)
+10. [Query Builder](#query-builder)
 
 ## Why you should use this
 
@@ -741,3 +742,59 @@ $better_wpdb->insert('test_table' , ['test_string' => 'foo']);
 
 ````
 
+## Query Builder
+
+BetterWPDB is **not** a query builder and unless you query is dynamic you don't need one.
+
+Most of the time plain sql-queries are more readable and easier to debug.
+
+```php
+
+❌ // You don't need a query builder. The query is always the same. Only the input changes.
+
+$query = SomeQueryBuilder::table('table')
+        ->select([['col1', 'col1']])
+        ->where('condition_1' = ?)
+        ->andWhere('condition2' = ?)
+        ->orWhere('condition3' = ?)
+        ->limit(1)
+        ->orderBy('desc')
+
+✅ // As plain sql.
+
+$query = 'select col1, col1
+          from table
+          where ( condition_1 = ? and condition2 = ? )
+          or condition3 = ?
+          limit 1
+          order by desc'
+
+$result = $better_wpdb->selectAll($query, ['foo', 'bar', 'baz']);
+
+```
+
+If some of your queries are highly dynamic you can consider using [latitude](https://github.com/shadowhand/latitude)
+which is a full-blown query builder that works perfectly with BetterWPDB.
+
+`composer require latitude/latitude`
+
+```php
+
+use Latitude\QueryBuilder\Engine\CommonEngine;
+use Latitude\QueryBuilder\QueryFactory;
+
+use function Latitude\QueryBuilder\field;
+
+$factory = new QueryFactory(new CommonEngine());
+$query = $factory
+    ->select('id', 'username')
+    ->from('users')
+    ->where(field('id')->eq(5))
+    ->compile();
+
+$sql = $query->sql(); // SELECT "id" FROM "users" WHERE "id" = ?
+$bindings = $query->params(); // [5]
+
+$results = $better_wpdb->selectRow($sql, $bindings);
+
+```
