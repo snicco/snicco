@@ -124,7 +124,7 @@ $result = $better_wpdb->preparedQuery('apparently not so valid sql');
 
 var_dump($e->getMessage()) // You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'apparently not a valid SQL statement' at line 1
                            // Query: [apparently not a valid SQL statement]
-                           // Bindings: ['calvin@web.de', 1]
+                           // Bindings: []
 
 ```
 
