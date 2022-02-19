@@ -21,7 +21,7 @@ coverage:
     patch:
       default:
         target: auto
-        threshold: 0.01%
+        threshold: 0.05%
         paths:
           - "src/Snicco/Component"
           - "src/Snicco/Bridge"
