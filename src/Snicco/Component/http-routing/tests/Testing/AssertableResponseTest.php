@@ -8,6 +8,8 @@ use Closure;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\HttpRouting\Http\Cookie;
+use Snicco\Component\HttpRouting\Http\Cookies;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
@@ -557,14 +559,26 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_getAssertableCookie_can_pass_and_returns_assertable_cookie(): void
     {
+        $cookie = (new Cookie('foo', 'bar'));
+        $cookies = new Cookies();
+        $cookies = $cookies->withCookie($cookie);
+
+        /** @var array{0:string} $headers */
+        $headers = $cookies->toHeaders();
+
         $response = new AssertableResponse(
             $this->response_factory->createResponse()
-                ->withAddedHeader('set-cookie', 'foo=bar')
+                ->withAddedHeader('set-cookie', $headers[0])
         );
 
         $cookie = $response->getAssertableCookie('foo');
         $this->assertInstanceOf(AssertableCookie::class, $cookie);
-        $cookie->assertValue('bar');
+        $this->assertSame('bar', $cookie->value);
+        $this->assertSame('foo', $cookie->name);
+        $this->assertSame(true, $cookie->http_only);
+        $this->assertSame('Lax', $cookie->same_site);
+        $this->assertSame('/', $cookie->path);
+        $this->assertSame(true, $cookie->secure);
     }
 
     /**
