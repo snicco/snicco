@@ -43,7 +43,7 @@ parameters:
         - type: className
           regex: Snicco\\Component\\Psr7ErrorHandler\\.*
 
-    - name: scopable_wp
+    - name: better_wp_api
       collectors:
         - type: className
           regex: Snicco\\Component\\BetterWPAPI\\.*
@@ -81,18 +81,18 @@ parameters:
   ruleset:
 
     better_wp_mail:
-      - scopable_wp
+      - better_wp_api
 
     better_wp_hooks:
       - event_dispatcher
-      - scopable_wp
+      - better_wp_api
 
     kernel:
       - str_arr
       - pimple # tests only
 
     eloquent:
-      - scopable_wp
+      - better_wp_api
       - str_arr # tests only
 
     http_routing:
@@ -110,4 +110,4 @@ parameters:
       - str_arr
 
     wp_object_cache_psr16:
-      - scopable_wp
+      - better_wp_api

@@ -1,0 +1,87 @@
+name: Deploy PhpMetrics to GitHub Pages
+
+on:
+  push:
+    # Only run for relevant changes.
+    paths:
+      - 'src/**'
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-phpmetrics:
+    name: Build PhpMetrics
+    runs-on: ubuntu-20.04
+    env:
+      php: 7.4
+      dependencies: highest
+        
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP [${{ env.php }}]
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php }}
+          tools: composer:v2
+          coverage: none
+          ini-values: error_reporting=E_ALL
+        env:
+          fail-fast: true
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ env.dependencies }}
+
+      - name: Install PhpMetrics
+        run: composer require phpmetrics/phpmetrics --dev
+
+      - name: Build PhpMetrics
+        run: vendor/bin/phpmetrics --config=phpmetrics.json
+
+      - name: Upload PhpMetrics
+        uses: actions/upload-artifact@v2
+        with:
+          name: phpmetrics-files
+          path: htmlout
+
+  deploy-phpmetrics:
+    name: Deploy PhpMetrics
+    runs-on: ubuntu-20.04
+    needs: [build-phpmetrics]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Download PhpMetrics files
+        uses: actions/download-artifact@v2
+        with:
+          name: phpmetrics-files
+          path: htmlout
+
+      - name: Move PhpMetrics assets
+        run: |
+          mkdir -p phpmetrics/
+          rm -rf phpmetrics/*
+          mv htmlout/* phpmetrics/
+          rm -rf htmlout/
+
+      - name: Commit updates
+        run: |
+          git add .
+          git status
+          git diff --staged --quiet && echo 'No changes to commit; exiting!' && exit 0
+          git commit -m "Deploy PhpMetrics for ${{ github.sha }}"
+          git pull --rebase --no-edit --quiet
+          git push origin gh-pages
+        env:
+          GIT_AUTHOR_EMAIL: calvin@snicco.de
+          GIT_AUTHOR_NAME: Calvin Alkan
+          GIT_COMMITTER_EMAIL: calvin@snicco.de
+          GIT_COMMITTER_NAME: Calvin Alkan
