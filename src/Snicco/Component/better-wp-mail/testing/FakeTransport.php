@@ -7,12 +7,12 @@ namespace Snicco\Component\BetterWPMail\Testing;
 use Closure;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
-use Snicco\Component\BetterWPMail\ScopableWP;
 use Snicco\Component\BetterWPMail\Transport\Transport;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
+use Snicco\Component\BetterWPMail\WPMailAPI;
 
 use function count;
 use function func_get_args;
@@ -25,16 +25,16 @@ use function strval;
 final class FakeTransport implements Transport
 {
 
-    private ScopableWP $wp;
+    private WPMailAPI $wp;
 
     /**
      * @var array<class-string, array<array{0: Email, 1: Envelope}>>
      */
     private $sent_mails = [];
 
-    public function __construct(ScopableWP $wp = null)
+    public function __construct(WPMailAPI $wp = null)
     {
-        $this->wp = $wp ?? new ScopableWP();
+        $this->wp = $wp ?? new WPMailAPI();
     }
 
     public function send(Email $email, Envelope $envelope): void

@@ -12,9 +12,9 @@ use Snicco\Component\BetterWPMail\Event\MailEventsUsingWPHooks;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
-use Snicco\Component\BetterWPMail\ScopableWP;
 use Snicco\Component\BetterWPMail\Tests\fixtures\Email\WelcomeEmail;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
+use Snicco\Component\BetterWPMail\WPMailAPI;
 
 final class MailerEventsTest extends WPTestCase
 {
@@ -124,7 +124,7 @@ final class MailerEventsTest extends WPTestCase
 
     private function getEventDispatcher(): MailEvents
     {
-        return new MailEventsUsingWPHooks(new ScopableWP());
+        return new MailEventsUsingWPHooks(new WPMailAPI());
     }
 
     private function getSentMails(): array

@@ -30,11 +30,11 @@ use const E_NOTICE;
 final class WPObjectCachePsr16 implements CacheInterface
 {
 
-    private ScopableWP $wp;
+    private WPCacheAPI $wp;
 
-    public function __construct(?ScopableWP $wp = null)
+    public function __construct(?WPCacheAPI $wp = null)
     {
-        $this->wp = $wp ?: new ScopableWP();
+        $this->wp = $wp ?: new WPCacheAPI();
     }
 
     /**

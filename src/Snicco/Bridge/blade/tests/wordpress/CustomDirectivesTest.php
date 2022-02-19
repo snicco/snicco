@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
-use Snicco\Component\ScopableWP\ScopableWP;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
@@ -78,7 +78,7 @@ class CustomDirectivesTest extends WPTestCase
      */
     public function custom_auth_user_directive_works(): void
     {
-        $this->blade->bindWordPressDirectives(new ScopableWP());
+        $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
         $user = $this->factory()->user->create_and_get();
         wp_set_current_user($user->ID);
@@ -99,7 +99,7 @@ class CustomDirectivesTest extends WPTestCase
      */
     public function custom_guest_user_directive_works(): void
     {
-        $this->blade->bindWordPressDirectives(new ScopableWP());
+        $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
         $view = $this->view('guest');
         $content = $view->toString();
@@ -117,7 +117,7 @@ class CustomDirectivesTest extends WPTestCase
      */
     public function custom_wp_role_directives_work(): void
     {
-        $this->blade->bindWordPressDirectives(new ScopableWP());
+        $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
         $admin = $this->factory()->user->create_and_get(['role' => 'administrator']);
         wp_set_current_user($admin->ID);

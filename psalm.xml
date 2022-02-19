@@ -22,7 +22,7 @@
         <ignoreFiles>
             <directory name="vendor"/>
             <!--            Only references global WP constants -->
-            <file name="src/Snicco/Component/eloquent/src/ScopableWP.php"/>
+            <file name="src/Snicco/Component/eloquent/src/WPDatabaseSettingsAPI.php"/>
             <!--            This file is not our code. @see https://github.com/php-cache/integration-tests/issues/117-->
             <file name="src/Snicco/Component/wp-object-cache-psr16/tests/wordpress/WPObjectCachePsr16Test.php"/>
         </ignoreFiles>

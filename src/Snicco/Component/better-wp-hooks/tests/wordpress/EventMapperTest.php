@@ -11,7 +11,7 @@ use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedFilter;
 use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
 use Snicco\Component\BetterWPHooks\Exception\CantCreateMappedEvent;
-use Snicco\Component\BetterWPHooks\ScopableWP;
+use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
@@ -48,7 +48,7 @@ class EventMapperTest extends WPTestCase
         $this->dispatcher = new BaseEventDispatcher(
             new NewableListenerFactory()
         );
-        $this->event_mapper = new EventMapper($this->dispatcher, new ScopableWP());
+        $this->event_mapper = new EventMapper($this->dispatcher, new WPHookAPI());
         $this->resetListenersResponses();
     }
 

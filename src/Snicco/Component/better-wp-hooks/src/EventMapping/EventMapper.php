@@ -10,7 +10,7 @@ use LogicException;
 use RuntimeException;
 use Snicco\Component\BetterWPHooks\EventFactory\MappedHookFactory;
 use Snicco\Component\BetterWPHooks\EventFactory\ParameterBasedHookFactory;
-use Snicco\Component\BetterWPHooks\ScopableWP;
+use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 
 use function array_key_first;
@@ -22,7 +22,7 @@ final class EventMapper
 {
 
     private EventDispatcher $event_dispatcher;
-    private ScopableWP $wp;
+    private WPHookAPI $wp;
     private MappedHookFactory $event_factory;
 
     /**
@@ -37,7 +37,7 @@ final class EventMapper
 
     public function __construct(
         EventDispatcher $event_dispatcher,
-        ScopableWP $wp,
+        WPHookAPI $wp,
         ?MappedHookFactory $event_factory = null
     ) {
         $this->event_dispatcher = $event_dispatcher;

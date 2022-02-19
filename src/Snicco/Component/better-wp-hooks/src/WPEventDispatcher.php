@@ -14,12 +14,12 @@ final class WPEventDispatcher implements EventDispatcher
 {
 
     private EventDispatcher $dispatcher;
-    private ScopableWP $wp;
+    private WPHookAPI $wp;
 
-    public function __construct(EventDispatcher $dispatcher, ScopableWP $wp = null)
+    public function __construct(EventDispatcher $dispatcher, WPHookAPI $wp = null)
     {
         $this->dispatcher = $dispatcher;
-        $this->wp = $wp ?: new ScopableWP();
+        $this->wp = $wp ?: new WPHookAPI();
     }
 
     public function dispatch(object $event): object
