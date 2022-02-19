@@ -7,9 +7,6 @@ namespace Snicco\Component\Session\Exception;
 use RuntimeException;
 use Throwable;
 
-/**
- * @api
- */
 final class CouldNotWriteSessionContent extends RuntimeException
 {
 

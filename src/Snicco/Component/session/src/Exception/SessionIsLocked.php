@@ -7,9 +7,6 @@ namespace Snicco\Component\Session\Exception;
 use LogicException;
 use Throwable;
 
-/**
- * @api
- */
 final class SessionIsLocked extends LogicException
 {
 

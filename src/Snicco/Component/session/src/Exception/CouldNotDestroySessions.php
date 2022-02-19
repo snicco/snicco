@@ -11,9 +11,6 @@ use function implode;
 use function intval;
 use function sprintf;
 
-/**
- * @api
- */
 final class CouldNotDestroySessions extends RuntimeException
 {
 

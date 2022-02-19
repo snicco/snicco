@@ -29,8 +29,9 @@ use function is_null;
 use function is_string;
 
 /**
- * @interal Either depend on {@see MutableSession} or {@see ImmutableSession} depending on your use
- *          case.
+ * @interal You should use {@see MutableSession} or {@see ImmutableSession} depending on your use case.
+ *
+ * @psalm-internal Snicco
  */
 final class ReadWriteSession implements Session
 {
@@ -68,7 +69,7 @@ final class ReadWriteSession implements Session
         $this->last_activity = $last_activity;
     }
 
-    public static function empty(int $last_activity): ReadWriteSession
+    public static function createEmpty(int $last_activity): ReadWriteSession
     {
         return new self(SessionId::new(), [], $last_activity);
     }
