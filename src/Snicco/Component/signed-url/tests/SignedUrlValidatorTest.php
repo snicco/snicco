@@ -10,7 +10,8 @@ use RuntimeException;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
 use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
-use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
+use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
+use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\SignedUrlValidator;
 use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
@@ -25,14 +26,14 @@ final class SignedUrlValidatorTest extends TestCase
 
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
-    private Sha256Hasher $hasher;
+    private HMAC $hmac;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->storage = new InMemoryStorage();
-        $this->hasher = new Sha256Hasher(Secret::generate());
-        $this->url_signer = new UrlSigner($this->storage, $this->hasher);
+        $this->hmac = new HMAC(Secret::generate());
+        $this->url_signer = new UrlSigner($this->storage, $this->hmac);
     }
 
     /**
@@ -42,7 +43,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $this->expectException(InvalidSignature::class);
         $this->expectExceptionMessage('Missing signature parameter for path [/foo].');
@@ -57,7 +58,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $this->expectException(InvalidSignature::class);
         $this->expectExceptionMessage('Missing expires parameter for path [/foo].');
@@ -72,7 +73,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $validator->validate($signed_url->asString());
 
@@ -90,7 +91,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $this->expectException(InvalidSignature::class);
 
@@ -110,7 +111,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
         try {
@@ -131,7 +132,7 @@ final class SignedUrlValidatorTest extends TestCase
 
         $this->expectException(InvalidSignature::class);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
         $validator->validate($url);
     }
 
@@ -141,7 +142,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_if_secret_is_changed(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
-        $validator = new SignedUrlValidator($this->storage, new Sha256Hasher(Secret::generate()));
+        $validator = new SignedUrlValidator($this->storage, new HMAC(Secret::generate()));
 
         $this->expectException(InvalidSignature::class);
         $validator->validate($signed_url->asString());
@@ -156,7 +157,7 @@ final class SignedUrlValidatorTest extends TestCase
 
         $validator = new SignedUrlValidator(
             $this->storage,
-            $this->hasher,
+            $this->hmac,
             $clock = new TestClock()
         );
 
@@ -177,7 +178,7 @@ final class SignedUrlValidatorTest extends TestCase
         $signed_url = $this->url_signer->sign('/foo', 10, 2);
         $validator = new SignedUrlValidator(
             $this->storage,
-            $this->hasher,
+            $this->hmac,
         );
 
         $validator->validate($signed_url->asString());
@@ -195,7 +196,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $this->expectException(InvalidSignature::class);
 
@@ -203,9 +204,35 @@ final class SignedUrlValidatorTest extends TestCase
 
         $string = $signed_url->asString();
         preg_match_all('/signature=([^|]+)/', $string, $matches);
+
+        if (!isset($matches[1][0])) {
+            throw new RuntimeException('Cant extract correct signature in test.');
+        }
         $correct_identifier = $matches[1][0];
 
         $string = str_replace($correct_identifier, $wrong_identifier, $string);
+
+        $validator->validate($string);
+    }
+
+    /**
+     * @test
+     */
+    public function signature_is_validated_before_expiry(): void
+    {
+        $signed_url = $this->url_signer->sign('/foo', 10);
+
+        $validator = new SignedUrlValidator(
+            $this->storage,
+            $this->hmac,
+            $clock = new TestClock()
+        );
+
+        $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
+
+        $clock->travelIntoFuture(11);
+
+        $this->expectException(InvalidSignature::class);
 
         $validator->validate($string);
     }
@@ -217,7 +244,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $validator->validate($signed_url->asString());
         $this->assertTrue(true);
@@ -230,7 +257,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/bar', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $validator->validate('https://foo.com' . $signed_url->asString());
         $this->assertTrue(true);
@@ -243,7 +270,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('https://foo.com/bar/baz/', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $validator->validate($signed_url->asString());
         $this->assertTrue(true);
@@ -256,7 +283,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('https://foo.com/bar/baz/', 10);
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $without_host = str_replace('https://foo.com', '', $signed_url->asString());
         $validator->validate($without_host);
@@ -279,7 +306,7 @@ final class SignedUrlValidatorTest extends TestCase
             $_SERVER['HTTP_USER_AGENT']
         );
 
-        $validator = new SignedUrlValidator($this->storage, $this->hasher);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         try {
             $validator->validate($signed_url->asString());

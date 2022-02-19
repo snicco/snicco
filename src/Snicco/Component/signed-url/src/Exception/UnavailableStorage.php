@@ -5,17 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\SignedUrl\Exception;
 
 use RuntimeException;
-use Throwable;
 
-/**
- * @codeCoverageIgnore
- */
 final class UnavailableStorage extends RuntimeException
 {
-
-    public static function fromPrevious(Throwable $e): UnavailableStorage
-    {
-        return new self($e->getMessage(), (int)$e->getCode(), $e);
-    }
 
 }
