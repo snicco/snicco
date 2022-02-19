@@ -6,10 +6,12 @@ namespace Snicco\Component\Session\Tests\SessionManager;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\Driver\InMemoryDriver;
+use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\Session\SessionManager\SingleSessionSessionManager;
 use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
+use Snicco\Component\TestableClock\TestClock;
 
 final class SingleSessionManagerTest extends TestCase
 {
@@ -66,7 +68,7 @@ final class SingleSessionManagerTest extends TestCase
             'cookie_name' => 'test',
             'idle_timeout_in_sec' => 10,
             'rotation_interval_in_sec' => 20,
-            'garbage_collection_percentage' => 2
+            'garbage_collection_percentage' => 0
         ]);
 
         $manager = new SingleSessionSessionManager($this->getSessionManager($config));
@@ -77,6 +79,41 @@ final class SingleSessionManagerTest extends TestCase
         $this->assertSame('test', $cookie->name());
         $this->assertSame(null, $cookie->lifetime());
         $this->assertSame(0, $cookie->expiryTimestamp());
+    }
+
+
+    /**
+     * @test
+     */
+    public function garbage_collection_works(): void
+    {
+        $test_clock = new TestClock();
+        $driver = new InMemoryDriver($test_clock);
+        $config = new SessionConfig([
+            'cookie_name' => 'test',
+            'idle_timeout_in_sec' => 10,
+            'rotation_interval_in_sec' => 20,
+            'garbage_collection_percentage' => 100
+        ]);
+
+        $manager = new SingleSessionSessionManager($this->getSessionManager($config, $driver));
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+
+        $manager->save($session);
+        $old_id = $session->id();
+
+        $test_clock->travelIntoFuture(9);
+
+        $manager->gc();
+
+        $this->assertNotNull($driver->read($old_id->selector()));
+
+        $test_clock->travelIntoFuture(1);
+
+        $manager->gc();
+
+        $this->expectException(BadSessionID::class);
+        $driver->read($old_id->selector());
     }
 
 }

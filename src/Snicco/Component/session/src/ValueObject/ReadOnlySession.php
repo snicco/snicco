@@ -7,9 +7,6 @@ namespace Snicco\Component\Session\ValueObject;
 use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\Session;
 
-/**
- * @api
- */
 final class ReadOnlySession implements ImmutableSession
 {
 
@@ -38,11 +35,6 @@ final class ReadOnlySession implements ImmutableSession
     public function createdAt(): int
     {
         return $this->session->createdAt();
-    }
-
-    public function csrfToken(): CsrfToken
-    {
-        return $this->session->csrfToken();
     }
 
     public function exists($keys): bool
@@ -95,4 +87,8 @@ final class ReadOnlySession implements ImmutableSession
         return $this->session->only($keys);
     }
 
+    public function userId()
+    {
+        return $this->session->userId();
+    }
 }

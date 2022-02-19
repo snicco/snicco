@@ -6,9 +6,6 @@ namespace Snicco\Component\Session\Event;
 
 use Snicco\Component\Session\ImmutableSession;
 
-/**
- * @api
- */
 final class SessionRotated
 {
 

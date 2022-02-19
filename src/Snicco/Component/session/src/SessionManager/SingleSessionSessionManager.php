@@ -12,18 +12,12 @@ use Snicco\Component\Session\ValueObject\SessionCookie;
 /**
  * Use this class if you want to only ever manage one session per request.
  * This class should not be used as a service locator to pass around a global session object.
- *
- * @api
  */
 final class SingleSessionSessionManager implements SessionManager
 {
 
     private SessionManager $session_manager;
-
-    /**
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private Session $session;
+    private ?Session $session = null;
 
     public function __construct(SessionManager $session_manager)
     {
@@ -49,4 +43,8 @@ final class SingleSessionSessionManager implements SessionManager
         return $this->session_manager->toCookie($session);
     }
 
+    public function gc(): void
+    {
+        $this->session_manager->gc();
+    }
 }

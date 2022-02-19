@@ -11,7 +11,8 @@
     "php": "^7.4|^8.0",
     "ext-filter": "*",
     "sniccowp/testable-clock": "dev-master",
-    "sniccowp/str-arr": "dev-master"
+    "sniccowp/str-arr": "dev-master",
+    "paragonie/constant_time_encoding": "^2.4"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",

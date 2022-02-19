@@ -9,15 +9,12 @@ use Throwable;
 
 use function intval;
 
-/**
- * @api
- */
-final class CantReadSessionContent extends RuntimeException
+final class CouldNotReadSessionContent extends RuntimeException
 {
 
-    public static function forID(string $id, string $driver, ?Throwable $previous = null): CantReadSessionContent
+    public static function forID(string $id, string $driver, ?Throwable $previous = null): CouldNotReadSessionContent
     {
-        return new CantReadSessionContent(
+        return new CouldNotReadSessionContent(
             "Cant read session content for session [$id] with driver [$driver].",
             intval($previous ? $previous->getCode() : 0),
             $previous
