@@ -21,7 +21,7 @@ final class InMemoryDriver implements UserSessionsDriver
 
     public function __construct(Clock $clock = null)
     {
-        $this->clock = $clock ?? new SystemClock();
+        $this->clock = $clock ?? SystemClock::fromUTC();
     }
 
     public function destroy(array $selectors): void
