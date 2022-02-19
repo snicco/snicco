@@ -15,7 +15,7 @@
     1. [Creating a secret](#creating-a-secret)
     2. [Signing an url](#creating-a-signed-url)
     3. [Validating a signed url](#validating-a-signed-url)
-        1. [PSR-15 middleware](#validating-a-signed-url)
+        1. [PSR-15 middleware](#PSR-15)
         2. [Other PHP applications](#validating-a-signed-url)
 5. [Supported storage types](#supported-storage-types)
     1. [Session](#session)
@@ -66,9 +66,9 @@ your web root.
 vendor/bin/generate-signed-url-secret
 ```
 
-**This secret should NEVER be stored in VCS.**
+**This secret should NEVER be stored in version control.**
 
-In your application you should load the secret from an environment variable.
+Load the secret from an environment variable in your application
 
 ```php
 // require 'vendor/autoload.php';
@@ -112,7 +112,7 @@ $mailer->send('user12@gmail.com', "Click <a href='{{$href}}'> here <a/> to unsub
 Validation signed urls should be performed in a middleware to avoid boilerplate.
 <br> The code samples below describe the **manual** way to validate urls in any PHP app.
 
-#### psr15
+#### PSR-15 middleware
 
 If your favorite framework is psr7/psr15 compatible and supports middleware on a per-route basis, you can use our
 inbuilt [psr15 middleware](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-middleware)
