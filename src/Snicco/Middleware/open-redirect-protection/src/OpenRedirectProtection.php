@@ -17,12 +17,6 @@ use function parse_url;
 
 use const PHP_URL_HOST;
 
-/**
- * @todo Its currently possible to redirect to a whitelisted host from an external referer.
- * @todo It this a problem tho? Neither rails nor symfony have this feature.
- *       The only way we could prevent this is to sign all outgoing urls with a HMAC and then strip
- *       that from the query string before the redirect.
- */
 final class OpenRedirectProtection extends Middleware
 {
     /**
