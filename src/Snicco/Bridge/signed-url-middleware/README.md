@@ -1,4 +1,10 @@
-# A psr3, psr7 and psr15 compatible middleware for [the sniccowp/signed-url](https://github.com/sniccowp/sniccowp/tree/feature/extract-magic-link/packages/signed-url) library
+# A psr3, psr7 and psr15 compatible middleware for the [sniccowp/signed-url](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Component/signed-url) library
+
+[![codecov](https://img.shields.io/badge/Coverage-100%25-success
+)](https://app.codecov.io/gh/sniccowp/sniccowp)
+[![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
+[![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
+[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SignedUrlMiddleware/index.html)
 
 This package consists of two simple middlewares that will make working with `sniccowp/signed-url` a breeze. Make sure to
 read the general [documenation](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Component/signed-url) to
