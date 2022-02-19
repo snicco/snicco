@@ -40,7 +40,7 @@ jobs:
         run: composer require phpmetrics/phpmetrics --dev
 
       - name: Build PhpMetrics
-        run: vendor/bin/phpmetrics src/ --report-html=htmlout
+        run: vendor/bin/phpmetrics --config=phpmetrics.json
 
       - name: Upload PhpMetrics
         uses: actions/upload-artifact@v2

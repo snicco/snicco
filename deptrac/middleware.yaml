@@ -117,13 +117,13 @@ parameters:
     wp_auth_only:
       - http_routing
       - psr7_error_handler
-      - scopable_wp
+      - better_wp_api
 
     wp_cap_only:
       - http_routing
       - psr7_error_handler
-      - scopable_wp
+      - better_wp_api
 
     wp_guests_only:
       - http_routing
-      - scopable_wp
+      - better_wp_api
