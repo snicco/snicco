@@ -6,7 +6,7 @@ namespace Snicco\Component\SignedUrl\Tests\Storage;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
+use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\Storage\SessionStorage;
 use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
@@ -16,7 +16,7 @@ use Snicco\Component\TestableClock\Clock;
 
 use function array_key_first;
 
-final class SessionStorageTestUsingArray extends TestCase
+final class SessionStorageUsingArrayTest extends TestCase
 {
 
     use SignedUrlStorageTests;
@@ -32,7 +32,7 @@ final class SessionStorageTestUsingArray extends TestCase
         $arr = [];
         $storage = new SessionStorage($arr);
 
-        $signer = new UrlSigner($storage, new Sha256HMAC(Secret::generate()));
+        $signer = new UrlSigner($storage, new HMAC(Secret::generate()));
 
         /** @var array $arr */
         $this->assertCount(0, $arr);
