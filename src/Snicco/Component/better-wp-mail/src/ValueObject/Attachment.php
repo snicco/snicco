@@ -35,7 +35,7 @@ final class Attachment
     private string $content_type;
     private string $filename;
     private string $disposition;
-    private string $cid;
+    private ?string $cid = null;
 
     /**
      * @var resource|string
@@ -59,6 +59,9 @@ final class Attachment
         $this->body = $body;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fromPath(
         string $path,
         string $name = null,
@@ -140,7 +143,7 @@ final class Attachment
 
     public function cid(): string
     {
-        if ('inline' !== $this->disposition) {
+        if ('inline' !== $this->disposition || !isset($this->cid)) {
             throw new LogicException('Attachment is not embedded and has no cid.');
         }
         return $this->cid;
