@@ -12,7 +12,6 @@ use Snicco\Component\EventDispatcher\Event;
  * The MappedEventFactory is responsible for transforming arbitrary primitive values into
  * an {@see Event} object.
  *
- * @api
  * @see ParameterBasedHookFactory
  */
 interface MappedHookFactory

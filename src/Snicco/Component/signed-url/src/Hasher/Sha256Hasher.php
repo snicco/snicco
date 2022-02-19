@@ -8,9 +8,6 @@ use RuntimeException;
 
 use function hash_hmac;
 
-/**
- * @api
- */
 final class Sha256Hasher extends Hasher
 {
 

@@ -9,7 +9,9 @@ use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 
 /**
- * @api
+ * @psalm-internal Snicco\Component\Templating
+ *
+ * @interal
  */
 final class PHPView implements View
 {

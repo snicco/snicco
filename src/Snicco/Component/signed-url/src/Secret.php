@@ -12,11 +12,6 @@ use Webmozart\Assert\Assert;
 use function random_bytes;
 use function strval;
 
-/**
- * @api
- *
- *
- */
 final class Secret
 {
 

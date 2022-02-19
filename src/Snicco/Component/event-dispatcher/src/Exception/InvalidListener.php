@@ -6,9 +6,6 @@ namespace Snicco\Component\EventDispatcher\Exception;
 
 use InvalidArgumentException;
 
-/**
- * @api
- */
 final class InvalidListener extends InvalidArgumentException
 {
 

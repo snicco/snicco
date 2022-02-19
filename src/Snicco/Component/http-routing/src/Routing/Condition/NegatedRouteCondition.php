@@ -8,6 +8,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 /**
  * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class NegatedRouteCondition extends RouteCondition
 {

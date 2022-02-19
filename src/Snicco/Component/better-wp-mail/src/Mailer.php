@@ -25,9 +25,6 @@ use function count;
 use function get_class;
 use function sprintf;
 
-/**
- * @api
- */
 final class Mailer
 {
 

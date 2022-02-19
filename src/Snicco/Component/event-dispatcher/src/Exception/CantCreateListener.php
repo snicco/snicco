@@ -10,9 +10,6 @@ use Throwable;
 
 use function sprintf;
 
-/**
- * @api
- */
 final class CantCreateListener extends RuntimeException
 {
 

@@ -11,9 +11,10 @@ use Webmozart\Assert\Assert;
 use function trim;
 
 /**
- * @interal
- *
  * @psalm-immutable
+ *
+ * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class RouteGroup
 {

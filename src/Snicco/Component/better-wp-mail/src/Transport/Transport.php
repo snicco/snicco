@@ -8,9 +8,6 @@ use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
-/**
- * @api
- */
 interface Transport
 {
 

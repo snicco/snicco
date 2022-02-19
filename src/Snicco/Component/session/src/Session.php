@@ -9,7 +9,8 @@ use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\SessionManager\SessionManager;
 
 /**
- * @psalm-internal Snicco
+ * @interal
+ * @psalm-internal Snicco\Component\Session
  */
 interface Session extends ImmutableSession, MutableSession
 {

@@ -7,9 +7,6 @@ namespace Snicco\Component\Templating\ViewComposer;
 use Closure;
 use Snicco\Component\Templating\Exception\BadViewComposer;
 
-/**
- * @api
- */
 interface ViewComposerFactory
 {
 

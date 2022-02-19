@@ -13,6 +13,7 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * @interal
+ * @psalm-internal Snicco\Component\Templating
  */
 final class PHPViewFinder
 {
@@ -28,15 +29,6 @@ final class PHPViewFinder
     public function __construct(array $directories = [])
     {
         $this->directories = $this->normalize($directories);
-    }
-
-    /**
-     * @param list<string> $directories
-     * @return list<string>
-     */
-    private function normalize(array $directories): array
-    {
-        return array_map(fn(string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     /**
@@ -62,15 +54,6 @@ final class PHPViewFinder
         throw new ViewNotFound("No file can be found for view name [$view_name].");
     }
 
-    private function normalizeViewName(string $view_name): string
-    {
-        $name = strstr($view_name, '.php', true);
-        $name = ($name === false) ? $view_name : $name;
-
-        $name = trim($name, '/');
-        return str_replace('.', '/', $name);
-    }
-
     /**
      * @psalm-suppress UnresolvableInclude
      */
@@ -81,6 +64,24 @@ final class PHPViewFinder
             unset($context);
             require $path;
         })();
+    }
+
+    /**
+     * @param list<string> $directories
+     * @return list<string>
+     */
+    private function normalize(array $directories): array
+    {
+        return array_map(fn(string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
+    }
+
+    private function normalizeViewName(string $view_name): string
+    {
+        $name = strstr($view_name, '.php', true);
+        $name = ($name === false) ? $view_name : $name;
+
+        $name = trim($name, '/');
+        return str_replace('.', '/', $name);
     }
 
 }

@@ -28,12 +28,6 @@ use const SEEK_CUR;
  * License: MIT, https://github.com/symfony/mime/blob/5.3/LICENSE
  */
 
-/**
- * @api
- *
- * @psalm-suppress PropertyNotSetInConstructor
- *
- */
 final class Attachment
 {
 

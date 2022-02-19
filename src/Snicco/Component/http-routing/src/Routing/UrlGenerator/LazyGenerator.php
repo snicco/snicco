@@ -7,6 +7,10 @@ namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
 use Closure;
 
+/**
+ * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
+ */
 final class LazyGenerator implements UrlGenerator
 {
     private ?UrlGenerator $generator = null;

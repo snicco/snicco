@@ -15,9 +15,10 @@ use Snicco\Component\Eloquent\Mysqli\PDOAdapter;
 use Snicco\Component\Eloquent\ScopableWP;
 
 /**
- * @internal
- *
+ * @psalm-internal Snicco\Component\Eloquent
  * @psalm-suppress PropertyNotSetInConstructor
+ *
+ * @internal
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {

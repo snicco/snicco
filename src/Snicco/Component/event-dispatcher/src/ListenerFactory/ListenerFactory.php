@@ -6,9 +6,6 @@ namespace Snicco\Component\EventDispatcher\ListenerFactory;
 
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 
-/**
- * @api
- */
 interface ListenerFactory
 {
 

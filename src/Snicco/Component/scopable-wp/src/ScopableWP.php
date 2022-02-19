@@ -42,7 +42,6 @@ use const E_USER_NOTICE;
  * extremely inconvenient with methods being final. That said, you should never overwrite any
  * methods of this class.
  *
- * @api
  * @note No new (public) methods will be added to this class until a next major version.
  */
 class ScopableWP

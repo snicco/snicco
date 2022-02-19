@@ -25,9 +25,6 @@ use function is_string;
 use function method_exists;
 use function sprintf;
 
-/**
- * @api
- */
 final class BaseEventDispatcher implements EventDispatcher
 {
 
