@@ -8,7 +8,6 @@ use Cache\Adapter\PHPArray\ArrayCachePool;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\Cache\CacheItemInterface;
 use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Driver\UserSessionsDriver;
@@ -16,7 +15,6 @@ use Snicco\Component\Session\Exception\CouldNotDestroySessions;
 use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
 use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
 use Snicco\Component\Session\Testing\SessionDriverTests;
-use Snicco\Component\Session\Testing\UserSessionDriverTests;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\TestClock;
@@ -28,7 +26,6 @@ final class Psr16SessionDriverTest extends TestCase
 {
 
     use SessionDriverTests;
-    use UserSessionDriverTests;
 
     /**
      * @test
@@ -103,7 +100,7 @@ final class Psr16SessionDriverTest extends TestCase
     {
         $cache = new class extends ArrayCachePool {
 
-            public function save(CacheItemInterface $item)
+            public function set($key, $value, $ttl = null)
             {
                 return false;
             }
@@ -124,11 +121,11 @@ final class Psr16SessionDriverTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_if_cache_throws_exception_for_save(): void
+    public function test_exception_if_cache_throws_exception_for_set(): void
     {
         $cache = new class extends ArrayCachePool {
 
-            public function save(CacheItemInterface $item)
+            public function set($key, $value, $ttl = null)
             {
                 throw new Exception('cant save');
             }
@@ -153,7 +150,7 @@ final class Psr16SessionDriverTest extends TestCase
     {
         $cache = new class extends ArrayCachePool {
 
-            public function getItem($key)
+            public function get($key, $default = null)
             {
                 throw new Exception('cant read');
             }
