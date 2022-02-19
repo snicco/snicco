@@ -1,9 +1,8 @@
 # A psr3, psr7 and psr15 compatible middleware for [the sniccowp/signed-url](https://github.com/sniccowp/sniccowp/tree/feature/extract-magic-link/packages/signed-url) library
 
 This package consists of two simple middlewares that will make working with `sniccowp/signed-url` a breeze. Make sure to
-read the
-general [documenation](https://github.com/sniccowp/sniccowp/tree/feature/extract-magic-link/packages/signed-url) to know
-how to instantiate the needed collaborators.<br>
+read the general [documenation](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Component/signed-url) to
+know how to instantiate the needed collaborators.<br>
 
 ## Installation
 
@@ -18,82 +17,27 @@ added to a route where you expect signed urls, not globally.
 
 ### Basic Usage
 
+---
+
 ```php
 $storage = /* */
-$hasher = /* */
+$hmac = /* */
 
-$validator = new \Snicco\Component\SignedUrl\SignedUrlValidator($storage, $hasher);
-
-$psr_response_factory = /* */
-$psr_logger = /* */
+$validator = new \Snicco\Component\SignedUrl\SignedUrlValidator($storage, $hmac);
 
 $middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
     $validator,
-    $psr_response_factory,
-    $psr_logger
 );
 // Attach $middleware to your route.
 /* */
 ```
 
-### Customize the failure response
+### Customizing the additional request context.
 
-By default, a 403 response will be returned with a very basic HTML template. You can customize the html output by
-passing a callable as the fourth argument. You'll want to wrap your favorite template engine in transformers closure.
+---
 
-```php
-// Same as above.
-$validator = /* */
-$psr_response_factory = /* */
-$psr_logger = /* */
-
-$middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
-    $validator,
-    $psr_response_factory,
-    $psr_logger,
-    function(\Psr\Http\Message\RequestInterface $request) {
-        return "<h1> Your link is invalid </h1> Please contact support."
-    }
-);
-// Attach $middleware to your route.
-/* */
-```
-
-### Customizing the psr log levels:
-
-By default, invalid attempts will be logged with ` \Psr\Log\LogLevel::WARNING`. You can customize transformers behaviour
-by passing an associative array as the fifth parameter.
-
-```php
-// Same as above.
-$validator = /* */
-$psr_response_factory = /* */
-$psr_logger = /* */
-$template = /* */
-
-$log_levels = [
-  \Snicco\Component\SignedUrl\Exception\InvalidSignature::class => \Psr\Log\LogLevel::WARNING,
-  \Snicco\Component\SignedUrl\Exception\SignedUrlExpired::class => \Psr\Log\LogLevel::INFO,
-  \Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded::class => \Psr\Log\LogLevel::NOTICE,
-]
-
-
-$middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
-    $validator,
-    $psr_response_factory,
-    $psr_logger,
-    $template,
-    $log_levels
-);
-
-// Attach $middleware to your route.
-/* */
-```
-
-#### Customizing the additional request context.
-
-As a sixth argument you can pass a closure that will receive the current request. Anything you return from transformers
-closure will be taken into account when validating the current request.
+As a second argument you can pass a closure that will receive the current request. Anything you return from this closure
+will be taken into account when validating the current request.
 
 **This has to match the request context that you used when the link was created!**
 <br>
@@ -103,17 +47,8 @@ invalidated.
 ```php
 // Same as above.
 $validator = /* */
-$psr_response_factory = /* */
-$psr_logger = /* */
-$template = /* */
-$log_levels = /* */
-
 $middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
     $validator,
-    $psr_response_factory,
-    $psr_logger,
-    $template
-    $log_levels,
     function(\Psr\Http\Message\RequestInterface $request) {
         return $request->getHeaderLine('User-Agent');
     }
@@ -123,14 +58,25 @@ $middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
 /* */
 ```
 
+### Only validate unsafe HTTP methods
+
+---
+
+If a signed-url should be used exactly one time you might run into trouble with certain email clients that preload all
+links. In this case you can set the third argument of the middleware to `true`. The signature will then only be checked
+if the request method is one of `[POST, PATCH, PUT, DELETE]`.
+**Make sure you route is not accessible with safe request methods if you use this option**
+
 ### Garbage collection
+
+---
 
 Add the `CollectGarbage` middleware to your global middleware groups.
 
 ```php
 // same as above
 $storage = /* */
-$logger = /* */
+$psr3_logger = /* */
 
 // value between 0-100
 // the percentage that one request through the middleware
