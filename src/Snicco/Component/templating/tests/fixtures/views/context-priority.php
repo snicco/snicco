@@ -2,4 +2,4 @@
 
 declare(strict_types=1);
 
-echo $test_context['foo.bar'];
+echo $test_context['foo']['bar'];
