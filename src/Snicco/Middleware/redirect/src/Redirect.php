@@ -18,9 +18,6 @@ use function ltrim;
 use function sprintf;
 use function strpos;
 
-/**
- * @api
- */
 final class Redirect extends Middleware
 {
 

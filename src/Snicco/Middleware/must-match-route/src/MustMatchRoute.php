@@ -11,9 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 
-/**
- * @api
- */
 final class MustMatchRoute implements MiddlewareInterface
 {
 

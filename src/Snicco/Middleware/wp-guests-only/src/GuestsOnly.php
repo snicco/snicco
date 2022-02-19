@@ -11,9 +11,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\ScopableWP\ScopableWP;
 
-/**
- * @api
- */
 final class GuestsOnly extends Middleware
 {
 
