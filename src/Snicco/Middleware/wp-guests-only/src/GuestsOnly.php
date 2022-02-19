@@ -5,27 +5,27 @@ declare(strict_types=1);
 namespace Snicco\Middleware\GuestsOnly;
 
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
-use Snicco\Component\ScopableWP\ScopableWP;
 
 final class GuestsOnly extends Middleware
 {
 
-    private ScopableWP $wp;
+    private BetterWPAPI $wp;
     private ?string $redirect_to;
     private string $json_message;
 
     public function __construct(
         string $redirect_to = null,
         string $json_message = null,
-        ScopableWP $wp = null
+        BetterWPAPI $wp = null
     ) {
         $this->redirect_to = $redirect_to;
         $this->json_message = $json_message ?: 'You are already authenticated';
-        $this->wp = $wp ?: new ScopableWP();
+        $this->wp = $wp ?: new BetterWPAPI();
     }
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface

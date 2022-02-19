@@ -11,7 +11,7 @@
   "require": {
     "php": "^7.4|^8.0",
     "ext-filter": "*",
-    "sniccowp/scopable-wp": "dev-master"
+    "sniccowp/better-wp-api": "dev-master"
   },
   "autoload": {
     "psr-4": {

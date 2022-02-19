@@ -12,7 +12,7 @@ use mysqli_result;
 use mysqli_sql_exception;
 use Snicco\Component\Eloquent\Mysqli\MysqliDriverInterface;
 use Snicco\Component\Eloquent\Mysqli\PDOAdapter;
-use Snicco\Component\Eloquent\ScopableWP;
+use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
 
 /**
  * @psalm-internal Snicco\Component\Eloquent
@@ -26,7 +26,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
     public const CONNECTION_NAME = 'wp_mysqli_connection';
     private MysqliDriverInterface $mysqli_driver;
 
-    public function __construct(MysqliDriverInterface $mysqli_driver, ScopableWP $wp)
+    public function __construct(MysqliDriverInterface $mysqli_driver, WPDatabaseSettingsAPI $wp)
     {
         $this->mysqli_driver = $mysqli_driver;
         $pdo_adapter = function (): PDOAdapter {
@@ -88,36 +88,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
             }
             return $this->mysqli_driver->doSelect($query, $bindings);
         });
-    }
-
-    /**
-     * Run an SQL statement through the mysqli_driver class.
-     *
-     * @template T
-     * @param string $query
-     * @param array $bindings
-     * @param Closure(string,array): T $callback
-     *
-     * @return T
-     *
-     * @psalm-suppress InvalidScalarArgument
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
-    protected function run($query, $bindings, Closure $callback)
-    {
-        $start = microtime(true);
-
-        try {
-            $result = $callback($query, $bindings = $this->prepareBindings($bindings));
-        } catch (mysqli_sql_exception $mysqli_sql_exception) {
-            throw new QueryException($query, $bindings, $mysqli_sql_exception);
-        }
-
-        if ($this->loggingQueries) {
-            $this->logQuery($query, $bindings, $this->getElapsedTime($start));
-        }
-
-        return $result;
     }
 
     /**
@@ -260,6 +230,36 @@ final class MysqliConnection extends IlluminateMysqlConnection
         while ($record = $result->fetch_assoc()) {
             yield $record;
         }
+    }
+
+    /**
+     * Run an SQL statement through the mysqli_driver class.
+     *
+     * @template T
+     * @param string $query
+     * @param array $bindings
+     * @param Closure(string,array): T $callback
+     *
+     * @return T
+     *
+     * @psalm-suppress InvalidScalarArgument
+     * @psalm-suppress MoreSpecificImplementedParamType
+     */
+    protected function run($query, $bindings, Closure $callback)
+    {
+        $start = microtime(true);
+
+        try {
+            $result = $callback($query, $bindings = $this->prepareBindings($bindings));
+        } catch (mysqli_sql_exception $mysqli_sql_exception) {
+            throw new QueryException($query, $bindings, $mysqli_sql_exception);
+        }
+
+        if ($this->loggingQueries) {
+            $this->logQuery($query, $bindings, $this->getElapsedTime($start));
+        }
+
+        return $result;
     }
 
     /**

@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\ScopableWP\ScopableWP;
 
 use function sprintf;
 
@@ -18,11 +18,11 @@ final class Authorize implements MiddlewareInterface
 
     private string $capability;
     private ?int $object_id;
-    private ScopableWP $wp;
+    private BetterWPAPI $wp;
 
-    public function __construct(string $capability, int $object_id = null, ScopableWP $wp = null)
+    public function __construct(string $capability, int $object_id = null, BetterWPAPI $wp = null)
     {
-        $this->wp = $wp ?: new ScopableWP();
+        $this->wp = $wp ?: new BetterWPAPI();
         $this->capability = $capability;
         $this->object_id = $object_id;
     }

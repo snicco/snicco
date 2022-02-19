@@ -18,7 +18,7 @@ use Illuminate\Support\Fluent;
 use Illuminate\View\View;
 use Illuminate\View\ViewServiceProvider;
 use RuntimeException;
-use Snicco\Component\ScopableWP\ScopableWP;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 use function sprintf;
@@ -79,9 +79,9 @@ final class BladeStandalone
     /**
      * @api
      */
-    public function bindWordPressDirectives(ScopableWP $wp = null): void
+    public function bindWordPressDirectives(BetterWPAPI $wp = null): void
     {
-        $wp = $wp ?: new ScopableWP();
+        $wp = $wp ?: new BetterWPAPI();
 
         Blade::if('auth', fn() => $wp->isUserLoggedIn());
 
@@ -91,7 +91,7 @@ final class BladeStandalone
             if ($expression === 'admin') {
                 $expression = 'administrator';
             }
-            $user = $wp->getCurrentUser();
+            $user = $wp->currentUser();
             if (!empty($user->roles) && is_array($user->roles)
                 && in_array(
                     $expression,

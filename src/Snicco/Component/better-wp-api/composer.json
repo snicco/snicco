@@ -1,0 +1,33 @@
+{
+  "name": "sniccowp/better-wp-api",
+  "description": "This small package tries to solve the pain point of not being able to solve to scope code that references WordPress core code.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPAPI\\": "src"
+    }
+  },
+  "require-dev": {
+    "lucatume/wp-browser": "~3.1.3",
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Component\\BetterWPAPI\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

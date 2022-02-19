@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\ValueObject;
 
-use Snicco\Component\BetterWPMail\ScopableWP;
+use Snicco\Component\BetterWPMail\WPMailAPI;
 
 final class MailDefaults
 {
@@ -22,9 +22,9 @@ final class MailDefaults
         $this->reply_to_email = $reply_to_email;
     }
 
-    public static function fromWordPressSettings(ScopableWP $wp = null): MailDefaults
+    public static function fromWordPressSettings(WPMailAPI $wp = null): MailDefaults
     {
-        $wp = $wp ?: new ScopableWP();
+        $wp = $wp ?: new WPMailAPI();
 
         $email = $wp->adminEmail();
         $name = $wp->siteName();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Eloquent;
 
 use mysqli;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Throwable;
 use wpdb;
 
@@ -20,7 +21,7 @@ use const DB_USER;
  *
  * @interal
  */
-class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
+class WPDatabaseSettingsAPI extends BetterWPAPI
 {
 
     public function dbHost(): string

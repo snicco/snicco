@@ -1,4 +1,4 @@
-namespace: Snicco\Component\ScopableWP
+namespace: Snicco\Component\BetterWPAPI
 paths:
   tests: tests
   output: tests/_output

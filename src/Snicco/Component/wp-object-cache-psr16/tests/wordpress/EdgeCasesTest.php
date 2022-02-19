@@ -8,18 +8,18 @@ namespace Snicco\Component\WPObjectCachePsr16\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use RuntimeException;
-use Snicco\Component\WPObjectCachePsr16\ScopableWP;
+use Snicco\Component\WPObjectCachePsr16\WPCacheAPI;
 use Snicco\Component\WPObjectCachePsr16\WPObjectCachePsr16;
 
 final class EdgeCasesTest extends WPTestCase
 {
     private WPObjectCachePsr16 $cache;
-    private ScopableWP $wp;
+    private WPCacheAPI $wp;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->cache = new WPObjectCachePsr16($this->wp = new ScopableWP());
+        $this->cache = new WPObjectCachePsr16($this->wp = new WPCacheAPI());
     }
 
     /**

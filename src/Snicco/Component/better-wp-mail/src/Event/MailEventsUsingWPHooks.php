@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Event;
 
-use Snicco\Component\BetterWPMail\ScopableWP;
+use Snicco\Component\BetterWPMail\WPMailAPI;
 
 use function get_class;
 
 final class MailEventsUsingWPHooks implements MailEvents
 {
 
-    private ScopableWP $wp;
+    private WPMailAPI $wp;
 
-    public function __construct(ScopableWP $wp)
+    public function __construct(WPMailAPI $wp)
     {
         $this->wp = $wp;
     }

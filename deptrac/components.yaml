@@ -46,7 +46,7 @@ parameters:
     - name: scopable_wp
       collectors:
         - type: className
-          regex: Snicco\\Component\\ScopableWP\\.*
+          regex: Snicco\\Component\\BetterWPAPI\\.*
 
     - name: session
       collectors:
