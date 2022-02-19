@@ -10,11 +10,13 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
 use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
-use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
+use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\SignedUrlValidator;
 use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
 use Snicco\Component\SignedUrl\UrlSigner;
+
+use function str_replace;
 
 final class ValidateSignatureTest extends MiddlewareTestCase
 {
@@ -27,11 +29,11 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         parent::setUp();
         $this->signer = new UrlSigner(
             $storage = new InMemoryStorage(),
-            $hasher = new Sha256Hasher(Secret::generate())
+            $hmac = new HMAC(Secret::generate())
         );
         $this->validator = new SignedUrlValidator(
             $storage,
-            $hasher
+            $hmac
         );
     }
 
@@ -140,6 +142,158 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $this->expectException(InvalidSignature::class);
         // User agent header did not match
         $this->runMiddleware($m, $new_request)->psr()->assertForbidden();
+    }
+
+    /**
+     * @test
+     */
+    public function can_only_check_post_requests(): void
+    {
+        $m = new ValidateSignature(
+            $this->validator,
+            null,
+            true
+        );
+
+        $link = $this->signer->sign('/foo', 10, 2);
+
+        $request = $this->frontendRequest('/foo', [], 'GET');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $request = $this->frontendRequest($link->asString(), [], 'POST');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $this->expectException(InvalidSignature::class);
+
+        $request = $this->frontendRequest(
+            str_replace('signature=', 'signature=tampered', $link->asString()),
+            [],
+            'POST'
+        );
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+    }
+
+    /**
+     * @test
+     */
+    public function can_only_check_put_requests(): void
+    {
+        $m = new ValidateSignature(
+            $this->validator,
+            null,
+            true
+        );
+
+        $link = $this->signer->sign('/foo', 10, 2);
+
+        $request = $this->frontendRequest('/foo', [], 'GET');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $request = $this->frontendRequest($link->asString(), [], 'PUT');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $this->expectException(InvalidSignature::class);
+
+        $request = $this->frontendRequest(
+            str_replace('signature=', 'signature=tampered', $link->asString()),
+            [],
+            'POST'
+        );
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+    }
+
+    /**
+     * @test
+     */
+    public function can_only_check_patch_requests(): void
+    {
+        $m = new ValidateSignature(
+            $this->validator,
+            null,
+            true
+        );
+
+        $link = $this->signer->sign('/foo', 10, 2);
+
+        $request = $this->frontendRequest('/foo', [], 'GET');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $request = $this->frontendRequest($link->asString(), [], 'PATCH');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $this->expectException(InvalidSignature::class);
+
+        $request = $this->frontendRequest(
+            str_replace('signature=', 'signature=tampered', $link->asString()),
+            [],
+            'POST'
+        );
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+    }
+
+    /**
+     * @test
+     */
+    public function can_only_check_delete_requests(): void
+    {
+        $m = new ValidateSignature(
+            $this->validator,
+            null,
+            true
+        );
+
+        $link = $this->signer->sign('/foo', 10, 2);
+
+        $request = $this->frontendRequest('/foo', [], 'GET');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $request = $this->frontendRequest($link->asString(), [], 'DELETE');
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
+
+        $this->expectException(InvalidSignature::class);
+
+        $request = $this->frontendRequest(
+            str_replace('signature=', 'signature=tampered', $link->asString()),
+            [],
+            'POST'
+        );
+
+        $response = $this->runMiddleware($m, $request);
+        $response->assertNextMiddlewareCalled();
+        $response->psr()->assertOk();
     }
 
 }
