@@ -11,6 +11,7 @@ use function random_int;
 
 /**
  * @interal
+ * @psalm-internal Snicco\Component\Session
  */
 final class SessionLottery
 {

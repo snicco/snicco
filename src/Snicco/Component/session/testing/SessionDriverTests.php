@@ -8,15 +8,13 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Exception\BadSessionID;
-use Snicco\Component\Session\ValueObject\SerializedSessionData;
+use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\TestClock;
 
+use function time;
+
 /**
- * @todo This should be tested with the real time() function since the psr cache interfaces
- *       don't use our clock interface. This should be refactored once we use the phpunit
- *       test runner to the symfony/phpunit-bridge
- *
  * @codeCoverageIgnore
  */
 trait SessionDriverTests
@@ -25,13 +23,13 @@ trait SessionDriverTests
     /**
      * @test
      */
-    public function read_from_session_throws_exception_for_bad_id(): void
+    final public function read_from_session_throws_exception_for_bad_id(): void
     {
         $driver = $this->createDriver(new TestClock());
 
         $driver->write(
             'id1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], time())
+            SerializedSession::fromString('foo', 'validator', time()),
         );
 
         try {
@@ -45,65 +43,75 @@ trait SessionDriverTests
     /**
      * @test
      */
-    public function last_activity_is_stored_correctly(): void
+    final public function last_activity_is_stored_correctly(): void
     {
         $driver = $this->createDriver($clock = new TestClock(new DateTimeImmutable('2000-01-01')));
 
         $driver->write(
             'session1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], $clock->currentTimestamp())
+            SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),
         );
 
-        $data = $driver->read('session1');
+        $serialized_session = $driver->read('session1');
 
-        PHPUnit::assertSame($clock->currentTimestamp(), $data->lastActivity()->getTimestamp());
+        PHPUnit::assertSame($clock->currentTimestamp(), $serialized_session->lastActivity());
     }
 
     /**
      * @test
      */
-    public function data_can_be_read_from_the_session(): void
+    final public function data_can_be_read_from_the_driver(): void
     {
         $driver = $this->createDriver(new TestClock());
 
         $driver->write(
             'session1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], time())
+            SerializedSession::fromString(
+                'foo',
+                'validator',
+                time(),
+                1
+            ),
         );
 
-        $data = $driver->read('session1');
-        PHPUnit::assertInstanceOf(SerializedSessionData::class, $data);
+        $session = $driver->read('session1');
 
-        PHPUnit::assertSame(['foo' => 'bar'], $data->asArray());
+        PHPUnit::assertSame('foo', $session->data());
+        PHPUnit::assertSame('validator', $session->hashedValidator());
+        PHPUnit::assertSame(1, $session->userId());
     }
 
     /**
      * @test
      */
-    public function data_can_be_written_to_the_session(): void
+    final public function data_can_be_written_to_an_existing_session(): void
     {
         $driver = $this->createDriver(new TestClock());
 
         $driver->write(
             'session1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], time())
-        );
-        $driver->write(
-            'session1',
-            SerializedSessionData::fromArray(['foo' => 'baz'], time())
+            SerializedSession::fromString('foo', 'validator', time()),
         );
 
-        PHPUnit::assertSame(['foo' => 'baz'], $driver->read('session1')->asArray());
+        $driver->write(
+            'session1',
+            SerializedSession::fromString('bar', 'validator', time()),
+        );
+
+        PHPUnit::assertSame('bar', $driver->read('session1')->data());
     }
 
     /**
      * @test
      */
-    public function a_session_can_be_destroyed(): void
+    final public function a_session_can_be_destroyed(): void
     {
         $driver = $this->createDriver(new TestClock());
 
-        $driver->write('session1', SerializedSessionData::fromArray([], time()));
+        $driver->write(
+            'session1',
+            SerializedSession::fromString('foo', 'validator', time()),
+        );
 
         $driver->destroy(['session1']);
 
@@ -118,14 +126,21 @@ trait SessionDriverTests
     /**
      * @test
      */
-    public function multiple_session_ids_can_be_destroyed(): void
+    final public function multiple_session_ids_can_be_destroyed(): void
     {
         $driver = $this->createDriver(new TestClock());
 
-        $driver->write('session1', SerializedSessionData::fromArray([], time()));
-        $driver->write('session2', SerializedSessionData::fromArray([], time()));
+        $driver->write(
+            'session1',
+            SerializedSession::fromString('foo', 'validator', time()),
+        );
+        $driver->write(
+            'session2',
+            SerializedSession::fromString('foo', 'validator2', time()),
+        );
 
-        $driver->destroy(['session1', 'session2']);
+        // bogus throws no exception
+        $driver->destroy(['session1', 'session2', 'bogus']);
 
         try {
             $driver->read('session1');
@@ -144,32 +159,33 @@ trait SessionDriverTests
     /**
      * @test
      */
-    public function garbage_collection_works_for_old_sessions(): void
+    final public function garbage_collection_works_for_old_sessions(): void
     {
         $driver = $this->createDriver($clock = new TestClock());
 
         $driver->write(
             'session1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], $clock->currentTimestamp())
+            SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),
         );
-        $driver->gc(10);
-        PHPUnit::assertSame(['foo' => 'bar'], $driver->read('session1')->asArray());
 
-        $clock->travelIntoFuture(1);
+        $driver->gc($this->idleTimeout());
+
+        PHPUnit::assertSame('foo', $driver->read('session1')->data());
+
+        $this->travelIntoFuture($clock, 1);
 
         $driver->write(
             'session2',
-            SerializedSessionData::fromArray(
-                ['foo' => 'baz'],
-                $clock->currentTimestamp()
-            )
+            SerializedSession::fromString('bar', 'validator2', $clock->currentTimestamp()),
         );
 
-        $clock->travelIntoFuture(10);
+        /** @psalm-suppress ArgumentTypeCoercion */
+        $this->travelIntoFuture($clock, $this->idleTimeout() - 1);
 
-        $driver->gc(10);
+        $driver->gc($this->idleTimeout());
 
-        PHPUnit::assertSame(['foo' => 'baz'], $driver->read('session2')->asArray());
+        // Session is still active by one second.
+        PHPUnit::assertSame('bar', $driver->read('session2')->data());
 
         try {
             $driver->read('session1');
@@ -182,35 +198,36 @@ trait SessionDriverTests
     /**
      * @test
      */
-    public function touching_the_session_activity_works(): void
+    final public function touching_the_session_activity_works(): void
     {
         $driver = $this->createDriver($clock = new TestClock());
+
         $driver->write(
             'session1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], $clock->currentTimestamp())
+            SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),
         );
 
         PHPUnit::assertSame(
             $clock->currentTimestamp(),
-            $driver->read('session1')->lastActivity()->getTimestamp()
+            $driver->read('session1')->lastActivity()
         );
 
         $driver->touch(
             'session1',
-            (new DateTimeImmutable())->setTimestamp($clock->currentTimestamp() + 1)
+            $clock->currentTimestamp() + 1
         );
 
-        $data = $driver->read('session1');
+        $session = $driver->read('session1');
 
         PHPUnit::assertSame(
             $clock->currentTimestamp() + 1,
-            $data->lastActivity()->getTimestamp(),
+            $session->lastActivity(),
             'session was not touched correctly.'
         );
 
         PHPUnit::assertSame(
-            ['foo' => 'bar'],
-            $data->asArray(),
+            'foo',
+            $session->data(),
             'touching the session should not change the content.'
         );
     }
@@ -218,26 +235,42 @@ trait SessionDriverTests
     /**
      * @test
      */
-    public function test_touch_throws_exception_for_bad_id(): void
+    final public function test_touch_throws_exception_for_bad_id(): void
     {
         $driver = $this->createDriver($clock = new TestClock());
 
         $driver->write(
             'session1',
-            SerializedSessionData::fromArray(['foo' => 'bar'], $clock->currentTimestamp())
+            SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),
         );
 
         $driver->touch(
             'session1',
-            (new DateTimeImmutable())->setTimestamp($clock->currentTimestamp() + 1)
+            $clock->currentTimestamp() + 1
         );
 
         $this->expectException(BadSessionID::class);
 
         $driver->touch(
             'session2',
-            (new DateTimeImmutable())->setTimestamp($clock->currentTimestamp() + 1)
+            $clock->currentTimestamp() + 1
         );
+    }
+
+    /**
+     * @param 0|positive-int $seconds
+     */
+    protected function travelIntoFuture(TestClock $clock, int $seconds): void
+    {
+        $clock->travelIntoFuture($seconds);
+    }
+
+    /**
+     * @return positive-int
+     */
+    protected function idleTimeout(): int
+    {
+        return 2;
     }
 
     abstract protected function createDriver(Clock $clock): SessionDriver;

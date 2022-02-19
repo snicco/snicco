@@ -13,9 +13,6 @@ use function sprintf;
 use function strtolower;
 use function ucfirst;
 
-/**
- * @api
- */
 final class SessionConfig
 {
 
@@ -35,7 +32,7 @@ final class SessionConfig
      *     cookie_name:string,
      *     idle_timeout_in_sec: positive-int,
      *     rotation_interval_in_sec: positive-int,
-     *     garbage_collection_percentage: positive-int,
+     *     garbage_collection_percentage: int,
      *     absolute_lifetime_in_sec?: positive-int,
      *     domain?: string,
      *     same_site?: 'Lax'|'Strict'|'None',

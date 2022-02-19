@@ -9,7 +9,6 @@ use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\Session;
 use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
-use Snicco\Component\Session\ValueObject\CsrfToken;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 
 use function time;
@@ -61,16 +60,6 @@ final class ReadOnlySessionTest extends TestCase
         $session = $this->newSession(null, ['foo' => 1, 'bar' => 0]);
         $store = ReadOnlySession::fromSession($session);
         $this->assertEqualsWithDelta(time(), $store->createdAt(), 1);
-    }
-
-    /**
-     * @test
-     */
-    public function test_csrf_token(): void
-    {
-        $session = $this->newSession();
-        $store = ReadOnlySession::fromSession($session);
-        $this->assertInstanceOf(CsrfToken::class, $store->csrfToken());
     }
 
     /**
@@ -174,4 +163,16 @@ final class ReadOnlySessionTest extends TestCase
 
         $this->assertSame(['foo' => false, 'bar' => null], $store->only(['foo', 'bar']));
     }
+
+    /**
+     * @test
+     */
+    public function test_userId(): void
+    {
+        $session = $this->newSession();
+        $session->setUserId(10);
+        $store = ReadOnlySession::fromSession($session);
+        $this->assertSame(10, $store->userId());
+    }
+
 }

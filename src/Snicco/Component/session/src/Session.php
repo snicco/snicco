@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session;
 
-use DateTimeImmutable;
 use Snicco\Component\Session\Driver\SessionDriver;
+use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\SessionManager\SessionManager;
 
 /**
- * @api
+ * @psalm-internal Snicco
  */
 interface Session extends ImmutableSession, MutableSession
 {
@@ -29,6 +29,11 @@ interface Session extends ImmutableSession, MutableSession
      *
      * @interal
      */
-    public function saveUsing(SessionDriver $driver, DateTimeImmutable $now): void;
+    public function saveUsing(
+        SessionDriver $driver,
+        Serializer $serializer,
+        string $hashed_validator,
+        int $current_timestamp
+    ): void;
 
 }
