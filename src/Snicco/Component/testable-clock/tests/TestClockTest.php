@@ -65,9 +65,17 @@ final class TestClockTest extends TestCase
         $clock = new TestClock();
         $ts1 = $clock->currentTimestamp();
 
-        $clock->travelIntoFuture(100);
+        $clock->travelIntoFuture(99);
+
+        $this->assertLessThan($ts1 + 100, $clock->currentTimestamp());
+
+        $clock->travelIntoFuture(1);
 
         $this->assertEquals($ts1 + 100, $clock->currentTimestamp());
+
+        $clock->travelIntoFuture(1);
+
+        $this->assertEquals($ts1 + 101, $clock->currentTimestamp());
     }
 
     /**
@@ -78,9 +86,17 @@ final class TestClockTest extends TestCase
         $clock = new TestClock();
         $ts1 = $clock->currentTimestamp();
 
-        $clock->travelIntoPast(100);
+        $clock->travelIntoPast(99);
+
+        $this->assertEquals($ts1 - 99, $clock->currentTimestamp());
+
+        $clock->travelIntoPast(1);
 
         $this->assertEquals($ts1 - 100, $clock->currentTimestamp());
+
+        $clock->travelIntoPast(1);
+
+        $this->assertEquals($ts1 - 101, $clock->currentTimestamp());
     }
 
 }

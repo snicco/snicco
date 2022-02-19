@@ -46,7 +46,7 @@ final class FactorySessionManager implements SessionManager
         $this->config = $config;
         $this->driver = $driver;
         $this->serializer = $serializer;
-        $this->clock = $clock ?: new SystemClock();
+        $this->clock = $clock ?: SystemClock::fromUTC();
         $this->event_dispatcher = $event_dispatcher ?: new NullSessionDispatcher();
     }
 

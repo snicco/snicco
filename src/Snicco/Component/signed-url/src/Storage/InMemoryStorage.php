@@ -21,7 +21,7 @@ final class InMemoryStorage implements SignedUrlStorage
 
     public function __construct(?Clock $clock = null)
     {
-        $this->clock = $clock ?? new SystemClock();
+        $this->clock = $clock ?? SystemClock::fromUTC();
     }
 
     public function gc(): void
@@ -41,11 +41,6 @@ final class InMemoryStorage implements SignedUrlStorage
         ];
     }
 
-    public function all(): array
-    {
-        return $this->links;
-    }
-
     public function consume(string $identifier): void
     {
         if (!isset($this->links[$identifier])) {
@@ -60,6 +55,11 @@ final class InMemoryStorage implements SignedUrlStorage
         } else {
             $this->links[$identifier]['usages_left'] = $new;
         }
+    }
+
+    public function all(): array
+    {
+        return $this->links;
     }
 
 }
