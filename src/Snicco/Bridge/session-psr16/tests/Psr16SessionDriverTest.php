@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
-use Snicco\Component\Session\Driver\UserSessionsDriver;
 use Snicco\Component\Session\Exception\CouldNotDestroySessions;
 use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
 use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
@@ -269,14 +268,4 @@ final class Psr16SessionDriverTest extends TestCase
         return new Psr16SessionDriver(new ArrayCachePool(), $this->idleTimeout());
     }
 
-    protected function createUserSessionDriver(array $user_sessions): UserSessionsDriver
-    {
-        $driver = new Psr16SessionDriver(new ArrayCachePool(), $this->idleTimeout());
-
-        foreach ($user_sessions as $selector => $user_session) {
-            $driver->write($selector, $user_session);
-        }
-
-        return $driver;
-    }
 }
