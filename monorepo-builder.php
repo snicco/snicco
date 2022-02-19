@@ -13,6 +13,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/src/Snicco/Component',
         __DIR__ . '/src/Snicco/Bridge',
         __DIR__ . '/src/Snicco/Middleware',
+        __DIR__ . '/src/Snicco/Bundle',
     ]);
 
     $parameters->set(Option::DATA_TO_APPEND, [

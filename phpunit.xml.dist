@@ -18,6 +18,7 @@
             <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
             <directory suffix="Test.php">src/Snicco/Component/*/tests/</directory>
             <directory suffix="Test.php">src/Snicco/Middleware/*/tests/</directory>
+            <directory suffix="Test.php">src/Snicco/Bundle/*/tests/</directory>
             <exclude>src/Snicco/*/*/tests/integration</exclude>
             <exclude>src/Snicco/*/*/tests/wordpress</exclude>
         </testsuite>
@@ -38,6 +39,12 @@
             <directory suffix="Test.php">src/Snicco/Bridge/*/tests/</directory>
             <exclude>src/Snicco/Bridge/*/tests/integration</exclude>
             <exclude>src/Snicco/Bridge/*/tests/wordpress</exclude>
+        </testsuite>
+
+        <testsuite name="Bundle">
+            <directory suffix="Test.php">src/Snicco/Bundle/*/tests/</directory>
+            <exclude>src/Snicco/Bundle/*/tests/integration</exclude>
+            <exclude>src/Snicco/Bundle/*/tests/wordpress</exclude>
         </testsuite>
 
         <testsuite name="integration">
