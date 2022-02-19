@@ -8,9 +8,6 @@ use Webmozart\Assert\Assert;
 
 use function time;
 
-/**
- * @api
- */
 final class SignedUrl
 {
 

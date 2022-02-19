@@ -18,9 +18,6 @@ use function in_array;
 
 use const PHP_INT_MIN;
 
-/**
- * @api
- */
 final class EventMapper
 {
 

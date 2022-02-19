@@ -12,8 +12,6 @@ use const PHP_SAPI;
 /**
  * This class is an immutable value object that represent the environment the application is
  * running in.
- *
- * @api
  */
 final class Environment
 {
@@ -57,14 +55,6 @@ final class Environment
         }
 
         $this->is_debug = $is_debug;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function validEnvironments(): array
-    {
-        return [self::TESTING, self::PROD, self::DEV, self::STAGING];
     }
 
     public function isProduction(): bool
@@ -128,6 +118,14 @@ final class Environment
     public function isCli(): bool
     {
         return (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg');
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function validEnvironments(): array
+    {
+        return [self::TESTING, self::PROD, self::DEV, self::STAGING];
     }
 
 }

@@ -16,6 +16,8 @@ use const DB_PASSWORD;
 use const DB_USER;
 
 /**
+ * @psalm-internal Snicco\Component\Eloquent
+ *
  * @interal
  */
 class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP

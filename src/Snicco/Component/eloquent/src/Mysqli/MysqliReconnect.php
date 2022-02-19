@@ -9,6 +9,8 @@ use mysqli;
 use RuntimeException;
 
 /**
+ * @psalm-internal Snicco\Component\Eloquent
+ *
  * @interal
  */
 final class MysqliReconnect

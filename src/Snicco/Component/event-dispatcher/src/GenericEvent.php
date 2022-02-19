@@ -6,9 +6,6 @@ namespace Snicco\Component\EventDispatcher;
 
 use function get_class;
 
-/**
- * @api
- */
 final class GenericEvent implements Event
 {
 

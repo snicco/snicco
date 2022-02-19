@@ -15,9 +15,6 @@ namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use InvalidArgumentException;
 
-/**
- * @api
- */
 final class Envelope
 {
 

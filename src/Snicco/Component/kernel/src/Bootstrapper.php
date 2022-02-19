@@ -7,9 +7,6 @@ namespace Snicco\Component\Kernel;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
-/**
- * @api
- */
 interface Bootstrapper
 {
 

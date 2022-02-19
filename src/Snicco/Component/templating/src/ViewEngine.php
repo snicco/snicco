@@ -9,9 +9,6 @@ use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
-/**
- * @api
- */
 final class ViewEngine
 {
 

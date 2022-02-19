@@ -12,8 +12,10 @@ use Traversable;
 use function count;
 
 /**
- * @interal
  * @psalm-immutable
+ *
+ * @psalm-internal Snicco\Component\HttpRouting
+ * @interal
  */
 final class RouteCollection implements Routes
 {

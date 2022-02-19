@@ -20,8 +20,6 @@ use function strip_tags;
  * The method on this class follow a simple convention:
  * 1) $email = $email->withXXX(); Will replace the attributes and return a new object.
  * 2 $email = $email->addXXX(); Will merge the attributes and return a new object.
- *
- * @api
  */
 class Email
 {
@@ -96,36 +94,6 @@ class Email
         $new = clone $this;
         $new->to = $this->normalizeAddresses($addresses);
         return $new;
-    }
-
-    /**
-     * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param string|Mailbox|WP_User|T|WP_User[]|Mailbox[]|T[] $addresses
-     * @return list<Mailbox>
-     *
-     * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @psalm-suppress PossiblyInvalidArgument
-     */
-    private function normalizeAddresses($addresses): array
-    {
-        if (is_array($addresses)) {
-            $first_key = array_key_first($addresses);
-            if (null === $first_key) {
-                return [];
-            }
-            if (is_string($addresses[$first_key])) {
-                $addresses = [$addresses];
-            }
-        }
-
-        $addresses = is_array($addresses) ? $addresses : [$addresses];
-
-        $a = [];
-        foreach ($addresses as $address) {
-            $a[] = Mailbox::create($address);
-        }
-
-        return $a;
     }
 
     /**
@@ -264,14 +232,6 @@ class Email
     }
 
     /**
-     * @api
-     */
-    final protected function _addAttachment(Attachment $attachment): void
-    {
-        $this->attachments[] = $attachment;
-    }
-
-    /**
      * @param string|resource $data
      */
     final public function addBinaryAttachment($data, string $name, string $content_type = null): Email
@@ -303,17 +263,6 @@ class Email
         $new = clone $this;
         $new->_setPriority($priority);
         return $new;
-    }
-
-    /**
-     * @api
-     */
-    final protected function _setPriority(int $priority): void
-    {
-        if ($priority < 1 || $priority > 5) {
-            throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
-        }
-        $this->priority = $priority;
     }
 
     final public function withHtmlTemplate(string $template): Email
@@ -359,31 +308,6 @@ class Email
     /**
      * @param string|array<string,mixed> $key
      * @param mixed $value
-     * @api
-     *
-     * @psalm-suppress MixedAssignment
-     */
-    final protected function _addContext($key, $value = null): void
-    {
-        $context = is_array($key) ? $key : [$key => $value];
-
-        foreach ($context as $key => $value) {
-            if (isset($this->reserved_context[$key])) {
-                throw new LogicException(
-                    sprintf(
-                        "[%s] is a reserved context key.\n[%s].\nPlease choose a different key.",
-                        $key,
-                        $this->reserved_context[$key]
-                    )
-                );
-            }
-            $this->context[$key] = $value;
-        }
-    }
-
-    /**
-     * @param string|array<string,mixed> $key
-     * @param mixed $value
      */
     final public function addContext($key, $value = null): Email
     {
@@ -403,14 +327,6 @@ class Email
             $new->_addCustomHeader($name, $value);
         }
         return $new;
-    }
-
-    /**
-     * @api
-     */
-    final protected function _addCustomHeader(string $name, string $value): void
-    {
-        $this->custom_headers = array_merge($this->custom_headers, [$name => $value]);
     }
 
     /**
@@ -545,6 +461,88 @@ class Email
     final public function htmlCharset(): string
     {
         return $this->html_charset;
+    }
+
+    /**
+     * @api
+     */
+    final protected function _addAttachment(Attachment $attachment): void
+    {
+        $this->attachments[] = $attachment;
+    }
+
+    /**
+     * @api
+     */
+    final protected function _setPriority(int $priority): void
+    {
+        if ($priority < 1 || $priority > 5) {
+            throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
+        }
+        $this->priority = $priority;
+    }
+
+    /**
+     * @param string|array<string,mixed> $key
+     * @param mixed $value
+     * @api
+     *
+     * @psalm-suppress MixedAssignment
+     */
+    final protected function _addContext($key, $value = null): void
+    {
+        $context = is_array($key) ? $key : [$key => $value];
+
+        foreach ($context as $key => $value) {
+            if (isset($this->reserved_context[$key])) {
+                throw new LogicException(
+                    sprintf(
+                        "[%s] is a reserved context key.\n[%s].\nPlease choose a different key.",
+                        $key,
+                        $this->reserved_context[$key]
+                    )
+                );
+            }
+            $this->context[$key] = $value;
+        }
+    }
+
+    /**
+     * @api
+     */
+    final protected function _addCustomHeader(string $name, string $value): void
+    {
+        $this->custom_headers = array_merge($this->custom_headers, [$name => $value]);
+    }
+
+    /**
+     * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     * @param string|Mailbox|WP_User|T|WP_User[]|Mailbox[]|T[] $addresses
+     * @return list<Mailbox>
+     *
+     * @psalm-suppress PossiblyUndefinedArrayOffset
+     * @psalm-suppress PossiblyInvalidArgument
+     */
+    private function normalizeAddresses($addresses): array
+    {
+        if (is_array($addresses)) {
+            $first_key = array_key_first($addresses);
+            if (null === $first_key) {
+                return [];
+            }
+            if (is_string($addresses[$first_key])) {
+                $addresses = [$addresses];
+            }
+        }
+
+        $addresses = is_array($addresses) ? $addresses : [$addresses];
+
+        $a = [];
+        foreach ($addresses as $address) {
+            $a[] = Mailbox::create($address);
+        }
+
+        return $a;
     }
 
 }

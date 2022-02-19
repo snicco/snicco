@@ -13,9 +13,6 @@ use function sprintf;
 
 use const JSON_THROW_ON_ERROR;
 
-/**
- * @api
- */
 final class JsonToArray extends Payload
 {
 

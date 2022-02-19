@@ -13,7 +13,7 @@ use function ob_start;
 
 /**
  * @interal
- * @codeCoverageIgnore
+ * @psalm-internal Snicco\Component\Templating
  */
 final class OutputBuffer
 {
@@ -24,7 +24,9 @@ final class OutputBuffer
     {
         $res = ob_start();
         if (false === $res) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Output buffering could not be started.');
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -35,7 +37,9 @@ final class OutputBuffer
     {
         $output = ob_get_clean();
         if (false === $output) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Buffered output could not be retrieved.');
+            // @codeCoverageIgnoreEnd
         }
         return $output;
     }
@@ -44,7 +48,9 @@ final class OutputBuffer
     {
         $res = ob_end_clean();
         if (false === $res) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Buffered output could not be removed.');
+            // @codeCoverageIgnoreEnd
         }
     }
 }

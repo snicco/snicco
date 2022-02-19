@@ -6,9 +6,6 @@ namespace Snicco\Component\Templating\ViewComposer;
 
 use Snicco\Component\Templating\View\View;
 
-/**
- * @api
- */
 interface ViewComposer
 {
 

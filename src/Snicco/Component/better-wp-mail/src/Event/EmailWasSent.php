@@ -7,9 +7,6 @@ namespace Snicco\Component\BetterWPMail\Event;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
-/**
- * @api
- */
 final class EmailWasSent
 {
 

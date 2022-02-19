@@ -10,9 +10,6 @@ use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\GenericEvent;
 
-/**
- * @api
- */
 final class WPEventDispatcher implements EventDispatcher
 {
 

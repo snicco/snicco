@@ -9,6 +9,9 @@ use Snicco\Component\Templating\View\View;
 use Throwable;
 
 /**
+ *
+ * @psalm-internal Snicco\Bridge\Blade
+ *
  * @internal
  */
 final class BladeView implements View, \Illuminate\Contracts\View\View

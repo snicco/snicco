@@ -14,8 +14,11 @@ use Illuminate\Contracts\Foundation\Application;
  * This class fulfills that role. When rendering BladeComponents the getNamespace method will be
  * called where have to return an empty string.
  *
- * @codeCoverageIgnore
+ * @psalm-internal Snicco\Bridge\Blade
+ *
  * @internal
+ *
+ * @codeCoverageIgnore
  */
 final class DummyApplication implements Application
 {

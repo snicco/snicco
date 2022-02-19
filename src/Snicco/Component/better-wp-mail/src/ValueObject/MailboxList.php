@@ -12,9 +12,6 @@ use function array_values;
 use function count;
 use function is_string;
 
-/**
- * @api
- */
 final class MailboxList implements Countable, IteratorAggregate
 {
 

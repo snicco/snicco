@@ -14,9 +14,6 @@ use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function is_file;
 
-/**
- * @api
- */
 final class BladeViewFactory implements ViewFactory
 {
 

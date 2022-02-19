@@ -9,9 +9,6 @@ use Snicco\Component\ParameterBag\ParameterBag;
 
 use function call_user_func;
 
-/**
- * @api
- */
 final class GlobalViewContext
 {
 

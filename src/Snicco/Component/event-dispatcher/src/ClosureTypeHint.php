@@ -15,8 +15,9 @@ use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 use function count;
 
 /**
- * @interal
  * @psalm-internal Snicco\Component\EventDispatcher
+ *
+ * @interal
  */
 final class ClosureTypeHint
 {

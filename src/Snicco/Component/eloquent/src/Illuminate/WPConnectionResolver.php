@@ -14,7 +14,9 @@ use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
  * best of both worlds. The developer can use secondary db connections with for example postgres or
  * mongo if needed, but we don't open another connection by default.
  *
- * @internal
+ * @psalm-internal Snicco\Component\Eloquent
+ *
+ * @interal
  */
 final class WPConnectionResolver implements IlluminateConnectionResolver
 {

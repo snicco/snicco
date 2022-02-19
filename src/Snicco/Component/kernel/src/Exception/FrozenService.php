@@ -7,9 +7,6 @@ namespace Snicco\Component\Kernel\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
-/**
- * @api
- */
 final class FrozenService extends RuntimeException implements ContainerExceptionInterface
 {
 

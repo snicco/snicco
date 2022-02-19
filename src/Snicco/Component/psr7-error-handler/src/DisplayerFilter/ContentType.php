@@ -14,7 +14,6 @@ use function strstr;
  * @note This Filter assumes that content negotiation already happened and that the request has the
  *       best negotiated content type filter already set. @see
  *      {https://github.com/middlewares/negotiation/blob/master/src/ContentType.php#L156}
- * @api
  */
 final class ContentType implements Filter
 {

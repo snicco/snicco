@@ -6,9 +6,6 @@ namespace Snicco\Component\BetterWPMail\Exception;
 
 use Throwable;
 
-/**
- * @api
- */
 interface CantSendEmail extends Throwable
 {
 
