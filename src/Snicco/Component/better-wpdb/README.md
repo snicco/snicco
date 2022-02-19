@@ -71,7 +71,7 @@ When using prepared statements, the sql query and the actual values are sent sep
 impossible to perform any SQL injection.
 
 `wpdb::prepare()` is a [string escaper](https://github.com/WordPress/WordPress/blob/master/wp-includes/wp-db.php#L1395).
-The name is misleading and wrong.
+The name is misleading and its utility is suboptimal.
 
 You can read more about this topic and why it's so important to use real prepared statements here:
 
