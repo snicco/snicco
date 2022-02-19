@@ -22,9 +22,6 @@ use function parse_url;
 use function preg_replace;
 use function rtrim;
 
-/**
- * @api
- */
 final class SignedUrlValidator
 {
 

@@ -11,9 +11,6 @@ use ReflectionException;
 use Snicco\Component\EventDispatcher\Exception\CantRemoveListener;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 
-/**
- * @api
- */
 interface EventDispatcher extends EventDispatcherInterface
 {
 

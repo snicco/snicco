@@ -7,9 +7,6 @@ namespace Snicco\Component\Templating\ViewFactory;
 use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\View\View;
 
-/**
- * @api
- */
 interface ViewFactory
 {
 

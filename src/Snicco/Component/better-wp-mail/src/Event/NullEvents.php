@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Event;
 
-/**
- * @api
- */
 final class NullEvents implements MailEvents
 {
 

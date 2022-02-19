@@ -12,6 +12,11 @@ use function gettype;
 use function is_string;
 use function sprintf;
 
+/**
+ * @psalm-internal Snicco\Component\BetterWPHooks
+ *
+ * @interal
+ */
 final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
 {
 

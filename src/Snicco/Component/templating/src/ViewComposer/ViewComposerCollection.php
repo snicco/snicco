@@ -10,9 +10,6 @@ use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\View\View;
 
-/**
- * @api
- */
 final class ViewComposerCollection
 {
 

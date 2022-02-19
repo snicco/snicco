@@ -12,6 +12,8 @@ use Webmozart\Assert\Assert;
 use function array_slice;
 
 /**
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
  * @interal
  */
 final class ViewController extends Controller

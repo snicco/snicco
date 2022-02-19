@@ -12,9 +12,6 @@ use function gettype;
 use function implode;
 use function sprintf;
 
-/**
- * @api
- */
 final class CantCreateMappedEvent extends RuntimeException
 {
 

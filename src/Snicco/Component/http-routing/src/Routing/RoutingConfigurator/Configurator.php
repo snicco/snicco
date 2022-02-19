@@ -30,6 +30,7 @@ use function trim;
 
 /**
  * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigurator
 {

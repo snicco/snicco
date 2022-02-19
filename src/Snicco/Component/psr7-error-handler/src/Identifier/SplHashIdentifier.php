@@ -8,9 +8,6 @@ use Throwable;
 
 use function spl_object_hash;
 
-/**
- * @api
- */
 final class SplHashIdentifier implements ExceptionIdentifier
 {
 

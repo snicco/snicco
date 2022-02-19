@@ -8,9 +8,6 @@ use Snicco\Component\BetterWPMail\ScopableWP;
 
 use function get_class;
 
-/**
- * @api
- */
 final class MailEventsUsingWPHooks implements MailEvents
 {
 

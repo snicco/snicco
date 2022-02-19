@@ -14,7 +14,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use function sprintf;
 
 /**
- * @internal
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
+ * @interal
  */
 final class MiddlewareFactory
 {

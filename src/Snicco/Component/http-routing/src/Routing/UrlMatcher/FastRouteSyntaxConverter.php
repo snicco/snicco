@@ -19,8 +19,10 @@ use function str_replace;
 use function strlen;
 
 /**
- * @interal
  * @psalm-immutable
+ *
+ * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class FastRouteSyntaxConverter
 {

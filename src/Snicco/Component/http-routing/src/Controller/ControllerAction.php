@@ -18,6 +18,8 @@ use function array_values;
 use function call_user_func_array;
 
 /**
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
  * @interal
  */
 final class ControllerAction

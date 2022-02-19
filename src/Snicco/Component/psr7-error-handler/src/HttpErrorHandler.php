@@ -18,9 +18,6 @@ use Throwable;
 use function array_values;
 use function strtolower;
 
-/**
- * @api
- */
 final class HttpErrorHandler implements HttpErrorHandlerInterface
 {
 
@@ -57,11 +54,6 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         $this->fallback_displayer = $default_displayer;
     }
 
-    private function addDisplayer(ExceptionDisplayer $displayer): void
-    {
-        $this->displayers[] = $displayer;
-    }
-
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         $info = $this->information_provider->createFor($e);
@@ -82,6 +74,11 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         }
 
         return $this->withHttpHeaders($info->transformedException(), $response);
+    }
+
+    private function addDisplayer(ExceptionDisplayer $displayer): void
+    {
+        $this->displayers[] = $displayer;
     }
 
     private function logException(ExceptionInformation $info, RequestInterface $request): void

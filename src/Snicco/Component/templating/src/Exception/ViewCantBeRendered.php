@@ -7,9 +7,6 @@ namespace Snicco\Component\Templating\Exception;
 use RuntimeException;
 use Throwable;
 
-/**
- * @api
- */
 final class ViewCantBeRendered extends RuntimeException
 {
 

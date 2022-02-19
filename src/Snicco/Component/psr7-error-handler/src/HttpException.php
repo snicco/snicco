@@ -7,9 +7,6 @@ namespace Snicco\Component\Psr7ErrorHandler;
 use RuntimeException;
 use Throwable;
 
-/**
- * @api
- */
 class HttpException extends RuntimeException
 {
 

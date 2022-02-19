@@ -6,9 +6,6 @@ namespace Snicco\Component\Psr7ErrorHandler\Log;
 
 use Psr\Http\Message\RequestInterface;
 
-/**
- * @api
- */
 interface RequestContext
 {
 

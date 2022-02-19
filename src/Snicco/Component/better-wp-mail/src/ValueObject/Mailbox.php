@@ -19,8 +19,6 @@ use const FILTER_VALIDATE_EMAIL;
  * Represents an "email mailbox". By default, the domain part is validated using the filter_var.
  * For better validation it is recommended to use
  * https://github.com/egulias/EmailValidator
- *
- * @api
  */
 final class Mailbox
 {

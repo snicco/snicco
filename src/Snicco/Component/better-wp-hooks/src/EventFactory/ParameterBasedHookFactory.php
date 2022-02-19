@@ -8,9 +8,6 @@ use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
 use Snicco\Component\BetterWPHooks\Exception\CantCreateMappedEvent;
 use Throwable;
 
-/**
- * @api
- */
 final class ParameterBasedHookFactory implements MappedHookFactory
 {
 

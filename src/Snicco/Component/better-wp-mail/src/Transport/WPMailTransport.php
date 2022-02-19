@@ -19,9 +19,6 @@ use function count;
 use function is_null;
 use function trim;
 
-/**
- * @api
- */
 final class WPMailTransport implements Transport
 {
 

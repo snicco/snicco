@@ -22,9 +22,6 @@ use function strpos;
 use function strval;
 use function time;
 
-/**
- * @api
- */
 final class UrlSigner
 {
 

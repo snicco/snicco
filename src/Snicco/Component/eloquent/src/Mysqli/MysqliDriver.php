@@ -17,7 +17,10 @@ use function sprintf;
  * This class needs to double-check every method call to mysqli for errors because by default
  * WordPress configures mysqli to not throw exceptions and also sets the mysql mode to non-strict.
  *
- * @internal
+ * @psalm-internal Snicco\Component\Eloquent
+ *
+ * @interal
+ *
  */
 final class MysqliDriver implements MysqliDriverInterface
 {
@@ -45,114 +48,6 @@ final class MysqliDriver implements MysqliDriverInterface
             $values[] = $row;
         }
         return $values;
-    }
-
-    /**
-     * @throws QueryException
-     * @psalm-suppress MixedAssignment
-     */
-    private function createPreparedStatement(string $sql, array $bindings = []): mysqli_stmt
-    {
-        try {
-            $stmt = $this->mysqli->prepare($sql);
-        } catch (mysqli_sql_exception $e) {
-            throw new QueryException($sql, $bindings, $e);
-        }
-
-        if (!$stmt instanceof mysqli_stmt) {
-            throw new QueryException($sql, $bindings, $this->lastException());
-        }
-
-        if (!count($bindings)) {
-            return $stmt;
-        }
-
-        $types = '';
-
-        foreach ($bindings as $binding) {
-            if (is_double($binding)) {
-                $types .= 'd';
-            } elseif (is_int($binding)) {
-                $types .= 'i';
-            } else {
-                $types .= 's';
-            }
-        }
-
-        $copy = $bindings;
-
-        try {
-            $success = $stmt->bind_param($types, ...$bindings);
-        } catch (mysqli_sql_exception $e) {
-            throw new QueryException(
-                $sql, $copy, $this->lastException()
-            );
-        }
-
-        if (!$success) {
-            throw new QueryException(
-                $sql, $copy, $this->lastException()
-            );
-        }
-
-        return $stmt;
-    }
-
-    private function lastException(): mysqli_sql_exception
-    {
-        /**
-         * @var array<array{error: string, errno: string, sqlstate: string}> $errors
-         */
-        $errors = $this->mysqli->error_list;
-        $msg = '';
-
-        if (isset($errors[0])) {
-            $msg = sprintf(
-                "error: %s\nerrno: [%s]\nsqlstate: [%s]",
-                $errors[0]['error'] ?? '',
-                $errors[0]['errno'] ?? '',
-                $errors[0]['sqlstate'] ?? '',
-            );
-        }
-
-        return new mysqli_sql_exception($msg);
-    }
-
-    /**
-     * @throws QueryException
-     */
-    private function executeStatement(mysqli_stmt $stmt, string $sql, array $bindings): bool
-    {
-        try {
-            $success = $stmt->execute();
-
-            if (false === $success) {
-                throw $this->lastException();
-            }
-        } catch (mysqli_sql_exception $e) {
-            throw new QueryException(
-                $sql, $bindings, $e
-            );
-        }
-
-        return $success;
-    }
-
-    /**
-     * @throws QueryException
-     */
-    private function getMysqliResult(mysqli_stmt $stmt, string $sql, array $bindings): mysqli_result
-    {
-        try {
-            $result = $stmt->get_result();
-            if (!$result instanceof mysqli_result) {
-                throw $this->lastException();
-            }
-        } catch (mysqli_sql_exception $e) {
-            throw new QueryException($sql, $bindings, $e);
-        }
-
-        return $result;
     }
 
     public function doStatement(string $sql, array $bindings): bool
@@ -286,6 +181,114 @@ final class MysqliDriver implements MysqliDriverInterface
         } catch (mysqli_sql_exception $e) {
             throw new QueryException('ROLLBACK', [], $e);
         }
+    }
+
+    /**
+     * @throws QueryException
+     * @psalm-suppress MixedAssignment
+     */
+    private function createPreparedStatement(string $sql, array $bindings = []): mysqli_stmt
+    {
+        try {
+            $stmt = $this->mysqli->prepare($sql);
+        } catch (mysqli_sql_exception $e) {
+            throw new QueryException($sql, $bindings, $e);
+        }
+
+        if (!$stmt instanceof mysqli_stmt) {
+            throw new QueryException($sql, $bindings, $this->lastException());
+        }
+
+        if (!count($bindings)) {
+            return $stmt;
+        }
+
+        $types = '';
+
+        foreach ($bindings as $binding) {
+            if (is_double($binding)) {
+                $types .= 'd';
+            } elseif (is_int($binding)) {
+                $types .= 'i';
+            } else {
+                $types .= 's';
+            }
+        }
+
+        $copy = $bindings;
+
+        try {
+            $success = $stmt->bind_param($types, ...$bindings);
+        } catch (mysqli_sql_exception $e) {
+            throw new QueryException(
+                $sql, $copy, $this->lastException()
+            );
+        }
+
+        if (!$success) {
+            throw new QueryException(
+                $sql, $copy, $this->lastException()
+            );
+        }
+
+        return $stmt;
+    }
+
+    private function lastException(): mysqli_sql_exception
+    {
+        /**
+         * @var array<array{error: string, errno: string, sqlstate: string}> $errors
+         */
+        $errors = $this->mysqli->error_list;
+        $msg = '';
+
+        if (isset($errors[0])) {
+            $msg = sprintf(
+                "error: %s\nerrno: [%s]\nsqlstate: [%s]",
+                $errors[0]['error'] ?? '',
+                $errors[0]['errno'] ?? '',
+                $errors[0]['sqlstate'] ?? '',
+            );
+        }
+
+        return new mysqli_sql_exception($msg);
+    }
+
+    /**
+     * @throws QueryException
+     */
+    private function executeStatement(mysqli_stmt $stmt, string $sql, array $bindings): bool
+    {
+        try {
+            $success = $stmt->execute();
+
+            if (false === $success) {
+                throw $this->lastException();
+            }
+        } catch (mysqli_sql_exception $e) {
+            throw new QueryException(
+                $sql, $bindings, $e
+            );
+        }
+
+        return $success;
+    }
+
+    /**
+     * @throws QueryException
+     */
+    private function getMysqliResult(mysqli_stmt $stmt, string $sql, array $bindings): mysqli_result
+    {
+        try {
+            $result = $stmt->get_result();
+            if (!$result instanceof mysqli_result) {
+                throw $this->lastException();
+            }
+        } catch (mysqli_sql_exception $e) {
+            throw new QueryException($sql, $bindings, $e);
+        }
+
+        return $result;
     }
 
 }

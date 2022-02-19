@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory as WithIlluminateFactory;
 use Illuminate\Support\Str;
 
-/**
- * @api
- */
 trait WithFactory
 {
 

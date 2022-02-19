@@ -7,9 +7,6 @@ namespace Snicco\Component\Kernel\Configuration;
 use Snicco\Component\Kernel\Exception\MissingConfigKey;
 use Snicco\Component\StrArr\Arr;
 
-/**
- * @api
- */
 final class ReadOnlyConfig extends Config
 {
 
