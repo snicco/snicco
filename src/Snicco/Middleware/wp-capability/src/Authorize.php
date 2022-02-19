@@ -13,9 +13,6 @@ use Snicco\Component\ScopableWP\ScopableWP;
 
 use function sprintf;
 
-/**
- * @api
- */
 final class Authorize implements MiddlewareInterface
 {
 
