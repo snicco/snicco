@@ -8,7 +8,7 @@ use Psr\Log\Test\TestLogger;
 use Snicco\Bridge\SignedUrlMiddleware\CollectGarbage;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
-use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
+use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\SignedUrl;
 use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
@@ -37,7 +37,7 @@ final class CollectGarbageTest extends MiddlewareTestCase
     {
         $signer = new UrlSigner(
             $storage = new InMemoryStorage($test_clock = new TestClock()),
-            new Sha256Hasher(Secret::generate())
+            new HMAC(Secret::generate())
         );
 
         $signer->sign('/foo', 10);

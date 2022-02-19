@@ -8,7 +8,8 @@ use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\SignedUrl\GarbageCollector;
-use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
+use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
+use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\SignedUrl;
 use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
@@ -26,13 +27,13 @@ final class UrlSignerTest extends TestCase
         parent::setUp();
         $this->storage = new InMemoryStorage();
         $this->url_signer =
-            new UrlSigner($this->storage, new Sha256Hasher(Secret::generate()));
+            new UrlSigner($this->storage, new HMAC(Secret::generate()));
     }
 
     /**
      * @test
      */
-    public function an_exception_is_thrown_if_the_path_contains_the_expired_query_param(): void
+    public function test_exception_if_the_path_contains_the_expired_query_param(): void
     {
         $this->expectException(LogicException::class);
         $this->url_signer->sign('/foo?expires=100', 10);
@@ -41,7 +42,7 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
-    public function an_exception_is_thrown_if_the_path_contains_the_signature_query_param(): void
+    public function test_exception_if_the_path_contains_the_signature_query_param(): void
     {
         $this->expectException(LogicException::class);
         $this->url_signer->sign('/foo?signature=100', 10);
@@ -89,11 +90,10 @@ final class UrlSignerTest extends TestCase
         $this->url_signer->sign('#f//sd$', 10);
     }
 
-
     /**
      * @test
      */
-    public function a_magic_link_can_be_created_for_a_path(): void
+    public function a_singed_url_can_be_created_for_a_path(): void
     {
         $magic_link = $this->url_signer->sign('foo', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -109,7 +109,18 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
-    public function a_magic_link_can_be_created_for_a_full_url(): void
+    public function two_signed_urls_are_not_the_same_for_the_same_target(): void
+    {
+        $signed1 = $this->url_signer->sign('foo', 10);
+        $signed2 = $this->url_signer->sign('foo', 10);
+
+        $this->assertNotSame($signed1, $signed2);
+    }
+
+    /**
+     * @test
+     */
+    public function a_signed_url_can_be_created_for_a_full_url(): void
     {
         $magic_link = $this->url_signer->sign('https://foo.com/foo/', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -119,7 +130,6 @@ final class UrlSignerTest extends TestCase
         $this->assertStringContainsString('signature=', $magic_link->asString());
         $this->assertSame('https://foo.com/foo/', $magic_link->protects());
     }
-
 
     /**
      * @test
@@ -172,7 +182,7 @@ final class UrlSignerTest extends TestCase
     public function garbage_collection_works(): void
     {
         $storage = new InMemoryStorage($test_clock = new TestClock());
-        $signer = new UrlSigner($storage, new Sha256Hasher(Secret::generate()));
+        $signer = new UrlSigner($storage, new HMAC(Secret::generate()));
 
         $this->assertCount(0, $storage->all());
         $signer->sign('/web?foo=bar&baz=biz', 10);
