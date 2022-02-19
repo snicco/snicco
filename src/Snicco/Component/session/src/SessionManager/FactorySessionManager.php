@@ -139,7 +139,7 @@ final class FactorySessionManager implements SessionManager
 
             return new ReadWriteSession($id, $data, $serialized_session->lastActivity());
         } catch (BadSessionID $e) {
-            $session = ReadWriteSession::empty($this->clock->currentTimestamp());
+            $session = ReadWriteSession::createEmpty($this->clock->currentTimestamp());
         }
         return $session;
     }

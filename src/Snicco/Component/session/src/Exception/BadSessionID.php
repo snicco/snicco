@@ -6,9 +6,6 @@ namespace Snicco\Component\Session\Exception;
 
 use InvalidArgumentException;
 
-/**
- * @api
- */
 final class BadSessionID extends InvalidArgumentException
 {
 

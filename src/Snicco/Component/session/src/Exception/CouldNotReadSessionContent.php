@@ -9,9 +9,6 @@ use Throwable;
 
 use function intval;
 
-/**
- * @api
- */
 final class CouldNotReadSessionContent extends RuntimeException
 {
 
