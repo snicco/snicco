@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\Kernel\Configuration;
 
 use LogicException;
-use Snicco\Component\ParameterBag\ParameterBag;
 use Snicco\Component\StrArr\Arr;
 use Webmozart\Assert\Assert;
 
@@ -22,16 +21,16 @@ use function range;
 final class WritableConfig extends Config
 {
 
-    private ParameterBag $repository;
+    private array $items;
 
-    public function __construct(?ParameterBag $repository = null)
+    public function __construct(?array $items = null)
     {
-        $this->repository = $repository ?? new ParameterBag();
+        $this->items = $items ?: [];
     }
 
     public static function fromArray(array $items): self
     {
-        return new self(new ParameterBag($items));
+        return new self($items);
     }
 
     /**
@@ -42,10 +41,10 @@ final class WritableConfig extends Config
      */
     public function extend(string $key, $extend_with): void
     {
-        $existing_config = $this->repository->get($key);
+        $existing_config = $this->get($key);
 
         if (null === $existing_config) {
-            $this->repository->set($key, $extend_with);
+            $this->set($key, $extend_with);
             return;
         }
 
@@ -59,7 +58,7 @@ final class WritableConfig extends Config
 
         $new_value = $this->mergedArrayConfig($extend_with, $existing_config);
 
-        $this->repository->set($key, $new_value);
+        $this->set($key, $new_value);
     }
 
     /**
@@ -73,7 +72,7 @@ final class WritableConfig extends Config
         if (!$this->has($key)) {
             throw new LogicException("Cant append to missing config key [$key].");
         }
-        $current = $this->repository->get($key);
+        $current = $this->get($key);
 
         Assert::isArray($current);
         Assert::isList($current, "Cant append to key [$key] because its not a list.");
@@ -92,7 +91,7 @@ final class WritableConfig extends Config
 
     public function has(string $key): bool
     {
-        return $this->repository->has($key);
+        return Arr::has($this->items, $key);
     }
 
     /**
@@ -100,7 +99,7 @@ final class WritableConfig extends Config
      */
     public function set(string $key, $value): void
     {
-        $this->repository->set($key, $value);
+        Arr::set($this->items, $key, $value);
     }
 
     /**
@@ -114,7 +113,7 @@ final class WritableConfig extends Config
         if (!$this->has($key)) {
             throw new LogicException("Cant prepend to missing config key [$key].");
         }
-        $current = $this->repository->get($key);
+        $current = $this->get($key);
 
         Assert::isArray($current);
         Assert::isList($current, "Cant prepend to key [$key] because its not a list.");
@@ -139,12 +138,12 @@ final class WritableConfig extends Config
      */
     public function get(string $key, $default = null)
     {
-        return $this->repository->get($key, $default);
+        return Arr::get($this->items, $key, $default);
     }
 
     public function toArray(): array
     {
-        return $this->repository->toArray();
+        return $this->items;
     }
 
     /**
