@@ -1,0 +1,164 @@
+{
+    "includes": [
+        "src"
+    ],
+    "exclude": [
+      "tests"
+    ],
+    "report": {
+        "html": "htmlout",
+        "csv": "/tmp/report.csv",
+        "json": "/tmp/report.json",
+        "violations": "/tmp/violations.xml"
+    },
+    "groups": [
+        {
+            "name": "Blade",
+            "match": "!Snicco\\\\Bridge\\\\Blade\\\\.*!"
+        },
+        {
+            "name": "IlluminateContainer",
+            "match": "!Snicco\\\\Bridge\\\\IlluminateContainer\\\\.*!"
+        },
+        {
+            "name": "Pimple",
+            "match": "!Snicco\\\\Bridge\\\\Pimple\\\\.*!"
+        },
+        {
+            "name": "SessionPsr16",
+            "match": "!Snicco\\\\Bridge\\\\SessionPsr16\\\\.*!"
+        },
+        {
+            "name": "SessionWP",
+            "match": "!Snicco\\\\Bridge\\\\SessionWP\\\\.*!"
+        },
+        {
+            "name": "SignedUrlMiddleware",
+            "match": "!Snicco\\\\Bridge\\\\SignedUrlMiddleware\\\\.*!"
+        },
+        {
+            "name": "SignedUrlPsr16",
+            "match": "!Snicco\\\\Bridge\\\\SignedUrlPsr16\\\\.*!"
+        },
+        {
+            "name": "SignedUrlWP",
+            "match": "!Snicco\\\\Bridge\\\\SignedUrlWP\\\\.*!"
+        },
+        {
+            "name": "BetterWPDB",
+            "match": "!Snicco\\\\Component\\\\BetterWPDB\\\\.*!"
+        },
+        {
+            "name": "BetterWPHooks",
+            "match": "!Snicco\\\\Component\\\\BetterWPHooks\\\\.*!"
+        },
+        {
+            "name": "BetterWPMail",
+            "match": "!Snicco\\\\Component\\\\BetterWPMail\\\\.*!"
+        },
+        {
+            "name": "Kernel",
+            "match": "!Snicco\\\\Component\\\\Kernel\\\\.*!"
+        },
+        {
+            "name": "Eloquent",
+            "match": "!Snicco\\\\Component\\\\Eloquent\\\\.*!"
+        },
+        {
+            "name": "EventDispatcher",
+            "match": "!Snicco\\\\Component\\\\EventDispatcher\\\\.*!"
+        },
+        {
+            "name": "HttpRouting",
+            "match": "!Snicco\\\\Component\\\\HttpRouting\\\\.*!"
+        },
+        {
+            "name": "Psr7ErrorHandler",
+            "match": "!Snicco\\\\Component\\\\Psr7ErrorHandler\\\\.*!"
+        },
+        {
+            "name": "BetterWPAPI",
+            "match": "!Snicco\\\\Component\\\\BetterWPAPI\\\\.*!"
+        },
+        {
+            "name": "Session",
+            "match": "!Snicco\\\\Component\\\\Session\\\\.*!"
+        },
+        {
+            "name": "SignedUrl",
+            "match": "!Snicco\\\\Component\\\\SignedUrl\\\\.*!"
+        },
+        {
+            "name": "StrArr",
+            "match": "!Snicco\\\\Component\\\\StrArr\\\\.*!"
+        },
+        {
+            "name": "Templating",
+            "match": "!Snicco\\\\Component\\\\Templating\\\\.*!"
+        },
+        {
+            "name": "TestableClock",
+            "match": "!Snicco\\\\Component\\\\TestableClock\\\\.*!"
+        },
+        {
+            "name": "WPObjectCachePsr16",
+            "match": "!Snicco\\\\Component\\\\WPObjectCachePsr16\\\\.*!"
+        },
+        {
+            "name": "DefaultHeaders",
+            "match": "!Snicco\\\\Middleware\\\\DefaultHeaders\\\\.*!"
+        },
+        {
+            "name": "HttpsOnly",
+            "match": "!Snicco\\\\Middleware\\\\HttpsOnly\\\\.*!"
+        },
+        {
+            "name": "MethodOverride",
+            "match": "!Snicco\\\\Middleware\\\\MethodOverride\\\\.*!"
+        },
+        {
+            "name": "MustMatchRoute",
+            "match": "!Snicco\\\\Middleware\\\\MustMatchRoute\\\\.*!"
+        },
+        {
+            "name": "Negotiation",
+            "match": "!Snicco\\\\Middleware\\\\Negotiation\\\\.*!"
+        },
+        {
+            "name": "NoRobots",
+            "match": "!Snicco\\\\Middleware\\\\NoRobots\\\\.*!"
+        },
+        {
+            "name": "OpenRedirectProtection",
+            "match": "!Snicco\\\\Middleware\\\\OpenRedirectProtection\\\\.*!"
+        },
+        {
+            "name": "Payload",
+            "match": "!Snicco\\\\Middleware\\\\Payload\\\\.*!"
+        },
+        {
+            "name": "Redirect",
+            "match": "!Snicco\\\\Middleware\\\\Redirect\\\\.*!"
+        },
+        {
+            "name": "ShareCookies",
+            "match": "!Snicco\\\\Middleware\\\\ShareCookies\\\\.*!"
+        },
+        {
+            "name": "TrailingSlash",
+            "match": "!Snicco\\\\Middleware\\\\TrailingSlash\\\\.*!"
+        },
+        {
+            "name": "WPAuth",
+            "match": "!Snicco\\\\Middleware\\\\WPAuth\\\\.*!"
+        },
+        {
+            "name": "WPCap",
+            "match": "!Snicco\\\\Middleware\\\\WPCap\\\\.*!"
+        },
+        {
+            "name": "GuestsOnly",
+            "match": "!Snicco\\\\Middleware\\\\GuestsOnly\\\\.*!"
+        }
+    ]
+}

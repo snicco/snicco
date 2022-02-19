@@ -46,7 +46,7 @@ parameters:
   ruleset:
     blade:
       - templating
-      - scopable_wp
+      - better_wp_api
     illuminate_container:
       - kernel
     pimple:
