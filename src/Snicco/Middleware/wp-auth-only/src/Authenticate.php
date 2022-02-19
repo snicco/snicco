@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\ScopableWP\ScopableWP;
 
 use function sprintf;
 
@@ -17,11 +17,11 @@ final class Authenticate implements MiddlewareInterface
 {
 
     const KEY = '_user_id';
-    private ScopableWP $wp;
+    private BetterWPAPI $wp;
 
-    public function __construct(ScopableWP $wp = null)
+    public function __construct(BetterWPAPI $wp = null)
     {
-        $this->wp = $wp ?: new ScopableWP();
+        $this->wp = $wp ?: new BetterWPAPI();
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -30,7 +30,7 @@ final class Authenticate implements MiddlewareInterface
             return $handler->handle(
                 $request->withAttribute(
                     self::KEY,
-                    $this->wp->getCurrentUserId()
+                    $this->wp->currentUserId()
                 )
             );
         }

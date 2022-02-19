@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Component\WPObjectCachePsr16;
 
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
+
 use function wp_cache_flush;
 use function wp_cache_get_multiple;
 
 /**
- * @interal
  * @psalm-internal Snicco\Component\WPObjectCachePsr16
+ *
+ * @interal
  */
-final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
+final class WPCacheAPI extends BetterWPAPI
 {
 
     /**

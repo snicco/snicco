@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\WPAuth\Tests;
 
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Middleware\WPAuth\Authenticate;
 
 class AuthenticateTest extends MiddlewareTestCase
@@ -17,7 +17,7 @@ class AuthenticateTest extends MiddlewareTestCase
      */
     public function logged_in_users_can_access_the_route(): void
     {
-        $middleware = new Authenticate(new WPTestDouble(true));
+        $middleware = new Authenticate(new WPAPI(true));
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
@@ -29,7 +29,7 @@ class AuthenticateTest extends MiddlewareTestCase
      */
     public function the_user_id_is_added_to_the_request(): void
     {
-        $middleware = new Authenticate(new WPTestDouble(true));
+        $middleware = new Authenticate(new WPAPI(true));
 
         $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
@@ -43,7 +43,7 @@ class AuthenticateTest extends MiddlewareTestCase
     {
         $request = $this->frontendRequest('https://mysite.com/foo');
 
-        $middleware = new Authenticate(new WPTestDouble(false));
+        $middleware = new Authenticate(new WPAPI(false));
 
         try {
             $this->runMiddleware(
@@ -59,7 +59,7 @@ class AuthenticateTest extends MiddlewareTestCase
 
 }
 
-class WPTestDouble extends ScopableWP
+class WPAPI extends BetterWPAPI
 {
 
     private bool $is_logged_in;
@@ -74,7 +74,7 @@ class WPTestDouble extends ScopableWP
         return $this->is_logged_in;
     }
 
-    public function getCurrentUserId(): int
+    public function currentUserId(): int
     {
         return $this->is_logged_in ? 1 : 0;
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPHooks;
 
 use RuntimeException;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use WP_Hook;
 
 use function current_filter;
@@ -17,7 +18,7 @@ use function sprintf;
  *
  * @interal
  */
-final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP
+final class WPHookAPI extends BetterWPAPI
 {
 
     public function currentFilter(): ?string

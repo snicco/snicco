@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\GuestsOnly\Tests;
 
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
-use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Middleware\GuestsOnly\GuestsOnly;
 
 use function json_encode;
@@ -21,7 +21,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
      */
     public function guests_can_access_the_route(): void
     {
-        $wp = new GuestScopableWP(false);
+        $wp = new GuestOnlyTestWPAPI(false);
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
@@ -37,7 +37,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $route = Route::create('/dashboard', Route::DELEGATE, 'dashboard');
         $this->withRoutes([$route]);
 
-        $wp = new GuestScopableWP(true);
+        $wp = new GuestOnlyTestWPAPI(true);
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
@@ -53,7 +53,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $route = Route::create('/home', Route::DELEGATE, 'home');
         $this->withRoutes([$route]);
 
-        $wp = new GuestScopableWP(true);
+        $wp = new GuestOnlyTestWPAPI(true);
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
@@ -66,7 +66,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
      */
     public function if_no_route_exists_users_are_redirected_to_the_root_domain_path(): void
     {
-        $wp = new GuestScopableWP(true);
+        $wp = new GuestOnlyTestWPAPI(true);
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
@@ -80,7 +80,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
     public function logged_in_users_can_be_redirected_to_custom_urls(): void
     {
         $response = $this->runMiddleware(
-            $this->newMiddleware(new GuestScopableWP(true), '/custom-home-page'),
+            $this->newMiddleware(new GuestOnlyTestWPAPI(true), '/custom-home-page'),
             $this->frontendRequest()
         );
 
@@ -94,7 +94,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
     public function a_json_response_is_returned_if_the_request_wants_json(): void
     {
         $response = $this->runMiddleware(
-            $this->newMiddleware(new GuestScopableWP(true)),
+            $this->newMiddleware(new GuestOnlyTestWPAPI(true)),
             $this->frontendRequest()->withHeader('Accept', 'application/json')
         );
 
@@ -113,7 +113,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
     public function a_custom_json_failure_message_can_be_used(): void
     {
         $response = $this->runMiddleware(
-            $this->newMiddleware(new GuestScopableWP(true), null, 'Guests only'),
+            $this->newMiddleware(new GuestOnlyTestWPAPI(true), null, 'Guests only'),
             $this->frontendRequest()->withHeader('Accept', 'application/json')
         );
 
@@ -127,7 +127,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
     }
 
     private function newMiddleware(
-        ScopableWP $scopable_wp,
+        BetterWPAPI $scopable_wp,
         string $redirect_url = null,
         string $json_message = null
     ): GuestsOnly {
@@ -137,7 +137,7 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
 }
 
-class GuestScopableWP extends ScopableWP
+class GuestOnlyTestWPAPI extends BetterWPAPI
 {
 
     private bool $is_logged_in;
