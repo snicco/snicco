@@ -8,7 +8,7 @@ use Closure;
 use mysqli;
 use RuntimeException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
-use Snicco\Component\Eloquent\ScopableWP;
+use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
 
 /**
  * @psalm-internal Snicco\Component\Eloquent
@@ -20,7 +20,7 @@ final class MysqliFactory
 
     public function create(): MysqliConnection
     {
-        $wp = new ScopableWP();
+        $wp = new WPDatabaseSettingsAPI();
 
         $reconnect = new MysqliReconnect($this->getReconnect($wp));
 
@@ -33,7 +33,7 @@ final class MysqliFactory
     /**
      * @return Closure():mysqli
      */
-    private function getReconnect(ScopableWP $wp): Closure
+    private function getReconnect(WPDatabaseSettingsAPI $wp): Closure
     {
         return function () use ($wp) {
             $success = $wp->wpdb()->check_connection(false);

@@ -9,10 +9,10 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
-use Snicco\Component\BetterWPMail\ScopableWP;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
+use Snicco\Component\BetterWPMail\WPMailAPI;
 use WP_Error;
 
 use function count;
@@ -22,11 +22,11 @@ use function trim;
 final class WPMailTransport implements Transport
 {
 
-    private ScopableWP $wp;
+    private WPMailAPI $wp;
 
-    public function __construct(ScopableWP $wp = null)
+    public function __construct(WPMailAPI $wp = null)
     {
-        $this->wp = $wp ?: new ScopableWP();
+        $this->wp = $wp ?: new WPMailAPI();
     }
 
     /**

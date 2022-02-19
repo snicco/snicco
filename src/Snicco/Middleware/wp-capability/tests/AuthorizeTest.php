@@ -6,10 +6,10 @@ namespace Snicco\Middleware\WPCap\Tests;
 
 use Closure;
 use RuntimeException;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Component\ScopableWP\ScopableWP;
 use Snicco\Middleware\WPCap\Authorize;
 
 use function array_values;
@@ -30,7 +30,7 @@ class AuthorizeTest extends MiddlewareTestCase
      */
     public function a_user_with_given_capabilities_can_access_the_route(): void
     {
-        $wp = new AuthorizeTestScopableWp(function (string $cap) {
+        $wp = new AuthorizeTestBetterWPAPI(function (string $cap) {
             if ($cap !== 'manage_options') {
                 throw new RuntimeException('Wrong cap passed');
             }
@@ -49,7 +49,7 @@ class AuthorizeTest extends MiddlewareTestCase
      */
     public function a_user_without_authorisation_to_the_route_will_throw_an_exception(): void
     {
-        $wp = new AuthorizeTestScopableWp(function (string $cap) {
+        $wp = new AuthorizeTestBetterWPAPI(function (string $cap) {
             if ($cap !== 'manage_options') {
                 throw new RuntimeException('Wrong cap passed');
             }
@@ -75,7 +75,7 @@ class AuthorizeTest extends MiddlewareTestCase
      */
     public function the_user_can_be_authorized_against_a_resource(): void
     {
-        $wp = new AuthorizeTestScopableWp(function (string $cap, int $resource_id) {
+        $wp = new AuthorizeTestBetterWPAPI(function (string $cap, int $resource_id) {
             if ($cap !== 'manage_options') {
                 throw new RuntimeException('Wrong cap passed');
             }
@@ -101,14 +101,14 @@ class AuthorizeTest extends MiddlewareTestCase
         }
     }
 
-    private function newMiddleware(ScopableWP $wp, string $cap, ?int $id = null): Authorize
+    private function newMiddleware(BetterWPAPI $wp, string $cap, ?int $id = null): Authorize
     {
         return new Authorize($cap, $id, $wp);
     }
 
 }
 
-class AuthorizeTestScopableWp extends ScopableWP
+class AuthorizeTestBetterWPAPI extends BetterWPAPI
 {
 
     /**

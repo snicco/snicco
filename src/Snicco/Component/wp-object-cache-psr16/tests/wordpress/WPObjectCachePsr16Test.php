@@ -9,7 +9,7 @@ use DateInterval;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use RuntimeException;
-use Snicco\Component\WPObjectCachePsr16\ScopableWP;
+use Snicco\Component\WPObjectCachePsr16\WPCacheAPI;
 use Snicco\Component\WPObjectCachePsr16\WPObjectCachePsr16;
 use stdClass;
 use WP_Object_Cache;
@@ -153,7 +153,7 @@ final class WPObjectCachePsr16Test extends WPTestCase
      */
     public function createSimpleCache()
     {
-        return new WPObjectCachePsr16(new ScopableWP());
+        return new WPObjectCachePsr16(new WPCacheAPI());
     }
 
     /**

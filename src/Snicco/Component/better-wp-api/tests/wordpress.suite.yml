@@ -1,4 +1,4 @@
-namespace: Snicco\Component\ScopableWP\Tests\wordpress
+namespace: Snicco\Component\BetterWPAPI\Tests\wordpress
 modules:
   enabled:
     - WPLoader

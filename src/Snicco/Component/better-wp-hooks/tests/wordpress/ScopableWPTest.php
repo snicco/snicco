@@ -7,7 +7,7 @@ namespace Snicco\Component\BetterWPHooks\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use RuntimeException;
-use Snicco\Component\BetterWPHooks\ScopableWP;
+use Snicco\Component\BetterWPHooks\WPHookAPI;
 use stdClass;
 
 final class ScopableWPTest extends WPTestCase
@@ -19,7 +19,7 @@ final class ScopableWPTest extends WPTestCase
     {
         $GLOBALS['wp_filter']['foo_filter'] = new stdClass();
 
-        $wp = new ScopableWP();
+        $wp = new WPHookAPI();
         $this->assertNull($wp->getHook('bar_filter'));
 
         $this->expectException(RuntimeException::class);
