@@ -17,6 +17,18 @@ coverage:
         if_not_found: failure
         if_ci_failed: error
 
+    # The difference is explained quite vague at https://docs.codecov.com/docs/commit-status#patch-status
+    patch:
+      default:
+        target: auto
+        threshold: 0.01%
+        paths:
+          - "src/Snicco/Component"
+          - "src/Snicco/Bridge"
+          - "src/Snicco/Middleware"
+        if_not_found: failure
+        if_ci_failed: error
+
   precision: 3
   round: nearest
   range: "95...99"
