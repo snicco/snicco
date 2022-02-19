@@ -6,9 +6,6 @@ namespace Snicco\Bridge\Blade;
 
 use Illuminate\View\Component as IlluminateComponent;
 
-/**
- * @api
- */
 abstract class BladeComponent extends IlluminateComponent
 {
 

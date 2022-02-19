@@ -11,9 +11,6 @@ use Psr\Log\LogLevel;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Throwable;
 
-/**
- * @api
- */
 final class RequestAwareLogger
 {
 
@@ -41,11 +38,6 @@ final class RequestAwareLogger
         }
     }
 
-    private function addLogLevel(string $class, string $log_level): void
-    {
-        $this->log_levels[$class] = $log_level;
-    }
-
     public function log(ExceptionInformation $exception_information, RequestInterface $request): void
     {
         $context = [
@@ -62,6 +54,11 @@ final class RequestAwareLogger
             $e->getMessage(),
             $context
         );
+    }
+
+    private function addLogLevel(string $class, string $log_level): void
+    {
+        $this->log_levels[$class] = $log_level;
     }
 
     private function determineLogLevel(Throwable $e): string

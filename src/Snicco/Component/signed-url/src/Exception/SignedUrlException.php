@@ -6,7 +6,7 @@ namespace Snicco\Component\SignedUrl\Exception;
 
 use RuntimeException;
 
-class SignedUrlException extends RuntimeException
+abstract class SignedUrlException extends RuntimeException
 {
 
 }

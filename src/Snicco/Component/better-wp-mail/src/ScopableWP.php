@@ -12,6 +12,8 @@ use function remove_filter;
 use function wp_mail;
 
 /**
+ * @psalm-internal Snicco\Component\BetterWPMail
+ *
  * @interal
  */
 final class ScopableWP extends \Snicco\Component\ScopableWP\ScopableWP

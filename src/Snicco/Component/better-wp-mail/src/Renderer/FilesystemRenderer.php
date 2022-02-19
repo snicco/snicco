@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Renderer;
 
-/**
- * @api
- */
 final class FilesystemRenderer implements MailRenderer
 {
 

@@ -4,9 +4,6 @@ namespace Snicco\Component\HttpRouting\Http\Response;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
-/**
- * @psalm-internal Snicco
- */
 final class DelegatedResponse extends Response
 {
 

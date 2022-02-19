@@ -8,9 +8,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 
-/**
- * @api
- */
 final class PsrListenerFactory implements ListenerFactory
 {
 

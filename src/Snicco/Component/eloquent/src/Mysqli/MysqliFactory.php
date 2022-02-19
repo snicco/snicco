@@ -11,7 +11,9 @@ use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\ScopableWP;
 
 /**
- * @internal
+ * @psalm-internal Snicco\Component\Eloquent
+ *
+ * @interal
  */
 final class MysqliFactory
 {

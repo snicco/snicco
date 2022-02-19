@@ -9,6 +9,7 @@ use Snicco\Component\Templating\View\View;
 
 /**
  * @interal
+ * @psalm-internal Snicco\Component\Templating
  */
 final class ClosureViewComposer implements ViewComposer
 {

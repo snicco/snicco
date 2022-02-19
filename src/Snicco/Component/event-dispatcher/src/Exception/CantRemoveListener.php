@@ -6,9 +6,6 @@ namespace Snicco\Component\EventDispatcher\Exception;
 
 use LogicException;
 
-/**
- * @api
- */
 final class CantRemoveListener extends LogicException
 {
 

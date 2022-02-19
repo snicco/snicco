@@ -7,6 +7,8 @@ namespace Snicco\Component\HttpRouting\Controller;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 
 /**
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
  * @interal
  */
 final class DelegateResponseController extends Controller

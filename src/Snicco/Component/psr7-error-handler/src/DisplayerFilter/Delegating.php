@@ -7,9 +7,6 @@ namespace Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
 use Psr\Http\Message\RequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
-/**
- * @api
- */
 final class Delegating implements Filter
 {
 

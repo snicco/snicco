@@ -19,9 +19,6 @@ use function gettype;
 use function is_array;
 use function range;
 
-/**
- * @api
- */
 final class WritableConfig extends Config
 {
 

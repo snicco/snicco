@@ -11,9 +11,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
-/**
- * @api
- */
 final class HttpsOnly extends Middleware
 {
 

@@ -23,9 +23,6 @@ use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 use function sprintf;
 
-/**
- * @api
- */
 final class BladeStandalone
 {
 

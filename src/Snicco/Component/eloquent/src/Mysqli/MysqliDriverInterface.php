@@ -8,7 +8,9 @@ use mysqli_result;
 use RuntimeException;
 
 /**
- * @internal
+ * @psalm-internal Snicco\Component\Eloquent
+ *
+ * @interal
  */
 interface MysqliDriverInterface extends PDOAdapter
 {

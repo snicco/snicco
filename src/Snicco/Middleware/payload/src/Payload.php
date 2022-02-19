@@ -13,9 +13,6 @@ use Webmozart\Assert\Assert;
 
 use function strpos;
 
-/**
- * @api
- */
 abstract class Payload extends Middleware
 {
 

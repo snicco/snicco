@@ -8,9 +8,6 @@ use Closure;
 use Snicco\Component\Templating\Exception\BadViewComposer;
 use Throwable;
 
-/**
- * @api Simple factory that tries to instantiate a class if a string is passed.
- */
 final class NewableInstanceViewComposerFactory implements ViewComposerFactory
 {
 

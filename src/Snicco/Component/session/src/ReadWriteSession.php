@@ -29,9 +29,11 @@ use function is_null;
 use function is_string;
 
 /**
- * @interal You should use {@see MutableSession} or {@see ImmutableSession} depending on your use case.
+ * You should depend on {@see MutableSession} or {@see ImmutableSession} depending on your use case.
  *
- * @psalm-internal Snicco
+ * @interal
+ * @psalm-internal Snicco\Component\Session
+ *
  */
 final class ReadWriteSession implements Session
 {

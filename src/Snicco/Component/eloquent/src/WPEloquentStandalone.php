@@ -27,9 +27,6 @@ use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
 use function class_exists;
 use function rtrim;
 
-/**
- * @api
- */
 final class WPEloquentStandalone
 {
 

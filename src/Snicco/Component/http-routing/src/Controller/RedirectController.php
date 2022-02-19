@@ -9,16 +9,20 @@ use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 
 /**
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
  * @interal
- * @psalm-suppress MixedArgument
  */
 final class RedirectController extends Controller
 {
 
     /**
      * @param mixed ...$args
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedArgument
      */
     public function to(...$args): RedirectResponse
     {
@@ -29,8 +33,11 @@ final class RedirectController extends Controller
 
     /**
      * @param mixed ...$args
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedArgument
      */
     public function away(...$args): RedirectResponse
     {
@@ -41,8 +48,11 @@ final class RedirectController extends Controller
 
     /**
      * @param mixed ...$args
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress MixedArgument
      */
     public function toRoute(...$args): RedirectResponse
     {

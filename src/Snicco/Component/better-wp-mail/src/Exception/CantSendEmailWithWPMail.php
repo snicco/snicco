@@ -12,9 +12,6 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
-/**
- * @api
- */
 final class CantSendEmailWithWPMail extends RuntimeException implements CantSendEmail
 {
 

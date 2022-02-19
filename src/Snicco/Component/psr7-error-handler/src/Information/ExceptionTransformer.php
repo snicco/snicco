@@ -6,9 +6,6 @@ namespace Snicco\Component\Psr7ErrorHandler\Information;
 
 use Throwable;
 
-/**
- * @api
- */
 interface ExceptionTransformer
 {
 

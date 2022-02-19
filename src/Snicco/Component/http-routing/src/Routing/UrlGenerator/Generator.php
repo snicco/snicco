@@ -24,6 +24,10 @@ use function str_replace;
 use function strpos;
 use function trim;
 
+/**
+ * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
+ */
 final class Generator implements UrlGenerator
 {
 

@@ -17,7 +17,6 @@ use function trim;
 
 /**
  * https://datatracker.ietf.org/doc/html/rfc3986
- * @interal
  */
 final class RFC3986Encoder implements UrlEncoder
 {

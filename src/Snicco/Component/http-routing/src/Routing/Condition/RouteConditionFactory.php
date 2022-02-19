@@ -14,6 +14,7 @@ use ReflectionException;
 
 /**
  * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class RouteConditionFactory
 {

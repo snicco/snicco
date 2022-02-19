@@ -6,9 +6,6 @@ namespace Snicco\Component\BetterWPMail\Renderer;
 
 use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
 
-/**
- * @api
- */
 interface MailRenderer
 {
 

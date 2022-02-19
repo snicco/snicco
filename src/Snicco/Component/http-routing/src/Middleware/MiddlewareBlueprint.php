@@ -8,9 +8,10 @@ use Psr\Http\Server\MiddlewareInterface;
 use Webmozart\Assert\Assert;
 
 /**
- * @interal
- *
  * @psalm-immutable
+ * @psalm-internal Snicco\Component\HttpRouting
+ *
+ * @interal
  */
 final class MiddlewareBlueprint
 {

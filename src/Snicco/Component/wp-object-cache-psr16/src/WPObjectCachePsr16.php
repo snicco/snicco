@@ -32,9 +32,9 @@ final class WPObjectCachePsr16 implements CacheInterface
 
     private ScopableWP $wp;
 
-    public function __construct(ScopableWP $wp)
+    public function __construct(?ScopableWP $wp = null)
     {
-        $this->wp = $wp;
+        $this->wp = $wp ?: new ScopableWP();
     }
 
     /**

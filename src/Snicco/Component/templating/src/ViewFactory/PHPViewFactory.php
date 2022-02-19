@@ -11,9 +11,6 @@ use Snicco\Component\Templating\View\PHPView;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Throwable;
 
-/**
- * @api
- */
 final class PHPViewFactory implements ViewFactory
 {
 

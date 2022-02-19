@@ -10,6 +10,7 @@ use Snicco\Component\Templating\OutputBuffer;
 
 /**
  * @internal
+ * @psalm-internal Snicco\Component\Templating
  */
 final class ChildContent
 {

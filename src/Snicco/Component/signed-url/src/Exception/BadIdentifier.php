@@ -6,9 +6,6 @@ namespace Snicco\Component\SignedUrl\Exception;
 
 use Throwable;
 
-/**
- * @api
- */
 final class BadIdentifier extends SignedUrlException
 {
 

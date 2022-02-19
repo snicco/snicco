@@ -6,9 +6,6 @@ namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use Snicco\Component\BetterWPMail\ScopableWP;
 
-/**
- * @api
- */
 final class MailDefaults
 {
 

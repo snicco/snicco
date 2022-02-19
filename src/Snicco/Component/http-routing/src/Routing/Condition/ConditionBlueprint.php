@@ -11,9 +11,10 @@ use function is_subclass_of;
 use function sprintf;
 
 /**
- * @internal
- *
  * @psalm-immutable
+ *
+ * @interal
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 final class ConditionBlueprint
 {
