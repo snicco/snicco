@@ -38,11 +38,6 @@ parameters:
         - type: className
           regex: Snicco\\Component\\HttpRouting\\.*
 
-    - name: parameter_bag
-      collectors:
-        - type: className
-          regex: Snicco\\Component\\ParameterBag\\.*
-
     - name: psr7_error_handler
       collectors:
         - type: className
@@ -93,7 +88,6 @@ parameters:
       - scopable_wp
 
     kernel:
-      - parameter_bag
       - str_arr
       - pimple # tests only
 
@@ -112,12 +106,8 @@ parameters:
     signed_url:
       - testable_clock
 
-    parameter_bag:
-      - str_arr
-
     templating:
       - str_arr
-      - parameter_bag
 
     wp_object_cache_psr16:
       - scopable_wp

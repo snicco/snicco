@@ -6,7 +6,6 @@ namespace Snicco\Component\Templating\Tests;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Component\ParameterBag\ParameterBag;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\GlobalViewContext;
@@ -171,15 +170,54 @@ class ViewEngineTest extends TestCase
     /**
      * @test
      */
+    public function test_global_view_context_array_access(): void
+    {
+        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $view = $this->view_engine->make('array-access-isset');
+
+        $this->assertSame('Isset works', $view->toString());
+    }
+
+    /**
+     * @test
+     */
+    public function test_global_view_context_array_access_set_throws_exception(): void
+    {
+        $this->expectException(ViewCantBeRendered::class);
+        $this->expectExceptionMessage('offsetSet');
+
+        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $view = $this->view_engine->make('array-access-set');
+
+        $view->toString();
+    }
+
+    /**
+     * @test
+     */
+    public function test_global_view_context_array_access_unset_throws_exception(): void
+    {
+        $this->expectException(ViewCantBeRendered::class);
+        $this->expectExceptionMessage('offsetUnset');
+
+        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $view = $this->view_engine->make('array-access-unset');
+
+        $view->toString();
+    }
+
+    /**
+     * @test
+     */
     public function view_composers_have_precedence_over_globals(): void
     {
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             $view->with([
-                'test_context' => new ParameterBag([
+                'test_context' => [
                     'foo' => ['bar' => 'biz'],
-                ]),
+                ],
             ]);
         });
 
@@ -197,17 +235,17 @@ class ViewEngineTest extends TestCase
 
         $this->composers->addComposer('context-priority', function (View $view) {
             $view->with([
-                'test_context' => new ParameterBag([
+                'test_context' => [
                     'foo' => ['bar' => 'biz'],
-                ]),
+                ]
             ]);
         });
 
         $view = $this->view_engine->make('context-priority')
             ->with([
-                'test_context' => new ParameterBag([
+                'test_context' => [
                     'foo' => ['bar' => 'boom'],
-                ]),
+                ],
             ]);
 
         $this->assertSame('boom', $view->toString());

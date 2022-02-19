@@ -1,1 +1,1 @@
-{{ $name ?? 'no local context [name]' }}{{$globals->get('surname') ?? 'no global context [surname]'}}
+{{ $name ?? 'no local context [name]' }}{{$globals['surname'] ?? 'no global context [surname]'}}
