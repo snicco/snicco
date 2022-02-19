@@ -47,7 +47,7 @@ final class SessionStorage implements SignedUrlStorage
             );
             // @codeCoverageIgnoreEnd
         }
-        $this->clock = $clock ?? new SystemClock();
+        $this->clock = $clock ?? SystemClock::fromUTC();
     }
 
     public function consume(string $identifier): void
