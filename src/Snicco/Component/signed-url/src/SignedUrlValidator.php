@@ -11,7 +11,6 @@ use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
 use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
 use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
-use Snicco\Component\SignedUrl\Hasher\Hasher;
 use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
@@ -21,19 +20,20 @@ use function parse_str;
 use function parse_url;
 use function preg_replace;
 use function rtrim;
+use function strval;
 
 final class SignedUrlValidator
 {
 
     private SignedUrlStorage $storage;
     private Clock $clock;
-    private Hasher $hasher;
+    private HMAC $hmac;
 
-    public function __construct(SignedUrlStorage $storage, Hasher $hasher, Clock $clock = null)
+    public function __construct(SignedUrlStorage $storage, HMAC $hmac, Clock $clock = null)
     {
         $this->storage = $storage;
-        $this->hasher = $hasher;
-        $this->clock = $clock ?? new SystemClock();
+        $this->hmac = $hmac;
+        $this->clock = $clock ?? SystemClock::fromUTC();
     }
 
     /**
@@ -61,8 +61,8 @@ final class SignedUrlValidator
         }
 
         $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
-        $identifier = $arr[0] ?? '';
-        $provided_signature = $arr[1] ?? '';
+        $identifier = strval($arr[0] ?? '');
+        $provided_signature = strval($arr[1] ?? '');
 
         // Rebuild the parts from the provided url
         // if anything has been changed at all the resulting signature will not match the
@@ -70,14 +70,16 @@ final class SignedUrlValidator
         $plaint_text_signature =
             $identifier .
             $request_context .
-            $path . '?' . $this->queryStringWithoutSignature($query_string);
+            $path .
+            '?' .
+            $this->queryStringWithoutSignature($query_string);
 
         $expected_signature = Base64UrlSafe::encode(
-            $this->hasher->hash($plaint_text_signature)
+            $this->hmac->create($plaint_text_signature)
         );
 
-        $this->validateExpiration(intval($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
         $this->validateSignature($expected_signature, $provided_signature, $path);
+        $this->validateExpiration(intval($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
         $this->validateUsage($identifier, $path);
     }
 

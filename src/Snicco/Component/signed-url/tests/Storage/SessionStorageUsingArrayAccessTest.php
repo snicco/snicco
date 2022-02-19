@@ -7,7 +7,8 @@ namespace Snicco\Component\SignedUrl\Tests\Storage;
 use ArrayAccess;
 use PHPUnit\Framework\TestCase;
 use ReturnTypeWillChange;
-use Snicco\Component\SignedUrl\Hasher\Sha256Hasher;
+use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
+use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\Storage\SessionStorage;
 use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
@@ -28,7 +29,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
         $arr = $this->getArrayAccess();
         $storage = new SessionStorage($arr);
 
-        $signer = new UrlSigner($storage, new Sha256Hasher(Secret::generate()));
+        $signer = new UrlSigner($storage, new HMAC(Secret::generate()));
 
         $this->assertArrayNotHasKey('_singed_urls', $arr);
 
