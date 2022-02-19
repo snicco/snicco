@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\SessionPsr16;
 
-use BadMethodCallException;
-use Cache\TagInterop\TaggableCacheItemPoolInterface;
 use Exception;
 use InvalidArgumentException;
-use Psr\Cache\CacheItemInterface;
 use Psr\SimpleCache\CacheInterface;
-use Snicco\Component\Session\Driver\UserSessionsDriver;
+use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Exception\BadSessionID;
 use Snicco\Component\Session\Exception\CouldNotDestroySessions;
 use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
 use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Throwable;
-use Traversable;
 
 use function array_key_exists;
 use function get_class;
@@ -26,7 +22,7 @@ use function is_int;
 use function is_null;
 use function is_string;
 
-final class Psr16SessionDriver implements UserSessionsDriver
+final class Psr16SessionDriver implements SessionDriver
 {
 
     private CacheInterface $cache;
@@ -99,115 +95,54 @@ final class Psr16SessionDriver implements UserSessionsDriver
         );
     }
 
-    public function destroyAll(): void
-    {
-        if (!$this->cache instanceof TaggableCacheItemPoolInterface) {
-            throw new BadMethodCallException(__METHOD__);
-        }
-        if (!$this->cache->invalidateTags(['sniccowp_user_sessions'])) {
-            throw new CouldNotDestroySessions('Could not invalidate tags.');
-        }
-    }
-
-    public function destroyAllForUserId($user_id): void
-    {
-        if (!$this->cache instanceof TaggableCacheItemPoolInterface) {
-            throw new BadMethodCallException(__METHOD__);
-        }
-        $user_id = (string)$user_id;
-        if (!$this->cache->invalidateTags(["sniccowp_user_id_$user_id"])) {
-            throw new CouldNotDestroySessions('Could not invalidate tags.');
-        }
-    }
-
-    public function destroyAllForUserIdExcept(string $selector, $user_id): void
-    {
-        if (!$this->cache instanceof TaggableCacheItemPoolInterface) {
-            throw new BadMethodCallException(__METHOD__);
-        }
-        $item = $this->read($selector);
-        $user_id = (string)$user_id;
-        if (!$this->cache->invalidateTags(["sniccowp_user_id_$user_id"])) {
-            throw new CouldNotDestroySessions('Could not invalidate tags.');
-        }
-        $this->write($selector, $item);
-    }
-
-    public function getAllForUserId($user_id): iterable
-    {
-        if (!$this->cache instanceof TaggableCacheItemPoolInterface) {
-            throw new BadMethodCallException(__METHOD__);
-        }
-
-        $user_id = (string)$user_id;
-        $item = $this->cache->getItem('user_id_' . $user_id . '_all_sessions');
-
-        if (!$item->isHit()) {
-            return [];
-        }
-        $list = (array)$item->get();
-
-        /** @var Traversable<string,CacheItemInterface> $items */
-        $items = $this->cache->getItems($list);
-
-        $sessions = [];
-
-        foreach ($items as $selector => $item) {
-            if ($item->isHit()) {
-                $sessions[$selector] = $this->read($selector);
-            }
-        }
-        return $sessions;
-    }
-
     /**
      * @return array{hashed_validator:string, data:string, user_id: int|string|null, last_activity:int}
      */
     private function readParts(string $session_id): array
     {
         try {
-            $val = $this->cache->get($session_id);
+            $payload = $this->cache->get($session_id);
         } catch (Exception $e) {
             throw CouldNotReadSessionContent::forID($session_id, self::class);
         }
 
-        if (null === $val) {
+        if (null === $payload) {
             throw BadSessionID::forSelector($session_id, get_class($this->cache));
         }
 
-        if (!is_array($val)) {
+        if (!is_array($payload)) {
             throw new CouldNotReadSessionContent("Session content for id [$session_id] is not an array.");
         }
 
-        if (!isset($val['last_activity']) || !is_int($val['last_activity'])) {
+        if (!isset($payload['last_activity']) || !is_int($payload['last_activity'])) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [last_activity] is not an integer for selector [$session_id]."
             );
         }
 
-        if (!isset($val['data']) || !is_string($val['data'])) {
+        if (!isset($payload['data']) || !is_string($payload['data'])) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [data] is not a string for selector [$session_id]."
             );
         }
 
-        if (!isset($val['hashed_validator']) || !is_string($val['hashed_validator'])) {
+        if (!isset($payload['hashed_validator']) || !is_string($payload['hashed_validator'])) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [hashed_validator] is not a string for selector [$session_id]."
             );
         }
 
         if (
-            !array_key_exists('user_id', $val)
+            !array_key_exists('user_id', $payload)
             ||
-            (!is_string($val['user_id']) && !is_int($val['user_id']) && !is_null($val['user_id']))
+            (!is_string($payload['user_id']) && !is_int($payload['user_id']) && !is_null($payload['user_id']))
         ) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [user_id] is not a null,string or integer for selector [$session_id]."
             );
         }
 
-        return $val;
+        return $payload;
     }
 
     /**
@@ -220,7 +155,7 @@ final class Psr16SessionDriver implements UserSessionsDriver
         int $last_activity,
         $user_id
     ): void {
-        $val = [
+        $payload = [
             'selector' => $selector,
             'hashed_validator' => $hashed_validator,
             'data' => $data,
@@ -229,26 +164,7 @@ final class Psr16SessionDriver implements UserSessionsDriver
         ];
 
         try {
-            if ($this->cache instanceof TaggableCacheItemPoolInterface) {
-                $user_id = (string)$user_id;
-                $item = $this->cache->getItem($selector);
-                $item->set($val)->expiresAfter($this->idle_timeout_in_seconds);
-                $item->setTags(['sniccowp_user_sessions', "sniccowp_user_id_$user_id"]);
-                $res1 = $this->cache->save($item);
-
-                $item = $this->cache->getItem('user_id_' . $user_id . '_all_sessions');
-                if ($item->isHit()) {
-                    $list = (array)$item->get();
-                } else {
-                    $list = [];
-                }
-                $list[] = $selector;
-                $item->set($list)->setTags(['sniccowp_user_sessions']);
-                $res2 = $this->cache->save($item);
-                $res = $res1 && $res2;
-            } else {
-                $res = $this->cache->set($selector, $val, $this->idle_timeout_in_seconds);
-            }
+            $res = $this->cache->set($selector, $payload, $this->idle_timeout_in_seconds);
         } catch (Throwable $e) {
             throw CouldNotWriteSessionContent::forId($selector, get_class($this->cache), $e);
         }
