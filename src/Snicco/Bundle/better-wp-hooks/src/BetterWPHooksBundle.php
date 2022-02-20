@@ -1,0 +1,64 @@
+<?php
+
+declare(strict_types=1);
+
+
+namespace Snicco\Bundle\BetterWPHooks;
+
+use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
+use Snicco\Component\BetterWPHooks\WPEventDispatcher;
+use Snicco\Component\BetterWPHooks\WPHookAPI;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
+use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
+use Snicco\Component\Kernel\Bundle;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
+use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\ValueObject\Environment;
+
+final class BetterWPHooksBundle implements Bundle
+{
+
+    public const ALIAS = 'sniccowp/better-wp-hooks-bundle';
+
+    public function shouldRun(Environment $env): bool
+    {
+        return true;
+    }
+
+    public function configure(WritableConfig $config, Kernel $kernel): void
+    {
+        //
+    }
+
+    public function register(Kernel $kernel): void
+    {
+        $container = $kernel->container();
+
+        $hook_api = new WPHookAPI();
+
+        $container->singleton(EventDispatcher::class, function () use ($container, $hook_api) {
+            $listener_factory = new PsrListenerFactory($container);
+            return new WPEventDispatcher(
+                new BaseEventDispatcher($listener_factory),
+                $hook_api
+            );
+        });
+
+        $container->singleton(EventMapper::class, fn() => new EventMapper(
+            $container->make(EventDispatcher::class),
+            $hook_api
+        )
+        );
+    }
+
+    public function bootstrap(Kernel $kernel): void
+    {
+        //
+    }
+
+    public function alias(): string
+    {
+        return self::ALIAS;
+    }
+}

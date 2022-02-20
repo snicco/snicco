@@ -1,0 +1,4 @@
+/.phpunit.cache/
+/vendor
+composer.lock
+/tests/fixtures/tmp

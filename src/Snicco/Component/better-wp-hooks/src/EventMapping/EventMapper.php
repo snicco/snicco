@@ -37,11 +37,11 @@ final class EventMapper
 
     public function __construct(
         EventDispatcher $event_dispatcher,
-        WPHookAPI $wp,
+        ?WPHookAPI $wp = null,
         ?MappedHookFactory $event_factory = null
     ) {
         $this->event_dispatcher = $event_dispatcher;
-        $this->wp = $wp;
+        $this->wp = $wp ?: new WPHookAPI();
         $this->event_factory = $event_factory ?? new ParameterBasedHookFactory();
     }
 
