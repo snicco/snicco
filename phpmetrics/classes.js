@@ -9854,7 +9854,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000005dfda18d0000000020b72fa5",
+        "name": "anonymous@000000006d62fe80000000004c99edde",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -11517,7 +11517,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000005dfdbfdd0000000020b72fa5",
+        "name": "anonymous@000000006d62e0d0000000004c99edde",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -11850,9 +11850,9 @@ var classes = [
         "totalSystemComplexity": 27670.58,
         "package": "Snicco\\Component\\BetterWPDB\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 1,
         "efferentCoupling": 13,
-        "instability": 1,
+        "instability": 0.93,
         "violations": {}
     },
     {
@@ -20265,9 +20265,9 @@ var classes = [
         "totalSystemComplexity": 173.25,
         "package": "Snicco\\Component\\Kernel\\ValueObject\\",
         "pageRank": 0,
-        "afferentCoupling": 6,
+        "afferentCoupling": 7,
         "efferentCoupling": 4,
-        "instability": 0.4,
+        "instability": 0.36,
         "violations": {}
     },
     {
@@ -20533,9 +20533,9 @@ var classes = [
         "totalSystemComplexity": 10821.74,
         "package": "Snicco\\Component\\Kernel\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
+        "afferentCoupling": 4,
         "efferentCoupling": 16,
-        "instability": 0.84,
+        "instability": 0.8,
         "violations": {}
     },
     {
@@ -21295,9 +21295,9 @@ var classes = [
         "totalSystemComplexity": 554.75,
         "package": "Snicco\\Component\\Kernel\\Configuration\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
+        "afferentCoupling": 4,
         "efferentCoupling": 4,
-        "instability": 0.57,
+        "instability": 0.5,
         "violations": {}
     },
     {
@@ -21384,7 +21384,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000005dfdb5d80000000020b72fa5",
+        "name": "anonymous@000000006d62ead5000000004c99edde",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -21576,6 +21576,101 @@ var classes = [
         "pageRank": 0,
         "afferentCoupling": 0,
         "efferentCoupling": 11,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bundle\\BetterWPDB\\BetterWPDBBundle",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "shouldRun",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "configure",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "register",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "bootstrap",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "alias",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 5,
+        "nbMethods": 5,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 5,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 6,
+        "ccn": 2,
+        "ccnMethodMax": 2,
+        "externals": [
+            "Snicco\\Component\\Kernel\\Bundle",
+            "Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+            "Snicco\\Component\\Kernel\\Kernel",
+            "Snicco\\Component\\Kernel\\Kernel",
+            "Snicco\\Component\\BetterWPDB\\BetterWPDB",
+            "Snicco\\Component\\Kernel\\Kernel"
+        ],
+        "parents": [],
+        "lcom": 5,
+        "length": 19,
+        "vocabulary": 9,
+        "volume": 60.23,
+        "difficulty": 3.25,
+        "effort": 195.74,
+        "level": 0.31,
+        "bugs": 0.02,
+        "time": 11,
+        "intelligentContent": 18.53,
+        "number_operators": 6,
+        "number_operands": 13,
+        "number_operators_unique": 3,
+        "number_operands_unique": 6,
+        "cloc": 2,
+        "loc": 29,
+        "lloc": 27,
+        "mi": 75.83,
+        "mIwoC": 56.05,
+        "commentWeight": 19.79,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 9,
+        "relativeDataComplexity": 1,
+        "relativeSystemComplexity": 10,
+        "totalStructuralComplexity": 45,
+        "totalDataComplexity": 5,
+        "totalSystemComplexity": 50,
+        "package": "Snicco\\Bundle\\BetterWPDB\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 5,
         "instability": 1,
         "violations": {}
     },

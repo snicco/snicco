@@ -459,9 +459,9 @@ var classes = [
         "totalSystemComplexity": 27670.58,
         "package": "Snicco\\Component\\BetterWPDB\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 1,
         "efferentCoupling": 13,
-        "instability": 1,
+        "instability": 0.93,
         "violations": {}
     },
     {
