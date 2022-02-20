@@ -1,3 +1,29 @@
 parameters:
   paths:
     - ./../src/Snicco/Bundle
+
+  layers:
+    - name: better_wp_hooks_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\BetterWPHooks\\.*
+
+    - name: testing_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\Testing\\.*
+
+
+  ruleset:
+    testing_bundle:
+      - kernel
+      - str_arr
+      - pimple
+
+    better_wp_hooks_bundle:
+      - testing_bundle
+      - better_wp_hooks
+      - event_dispatcher
+      - kernel
+      - str_arr # test only
+      - pimple # test only

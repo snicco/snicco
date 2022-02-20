@@ -7,6 +7,7 @@ namespace Snicco\Bundle\Testing\Tests;
 
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Bundle\Testing\BootsKernel;
 use Snicco\Component\Kernel\Bootstrapper;
 use Snicco\Component\Kernel\Bundle;
@@ -131,7 +132,7 @@ final class BootsKernelTest extends TestCase
     /**
      * @test
      */
-    public function test_bootstrappers_and_bundles_are_automatically_merged_if_not_provided_explicitly(): void
+    public function test_bundles_are_automatically_merged_if_not_provided_explicitly(): void
     {
         $base_directory = $this->setUpDirectories(__DIR__ . '/fixtures/tmp');
 
@@ -143,7 +144,11 @@ final class BootsKernelTest extends TestCase
                 'biz'
             ],
             'app' => [
-                'name' => 'my_app'
+                'name' => 'my_app',
+                'bootstrappers' => [
+                    TestingBundleBootstrapper1::class,
+                    TestingBundleBootstrapper2::class
+                ]
             ],
         ], $base_directory, Environment::prod());
 
@@ -183,6 +188,28 @@ final class BootsKernelTest extends TestCase
 
         $this->assertCanBeResolved(ServiceA::class, $kernel);
     }
+
+    /**
+     * @test
+     */
+    public function test_assertCanBeResolved_fails_for_other_instance(): void
+    {
+        $base_directory = $this->setUpDirectories(__DIR__ . '/fixtures/tmp');
+
+        $kernel = $this->bootWithFixedConfig([
+            'bundles' => [
+                Environment::ALL => [TestingBundleBundle2::class]
+            ]
+        ], $base_directory);
+
+        try {
+            $this->assertCanBeResolved(ServiceA::class, $kernel);
+            throw new RuntimeException('Assertion should have failed.');
+        } catch (AssertionFailedError $e) {
+            $this->assertStringContainsString('instance ', $e->getMessage());
+        }
+    }
+
 
     /**
      * @test
@@ -296,6 +323,33 @@ class TestingBundleBundle1 implements Bundle
     public function alias(): string
     {
         return 'bundle1';
+    }
+}
+
+class TestingBundleBundle2 implements Bundle
+{
+
+    public function shouldRun(Environment $env): bool
+    {
+        return true;
+    }
+
+    public function configure(WritableConfig $config, Kernel $kernel): void
+    {
+    }
+
+    public function register(Kernel $kernel): void
+    {
+        $kernel->container()->singleton(ServiceA::class, fn() => new ServiceB());
+    }
+
+    public function bootstrap(Kernel $kernel): void
+    {
+    }
+
+    public function alias(): string
+    {
+        return 'bundle2';
     }
 }
 
