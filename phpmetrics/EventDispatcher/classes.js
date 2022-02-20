@@ -680,9 +680,9 @@ var classes = [
         "totalSystemComplexity": 3480.28,
         "package": "Snicco\\Component\\EventDispatcher\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 1,
         "efferentCoupling": 9,
-        "instability": 1,
+        "instability": 0.9,
         "violations": {}
     },
     {
@@ -871,9 +871,9 @@ var classes = [
         "totalSystemComplexity": 9.67,
         "package": "Snicco\\Component\\EventDispatcher\\ListenerFactory\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 1,
         "efferentCoupling": 3,
-        "instability": 1,
+        "instability": 0.75,
         "violations": {}
     },
     {
