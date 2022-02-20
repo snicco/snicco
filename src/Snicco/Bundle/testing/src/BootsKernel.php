@@ -13,7 +13,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Component\Kernel\Bootstrapper;
 use Snicco\Component\Kernel\Configuration\ConfigCache;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
@@ -37,11 +36,6 @@ trait BootsKernel
     {
         return new PimpleContainerAdapter();
     }
-
-    /**
-     * @return array<class-string<Bootstrapper>
-     */
-    abstract protected function bootstrappers(): array;
 
     /**
      * @return array<'testing'|'prod'|'dev'|'staging'|'all', list< class-string<\Snicco\Component\Kernel\Bundle> >>
@@ -149,7 +143,7 @@ trait BootsKernel
     protected function bootWithFixedConfig(array $config, Directories $dirs, ?Environment $env = null): Kernel
     {
         if (!Arr::has($config, 'app.bootstrappers')) {
-            Arr::set($config, 'app.bootstrappers', $this->bootstrappers());
+            Arr::set($config, 'app.bootstrappers', []);
         }
         if (!Arr::has($config, 'bundles')) {
             Arr::set($config, 'bundles', $this->bundles());
