@@ -1,38 +1,38 @@
 {
-  "name": "sniccowp/event-dispatcher",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
+    "name": "sniccowp/event-dispatcher",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "psr/container": "^1.1",
+        "psr/event-dispatcher": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5.13",
+        "pimple/pimple": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\EventDispatcher\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\EventDispatcher\\Tests\\": "tests",
+            "Snicco\\Component\\EventDispatcher\\Testing\\": "testing"
+        }
+    },
+    "suggest": {
+        "phpunit/phpunit": "To use the assertions on TestableEventDispatcher [^9.5]"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
     }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "psr/container": "^1.1",
-    "psr/event-dispatcher": "^1.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "9.5.13",
-    "pimple/pimple": "^3.4"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\EventDispatcher\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\EventDispatcher\\Tests\\": "tests",
-      "Snicco\\Component\\EventDispatcher\\Testing\\": "testing"
-    }
-  },
-  "suggest": {
-    "phpunit/phpunit": "To use the assertions on TestableEventDispatcher [^9.5]"
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true
-  }
 }
