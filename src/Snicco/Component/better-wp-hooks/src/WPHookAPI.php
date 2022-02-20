@@ -14,13 +14,16 @@ use function is_string;
 use function sprintf;
 
 /**
- * @psalm-internal Snicco\Component\BetterWPHooks
- *
- * @interal
+ * @psalm-internal Snicco
  */
 final class WPHookAPI extends BetterWPAPI
 {
 
+    /**
+     * @psalm-internal Snicco\Component\BetterWPHooks
+     *
+     * @interal
+     */
     public function currentFilter(): ?string
     {
         /** @var string|false $filter */
@@ -31,6 +34,11 @@ final class WPHookAPI extends BetterWPAPI
         return null;
     }
 
+    /**
+     * @psalm-internal Snicco\Component\BetterWPHooks
+     *
+     * @interal
+     */
     public function getHook(string $hook_name): ?WP_Hook
     {
         $hook = $GLOBALS['wp_filter'][$hook_name] ?? null;
