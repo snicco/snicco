@@ -3,6 +3,7 @@ include:
   - src/Snicco/Component/*
   - src/Snicco/Middleware/*
   - src/Snicco/Bridge/*
+  - src/Snicco/Bundle/*
 paths:
   output: _output
   tests: tests
