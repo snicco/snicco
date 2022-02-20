@@ -32,8 +32,13 @@ use function var_export;
 trait BootsKernel
 {
 
+    protected ?DIContainer $container = null;
+
     protected function container(): DIContainer
     {
+        if (isset($this->container)) {
+            return $this->container;
+        }
         return new PimpleContainerAdapter();
     }
 

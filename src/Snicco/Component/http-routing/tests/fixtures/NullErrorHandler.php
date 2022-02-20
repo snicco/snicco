@@ -9,6 +9,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Throwable;
 
+/**
+ * @interal
+ *
+ * @psalm-internal Snicco\Component\HttpRouting
+ */
 final class NullErrorHandler implements HttpErrorHandlerInterface
 {
 

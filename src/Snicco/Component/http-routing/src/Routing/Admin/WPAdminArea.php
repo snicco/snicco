@@ -22,6 +22,7 @@ final class WPAdminArea implements AdminArea
     public function __construct(string $admin_dashboard_url_prefix, string $login_path)
     {
         Assert::stringNotEmpty($admin_dashboard_url_prefix);
+        Assert::stringNotEmpty($login_path);
         $this->prefix = '/' . ltrim($admin_dashboard_url_prefix, '/');
         $this->login_path = $login_path;
     }
