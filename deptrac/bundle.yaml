@@ -13,6 +13,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\BetterWPDB\\.*
 
+    - name: http_routing_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\HttpRouting\\.*
+
     - name: testing_bundle
       collectors:
         - type: className

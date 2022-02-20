@@ -49,6 +49,21 @@ final class HttpErrorHandlerTest extends TestCase
     private array $error_data;
     private SplHashIdentifier $identifier;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->response_factory = new Psr17Factory();
+        $this->error_data = json_decode(
+            file_get_contents(
+                dirname(__DIR__) . '/resources/en_US.error.json'
+            ),
+            true
+        );
+        $this->identifier = new SplHashIdentifier();
+        $this->error_handler = $this->createErrorHandler();
+        $this->base_request = $this->response_factory->createServerRequest('GET', '/');
+    }
+
     /**
      * @test
      */
@@ -348,21 +363,6 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertTrue(
             $test_logger->hasCriticalThatMatches('/display type error/')
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->response_factory = new Psr17Factory();
-        $this->error_data = json_decode(
-            file_get_contents(
-                dirname(__DIR__) . '/resources/en_US.error.json'
-            ),
-            true
-        );
-        $this->identifier = new SplHashIdentifier();
-        $this->error_handler = $this->createErrorHandler();
-        $this->base_request = $this->response_factory->createServerRequest('GET', '/');
     }
 
     private function createErrorHandler(
