@@ -115,9 +115,9 @@ var classes = [
         "totalSystemComplexity": 205.5,
         "package": "Snicco\\Bridge\\Pimple\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 1,
         "efferentCoupling": 5,
-        "instability": 1,
+        "instability": 0.83,
         "violations": {}
     }
 ]
