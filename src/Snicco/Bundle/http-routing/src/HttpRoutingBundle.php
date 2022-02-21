@@ -8,7 +8,6 @@ namespace Snicco\Bundle\HttpRouting;
 use InvalidArgumentException;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -16,9 +15,7 @@ use Snicco\Bundle\HttpRouting\ErrorHandler\DisplayerCollection;
 use Snicco\Bundle\HttpRouting\ErrorHandler\ExceptionTransformerCollection;
 use Snicco\Bundle\HttpRouting\ErrorHandler\NullErrorHandler;
 use Snicco\Bundle\HttpRouting\ErrorHandler\RequestLogContextCollection;
-use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
@@ -79,6 +76,9 @@ final class HttpRoutingBundle implements Bundle
         $config->extend('routing.' . RoutingOption::MIDDLEWARE_ALIASES, []);
         $config->extend('routing.' . RoutingOption::MIDDLEWARE_PRIORITY, []);
         $config->extend('routing.' . RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS, []);
+        $config->extend('routing.' . RoutingOption::HTTP_PORT, 80);
+        $config->extend('routing.' . RoutingOption::HTTPS_PORT, 443);
+        $config->extend('routing.' . RoutingOption::HTTPS, true);
     }
 
     public function register(Kernel $kernel): void
@@ -86,7 +86,7 @@ final class HttpRoutingBundle implements Bundle
         $container = $kernel->container();
         $this->bindPsr17Discovery($container);
         $this->bindResponseFactory($container);
-        $this->bindServerRequest($container);
+        $this->bindServerRequestCreator($container);
         $this->bindRoutingFacade($kernel);
         $this->bindUrlGenerator($container);
         $this->bindUrlMatcher($container);
@@ -114,18 +114,12 @@ final class HttpRoutingBundle implements Bundle
             $config = $kernel->config();
             $env = $kernel->env();
 
-            if ($container->has(Request::class)) {
-                $context = UrlGenerationContext::fromRequest($container->make(Request::class));
-            } elseif ($env->isCli()) {
-                $context = UrlGenerationContext::forConsole(
-                    $config->getString('routing.host')
-                );
-            } else {
-                // @codeCoverageIgnoreStart
-                $server_request = $container->make(ServerRequestInterface::class);
-                $context = UrlGenerationContext::fromRequest($server_request, true);
-                // @codeCoverageIgnoreEnd
-            }
+            $context = new UrlGenerationContext(
+                $config->getString('routing.host'),
+                $config->getInteger('routing.https_port'),
+                $config->getInteger('routing.http_port'),
+                $config->getBoolean('routing.https')
+            );
 
             $loader = $container[RouteLoader::class] ?? new PHPFileRouteLoader(
                     $config->getListOfStrings('routing.route_directories'),
@@ -191,7 +185,6 @@ final class HttpRoutingBundle implements Bundle
         $container->singleton(RequestLogContextCollection::class, function () {
             return new RequestLogContextCollection();
         });
-
         $container->singleton(
             HttpErrorHandlerInterface::class,
             function () use ($container, $kernel): HttpErrorHandlerInterface {
@@ -281,12 +274,10 @@ final class HttpRoutingBundle implements Bundle
             return new ResponseFactory(
                 $discovery->createResponseFactory(),
                 $discovery->createStreamFactory(),
-                $container->make(UrlGenerator::class)
             );
         });
         $container->singleton(ResponseFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
         $container->singleton(StreamFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
-        $container->singleton(Redirector::class, fn() => $container->make(ResponseFactory::class));
     }
 
     private function bindPsr17Discovery(DIContainer $container): void
@@ -299,18 +290,16 @@ final class HttpRoutingBundle implements Bundle
         });
     }
 
-    private function bindServerRequest(DIContainer $container): void
+    private function bindServerRequestCreator(DIContainer $container): void
     {
-        $container->singleton(ServerRequestInterface::class, function () use ($container): ServerRequestInterface {
+        $container->singleton(ServerRequestCreator::class, function () use ($container): ServerRequestCreator {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
-            $creator = new ServerRequestCreator(
+            return new ServerRequestCreator(
                 $discovery->createServerRequestFactory(),
                 $discovery->createUriFactory(),
                 $discovery->createUploadedFileFactory(),
                 $discovery->createStreamFactory()
             );
-
-            return $creator->fromGlobals();
         });
     }
 }
