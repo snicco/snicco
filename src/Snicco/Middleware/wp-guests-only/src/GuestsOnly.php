@@ -35,17 +35,16 @@ final class GuestsOnly extends Middleware
         }
 
         if ($request->isExpectingJson()) {
-            return $this->respond()
-                ->json(['message' => $this->json_message], 403);
+            return $this->respondWith()->json(['message' => $this->json_message], 403);
         }
 
         if ($this->redirect_to) {
-            return $this->redirect()->to($this->redirect_to);
+            return $this->respondWith()->redirectTo($this->redirect_to);
         } else {
             try {
-                return $this->redirect()->toRoute('dashboard');
+                return $this->respondWith()->redirectToRoute('dashboard');
             } catch (RouteNotFound $e) {
-                return $this->redirect()->home();
+                return $this->respondWith()->redirectHome();
             }
         }
     }

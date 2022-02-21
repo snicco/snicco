@@ -19,7 +19,7 @@ use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
+use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
@@ -47,6 +47,7 @@ abstract class MiddlewareTestCase extends TestCase
     private Closure $next_middleware_response;
     private bool $next_called = false;
     private ?Request $received_request_by_next_middleware = null;
+    private ?ResponseUtils $response_utils = null;
 
     protected function setUp(): void
     {
@@ -54,14 +55,7 @@ abstract class MiddlewareTestCase extends TestCase
         $this->next_middleware_response = function (Response $response): Response {
             return $response;
         };
-    }
-
-    /**
-     * @param Route[] $routes
-     */
-    final protected function withRoutes(array $routes): void
-    {
-        $this->routes = new RouteCollection($routes);
+        $this->response_factory = $this->newResponseFactory();
     }
 
     protected function psrServerRequestFactory(): ServerRequestFactoryInterface
@@ -72,6 +66,24 @@ abstract class MiddlewareTestCase extends TestCase
     protected function psrUriFactory(): UriFactoryInterface
     {
         return new Psr17Factory();
+    }
+
+    protected function psrResponseFactory(): ResponseFactoryInterface
+    {
+        return new Psr17Factory();
+    }
+
+    protected function psrStreamFactory(): StreamFactoryInterface
+    {
+        return new Psr17Factory();
+    }
+
+    /**
+     * @param Route[] $routes
+     */
+    final protected function withRoutes(array $routes): void
+    {
+        $this->routes = new RouteCollection($routes);
     }
 
     /**
@@ -90,17 +102,12 @@ abstract class MiddlewareTestCase extends TestCase
         $pimple = new Container();
         $url = $this->newUrlGenerator(
             $this->routes ?? new RouteCollection([]),
-            UrlGenerationContext::fromRequest($request)
+            new UrlGenerationContext($request->getUri()->getHost())
         );
-        $response_factory = $this->newResponseFactory($url);
-        $this->response_factory = $response_factory;
 
         if ($middleware instanceof Middleware) {
             if (!$pimple->offsetExists(ResponseFactory::class)) {
-                $pimple[ResponseFactory::class] = $response_factory;
-            }
-            if (!$pimple->offsetExists(Redirector::class)) {
-                $pimple[Redirector::class] = $response_factory;
+                $pimple[ResponseFactory::class] = $this->response_factory;
             }
             if (!$pimple->offsetExists(UrlGenerator::class)) {
                 $pimple[UrlGenerator::class] = $url;
@@ -108,25 +115,19 @@ abstract class MiddlewareTestCase extends TestCase
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
 
+        $this->response_utils = new ResponseUtils(
+            $url,
+            $this->response_factory,
+            $request
+        );
+
         /** @var Response $response */
         $response = $middleware->process($request, $this->next());
-
-        unset($this->response_factory);
 
         return new MiddlewareTestResponse(
             $response,
             $this->next_called
         );
-    }
-
-    protected function psrResponseFactory(): ResponseFactoryInterface
-    {
-        return new Psr17Factory();
-    }
-
-    protected function psrStreamFactory(): StreamFactoryInterface
-    {
-        return new Psr17Factory();
     }
 
     final protected function receivedRequest(): Request
@@ -138,24 +139,17 @@ abstract class MiddlewareTestCase extends TestCase
         return $this->received_request_by_next_middleware;
     }
 
-    final protected function redirector(): Redirector
+    final protected function responseFactory(): ResponseFactory
     {
-        if (!isset($this->response_factory)) {
-            throw new LogicException(
-                'You can only retrieve the redirector from inside the next_response closure'
-            );
-        }
         return $this->response_factory;
     }
 
-    final protected function responseFactory(): ResponseFactory
+    final protected function responseUtils(): ResponseUtils
     {
-        if (!isset($this->response_factory)) {
-            throw new LogicException(
-                'You can only retrieve the response factory from inside the next_response closure'
-            );
+        if (!isset($this->response_utils)) {
+            throw new LogicException('response utils can only be accessed during the next middleware response.');
         }
-        return $this->response_factory;
+        return $this->response_utils;
     }
 
     private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGenerator
@@ -168,12 +162,11 @@ abstract class MiddlewareTestCase extends TestCase
         );
     }
 
-    private function newResponseFactory(UrlGenerator $url_generator): ResponseFactory
+    private function newResponseFactory(): ResponseFactory
     {
         return new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $url_generator,
         );
     }
 

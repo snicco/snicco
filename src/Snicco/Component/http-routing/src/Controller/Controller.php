@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Controller;
 
+use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use RuntimeException;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
+use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\StrArr\Arr;
 
 use function array_filter;
 use function array_merge;
+use function sprintf;
 
 abstract class Controller
 {
@@ -24,8 +26,8 @@ abstract class Controller
      * @var ControllerMiddleware[]
      */
     private array $middleware = [];
-
     private ContainerInterface $container;
+    private ?Request $current_request = null;
 
     /**
      * @psalm-mutation-free
@@ -54,6 +56,8 @@ abstract class Controller
     }
 
     /**
+     * @psalm-internal Snicco\Component\HttpRouting
+     *
      * @interal
      */
     final public function setContainer(ContainerInterface $container): void
@@ -62,47 +66,52 @@ abstract class Controller
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @psalm-internal Snicco\Component\HttpRouting
+     *
+     * @interal
      */
-    final protected function redirect(): Redirector
+    final public function setCurrentRequest(Request $request): void
     {
-        /** @var Redirector $r */
-        $r = $this->container->get(Redirector::class);
-        return $r;
+        $this->current_request = $request;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     final protected function url(): UrlGenerator
     {
-        /** @var UrlGenerator $url */
-        $url = $this->container->get(UrlGenerator::class);
-        return $url;
+        try {
+            /** @var UrlGenerator $url */
+            $url = $this->container->get(UrlGenerator::class);
+            return $url;
+        } catch (ContainerExceptionInterface $e) {
+            throw new LogicException(
+                "The UrlGenerator is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
+                (int)$e->getCode(),
+                $e
+            );
+        }
     }
 
-    /**
-     * @param array<string,mixed> $data
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    final protected function render(string $template_identifier, array $data = []): ViewResponse
+    final protected function responseFactory(): ResponseFactory
     {
-        return $this->respond()->view($template_identifier, $data);
+        try {
+            /** @var ResponseFactory $factory */
+            $factory = $this->container->get(ResponseFactory::class);
+            return $factory;
+        } catch (ContainerExceptionInterface $e) {
+            throw new LogicException(
+                "The ResponseFactory is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
+                (int)$e->getCode(),
+                $e
+            );
+        }
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    final protected function respond(): ResponseFactory
+    final protected function respondWith(): ResponseUtils
     {
-        /** @var ResponseFactory $response */
-        $response = $this->container->get(ResponseFactory::class);
-        return $response;
+        return new ResponseUtils(
+            $this->url(),
+            $this->responseFactory(),
+            $this->currentRequest()
+        );
     }
 
     /**
@@ -113,6 +122,14 @@ abstract class Controller
         $middleware = new ControllerMiddleware(Arr::toArray($middleware_names));
         $this->middleware[] = $middleware;
         return $middleware;
+    }
+
+    private function currentRequest(): Request
+    {
+        if (!isset($this->current_request)) {
+            throw new RuntimeException(sprintf('Current request not set on controller [%s]', static::class));
+        }
+        return $this->current_request;
     }
 
 }

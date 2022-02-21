@@ -372,7 +372,7 @@ class StopMiddleware extends Middleware
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        return $this->respond()->html('stopped');
+        return $this->responseFactory()->html('stopped');
     }
 
 }

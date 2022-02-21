@@ -27,11 +27,11 @@ interface UrlGenerator
      * @param array<string,string|int> $extra The query arguments to append.
      * A "_fragment" key can be passed to include a fragment after the query string.
      * @param int $type
-     * @param ?bool $secure If null is passed the scheme of the current request will be used.
+     * @param bool|null $https If null is passed the scheme of the current request will be used.
      *
      * @return string an rfc-compliant url
      */
-    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null): string;
+    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string;
 
     /**
      *
@@ -44,7 +44,7 @@ interface UrlGenerator
         string $name,
         array $arguments = [],
         int $type = self::ABSOLUTE_PATH,
-        ?bool $secure = null
+        ?bool $https = null
     ): string;
 
     /**
@@ -60,30 +60,5 @@ interface UrlGenerator
      */
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string;
 
-    /**
-     * Generates a secure, absolute URL to the provided path.
-     *
-     * @param array<string,string|int> $extra
-     */
-    public function secure(string $path, array $extra = []): string;
-
-    /**
-     * Returns the canonical url for the current request.
-     * i.e: current request: https://foo.com/foo?bar=baz
-     * => https://foo.com/foo
-     */
-    public function canonical(): string;
-
-    /**
-     * The full current uri as a string including query, fragment etc.
-     * Returns an absolute URL.
-     */
-    public function full(): string;
-
-    /**
-     * Get the previous URL based on the referer headers, including query string and fragment.
-     * Returns an absolute URL.
-     */
-    public function previous(string $fallback = '/'): string;
 
 }

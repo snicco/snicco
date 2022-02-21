@@ -154,120 +154,26 @@ class GeneratorTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function the_current_scheme_is_used_if_no_explicit_scheme_is_provided(): void
+    public function urls_with_use_the_default_settings_of_the_url_generation_context(): void
     {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('https://foo.com'),
-        );
+        $context = new UrlGenerationContext('foo.com');
         $generator = $this->generator($context);
 
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foo.com/foo', $url);
 
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com'),
-        );
+        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
+        $this->assertSame('http://foo.com/foo', $url);
+
+        $context = new UrlGenerationContext('foo.com', 443, 80, false);
         $generator = $this->generator($context);
 
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('http://foo.com/foo', $url);
-    }
-
-    /**
-     * @test
-     */
-    public function the_current_scheme_can_be_overwritten(): void
-    {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('https://foo.com')
-        );
-        $generator = $this->generator($context);
-
-        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
-        $this->assertSame('http://foo.com/foo', $url);
-
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com')
-        );
-        $generator = $this->generator($context);
 
         $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, true);
         $this->assertSame('https://foo.com/foo', $url);
     }
-
-    /**
-     * @test
-     */
-    public function a_scheme_can_be_forced_for_all_generated_urls(): void
-    {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com'),
-            true
-        );
-
-        $generator = $this->generator($context);
-
-        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL);
-        $this->assertSame('https://foo.com/foo', $url);
-    }
-
-    /**
-     * @test
-     */
-    public function a_forced_scheme_can_be_explicitly_overwritten(): void
-    {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com'),
-            true
-        );
-
-        $generator = $this->generator($context);
-
-        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_URL, false);
-        $this->assertSame('http://foo.com/foo', $url);
-
-        $url = $generator->to('/foo', ['bar' => 'baz'], UrlGenerator::ABSOLUTE_PATH, false);
-        $this->assertSame('/foo?bar=baz', $url);
-    }
-
-    /**
-     * @test
-     */
-    public function a_relative_link_with_a_forced_secure_schema_will_be_absolute_if_the_current_scheme_is_not_secure(
-    ): void
-    {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com')
-        );
-        $generator = $this->generator($context);
-
-        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH, true);
-        $this->assertSame('https://foo.com/foo', $url);
-
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com'),
-            true
-        );
-
-        $generator = $this->generator($context);
-        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH);
-        $this->assertSame('https://foo.com/foo', $url);
-    }
-
-    /**
-     * @test
-     */
-    public function a_relative_link_will_not_be_upgraded_to_a_full_url_if_the_request_is_secure(): void
-    {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('https://foo.com')
-        );
-        $generator = $this->generator($context);
-
-        $url = $generator->to('/foo', [], UrlGenerator::ABSOLUTE_PATH, true);
-        $this->assertSame('/foo', $url);
-    }
-
 
     /**
      * @test
@@ -293,34 +199,9 @@ class GeneratorTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function test_secure(): void
-    {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('https://foo.com')
-        );
-        $generator = $this->generator($context);
-
-        $this->assertSame('https://foo.com/foo', $generator->secure('foo'));
-
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com')
-        );
-        $generator = $this->generator($context);
-
-        $this->assertSame(
-            'https://foo.com/foo?foo=bar',
-            $generator->secure('foo', ['foo' => 'bar'])
-        );
-    }
-
-    /**
-     * @test
-     */
     public function test_absolute_url_with_non_standard_https_port(): void
     {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('https://foo.com:4000')
-        );
+        $context = new UrlGenerationContext('foo.com', 4000);
         $g = $this->generator($context);
 
         $this->assertSame('/foo', $g->to('foo'));
@@ -335,84 +216,13 @@ class GeneratorTest extends HttpRunnerTestCase
      */
     public function test_absolute_url_with_non_standard_http_port(): void
     {
-        $context = UrlGenerationContext::fromRequest(
-            $this->frontendRequest('http://foo.com:8080')
-        );
+        $context = new UrlGenerationContext('foo.com', 443, 8080);
         $g = $this->generator($context);
 
         $this->assertSame('/foo', $g->to('foo'));
         $this->assertSame(
             'http://foo.com:8080/foo',
-            $g->to('foo', [], UrlGenerator::ABSOLUTE_URL)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function the_previous_url_is_returned_as_is(): void
-    {
-        $request = $this->frontendRequest('/foo');
-        $r1 = $request->withAddedHeader('referer', 'https://other-site.com');
-        $r2 = $request->withAddedHeader('referer', '/foo');
-
-        $context = UrlGenerationContext::fromRequest($r1);
-        $g = $this->generator($context);
-
-        $this->assertSame('https://other-site.com', $g->previous());
-
-        $context = UrlGenerationContext::fromRequest($r2);
-        $g = $this->generator($context);
-
-        $this->assertSame('/foo', $g->previous());
-    }
-
-    /**
-     * @test
-     */
-    public function the_fallback_url_is_used_if_no_previous_url_exists(): void
-    {
-        $this->assertSame('https://foobar.com/fallback', $this->generator()->previous('fallback'));
-    }
-
-    /**
-     * @test
-     */
-    public function test_canonical(): void
-    {
-        $r = $this->frontendRequest('https://foobar.com/foo/bar');
-
-        $g = $this->generator(UrlGenerationContext::fromRequest($r));
-
-        $this->assertSame('https://foobar.com/foo/bar', $g->canonical());
-    }
-
-    /**
-     * @test
-     */
-    public function the_canonical_stays_url_encoded_and_is_not_double_url_encoded(): void
-    {
-        $r = $this->frontendRequest('https://foobar.com/münchen');
-        $g = $this->generator(
-            UrlGenerationContext::fromRequest($r)
-        );
-        $this->assertSame('https://foobar.com/' . rawurlencode('münchen'), $g->canonical());
-    }
-
-    /**
-     * @test
-     */
-    public function test_full(): void
-    {
-        $r = $this->frontendRequest('http://foobar.com:8080/foo/bar?city=münchen#section1');
-
-        $g = $this->generator(
-            UrlGenerationContext::fromRequest($r)
-        );
-
-        $this->assertSame(
-            'http://foobar.com:8080/foo/bar?city=' . rawurlencode('münchen') . '#section1',
-            $g->full()
+            $g->to('foo', [], UrlGenerator::ABSOLUTE_URL, false)
         );
     }
 
