@@ -8,9 +8,9 @@ namespace Snicco\Bundle\HttpRouting\Tests;
 use GuzzleHttp\Psr7\HttpFactory;
 use InvalidArgumentException;
 use Nyholm\Psr7\ServerRequest;
+use Nyholm\Psr7Server\ServerRequestCreator;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
@@ -23,7 +23,6 @@ use Snicco\Bundle\HttpRouting\RoutingOption;
 use Snicco\Bundle\Testing\BootsKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
@@ -253,7 +252,10 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
@@ -273,7 +275,10 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
@@ -300,7 +305,10 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
@@ -380,7 +388,10 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
@@ -426,7 +437,10 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories, Environment::prod());
@@ -447,13 +461,15 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
 
         $this->assertCanBeResolved(ResponseFactory::class, $kernel);
-        $this->assertCanBeResolved(Redirector::class, $kernel);
         $this->assertCanBeResolved(ResponseFactoryInterface::class, $kernel);
         $this->assertCanBeResolved(StreamFactoryInterface::class, $kernel);
     }
@@ -461,7 +477,7 @@ final class HttpRoutingBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_server_request_can_be_resolved(): void
+    public function test_server_request__creator_can_be_resolved(): void
     {
         $kernel = $this->bootWithFixedConfig(
             [
@@ -471,51 +487,21 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
 
-        $this->assertCanBeResolved(ServerRequestInterface::class, $kernel);
-
-        $request1 = $kernel->container()->make(ServerRequestInterface::class);
-        $request2 = $kernel->container()->make(ServerRequestInterface::class);
-
-        $this->assertSame($request1, $request2);
+        $this->assertCanBeResolved(ServerRequestCreator::class, $kernel);
     }
 
     /**
      * @test
      */
-    public function test_url_generation_context_is_taken_from_request_if_already_bound_in_container(): void
-    {
-        $server_request = new ServerRequest('GET', 'https://foobar.com/baz');
-        $this->container = $this->container();
-        $this->container->instance(Request::class, Request::fromPsr($server_request));
-
-        $kernel = $this->bootWithFixedConfig(
-            [
-                'routing' => [
-                    RoutingOption::HOST => 'foo.com',
-                    RoutingOption::ROUTE_DIRECTORIES => [],
-                    RoutingOption::API_ROUTE_DIRECTORIES => [],
-                    RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
-                    RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
-                ]
-            ]
-            , $this->directories);
-
-        $url_generator = $kernel->container()->make(UrlGenerator::class);
-
-        $current = $url_generator->canonical();
-        $this->assertSame('https://foobar.com/baz', $current);
-    }
-
-    /**
-     * @test
-     */
-    public function test_url_generation_context_is_taken_from_config_in_cli_if_no_request_is_bound(): void
+    public function test_url_generation_context_is_taken_from_config(): void
     {
         $kernel = $this->bootWithFixedConfig(
             [
@@ -525,15 +511,18 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => false,
+                    RoutingOption::HTTP_PORT => 8080,
+                    RoutingOption::HTTPS_PORT => 443,
                 ]
             ]
             , $this->directories);
 
+        /** @var UrlGenerator $url_generator */
         $url_generator = $kernel->container()->make(UrlGenerator::class);
 
-        $current = $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL);
-        $this->assertSame('https://foo.com/baz', $current);
+        $this->assertSame('http://foo.com:8080/baz', $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL));
     }
 
     /**

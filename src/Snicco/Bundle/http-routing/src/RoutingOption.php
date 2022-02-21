@@ -30,4 +30,10 @@ final class RoutingOption
 
     public const MIDDLEWARE_PRIORITY = 'middleware_priority';
 
+    public const HTTP_PORT = 'http_port';
+
+    public const HTTPS_PORT = 'https_port';
+
+    public const HTTPS = 'https';
+
 }
