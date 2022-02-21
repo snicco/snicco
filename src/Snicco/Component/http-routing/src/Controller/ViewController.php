@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Controller;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Webmozart\Assert\Assert;
 
+use function array_keys;
 use function array_slice;
 
 /**
@@ -21,8 +20,6 @@ final class ViewController extends Controller
 
     /**
      * @param mixed ...$args
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function __invoke(...$args): Response
     {
@@ -32,6 +29,9 @@ final class ViewController extends Controller
         Assert::integer($status);
         Assert::isArray($data);
         Assert::isArray($headers);
+        Assert::allString(array_keys($data));
+
+        /** @var array<string,mixed> $data */
 
         $response = $this->respondWith()->view($view, $data);
 

@@ -7,13 +7,11 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 class ResponsePreparationTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
-    use CreateUrlGenerator;
 
     private ResponseFactory $factory;
     private ResponsePreparation $preparation;
@@ -22,7 +20,7 @@ class ResponsePreparationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
+        $this->factory = $this->createResponseFactory();
         $this->preparation = new ResponsePreparation($this->psrStreamFactory());
         $this->request = new Request(
             $this->psrServerRequestFactory()->createServerRequest('GET', ' /foo')

@@ -33,7 +33,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
     private array $displayers = [];
 
     /**
-     * @param iterable<ExceptionDisplayer> $displayers
+     * @param ExceptionDisplayer[] $displayers
      */
     public function __construct(
         ResponseFactoryInterface $response_factory,
@@ -41,7 +41,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         InformationProvider $information_provider,
         ExceptionDisplayer $default_displayer,
         Filter $filter,
-        iterable $displayers = []
+        array $displayers = []
     ) {
         $this->response_factory = $response_factory;
         $this->filter = $filter;

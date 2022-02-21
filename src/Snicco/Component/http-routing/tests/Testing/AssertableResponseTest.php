@@ -14,7 +14,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 use function json_encode;
 
@@ -22,14 +21,13 @@ final class AssertableResponseTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
-    use CreateUrlGenerator;
 
     private ResponseFactory $response_factory;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->response_factory = $this->createResponseFactory($this->createUrlGenerator());
+        $this->response_factory = $this->createResponseFactory();
     }
 
     /**
