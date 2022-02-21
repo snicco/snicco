@@ -220,7 +220,7 @@ final class HttpRoutingBundle implements Bundle
                     $information_provider,
                     $container[ExceptionDisplayer::class] ?? new FallbackDisplayer(),
                     $displayer_filter,
-                    $container->make(DisplayerCollection::class)->getIterator()
+                    $container->make(DisplayerCollection::class)->all()
                 );
             }
         );

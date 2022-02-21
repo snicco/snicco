@@ -15,7 +15,6 @@ use Snicco\Component\HttpRouting\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Controller\ViewController;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
@@ -36,7 +35,6 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
-use Snicco\Component\HttpRouting\Tests\fixtures\Controller\TestViewController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
@@ -271,9 +269,8 @@ abstract class HttpRunnerTestCase extends TestCase
         );
 
         $this->pimple[UrlGenerator::class] = $routing->urlGenerator();
-        $rf = $this->createResponseFactory($routing->urlGenerator());
+        $rf = $this->createResponseFactory();
         $this->pimple[ResponseFactory::class] = $rf;
-        $this->pimple[Redirector::class] = $rf;
 
         // Fetch one service from the routing facade in order to trigger Exceptions.
         // If we don't do this we need to fetch an extra service in every test case where we assert Exceptions

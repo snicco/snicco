@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -19,7 +18,6 @@ class ResponseTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
-    use CreateUrlGenerator;
 
     private ResponseFactory $factory;
 
@@ -28,7 +26,7 @@ class ResponseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->factory = $this->createResponseFactory($this->createUrlGenerator());
+        $this->factory = $this->createResponseFactory();
         $this->response = $this->factory->createResponse();
     }
 

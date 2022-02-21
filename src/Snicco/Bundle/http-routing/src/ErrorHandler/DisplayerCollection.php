@@ -5,13 +5,11 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\HttpRouting\ErrorHandler;
 
-use ArrayIterator;
-use IteratorAggregate;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 
 use function array_unshift;
 
-final class DisplayerCollection implements IteratorAggregate
+final class DisplayerCollection
 {
 
     /**
@@ -30,10 +28,10 @@ final class DisplayerCollection implements IteratorAggregate
     }
 
     /**
-     * @return ArrayIterator<array-key,ExceptionDisplayer>
+     * @return  ExceptionDisplayer[]
      */
-    public function getIterator(): ArrayIterator
+    public function all(): array
     {
-        return new ArrayIterator($this->displayers);
+        return $this->displayers;
     }
 }
