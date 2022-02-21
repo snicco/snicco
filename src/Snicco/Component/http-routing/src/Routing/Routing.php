@@ -87,6 +87,9 @@ final class Routing
         return $this->url_matcher;
     }
 
+    /**
+     * @todo This must accept the context as an argument here.
+     */
     public function urlGenerator(): UrlGenerator
     {
         if (!isset($this->url_generator)) {
