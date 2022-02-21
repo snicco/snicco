@@ -14,9 +14,11 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Snicco\Bundle\HttpRouting\ErrorHandler\DisplayerCollection;
 use Snicco\Bundle\HttpRouting\ErrorHandler\ExceptionTransformerCollection;
+use Snicco\Bundle\HttpRouting\ErrorHandler\NullErrorHandler;
 use Snicco\Bundle\HttpRouting\ErrorHandler\RequestLogContextCollection;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
@@ -82,7 +84,6 @@ final class HttpRoutingBundle implements Bundle
     public function register(Kernel $kernel): void
     {
         $container = $kernel->container();
-
         $this->bindPsr17Discovery($container);
         $this->bindResponseFactory($container);
         $this->bindServerRequest($container);
@@ -136,7 +137,7 @@ final class HttpRoutingBundle implements Bundle
 
             $cache = ($env->isStaging() || $env->isProduction())
                 ? new FileRouteCache(
-                    $kernel->directories()->cacheDir() . '/' . $env->asString() . '.routes-generated.php'
+                    $kernel->directories()->cacheDir() . '/prod.routes-generated.php'
                 )
                 : new NullCache();
 
@@ -191,36 +192,45 @@ final class HttpRoutingBundle implements Bundle
             return new RequestLogContextCollection();
         });
 
-        $container->singleton(HttpErrorHandlerInterface::class, function () use ($container, $kernel) {
-            /** @var LoggerInterface $psr_logger */
-            $psr_logger = $container[LoggerInterface::class] ?? new NullLogger();
+        $container->singleton(
+            HttpErrorHandlerInterface::class,
+            function () use ($container, $kernel): HttpErrorHandlerInterface {
+                $null_handler = $container[NullErrorHandler::class] ?? null;
 
-            $information_provider = $container[InformationProvider::class] ?? TransformableInformationProvider::withDefaultData(
-                    new SplHashIdentifier(),
-                    ...$container->make(ExceptionTransformerCollection::class)->all()
+                if ($null_handler) {
+                    return $null_handler;
+                }
+
+                /** @var LoggerInterface $psr_logger */
+                $psr_logger = $container[LoggerInterface::class] ?? new NullLogger();
+
+                $information_provider = $container[InformationProvider::class] ?? TransformableInformationProvider::withDefaultData(
+                        new SplHashIdentifier(),
+                        ...$container->make(ExceptionTransformerCollection::class)->all()
+                    );
+
+                $displayer_filter = $container[Filter::class] ?? new Delegating(
+                        new ContentType(),
+                        new Verbosity($kernel->env()->isDebug()),
+                        new CanDisplay(),
+                    );
+
+                $logger = new RequestAwareLogger(
+                    $psr_logger,
+                    [],
+                    ...$container->make(RequestLogContextCollection::class)->all()
                 );
 
-            $displayer_filter = $container[Filter::class] ?? new Delegating(
-                    new ContentType(),
-                    new Verbosity($kernel->env()->isDebug()),
-                    new CanDisplay(),
+                return new HttpErrorHandler(
+                    $container->make(ResponseFactoryInterface::class),
+                    $logger,
+                    $information_provider,
+                    $container[ExceptionDisplayer::class] ?? new FallbackDisplayer(),
+                    $displayer_filter,
+                    $container->make(DisplayerCollection::class)->getIterator()
                 );
-
-            $logger = new RequestAwareLogger(
-                $psr_logger,
-                [],
-                ...$container->make(RequestLogContextCollection::class)->all()
-            );
-
-            return new HttpErrorHandler(
-                $container->make(ResponseFactoryInterface::class),
-                $logger,
-                $information_provider,
-                $container[ExceptionDisplayer::class] ?? new FallbackDisplayer(),
-                $displayer_filter,
-                $container->make(DisplayerCollection::class)->getIterator()
-            );
-        });
+            }
+        );
     }
 
     private function bindMiddlewarePipeline(DIContainer $container): void
@@ -276,6 +286,7 @@ final class HttpRoutingBundle implements Bundle
         });
         $container->singleton(ResponseFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
         $container->singleton(StreamFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
+        $container->singleton(Redirector::class, fn() => $container->make(ResponseFactory::class));
     }
 
     private function bindPsr17Discovery(DIContainer $container): void

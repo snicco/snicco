@@ -5,6 +5,9 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\HttpRouting;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class RoutingOption
 {
     public const HOST = 'host';

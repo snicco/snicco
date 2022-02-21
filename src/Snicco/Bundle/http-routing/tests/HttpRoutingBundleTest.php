@@ -23,6 +23,7 @@ use Snicco\Bundle\HttpRouting\RoutingOption;
 use Snicco\Bundle\Testing\BootsKernel;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
@@ -452,6 +453,7 @@ final class HttpRoutingBundleTest extends TestCase
             , $this->directories);
 
         $this->assertCanBeResolved(ResponseFactory::class, $kernel);
+        $this->assertCanBeResolved(Redirector::class, $kernel);
         $this->assertCanBeResolved(ResponseFactoryInterface::class, $kernel);
         $this->assertCanBeResolved(StreamFactoryInterface::class, $kernel);
     }

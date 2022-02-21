@@ -48,6 +48,7 @@ final class Psr17FactoryDiscovery
     public function __construct(?array $check_for_classes = null)
     {
         $this->check_for_classes = $check_for_classes ?: [
+            // nyholm-psr7
             Psr17Factory::class => [
                 'server_request' => Psr17Factory::class,
                 'uri' => Psr17Factory::class,
@@ -55,6 +56,7 @@ final class Psr17FactoryDiscovery
                 'stream' => Psr17Factory::class,
                 'response' => Psr17Factory::class,
             ],
+            // guzzle
             HttpFactory::class => [
                 'server_request' => HttpFactory::class,
                 'uri' => HttpFactory::class,
