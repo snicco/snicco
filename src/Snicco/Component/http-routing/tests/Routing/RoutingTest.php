@@ -28,7 +28,7 @@ final class RoutingTest extends TestCase
     {
         $routing = new Routing(
             new \Pimple\Psr11\Container(new Container()),
-            UrlGenerationContext::forConsole('127.0.0.1'),
+            new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
                 [],
@@ -49,7 +49,8 @@ final class RoutingTest extends TestCase
     {
         $routing = new Routing(
             new \Pimple\Psr11\Container(new Container()),
-            UrlGenerationContext::forConsole('127.0.0.1'),
+            new UrlGenerationContext('127.0.0.1')
+            ,
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
                 [],
@@ -70,7 +71,7 @@ final class RoutingTest extends TestCase
     {
         $routing = new Routing(
             new \Pimple\Psr11\Container(new Container()),
-            UrlGenerationContext::forConsole('127.0.0.1'),
+            new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
                 [],
@@ -91,7 +92,7 @@ final class RoutingTest extends TestCase
     {
         $routing = new Routing(
             new \Pimple\Psr11\Container(new Container()),
-            UrlGenerationContext::forConsole('127.0.0.1'),
+            new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
                 [],

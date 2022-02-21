@@ -69,7 +69,7 @@ final class RouteRunner extends Middleware
                     )
                 );
 
-                return $this->respond()->toResponse($response);
+                return $this->responseFactory()->toResponse($response);
             });
     }
 
@@ -78,14 +78,14 @@ final class RouteRunner extends Middleware
         $middleware = $this->middleware_resolver->resolveForRequestWithoutRoute($request);
 
         if (!count($middleware)) {
-            return $this->respond()->delegate();
+            return $this->responseFactory()->delegate();
         }
 
         return $this->pipeline
             ->send($request)
             ->through($middleware)
             ->then(function () {
-                return $this->respond()->delegate();
+                return $this->responseFactory()->delegate();
             });
     }
 

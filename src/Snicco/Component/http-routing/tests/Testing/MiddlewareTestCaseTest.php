@@ -31,7 +31,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respond()->html('foo');
+                return $this->responseFactory()->html('foo');
             }
 
         };
@@ -72,7 +72,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respond()->html('foo');
+                return $this->responseFactory()->html('foo');
             }
 
         };
@@ -98,7 +98,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respond()->html('foo');
+                return $this->responseFactory()->html('foo');
             }
 
         };
@@ -163,7 +163,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
 
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respond()->html('foo');
+                return $this->responseFactory()->html('foo');
             }
 
         };
@@ -259,7 +259,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
             {
                 $next($request);
 
-                return $this->respond()->html('foo');
+                return $this->responseFactory()->html('foo');
             }
 
         };
@@ -282,7 +282,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
                 if ($request->isGet()) {
                     $next($request);
                 }
-                return $this->respond()->html('foo');
+                return $this->responseFactory()->html('foo');
             }
 
         };
@@ -300,21 +300,11 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function test_exception_if_response_factory_is_not_retrieved_inside_next_response_closure(): void
+    public function test_exception_if_response_utils_is_access_to_early(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('inside');
-        $this->responseFactory();
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_redirector_is_not_retrieved_inside_next_response_closure(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('inside');
-        $this->redirector();
+        $this->expectExceptionMessage('response utils');
+        $this->responseUtils();
     }
 
     /**
@@ -336,7 +326,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $this->withRoutes([Route::create('/foo', Route::DELEGATE, 'r1')]);
 
         $this->withNextMiddlewareResponse(function () {
-            return $this->redirector()->toRoute('r1');
+            return $this->responseUtils()->redirectToRoute('r1');
         });
 
         $middleware = new class extends Middleware {

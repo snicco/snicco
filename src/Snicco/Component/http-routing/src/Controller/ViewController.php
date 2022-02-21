@@ -33,7 +33,7 @@ final class ViewController extends Controller
         Assert::isArray($data);
         Assert::isArray($headers);
 
-        $response = $this->respond()->view($view, $data);
+        $response = $this->respondWith()->view($view, $data);
 
         /**
          * @var array<string,string> $headers

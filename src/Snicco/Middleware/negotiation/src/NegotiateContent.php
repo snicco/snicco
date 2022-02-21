@@ -47,7 +47,7 @@ final class NegotiateContent extends Middleware
     {
         $content_type = new ContentType($this->content_types);
         $content_type->charsets($this->charsets);
-        $content_type->errorResponse($this->respond());
+        $content_type->errorResponse($this->responseFactory());
         $content_type->nosniff(true);
         $language = new ContentLanguage($this->languages);
 

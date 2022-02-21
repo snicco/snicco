@@ -5,125 +5,103 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Controller;
 
-use PHPUnit\Framework\TestCase;
-use Pimple\Container;
-use Psr\Http\Message\ResponseInterface;
+use LogicException;
+use RuntimeException;
+use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
-use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
-use Snicco\Component\HttpRouting\Renderer\TemplateRenderer;
-use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
+use Snicco\Component\HttpRouting\Http\ResponseUtils;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
+use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-use function dirname;
-
-final class ControllerTest extends TestCase
+final class ControllerTest extends HttpRunnerTestCase
 {
 
-    use CreateTestPsr17Factories;
-
-    private Container $pimple;
-    private \Pimple\Psr11\Container $pimple_psr;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->pimple = new Container();
-        $this->pimple_psr = new \Pimple\Psr11\Container($this->pimple);
-    }
-
-
     /**
      * @test
      */
-    public function test_redirector_can_be_used(): void
+    public function test_controllers_have_access_to_response_utils(): void
     {
-        $controller = new class extends Controller {
+        $this->webRouting(function (WebRoutingConfigurator $router) {
+            $router->get('r1', '/foo', ResponseUtilsTestController::class);
+        });
 
-            public function handle(): ResponseInterface
-            {
-                return $this->redirect()->to('/foo');
-            }
-        };
-        $controller->setContainer($this->pimple_psr);
-        $this->pimple[Redirector::class] = function (): Redirector {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
+        $response = $this->runNewPipeline($this->frontendRequest('https://foo.com/foo'));
 
-        $response = $controller->handle();
-
-        $this->assertSame('/foo', $response->getHeaderLine('location'));
+        $response->assertLocation('https://foo.com/foo');
     }
 
     /**
      * @test
      */
-    public function test_url_generator_can_be_used(): void
+    public function test_exception_if_current_request_not_set(): void
     {
-        $controller = new class extends Controller {
+        $container = new PimpleContainerAdapter();
+        $container->singleton(ResponseFactory::class, function () {
+            return $this->createResponseFactory();
+        });
+        $container->singleton(UrlGenerator::class, function () {
+            return $this->generator();
+        });
 
-            public function handle(): ResponseInterface
-            {
-                return $this->respond()->redirect($this->url()->to('/foo', ['bar' => 'baz']));
-            }
-        };
-        $controller->setContainer($this->pimple_psr);
-        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
-        $this->pimple[UrlGenerator::class] = function (): UrlGenerator {
-            return $this->getUrLGenerator();
-        };
+        $controller = new ResponseUtilsTestController();
+        $controller->setContainer($container);
 
-        $response = $controller->handle();
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Current request');
 
-        $this->assertSame('/foo?bar=baz', $response->getHeaderLine('location'));
+        $controller->responseWith()->refresh();
     }
 
     /**
      * @test
      */
-    public function test_template_renderer_can_be_used(): void
+    public function test_exception_if_url_generator_not_set(): void
     {
-        $controller = new class extends Controller {
+        $container = new PimpleContainerAdapter();
 
-            public function handle(): ResponseInterface
-            {
-                return $this->render(dirname(__DIR__, 1) . '/fixtures/templates/greeting.php', ['greet' => 'Calvin'])
-                    ->withHeader(
-                        'foo',
-                        'bar'
-                    );
-            }
-        };
-        $controller->setContainer($this->pimple_psr);
-        $this->pimple[ResponseFactory ::class] = function (): ResponseFactory {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
+        $controller = new ResponseUtilsTestController();
+        $controller->setContainer($container);
 
-        $response = $controller->handle();
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The UrlGenerator is not bound');
 
-        $this->assertSame('bar', $response->getHeaderLine('foo'));
-
-        $this->assertInstanceOf(ViewResponse::class, $response);
-        $this->assertSame(dirname(__DIR__, 1) . '/fixtures/templates/greeting.php', $response->view());
-        $this->assertSame(['greet' => 'Calvin'], $response->viewData());
+        $controller->responseWith()->refresh();
     }
 
-    private function getUrLGenerator(): UrlGenerator
+    /**
+     * @test
+     */
+    public function test_exception_if_response_factory_not_set(): void
     {
-        return new Generator(
-            new RouteCollection(),
-            UrlGenerationContext::forConsole('127.0.0.0'),
-            WPAdminArea::fromDefaults()
-        );
+        $container = new PimpleContainerAdapter();
+
+        $controller = new ResponseUtilsTestController();
+        $container->singleton(UrlGenerator::class, function () {
+            return $this->generator();
+        });
+        $controller->setContainer($container);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The ResponseFactory is not bound');
+
+        $controller->responseWith()->refresh();
     }
 
+}
+
+class ResponseUtilsTestController extends Controller
+{
+
+    public function responseWith(): ResponseUtils
+    {
+        return parent::respondWith();
+    }
+
+    public function __invoke()
+    {
+        return $this->respondWith()->refresh();
+    }
 
 }

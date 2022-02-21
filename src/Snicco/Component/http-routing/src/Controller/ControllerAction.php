@@ -53,6 +53,10 @@ final class ControllerAction
             array_unshift($captured_args_decoded, $request);
         }
 
+        if ($this->controller_instance instanceof Controller) {
+            $this->controller_instance->setCurrentRequest($request);
+        }
+
         return call_user_func_array($callable, array_values($captured_args_decoded));
     }
 

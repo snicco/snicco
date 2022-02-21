@@ -11,10 +11,11 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
 /**
  * @internal
+ *
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 trait CreateTestPsr17Factories
 {
@@ -49,12 +50,11 @@ trait CreateTestPsr17Factories
         return new Psr17Factory();
     }
 
-    public function createResponseFactory(UrlGenerator $generator): ResponseFactory
+    public function createResponseFactory(): ResponseFactory
     {
         return new ResponseFactory(
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            $generator
         );
     }
 

@@ -263,7 +263,7 @@ abstract class HttpRunnerTestCase extends TestCase
     ): Routing {
         $routing = new Routing(
             $this->psr_container,
-            $context ?: UrlGenerationContext::forConsole($this->app_domain),
+            $context ?: new UrlGenerationContext($this->app_domain),
             $loader ?: $this->nullLoader(),
             $cache ?: new NullCache(),
             WPAdminArea::fromDefaults(),

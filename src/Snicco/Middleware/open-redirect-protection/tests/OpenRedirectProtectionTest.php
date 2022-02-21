@@ -30,7 +30,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     public function a_redirect_response_is_allowed_if_its_relative(): void
     {
         $this->withNextMiddlewareResponse(function () {
-            return $this->redirector()->to('foo');
+            return $this->responseUtils()->redirectTo('foo');
         });
 
         $request = $this->frontendRequest('/foo');
@@ -180,7 +180,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $this->withNextMiddlewareResponse(function () {
             $target = 'https://external-site.com';
 
-            return $this->redirector()->away($target);
+            return $this->responseUtils()->externalRedirect($target);
         });
 
         $request = $this->frontendRequest('/foo');

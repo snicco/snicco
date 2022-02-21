@@ -11,8 +11,11 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
+
 /**
- * @interal
+ * @internal
+ *
+ * @psalm-internal Snicco\Component\HttpRouting
  */
 trait CreateUrlGenerator
 {
@@ -23,7 +26,7 @@ trait CreateUrlGenerator
     ): UrlGenerator {
         return new Generator(
             $routes ?? new RouteCollection([]),
-            $context ?? UrlGenerationContext::forConsole('127.0.0.1'),
+            $context ?? new UrlGenerationContext('127.0.0.1'),
             WPAdminArea::fromDefaults(),
         );
     }
