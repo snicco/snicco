@@ -14,7 +14,7 @@ use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
-use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 
 trait CreateHttpErrorHandler
@@ -25,7 +25,7 @@ trait CreateHttpErrorHandler
         return new HttpErrorHandler(
             $response_factory,
             new RequestAwareLogger(new NullLogger()),
-            TransformableInformationProvider::withDefaultData(new SplHashIdentifier()),
+            InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier()),
             new FallbackDisplayer(),
             new Delegating(new CanDisplay(), new ContentType(), new Verbosity(true)),
         );
