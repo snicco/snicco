@@ -42,7 +42,7 @@ final class ExceptionInformation
         return $this->identifier;
     }
 
-    public function title(): string
+    public function safeTitle(): string
     {
         return $this->title;
     }

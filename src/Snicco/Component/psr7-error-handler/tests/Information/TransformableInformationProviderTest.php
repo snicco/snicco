@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
-use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 
 /**
  * @psalm-suppress InvalidArgument
@@ -22,14 +22,14 @@ final class TransformableInformationProviderTest extends TestCase
      */
     public function test_from_default_data(): void
     {
-        $provider = TransformableInformationProvider::withDefaultData(new SplHashIdentifier());
+        $provider = InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier());
 
         $e = new HttpException(404, 'secret stuff');
 
         $information = $provider->createFor($e);
 
         $this->assertSame(404, $information->statusCode());
-        $this->assertSame('Not Found', $information->title());
+        $this->assertSame('Not Found', $information->safeTitle());
         $this->assertSame(
             'The requested resource could not be found but may be available again in the future.',
             $information->safeDetails()
@@ -44,7 +44,7 @@ final class TransformableInformationProviderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$status_code must be greater >= 400.');
 
-        new TransformableInformationProvider([
+        new InformationProviderWithTransformation([
             303 => [
                 'title' => 'foo',
                 'message' => 'bar'
@@ -60,7 +60,7 @@ final class TransformableInformationProviderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$title must be string for status code [403].');
 
-        new TransformableInformationProvider([
+        new InformationProviderWithTransformation([
             403 => [
                 'message' => 'bar'
             ]
@@ -75,7 +75,7 @@ final class TransformableInformationProviderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$message must be string for status code [403].');
 
-        new TransformableInformationProvider([
+        new InformationProviderWithTransformation([
             403 => [
                 'title' => 'bar'
             ]

@@ -10,7 +10,7 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
-final class CanDisplay implements Filter
+final class CanDisplay implements DisplayerFilter
 {
 
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array

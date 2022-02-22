@@ -15,14 +15,20 @@ use RuntimeException;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
-use Snicco\Component\Psr7ErrorHandler\Log\RequestContext;
-use TypeError;
+use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 
 final class RequestAwareLoggerTest extends TestCase
 {
 
     private ServerRequestInterface $request;
     private TestLogger $test_logger;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->request = new ServerRequest('GET', '/foo');
+        $this->test_logger = new TestLogger();
+    }
 
     /**
      * @test
@@ -77,16 +83,16 @@ final class RequestAwareLoggerTest extends TestCase
     /**
      * @test
      */
-    public function errors_are_logged_as_critical_by_default(): void
+    public function exception_information_with_a_500_status_code_or_higher_are_logged_as_critical(): void
     {
         $logger = new RequestAwareLogger($test_logger = new TestLogger());
 
         $info = new ExceptionInformation(
-            403,
+            500,
             'foo_id',
             'title',
             'safe_details',
-            $e = new TypeError('secret stuff here'),
+            $e = new RuntimeException('secret stuff here'),
             HttpException::fromPrevious(403, $e)
         );
 
@@ -154,8 +160,8 @@ final class RequestAwareLoggerTest extends TestCase
         $logger = new RequestAwareLogger(
             $this->test_logger,
             [],
-            new PathContext(),
-            new MethodContext(),
+            new PathLogContext(),
+            new MethodLogContext(),
         );
 
         $info = new ExceptionInformation(
@@ -182,19 +188,12 @@ final class RequestAwareLoggerTest extends TestCase
         );
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->request = new ServerRequest('GET', '/foo');
-        $this->test_logger = new TestLogger();
-    }
-
 }
 
-class PathContext implements RequestContext
+class PathLogContext implements RequestLogContext
 {
 
-    public function add(array $context, RequestInterface $request): array
+    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
     {
         $context['path'] = $request->getUri()->getPath();
         return $context;
@@ -202,10 +201,10 @@ class PathContext implements RequestContext
 
 }
 
-class MethodContext implements RequestContext
+class MethodLogContext implements RequestLogContext
 {
 
-    public function add(array $context, RequestInterface $request): array
+    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
     {
         $context['method'] = $request->getMethod();
         return $context;

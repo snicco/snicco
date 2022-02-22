@@ -10,7 +10,7 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_filter;
 
-final class Verbosity implements Filter
+final class Verbosity implements DisplayerFilter
 {
 
     private bool $show_verbose_filters;

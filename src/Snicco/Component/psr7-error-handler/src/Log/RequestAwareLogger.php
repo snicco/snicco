@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Log;
 
-use Exception;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -17,19 +16,19 @@ final class RequestAwareLogger
     private LoggerInterface $psr_logger;
 
     /**
-     * @var RequestContext[]
+     * @var RequestLogContext[]
      */
     private array $context;
 
     /**
-     * @var array<string,string>
+     * @var array<class-string<Throwable>,string>
      */
     private array $log_levels = [];
 
     /**
-     * @param array<string,string> $log_levels
+     * @param array<class-string<Throwable>,string> $log_levels
      */
-    public function __construct(LoggerInterface $psr_logger, array $log_levels = [], RequestContext ...$context)
+    public function __construct(LoggerInterface $psr_logger, array $log_levels = [], RequestLogContext ...$context)
     {
         $this->psr_logger = $psr_logger;
         $this->context = $context;
@@ -46,11 +45,11 @@ final class RequestAwareLogger
         ];
 
         foreach ($this->context as $request_context) {
-            $context = $request_context->add($context, $request);
+            $context = $request_context->add($context, $request, $exception_information);
         }
 
         $this->psr_logger->log(
-            $this->determineLogLevel($e),
+            $this->determineLogLevel($e, $exception_information->statusCode()),
             $e->getMessage(),
             $context
         );
@@ -61,7 +60,7 @@ final class RequestAwareLogger
         $this->log_levels[$class] = $log_level;
     }
 
-    private function determineLogLevel(Throwable $e): string
+    private function determineLogLevel(Throwable $e, int $status_code): string
     {
         $user_defined_level = null;
         foreach ($this->log_levels as $type => $level) {
@@ -75,11 +74,7 @@ final class RequestAwareLogger
             return $user_defined_level;
         }
 
-        if ($e instanceof Exception) {
-            return LogLevel::ERROR;
-        }
-
-        return LogLevel::CRITICAL;
+        return $status_code >= 500 ? LogLevel::CRITICAL : LogLevel::ERROR;
     }
 
 }
