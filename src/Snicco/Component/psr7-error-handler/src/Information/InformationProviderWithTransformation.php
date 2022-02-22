@@ -127,10 +127,10 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
 
     /**
      * @return array{0:string, 1:string}
-     * @psalm-suppress PossiblyUndefinedIntArrayOffset , 500 is always defined.
      */
     private function getData(int $status_code, Throwable $transformed, Throwable $original): array
     {
+        /** @psalm-suppress PossiblyUndefinedIntArrayOffset */
         $info = $this->default_messages[$status_code] ?? $this->default_messages[500];
         $title = $info['title'];
         $safe_message = $info['message'];
