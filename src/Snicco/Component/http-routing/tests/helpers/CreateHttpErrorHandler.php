@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Tests\helpers;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\NullLogger;
-use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\CanDisplay;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
@@ -26,7 +25,6 @@ trait CreateHttpErrorHandler
             $response_factory,
             new RequestAwareLogger(new NullLogger()),
             InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier()),
-            new FallbackDisplayer(),
             new Delegating(new CanDisplay(), new ContentType(), new Verbosity(true)),
         );
     }

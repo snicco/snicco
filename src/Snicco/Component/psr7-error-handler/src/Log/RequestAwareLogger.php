@@ -55,6 +55,9 @@ final class RequestAwareLogger
         );
     }
 
+    /**
+     * @param class-string<Throwable> $class
+     */
     private function addLogLevel(string $class, string $log_level): void
     {
         $this->log_levels[$class] = $log_level;
