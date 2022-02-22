@@ -16,12 +16,15 @@ final class FallbackDisplayer implements ExceptionDisplayer
             htmlentities($exception_information->identifier(), ENT_QUOTES, 'UTF-8')
         );
 
+        $title = $exception_information->safeTitle();
+        $details = $exception_information->safeDetails();
+
         return sprintf(
             '<h1>%s</h1><p>%s</p><p>%s</p><p>%s</p>',
-            'Oops! An Error Occurred',
-            'Something went wrong on our servers while we were processing your request.',
+            $title,
+            $details,
             $code,
-            'Sorry for any inconvenience caused.'
+            'We are sorry for any inconvenience caused.'
         );
     }
 

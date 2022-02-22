@@ -6,7 +6,7 @@ namespace Snicco\Component\Psr7ErrorHandler\Information;
 
 use Throwable;
 
-interface InformationProvider
+interface ExceptionInformationProvider
 {
 
     public function createFor(Throwable $e): ExceptionInformation;

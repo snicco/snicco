@@ -9,9 +9,10 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
-use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Filter;
+use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\DisplayerFilter;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
-use Snicco\Component\Psr7ErrorHandler\Information\InformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Throwable;
 
@@ -22,15 +23,14 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
 {
 
     private ResponseFactoryInterface $response_factory;
-    private Filter $filter;
+    private DisplayerFilter $filter;
     private RequestAwareLogger $logger;
-    private InformationProvider $information_provider;
-    private ExceptionDisplayer $fallback_displayer;
+    private ExceptionInformationProvider $information_provider;
 
     /**
      * @var ExceptionDisplayer[]
      */
-    private array $displayers = [];
+    private array $displayers;
 
     /**
      * @param ExceptionDisplayer[] $displayers
@@ -38,20 +38,15 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
     public function __construct(
         ResponseFactoryInterface $response_factory,
         RequestAwareLogger $logger,
-        InformationProvider $information_provider,
-        ExceptionDisplayer $default_displayer,
-        Filter $filter,
-        array $displayers = []
+        ExceptionInformationProvider $information_provider,
+        DisplayerFilter $filter,
+        ExceptionDisplayer ...$displayers
     ) {
         $this->response_factory = $response_factory;
         $this->filter = $filter;
         $this->information_provider = $information_provider;
         $this->logger = $logger;
-
-        foreach ($displayers as $displayer) {
-            $this->addDisplayer($displayer);
-        }
-        $this->fallback_displayer = $default_displayer;
+        $this->displayers = $displayers;
     }
 
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
@@ -74,11 +69,6 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         }
 
         return $this->withHttpHeaders($info->transformedException(), $response);
-    }
-
-    private function addDisplayer(ExceptionDisplayer $displayer): void
-    {
-        $this->displayers[] = $displayer;
     }
 
     private function logException(ExceptionInformation $info, RequestInterface $request): void
@@ -105,7 +95,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
             $this->filter->filter($this->displayers, $request, $info)
         );
 
-        return $displayers[0] ?? $this->fallback_displayer;
+        return $displayers[0] ?? new FallbackDisplayer();
     }
 
     private function handleDisplayError(Throwable $display_error, RequestInterface $request): ResponseInterface
