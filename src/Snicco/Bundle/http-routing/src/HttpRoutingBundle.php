@@ -78,9 +78,10 @@ final class HttpRoutingBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        if (!$config->has('routing.host')) {
-            throw new InvalidArgumentException('routing.host must be a non-empty-string.');
+        if (!$config->has('routing.' . RoutingOption::HOST)) {
+            throw new InvalidArgumentException('routing.' . RoutingOption::HOST . ' must be a non-empty-string.');
         }
+
         $config->extend('routing.' . RoutingOption::WP_ADMIN_PREFIX, '/wp-admin');
         $config->extend('routing.' . RoutingOption::WP_LOGIN_PATH, '/wp-login.php');
         $config->extend('routing.' . RoutingOption::ROUTE_DIRECTORIES, []);
@@ -141,17 +142,17 @@ final class HttpRoutingBundle implements Bundle
             $env = $kernel->env();
 
             $context = new UrlGenerationContext(
-                $config->getString('routing.host'),
-                $config->getInteger('routing.https_port'),
-                $config->getInteger('routing.http_port'),
-                $config->getBoolean('routing.https')
+                $config->getString('routing.' . RoutingOption::HOST),
+                $config->getInteger('routing.' . RoutingOption::HTTPS_PORT),
+                $config->getInteger('routing.' . RoutingOption::HTTP_PORT),
+                $config->getBoolean('routing.' . RoutingOption::HTTPS)
             );
 
             $loader = $container[RouteLoader::class] ?? new PHPFileRouteLoader(
-                    $config->getListOfStrings('routing.route_directories'),
-                    $config->getListOfStrings('routing.api_route_directories'),
+                    $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
+                    $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES),
                     $container[RouteLoadingOptions::class] ?? new DefaultRouteLoadingOptions(
-                        $config->getString('routing.api_prefix')
+                        $config->getString('routing.' . RoutingOption::API_PREFIX)
                     ),
                 );
 
@@ -163,7 +164,7 @@ final class HttpRoutingBundle implements Bundle
 
             $admin_area = new WPAdminArea(
                 $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
-                $config->getString('routing.wp_login_path')
+                $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH)
             );
 
             return new Routing(
@@ -178,69 +179,59 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindUrlGenerator(DIContainer $container): void
     {
-        $container->singleton(
-            UrlGenerator::class,
-            fn() => $container->make(Routing::class)->urlGenerator()
-        );
+        $container->singleton(UrlGenerator::class, fn() => $container->make(Routing::class)->urlGenerator());
     }
 
     private function bindUrlMatcher(DIContainer $container): void
     {
-        $container->singleton(
-            UrlMatcher::class,
-            fn() => $container->make(Routing::class)->urlMatcher()
-        );
+        $container->singleton(UrlMatcher::class, fn() => $container->make(Routing::class)->urlMatcher());
     }
 
     private function bindAdminMenu(DIContainer $container): void
     {
-        $container->singleton(
-            AdminMenu::class,
-            fn() => $container->make(Routing::class)->adminMenu()
-        );
+        $container->singleton(AdminMenu::class, fn() => $container->make(Routing::class)->adminMenu());
     }
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
     {
-        $container->singleton(HttpErrorHandlerInterface::class,
-            function () use ($container, $kernel): HttpErrorHandlerInterface {
-                $error_logger = $container[TestLogger::class] ?? $container->make(LoggerInterface::class);
+        $container->singleton(HttpErrorHandlerInterface::class, function () use ($container, $kernel) {
+            $error_logger = $container[TestLogger::class] ?? $container->make(LoggerInterface::class);
 
-                $information_provider = $this->informationProvider($kernel);
+            $information_provider = $this->informationProvider($kernel);
 
-                $displayer_filter = $container[DisplayerFilter::class] ?? new Delegating(
-                        new ContentType(),
-                        new Verbosity($kernel->env()->isDebug()),
-                        new CanDisplay(),
-                    );
-
-                $log_context = array_map(function ($class) {
-                    /** @var class-string<RequestLogContext> $class */
-                    return new $class;
-                }, $kernel->config()->getListOfStrings('routing.exception_request_context'));
-
-                /** @var array<class-string<Throwable>,string> $log_levels */
-                $log_levels = $kernel->config()->getArray('routing.exception_log_levels');
-
-                $logger = new RequestAwareLogger(
-                    $error_logger,
-                    $log_levels,
-                    ...$log_context
+            $displayer_filter = $container[DisplayerFilter::class] ?? new Delegating(
+                    new ContentType(),
+                    new Verbosity($kernel->env()->isDebug()),
+                    new CanDisplay(),
                 );
 
-                $displayers = array_map(function ($class) {
-                    /** @var class-string<ExceptionDisplayer> $class */
-                    return new $class;
-                }, $kernel->config()->getListOfStrings('routing.exception_displayers'));
+            $log_context = array_map(function ($class) {
+                /** @var class-string<RequestLogContext> $class */
+                return new $class;
+            }, $kernel->config()->getListOfStrings('routing.' . RoutingOption::EXCEPTION_REQUEST_CONTEXT));
 
-                return new HttpErrorHandler(
-                    $container->make(ResponseFactoryInterface::class),
-                    $logger,
-                    $information_provider,
-                    $displayer_filter,
-                    ...$displayers
-                );
-            }
+            /** @var array<class-string<Throwable>,string> $log_levels */
+            $log_levels = $kernel->config()->getArray('routing.' . RoutingOption::EXCEPTION_LOG_LEVELS);
+
+            $logger = new RequestAwareLogger(
+                $error_logger,
+                $log_levels,
+                ...$log_context
+            );
+
+            $displayers = array_map(function ($class) {
+                /** @var class-string<ExceptionDisplayer> $class */
+                return new $class;
+            }, $kernel->config()->getListOfStrings('routing.' . RoutingOption::EXCEPTION_DISPLAYERS));
+
+            return new HttpErrorHandler(
+                $container->make(ResponseFactoryInterface::class),
+                $logger,
+                $information_provider,
+                $displayer_filter,
+                ...$displayers
+            );
+        }
         );
     }
 
@@ -293,6 +284,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindPsr17Discovery(DIContainer $container): void
     {
+        // Allow using other psr implementations.
         if ($container->has(Psr17FactoryDiscovery::class)) {
             return;
         }
@@ -322,10 +314,10 @@ final class HttpRoutingBundle implements Bundle
         $config = $kernel->config();
 
         return new MiddlewareResolver(
-            $config->getArray('routing.always_run_middleware_groups'),
-            $config->getArray('routing.middleware_aliases'),
-            $config->getArray('routing.middleware_groups'),
-            $config->getArray('routing.middleware_priority')
+            $config->getArray('routing.' . RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS),
+            $config->getArray('routing.' . RoutingOption::MIDDLEWARE_ALIASES),
+            $config->getArray('routing.' . RoutingOption::MIDDLEWARE_GROUPS),
+            $config->getArray('routing.' . RoutingOption::MIDDLEWARE_PRIORITY)
         );
     }
 
@@ -372,7 +364,7 @@ final class HttpRoutingBundle implements Bundle
         $transformers = array_map(function ($class) {
             /** @var class-string<ExceptionTransformer> $class */
             return new $class;
-        }, $config->getListOfStrings('routing.exception_transformers'));
+        }, $config->getListOfStrings('routing.' . RoutingOption::EXCEPTION_TRANSFORMERS));
 
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
     }

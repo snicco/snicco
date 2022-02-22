@@ -209,12 +209,12 @@ final class HttpRoutingBundleTest extends TestCase
             'routing' => [
                 RoutingOption::HOST => 'foo.com',
                 RoutingOption::ROUTE_DIRECTORIES => [__DIR__],
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__ . '/api'],
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__ . '/fixtures'],
             ]
         ]);
         $bundle->configure($config, $kernel);
         $this->assertSame([__DIR__], $config->get('routing.route_directories'));
-        $this->assertSame([__DIR__ . '/api'], $config->get('routing.api_route_directories'));
+        $this->assertSame([__DIR__ . '/fixtures'], $config->get('routing.api_route_directories'));
     }
 
     /**
