@@ -37,6 +37,8 @@ final class WritableConfig extends Config
      * Extend the configuration with the given values.
      * Existing values have priority.
      *
+     * @note This method does not work for multidimensional arrays. The existing config has to be an array of scalars.
+     *
      * @param scalar|array<scalar> $extend_with
      */
     public function extend(string $key, $extend_with): void
