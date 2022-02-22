@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\HttpRouting\Tests;
+namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use GuzzleHttp\Psr7\HttpFactory;
 use Laminas\Diactoros\ResponseFactory;
