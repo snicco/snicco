@@ -7,7 +7,7 @@ namespace Snicco\Bundle\BetterWPHooks\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
-use Snicco\Bundle\Testing\BootsKernel;
+use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Kernel\Bootstrapper;
@@ -19,7 +19,7 @@ use stdClass;
 
 final class BetterWPHooksBundleTest extends TestCase
 {
-    use BootsKernel;
+    use BootsKernelForBundleTest;
 
     private string $base_dir;
     private Directories $directories;
