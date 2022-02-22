@@ -7,7 +7,7 @@ namespace Snicco\Bundle\BetterWPDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
-use Snicco\Bundle\Testing\BootsKernel;
+use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;
@@ -22,7 +22,7 @@ use function dirname;
 final class BetterWPDBBundleTest extends WPTestCase
 {
 
-    use BootsKernel;
+    use BootsKernelForBundleTest;
 
     private string $base_dir;
     private Directories $directories;
