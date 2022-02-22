@@ -6,7 +6,10 @@ namespace Snicco\Component\HttpRouting\Middleware;
 
 use InvalidArgumentException;
 use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use ReflectionException;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
@@ -14,6 +17,7 @@ use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Reflector;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Webmozart\Assert\Assert;
 
@@ -174,6 +178,51 @@ final class MiddlewareResolver
         }
 
         return $this->resolve($middleware);
+    }
+
+    /**
+     * @return array{
+     *     route_map: array<string, list<array{class: class-string<MiddlewareInterface>, args: array<string>}>>,
+     *     request_map: array{
+     *          api: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>,
+     *          frontend: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>,
+     *          admin: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>,
+     *          global: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>
+     *      }
+     * }
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    public function createMiddlewareCache(Routes $routes, ContainerInterface $container): array
+    {
+        $route_map = [];
+
+        foreach ($routes as $route) {
+            $action = new ControllerAction($route->getController(), $container);
+            $middlewares = $this->resolveForRoute($route, $action);
+            $route_map[$name = $route->getName()] = [];
+            foreach ($middlewares as $middleware) {
+                $route_map[$name][] = $middleware->asArray();
+            }
+        }
+        $request_map = [
+            'api' => [],
+            'frontend' => [],
+            'admin' => [],
+            'global' => []
+        ];
+
+        foreach (array_keys($request_map) as $type) {
+            foreach ($this->resolve([$type]) as $blueprint) {
+                $request_map[$type][] = $blueprint->asArray();
+            }
+        }
+
+        return [
+            'route_map' => $route_map,
+            'request_map' => $request_map
+        ];
     }
 
     /**

@@ -6,13 +6,17 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use LogicException;
+use Pimple\Container;
 use Snicco\Component\HttpRouting\Controller\ControllerAction;
+use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareBlueprint;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithBarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -112,6 +116,110 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The middleware resolver is cached but has no entry for route [r1].');
         $resolver->resolveForRoute($route, new ControllerAction(Route::DELEGATE, $this->psr_container));
+    }
+
+    /**
+     * @test
+     */
+    public function test_createMiddlewareCache(): void
+    {
+        $route1 = Route::create('/foo', Route::DELEGATE, 'r1')->middleware('group1');
+        $route2 = Route::create('/bar', Route::DELEGATE, 'r2')->middleware('foo:FOO');
+        $route3 = Route::create('/baz', ControllerWithBarMiddleware::class, 'r3')->middleware(['foo:FOO']);
+
+        $routes = new RouteCollection([$route1, $route2, $route3]);
+
+        $resolver = new MiddlewareResolver(
+            [RoutingConfigurator::FRONTEND_MIDDLEWARE],
+            ['foo' => FooMiddleware::class, 'bar' => BarMiddleware::class, 'baz' => BazMiddleware::class],
+            ['group1' => ['foo', 'bar'], 'frontend' => ['baz', 'bar']],
+            [BarMiddleware::class]
+        );
+
+        $pimple = new Container();
+        $psr = new \Pimple\Psr11\Container($pimple);
+
+        $cache = $resolver->createMiddlewareCache($routes, $psr);
+
+        $this->assertTrue(isset($cache['route_map']));
+        $this->assertTrue(isset($cache['route_map']));
+        $this->assertTrue(isset($cache['route_map']['r1']));
+        $this->assertTrue(isset($cache['route_map']['r2']));
+        $this->assertTrue(isset($cache['route_map']['r3']));
+
+        $this->assertTrue(isset($cache['request_map']));
+        $this->assertTrue(isset($cache['request_map']['frontend']));
+        $this->assertTrue(isset($cache['request_map']['api']));
+        $this->assertTrue(isset($cache['request_map']['admin']));
+        $this->assertTrue(isset($cache['request_map']['global']));
+
+        $this->assertSame([
+            [
+                'class' => BarMiddleware::class,
+                'args' => []
+            ],
+            [
+                'class' => FooMiddleware::class,
+                'args' => []
+            ]
+        ], $cache['route_map']['r1']);
+
+        $this->assertSame([
+            [
+                'class' => FooMiddleware::class,
+                'args' => ['FOO']
+            ]
+        ], $cache['route_map']['r2']);
+
+        $this->assertSame([
+            [
+                'class' => BarMiddleware::class,
+                'args' => []
+            ],
+            [
+                'class' => FooMiddleware::class,
+                'args' => ['FOO']
+            ]
+        ], $cache['route_map']['r3']);
+
+
+        $this->assertSame([], $cache['request_map']['global']);
+        $this->assertSame([], $cache['request_map']['api']);
+        $this->assertSame([], $cache['request_map']['admin']);
+
+        // Bar has higher priority
+        $this->assertSame([
+            [
+                'class' => BarMiddleware::class,
+                'args' => []
+            ],
+            [
+                'class' => BazMiddleware::class,
+                'args' => []
+            ]
+        ], $cache['request_map']['frontend']);
+    }
+
+    /**
+     * @test
+     */
+    public function middleware_caching_detects_recursion(): void
+    {
+        $this->expectException(MiddlewareRecursion::class);
+        $this->expectExceptionMessage('Detected middleware recursion: global->group2->group3->group2');
+
+        new MiddlewareResolver(
+            [],
+            [],
+            [
+                'correct_1' => [FooMiddleware::class],
+                'correct_2' => [BarMiddleware::class],
+                RoutingConfigurator::GLOBAL_MIDDLEWARE => ['correct_1', 'group2'],
+                'group2' => ['correct_2', 'group3'],
+                'group3' => [BazMiddleware::class, 'group2']
+            ],
+            []
+        );
     }
 
 }
