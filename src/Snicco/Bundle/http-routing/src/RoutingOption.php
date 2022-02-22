@@ -43,5 +43,7 @@ final class RoutingOption
     public const EXCEPTION_REQUEST_CONTEXT = 'exception_request_context';
 
     public const EXCEPTION_LOG_LEVELS = 'exception_log_levels';
+    
+    public const ERROR_LOG_NAME = 'error_log_name';
 
 }

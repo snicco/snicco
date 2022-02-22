@@ -12,7 +12,6 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
 use Psr\Log\Test\TestLogger;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
@@ -80,6 +79,12 @@ final class HttpRoutingBundle implements Bundle
     {
         if (!$config->has('routing.' . RoutingOption::HOST)) {
             throw new InvalidArgumentException('routing.' . RoutingOption::HOST . ' must be a non-empty-string.');
+        }
+
+        if (!$config->has('routing.' . RoutingOption::ERROR_LOG_NAME)) {
+            $name = $config->getString('app.name', '');
+            $name = empty($name) ? 'request' : "$name.request";
+            $config->set('routing.' . RoutingOption::ERROR_LOG_NAME, $name);
         }
 
         $config->extend('routing.' . RoutingOption::WP_ADMIN_PREFIX, '/wp-admin');
@@ -345,7 +350,9 @@ final class HttpRoutingBundle implements Bundle
         }
 
         if (!$kernel->container()->has(LoggerInterface::class)) {
-            $kernel->container()->singleton(LoggerInterface::class, fn() => new NullLogger());
+            $kernel->container()->singleton(LoggerInterface::class, fn() => new StdErrLogger(
+                $kernel->config()->getString('routing.' . RoutingOption::ERROR_LOG_NAME)
+            ));
         }
     }
 
