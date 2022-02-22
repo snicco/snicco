@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\HttpRouting\Tests;
+namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use GuzzleHttp\Psr7\HttpFactory;
 use InvalidArgumentException;
@@ -13,20 +13,20 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
-use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
 use Snicco\Bundle\HttpRouting\ErrorHandler\DisplayerCollection;
 use Snicco\Bundle\HttpRouting\ErrorHandler\ExceptionTransformerCollection;
 use Snicco\Bundle\HttpRouting\ErrorHandler\RequestLogContextCollection;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 use Snicco\Bundle\HttpRouting\RoutingOption;
-use Snicco\Bundle\Testing\BootsKernel;
+use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
+use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\Routing;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
@@ -41,7 +41,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 final class HttpRoutingBundleTest extends TestCase
 {
 
-    use BootsKernel;
+    use BootsKernelForBundleTest;
 
     private string $base_dir;
     private Directories $directories;
@@ -58,7 +58,6 @@ final class HttpRoutingBundleTest extends TestCase
         $this->directories = $this->setUpDirectories($this->base_dir);
         $this->bundles = [
             Environment::ALL => [
-                BetterWPDBBundle::class,
                 HttpRoutingBundle::class,
             ]
         ];
@@ -319,6 +318,30 @@ final class HttpRoutingBundleTest extends TestCase
     /**
      * @test
      */
+    public function test_routes_can_be_resolved(): void
+    {
+        $kernel = $this->bootWithFixedConfig(
+            [
+                'routing' => [
+                    RoutingOption::HOST => 'foo.com',
+                    RoutingOption::ROUTE_DIRECTORIES => [],
+                    RoutingOption::API_ROUTE_DIRECTORIES => [],
+                    RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
+                    RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::HTTPS => true,
+                    RoutingOption::HTTP_PORT => 80,
+                    RoutingOption::HTTPS_PORT => 443,
+                ]
+            ]
+            , $this->directories);
+
+        $this->assertCanBeResolved(Routes::class, $kernel);
+    }
+
+    /**
+     * @test
+     */
     public function test_pipeline_can_be_resolved(): void
     {
         $kernel = $this->bootWithFixedConfig(
@@ -353,7 +376,11 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::API_ROUTE_DIRECTORIES => [],
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
+                    RoutingOption::API_PREFIX => '/test',
+                    RoutingOption::EXCEPTION_TRANSFORMERS => [],
+                    RoutingOption::EXCEPTION_DISPLAYERS => [],
+                    RoutingOption::EXCEPTION_REQUEST_CONTEXT => [],
+                    RoutingOption::EXCEPTION_LOG_LEVELS => [],
                 ]
             ],
             $this->directories
@@ -372,7 +399,7 @@ final class HttpRoutingBundleTest extends TestCase
             });
 
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertStringContainsString('<h1>Oops! An Error Occurred</h1>', (string)$response->getBody());
+        $this->assertStringContainsString('<h1>Internal Server Error</h1>', (string)$response->getBody());
     }
 
     /**
@@ -562,29 +589,6 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertCanBeResolved(ResponseFactory::class, $kernel);
         $this->assertCanBeResolved(ResponseFactoryInterface::class, $kernel);
         $this->assertCanBeResolved(StreamFactoryInterface::class, $kernel);
-    }
-
-    /**
-     * @test
-     */
-    public function test_error_handling_utils_can_be_resolved(): void
-    {
-        $kernel = $this->bootWithFixedConfig(
-            [
-                'routing' => [
-                    RoutingOption::HOST => 'foo.com',
-                    RoutingOption::ROUTE_DIRECTORIES => [],
-                    RoutingOption::API_ROUTE_DIRECTORIES => [],
-                    RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
-                    RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
-                    RoutingOption::API_PREFIX => '/test'
-                ]
-            ]
-            , $this->directories);
-
-        $this->assertCanBeResolved(DisplayerCollection::class, $kernel);
-        $this->assertCanBeResolved(ExceptionTransformerCollection::class, $kernel);
-        $this->assertCanBeResolved(RequestLogContextCollection::class, $kernel);
     }
 
     protected function bundles(): array

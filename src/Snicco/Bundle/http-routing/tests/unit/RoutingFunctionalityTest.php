@@ -3,16 +3,17 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\HttpRouting\Tests;
+namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\SimpleTemplatingMiddleware;
-use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
+use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
@@ -27,7 +28,7 @@ use function unlink;
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
  */
-final class RoutingTest extends TestCase
+final class RoutingFunctionalityTest extends TestCase
 {
 
     private Directories $dirs;
@@ -47,6 +48,9 @@ final class RoutingTest extends TestCase
     {
         if (is_file($this->expected_cache_file)) {
             unlink($this->expected_cache_file);
+        }
+        if (is_file(__DIR__ . '/fixtures/var/cache/prod.middleware-map-generated.php')) {
+            unlink(__DIR__ . '/fixtures/var/cache/prod.middleware-map-generated.php');
         }
         parent::tearDown();
     }
@@ -205,6 +209,38 @@ final class RoutingTest extends TestCase
         $this->assertNotInstanceOf(ViewResponse::class, $response);
         $this->assertSame('Hello Calvin', (string)$response->getBody());
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
+    }
+
+    /**
+     * @test
+     */
+    public function non_view_responses_are_not_affected(): void
+    {
+        $kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::dev(),
+            $this->dirs
+        );
+
+        $kernel->boot();
+
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/foo');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([
+                SimpleTemplatingMiddleware::class,
+                RoutingMiddleware::class,
+                RouteRunner::class
+            ])->then(function () {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('', (string)$response->getBody());
     }
 
 

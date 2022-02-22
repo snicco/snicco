@@ -36,4 +36,12 @@ final class RoutingOption
 
     public const HTTPS = 'https';
 
+    public const EXCEPTION_DISPLAYERS = 'exception_displayers';
+
+    public const EXCEPTION_TRANSFORMERS = 'exception_transformers';
+
+    public const EXCEPTION_REQUEST_CONTEXT = 'exception_request_context';
+
+    public const EXCEPTION_LOG_LEVELS = 'exception_log_levels';
+
 }
