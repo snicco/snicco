@@ -25,6 +25,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use Throwable;
@@ -275,7 +276,7 @@ final class ErrorHandlingTest extends TestCase
         $this->assertInstanceOf(StdErrLogger::class, $kernel->container()->make(LoggerInterface::class));
 
         $container = $this->container();
-        $container[LoggerInterface::class] = fn() => new NullLogger();
+        $container[LoggerInterface::class] = fn(): NullLogger => new NullLogger();
 
         $kernel = new Kernel(
             $container,
@@ -285,6 +286,54 @@ final class ErrorHandlingTest extends TestCase
         $kernel->boot();
 
         $this->assertInstanceOf(NullLogger::class, $kernel->container()->make(LoggerInterface::class));
+    }
+
+    /**
+     * @test
+     */
+    public function a_custom_exception_information_provider_can_be_used(): void
+    {
+        $container = $this->container();
+        $container[ExceptionInformationProvider::class] = function (): ExceptionInformationProvider {
+            return new class implements ExceptionInformationProvider {
+
+                public function createFor(Throwable $e): ExceptionInformation
+                {
+                    return new ExceptionInformation(
+                        500,
+                        'foo_id',
+                        'foo_title',
+                        'foo_details',
+                        $e,
+                        $e
+                    );
+                }
+            };
+        };
+
+        $kernel = new Kernel(
+            $container,
+            Environment::prod(),
+            Directories::fromDefaults(__DIR__ . '/fixtures')
+        );
+        $kernel->boot();
+
+        /**
+         * @var MiddlewarePipeline $pipeline
+         */
+        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/foo');
+
+        $response = $pipeline->send(Request::fromPsr($request))->through([])->then(function () {
+            throw new RuntimeException('error');
+        });
+
+        $body = (string)$response->getBody();
+
+        $this->assertStringContainsString('foo_id', $body);
+        $this->assertStringContainsString('foo_title', $body);
+        $this->assertStringContainsString('foo_details', $body);
     }
 
     protected function bundles(): array
