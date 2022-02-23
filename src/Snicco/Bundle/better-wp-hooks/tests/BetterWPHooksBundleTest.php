@@ -6,10 +6,13 @@ declare(strict_types=1);
 namespace Snicco\Bundle\BetterWPHooks\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
+use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Bootstrapper;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
@@ -63,6 +66,7 @@ final class BetterWPHooksBundleTest extends TestCase
         $kernel = $this->bootWithFixedConfig([], $this->directories);
 
         $this->assertCanBeResolved(EventDispatcher::class, $kernel);
+        $this->assertCanBeResolved(EventDispatcherInterface::class, $kernel);
     }
 
     /**
@@ -97,6 +101,28 @@ final class BetterWPHooksBundleTest extends TestCase
         $kernel = $this->bootWithFixedConfig([], $this->directories);
 
         $this->assertCanBeResolved(EventMapper::class, $kernel);
+    }
+
+    /**
+     * @test
+     */
+    public function in_testing_environment_the_testable_dispatcher_is_used(): void
+    {
+        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::testing());
+
+        $this->assertInstanceOf(
+            TestableEventDispatcher::class,
+            $d1 = $kernel->container()->make(EventDispatcher::class)
+        );
+        $this->assertInstanceOf(
+            TestableEventDispatcher::class,
+            $d2 = $kernel->container()->make(TestableEventDispatcher::class)
+        );
+        $this->assertSame($d1, $d2);
+
+        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::prod());
+
+        $this->assertInstanceOf(WPEventDispatcher::class, $kernel->container()->make(EventDispatcher::class));
     }
 
     protected function bundles(): array
