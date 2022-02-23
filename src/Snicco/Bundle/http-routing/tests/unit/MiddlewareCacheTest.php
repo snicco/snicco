@@ -8,6 +8,7 @@ namespace Snicco\Bundle\HttpRouting\Tests\unit;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
@@ -200,7 +201,8 @@ final class MiddlewareCacheTest extends TestCase
     {
         return [
             Environment::ALL => [
-                HttpRoutingBundle::class
+                HttpRoutingBundle::class,
+                BetterWPHooksBundle::class
             ]
         ];
     }

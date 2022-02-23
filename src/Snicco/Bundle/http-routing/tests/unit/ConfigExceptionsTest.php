@@ -15,6 +15,8 @@ use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareOne;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareTwo;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Component\HttpRouting\Middleware\RouteRunner;
+use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
@@ -160,7 +162,34 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus']
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus'],
+                RoutingOption::API_PREFIX => 'snicco'
+            ]
+        ]);
+
+        $bundle->configure($config, $kernel);
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_api_routes_are_set_but_no_api_prefix_is_set(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must be a non-empty-string if API routes are used.');
+
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+
+        $bundle = new HttpRoutingBundle();
+
+        $config = WritableConfig::fromArray([
+            'routing' => [
+                'host' => 'foo.com',
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__],
             ]
         ]);
 
@@ -376,6 +405,41 @@ final class ConfigExceptionsTest extends TestCase
                     'admin',
                     'api',
                     'foo'
+                ]
+            ]
+        ]);
+
+        $bundle->configure($config, $kernel);
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_kernel_middleware_not_all_middleware_interface(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'middleware.kernel_middleware has to be a list of middleware class-strings'
+        );
+
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+
+        $bundle = new HttpRoutingBundle();
+
+        $config = WritableConfig::fromArray([
+            'routing' => [
+                'host' => 'foo.com',
+
+            ],
+            'middleware' => [
+                MiddlewareOption::KERNEL_MIDDLEWARE => [
+                    RoutingMiddleware::class,
+                    RouteRunner::class,
+                    stdClass::class,
                 ]
             ]
         ]);

@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
+use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
@@ -57,6 +58,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->directories = $this->setUpDirectories($this->base_dir);
         $this->bundles = [
             Environment::ALL => [
+                BetterWPHooksBundle::class,
                 HttpRoutingBundle::class,
             ]
         ];
@@ -66,6 +68,25 @@ final class HttpRoutingBundleTest extends TestCase
     {
         $this->tearDownDirectories($this->base_dir);
         parent::tearDown();
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_better_wp_hooks_bundle_is_not_used(): void
+    {
+        $this->bundles = [
+            Environment::ALL => [HttpRoutingBundle::class]
+        ];
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The http-routing-bundle needs the sniccowp-better-wp-hooks-bundle to run.');
+
+        $this->bootWithFixedConfig([
+            'routing' => [
+                RoutingOption::HOST => 'foo.com'
+            ]
+        ], $this->directories);
     }
 
     /**
@@ -209,6 +230,7 @@ final class HttpRoutingBundleTest extends TestCase
                 RoutingOption::HOST => 'foo.com',
                 RoutingOption::ROUTE_DIRECTORIES => [__DIR__],
                 RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__ . '/fixtures'],
+                RoutingOption::API_PREFIX => '/snicco'
             ]
         ]);
         $bundle->configure($config, $kernel);
@@ -235,6 +257,27 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertSame([], $config->getArray('middleware.always_run_middleware_groups'));
         $this->assertSame([], $config->getArray('middleware.middleware_priority'));
         $this->assertSame([], $config->getArray('middleware.middleware_aliases'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_kernel_middleware_defaults_to_the_correct_routing_setup(): void
+    {
+        $bundle = new HttpRoutingBundle();
+        $config = new WritableConfig([
+            'routing' => [
+                RoutingOption::HOST => 'foo.com'
+            ]
+        ]);
+
+        $kernel = new Kernel($this->container(), Environment::testing(), $this->directories);
+        $bundle->configure($config, $kernel);
+
+        $this->assertSame(
+            [RoutingMiddleware::class, RouteRunner::class],
+            $config->getArray('middleware.kernel_middleware')
+        );
     }
 
     /**

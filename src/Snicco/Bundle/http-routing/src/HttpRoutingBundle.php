@@ -6,17 +6,27 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting;
 
 use InvalidArgumentException;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Nyholm\Psr7Server\ServerRequestCreator;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\TestLogger;
+use RuntimeException;
+use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
+use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
+use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
+use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
@@ -60,6 +70,7 @@ use Throwable;
 use function array_map;
 use function class_exists;
 use function class_implements;
+use function count;
 use function gettype;
 use function implode;
 use function in_array;
@@ -87,7 +98,12 @@ final class HttpRoutingBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
+        if (!class_exists(BetterWPHooksBundle::class) || !$kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
+            throw new RuntimeException('The http-routing-bundle needs the sniccowp-better-wp-hooks-bundle to run.');
+        }
+
         $container = $kernel->container();
+        $this->bindHttpRunner($kernel);
         $this->bindPsr17Discovery($container);
         $this->bindResponseFactory($container);
         $this->bindServerRequestCreator($container);
@@ -101,11 +117,13 @@ final class HttpRoutingBundle implements Bundle
         $this->bindMiddlewarePipeline($container);
         $this->bindRoutingMiddleware($container);
         $this->bindRouteRunnerMiddleware($container, $kernel);
+        $this->bindResponsePostProcessor($kernel);
     }
 
     public function bootstrap(Kernel $kernel): void
     {
-        // Nothing to bootstrap. Everything is lazy loaded.
+        $dispatcher = $kernel->container()->make(EventDispatcher::class);
+        $dispatcher->listen(TerminatedResponse::class, ResponsePostProcessor::class);
     }
 
     public function alias(): string
@@ -368,7 +386,7 @@ final class HttpRoutingBundle implements Bundle
         $config->extend(RoutingOption::key(RoutingOption::WP_LOGIN_PATH), '/wp-login.php');
         $config->extend(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES), []);
         $config->extend(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES), []);
-        $config->extend(RoutingOption::key(RoutingOption::API_PREFIX), '/');
+        $config->extend(RoutingOption::key(RoutingOption::API_PREFIX), '');
         $config->extend(RoutingOption::key(RoutingOption::HTTP_PORT), 80);
         $config->extend(RoutingOption::key(RoutingOption::HTTPS_PORT), 443);
         $config->extend(RoutingOption::key(RoutingOption::USE_HTTPS), true);
@@ -402,7 +420,20 @@ final class HttpRoutingBundle implements Bundle
             }
         }
 
-        foreach ($config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)) as $dir) {
+        $api_dirs = $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES));
+
+        if (count($api_dirs)) {
+            $prefix = $config->getString(RoutingOption::key(RoutingOption::API_PREFIX));
+            if ('' === $prefix) {
+                throw new InvalidArgumentException(
+                    RoutingOption::key(
+                        RoutingOption::API_PREFIX
+                    ) . ' must be a non-empty-string if API routes are used.'
+                );
+            }
+        }
+
+        foreach ($api_dirs as $dir) {
             if (!is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
@@ -423,6 +454,10 @@ final class HttpRoutingBundle implements Bundle
         $config->extend(MiddlewareOption::key(MiddlewareOption::ALIASES), []);
         $config->extend(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST), []);
         $config->extend(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN), []);
+        $config->extend(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE), [
+            RoutingMiddleware::class,
+            RouteRunner::class
+        ]);
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
             if (!is_string($key)) {
@@ -484,6 +519,21 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::PRIORITY_LIST
+                    ) . " has to be a list of middleware class-strings.\nGot [$class]."
+                );
+            }
+        }
+
+        foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE)) as $class) {
+            if (
+                !class_exists($class)
+                || !in_array(
+                    MiddlewareInterface::class,
+                    (array)class_implements($class)
+                )) {
+                throw new InvalidArgumentException(
+                    MiddlewareOption::key(
+                        MiddlewareOption::KERNEL_MIDDLEWARE
                     ) . " has to be a list of middleware class-strings.\nGot [$class]."
                 );
             }
@@ -618,5 +668,65 @@ final class HttpRoutingBundle implements Bundle
                 );
             }
         }
+    }
+
+    private function bindHttpRunner(Kernel $kernel): void
+    {
+        $kernel->container()->singleton(HttpKernel::class, function () use ($kernel) {
+            /** @var class-string<MiddlewareInterface>[] $kernel_middleware */
+            $kernel_middleware = $kernel->config()->getListOfStrings(
+                MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE)
+            );
+
+            $container = $kernel->container();
+
+            return new HttpKernel(
+                $container->make(MiddlewarePipeline::class),
+                new ResponsePreparation($container->make(StreamFactoryInterface::class)),
+                $container->make(EventDispatcherInterface::class),
+                $kernel_middleware
+            );
+        });
+
+        $kernel->container()->singleton(HttpKernelRunner::class, function () use ($kernel) {
+            $container = $kernel->container();
+
+            $dispatcher = $container->make(EventDispatcher::class);
+
+            $emitter = $kernel->env()->isTesting() ?
+                new class($dispatcher) implements EmitterInterface {
+                    private EventDispatcher $dispatcher;
+
+                    public function __construct(EventDispatcher $dispatcher)
+                    {
+                        $this->dispatcher = $dispatcher;
+                    }
+
+                    public function emit(ResponseInterface $response): bool
+                    {
+                        $this->dispatcher->dispatch(new GenericEvent('test_emitter', [$response]));
+                        return true;
+                    }
+                }
+                : new SapiEmitter();
+
+            $api_prefix = $kernel->config()->getString(RoutingOption::key(RoutingOption::API_PREFIX));
+
+            return new HttpKernelRunner(
+                $container->make(HttpKernel::class),
+                $container->make(ServerRequestCreator::class),
+                $dispatcher,
+                $emitter,
+                $container->make(StreamFactoryInterface::class),
+                '' === $api_prefix ? null : $api_prefix
+            );
+        });
+    }
+
+    private function bindResponsePostProcessor(Kernel $kernel): void
+    {
+        $kernel->container()->singleton(ResponsePostProcessor::class, function () use ($kernel) {
+            return new ResponsePostProcessor($kernel->env());
+        });
     }
 }
