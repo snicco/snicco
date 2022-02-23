@@ -12,6 +12,8 @@ use const PHP_SAPI;
 /**
  * This class is an immutable value object that represent the environment the application is
  * running in.
+ *
+ * @psalm-immutable
  */
 final class Environment
 {
