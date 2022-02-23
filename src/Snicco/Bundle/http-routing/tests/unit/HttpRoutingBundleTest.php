@@ -24,7 +24,7 @@ use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
-use Snicco\Component\HttpRouting\Routing\Routing;
+use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
@@ -469,7 +469,7 @@ final class HttpRoutingBundleTest extends TestCase
             ]
             , $this->directories, Environment::prod());
 
-        $this->assertCanBeResolved(Routing::class, $kernel);
+        $this->assertCanBeResolved(Router::class, $kernel);
     }
 
     /**

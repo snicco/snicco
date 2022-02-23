@@ -23,7 +23,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
-use Snicco\Component\HttpRouting\Routing\Routing;
+use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
@@ -60,7 +60,7 @@ abstract class HttpRunnerTestCase extends TestCase
     protected string $routes_dir;
     protected Container $pimple;
     protected ContainerInterface $psr_container;
-    private Routing $routing;
+    private Router $routing;
 
     /**
      * @var list<class-string<MiddlewareInterface>>
@@ -189,7 +189,7 @@ abstract class HttpRunnerTestCase extends TestCase
         Closure $loader,
         ?RouteCache $cache = null,
         ?UrlGenerationContext $context = null
-    ): Routing {
+    ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
             private Closure $loader;
@@ -216,7 +216,7 @@ abstract class HttpRunnerTestCase extends TestCase
     /**
      * @param Closure(AdminRoutingConfigurator) $loader
      */
-    final protected function adminRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
+    final protected function adminRouting(Closure $loader, ?UrlGenerationContext $context = null): Router
     {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
@@ -258,8 +258,8 @@ abstract class HttpRunnerTestCase extends TestCase
         RouteLoader $loader = null,
         ?RouteCache $cache = null,
         UrlGenerationContext $context = null
-    ): Routing {
-        $routing = new Routing(
+    ): Router {
+        $routing = new Router(
             $this->psr_container,
             $context ?: new UrlGenerationContext($this->app_domain),
             $loader ?: $this->nullLoader(),

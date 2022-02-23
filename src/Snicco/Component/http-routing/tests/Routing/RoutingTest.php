@@ -11,7 +11,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader;
-use Snicco\Component\HttpRouting\Routing\Routing;
+use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
@@ -26,7 +26,7 @@ final class RoutingTest extends TestCase
      */
     public function test_url_matcher_is_singleton(): void
     {
-        $routing = new Routing(
+        $routing = new Router(
             new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
@@ -47,7 +47,7 @@ final class RoutingTest extends TestCase
      */
     public function test_url_generator_is_singleton(): void
     {
-        $routing = new Routing(
+        $routing = new Router(
             new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1')
             ,
@@ -69,7 +69,7 @@ final class RoutingTest extends TestCase
      */
     public function test_routes_is_singleton(): void
     {
-        $routing = new Routing(
+        $routing = new Router(
             new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
@@ -90,7 +90,7 @@ final class RoutingTest extends TestCase
      */
     public function test_admin_menu_is_singleton(): void
     {
-        $routing = new Routing(
+        $routing = new Router(
             new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
