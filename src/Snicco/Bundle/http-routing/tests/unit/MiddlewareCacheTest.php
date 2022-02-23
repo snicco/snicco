@@ -9,7 +9,8 @@ use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
-use Snicco\Bundle\HttpRouting\RoutingOption;
+use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
+use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareThree;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
@@ -60,15 +61,17 @@ final class MiddlewareCacheTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS => [
-                        RoutingConfigurator::FRONTEND_MIDDLEWARE
-                    ],
-                    RoutingOption::MIDDLEWARE_ALIASES => [],
-                    RoutingOption::MIDDLEWARE_GROUPS => ['frontend' => [MiddlewareThree::class]],
-                    RoutingOption::MIDDLEWARE_PRIORITY => [],
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTPS_PORT => 443,
                     RoutingOption::HTTP_PORT => 80,
+                ],
+                'middleware' => [
+                    MiddlewareOption::ALWAYS_RUN => [
+                        RoutingConfigurator::FRONTEND_MIDDLEWARE
+                    ],
+                    MiddlewareOption::ALIASES => [],
+                    MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
+                    MiddlewareOption::PRIORITY_LIST => [],
                 ]
             ]
             , $this->directories, Environment::dev());
@@ -94,15 +97,18 @@ final class MiddlewareCacheTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS => [
-                        RoutingConfigurator::FRONTEND_MIDDLEWARE
-                    ],
-                    RoutingOption::MIDDLEWARE_ALIASES => [],
-                    RoutingOption::MIDDLEWARE_GROUPS => ['frontend' => [MiddlewareThree::class]],
-                    RoutingOption::MIDDLEWARE_PRIORITY => [],
-                    RoutingOption::HTTPS => true,
+
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTPS_PORT => 443,
                     RoutingOption::HTTP_PORT => 80,
+                ],
+                'middleware' => [
+                    MiddlewareOption::ALWAYS_RUN => [
+                        RoutingConfigurator::FRONTEND_MIDDLEWARE
+                    ],
+                    MiddlewareOption::ALIASES => [],
+                    MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
+                    MiddlewareOption::PRIORITY_LIST => [],
                 ]
             ]
             , $this->directories, Environment::prod());
@@ -122,15 +128,17 @@ final class MiddlewareCacheTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS => [
-                        RoutingConfigurator::FRONTEND_MIDDLEWARE
-                    ],
-                    RoutingOption::MIDDLEWARE_ALIASES => [],
-                    RoutingOption::MIDDLEWARE_GROUPS => [],
-                    RoutingOption::MIDDLEWARE_PRIORITY => [],
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTPS_PORT => 443,
                     RoutingOption::HTTP_PORT => 80,
+                ],
+                'middleware' => [
+                    MiddlewareOption::ALWAYS_RUN => [
+                        RoutingConfigurator::FRONTEND_MIDDLEWARE
+                    ],
+                    MiddlewareOption::ALIASES => [],
+                    MiddlewareOption::GROUPS => [],
+                    MiddlewareOption::PRIORITY_LIST => [],
                 ]
             ]
             , $this->directories, Environment::prod());

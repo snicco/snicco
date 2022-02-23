@@ -14,8 +14,10 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
+use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
+use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
+use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
-use Snicco\Bundle\HttpRouting\RoutingOption;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
@@ -229,10 +231,10 @@ final class HttpRoutingBundleTest extends TestCase
         $kernel = new Kernel($this->container(), Environment::testing(), $this->directories);
         $bundle->configure($config, $kernel);
 
-        $this->assertSame([], $config->getArray('routing.middleware_groups'));
-        $this->assertSame([], $config->getArray('routing.always_run_middleware_groups'));
-        $this->assertSame([], $config->getArray('routing.middleware_priority'));
-        $this->assertSame([], $config->getArray('routing.middleware_aliases'));
+        $this->assertSame([], $config->getArray('middleware.middleware_groups'));
+        $this->assertSame([], $config->getArray('middleware.always_run_middleware_groups'));
+        $this->assertSame([], $config->getArray('middleware.middleware_priority'));
+        $this->assertSame([], $config->getArray('middleware.middleware_aliases'));
     }
 
     /**
@@ -249,7 +251,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -272,7 +274,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -302,7 +304,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -326,7 +328,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -374,10 +376,13 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::EXCEPTION_TRANSFORMERS => [],
-                    RoutingOption::EXCEPTION_DISPLAYERS => [],
-                    RoutingOption::EXCEPTION_REQUEST_CONTEXT => [],
-                    RoutingOption::EXCEPTION_LOG_LEVELS => [],
+
+                ],
+                'http_error_handling' => [
+                    HttpErrorHandlingOption::TRANSFORMERS => [],
+                    HttpErrorHandlingOption::DISPLAYERS => [],
+                    HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [],
+                    HttpErrorHandlingOption::LOG_LEVELS => [],
                 ]
             ],
             $this->directories
@@ -413,7 +418,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -437,10 +442,13 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS => [],
-                    RoutingOption::MIDDLEWARE_PRIORITY => [],
-                    RoutingOption::MIDDLEWARE_ALIASES => [],
-                    RoutingOption::MIDDLEWARE_GROUPS => []
+
+                ],
+                'middleware' => [
+                    MiddlewareOption::ALWAYS_RUN => [],
+                    MiddlewareOption::PRIORITY_LIST => [],
+                    MiddlewareOption::ALIASES => [],
+                    MiddlewareOption::GROUPS => []
                 ]
             ]
             , $this->directories);
@@ -462,7 +470,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -486,7 +494,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -512,7 +520,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => true,
+                    RoutingOption::USE_HTTPS => true,
                     RoutingOption::HTTP_PORT => 80,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
@@ -536,7 +544,7 @@ final class HttpRoutingBundleTest extends TestCase
                     RoutingOption::WP_ADMIN_PREFIX => '/wp/wp-admin',
                     RoutingOption::WP_LOGIN_PATH => '/wp/wp-login',
                     RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::HTTPS => false,
+                    RoutingOption::USE_HTTPS => false,
                     RoutingOption::HTTP_PORT => 8080,
                     RoutingOption::HTTPS_PORT => 443,
                 ]
