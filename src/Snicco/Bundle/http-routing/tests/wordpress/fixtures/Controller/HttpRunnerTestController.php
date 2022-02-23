@@ -37,4 +37,9 @@ final class HttpRunnerTestController extends Controller
         return $this->responseFactory()->html('server error')->withStatus(500);
     }
 
+    public function stream(): Response
+    {
+        return $this->responseFactory()->html('foo')->withHeader('content-disposition', 'attachment');
+    }
+
 }
