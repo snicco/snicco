@@ -9,7 +9,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
-use Snicco\Bundle\HttpRouting\RoutingOption;
+use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
+use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
+use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareOne;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareTwo;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
@@ -171,7 +173,7 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_for_middleware_groups_non_string_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(RoutingOption::MIDDLEWARE_GROUPS);
+        $this->expectExceptionMessage(MiddlewareOption::GROUPS);
 
         $kernel = new Kernel(
             $this->container(),
@@ -184,7 +186,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::MIDDLEWARE_GROUPS => ['foo']
+            ],
+            'middleware' => [
+                MiddlewareOption::GROUPS => ['foo']
             ]
         ]);
 
@@ -210,7 +214,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::MIDDLEWARE_GROUPS => ['foo' => 'bar']
+            ],
+            'middleware' => [
+                MiddlewareOption::GROUPS => ['foo' => 'bar']
             ]
         ]);
 
@@ -238,7 +244,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::MIDDLEWARE_GROUPS => ['foo' => ['bar', 1]]
+            ],
+            'middleware' => [
+                MiddlewareOption::GROUPS => ['foo' => ['bar', 1]]
             ]
         ]);
 
@@ -252,7 +260,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'routing.middleware_aliases has to be an array of string => middleware-class pairs'
+            'middleware.middleware_aliases has to be an array of string => middleware-class pairs'
         );
 
         $kernel = new Kernel(
@@ -266,7 +274,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::MIDDLEWARE_ALIASES => ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
+            ],
+            'middleware' => [
+                MiddlewareOption::ALIASES => ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
             ]
         ]);
 
@@ -294,7 +304,10 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::MIDDLEWARE_ALIASES => ['foo' => stdClass::class]
+
+            ],
+            'middleware' => [
+                MiddlewareOption::ALIASES => ['foo' => stdClass::class]
             ]
         ]);
 
@@ -308,7 +321,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            RoutingOption::MIDDLEWARE_PRIORITY . " has to be a list of middleware class-strings.\nGot [stdClass]."
+            MiddlewareOption::PRIORITY_LIST . " has to be a list of middleware class-strings.\nGot [stdClass]."
         );
 
         $kernel = new Kernel(
@@ -322,7 +335,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::MIDDLEWARE_PRIORITY => [
+            ],
+            'middleware' => [
+                MiddlewareOption::PRIORITY_LIST => [
                     MiddlewareOne::class,
                     MiddlewareTwo::class,
                     stdClass::class,
@@ -340,7 +355,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS . " can only contain [frontend,api,admin,global].\nGot [foo]."
+            MiddlewareOption::ALWAYS_RUN . " can only contain [frontend,api,admin,global].\nGot [foo]."
         );
 
         $kernel = new Kernel(
@@ -354,7 +369,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS => [
+            ],
+            'middleware' => [
+                MiddlewareOption::ALWAYS_RUN => [
                     'frontend',
                     'admin',
                     'api',
@@ -373,7 +390,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            RoutingOption::EXCEPTION_DISPLAYERS . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [stdClass]."
+            HttpErrorHandlingOption::DISPLAYERS . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [stdClass]."
         );
 
         $kernel = new Kernel(
@@ -387,7 +404,10 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::EXCEPTION_DISPLAYERS => [
+
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::DISPLAYERS => [
                     stdClass::class
                 ]
             ]
@@ -403,7 +423,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            RoutingOption::EXCEPTION_TRANSFORMERS . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [stdClass]."
+            HttpErrorHandlingOption::TRANSFORMERS . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [stdClass]."
         );
 
         $kernel = new Kernel(
@@ -417,7 +437,10 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::EXCEPTION_TRANSFORMERS => [
+
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::TRANSFORMERS => [
                     stdClass::class
                 ]
             ]
@@ -433,7 +456,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            RoutingOption::EXCEPTION_REQUEST_CONTEXT . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [stdClass]."
+            HttpErrorHandlingOption::REQUEST_LOG_CONTEXT . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [stdClass]."
         );
 
         $kernel = new Kernel(
@@ -447,7 +470,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::EXCEPTION_REQUEST_CONTEXT => [
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     stdClass::class
                 ]
             ]
@@ -463,7 +488,9 @@ final class ConfigExceptionsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            '[stdClass] is not a valid exception class-string for ' . RoutingOption::EXCEPTION_LOG_LEVELS
+            '[stdClass] is not a valid exception class-string for ' . HttpErrorHandlingOption::key(
+                HttpErrorHandlingOption::LOG_LEVELS
+            )
         );
 
         $kernel = new Kernel(
@@ -477,7 +504,10 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::EXCEPTION_LOG_LEVELS => [
+
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => LogLevel::ERROR,
                     stdClass::class => LogLevel::CRITICAL
                 ]
@@ -508,7 +538,9 @@ final class ConfigExceptionsTest extends TestCase
         $config = WritableConfig::fromArray([
             'routing' => [
                 'host' => 'foo.com',
-                RoutingOption::EXCEPTION_LOG_LEVELS => [
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => 'bogus',
                 ]
             ]

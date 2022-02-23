@@ -13,6 +13,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\TestLogger;
+use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
+use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
+use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
@@ -77,38 +80,9 @@ final class HttpRoutingBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        if (!$config->has('routing.' . RoutingOption::HOST)) {
-            throw new InvalidArgumentException('routing.' . RoutingOption::HOST . ' must be a non-empty-string.');
-        }
-
-        if (!$config->has('routing.' . RoutingOption::ERROR_LOG_NAME)) {
-            $name = $config->getString('app.name', '');
-            $name = empty($name) ? 'request' : "$name.request";
-            $config->set('routing.' . RoutingOption::ERROR_LOG_NAME, $name);
-        }
-
-        $config->extend('routing.' . RoutingOption::WP_ADMIN_PREFIX, '/wp-admin');
-        $config->extend('routing.' . RoutingOption::WP_LOGIN_PATH, '/wp-login.php');
-        $config->extend('routing.' . RoutingOption::ROUTE_DIRECTORIES, []);
-        $config->extend('routing.' . RoutingOption::API_ROUTE_DIRECTORIES, []);
-        $config->extend('routing.' . RoutingOption::API_PREFIX, '/');
-
-        if (!$config->has('routing.' . RoutingOption::MIDDLEWARE_GROUPS)) {
-            $config->set('routing.' . RoutingOption::MIDDLEWARE_GROUPS, []);
-        }
-
-        $config->extend('routing.' . RoutingOption::MIDDLEWARE_ALIASES, []);
-        $config->extend('routing.' . RoutingOption::MIDDLEWARE_PRIORITY, []);
-        $config->extend('routing.' . RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS, []);
-        $config->extend('routing.' . RoutingOption::HTTP_PORT, 80);
-        $config->extend('routing.' . RoutingOption::HTTPS_PORT, 443);
-        $config->extend('routing.' . RoutingOption::HTTPS, true);
-        $config->extend('routing.' . RoutingOption::EXCEPTION_DISPLAYERS, []);
-        $config->extend('routing.' . RoutingOption::EXCEPTION_TRANSFORMERS, []);
-        $config->extend('routing.' . RoutingOption::EXCEPTION_REQUEST_CONTEXT, []);
-        $config->extend('routing.' . RoutingOption::EXCEPTION_LOG_LEVELS, []);
-
-        $this->validateConfig($config);
+        $this->configureRouting($config);
+        $this->configureMiddleware($config);
+        $this->configureErrorHandling($config);
     }
 
     public function register(Kernel $kernel): void
@@ -117,7 +91,7 @@ final class HttpRoutingBundle implements Bundle
         $this->bindPsr17Discovery($container);
         $this->bindResponseFactory($container);
         $this->bindServerRequestCreator($container);
-        $this->bindRoutingFacade($kernel);
+        $this->bindRouter($kernel);
         $this->bindUrlGenerator($container);
         $this->bindUrlMatcher($container);
         $this->bindAdminMenu($container);
@@ -139,7 +113,7 @@ final class HttpRoutingBundle implements Bundle
         return self::ALIAS;
     }
 
-    private function bindRoutingFacade(Kernel $kernel): void
+    private function bindRouter(Kernel $kernel): void
     {
         $kernel->container()->singleton(Router::class, function () use ($kernel) {
             $container = $kernel->container();
@@ -147,17 +121,17 @@ final class HttpRoutingBundle implements Bundle
             $env = $kernel->env();
 
             $context = new UrlGenerationContext(
-                $config->getString('routing.' . RoutingOption::HOST),
-                $config->getInteger('routing.' . RoutingOption::HTTPS_PORT),
-                $config->getInteger('routing.' . RoutingOption::HTTP_PORT),
-                $config->getBoolean('routing.' . RoutingOption::HTTPS)
+                $config->getString(RoutingOption::key(RoutingOption::HOST)),
+                $config->getInteger(RoutingOption::key(RoutingOption::HTTPS_PORT)),
+                $config->getInteger(RoutingOption::key(RoutingOption::HTTP_PORT)),
+                $config->getBoolean(RoutingOption::key(RoutingOption::USE_HTTPS))
             );
 
             $loader = $container[RouteLoader::class] ?? new PHPFileRouteLoader(
-                    $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
-                    $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES),
+                    $config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)),
+                    $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)),
                     $container[RouteLoadingOptions::class] ?? new DefaultRouteLoadingOptions(
-                        $config->getString('routing.' . RoutingOption::API_PREFIX)
+                        $config->getString(RoutingOption::key(RoutingOption::API_PREFIX))
                     ),
                 );
 
@@ -168,8 +142,8 @@ final class HttpRoutingBundle implements Bundle
                 : new NullCache();
 
             $admin_area = new WPAdminArea(
-                $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
-                $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH)
+                $config->getString(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX)),
+                $config->getString(RoutingOption::key(RoutingOption::WP_LOGIN_PATH))
             );
 
             return new Router(
@@ -210,13 +184,20 @@ final class HttpRoutingBundle implements Bundle
                     new CanDisplay(),
                 );
 
-            $log_context = array_map(function ($class) {
-                /** @var class-string<RequestLogContext> $class */
-                return new $class;
-            }, $kernel->config()->getListOfStrings('routing.' . RoutingOption::EXCEPTION_REQUEST_CONTEXT));
+            $log_context = array_map(
+                function ($class) {
+                    /** @var class-string<RequestLogContext> $class */
+                    return new $class;
+                },
+                $kernel->config()->getListOfStrings(
+                    HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT)
+                )
+            );
 
             /** @var array<class-string<Throwable>,string> $log_levels */
-            $log_levels = $kernel->config()->getArray('routing.' . RoutingOption::EXCEPTION_LOG_LEVELS);
+            $log_levels = $kernel->config()->getArray(
+                HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS)
+            );
 
             $logger = new RequestAwareLogger(
                 $error_logger,
@@ -227,7 +208,7 @@ final class HttpRoutingBundle implements Bundle
             $displayers = array_map(function ($class) {
                 /** @var class-string<ExceptionDisplayer> $class */
                 return new $class;
-            }, $kernel->config()->getListOfStrings('routing.' . RoutingOption::EXCEPTION_DISPLAYERS));
+            }, $kernel->config()->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)));
 
             return new HttpErrorHandler(
                 $container->make(ResponseFactoryInterface::class),
@@ -236,8 +217,7 @@ final class HttpRoutingBundle implements Bundle
                 $displayer_filter,
                 ...$displayers
             );
-        }
-        );
+        });
     }
 
     private function bindMiddlewarePipeline(DIContainer $container): void
@@ -319,10 +299,10 @@ final class HttpRoutingBundle implements Bundle
         $config = $kernel->config();
 
         return new MiddlewareResolver(
-            $config->getArray('routing.' . RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS),
-            $config->getArray('routing.' . RoutingOption::MIDDLEWARE_ALIASES),
-            $config->getArray('routing.' . RoutingOption::MIDDLEWARE_GROUPS),
-            $config->getArray('routing.' . RoutingOption::MIDDLEWARE_PRIORITY)
+            $config->getArray(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN)),
+            $config->getArray(MiddlewareOption::key(MiddlewareOption::ALIASES)),
+            $config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)),
+            $config->getArray(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST))
         );
     }
 
@@ -351,7 +331,7 @@ final class HttpRoutingBundle implements Bundle
 
         if (!$kernel->container()->has(LoggerInterface::class)) {
             $kernel->container()->singleton(LoggerInterface::class, fn() => new StdErrLogger(
-                $kernel->config()->getString('routing.' . RoutingOption::ERROR_LOG_NAME)
+                $kernel->config()->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
             ));
         }
     }
@@ -371,57 +351,93 @@ final class HttpRoutingBundle implements Bundle
         $transformers = array_map(function ($class) {
             /** @var class-string<ExceptionTransformer> $class */
             return new $class;
-        }, $config->getListOfStrings('routing.' . RoutingOption::EXCEPTION_TRANSFORMERS));
+        }, $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)));
 
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
     }
 
-    private function validateConfig(WritableConfig $config): void
+    private function configureRouting(WritableConfig $config): void
     {
-        if (empty($config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX))) {
+        if (!$config->has(RoutingOption::key(RoutingOption::HOST))) {
             throw new InvalidArgumentException(
-                'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string.'
+                RoutingOption::key(RoutingOption::HOST) . ' must be a non-empty-string.'
             );
         }
 
-        if (empty($config->getString('routing.' . RoutingOption::WP_LOGIN_PATH))) {
+        $config->extend(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX), '/wp-admin');
+        $config->extend(RoutingOption::key(RoutingOption::WP_LOGIN_PATH), '/wp-login.php');
+        $config->extend(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES), []);
+        $config->extend(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES), []);
+        $config->extend(RoutingOption::key(RoutingOption::API_PREFIX), '/');
+        $config->extend(RoutingOption::key(RoutingOption::HTTP_PORT), 80);
+        $config->extend(RoutingOption::key(RoutingOption::HTTPS_PORT), 443);
+        $config->extend(RoutingOption::key(RoutingOption::USE_HTTPS), true);
+
+        // quick type checks.
+        $config->getInteger(RoutingOption::key(RoutingOption::HTTP_PORT));
+        $config->getInteger(RoutingOption::key(RoutingOption::HTTPS_PORT));
+        $config->getBoolean(RoutingOption::key(RoutingOption::USE_HTTPS));
+
+        if (empty($config->getString(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX)))) {
             throw new InvalidArgumentException(
-                'routing.' . RoutingOption::WP_LOGIN_PATH . ' must be a non-empty string.'
+                RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX) . ' must be a non-empty string.'
             );
         }
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES) as $dir) {
+        if (empty($config->getString(RoutingOption::key(RoutingOption::WP_LOGIN_PATH)))) {
+            throw new InvalidArgumentException(
+                RoutingOption::key(RoutingOption::WP_LOGIN_PATH) . ' must be a non-empty string.'
+            );
+        }
+
+        foreach ($config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)) as $dir) {
             if (!is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        'routing.' . RoutingOption::ROUTE_DIRECTORIES . " must be a list of readable directories.\nPath [%s] is not readable.",
+                        RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)
+                        . " must be a list of readable directories.\nPath [%s] is not readable.",
                         $dir
                     )
                 );
             }
         }
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES) as $dir) {
+        foreach ($config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)) as $dir) {
             if (!is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        'routing.' . RoutingOption::ROUTE_DIRECTORIES . " must be a list of readable directories.\nPath [%s] is not readable.",
+                        RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)
+                        . " must be a list of readable directories.\nPath [%s] is not readable.",
                         $dir
                     )
                 );
             }
         }
+    }
 
-        foreach ($config->getArray('routing.' . RoutingOption::MIDDLEWARE_GROUPS) as $key => $middleware) {
+    private function configureMiddleware(WritableConfig $config): void
+    {
+        if (!$config->has(MiddlewareOption::key(MiddlewareOption::GROUPS))) {
+            $config->set(MiddlewareOption::key(MiddlewareOption::GROUPS), []);
+        }
+        $config->extend(MiddlewareOption::key(MiddlewareOption::ALIASES), []);
+        $config->extend(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST), []);
+        $config->extend(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN), []);
+
+        foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
             if (!is_string($key)) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::MIDDLEWARE_GROUPS . " has to an associative array of string => array pairs.\nGot key [$key]."
+                    MiddlewareOption::key(
+                        MiddlewareOption::GROUPS
+                    ) . " has to an associative array of string => array pairs.\nGot key [$key]."
                 );
             }
             if (!is_array($middleware)) {
                 $type = gettype($middleware);
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::MIDDLEWARE_GROUPS . " has to an associative array of string => array pairs.\nGot [$type] for key [$key]."
+                    MiddlewareOption::key(
+                        MiddlewareOption::GROUPS
+                    ) . " has to an associative array of string => array pairs.\nGot [$type] for key [$key]."
                 );
             }
 
@@ -438,10 +454,12 @@ final class HttpRoutingBundle implements Bundle
             }
         }
 
-        foreach ($config->getArray('routing.' . RoutingOption::MIDDLEWARE_ALIASES) as $alias => $class) {
+        foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::ALIASES)) as $alias => $class) {
             if (!is_string($alias)) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::MIDDLEWARE_ALIASES . ' has to be an array of string => middleware-class pairs.'
+                    MiddlewareOption::key(
+                        MiddlewareOption::ALIASES
+                    ) . ' has to be an array of string => middleware-class pairs.'
                 );
             }
             if (!is_string($class)
@@ -456,7 +474,7 @@ final class HttpRoutingBundle implements Bundle
             }
         }
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::MIDDLEWARE_PRIORITY) as $class) {
+        foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST)) as $class) {
             if (
                 !class_exists($class)
                 || !in_array(
@@ -464,7 +482,9 @@ final class HttpRoutingBundle implements Bundle
                     (array)class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::MIDDLEWARE_PRIORITY . " has to be a list of middleware class-strings.\nGot [$class]."
+                    MiddlewareOption::key(
+                        MiddlewareOption::PRIORITY_LIST
+                    ) . " has to be a list of middleware class-strings.\nGot [$class]."
                 );
             }
         }
@@ -476,19 +496,35 @@ final class HttpRoutingBundle implements Bundle
             RoutingConfigurator::GLOBAL_MIDDLEWARE
         ];
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS) as $group_name) {
+        foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN)) as $group_name) {
             if (!in_array($group_name, $valid, true)) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::ALWAYS_RUN_MIDDLEWARE_GROUPS . " can only contain [frontend,api,admin,global].\nGot [$group_name]."
+                    MiddlewareOption::key(
+                        MiddlewareOption::ALWAYS_RUN
+                    ) . " can only contain [frontend,api,admin,global].\nGot [$group_name]."
                 );
             }
         }
+    }
 
-        $config->getInteger('routing.' . RoutingOption::HTTP_PORT);
-        $config->getInteger('routing.' . RoutingOption::HTTPS_PORT);
-        $config->getBoolean('routing.' . RoutingOption::HTTPS);
+    private function configureErrorHandling(WritableConfig $config): void
+    {
+        if (!$config->has(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))) {
+            $name = $config->getString('app.name', '');
+            $name = empty($name) ? 'request' : "$name.request";
+            $config->set(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX), $name);
+        }
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::EXCEPTION_DISPLAYERS) as $class) {
+        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS), []);
+        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS), []);
+        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT), []);
+        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS), []);
+
+        foreach (
+            $config->getListOfStrings(
+                HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)
+            ) as $class
+        ) {
             if (
                 !class_exists($class)
                 || !in_array(
@@ -496,12 +532,18 @@ final class HttpRoutingBundle implements Bundle
                     (array)class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::EXCEPTION_DISPLAYERS . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [$class]."
+                    HttpErrorHandlingOption::key(
+                        HttpErrorHandlingOption::DISPLAYERS
+                    ) . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [$class]."
                 );
             }
         }
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::EXCEPTION_TRANSFORMERS) as $class) {
+        foreach (
+            $config->getListOfStrings(
+                HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)
+            ) as $class
+        ) {
             if (
                 !class_exists($class)
                 || !in_array(
@@ -509,12 +551,18 @@ final class HttpRoutingBundle implements Bundle
                     (array)class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::EXCEPTION_TRANSFORMERS . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [$class]."
+                    HttpErrorHandlingOption::key(
+                        HttpErrorHandlingOption::TRANSFORMERS
+                    ) . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [$class]."
                 );
             }
         }
 
-        foreach ($config->getListOfStrings('routing.' . RoutingOption::EXCEPTION_REQUEST_CONTEXT) as $class) {
+        foreach (
+            $config->getListOfStrings(
+                HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT)
+            ) as $class
+        ) {
             if (
                 !class_exists($class)
                 || !in_array(
@@ -522,7 +570,9 @@ final class HttpRoutingBundle implements Bundle
                     (array)class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::EXCEPTION_REQUEST_CONTEXT . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [$class]."
+                    HttpErrorHandlingOption::key(
+                        HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
+                    ) . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [$class]."
                 );
             }
         }
@@ -538,7 +588,11 @@ final class HttpRoutingBundle implements Bundle
             LogLevel::DEBUG
         ];
 
-        foreach ($config->getArray('routing.' . RoutingOption::EXCEPTION_LOG_LEVELS) as $class => $level) {
+        foreach (
+            $config->getArray(
+                HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS)
+            ) as $class => $level
+        ) {
             if (!is_string($class)
                 || !class_exists($class)
                 || !in_array(
@@ -547,7 +601,9 @@ final class HttpRoutingBundle implements Bundle
                 )) {
                 $class = (string)$class;
                 throw new InvalidArgumentException(
-                    "[$class] is not a valid exception class-string for " . RoutingOption::EXCEPTION_LOG_LEVELS
+                    "[$class] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
+                        HttpErrorHandlingOption::LOG_LEVELS
+                    )
                 );
             }
 

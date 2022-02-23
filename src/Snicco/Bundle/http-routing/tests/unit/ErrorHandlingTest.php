@@ -14,7 +14,7 @@ use Psr\Log\NullLogger;
 use Psr\Log\Test\TestLogger;
 use RuntimeException;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
-use Snicco\Bundle\HttpRouting\RoutingOption;
+use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -125,7 +125,10 @@ final class ErrorHandlingTest extends TestCase
     {
         $kernel = $this->bootWithExtraConfig([
             'routing' => [
-                RoutingOption::EXCEPTION_REQUEST_CONTEXT => [
+
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
                     QueryStringLogContext::class
                 ]
@@ -162,8 +165,8 @@ final class ErrorHandlingTest extends TestCase
     public function custom_transformers_can_be_added(): void
     {
         $kernel = $this->bootWithExtraConfig([
-            'routing' => [
-                RoutingOption::EXCEPTION_TRANSFORMERS => [
+            'http_error_handling' => [
+                HttpErrorHandlingOption::TRANSFORMERS => [
                     Transformer2::class,
                     Transformer1::class,
                 ]
@@ -203,8 +206,8 @@ final class ErrorHandlingTest extends TestCase
     public function custom_displayers_can_be_added(): void
     {
         $kernel = $this->bootWithExtraConfig([
-            'routing' => [
-                RoutingOption::EXCEPTION_DISPLAYERS => [
+            'http_error_handling' => [
+                HttpErrorHandlingOption::DISPLAYERS => [
                     CustomHtmlDisplayer::class,
                 ]
             ]
@@ -236,7 +239,10 @@ final class ErrorHandlingTest extends TestCase
     {
         $kernel = $this->bootWithExtraConfig([
             'routing' => [
-                RoutingOption::EXCEPTION_LOG_LEVELS => [
+
+            ],
+            'http_error_handling' => [
+                HttpErrorHandlingOption::LOG_LEVELS => [
                     TypeError::class => LogLevel::WARNING
                 ]
             ]
