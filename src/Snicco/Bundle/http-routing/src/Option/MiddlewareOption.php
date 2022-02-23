@@ -11,6 +11,7 @@ final class MiddlewareOption
     public const GROUPS = 'middleware_groups';
     public const ALIASES = 'middleware_aliases';
     public const PRIORITY_LIST = 'middleware_priority';
+    public const KERNEL_MIDDLEWARE = 'kernel_middleware';
 
     /**
      * @interal
