@@ -8,11 +8,14 @@ use LogicException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use Psr\Log\Test\TestLogger;
 use RuntimeException;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\RoutingOption;
+use Snicco\Bundle\HttpRouting\StdErrLogger;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
@@ -255,6 +258,33 @@ final class ErrorHandlingTest extends TestCase
 
         $this->assertFalse($logger->hasCriticalRecords());
         $this->assertTrue($logger->hasWarningRecords());
+    }
+
+    /**
+     * @test
+     */
+    public function the_production_the_logger_is_bound_if_not_already_set_in_the_container(): void
+    {
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::prod(),
+            Directories::fromDefaults(__DIR__ . '/fixtures')
+        );
+        $kernel->boot();
+
+        $this->assertInstanceOf(StdErrLogger::class, $kernel->container()->make(LoggerInterface::class));
+
+        $container = $this->container();
+        $container[LoggerInterface::class] = fn() => new NullLogger();
+
+        $kernel = new Kernel(
+            $container,
+            Environment::dev(),
+            Directories::fromDefaults(__DIR__ . '/fixtures')
+        );
+        $kernel->boot();
+
+        $this->assertInstanceOf(NullLogger::class, $kernel->container()->make(LoggerInterface::class));
     }
 
     protected function bundles(): array
