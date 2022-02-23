@@ -35,9 +35,9 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use function serialize;
 
 /**
- * The Routing class is a Facade that glues together all parts of the Routing system.
+ * The Router class is a Facade that glues together all parts of the Routing system.
  */
-final class Routing
+final class Router
 {
 
     private ContainerInterface $psr_container;

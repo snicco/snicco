@@ -28,7 +28,7 @@ use Snicco\Component\HttpRouting\Routing\RouteLoader\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoadingOptions;
-use Snicco\Component\HttpRouting\Routing\Routing;
+use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
@@ -141,7 +141,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRoutingFacade(Kernel $kernel): void
     {
-        $kernel->container()->singleton(Routing::class, function () use ($kernel) {
+        $kernel->container()->singleton(Router::class, function () use ($kernel) {
             $container = $kernel->container();
             $config = $kernel->config();
             $env = $kernel->env();
@@ -172,7 +172,7 @@ final class HttpRoutingBundle implements Bundle
                 $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH)
             );
 
-            return new Routing(
+            return new Router(
                 $container,
                 $context,
                 $loader,
@@ -184,17 +184,17 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindUrlGenerator(DIContainer $container): void
     {
-        $container->singleton(UrlGenerator::class, fn() => $container->make(Routing::class)->urlGenerator());
+        $container->singleton(UrlGenerator::class, fn() => $container->make(Router::class)->urlGenerator());
     }
 
     private function bindUrlMatcher(DIContainer $container): void
     {
-        $container->singleton(UrlMatcher::class, fn() => $container->make(Routing::class)->urlMatcher());
+        $container->singleton(UrlMatcher::class, fn() => $container->make(Router::class)->urlMatcher());
     }
 
     private function bindAdminMenu(DIContainer $container): void
     {
-        $container->singleton(AdminMenu::class, fn() => $container->make(Routing::class)->adminMenu());
+        $container->singleton(AdminMenu::class, fn() => $container->make(Router::class)->adminMenu());
     }
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
@@ -339,7 +339,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRoutes(DIContainer $container): void
     {
-        $container->singleton(Routes::class, fn() => $container->make(Routing::class)->routes());
+        $container->singleton(Routes::class, fn() => $container->make(Router::class)->routes());
     }
 
     private function bindLogger(Kernel $kernel): void
