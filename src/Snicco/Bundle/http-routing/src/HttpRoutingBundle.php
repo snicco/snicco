@@ -6,12 +6,9 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting;
 
 use InvalidArgumentException;
-use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
@@ -23,8 +20,10 @@ use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
+use Snicco\Bundle\HttpRouting\ResponseEmitter\LaminasEmitterStack;
+use Snicco\Bundle\HttpRouting\ResponseEmitter\ResponseEmitter;
+use Snicco\Bundle\HttpRouting\ResponseEmitter\TestEmitter;
 use Snicco\Component\EventDispatcher\EventDispatcher;
-use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
@@ -693,22 +692,8 @@ final class HttpRoutingBundle implements Bundle
 
             $dispatcher = $container->make(EventDispatcher::class);
 
-            $emitter = $kernel->env()->isTesting() ?
-                new class($dispatcher) implements EmitterInterface {
-                    private EventDispatcher $dispatcher;
+            $emitter = $this->getResponseEmitter($kernel, $dispatcher);
 
-                    public function __construct(EventDispatcher $dispatcher)
-                    {
-                        $this->dispatcher = $dispatcher;
-                    }
-
-                    public function emit(ResponseInterface $response): bool
-                    {
-                        $this->dispatcher->dispatch(new GenericEvent('test_emitter', [$response]));
-                        return true;
-                    }
-                }
-                : new SapiEmitter();
 
             $api_prefix = $kernel->config()->getString(RoutingOption::key(RoutingOption::API_PREFIX));
 
@@ -728,5 +713,14 @@ final class HttpRoutingBundle implements Bundle
         $kernel->container()->singleton(ResponsePostProcessor::class, function () use ($kernel) {
             return new ResponsePostProcessor($kernel->env());
         });
+    }
+
+    private function getResponseEmitter(Kernel $kernel, EventDispatcher $dispatcher): ResponseEmitter
+    {
+        if ($kernel->env()->isTesting()) {
+            return new TestEmitter($dispatcher);
+        }
+
+        return $kernel->container()[ResponseEmitter::class] ?? new LaminasEmitterStack();
     }
 }

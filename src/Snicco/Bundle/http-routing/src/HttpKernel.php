@@ -22,7 +22,6 @@ final class HttpKernel
 {
     private MiddlewarePipeline $pipeline;
     private ResponsePreparation $preparation;
-
     private EventDispatcherInterface $dispatcher;
 
     /**

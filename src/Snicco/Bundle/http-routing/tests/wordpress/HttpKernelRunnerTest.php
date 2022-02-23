@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
+use Laminas\HttpHandlerRunner\Exception\EmitterException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Event\HandledRequest;
 use Snicco\Bundle\HttpRouting\Event\HandlingRequest;
@@ -62,11 +63,11 @@ final class HttpKernelRunnerTest extends WPTestCase
     /**
      * @test
      */
-    public function test_http_runner_can_be_resolved(): void
+    public function test_http_runner_can_be_resolved_in_production(): void
     {
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
-            Environment::testing(),
+            Environment::prod(),
             Directories::fromDefaults(__DIR__ . '/fixtures')
         );
         $kernel->boot();
@@ -469,6 +470,124 @@ final class HttpKernelRunnerTest extends WPTestCase
             return true;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
+    }
+
+    /**
+     * @test
+     */
+    public function test_run_sends_a_frontend_response_immediately(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/frontend1';
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        $this->http_dispatcher->run();
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(function (ResponseSent $event) {
+            return $event->body_sent;
+        });
+
+        $dispatcher->assertDispatched('test_emitter', function (Response $response) {
+            return HttpRunnerTestController::class === (string)$response->getBody()
+                && !$response instanceof DelegatedResponse;
+        });
+        $dispatcher->assertDispatched(TerminatedResponse::class);
+    }
+
+    /**
+     * @test
+     */
+    public function test_run_sends_an_api_response_immediately(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/sniccowp/auth/register';
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        $this->http_dispatcher->run();
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(function (ResponseSent $event) {
+            return $event->body_sent;
+        });
+
+        $dispatcher->assertDispatched('test_emitter', function (Response $response) {
+            $this->assertSame(HttpRunnerTestController::class, (string)$response->getBody());
+            $this->assertNotEmpty($response->getHeaders());
+            $this->assertTrue($response->hasHeader('content-length'));
+            return true;
+        });
+        $dispatcher->assertDispatched(TerminatedResponse::class);
+    }
+
+    /**
+     * @test
+     */
+    public function test_laminas_is_used_in_non_testing_env(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/frontend1';
+
+        $kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::dev(),
+            Directories::fromDefaults(__DIR__ . '/fixtures')
+        );
+        $kernel->boot();
+
+        $http_runner = $kernel->container()->make(HttpKernelRunner::class);
+
+        try {
+            /**
+             * @var HttpKernelRunner
+             */
+            $http_runner->run();
+        } catch (EmitterException $e) {
+            // Is there any better way to test this?
+            $this->assertStringContainsString('headers already sent', $e->getMessage());
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function test_laminas_is_used_in_production_with_streamed_response(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/stream';
+
+        $kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::dev(),
+            Directories::fromDefaults(__DIR__ . '/fixtures')
+        );
+        $kernel->boot();
+
+        $http_runner = $kernel->container()->make(HttpKernelRunner::class);
+
+        try {
+            /**
+             * @var HttpKernelRunner
+             */
+            $http_runner->run();
+        } catch (EmitterException $e) {
+            // Is there any better way to test this?
+            $this->assertStringContainsString('headers already sent', $e->getMessage());
+        }
     }
 
 }

@@ -5,13 +5,13 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\HttpRouting;
 
-use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Bundle\HttpRouting\Event\ResponseSent;
 use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
+use Snicco\Bundle\HttpRouting\ResponseEmitter\ResponseEmitter;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\StrArr\Str;
@@ -27,7 +27,7 @@ final class HttpKernelRunner
     private HttpKernel $http_kernel;
     private ServerRequestCreator $request_creator;
     private EventDispatcherInterface $event_dispatcher;
-    private EmitterInterface $emitter;
+    private ResponseEmitter $emitter;
     private StreamFactoryInterface $stream_factory;
 
     /**
@@ -42,7 +42,7 @@ final class HttpKernelRunner
         HttpKernel $http_kernel,
         ServerRequestCreator $request_creator,
         EventDispatcherInterface $event_dispatcher,
-        EmitterInterface $emitter,
+        ResponseEmitter $emitter,
         StreamFactoryInterface $stream_factory,
         ?string $api_prefix
     ) {
@@ -59,6 +59,8 @@ final class HttpKernelRunner
     }
 
     /**
+     * Sets up the runner to send a response an appropriate (later) time based on the request type.
+     *
      * @note Unless you are 100% sure what you are doing you should not change the hooks.
      *       You have been warned.
      */
@@ -81,6 +83,22 @@ final class HttpKernelRunner
                 );
             }, PHP_INT_MIN);
         }
+    }
+
+    /**
+     * Pipes the current request through the application immediately.
+     *
+     * @note Unless you are 100% what you are doing, should stick to using {@see HttpKernelRunner::listen())
+     */
+    public function run(): void
+    {
+        $psr_request = $this->request_creator->fromGlobals();
+
+        $type = $this->isApiRequest($psr_request)
+            ? Request::TYPE_API
+            : Request::TYPE_FRONTEND;
+
+        $this->dispatchFrontendRequest(Request::fromPsr($psr_request, $type));
     }
 
     private function dispatchFrontendRequest(Request $request): void
