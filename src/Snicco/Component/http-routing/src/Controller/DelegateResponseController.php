@@ -16,7 +16,7 @@ final class DelegateResponseController extends Controller
 
     public function __invoke(): DelegatedResponse
     {
-        return $this->respond()->delegate(true);
+        return $this->responseFactory()->delegate(true);
     }
 
 }

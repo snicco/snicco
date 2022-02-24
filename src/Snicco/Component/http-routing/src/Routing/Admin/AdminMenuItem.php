@@ -29,7 +29,7 @@ final class AdminMenuItem
     private ?int $position;
     private ?string $parent_slug;
 
-    private function __construct(
+    public function __construct(
         string $page_title,
         string $menu_title,
         string $menu_slug,

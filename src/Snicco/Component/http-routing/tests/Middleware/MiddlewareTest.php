@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Psr\Http\Message\ResponseInterface;
@@ -13,113 +14,75 @@ use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
-use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
-use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
-use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-
-use function dirname;
+use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 final class MiddlewareTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
+    use CreateUrlGenerator;
 
-    private Container $pimple;
     private \Pimple\Psr11\Container $pimple_psr;
+    private Container $pimple;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pimple = new Container();
-        $this->pimple_psr = new \Pimple\Psr11\Container($this->pimple);
+        $pimple = new Container();
+        $this->pimple = $pimple;
+        $this->pimple_psr = new \Pimple\Psr11\Container($pimple);
+        $pimple[ResponseFactory::class] = function (): ResponseFactory {
+            return $this->createResponseFactory();
+        };
+        $pimple[UrlGenerator::class] = function (): UrlGenerator {
+            return $this->createUrlGenerator();
+        };
     }
-
 
     /**
      * @test
      */
-    public function test_redirector_can_be_used(): void
+    public function middleware_has_access_to_the_url_generator(): void
     {
         $middleware = new class extends Middleware {
 
-            public function handle(Request $request, NextMiddleware $next): ResponseInterface
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->redirect()->to('/foo');
+                $url = $this->url()->to('/foo');
+                return $this->responseFactory()->html($url);
             }
         };
         $middleware->setContainer($this->pimple_psr);
-        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
-        $this->pimple[Redirector::class] = function (): Redirector {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
 
-        $response = $middleware->handle($this->frontendRequest(), $this->getNext());
+        $response = $middleware->process($this->frontendRequest(), $this->getNext());
+
+        $this->assertSame('/foo', (string)$response->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function middleware_has_access_to_the_response_utils(): void
+    {
+        $middleware = new class extends Middleware {
+
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                return $this->respondWith()->redirectTo('/foo', 303);
+            }
+        };
+        $middleware->setContainer($this->pimple_psr);
+
+        $response = $middleware->process($this->frontendRequest(), $this->getNext());
 
         $this->assertSame('/foo', $response->getHeaderLine('location'));
-    }
-
-    /**
-     * @test
-     */
-    public function test_url_generator_can_be_used(): void
-    {
-        $middleware = new class extends Middleware {
-
-            public function handle(Request $request, NextMiddleware $next): ResponseInterface
-            {
-                return $this->respond()->redirect($this->url()->to('/foo', ['bar' => 'baz']));
-            }
-        };
-        $middleware->setContainer($this->pimple_psr);
-        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
-        $this->pimple[UrlGenerator::class] = function (): UrlGenerator {
-            return $this->getUrLGenerator();
-        };
-
-        $response = $middleware->handle($this->frontendRequest(), $this->getNext());
-
-        $this->assertSame('/foo?bar=baz', $response->getHeaderLine('location'));
-    }
-
-    /**
-     * @test
-     */
-    public function test_template_renderer_can_be_used(): void
-    {
-        $middleware = new class extends Middleware {
-
-            public function handle(Request $request, NextMiddleware $next): ResponseInterface
-            {
-                return $this->render(dirname(__DIR__, 1) . '/fixtures/templates/greeting.php', ['greet' => 'Calvin'])
-                    ->withHeader(
-                        'foo',
-                        'bar'
-                    );
-            }
-        };
-        $middleware->setContainer($this->pimple_psr);
-        $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory($this->getUrLGenerator());
-        };
-
-        $response = $middleware->handle($this->frontendRequest(), $this->getNext());
-
-        $this->assertInstanceOf(ViewResponse::class, $response);
-        $this->assertSame(dirname(__DIR__, 1) . '/fixtures/templates/greeting.php', $response->view());
-        $this->assertSame(['greet' => 'Calvin'], $response->viewData());
+        $this->assertSame(303, $response->getStatusCode());
     }
 
     /**
@@ -129,17 +92,13 @@ final class MiddlewareTest extends TestCase
     {
         $middleware = new class extends Middleware {
 
-            public function handle(Request $request, NextMiddleware $next): ResponseInterface
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
         };
         $middleware->setContainer($this->pimple_psr);
-        $rf = $this->createResponseFactory($this->getUrLGenerator());
-        $this->pimple[ResponseFactory::class] = function () use ($rf): ResponseFactory {
-            return $rf;
-        };
-
+        $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
             $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
@@ -162,20 +121,138 @@ final class MiddlewareTest extends TestCase
         $this->assertSame('foo', (string)$response->getBody());
     }
 
+    /**
+     * @test
+     */
+    public function the_current_request_is_used_for_the_response_utils(): void
+    {
+        $middleware = new class extends Middleware {
+
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                return $this->respondWith()->refresh();
+            }
+        };
+        $middleware->setContainer($this->pimple_psr);
+
+        $response = $middleware->process($this->frontendRequest('https://foo.com/bar'), $this->getNext());
+        $this->assertSame('https://foo.com/bar', $response->getHeaderLine('location'));
+
+        $response = $middleware->process($this->frontendRequest('https://foo.com/baz'), $this->getNext());
+        $this->assertSame('https://foo.com/baz', $response->getHeaderLine('location'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_current_request_is_not_set(): void
+    {
+        $middleware = new class extends Middleware {
+
+            // Handle method is made public.
+            public function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                return $this->respondWith()->refresh();
+            }
+        };
+        $middleware->setContainer($this->pimple_psr);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('current request not set on middleware');
+
+        $middleware->handle(
+            Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', '/foo')),
+            $this->getNext()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_next_middleware_can_be_called_with_handle_method(): void
+    {
+        $middleware = new class extends Middleware {
+
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                return $next->handle($request);
+            }
+        };
+        $middleware->setContainer($this->pimple_psr);
+        $rf = $this->createResponseFactory();
+
+        $response = $middleware->process(
+            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            new class($rf) implements RequestHandlerInterface {
+
+                private ResponseFactory $factory;
+
+                public function __construct(ResponseFactory $factory)
+                {
+                    $this->factory = $factory;
+                }
+
+                public function handle(ServerRequestInterface $request): ResponseInterface
+                {
+                    return $this->factory->html('foo');
+                }
+            }
+        );
+
+        $this->assertSame('foo', (string)$response->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_response_factory_not_bound(): void
+    {
+        $middleware = new class extends Middleware {
+
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                $url = $this->url()->to('/foo');
+                return $this->responseFactory()->html($url);
+            }
+        };
+
+        unset($this->pimple[ResponseFactory::class]);
+        $middleware->setContainer($this->pimple_psr);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The ResponseFactory is not bound correctly');
+
+        $middleware->process($this->frontendRequest(), $this->getNext());
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_url_generator_not_bound(): void
+    {
+        $middleware = new class extends Middleware {
+
+            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                $url = $this->url()->to('/foo');
+                return $this->responseFactory()->html($url);
+            }
+        };
+
+        unset($this->pimple[UrlGenerator::class]);
+        $middleware->setContainer($this->pimple_psr);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The UrlGenerator is not bound correctly');
+
+        $middleware->process($this->frontendRequest(), $this->getNext());
+    }
+
     private function getNext(): NextMiddleware
     {
         return new NextMiddleware(function () {
             throw new RuntimeException('Next should not be called.');
         });
-    }
-
-    private function getUrLGenerator(): UrlGenerator
-    {
-        return new Generator(
-            new RouteCollection(),
-            UrlGenerationContext::forConsole('127.0.0.0'),
-            WPAdminArea::fromDefaults()
-        );
     }
 
 }

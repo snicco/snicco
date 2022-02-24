@@ -7,15 +7,15 @@ namespace Snicco\Component\Psr7ErrorHandler\DisplayerFilter;
 use Psr\Http\Message\RequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
-final class Delegating implements Filter
+final class Delegating implements DisplayerFilter
 {
 
     /**
-     * @var Filter[]
+     * @var DisplayerFilter[]
      */
     private array $filters;
 
-    public function __construct(Filter ...$filter)
+    public function __construct(DisplayerFilter ...$filter)
     {
         $this->filters = $filter;
     }

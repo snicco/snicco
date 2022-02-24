@@ -44,7 +44,7 @@ final class LazyGeneratorTest extends TestCase
 
             return new Generator(
                 new RouteCollection([]),
-                UrlGenerationContext::forConsole('127.0.0.0'),
+                new UrlGenerationContext('127.0.0.1'),
                 WPAdminArea::fromDefaults(),
             );
         });
@@ -56,7 +56,7 @@ final class LazyGeneratorTest extends TestCase
         $this->assertSame(1, $this->constructed);
 
         $this->assertSame(
-            'https://127.0.0.0/foo?bar=baz',
+            'https://127.0.0.1/foo?bar=baz',
             $lazy_generator->to('/foo', ['bar' => 'baz'], UrlGenerator::ABSOLUTE_URL)
         );
 
@@ -75,7 +75,7 @@ final class LazyGeneratorTest extends TestCase
 
             return new Generator(
                 new RouteCollection([$route]),
-                UrlGenerationContext::forConsole('127.0.0.0'),
+                new UrlGenerationContext('127.0.0.1'),
                 WPAdminArea::fromDefaults(),
             );
         });
@@ -100,7 +100,7 @@ final class LazyGeneratorTest extends TestCase
 
             return new Generator(
                 new RouteCollection(),
-                UrlGenerationContext::forConsole('127.0.0.0'),
+                new UrlGenerationContext('127.0.0.1'),
                 WPAdminArea::fromDefaults(),
             );
         });
@@ -108,94 +108,6 @@ final class LazyGeneratorTest extends TestCase
         $this->assertSame(0, $this->constructed);
 
         $this->assertSame('/wp-login.php?bar=baz', $lazy_generator->toLogin(['bar' => 'baz']));
-
-        $this->assertSame(1, $this->constructed);
-    }
-
-    /**
-     * @test
-     */
-    public function test_secure_works(): void
-    {
-        $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
-
-            return new Generator(
-                new RouteCollection(),
-                UrlGenerationContext::forConsole('127.0.0.0'),
-                WPAdminArea::fromDefaults(),
-            );
-        });
-
-        $this->assertSame(0, $this->constructed);
-
-        $this->assertSame('https://127.0.0.0/foo', $lazy_generator->secure('foo'));
-
-        $this->assertSame(1, $this->constructed);
-    }
-
-    /**
-     * @test
-     */
-    public function test_canonical_works(): void
-    {
-        $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
-
-            return new Generator(
-                new RouteCollection(),
-                UrlGenerationContext::forConsole('127.0.0.0'),
-                WPAdminArea::fromDefaults(),
-            );
-        });
-
-        $this->assertSame(0, $this->constructed);
-
-        $this->assertSame('https://127.0.0.0/', $lazy_generator->canonical());
-
-        $this->assertSame(1, $this->constructed);
-    }
-
-    /**
-     * @test
-     */
-    public function test_full_works(): void
-    {
-        $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
-
-            return new Generator(
-                new RouteCollection(),
-                UrlGenerationContext::forConsole('127.0.0.0'),
-                WPAdminArea::fromDefaults(),
-            );
-        });
-
-        $this->assertSame(0, $this->constructed);
-
-        $this->assertSame('https://127.0.0.0/', $lazy_generator->full());
-
-        $this->assertSame(1, $this->constructed);
-    }
-
-    /**
-     * @test
-     */
-    public function test_previous_works(): void
-    {
-        $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
-
-            return new Generator(
-                new RouteCollection(),
-                UrlGenerationContext::fromRequest($this->frontendRequest('/')->withHeader('referer', '/foo')),
-                WPAdminArea::fromDefaults(),
-            );
-        });
-
-        $this->assertSame(0, $this->constructed);
-
-        $this->assertSame('/foo', $lazy_generator->previous());
 
         $this->assertSame(1, $this->constructed);
     }

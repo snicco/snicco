@@ -48,45 +48,14 @@ final class Generator implements UrlGenerator
         $this->admin_area = $admin_area;
     }
 
-    public function secure(string $path, array $extra = []): string
-    {
-        return $this->to($path, $extra, self::ABSOLUTE_URL, true);
-    }
 
-    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null): string
+    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string
     {
         if ($this->isValidUrl($path)) {
             return $path;
         }
 
-        return $this->generate($path, $extra, $type, $secure);
-    }
-
-    public function canonical(): string
-    {
-        return $this->generate(
-            $this->context->currentPathUrlEncoded(),
-            [],
-            self::ABSOLUTE_URL,
-            null,
-            false
-        );
-    }
-
-    public function full(): string
-    {
-        return $this->context->currentUriAsString();
-    }
-
-    public function previous(string $fallback = '/'): string
-    {
-        $referer = $this->context->referer();
-
-        if (!$referer) {
-            return $this->generate($fallback, [], self::ABSOLUTE_URL);
-        }
-
-        return $referer;
+        return $this->generate($path, $extra, $type, $https);
     }
 
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string
@@ -114,7 +83,7 @@ final class Generator implements UrlGenerator
         string $name,
         array $arguments = [],
         int $type = self::ABSOLUTE_PATH,
-        ?bool $secure = null
+        ?bool $https = null
     ): string {
         $route = $this->routes->getByName($name);
 
@@ -159,7 +128,7 @@ final class Generator implements UrlGenerator
             $route_path = rtrim($route_path, '/') . '/';
         }
 
-        return $this->generate($route_path, $extra, $type, $secure);
+        return $this->generate($route_path, $extra, $type, $https);
     }
 
     private function isValidUrl(string $path): bool
@@ -200,10 +169,6 @@ final class Generator implements UrlGenerator
 
         $query_string = $this->buildQueryString($extra, $existing_query);
         $fragment = $this->buildFragment($existing_fragment, $extra_fragment);
-
-        if ($type != self::ABSOLUTE_URL && $this->needsUpgradeToAbsoluteHttps($secure)) {
-            $type = self::ABSOLUTE_URL;
-        }
 
         $target = $path . $query_string . $fragment;
 
@@ -283,34 +248,13 @@ final class Generator implements UrlGenerator
         return '';
     }
 
-    private function needsUpgradeToAbsoluteHttps(?bool $secure): bool
+    private function requiredScheme(?bool $secure): string
     {
-        if ($secure === false) {
-            return false;
+        if (is_null($secure)) {
+            return $this->context->httpsByDefault() ? 'https' : 'http';
         }
 
-        if ($this->context->isSecure()) {
-            return false;
-        }
-
-        if ($this->context->shouldForceHttps()) {
-            return true;
-        }
-
-        return (bool)$secure;
-    }
-
-    private function requiredScheme(?bool $secure = null): string
-    {
-        if (!is_null($secure)) {
-            return $secure ? 'https' : 'http';
-        }
-
-        if ($this->context->shouldForceHttps()) {
-            return 'https';
-        }
-
-        return $this->context->currentScheme();
+        return $secure ? 'https' : 'http';
     }
 
     private function withHostAndPort(string $valid_url_or_path, string $scheme): string

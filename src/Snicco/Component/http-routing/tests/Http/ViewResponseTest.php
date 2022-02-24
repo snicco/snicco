@@ -9,20 +9,18 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 class ViewResponseTest extends TestCase
 {
 
     use CreateTestPsr17Factories;
-    use CreateUrlGenerator;
 
     private Response $base_response;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->base_response = $this->createResponseFactory($this->createUrlGenerator())->createResponse();
+        $this->base_response = $this->createResponseFactory()->createResponse();
     }
 
     /**

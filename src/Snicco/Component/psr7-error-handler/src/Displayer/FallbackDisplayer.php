@@ -4,24 +4,43 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Displayer;
 
+use RuntimeException;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
+
+use function dirname;
+use function htmlentities;
+use function str_replace;
+
+use const ENT_QUOTES;
 
 final class FallbackDisplayer implements ExceptionDisplayer
 {
 
     public function display(ExceptionInformation $exception_information): string
     {
-        $code = sprintf(
-            'This error can be identified by the code <b>[%s]</b>',
-            htmlentities($exception_information->identifier(), ENT_QUOTES, 'UTF-8')
-        );
+        $content = @file_get_contents($file = dirname(__DIR__, 2) . '/resources/error.fallback.html');
 
-        return sprintf(
-            '<h1>%s</h1><p>%s</p><p>%s</p><p>%s</p>',
-            'Oops! An Error Occurred',
-            'Something went wrong on our servers while we were processing your request.',
-            $code,
-            'Sorry for any inconvenience caused.'
+        if (false === $content) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException("Cant read fallback error template at location [$file].");
+            // @codeCoverageIgnoreEnd
+        }
+
+        $content = str_replace('{{title}}', htmlentities($exception_information->safeTitle(), ENT_QUOTES), $content);
+        $content = str_replace(
+            '{{details}}',
+            htmlentities($exception_information->safeDetails(), ENT_QUOTES),
+            $content
+        );
+        $content = str_replace(
+            '{{identifier}}',
+            htmlentities($exception_information->identifier(), ENT_QUOTES),
+            $content
+        );
+        return str_replace(
+            '{{status}}',
+            htmlentities((string)$exception_information->statusCode(), ENT_QUOTES),
+            $content
         );
     }
 

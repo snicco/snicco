@@ -15,18 +15,15 @@ use Snicco\Component\HttpRouting\Controller\RedirectController;
 use Snicco\Component\HttpRouting\Controller\ViewController;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
-use Snicco\Component\HttpRouting\Http\Redirector;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
-use Snicco\Component\HttpRouting\Renderer\FileTemplateRenderer;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
-use Snicco\Component\HttpRouting\Routing\RouteLoader\NullLoader;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
-use Snicco\Component\HttpRouting\Routing\Routing;
+use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
@@ -38,7 +35,6 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
-use Snicco\Component\HttpRouting\Tests\fixtures\Controller\TestViewController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\NullErrorHandler;
@@ -64,7 +60,7 @@ abstract class HttpRunnerTestCase extends TestCase
     protected string $routes_dir;
     protected Container $pimple;
     protected ContainerInterface $psr_container;
-    private Routing $routing;
+    private Router $routing;
 
     /**
      * @var list<class-string<MiddlewareInterface>>
@@ -193,7 +189,7 @@ abstract class HttpRunnerTestCase extends TestCase
         Closure $loader,
         ?RouteCache $cache = null,
         ?UrlGenerationContext $context = null
-    ): Routing {
+    ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
             private Closure $loader;
@@ -220,8 +216,11 @@ abstract class HttpRunnerTestCase extends TestCase
     /**
      * @param Closure(AdminRoutingConfigurator) $loader
      */
-    final protected function adminRouting(Closure $loader, ?UrlGenerationContext $context = null): Routing
-    {
+    final protected function adminRouting(
+        Closure $loader,
+        ?RouteCache $cache = null,
+        ?UrlGenerationContext $context = null
+    ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
             private Closure $loader;
@@ -242,7 +241,7 @@ abstract class HttpRunnerTestCase extends TestCase
             }
         };
 
-        return $this->newRoutingFacade($on_the_fly_loader, null, $context);
+        return $this->newRoutingFacade($on_the_fly_loader, $cache, $context);
     }
 
     /**
@@ -262,10 +261,10 @@ abstract class HttpRunnerTestCase extends TestCase
         RouteLoader $loader = null,
         ?RouteCache $cache = null,
         UrlGenerationContext $context = null
-    ): Routing {
-        $routing = new Routing(
+    ): Router {
+        $routing = new Router(
             $this->psr_container,
-            $context ?: UrlGenerationContext::forConsole($this->app_domain),
+            $context ?: new UrlGenerationContext($this->app_domain),
             $loader ?: $this->nullLoader(),
             $cache ?: new NullCache(),
             WPAdminArea::fromDefaults(),
@@ -273,9 +272,8 @@ abstract class HttpRunnerTestCase extends TestCase
         );
 
         $this->pimple[UrlGenerator::class] = $routing->urlGenerator();
-        $rf = $this->createResponseFactory($routing->urlGenerator());
+        $rf = $this->createResponseFactory();
         $this->pimple[ResponseFactory::class] = $rf;
-        $this->pimple[Redirector::class] = $rf;
 
         // Fetch one service from the routing facade in order to trigger Exceptions.
         // If we don't do this we need to fetch an extra service in every test case where we assert Exceptions

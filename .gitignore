@@ -15,3 +15,10 @@ _output
 /src/Snicco/*/*/phpunit.xml
 /src/Snicco/*/*/tests/_output/*
 
+/src/Snicco/*/*/tests/fixtures/var/*
+!/src/Snicco/*/*/tests/fixtures/var/cache/.gitkeep
+!/src/Snicco/*/*/tests/fixtures/var/log/.gitkeep
+
+/src/Snicco/*/*/tests/*/fixtures/var/*
+!/src/Snicco/*/*/tests/*/fixtures/var/cache/.gitkeep
+!/src/Snicco/*/*/tests/*/fixtures/var/log/.gitkeep

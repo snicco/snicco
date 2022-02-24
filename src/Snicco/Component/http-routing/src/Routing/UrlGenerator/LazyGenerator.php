@@ -28,43 +28,23 @@ final class LazyGenerator implements UrlGenerator
         $this->get_generator = $get_generator;
     }
 
-    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $secure = null): string
+    public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string
     {
-        return $this->lazyGenerator()->to($path, $extra, $type, $secure);
+        return $this->lazyGenerator()->to($path, $extra, $type, $https);
     }
 
     public function toRoute(
         string $name,
         array $arguments = [],
         int $type = self::ABSOLUTE_PATH,
-        ?bool $secure = null
+        ?bool $https = null
     ): string {
-        return $this->lazyGenerator()->toRoute($name, $arguments, $type, $secure);
+        return $this->lazyGenerator()->toRoute($name, $arguments, $type, $https);
     }
 
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string
     {
         return $this->lazyGenerator()->toLogin($arguments, $type);
-    }
-
-    public function secure(string $path, array $extra = []): string
-    {
-        return $this->lazyGenerator()->secure($path, $extra);
-    }
-
-    public function canonical(): string
-    {
-        return $this->lazyGenerator()->canonical();
-    }
-
-    public function full(): string
-    {
-        return $this->lazyGenerator()->full();
-    }
-
-    public function previous(string $fallback = '/'): string
-    {
-        return $this->lazyGenerator()->previous($fallback);
     }
 
     private function lazyGenerator(): UrlGenerator

@@ -15,7 +15,7 @@ final class JsonExceptionDisplayer implements ExceptionDisplayer
     public function display(ExceptionInformation $exception_information): string
     {
         return json_encode([
-            'title' => $exception_information->title(),
+            'title' => $exception_information->safeTitle(),
             'details' => $exception_information->safeDetails(),
             'identifier' => $exception_information->identifier(),
         ]);

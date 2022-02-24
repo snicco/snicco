@@ -41,7 +41,7 @@ final class Redirect extends Middleware
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (isset($this->redirects[$request->path()])) {
-            return $this->respond()->redirect(
+            return $this->responseFactory()->redirect(
                 $this->redirects[$request->path()]['to'],
                 $this->redirects[$request->path()]['status']
             );
@@ -50,7 +50,7 @@ final class Redirect extends Middleware
         $path_qs = $request->path() . '?' . $request->queryString();
 
         if (isset($this->redirects[$path_qs])) {
-            return $this->respond()->redirect(
+            return $this->responseFactory()->redirect(
                 $this->redirects[$path_qs]['to'],
                 $this->redirects[$path_qs]['status']
             );

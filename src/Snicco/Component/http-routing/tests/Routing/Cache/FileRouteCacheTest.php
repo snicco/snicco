@@ -42,13 +42,15 @@ final class FileRouteCacheTest extends TestCase
         $res = $cache->get(function () {
             return [
                 'route_collection' => ['foo' => 'bar'],
-                'url_matcher' => []
+                'url_matcher' => [],
+                'admin_menu' => []
             ];
         });
 
         $this->assertSame([
             'route_collection' => ['foo' => 'bar'],
-            'url_matcher' => []
+            'url_matcher' => [],
+            'admin_menu' => []
         ], $res);
 
         $this->assertTrue(is_file($this->test_cache_file));
@@ -66,7 +68,8 @@ final class FileRouteCacheTest extends TestCase
         $cache->get(function () {
             return [
                 'route_collection' => ['foo' => 'bar'],
-                'url_matcher' => []
+                'url_matcher' => [],
+                'admin_menu' => []
             ];
         });
 
@@ -75,7 +78,8 @@ final class FileRouteCacheTest extends TestCase
         $this->assertSame(
             [
                 'route_collection' => ['foo' => 'bar'],
-                'url_matcher' => []
+                'url_matcher' => [],
+                'admin_menu' => []
             ],
             $cache->get(function () {
                 throw new RuntimeException('Data not loaded from cache.');
