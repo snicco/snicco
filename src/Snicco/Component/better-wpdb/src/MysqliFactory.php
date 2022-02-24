@@ -24,9 +24,8 @@ final class MysqliFactory
 
         /**
          * @var mysqli $mysqli
-         * @psalm-suppress InaccessibleProperty
          */
-        $mysqli = $wpdb->dbh;
+        $mysqli = $dbh->getValue($wpdb);
 
         $dbh->setAccessible(false);
 
