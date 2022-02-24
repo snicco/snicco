@@ -146,7 +146,7 @@ class RouteCachingTest extends HttpRunnerTestCase
         }, new FileRouteCache($this->route_cache_file));
 
         $admin_menu = $routing->adminMenu();
-        $this->assertCount(3, $admin_menu, 'Admin menu wrong pre cache');
+        $this->assertCount(3, $admin_menu->items(), 'Admin menu wrong pre cache');
 
         // Trigger reload
         $routing->routes();

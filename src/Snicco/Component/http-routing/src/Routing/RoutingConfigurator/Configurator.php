@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\RoutingConfigurator;
 
-use ArrayIterator;
 use Closure;
 use LogicException;
 use Snicco\Component\HttpRouting\Controller\RedirectController;
@@ -186,11 +185,6 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function configuredRoutes(): Routes
     {
         return new RouteCollection($this->routes);
-    }
-
-    public function getIterator(): ArrayIterator
-    {
-        return new ArrayIterator($this->items());
     }
 
     public function items(): array

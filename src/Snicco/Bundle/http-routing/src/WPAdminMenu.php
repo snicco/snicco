@@ -38,7 +38,7 @@ final class WPAdminMenu
         $parents = [];
         $children = [];
 
-        foreach ($this->admin_menu as $item) {
+        foreach ($this->admin_menu->items() as $item) {
             if ($item->isChild()) {
                 $children[] = $item;
             } else {
