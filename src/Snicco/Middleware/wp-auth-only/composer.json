@@ -1,6 +1,6 @@
 {
   "name": "sniccowp/wp-auth-only-middleware",
-  "description": "Provides a middleware for sniccowp/http-runner that uses the WP auth system.",
+  "description": "Provides a middleware for sniccowp/http-routing that uses the WP auth system.",
   "license": "MIT",
   "authors": [
     {
@@ -10,7 +10,7 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "sniccowp/http-runner": "dev-master",
+    "sniccowp/http-routing": "dev-master",
     "sniccowp/psr7-error-handler": "dev-master",
     "sniccowp/better-wp-api": "dev-master"
   },
