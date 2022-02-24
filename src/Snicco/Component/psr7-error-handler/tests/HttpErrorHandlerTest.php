@@ -102,9 +102,10 @@ final class HttpErrorHandlerTest extends TestCase
 
         $body = (string)$response->getBody();
 
-        $this->assertStringStartsWith('<h1>Internal Server Error</h1>', $body);
-        $this->assertStringNotContainsString('Secret message here', $body);
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringContainsString(spl_object_hash($e), $body);
+
+        $this->assertStringNotContainsString('Secret message here', $body);
     }
 
     /**
@@ -120,9 +121,9 @@ final class HttpErrorHandlerTest extends TestCase
 
         $body = (string)$response->getBody();
 
-        $this->assertStringStartsWith('<h1>Not Found</h1>', $body);
+        $this->assertStringContainsString('<h1>404 - Not Found</h1>', $body);
         $this->assertStringContainsString(
-            '<p>The requested resource could not be found but may be available again in the future.</p>',
+            'The requested resource could not be found but may be available again in the future',
             $body
         );
         $this->assertStringNotContainsString('Secret message here', $body);
@@ -169,8 +170,8 @@ final class HttpErrorHandlerTest extends TestCase
 
         // default handler handles this.
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertStringStartsWith(
-            '<h1>Internal Server Error</h1>',
+        $this->assertStringContainsString(
+            '<h1>500 - Internal Server Error</h1>',
             (string)$response->getBody()
         );
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
@@ -333,8 +334,8 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertTrue($test_logger->hasCriticalRecords());
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
-        $this->assertStringStartsWith(
-            '<h1>Internal Server Error</h1>',
+        $this->assertStringContainsString(
+            '<h1>500 - Internal Server Error</h1>',
             (string)$response->getBody()
         );
     }

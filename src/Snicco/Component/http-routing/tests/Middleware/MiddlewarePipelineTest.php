@@ -259,7 +259,7 @@ class MiddlewarePipelineTest extends TestCase
 
         $body = (string)$response->getBody();
 
-        $this->assertStringStartsWith('<h1>Internal Server Error</h1>', $body);
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringEndsWith('foo_middleware', $body);
     }
 
@@ -287,7 +287,7 @@ class MiddlewarePipelineTest extends TestCase
 
         $body = (string)$response->getBody();
 
-        $this->assertStringStartsWith('<h1>Internal Server Error</h1>', $body);
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringEndsWith(':bar_middleware:foo_middleware', $body);
     }
 
