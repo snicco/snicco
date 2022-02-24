@@ -19,9 +19,6 @@ use function count;
 use function is_array;
 use function is_bool;
 
-/**
- * @api
- */
 final class TestableEventDispatcher implements EventDispatcher
 {
 
