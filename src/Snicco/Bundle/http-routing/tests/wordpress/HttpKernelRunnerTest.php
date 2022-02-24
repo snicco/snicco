@@ -6,13 +6,14 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
-use Laminas\HttpHandlerRunner\Exception\EmitterException;
+use ReflectionProperty;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Event\HandledRequest;
 use Snicco\Bundle\HttpRouting\Event\HandlingRequest;
 use Snicco\Bundle\HttpRouting\Event\ResponseSent;
 use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
 use Snicco\Bundle\HttpRouting\HttpKernelRunner;
+use Snicco\Bundle\HttpRouting\ResponseEmitter\LaminasEmitterStack;
 use Snicco\Bundle\HttpRouting\Tests\wordpress\fixtures\Controller\HttpRunnerTestController;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -551,43 +552,11 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $http_runner = $kernel->container()->make(HttpKernelRunner::class);
 
-        try {
-            /**
-             * @var HttpKernelRunner
-             */
-            $http_runner->run();
-        } catch (EmitterException $e) {
-            // Is there any better way to test this?
-            $this->assertStringContainsString('headers already sent', $e->getMessage());
-        }
-    }
+        $property = new ReflectionProperty(HttpKernelRunner::class, 'emitter');
+        $property->setAccessible(true);
+        $emitter = $property->getValue($http_runner);
 
-    /**
-     * @test
-     */
-    public function test_laminas_is_used_in_production_with_streamed_response(): void
-    {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/stream';
-
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
-        );
-        $kernel->boot();
-
-        $http_runner = $kernel->container()->make(HttpKernelRunner::class);
-
-        try {
-            /**
-             * @var HttpKernelRunner
-             */
-            $http_runner->run();
-        } catch (EmitterException $e) {
-            // Is there any better way to test this?
-            $this->assertStringContainsString('headers already sent', $e->getMessage());
-        }
+        $this->assertInstanceOf(LaminasEmitterStack::class, $emitter);
     }
 
 }
