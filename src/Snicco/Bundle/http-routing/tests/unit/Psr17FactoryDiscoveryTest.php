@@ -48,6 +48,22 @@ final class Psr17FactoryDiscoveryTest extends TestCase
     /**
      * @test
      */
+    public function test_with_no_arguments(): void
+    {
+        $discovery = new Psr17FactoryDiscovery();
+
+        $this->assertInstanceOf(Psr17Factory::class, $discovery->createServerRequestFactory());
+        $this->assertInstanceOf(Psr17Factory::class, $discovery->createUriFactory());
+        $this->assertInstanceOf(Psr17Factory::class, $discovery->createUploadedFileFactory());
+        $this->assertInstanceOf(Psr17Factory::class, $discovery->createStreamFactory());
+        $this->assertInstanceOf(Psr17Factory::class, $discovery->createResponseFactory());
+
+        $this->assertSame($discovery->createResponseFactory(), $discovery->createUriFactory());
+    }
+
+    /**
+     * @test
+     */
     public function test_auto_discovery_guzzle(): void
     {
         $discovery = new Psr17FactoryDiscovery([
@@ -131,9 +147,8 @@ final class Psr17FactoryDiscoveryTest extends TestCase
      */
     public function test_exception_if_auto_discovery_does_not_work(): void
     {
-        // empty array on purpose
         $discovery = new Psr17FactoryDiscovery([
-                '\Slim\Psr7\Factory\RequestFactory::class' => [
+                '\Slim\Psr7\Factory\RequestFactory' => [
                     'server_request' => ServerRequestFactory::class,
                     'uri' => UriFactory::class,
                     'uploaded_file' => UploadedFileFactory::class,
