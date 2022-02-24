@@ -216,8 +216,11 @@ abstract class HttpRunnerTestCase extends TestCase
     /**
      * @param Closure(AdminRoutingConfigurator) $loader
      */
-    final protected function adminRouting(Closure $loader, ?UrlGenerationContext $context = null): Router
-    {
+    final protected function adminRouting(
+        Closure $loader,
+        ?RouteCache $cache = null,
+        ?UrlGenerationContext $context = null
+    ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
 
             private Closure $loader;
@@ -238,7 +241,7 @@ abstract class HttpRunnerTestCase extends TestCase
             }
         };
 
-        return $this->newRoutingFacade($on_the_fly_loader, null, $context);
+        return $this->newRoutingFacade($on_the_fly_loader, $cache, $context);
     }
 
     /**
