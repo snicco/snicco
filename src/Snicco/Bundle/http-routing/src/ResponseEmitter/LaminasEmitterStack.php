@@ -17,6 +17,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
  *  - If the request does not need to be streamed the content will be sent in one go.
  *  - If output has already been sent an exception is thrown.
  *
+ * @codeCoverageIgnore
  */
 final class LaminasEmitterStack implements ResponseEmitter
 {
