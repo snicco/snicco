@@ -6,8 +6,8 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Controller;
 
 use LogicException;
+use Pimple\Container;
 use RuntimeException;
-use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponseUtils;
@@ -37,16 +37,16 @@ final class ControllerTest extends HttpRunnerTestCase
      */
     public function test_exception_if_current_request_not_set(): void
     {
-        $container = new PimpleContainerAdapter();
-        $container->singleton(ResponseFactory::class, function () {
+        $container = new Container();
+        $container[ResponseFactory::class] = function (): ResponseFactory {
             return $this->createResponseFactory();
-        });
-        $container->singleton(UrlGenerator::class, function () {
+        };
+        $container[UrlGenerator::class] = function (): UrlGenerator {
             return $this->generator();
-        });
+        };
 
         $controller = new ResponseUtilsTestController();
-        $controller->setContainer($container);
+        $controller->setContainer(new \Pimple\Psr11\Container($container));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Current request');
@@ -59,10 +59,13 @@ final class ControllerTest extends HttpRunnerTestCase
      */
     public function test_exception_if_url_generator_not_set(): void
     {
-        $container = new PimpleContainerAdapter();
+        $container = new Container();
+        $container[ResponseFactory::class] = function (): ResponseFactory {
+            return $this->createResponseFactory();
+        };
 
         $controller = new ResponseUtilsTestController();
-        $controller->setContainer($container);
+        $controller->setContainer(new \Pimple\Psr11\Container($container));
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The UrlGenerator is not bound');
@@ -75,13 +78,13 @@ final class ControllerTest extends HttpRunnerTestCase
      */
     public function test_exception_if_response_factory_not_set(): void
     {
-        $container = new PimpleContainerAdapter();
+        $container = new Container();
+        $container[UrlGenerator::class] = function (): UrlGenerator {
+            return $this->generator();
+        };
 
         $controller = new ResponseUtilsTestController();
-        $container->singleton(UrlGenerator::class, function () {
-            return $this->generator();
-        });
-        $controller->setContainer($container);
+        $controller->setContainer(new \Pimple\Psr11\Container($container));
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The ResponseFactory is not bound');
