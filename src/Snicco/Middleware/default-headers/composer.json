@@ -9,7 +9,7 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "sniccowp/http-runner": "dev-master"
+    "sniccowp/http-routing": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13"
