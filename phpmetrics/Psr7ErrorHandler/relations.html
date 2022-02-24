@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-20 13:59:14        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-24 16:23:21        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -361,10 +361,7 @@
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackDisplayer",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
@@ -373,6 +370,11 @@
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
@@ -387,7 +389,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestContext",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
         "size": 3000,
         "relations": []
     },
@@ -402,10 +404,10 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\TransformableInformationProvider",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\InformationProviderWithTransformation",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\InformationProvider",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Identifier\\ExceptionIdentifier",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionTransformer",
             "\\InvalidArgumentException",
@@ -415,7 +417,7 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\InformationProvider",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
         "size": 3000,
         "relations": []
     },
@@ -435,11 +437,6 @@
         "relations": []
     },
     {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\HttpException",
         "size": 3000,
         "relations": [
@@ -454,14 +451,15 @@
             "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
             "\\Psr\\Http\\Message\\ResponseFactoryInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\InformationProvider",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Filter",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Throwable",
             "\\Psr\\Http\\Message\\ServerRequestInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "\\Psr\\Http\\Message\\RequestInterface"
+            "\\Psr\\Http\\Message\\RequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackDisplayer"
         ]
     },
     {
@@ -475,7 +473,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Filter",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
         "size": 3000,
         "relations": []
     },
@@ -501,7 +499,7 @@
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Delegating",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Filter",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
             "\\Psr\\Http\\Message\\RequestInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ]
@@ -510,7 +508,7 @@
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Filter",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
             "\\Psr\\Http\\Message\\RequestInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ]
@@ -519,7 +517,7 @@
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Verbosity",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Filter",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
             "\\Psr\\Http\\Message\\RequestInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ]
@@ -528,7 +526,7 @@
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\CanDisplay",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Filter",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
             "\\Psr\\Http\\Message\\RequestInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ]
