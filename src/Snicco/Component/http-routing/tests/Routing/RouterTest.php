@@ -18,7 +18,7 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
 use function dirname;
 
-final class RoutingTest extends TestCase
+final class RouterTest extends TestCase
 {
 
     /**

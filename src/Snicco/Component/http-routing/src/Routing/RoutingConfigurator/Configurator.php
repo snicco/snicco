@@ -183,6 +183,11 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $this->group($routes);
     }
 
+    public function configuredRoutes(): Routes
+    {
+        return new RouteCollection($this->routes);
+    }
+
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items());
@@ -191,11 +196,6 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function items(): array
     {
         return array_values($this->menu_items);
-    }
-
-    public function configuredRoutes(): Routes
-    {
-        return new RouteCollection($this->routes);
     }
 
     public function permanentRedirect(string $from_path, string $to_path, array $query = []): Route

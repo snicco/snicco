@@ -40,7 +40,7 @@ final class FileRouteCache implements RouteCache
     }
 
     /**
-     * @return null|array{url_matcher: array, route_collection: array<string,string>}
+     * @return null|array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}
      */
     private function readFile(string $path): ?array
     {
@@ -54,7 +54,7 @@ final class FileRouteCache implements RouteCache
             return null;
         }
 
-        /** @var array{url_matcher: array, route_collection: array<string,string>} $value */
+        /** @var array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>} $value */
         return $value;
     }
 

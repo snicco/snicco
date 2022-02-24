@@ -12,6 +12,7 @@ use FastRoute\RouteParser\Std as RouteParser;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
+use Snicco\Component\HttpRouting\Routing\Admin\CachedAdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
@@ -35,7 +36,7 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use function serialize;
 
 /**
- * The Router class is a Facade that glues together all parts of the Routing system.
+ * The Router class is a facade that glues together all parts of the Routing system.
  */
 final class Router
 {
@@ -51,9 +52,10 @@ final class Router
     private ?UrlMatcher $url_matcher = null;
     private ?UrlGenerator $url_generator = null;
     private ?Routes $routes = null;
+    private ?AdminMenu $admin_menu = null;
 
     /**
-     * @var ?array{url_matcher:array, route_collection:array<string,string>}
+     * @var ?array{url_matcher:array, route_collection:array<string,string>, admin_menu: array<string>}
      */
     private ?array $route_data = null;
 
@@ -87,9 +89,6 @@ final class Router
         return $this->url_matcher;
     }
 
-    /**
-     * @todo This must accept the context as an argument here.
-     */
     public function urlGenerator(): UrlGenerator
     {
         if (!isset($this->url_generator)) {
@@ -115,7 +114,11 @@ final class Router
 
     public function adminMenu(): AdminMenu
     {
-        return $this->routingConfigurator();
+        if (!isset($this->admin_menu)) {
+            $this->admin_menu = new CachedAdminMenu($this->routeData()['admin_menu']);
+        }
+
+        return $this->admin_menu;
     }
 
     private function routingConfigurator(): Configurator
@@ -129,7 +132,7 @@ final class Router
     }
 
     /**
-     * @return array{url_matcher: array, route_collection: array<string,string>}
+     * @return array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}
      */
     private function routeData(): array
     {
@@ -145,7 +148,7 @@ final class Router
     }
 
     /**
-     * @return array{url_matcher: array, route_collection: array<string,string>}
+     * @return array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}
      */
     private function loadRoutes(): array
     {
@@ -169,9 +172,17 @@ final class Router
                 throw BadRouteConfiguration::fromPrevious($e);
             }
         }
+
+        $menu = [];
+
+        foreach ($configurator->items() as $admin_menu_item) {
+            $menu[] = serialize($admin_menu_item);
+        }
+
         return [
             'route_collection' => $serialized_routes,
-            'url_matcher' => $collector->getData()
+            'url_matcher' => $collector->getData(),
+            'admin_menu' => $menu,
         ];
     }
 

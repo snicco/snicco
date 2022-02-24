@@ -7,16 +7,19 @@ namespace Snicco\Component\HttpRouting\Routing\Admin;
 use IteratorAggregate;
 use Traversable;
 
+/**
+ * @implements IteratorAggregate<int,AdminMenuItem>
+ */
 interface AdminMenu extends IteratorAggregate
 {
 
     /**
-     * @return AdminMenuItem[]
+     * @return list<AdminMenuItem>
      */
     public function items(): array;
 
     /**
-     * @return Traversable<AdminMenuItem>
+     * @return Traversable<int,AdminMenuItem>
      */
     public function getIterator(): Traversable;
 
