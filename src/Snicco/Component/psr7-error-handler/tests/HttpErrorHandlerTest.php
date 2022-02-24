@@ -10,11 +10,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\Log\Test\TestLogger;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
-use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\CanDisplay;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
@@ -23,9 +23,10 @@ use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
-use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
-use Snicco\Component\Psr7ErrorHandler\Log\RequestContext;
+use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\JsonExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer2;
@@ -37,17 +38,44 @@ use TypeError;
 use function dirname;
 use function file_get_contents;
 use function json_decode;
-use function json_encode;
 use function spl_object_hash;
 
+use const JSON_THROW_ON_ERROR;
+
+/**
+ * @psalm-suppress PossiblyUndefinedIntArrayOffset
+ */
 final class HttpErrorHandlerTest extends TestCase
 {
 
     private HttpErrorHandler $error_handler;
-    private RequestInterface $base_request;
+    private ServerRequestInterface $base_request;
     private ResponseFactoryInterface $response_factory;
+
+    /**
+     * @var array<positive-int,array{title:string, message:string}>
+     */
     private array $error_data;
+
     private SplHashIdentifier $identifier;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->response_factory = new Psr17Factory();
+
+        /** @psalm-suppress MixedAssignment */
+        $this->error_data = json_decode(
+            (string)file_get_contents(
+                dirname(__DIR__) . '/resources/en_US.error.json'
+            ),
+            true,
+            JSON_THROW_ON_ERROR
+        );
+        $this->identifier = new SplHashIdentifier();
+        $this->error_handler = $this->createErrorHandler();
+        $this->base_request = $this->response_factory->createServerRequest('GET', '/');
+    }
 
     /**
      * @test
@@ -74,9 +102,10 @@ final class HttpErrorHandlerTest extends TestCase
 
         $body = (string)$response->getBody();
 
-        $this->assertStringStartsWith('<h1>Oops! An Error Occurred</h1>', $body);
-        $this->assertStringNotContainsString('Secret message here', $body);
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringContainsString(spl_object_hash($e), $body);
+
+        $this->assertStringNotContainsString('Secret message here', $body);
     }
 
     /**
@@ -92,7 +121,11 @@ final class HttpErrorHandlerTest extends TestCase
 
         $body = (string)$response->getBody();
 
-        $this->assertStringStartsWith('<h1>Oops! An Error Occurred</h1>', $body);
+        $this->assertStringContainsString('<h1>404 - Not Found</h1>', $body);
+        $this->assertStringContainsString(
+            'The requested resource could not be found but may be available again in the future',
+            $body
+        );
         $this->assertStringNotContainsString('Secret message here', $body);
         $this->assertStringContainsString(spl_object_hash($e), $body);
     }
@@ -137,8 +170,8 @@ final class HttpErrorHandlerTest extends TestCase
 
         // default handler handles this.
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertStringStartsWith(
-            '<h1>Oops! An Error Occurred</h1>',
+        $this->assertStringContainsString(
+            '<h1>500 - Internal Server Error</h1>',
             (string)$response->getBody()
         );
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
@@ -198,12 +231,18 @@ final class HttpErrorHandlerTest extends TestCase
         );
 
         $body = (string)$response->getBody();
-        $body = json_decode($body, true);
+
+        /** @var array $response_data */
+        $response_data = json_decode($body, true, JSON_THROW_ON_ERROR);
+
+        $this->assertTrue(isset($response_data['title']));
+        $this->assertTrue(isset($response_data['details']));
+        $this->assertTrue(isset($response_data['identifier']));
 
         // json displayer matched because of the header
-        $this->assertSame($this->error_data[500]['title'], $body['title']);
-        $this->assertSame($this->error_data[500]['message'], $body['details']);
-        $this->assertSame($this->identifier->identify($e), $body['identifier']);
+        $this->assertSame($this->error_data[500]['title'], $response_data['title']);
+        $this->assertSame($this->error_data[500]['message'], $response_data['details']);
+        $this->assertSame($this->identifier->identify($e), $response_data['identifier']);
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
     }
 
@@ -256,9 +295,9 @@ final class HttpErrorHandlerTest extends TestCase
 
         $handler->handle($e, $this->base_request);
 
-        $this->assertTrue($logger->hasErrorRecords());
+        $this->assertTrue($logger->hasCriticalRecords());
         $this->assertTrue(
-            $logger->hasError(
+            $logger->hasCritical(
                 [
                     'message' => 'secret stuff',
                     'context' => [
@@ -273,34 +312,18 @@ final class HttpErrorHandlerTest extends TestCase
     /**
      * @test
      */
-    public function a_custom_fallback_display_can_be_provided(): void
-    {
-        $handler = $this->createErrorHandler([], [], null, new JsonFallbackExceptionDisplayer());
-
-        $e = new Exception('foobar');
-
-        $response = $handler->handle($e, $this->base_request);
-
-        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame('custom_fallback_displayer', json_decode((string)$response->getBody()));
-    }
-
-    /**
-     * @test
-     */
     public function an_exception_during_logging_will_be_logged(): void
     {
         $logger = new RequestAwareLogger(
             $test_logger = new TestLogger(),
             [],
-            new RequestContextWithException()
+            new RequestLogContextWithException()
         );
 
         $handler = new HttpErrorHandler(
             $this->response_factory,
             $logger,
-            new TransformableInformationProvider($this->error_data, $this->identifier),
-            new FallbackDisplayer(),
+            new InformationProviderWithTransformation($this->error_data, $this->identifier),
             new CanDisplay(),
         );
 
@@ -311,8 +334,8 @@ final class HttpErrorHandlerTest extends TestCase
         $this->assertTrue($test_logger->hasCriticalRecords());
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
-        $this->assertStringStartsWith(
-            '<h1>Oops! An Error Occurred</h1>',
+        $this->assertStringContainsString(
+            '<h1>500 - Internal Server Error</h1>',
             (string)$response->getBody()
         );
     }
@@ -329,9 +352,9 @@ final class HttpErrorHandlerTest extends TestCase
         $handler = new HttpErrorHandler(
             $this->response_factory,
             $logger,
-            new TransformableInformationProvider($this->error_data, $this->identifier),
-            new DisplayerWithException(),
+            new InformationProviderWithTransformation($this->error_data, $this->identifier),
             new CanDisplay(),
+            new DisplayerWithException()
         );
 
         $e = new Exception('secret stuff');
@@ -350,26 +373,14 @@ final class HttpErrorHandlerTest extends TestCase
         );
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->response_factory = new Psr17Factory();
-        $this->error_data = json_decode(
-            file_get_contents(
-                dirname(__DIR__) . '/resources/en_US.error.json'
-            ),
-            true
-        );
-        $this->identifier = new SplHashIdentifier();
-        $this->error_handler = $this->createErrorHandler();
-        $this->base_request = $this->response_factory->createServerRequest('GET', '/');
-    }
-
+    /**
+     * @param ExceptionDisplayer[] $displayers
+     * @param ExceptionTransformer[] $transformers
+     */
     private function createErrorHandler(
         array $displayers = [],
         array $transformers = [],
-        LoggerInterface $logger = null,
-        ExceptionDisplayer $fallback = null
+        LoggerInterface $logger = null
     ): HttpErrorHandler {
         $filters = new Delegating(
             new Verbosity(false),
@@ -379,7 +390,7 @@ final class HttpErrorHandlerTest extends TestCase
 
         $logger = new RequestAwareLogger($logger ?: new NullLogger(), []);
 
-        $information_provider = new TransformableInformationProvider(
+        $information_provider = new InformationProviderWithTransformation(
             $this->error_data,
             $this->identifier,
             ...$transformers
@@ -389,20 +400,19 @@ final class HttpErrorHandlerTest extends TestCase
             $this->response_factory,
             $logger,
             $information_provider,
-            $fallback ?: new FallbackDisplayer(),
             $filters,
-            $displayers
+            ...$displayers
         );
     }
 
 }
 
-class RequestContextWithException implements RequestContext
+class RequestLogContextWithException implements RequestLogContext
 {
 
     private int $count = 0;
 
-    public function add(array $context, RequestInterface $request): array
+    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
     {
         if ($this->count === 0) {
             $e = new TypeError('bad bad type error.');
@@ -410,31 +420,6 @@ class RequestContextWithException implements RequestContext
             throw $e;
         }
         return $context;
-    }
-
-}
-
-class JsonFallbackExceptionDisplayer implements ExceptionDisplayer
-{
-
-    public function display(ExceptionInformation $exception_information): string
-    {
-        return json_encode('custom_fallback_displayer');
-    }
-
-    public function supportedContentType(): string
-    {
-        return 'application/json';
-    }
-
-    public function isVerbose(): bool
-    {
-        return false;
-    }
-
-    public function canDisplay(ExceptionInformation $exception_information): bool
-    {
-        return true;
     }
 
 }

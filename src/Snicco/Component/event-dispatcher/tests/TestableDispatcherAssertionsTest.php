@@ -223,6 +223,8 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress InvalidScalarArgument
      */
     public function assertDispatched_fails_if_closure_does_not_return_boolean(): void
     {

@@ -8,11 +8,12 @@ namespace Snicco\Bundle\Testing\Tests;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Bundle\Testing\BootsKernel;
+use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\Kernel\Bootstrapper;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function is_dir;
@@ -20,7 +21,7 @@ use function is_file;
 
 final class BootsKernelTest extends TestCase
 {
-    use BootsKernel;
+    use BootsKernelForBundleTest;
 
     /**
      * @var array<class-string<Bootstrapper>>
@@ -132,6 +133,26 @@ final class BootsKernelTest extends TestCase
     /**
      * @test
      */
+    public function test_withExtraConfig(): void
+    {
+        $directories = Directories::fromDefaults(__DIR__ . '/fixtures/boots-kernel');
+
+        $kernel = $this->bootWithExtraConfig([
+            'app' => ['baz' => 'biz']
+        ], $directories);
+
+        $this->assertEquals(Environment::testing(), $kernel->env());
+
+        $this->assertSame([
+            'foo' => 'bar',
+            'bootstrappers' => [],
+            'baz' => 'biz',
+        ], $kernel->config()->get('app'));
+    }
+
+    /**
+     * @test
+     */
     public function test_bundles_are_automatically_merged_if_not_provided_explicitly(): void
     {
         $base_directory = $this->setUpDirectories(__DIR__ . '/fixtures/tmp');
@@ -210,7 +231,6 @@ final class BootsKernelTest extends TestCase
         }
     }
 
-
     /**
      * @test
      */
@@ -268,6 +288,21 @@ final class BootsKernelTest extends TestCase
         } catch (AssertionFailedError $e) {
             $this->assertStringContainsString('was bound', $e->getMessage());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function the_container_can_be_set(): void
+    {
+        $this->container = $this->container();
+        $this->container['foo'] = 'bar';
+
+        $base_directory = $this->setUpDirectories(__DIR__ . '/fixtures/tmp');
+
+        $kernel = $this->bootWithFixedConfig([], $base_directory);
+
+        $this->assertSame('bar', $kernel->container()->get('foo'));
     }
 
     protected function bootstrappers(): array

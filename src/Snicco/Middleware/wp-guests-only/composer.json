@@ -9,7 +9,7 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "sniccowp/http-runner": "dev-master",
+    "sniccowp/http-routing": "dev-master",
     "sniccowp/better-wp-api": "dev-master"
   },
   "require-dev": {

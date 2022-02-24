@@ -12,7 +12,7 @@ use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
-use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
 use Throwable;
 
@@ -24,7 +24,7 @@ final class HttpInformationProviderTest extends TestCase
      */
     public function http_exceptions_use_the_correct_title_and_status_code(): void
     {
-        $provider = new TransformableInformationProvider([
+        $provider = new InformationProviderWithTransformation([
             404 => [
                 'title' => 'Not Found',
                 'message' => 'The requested resource could not be found but may be available again in the future.',
@@ -43,7 +43,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertEquals(404, $information->statusCode());
         $this->assertEquals('foobar_exception', $information->identifier());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('Not Found', $information->title());
+        $this->assertSame('Not Found', $information->safeTitle());
         $this->assertSame(
             'The requested resource could not be found but may be available again in the future.',
             $information->safeDetails()
@@ -60,7 +60,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Data for the 500 status code must be provided.');
 
-        new TransformableInformationProvider([
+        new InformationProviderWithTransformation([
             404 => [
                 'title' => 'Not Found',
                 'message' => 'The requested resource could not be found but may be available again in the future.',
@@ -84,7 +84,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertEquals(401, $information->statusCode());
         $this->assertEquals('foobar_e', $information->identifier());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('Unauthorized', $information->title());
+        $this->assertSame('Unauthorized', $information->safeTitle());
         $this->assertSame(
             'You need to log-in first.',
             $information->safeDetails()
@@ -114,7 +114,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertEquals(500, $information->statusCode());
         $this->assertEquals('foo_id', $information->identifier());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('Internal Server Error', $information->title());
+        $this->assertSame('Internal Server Error', $information->safeTitle());
     }
 
     /**
@@ -134,7 +134,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame(403, $information->statusCode());
         $this->assertSame('foo', $information->identifier());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('Forbidden', $information->title());
+        $this->assertSame('Forbidden', $information->safeTitle());
         $this->assertSame('You cant do this.', $information->safeDetails());
     }
 
@@ -154,7 +154,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $this->assertSame(500, $information->statusCode());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('Foo title', $information->title());
+        $this->assertSame('Foo title', $information->safeTitle());
         $this->assertSame('Bar message', $information->safeDetails());
     }
 
@@ -174,7 +174,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame(403, $information->statusCode());
         $this->assertSame('foobar_id', $information->identifier());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('Foo title', $information->title());
+        $this->assertSame('Foo title', $information->safeTitle());
         $this->assertSame('Bar message', $information->safeDetails());
     }
 
@@ -193,23 +193,26 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame(500, $information->statusCode());
         $this->assertSame('foo_id', $information->identifier());
         $this->assertSame($e, $information->originalException());
-        $this->assertSame('transformed_user_facing_title', $information->title());
+        $this->assertSame('transformed_user_facing_title', $information->safeTitle());
         $this->assertSame('transformed_user_facing_message', $information->safeDetails());
     }
 
 
+    /**
+     * @param array<positive-int, array{message: string, title: string}> $data
+     */
     private function newProvider(
         array $data = [],
         ExceptionIdentifier $identifier = null,
         ExceptionTransformer ...$transformer
-    ): TransformableInformationProvider {
+    ): InformationProviderWithTransformation {
         if (!isset($data[500])) {
             $data[500] = [
                 'title' => 'Internal Server Error',
                 'message' => 'An error has occurred and this resource cannot be displayed.',
             ];
         }
-        return new TransformableInformationProvider(
+        return new InformationProviderWithTransformation(
             $data,
             $identifier ?: new SplHashIdentifier(),
             ...

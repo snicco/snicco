@@ -9,7 +9,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
-use Snicco\Component\Psr7ErrorHandler\Information\TransformableInformationProvider;
+use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 
 final class FallbackDisplayerTest extends TestCase
 {
@@ -19,7 +19,7 @@ final class FallbackDisplayerTest extends TestCase
      */
     public function test_can_always_display(): void
     {
-        $info = TransformableInformationProvider::withDefaultData(new SplHashIdentifier());
+        $info = InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier());
 
         $this->assertTrue((new FallbackDisplayer())->canDisplay($info->createFor(new Exception())));
     }

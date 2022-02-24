@@ -13,6 +13,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\BetterWPDB\\.*
 
+    - name: http_routing_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\HttpRouting\\.*
+
     - name: testing_bundle
       collectors:
         - type: className
@@ -38,3 +43,14 @@ parameters:
       - kernel
       - str_arr # test only
       - pimple # test only
+
+    http_routing_bundle:
+      - kernel
+      - better_wp_hooks_bundle
+      - http_routing
+      - psr7_error_handler
+      - str_arr
+      - event_dispatcher
+      - better_wp_hooks_bundle
+      - pimple # dev only
+      - testing_bundle # dev only

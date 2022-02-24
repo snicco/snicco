@@ -19,9 +19,6 @@ use function count;
 use function is_array;
 use function is_bool;
 
-/**
- * @api
- */
 final class TestableEventDispatcher implements EventDispatcher
 {
 
@@ -120,8 +117,8 @@ final class TestableEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param string|Closure $event_name
-     * @param null $condition
+     * @param string|Closure(mixed):bool $event_name
+     * @param null|Closure(mixed...):bool $condition
      *
      * @throws ReflectionException
      */
@@ -150,8 +147,8 @@ final class TestableEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param string|Closure $event_name
-     * @param Closure|null $condition
+     * @param string|Closure(mixed):bool $event_name
+     * @param null|Closure(mixed...):bool $condition
      *
      * @return void
      * @throws ReflectionException

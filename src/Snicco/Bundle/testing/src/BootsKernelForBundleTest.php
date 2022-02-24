@@ -13,7 +13,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Component\Kernel\Configuration\ConfigCache;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
@@ -29,11 +28,16 @@ use function rmdir;
 use function unlink;
 use function var_export;
 
-trait BootsKernel
+trait BootsKernelForBundleTest
 {
+
+    protected ?DIContainer $container = null;
 
     protected function container(): DIContainer
     {
+        if (isset($this->container)) {
+            return $this->container;
+        }
         return new PimpleContainerAdapter();
     }
 
@@ -152,20 +156,24 @@ trait BootsKernel
             $this->container(),
             $env ?: Environment::testing(),
             $dirs,
-            new class($config) implements ConfigCache {
+            new FixedConfigCache($config)
+        );
 
-                private array $config;
+        $kernel->boot();
 
-                public function __construct(array $config)
-                {
-                    $this->config = $config;
-                }
+        return $kernel;
+    }
 
-                public function get(string $key, callable $loader): array
-                {
-                    return $this->config;
-                }
-            }
+    /**
+     * @param array<string, array> $extra
+     */
+    protected function bootWithExtraConfig(array $extra, Directories $dirs, ?Environment $env = null): Kernel
+    {
+        $kernel = new Kernel(
+            $this->container(),
+            $env ?: Environment::testing(),
+            $dirs,
+            new ExtraConfigCache($extra)
         );
 
         $kernel->boot();

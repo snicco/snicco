@@ -15,7 +15,7 @@ use function strstr;
  *       best negotiated content type filter already set. @see
  *      {https://github.com/middlewares/negotiation/blob/master/src/ContentType.php#L156}
  */
-final class ContentType implements Filter
+final class ContentType implements DisplayerFilter
 {
 
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array

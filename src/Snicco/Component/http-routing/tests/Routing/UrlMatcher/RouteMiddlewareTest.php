@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use InvalidArgumentException;
-use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Exception\InvalidMiddleware;
 use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
@@ -14,6 +13,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BazMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\BooleanMiddleware;
+use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithBarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
@@ -817,7 +817,11 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     public function controller_middleware_is_after_route_middleware(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', ControllerWithBarMiddleware::class)
+            $configurator->get(
+                'r1',
+                '/foo',
+                ControllerWithBarMiddleware::class
+            )
                 ->middleware(FooMiddleware::class);
         });
 
@@ -827,16 +831,3 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
 }
 
-class ControllerWithBarMiddleware extends Controller
-{
-
-    public function __construct()
-    {
-        $this->addMiddleware(BarMiddleware::class);
-    }
-
-    public function __invoke()
-    {
-        return 'controller';
-    }
-}

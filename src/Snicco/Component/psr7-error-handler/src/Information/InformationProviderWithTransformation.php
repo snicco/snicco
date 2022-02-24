@@ -19,7 +19,7 @@ use function sprintf;
 
 use const JSON_THROW_ON_ERROR;
 
-final class TransformableInformationProvider implements InformationProvider
+final class InformationProviderWithTransformation implements ExceptionInformationProvider
 {
 
     private ExceptionIdentifier $identifier;
@@ -51,7 +51,7 @@ final class TransformableInformationProvider implements InformationProvider
         $this->identifier = $identifier;
     }
 
-    public static function withDefaultData(ExceptionIdentifier $identifier, ExceptionTransformer ...$transformer): self
+    public static function fromDefaultData(ExceptionIdentifier $identifier, ExceptionTransformer ...$transformer): self
     {
         $data = file_get_contents($f = dirname(__DIR__, 2) . '/resources/en_US.error.json');
 
@@ -127,10 +127,10 @@ final class TransformableInformationProvider implements InformationProvider
 
     /**
      * @return array{0:string, 1:string}
-     * @psalm-suppress PossiblyUndefinedIntArrayOffset Always defined.
      */
     private function getData(int $status_code, Throwable $transformed, Throwable $original): array
     {
+        /** @psalm-suppress PossiblyUndefinedIntArrayOffset */
         $info = $this->default_messages[$status_code] ?? $this->default_messages[500];
         $title = $info['title'];
         $safe_message = $info['message'];

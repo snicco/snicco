@@ -8,7 +8,7 @@ use Psr\Http\Message\RequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
-interface Filter
+interface DisplayerFilter
 {
 
     /**

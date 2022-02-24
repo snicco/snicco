@@ -20,7 +20,7 @@ final class PlainTextExceptionDisplayer implements ExceptionDisplayer
     public function display(ExceptionInformation $exception_information): string
     {
         return 'plain_text1:title:'
-            . $exception_information->title()
+            . $exception_information->safeTitle()
             . ':id:'
             . $exception_information->identifier()
             . ':details:'

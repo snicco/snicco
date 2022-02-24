@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
@@ -131,6 +132,39 @@ class RouteCachingTest extends HttpRunnerTestCase
 
         $this->assertSame('/foo', $routing->urlGenerator()->toRoute('foo'));
         $this->assertSame('/bar', $routing->urlGenerator()->toRoute('bar'));
+    }
+
+    /**
+     * @test
+     */
+    public function the_admin_menu_works_with_a_cached_router(): void
+    {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+            $configurator->page('foo', 'admin.php/foo', RoutingTestController::class);
+            $configurator->page('bar', 'admin.php/bar', RoutingTestController::class);
+            $configurator->page('baz', 'admin.php/baz', RoutingTestController::class);
+        }, new FileRouteCache($this->route_cache_file));
+
+        $admin_menu = $routing->adminMenu();
+        $this->assertCount(3, $admin_menu->items(), 'Admin menu wrong pre cache');
+
+        // Trigger reload
+        $routing->routes();
+        $routing = $this->webRouting(function () {
+        }, new FileRouteCache($this->route_cache_file));
+
+        $admin_menu = $routing->adminMenu();
+        $this->assertCount(3, $admin_menu->items(), 'Admin menu wrong post cache');
+
+        $items = $admin_menu->items();
+
+        $this->assertTrue(isset($items[0]));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $this->assertSame('/wp-admin/admin.php/foo', (string)$items[0]->slug());
+        $this->assertSame('/wp-admin/admin.php/bar', (string)$items[1]->slug());
+        $this->assertSame('/wp-admin/admin.php/baz', (string)$items[2]->slug());
     }
 
 }

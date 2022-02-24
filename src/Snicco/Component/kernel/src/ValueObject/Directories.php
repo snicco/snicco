@@ -10,6 +10,8 @@ use Webmozart\Assert\Assert;
  * This class represents a simple value object that holds references to all relevant
  * directories the app needs. All directories are validated to be readable and don't end with a
  * trailing slash.
+ *
+ * @psalm-immutable
  */
 final class Directories
 {

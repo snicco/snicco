@@ -45,7 +45,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $parameters->set(Option::DATA_TO_REMOVE, [
         ComposerJsonSection::REQUIRE => [
-            'sniccowp/http-runner' => '*',
+            'sniccowp/http-routing' => '*',
             'sniccowp/parameter-bag' => '*',
             'sniccowp/psr7-error-handler' => '*',
         ],

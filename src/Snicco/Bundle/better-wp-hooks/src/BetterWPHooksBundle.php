@@ -5,16 +5,20 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\BetterWPHooks;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
+
+use function class_exists;
 
 final class BetterWPHooksBundle implements Bundle
 {
@@ -37,13 +41,24 @@ final class BetterWPHooksBundle implements Bundle
 
         $hook_api = new WPHookAPI();
 
-        $container->singleton(EventDispatcher::class, function () use ($container, $hook_api) {
+        $container->singleton(EventDispatcher::class, function () use ($kernel, $container, $hook_api) {
             $listener_factory = new PsrListenerFactory($container);
-            return new WPEventDispatcher(
+            $dispatcher = new WPEventDispatcher(
                 new BaseEventDispatcher($listener_factory),
                 $hook_api
             );
+            if ($kernel->env()->isTesting() && class_exists(TestableEventDispatcher::class)) {
+                $dispatcher = new TestableEventDispatcher($dispatcher);
+            }
+            return $dispatcher;
         });
+        $container->singleton(EventDispatcherInterface::class, fn() => $container->make(EventDispatcher::class));
+
+        if ($kernel->env()->isTesting()) {
+            $container->singleton(TestableEventDispatcher::class, function () use ($container) {
+                return $container->make(EventDispatcher::class);
+            });
+        }
 
         $container->singleton(EventMapper::class, fn() => new EventMapper(
             $container->make(EventDispatcher::class),
