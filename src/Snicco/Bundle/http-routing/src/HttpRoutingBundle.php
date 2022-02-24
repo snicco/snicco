@@ -102,16 +102,17 @@ final class HttpRoutingBundle implements Bundle
         }
 
         $container = $kernel->container();
+
         $this->bindHttpRunner($kernel);
+        $this->bindAdminMenu($container);
+        $this->bindLogger($kernel);
         $this->bindPsr17Discovery($container);
         $this->bindResponseFactory($container);
         $this->bindServerRequestCreator($container);
         $this->bindRouter($kernel);
         $this->bindUrlGenerator($container);
         $this->bindUrlMatcher($container);
-        $this->bindAdminMenu($container);
         $this->bindRoutes($container);
-        $this->bindLogger($kernel);
         $this->bindErrorHandler($container, $kernel);
         $this->bindMiddlewarePipeline($container);
         $this->bindRoutingMiddleware($container);
@@ -185,7 +186,12 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindAdminMenu(DIContainer $container): void
     {
-        $container->singleton(AdminMenu::class, fn() => $container->make(Router::class)->adminMenu());
+        $container->singleton(AdminMenu::class, function () use ($container) {
+            return $container->make(Router::class)->adminMenu();
+        });
+        $container->singleton(WPAdminMenu::class, function () use ($container) {
+            return new WPAdminMenu($container->make(AdminMenu::class));
+        });
     }
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
@@ -671,6 +677,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindHttpRunner(Kernel $kernel): void
     {
+        // The HttpKernel needs to be resolvable on it's on so that we can use it in functional tests.
         $kernel->container()->singleton(HttpKernel::class, function () use ($kernel) {
             /** @var class-string<MiddlewareInterface>[] $kernel_middleware */
             $kernel_middleware = $kernel->config()->getListOfStrings(

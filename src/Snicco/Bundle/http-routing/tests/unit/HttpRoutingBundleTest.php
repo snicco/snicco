@@ -444,7 +444,7 @@ final class HttpRoutingBundleTest extends TestCase
             });
 
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertStringContainsString('<h1>Internal Server Error</h1>', (string)$response->getBody());
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', (string)$response->getBody());
     }
 
     /**

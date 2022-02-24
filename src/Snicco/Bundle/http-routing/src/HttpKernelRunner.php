@@ -185,6 +185,5 @@ final class HttpKernelRunner
     {
         return $this->api_prefix && Str::startsWith($request->getUri()->getPath(), $this->api_prefix);
     }
-
-
+    
 }
