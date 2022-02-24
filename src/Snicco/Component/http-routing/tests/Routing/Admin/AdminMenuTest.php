@@ -511,6 +511,8 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress RedundantCondition
      */
     public function test_is_iterator(): void
     {
@@ -521,7 +523,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         });
 
         $count = 0;
-        foreach ($routing->adminMenu() as $key => $item) {
+        foreach ($routing->adminMenu()->items() as $key => $item) {
             $this->assertIsInt($key);
             $this->assertInstanceOf(AdminMenuItem::class, $item);
             $count++;

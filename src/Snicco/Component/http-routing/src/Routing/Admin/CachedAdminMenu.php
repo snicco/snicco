@@ -5,9 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Admin;
 
-use ArrayIterator;
 use RuntimeException;
-use Traversable;
 
 use function count;
 use function unserialize;
@@ -37,11 +35,6 @@ final class CachedAdminMenu implements AdminMenu
     public function items(): array
     {
         return $this->getItems();
-    }
-
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator($this->getItems());
     }
 
     /**
