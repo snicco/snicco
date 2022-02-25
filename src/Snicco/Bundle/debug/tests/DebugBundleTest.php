@@ -186,8 +186,9 @@ final class DebugBundleTest extends TestCase
         /** @var array $decoded */
         $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
 
-        $this->assertTrue(isset($decoded['error']));
-        $this->assertIsArray($decoded['error']);
+        $this->assertTrue(isset($decoded['errors']));
+        $this->assertTrue(isset($decoded['errors'][0]));
+        $this->assertIsArray($decoded['errors'][0]);
 
         // Not using the default handler
         $this->assertStringContainsString('whoops', $body);
