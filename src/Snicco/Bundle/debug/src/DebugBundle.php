@@ -111,6 +111,7 @@ final class DebugBundle implements Bundle
 
             $handler = new JsonResponseHandler();
             $handler->addTraceToOutput(true);
+            $handler->setJsonApi(true);
 
             $whoops->pushHandler($handler);
             return new WhoopsJsonDisplayer($whoops);

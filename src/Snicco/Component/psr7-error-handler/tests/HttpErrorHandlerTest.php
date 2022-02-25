@@ -111,6 +111,39 @@ final class HttpErrorHandlerTest extends TestCase
     /**
      * @test
      */
+    public function the_fallback_json_displayer_will_be_used_if_the_accept_header_matches(): void
+    {
+        $e = new Exception('Secret message here.');
+
+        $response = $this->error_handler->handle(
+            $e,
+            $this->base_request->withAddedHeader('Accept', 'application/json; text/html;')
+        );
+
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+
+        $body = (string)$response->getBody();
+        $this->assertStringNotContainsString('Secret message here', $body);
+
+        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
+        $this->assertIsArray($decoded);
+        $this->assertTrue(isset($decoded['errors']));
+        $this->assertTrue(isset($decoded['errors'][0]));
+        $this->assertIsArray($error = $decoded['errors'][0]);
+
+        $this->assertTrue(isset($error['identifier']));
+        $this->assertTrue(isset($error['title']));
+        $this->assertTrue(isset($error['details']));
+
+        $this->assertSame(spl_object_hash($e), $error['identifier']);
+        $this->assertSame('Internal Server Error', $error['title']);
+        $this->assertSame('An error has occurred and this resource cannot be displayed.', $error['details']);
+    }
+
+    /**
+     * @test
+     */
     public function the_fallback_response_has_the_correct_status_code_if_no_displayer_matches(): void
     {
         $e = new HttpException(404, 'Secret message here.');

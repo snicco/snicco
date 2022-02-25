@@ -13,7 +13,7 @@ use function str_replace;
 
 use const ENT_QUOTES;
 
-final class FallbackDisplayer implements ExceptionDisplayer
+final class FallbackHtmlDisplayer implements ExceptionDisplayer
 {
 
     public function display(ExceptionInformation $exception_information): string

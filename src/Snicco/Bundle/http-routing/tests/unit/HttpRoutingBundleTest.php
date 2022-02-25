@@ -15,6 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
+use Snicco\Bundle\HttpRouting\Middleware\ErrorsToExceptions;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
@@ -275,7 +276,7 @@ final class HttpRoutingBundleTest extends TestCase
         $bundle->configure($config, $kernel);
 
         $this->assertSame(
-            [RoutingMiddleware::class, RouteRunner::class],
+            [ErrorsToExceptions::class, RoutingMiddleware::class, RouteRunner::class],
             $config->getArray('middleware.kernel_middleware')
         );
     }
