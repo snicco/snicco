@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\HttpRouting;
+namespace Snicco\Bundle\HttpRouting\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -18,7 +18,7 @@ use function ob_start;
 
 use const EXTR_SKIP;
 
-final class SimpleTemplatingMiddleware extends Middleware
+final class SimpleTemplating extends Middleware
 {
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
