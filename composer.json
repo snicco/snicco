@@ -19,7 +19,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
-        "filp/whoops": "^2.14",
+        "filp/whoops": "^2.14.5",
         "illuminate/collections": "^8.81",
         "illuminate/container": "^8.81",
         "illuminate/contracts": "^8.81",
