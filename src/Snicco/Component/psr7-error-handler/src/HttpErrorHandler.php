@@ -9,7 +9,9 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
-use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackDisplayer;
+use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackHtmlDisplayer;
+use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackJsonDisplayer;
+use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\DisplayerFilter;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformationProvider;
@@ -95,7 +97,24 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
             $this->filter->filter($this->displayers, $request, $info)
         );
 
-        return $displayers[0] ?? new FallbackDisplayer();
+        if (isset($displayers[0])) {
+            return $displayers[0];
+        }
+        $content_type_filter = new ContentType();
+
+        $displayers = array_values(
+            $content_type_filter->filter(
+                [$html = new FallbackHtmlDisplayer(), new FallbackJsonDisplayer()],
+                $request,
+                $info
+            )
+        );
+
+        if (isset($displayers[0])) {
+            return $displayers[0];
+        }
+
+        return $html;
     }
 
     private function handleDisplayError(Throwable $display_error, RequestInterface $request): ResponseInterface
