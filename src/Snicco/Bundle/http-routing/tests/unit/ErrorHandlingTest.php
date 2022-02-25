@@ -13,9 +13,11 @@ use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 use Psr\Log\Test\TestLogger;
 use RuntimeException;
+use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
+use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
@@ -30,6 +32,12 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use Throwable;
 use TypeError;
+
+use function restore_error_handler;
+use function set_error_handler;
+use function trigger_error;
+
+use const E_USER_NOTICE;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
@@ -100,6 +108,8 @@ final class ErrorHandlingTest extends TestCase
         $logger = $kernel->container()->make(TestLogger::class);
 
         $this->assertTrue($logger->hasCriticalRecords());
+
+        $this->assertSame($logger, $kernel->container()->make(LoggerInterface::class));
     }
 
     /**
@@ -340,6 +350,141 @@ final class ErrorHandlingTest extends TestCase
         $this->assertStringContainsString('foo_id', $body);
         $this->assertStringContainsString('foo_title', $body);
         $this->assertStringContainsString('foo_details', $body);
+    }
+
+    /**
+     * @test
+     */
+    public function errors_inside_the_routing_pipeline_are_converted_to_exceptions(): void
+    {
+        $handled_by_global_handler = false;
+        set_error_handler(function () use (&$handled_by_global_handler): bool {
+            $handled_by_global_handler = true;
+            return false;
+        });
+
+        try {
+            $kernel = new Kernel(
+                $this->container(),
+                Environment::testing(),
+                Directories::fromDefaults(__DIR__ . '/fixtures')
+            );
+
+            $kernel->boot();
+
+            /**
+             * @var HttpKernel $http_kernel
+             */
+            $http_kernel = $kernel->container()->make(HttpKernel::class);
+
+            $request = new ServerRequest('GET', '/trigger-notice');
+
+            $response = $http_kernel->handle(Request::fromPsr($request));
+
+            $body = (string)$response->getBody();
+
+            $this->assertSame(500, $response->getStatusCode());
+            $this->assertStringNotContainsString(RoutingBundleTestController::class, $body);
+            $this->assertFalse(
+                $handled_by_global_handler,
+                'the error was handled by the global exception handler, not the kernel.'
+            );
+
+            /**
+             * @var TestLogger $logger
+             */
+            $logger = $kernel->container()->make(TestLogger::class);
+            $this->assertTrue(
+                $logger->hasCritical([
+                    'message' => 'Undefined offset: 1'
+                ])
+            );
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function the_error_handler_is_only_active_inside_the_routing_pipeline_and_restored_after_each_run(): void
+    {
+        $handled_by_global_handler = false;
+        set_error_handler(function () use (&$handled_by_global_handler): bool {
+            $handled_by_global_handler = true;
+            return true;
+        });
+
+        try {
+            $kernel = new Kernel(
+                $this->container(),
+                Environment::testing(),
+                Directories::fromDefaults(__DIR__ . '/fixtures')
+            );
+
+            $kernel->boot();
+
+            /**
+             * @var HttpKernel $http_kernel
+             */
+            $http_kernel = $kernel->container()->make(HttpKernel::class);
+
+            $request = new ServerRequest('GET', '/trigger-notice');
+
+            $response = $http_kernel->handle(Request::fromPsr($request));
+
+            $this->assertSame(500, $response->getStatusCode());
+            $this->assertFalse(
+                $handled_by_global_handler,
+                'the error was handled by the global exception handler, not the kernel.'
+            );
+
+            trigger_error('foo', E_USER_NOTICE);
+
+            /**
+             * @psalm-suppress DocblockTypeContradiction
+             */
+            $this->assertTrue(
+                $handled_by_global_handler,
+                'the error was handled by the global exception handler, not the kernel.'
+            );
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+
+    /**
+     * @test
+     */
+    public function deprecations_are_not_converted_to_exceptions(): void
+    {
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            Directories::fromDefaults(__DIR__ . '/fixtures')
+        );
+
+        $kernel->boot();
+
+        /**
+         * @var HttpKernel $http_kernel
+         */
+        $http_kernel = $kernel->container()->make(HttpKernel::class);
+
+        $request = new ServerRequest('GET', '/trigger-deprecation');
+
+        $response = $http_kernel->handle(Request::fromPsr($request));
+
+        $this->assertSame(200, $response->getStatusCode());
+
+        /**
+         * @var TestLogger $test_logger
+         */
+        $test_logger = $kernel->container()->make(TestLogger::class);
+        $this->assertTrue(
+            $test_logger->hasInfoThatContains('PHP Deprecated')
+        );
     }
 
     protected function bundles(): array

@@ -10,4 +10,10 @@ return function (WebRoutingConfigurator $router) {
     $router->get('delegate', '/delegate');
     $router->view('/view', dirname(__DIR__) . '/templates/greeting.php', ['greet' => 'Calvin']);
     $router->redirect('/foo', '/bar');
+    $router->get('trigger-notice', '/trigger-notice', [RoutingBundleTestController::class, 'triggerNotice']);
+    $router->get(
+        'trigger-deprecation',
+        '/trigger-deprecation',
+        [RoutingBundleTestController::class, 'triggerDeprecation']
+    );
 };

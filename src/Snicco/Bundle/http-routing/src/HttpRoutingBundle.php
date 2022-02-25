@@ -17,6 +17,7 @@ use Psr\Log\Test\TestLogger;
 use RuntimeException;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
+use Snicco\Bundle\HttpRouting\Middleware\ErrorsToExceptions;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
@@ -117,6 +118,7 @@ final class HttpRoutingBundle implements Bundle
         $this->bindMiddlewarePipeline($container);
         $this->bindRoutingMiddleware($container);
         $this->bindRouteRunnerMiddleware($container, $kernel);
+        $this->bindErrorHandlingMiddleware($container);
         $this->bindResponsePostProcessor($kernel);
     }
 
@@ -349,6 +351,10 @@ final class HttpRoutingBundle implements Bundle
     {
         if ($kernel->env()->isTesting()) {
             $kernel->container()->singleton(TestLogger::class, fn() => new TestLogger());
+            $kernel->container()->singleton(
+                LoggerInterface::class,
+                fn() => $kernel->container()->make(TestLogger::class)
+            );
             return;
         }
 
@@ -459,10 +465,14 @@ final class HttpRoutingBundle implements Bundle
         $config->extend(MiddlewareOption::key(MiddlewareOption::ALIASES), []);
         $config->extend(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST), []);
         $config->extend(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN), []);
-        $config->extend(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE), [
-            RoutingMiddleware::class,
-            RouteRunner::class
-        ]);
+
+        if (!$config->has($key = MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE))) {
+            $config->set($key, [
+                ErrorsToExceptions::class,
+                RoutingMiddleware::class,
+                RouteRunner::class
+            ]);
+        }
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
             if (!is_string($key)) {
@@ -729,5 +739,14 @@ final class HttpRoutingBundle implements Bundle
         }
 
         return $kernel->container()[ResponseEmitter::class] ?? new LaminasEmitterStack();
+    }
+
+    private function bindErrorHandlingMiddleware(DIContainer $container): void
+    {
+        $container->singleton(ErrorsToExceptions::class, function () use ($container) {
+            return new ErrorsToExceptions(
+                $container->make(LoggerInterface::class)
+            );
+        });
     }
 }
