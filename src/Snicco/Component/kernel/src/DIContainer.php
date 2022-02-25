@@ -42,8 +42,10 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * Register a binding with the container.
      * This will not be a singleton but a new object everytime it gets resolved.
      *
-     * @param string $id
-     * @param Closure $service
+     * @template T
+     *
+     * @param string|class-string<T> $id
+     * @param Closure():T $service
      *
      * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
@@ -51,9 +53,11 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
     /**
      * @template T
+     *
      * @param string|class-string<T> $offset
-     * @return T|mixed
+     *
      * @psalm-return ($offset is class-string ? T : mixed)
+     * @return T|mixed
      *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
@@ -65,11 +69,15 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
     }
 
     /**
-     * @psalm-suppress MixedArgument
+     * @param mixed $offset
+     * @param Closure():object|object|scalar $value
      */
     final public function offsetSet($offset, $value): void
     {
         if ($value instanceof Closure) {
+            /**
+             * @var Closure():object $value
+             */
             $this->singleton((string)$offset, $value);
             return;
         }
@@ -84,18 +92,21 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
     /**
      * @template T
+     *
      * @param string|class-string<T> $id
-     * @return T|mixed
+     *
      * @psalm-return ($id is class-string ? T : mixed)
+     * @return T|mixed
      *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      *
-     * @psalm-suppress MixedReturnStatement
-     * @psalm-suppress MixedAssignment
      */
     final public function make(string $id)
     {
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         $res = $this->get($id);
 
         if (class_exists($id) || interface_exists($id)) {
@@ -106,6 +117,9 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
             return $res;
         }
 
+        /**
+         * @psalm-suppress MixedReturnStatement
+         */
         return $res;
     }
 
@@ -113,8 +127,10 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * Register a lazy service in the container. Once the service is resolved the stored closure
      * MUST be run and return the service defined in the closure. NOT the closure itself.
      *
-     * @param string $id
-     * @param Closure $service
+     * @template T
+     *
+     * @param string|class-string<T> $id
+     * @param Closure():T $service
      *
      * @throws FrozenService When trying to overwrite an already resolved singleton.
      */

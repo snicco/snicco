@@ -29,6 +29,8 @@ final class DirectoriesTest extends TestCase
         $dirs = Directories::fromDefaults($this->valid_base_dir);
 
         $this->assertInstanceOf(Directories::class, $dirs);
+
+        $this->assertSame($this->valid_base_dir, $dirs->baseDir());
     }
 
     /**
