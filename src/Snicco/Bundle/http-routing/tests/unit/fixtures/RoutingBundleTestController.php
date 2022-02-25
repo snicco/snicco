@@ -8,6 +8,7 @@ namespace Snicco\Bundle\HttpRouting\Tests\unit\fixtures;
 use function trigger_error;
 
 use const E_USER_DEPRECATED;
+use const E_USER_NOTICE;
 
 final class RoutingBundleTestController
 {
@@ -17,16 +18,9 @@ final class RoutingBundleTestController
         return self::class;
     }
 
-    /**
-     * @psalm-suppress UnusedVariable
-     * @psalm-suppress EmptyArrayAccess
-     * @psalm-suppress MixedAssignment
-     */
     public function triggerNotice(): string
     {
-        $arr = [];
-        $foo = $arr[1];
-
+        trigger_error(self::class, E_USER_NOTICE);
         return self::class;
     }
 
