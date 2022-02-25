@@ -6,6 +6,8 @@ namespace Snicco\Component\Kernel\ValueObject;
 
 use Webmozart\Assert\Assert;
 
+use function sprintf;
+
 /**
  * This class represents a simple value object that holds references to all relevant
  * directories the app needs. All directories are validated to be readable and don't end with a
@@ -41,11 +43,13 @@ final class Directories
             $cache_dir,
             sprintf('$cache_dir [%s] is not readable.', $cache_dir)
         );
+        Assert::writable($cache_dir, sprintf('$cache_dir [%s] is not writable.', $cache_dir));
 
         Assert::readable(
             $log_dir,
             sprintf('$log_dir [%s] is not readable.', $log_dir)
         );
+        Assert::writable($cache_dir, sprintf('$log_dir [%s] is not writable.', $cache_dir));
 
         $this->config_dir = rtrim($config_dir, DIRECTORY_SEPARATOR);
         $this->cache_dir = rtrim($cache_dir, DIRECTORY_SEPARATOR);
