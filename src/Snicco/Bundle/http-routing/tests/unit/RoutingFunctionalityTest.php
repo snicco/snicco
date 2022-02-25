@@ -9,7 +9,7 @@ use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Bundle\HttpRouting\SimpleTemplatingMiddleware;
+use Snicco\Bundle\HttpRouting\Middleware\SimpleTemplating;
 use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
@@ -199,7 +199,7 @@ final class RoutingFunctionalityTest extends TestCase
         $response = $pipeline
             ->send(Request::fromPsr($request))
             ->through([
-                SimpleTemplatingMiddleware::class,
+                SimpleTemplating::class,
                 RoutingMiddleware::class,
                 RouteRunner::class
             ])->then(function () {
@@ -232,7 +232,7 @@ final class RoutingFunctionalityTest extends TestCase
         $response = $pipeline
             ->send(Request::fromPsr($request))
             ->through([
-                SimpleTemplatingMiddleware::class,
+                SimpleTemplating::class,
                 RoutingMiddleware::class,
                 RouteRunner::class
             ])->then(function () {
