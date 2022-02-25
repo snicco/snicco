@@ -9,6 +9,7 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
@@ -224,5 +225,89 @@ final class KernelTest extends TestCase
 
         unset($container['foo']);
     }
+
+    /**
+     * @test
+     */
+    public function after_register_callbacks_can_be_added(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()->primitive('foo', 'bar');
+        });
+
+        $this->assertFalse($kernel->container()->has('foo'));
+
+        $kernel->boot();
+
+        $this->assertSame('bar', $kernel->container()->get('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function after_configuration_callbacks_can_be_added(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->afterConfiguration(function (WritableConfig $config, Kernel $kernel) {
+            $config->set('foo', $kernel->env()->asString());
+        });
+
+        $kernel->boot();
+
+        $this->assertSame('testing', $kernel->config()->get('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_after_register_callback_is_added_after_kernel_is_booted(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->boot();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('register callbacks can not be added after the kernel was booted.');
+
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()->primitive('foo', 'bar');
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_after_configuration_callback_is_added_after_kernel_is_booted(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->boot();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('configuration callbacks can not be added after the kernel was booted.');
+
+        $kernel->afterConfiguration(function () {
+        });
+    }
+
 
 }
