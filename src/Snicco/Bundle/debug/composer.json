@@ -11,7 +11,7 @@
     "sniccowp/kernel": "dev-master",
     "sniccowp/http-routing-bundle": "dev-master",
     "sniccowp/psr7-error-handler": "dev-master",
-    "filp/whoops": "^2.14"
+    "filp/whoops": "^2.14.5"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
