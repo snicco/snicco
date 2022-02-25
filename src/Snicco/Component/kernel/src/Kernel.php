@@ -12,6 +12,7 @@ use RuntimeException;
 use Snicco\Component\Kernel\Configuration\ConfigCache;
 use Snicco\Component\Kernel\Configuration\ConfigLoader;
 use Snicco\Component\Kernel\Configuration\NullCache;
+use Snicco\Component\Kernel\Configuration\PHPFileCache;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\ValueObject\Directories;
@@ -22,17 +23,17 @@ use function get_class;
 use function implode;
 use function sprintf;
 
-/**
- * @psalm-suppress PropertyNotSetInConstructor
- */
+
 final class Kernel
 {
 
     private DIContainer $container;
     private Environment $env;
     private Directories $dirs;
-    private ReadOnlyConfig $read_only_config;
     private ConfigCache $config_cache;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    private ReadOnlyConfig $read_only_config;
 
     private bool $booted = false;
 
@@ -48,16 +49,26 @@ final class Kernel
 
     private bool $loaded_from_cache = true;
 
+    /**
+     * @var array<callable(Kernel):void>
+     */
+    private array $after_register_callbacks = [];
+
+    /**
+     * @var array<callable(WritableConfig,Kernel):void>
+     */
+    private array $after_configuration_callbacks = [];
+
     public function __construct(
         DIContainer $container,
         Environment $env,
         Directories $dirs,
-        ConfigCache $config_cache = null
+        ?ConfigCache $config_cache = null
     ) {
         $this->container = $container;
         $this->env = $env;
         $this->dirs = $dirs;
-        $this->config_cache = $config_cache ?: new NullCache();
+        $this->config_cache = $config_cache ?: $this->determineCache($this->env);
         $this->container[ContainerInterface::class] = $this->container;
     }
 
@@ -119,6 +130,33 @@ final class Kernel
         return isset($this->bundles[$alias]);
     }
 
+    /**
+     * Adds a callback that will be run after all bundles and bootstrappers have been registered.
+     *
+     * @param callable(Kernel):void $callback
+     */
+    public function afterRegister(callable $callback): void
+    {
+        if ($this->booted) {
+            throw new LogicException('register callbacks can not be added after the kernel was booted.');
+        }
+        $this->after_register_callbacks[] = $callback;
+    }
+
+    /**
+     * Adds a callback that will be run after all configuration calls have been loaded from disk.
+     * Callbacks will NOT be run if the configuration is cached.
+     *
+     * @param callable(WritableConfig, Kernel):void $callback
+     */
+    public function afterConfiguration(callable $callback): void
+    {
+        if ($this->booted) {
+            throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
+        }
+        $this->after_configuration_callbacks[] = $callback;
+    }
+
     private function loadAllConfigFilesFromDisk(): array
     {
         $config_dir = $this->dirs->configDir();
@@ -153,6 +191,10 @@ final class Kernel
 
         $this->loaded_from_cache = false;
 
+        foreach ($this->after_configuration_callbacks as $callback) {
+            $callback($writable_config, $this);
+        }
+
         return $writable_config->toArray();
     }
 
@@ -163,6 +205,10 @@ final class Kernel
         }
         foreach ($this->bootstrappers as $bootstrapper) {
             $bootstrapper->register($this);
+        }
+
+        foreach ($this->after_register_callbacks as $callback) {
+            $callback($this);
         }
     }
 
@@ -244,6 +290,14 @@ final class Kernel
         foreach ($this->bootstrappersInCurrentEnv($bootstrappers) as $bootstrapper) {
             $this->addBootstrapper($bootstrapper);
         }
+    }
+
+    private function determineCache(Environment $environment): ConfigCache
+    {
+        if ($environment->isProduction() || $environment->isStaging()) {
+            return new PHPFileCache();
+        }
+        return new NullCache();
     }
 
 }
