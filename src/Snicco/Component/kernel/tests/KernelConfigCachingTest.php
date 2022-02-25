@@ -6,7 +6,9 @@ namespace Snicco\Component\Kernel\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Snicco\Component\Kernel\Configuration\ConfigCache;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
@@ -45,7 +47,7 @@ final class KernelConfigCachingTest extends TestCase
      */
     public function the_configuration_will_be_written_to_the_cache_if_its_not_yet_created(): void
     {
-        $app = new Kernel(
+        $kernel = new Kernel(
             $this->createContainer(),
             Environment::prod(),
             $dir = Directories::fromDefaults($this->fixtures_dir),
@@ -56,12 +58,12 @@ final class KernelConfigCachingTest extends TestCase
 
         $this->assertFalse(is_file($expected_path));
 
-        $app->boot();
+        $kernel->boot();
 
         $this->assertTrue(is_file($expected_path));
 
         $saved_config = require $expected_path;
-        $this->assertSame($app->config()->toArray(), $saved_config);
+        $this->assertSame($kernel->config()->toArray(), $saved_config);
     }
 
     /**
@@ -81,6 +83,93 @@ final class KernelConfigCachingTest extends TestCase
         );
 
         $app->boot();
+    }
+
+    /**
+     * @test
+     */
+    public function not_passing_a_cache_instance_will_default_to_file_cache_in_production(): void
+    {
+        $app = new Kernel(
+            $this->createContainer(),
+            Environment::prod(),
+            $dir = Directories::fromDefaults($this->fixtures_dir),
+        );
+
+        $expected_path = $dir->cacheDir() . '/' . 'prod.config.php';
+
+        $this->assertFalse(is_file($expected_path));
+
+        $app->boot();
+
+        $this->assertTrue(is_file($expected_path), 'configuration file not written.');
+
+        $saved_config = require $expected_path;
+        $this->assertSame($app->config()->toArray(), $saved_config);
+    }
+
+    /**
+     * @test
+     */
+    public function not_passing_a_cache_instance_will_default_to_null_cache_in_non_production(): void
+    {
+        $app = new Kernel(
+            $this->createContainer(),
+            Environment::dev(),
+            $dir = Directories::fromDefaults($this->fixtures_dir),
+        );
+
+        $expected_path = $dir->cacheDir() . '/' . 'dev.config.php';
+
+        $this->assertFalse(is_file($expected_path));
+
+        $app->boot();
+
+        $this->assertFalse(is_file($expected_path), 'configuration cache was created in dev env.');
+    }
+
+    /**
+     * @test
+     */
+    public function afterRegister_callbacks_are_run_if_the_config_is_cached(): void
+    {
+        $get_kernel = function (): Kernel {
+            static $run = false;
+            $kernel = new Kernel(
+                $this->createContainer(),
+                Environment::prod(),
+                Directories::fromDefaults($this->fixtures_dir),
+                new TestConfigCache()
+            );
+            $kernel->afterConfiguration(function (WritableConfig $config) use (&$run) {
+                if ($run === true) {
+                    throw new RuntimeException('after configuration callback run for cached kernel');
+                } else {
+                    $run = true;
+                }
+                $config->set('foo_config', 'bar');
+            });
+            $kernel->afterRegister(function (Kernel $kernel) {
+                $kernel->container()->primitive('foo_container', 'bar');
+            });
+            return $kernel;
+        };
+
+
+        $expected_path = Directories::fromDefaults($this->fixtures_dir)->cacheDir() . '/' . 'prod.config.php';
+        $this->assertFalse(is_file($expected_path));
+
+        $kernel = $get_kernel();
+        $kernel->boot();
+
+        $this->assertTrue(is_file($expected_path));
+
+        $cached_kernel = $get_kernel();
+
+        $cached_kernel->boot();
+
+        $this->assertSame('bar', $cached_kernel->container()->get('foo_container'));
+        $this->assertSame('bar', $cached_kernel->config()->get('foo_config'));
     }
 
 }
