@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-25 14:12:39        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-25 16:50:48        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1357,7 +1357,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005ec561c4000000003e045f7e",
+        "name": "\\anonymous@0000000067b822080000000003d781da",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1403,7 +1403,7 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackDisplayer",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer",
         "size": 3000,
         "relations": []
     },
@@ -1414,6 +1414,11 @@
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
         "size": 3000,
         "relations": []
     },
@@ -1468,17 +1473,17 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Identifier\\SplHashIdentifier",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Delegating",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
         "size": 3000,
         "relations": []
     },
@@ -1523,7 +1528,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005ec5629b000000003e045f7e",
+        "name": "\\anonymous@0000000067b82fd60000000003d781da",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2611,17 +2616,6 @@
         ]
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\SimpleTemplatingMiddleware",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
-        ]
-    },
-    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\HttpRoutingBundle",
         "size": 3000,
         "relations": [
@@ -2671,7 +2665,8 @@
             "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\ResponseEmitter",
             "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
             "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\TestEmitter",
-            "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\LaminasEmitterStack"
+            "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\LaminasEmitterStack",
+            "\\Snicco\\Bundle\\HttpRouting\\Middleware\\ErrorsToExceptions"
         ]
     },
     {
@@ -2697,7 +2692,35 @@
         ]
     },
     {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Middleware\\ErrorsToExceptions",
+        "size": 3000,
+        "relations": [
+            "\\Psr\\Http\\Server\\MiddlewareInterface",
+            "\\Psr\\Log\\LoggerInterface",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Psr\\Http\\Message\\ServerRequestInterface",
+            "\\Psr\\Http\\Server\\RequestHandlerInterface",
+            "\\ErrorException"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\EventDispatcher\\Unremovable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Middleware\\SimpleTemplating",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
+        ]
+    },
+    {
+        "name": "\\ErrorException",
         "size": 3000,
         "relations": []
     },

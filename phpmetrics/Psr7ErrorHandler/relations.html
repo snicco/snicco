@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-25 14:12:39        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-25 16:50:49        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -359,7 +359,7 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackDisplayer",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer",
         "size": 3000,
         "relations": []
     },
@@ -370,6 +370,11 @@
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
         "size": 3000,
         "relations": []
     },
@@ -459,7 +464,9 @@
             "\\Psr\\Http\\Message\\ServerRequestInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
             "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackDisplayer"
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer"
         ]
     },
     {
@@ -488,6 +495,15 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+            "\\Psr\\Http\\Message\\RequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Identifier\\SplHashIdentifier",
         "size": 3000,
         "relations": [
@@ -497,15 +513,6 @@
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Delegating",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",

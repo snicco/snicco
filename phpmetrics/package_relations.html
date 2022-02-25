@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-25 14:12:39        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-25 16:50:48        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1290,6 +1290,7 @@
             "Snicco\\Component\\Psr7ErrorHandler\\Information",
             "Snicco\\Component\\Psr7ErrorHandler\\Identifier",
             "Snicco\\Component\\EventDispatcher",
+            "Snicco\\Bundle\\HttpRouting\\Middleware",
             "Webimpress\\SafeWriter"
         ]
     },
@@ -1314,6 +1315,18 @@
         "name": "Psr\\Log\\Test",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Psr\\Http\\Server",
+            "Psr\\Log",
+            "global"
+        ]
     },
     {
         "name": "Snicco\\Bundle\\Debug",
