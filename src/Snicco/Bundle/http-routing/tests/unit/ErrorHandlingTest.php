@@ -396,7 +396,7 @@ final class ErrorHandlingTest extends TestCase
             $logger = $kernel->container()->make(TestLogger::class);
             $this->assertTrue(
                 $logger->hasCritical([
-                    'message' => 'Undefined offset: 1'
+                    'message' => RoutingBundleTestController::class
                 ])
             );
         } finally {
