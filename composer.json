@@ -57,7 +57,6 @@
         "nyholm/psr7": "^1.0.0",
         "php-stubs/wordpress-stubs": "^5.8.0",
         "phpunit/phpunit": "9.5.13",
-        "sniccwp/testing-bundle": "dev-master",
         "symfony/finder": "^5.0",
         "symplify/monorepo-builder": "9.4.70",
         "vimeo/psalm": "^4.10",
