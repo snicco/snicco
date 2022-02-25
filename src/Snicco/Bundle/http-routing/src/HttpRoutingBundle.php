@@ -228,9 +228,9 @@ final class HttpRoutingBundle implements Bundle
                 ...$log_context
             );
 
-            $displayers = array_map(function ($class) {
+            $displayers = array_map(function ($class) use ($container) {
                 /** @var class-string<ExceptionDisplayer> $class */
-                return new $class;
+                return $container[$class] ?? new $class;
             }, $kernel->config()->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)));
 
             return new HttpErrorHandler(
