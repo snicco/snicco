@@ -19,6 +19,7 @@ final class Directories
     private string $config_dir;
     private string $cache_dir;
     private string $log_dir;
+    private string $base_directory;
 
     public function __construct(
         string $base_directory,
@@ -49,6 +50,7 @@ final class Directories
         $this->config_dir = rtrim($config_dir, DIRECTORY_SEPARATOR);
         $this->cache_dir = rtrim($cache_dir, DIRECTORY_SEPARATOR);
         $this->log_dir = rtrim($log_dir, DIRECTORY_SEPARATOR);
+        $this->base_directory = rtrim($base_directory, DIRECTORY_SEPARATOR);
     }
 
     public static function fromDefaults(string $base_directory): Directories
@@ -75,6 +77,11 @@ final class Directories
     public function configDir(): string
     {
         return $this->config_dir;
+    }
+
+    public function baseDir(): string
+    {
+        return $this->base_directory;
     }
 
     public function cacheDir(): string
