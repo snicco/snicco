@@ -68,13 +68,17 @@ use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use Throwable;
 
 use function array_map;
+use function array_replace;
 use function class_exists;
 use function class_implements;
+use function copy;
 use function count;
+use function dirname;
 use function gettype;
 use function implode;
 use function in_array;
 use function is_array;
+use function is_file;
 use function is_readable;
 use function is_string;
 use function sprintf;
@@ -91,9 +95,9 @@ final class HttpRoutingBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        $this->configureRouting($config);
-        $this->configureMiddleware($config);
-        $this->configureErrorHandling($config);
+        $this->configureRouting($config, $kernel);
+        $this->configureMiddleware($config, $kernel);
+        $this->configureErrorHandling($config, $kernel);
     }
 
     public function register(Kernel $kernel): void
@@ -381,22 +385,18 @@ final class HttpRoutingBundle implements Bundle
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
     }
 
-    private function configureRouting(WritableConfig $config): void
+    private function configureRouting(WritableConfig $config, Kernel $kernel): void
     {
-        if (!$config->has(RoutingOption::key(RoutingOption::HOST))) {
+        $defaults = require dirname(__DIR__) . '/config/routing.php';
+        $merged = array_replace($defaults, $config->getArray('routing', []));
+
+        $config->set('routing', $merged);
+
+        if (empty($config->getString('routing.' . RoutingOption::HOST))) {
             throw new InvalidArgumentException(
-                RoutingOption::key(RoutingOption::HOST) . ' must be a non-empty-string.'
+                'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
             );
         }
-
-        $config->setIfMissing(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX), '/wp-admin');
-        $config->setIfMissing(RoutingOption::key(RoutingOption::WP_LOGIN_PATH), '/wp-login.php');
-        $config->setIfMissing(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES), []);
-        $config->setIfMissing(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES), []);
-        $config->setIfMissing(RoutingOption::key(RoutingOption::API_PREFIX), '');
-        $config->setIfMissing(RoutingOption::key(RoutingOption::HTTP_PORT), 80);
-        $config->setIfMissing(RoutingOption::key(RoutingOption::HTTPS_PORT), 443);
-        $config->setIfMissing(RoutingOption::key(RoutingOption::USE_HTTPS), true);
 
         // quick type checks.
         $config->getInteger(RoutingOption::key(RoutingOption::HTTP_PORT));
@@ -451,19 +451,17 @@ final class HttpRoutingBundle implements Bundle
                 );
             }
         }
+
+        $this->copyConfig($kernel, 'routing');
     }
 
-    private function configureMiddleware(WritableConfig $config): void
+    private function configureMiddleware(WritableConfig $config, Kernel $kernel): void
     {
-        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::GROUPS), []);
-        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::ALIASES), []);
-        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST), []);
-        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN), []);
-        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE), [
-            ErrorsToExceptions::class,
-            RoutingMiddleware::class,
-            RouteRunner::class
-        ]);
+        $defaults = require dirname(__DIR__) . '/config/middleware.php';
+        $config->set(
+            'middleware',
+            array_replace($defaults, $config->getArray('middleware', []))
+        );
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
             if (!is_string($key)) {
@@ -561,20 +559,18 @@ final class HttpRoutingBundle implements Bundle
                 );
             }
         }
+
+        $this->copyConfig($kernel, 'middleware');
     }
 
-    private function configureErrorHandling(WritableConfig $config): void
+    private function configureErrorHandling(WritableConfig $config, Kernel $kernel): void
     {
-        if (!$config->has(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))) {
-            $name = $config->getString('app.name', '');
-            $name = empty($name) ? 'request' : "$name.request";
-            $config->set(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX), $name);
-        }
+        $defaults = require dirname(__DIR__) . '/config/http_error_handling.php';
 
-        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS), []);
-        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS), []);
-        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT), []);
-        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS), []);
+        $config->set(
+            'http_error_handling',
+            array_replace($defaults, $config->getArray('http_error_handling', []))
+        );
 
         foreach (
             $config->getListOfStrings(
@@ -674,6 +670,8 @@ final class HttpRoutingBundle implements Bundle
                 );
             }
         }
+
+        $this->copyConfig($kernel, 'http_error_handling');
     }
 
     private function bindHttpRunner(Kernel $kernel): void
@@ -740,4 +738,29 @@ final class HttpRoutingBundle implements Bundle
             );
         });
     }
+
+    private function copyConfig(Kernel $kernel, string $namespace): void
+    {
+        if (!$kernel->env()->isDevelop()) {
+            return;
+        }
+
+        $destination = $kernel->directories()->configDir() . '/' . $namespace . '.php';
+
+        if (is_file($destination)) {
+            return;
+        }
+
+        $copied = copy(
+            dirname(__DIR__) . "/config/$namespace.php",
+            $destination
+        );
+
+        if (false === $copied) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException("Could not copy default routing.php config to path $destination");
+            // @codeCoverageIgnoreEnd
+        }
+    }
+
 }
