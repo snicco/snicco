@@ -23,13 +23,53 @@ use Snicco\Component\Kernel\Exception\MissingConfigKey;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function dirname;
+use function file_put_contents;
+use function is_file;
 use function json_decode;
+use function unlink;
+use function var_export;
 
 use const JSON_THROW_ON_ERROR;
 
 final class DebugBundleTest extends TestCase
 {
     use BundleTestHelpers;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpDirectories();
+        if (is_file($this->directories->configDir() . '/debug.php')) {
+            unlink($this->directories->configDir() . '/debug.php');
+        }
+        if (is_file($this->directories->configDir() . '/middleware.php')) {
+            unlink($this->directories->configDir() . '/middleware.php');
+        }
+        if (is_file($this->directories->configDir() . '/http_error_handling.php')) {
+            unlink($this->directories->configDir() . '/http_error_handling.php');
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        $this->tearDownDirectories();
+        if (is_file($this->directories->configDir() . '/debug.php')) {
+            unlink($this->directories->configDir() . '/debug.php');
+        }
+        if (is_file($this->directories->configDir() . '/middleware.php')) {
+            unlink($this->directories->configDir() . '/middleware.php');
+        }
+        if (is_file($this->directories->configDir() . '/http_error_handling.php')) {
+            unlink($this->directories->configDir() . '/http_error_handling.php');
+        }
+        parent::tearDown();
+    }
+
+    protected function fixturesDir(): string
+    {
+        return __DIR__ . '/fixtures';
+    }
 
     /**
      * @test
@@ -376,8 +416,76 @@ final class DebugBundleTest extends TestCase
         $this->assertSame([__DIR__], $paths);
     }
 
-    protected function fixturesDir(): string
+    /**
+     * @test
+     */
+    public function the_default_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        return __DIR__ . '/fixtures';
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::dev(),
+            $this->directories
+        );
+
+        $this->assertFalse(is_file($this->directories->configDir() . '/debug.php'));
+
+        $kernel->boot();
+
+        $this->assertTrue(is_file($this->directories->configDir() . '/debug.php'));
+
+        /**
+         * @psalm-suppress UnresolvableInclude
+         */
+        $config = require $this->directories->configDir() . '/debug.php';
+
+        $this->assertSame(
+            require dirname(__DIR__, 1) . '/config/debug.php',
+            $config
+        );
     }
+
+    /**
+     * @test
+     */
+    public function the_default_configuration_is_not_copied_if_the_file_already_exists(): void
+    {
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::dev(),
+            $this->directories
+        );
+
+        file_put_contents(
+            $this->directories->configDir() . '/debug.php',
+            '<?php return ' . var_export(['editor' => 'sublime'], true) . ';'
+        );
+
+        $this->assertTrue(is_file($this->directories->configDir() . '/debug.php'));
+
+        $kernel->boot();
+
+        /**
+         * @psalm-suppress UnresolvableInclude
+         */
+        $this->assertSame(['editor' => 'sublime'], require $this->directories->configDir() . '/debug.php');
+    }
+
+    /**
+     * @test
+     */
+    public function the_default_configuration_is_only_copied_in_dev_environment(): void
+    {
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::prod(),
+            $this->directories
+        );
+
+        $this->assertFalse(is_file($this->directories->configDir() . '/debug.php'));
+
+        $kernel->boot();
+
+        $this->assertFalse(is_file($this->directories->configDir() . '/debug.php'));
+    }
+
 }
