@@ -115,10 +115,11 @@ trait BundleTestHelpers
 
         /**
          * @var SplFileInfo $file_info
+         * @var string $path
          */
-        foreach ($iterator as $file_info) {
+        foreach ($iterator as $path => $file_info) {
             if ($file_info->isFile() && $file_info->getExtension() === 'php') {
-                $this->fixture_config_files[] = $file_info->getRealPath();
+                $this->fixture_config_files[] = $path;
             }
         }
 
