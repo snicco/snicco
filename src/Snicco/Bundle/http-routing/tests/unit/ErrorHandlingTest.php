@@ -509,6 +509,8 @@ final class ErrorHandlingTest extends TestCase
     {
         return dirname(__DIR__) . '/fixtures';
     }
+
+
 }
 
 class Transformer1 implements ExceptionTransformer

@@ -232,7 +232,12 @@ final class HttpRoutingBundleTest extends TestCase
         );
         $kernel->boot();
 
-        $this->assertSame([], $kernel->config()->getArray('middleware.middleware_groups'));
+        $this->assertSame([
+            'frontend' => [],
+            'admin' => [],
+            'api' => [],
+            'global' => []
+        ], $kernel->config()->getArray('middleware.middleware_groups'));
         $this->assertSame([], $kernel->config()->getArray('middleware.always_run_middleware_groups'));
         $this->assertSame([], $kernel->config()->getArray('middleware.middleware_priority'));
         $this->assertSame([], $kernel->config()->getArray('middleware.middleware_aliases'));
