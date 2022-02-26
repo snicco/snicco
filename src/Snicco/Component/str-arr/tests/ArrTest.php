@@ -127,6 +127,10 @@ final class ArrTest extends TestCase
                 return 'dayle';
             })
         );
+
+        // test keys with dots have priority
+        $array = ['foo.bar' => ['bar' => 'baz']];
+        $this->assertSame(['bar' => 'baz'], Arr::get($array, 'foo.bar'));
     }
 
     /**

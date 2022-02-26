@@ -17,7 +17,7 @@ use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
-use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
@@ -46,7 +46,7 @@ use const E_USER_NOTICE;
 final class ErrorHandlingTest extends TestCase
 {
 
-    use BootsKernelForBundleTest;
+    use BundleTestHelpers;
 
     private Directories $directories;
 
@@ -69,7 +69,7 @@ final class ErrorHandlingTest extends TestCase
     public function exceptions_are_handled_by_default_during_routing(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -98,7 +98,7 @@ final class ErrorHandlingTest extends TestCase
     public function a_test_logger_is_used_in_testing_environments(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -132,7 +132,7 @@ final class ErrorHandlingTest extends TestCase
     public function the_test_logger_is_not_bound_in_non_testing_env(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -148,7 +148,7 @@ final class ErrorHandlingTest extends TestCase
     public function request_log_context_can_be_added(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -194,7 +194,7 @@ final class ErrorHandlingTest extends TestCase
     public function custom_transformers_can_be_added(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -242,7 +242,7 @@ final class ErrorHandlingTest extends TestCase
     public function custom_displayers_can_be_added(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -280,7 +280,7 @@ final class ErrorHandlingTest extends TestCase
     public function custom_log_levels_can_be_used(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -318,7 +318,7 @@ final class ErrorHandlingTest extends TestCase
     public function in_production_the_std_error_logger_is_bound_if_not_already_set_in_the_container(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -326,7 +326,7 @@ final class ErrorHandlingTest extends TestCase
 
         $this->assertInstanceOf(StdErrLogger::class, $kernel->container()->make(LoggerInterface::class));
 
-        $container = $this->container();
+        $container = $this->newContainer();
         $container[LoggerInterface::class] = fn(): NullLogger => new NullLogger();
 
         $kernel = new Kernel(
@@ -344,7 +344,7 @@ final class ErrorHandlingTest extends TestCase
      */
     public function a_custom_exception_information_provider_can_be_used(): void
     {
-        $container = $this->container();
+        $container = $this->newContainer();
         $container[ExceptionInformationProvider::class] = function (): ExceptionInformationProvider {
             return new class implements ExceptionInformationProvider {
 
@@ -400,7 +400,7 @@ final class ErrorHandlingTest extends TestCase
 
         try {
             $kernel = new Kernel(
-                $this->container(),
+                $this->newContainer(),
                 Environment::testing(),
                 $this->directories
             );
@@ -452,7 +452,7 @@ final class ErrorHandlingTest extends TestCase
 
         try {
             $kernel = new Kernel(
-                $this->container(),
+                $this->newContainer(),
                 Environment::testing(),
                 $this->directories
             );
@@ -494,7 +494,7 @@ final class ErrorHandlingTest extends TestCase
     public function deprecations_are_not_converted_to_exceptions(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );

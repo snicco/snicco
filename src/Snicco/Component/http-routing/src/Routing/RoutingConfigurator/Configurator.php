@@ -241,6 +241,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     {
         $name = 'view:' . Str::afterLast($view, '/');
 
+        // @todo remove HEAD here
         $route = $this->match(['GET', 'HEAD'], $name, $path, ViewController::class);
         $route->defaults([
             'view' => $view,

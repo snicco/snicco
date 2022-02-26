@@ -59,6 +59,11 @@ final class Kernel
      */
     private array $after_configuration_callbacks = [];
 
+    /**
+     * @var array<callable(WritableConfig,Kernel):void>
+     */
+    private array $before_configuration_callbacks = [];
+
     public function __construct(
         DIContainer $container,
         Environment $env,
@@ -79,7 +84,7 @@ final class Kernel
         }
 
         $cached_config = $this->config_cache->get($this->configCacheFile(), function () {
-            return $this->loadAllConfigFilesFromDisk();
+            return $this->loadConfiguration();
         });
 
         $this->read_only_config = ReadOnlyConfig::fromArray($cached_config);
@@ -144,7 +149,8 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all configuration calls have been loaded from disk.
+     * Adds a callback that will be run after all configuration files have been loaded from disk and after all bundles
+     * were configured. This is the last option to modify the writable configuration before its written to disk.
      * Callbacks will NOT be run if the configuration is cached.
      *
      * @param callable(WritableConfig, Kernel):void $callback
@@ -157,7 +163,21 @@ final class Kernel
         $this->after_configuration_callbacks[] = $callback;
     }
 
-    private function loadAllConfigFilesFromDisk(): array
+    /**
+     * Adds a callback that will be run after all configuration files have been loaded from disk but BEFORE all bundles are configured.
+     * Callbacks will NOT be run if the configuration is cached.
+     *
+     * @param callable(WritableConfig, Kernel):void $callback
+     */
+    public function beforeConfiguration(callable $callback): void
+    {
+        if ($this->booted) {
+            throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
+        }
+        $this->before_configuration_callbacks[] = $callback;
+    }
+
+    private function loadConfiguration(): array
     {
         $config_dir = $this->dirs->configDir();
 
@@ -174,6 +194,11 @@ final class Kernel
         }
         if (!$writable_config->has('bundles')) {
             $writable_config->set('bundles', []);
+        }
+
+        // @todo should these callbacks be allowed to change bundle and bootstrapper configuration?
+        foreach ($this->before_configuration_callbacks as $callback) {
+            $callback($writable_config, $this);
         }
 
         $this->setBundlesAndBootstrappers(

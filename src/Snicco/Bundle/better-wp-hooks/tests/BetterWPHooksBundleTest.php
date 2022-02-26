@@ -7,7 +7,7 @@ namespace Snicco\Bundle\BetterWPHooks\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
@@ -19,7 +19,7 @@ use stdClass;
 
 final class BetterWPHooksBundleTest extends TestCase
 {
-    use BootsKernelForBundleTest;
+    use BundleTestHelpers;
 
     private Directories $directories;
 
@@ -41,7 +41,7 @@ final class BetterWPHooksBundleTest extends TestCase
     public function test_runs_in_all_environments(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -50,7 +50,7 @@ final class BetterWPHooksBundleTest extends TestCase
 
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -59,7 +59,7 @@ final class BetterWPHooksBundleTest extends TestCase
 
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::staging(),
             $this->directories
         );
@@ -67,7 +67,7 @@ final class BetterWPHooksBundleTest extends TestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -81,7 +81,7 @@ final class BetterWPHooksBundleTest extends TestCase
     public function test_event_dispatcher_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -97,7 +97,7 @@ final class BetterWPHooksBundleTest extends TestCase
     public function test_listeners_are_resolved_from_the_container(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -129,7 +129,7 @@ final class BetterWPHooksBundleTest extends TestCase
     public function test_event_mapper_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -144,7 +144,7 @@ final class BetterWPHooksBundleTest extends TestCase
     public function in_testing_environment_the_testable_dispatcher_is_used(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -161,7 +161,7 @@ final class BetterWPHooksBundleTest extends TestCase
         $this->assertSame($d1, $d2);
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
