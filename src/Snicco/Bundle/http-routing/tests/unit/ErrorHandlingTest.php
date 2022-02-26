@@ -14,13 +14,13 @@ use Psr\Log\NullLogger;
 use Psr\Log\Test\TestLogger;
 use RuntimeException;
 use Snicco\Bundle\HttpRouting\HttpKernel;
-use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
@@ -33,6 +33,7 @@ use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use Throwable;
 use TypeError;
 
+use function dirname;
 use function restore_error_handler;
 use function set_error_handler;
 use function trigger_error;
@@ -47,6 +48,21 @@ final class ErrorHandlingTest extends TestCase
 
     use BootsKernelForBundleTest;
 
+    private Directories $directories;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
+        $this->removePHPFilesRecursive($this->directories->cacheDir());
+    }
+
+    protected function tearDown(): void
+    {
+        $this->removePHPFilesRecursive($this->directories->cacheDir());
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
@@ -55,7 +71,7 @@ final class ErrorHandlingTest extends TestCase
         $kernel = new Kernel(
             $this->container(),
             Environment::testing(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories
         );
 
         $kernel->boot();
@@ -67,9 +83,7 @@ final class ErrorHandlingTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', '/')))
-            ->through([
-
-            ])
+            ->through([])
             ->then(function () {
                 throw new RuntimeException('secret error in routing.');
             });
@@ -86,7 +100,7 @@ final class ErrorHandlingTest extends TestCase
         $kernel = new Kernel(
             $this->container(),
             Environment::testing(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories
         );
 
         $kernel->boot();
@@ -120,7 +134,7 @@ final class ErrorHandlingTest extends TestCase
         $kernel = new Kernel(
             $this->container(),
             Environment::prod(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories
         );
 
         $kernel->boot();
@@ -133,17 +147,22 @@ final class ErrorHandlingTest extends TestCase
      */
     public function request_log_context_can_be_added(): void
     {
-        $kernel = $this->bootWithExtraConfig([
-            'routing' => [
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
 
-            ],
-            'http_error_handling' => [
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling', [
                 HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
                     QueryStringLogContext::class
                 ]
-            ]
-        ], Directories::fromDefaults(__DIR__ . '/fixtures'));
+            ]);
+        });
+
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -174,14 +193,21 @@ final class ErrorHandlingTest extends TestCase
      */
     public function custom_transformers_can_be_added(): void
     {
-        $kernel = $this->bootWithExtraConfig([
-            'http_error_handling' => [
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::prod(),
+            $this->directories
+        );
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling', [
                 HttpErrorHandlingOption::TRANSFORMERS => [
                     Transformer2::class,
                     Transformer1::class,
                 ]
-            ]
-        ], Directories::fromDefaults(__DIR__ . '/fixtures'));
+            ]);
+        });
+
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -215,13 +241,19 @@ final class ErrorHandlingTest extends TestCase
      */
     public function custom_displayers_can_be_added(): void
     {
-        $kernel = $this->bootWithExtraConfig([
-            'http_error_handling' => [
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::prod(),
+            $this->directories
+        );
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling', [
                 HttpErrorHandlingOption::DISPLAYERS => [
                     CustomHtmlDisplayer::class,
                 ]
-            ]
-        ], Directories::fromDefaults(__DIR__ . '/fixtures'));
+            ]);
+        });
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -247,16 +279,19 @@ final class ErrorHandlingTest extends TestCase
      */
     public function custom_log_levels_can_be_used(): void
     {
-        $kernel = $this->bootWithExtraConfig([
-            'routing' => [
-
-            ],
-            'http_error_handling' => [
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     TypeError::class => LogLevel::WARNING
                 ]
-            ]
-        ], Directories::fromDefaults(__DIR__ . '/fixtures'));
+            ]);
+        });
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -280,12 +315,12 @@ final class ErrorHandlingTest extends TestCase
     /**
      * @test
      */
-    public function the_production_the_logger_is_bound_if_not_already_set_in_the_container(): void
+    public function in_production_the_std_error_logger_is_bound_if_not_already_set_in_the_container(): void
     {
         $kernel = new Kernel(
             $this->container(),
             Environment::prod(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories
         );
         $kernel->boot();
 
@@ -296,8 +331,8 @@ final class ErrorHandlingTest extends TestCase
 
         $kernel = new Kernel(
             $container,
-            Environment::dev(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            Environment::prod(),
+            $this->directories
         );
         $kernel->boot();
 
@@ -330,7 +365,7 @@ final class ErrorHandlingTest extends TestCase
         $kernel = new Kernel(
             $container,
             Environment::prod(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories
         );
         $kernel->boot();
 
@@ -367,7 +402,7 @@ final class ErrorHandlingTest extends TestCase
             $kernel = new Kernel(
                 $this->container(),
                 Environment::testing(),
-                Directories::fromDefaults(__DIR__ . '/fixtures')
+                $this->directories
             );
 
             $kernel->boot();
@@ -419,7 +454,7 @@ final class ErrorHandlingTest extends TestCase
             $kernel = new Kernel(
                 $this->container(),
                 Environment::testing(),
-                Directories::fromDefaults(__DIR__ . '/fixtures')
+                $this->directories
             );
 
             $kernel->boot();
@@ -453,7 +488,6 @@ final class ErrorHandlingTest extends TestCase
         }
     }
 
-
     /**
      * @test
      */
@@ -462,7 +496,7 @@ final class ErrorHandlingTest extends TestCase
         $kernel = new Kernel(
             $this->container(),
             Environment::testing(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories
         );
 
         $kernel->boot();
@@ -485,15 +519,6 @@ final class ErrorHandlingTest extends TestCase
         $this->assertTrue(
             $test_logger->hasInfoThatContains('PHP Deprecated')
         );
-    }
-
-    protected function bundles(): array
-    {
-        return [
-            Environment::ALL => [
-                HttpRoutingBundle::class
-            ]
-        ];
     }
 
 }

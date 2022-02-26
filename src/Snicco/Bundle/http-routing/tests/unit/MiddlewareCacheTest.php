@@ -8,21 +8,22 @@ namespace Snicco\Bundle\HttpRouting\Tests\unit;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
-use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
+use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
-use Snicco\Bundle\HttpRouting\Option\RoutingOption;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareThree;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareThree;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
+use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function dirname;
 use function is_file;
 
 /**
@@ -30,21 +31,20 @@ use function is_file;
  */
 final class MiddlewareCacheTest extends TestCase
 {
+
     use BootsKernelForBundleTest;
 
     private Directories $directories;
-    private string $base_dir;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->base_dir = __DIR__ . '/fixtures/tmp';
-        $this->directories = $this->setUpDirectories($this->base_dir);
+        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
     }
 
     protected function tearDown(): void
     {
-        $this->tearDownDirectories($this->base_dir);
+        $this->removePHPFilesRecursive($this->directories->cacheDir());
         parent::tearDown();
     }
 
@@ -53,31 +53,26 @@ final class MiddlewareCacheTest extends TestCase
      */
     public function route_middleware_is_not_cached_in_non_production(): void
     {
-        $kernel = $this->bootWithFixedConfig(
-            [
-                'routing' => [
-                    RoutingOption::HOST => 'foo.com',
-                    RoutingOption::ROUTE_DIRECTORIES => [__DIR__ . '/fixtures/routes-with-middleware'],
-                    RoutingOption::API_ROUTE_DIRECTORIES => [],
-                    RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
-                    RoutingOption::WP_LOGIN_PATH => '/wp-login',
-                    RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::USE_HTTPS => true,
-                    RoutingOption::HTTPS_PORT => 443,
-                    RoutingOption::HTTP_PORT => 80,
+        $kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::dev(),
+            $this->directories
+        );
+
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            $config->set('middleware', [
+                MiddlewareOption::ALWAYS_RUN => [
+                    RoutingConfigurator::FRONTEND_MIDDLEWARE
                 ],
-                'middleware' => [
-                    MiddlewareOption::ALWAYS_RUN => [
-                        RoutingConfigurator::FRONTEND_MIDDLEWARE
-                    ],
-                    MiddlewareOption::ALIASES => [],
-                    MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
-                    MiddlewareOption::PRIORITY_LIST => [],
-                ]
-            ]
-            , $this->directories, Environment::dev());
+                MiddlewareOption::ALIASES => [],
+                MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
+                MiddlewareOption::PRIORITY_LIST => [],
+            ]);
+        });
 
         $this->assertFalse(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
+
+        $kernel->boot();
 
         $kernel->container()->make(RouteRunner::class);
 
@@ -89,30 +84,24 @@ final class MiddlewareCacheTest extends TestCase
      */
     public function route_middleware_is_cached_in_production(): void
     {
-        $kernel = $this->bootWithFixedConfig(
-            [
-                'routing' => [
-                    RoutingOption::HOST => 'foo.com',
-                    RoutingOption::ROUTE_DIRECTORIES => [__DIR__ . '/fixtures/routes-with-middleware'],
-                    RoutingOption::API_ROUTE_DIRECTORIES => [],
-                    RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
-                    RoutingOption::WP_LOGIN_PATH => '/wp-login',
-                    RoutingOption::API_PREFIX => '/test',
+        $kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::prod(),
+            $this->directories
+        );
 
-                    RoutingOption::USE_HTTPS => true,
-                    RoutingOption::HTTPS_PORT => 443,
-                    RoutingOption::HTTP_PORT => 80,
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            $config->set('middleware', [
+                MiddlewareOption::ALWAYS_RUN => [
+                    RoutingConfigurator::FRONTEND_MIDDLEWARE
                 ],
-                'middleware' => [
-                    MiddlewareOption::ALWAYS_RUN => [
-                        RoutingConfigurator::FRONTEND_MIDDLEWARE
-                    ],
-                    MiddlewareOption::ALIASES => [],
-                    MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
-                    MiddlewareOption::PRIORITY_LIST => [],
-                ]
-            ]
-            , $this->directories, Environment::prod());
+                MiddlewareOption::ALIASES => [],
+                MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
+                MiddlewareOption::PRIORITY_LIST => [],
+            ]);
+        });
+
+        $kernel->boot();
 
         $this->assertFalse(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
 
@@ -120,34 +109,18 @@ final class MiddlewareCacheTest extends TestCase
 
         $this->assertTrue(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
 
-        $new_kernel = $this->bootWithFixedConfig(
-            [
-                'routing' => [
-                    RoutingOption::HOST => 'foo.com',
-                    RoutingOption::ROUTE_DIRECTORIES => [__DIR__ . '/fixtures/routes-with-middleware'],
-                    RoutingOption::API_ROUTE_DIRECTORIES => [],
-                    RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
-                    RoutingOption::WP_LOGIN_PATH => '/wp-login',
-                    RoutingOption::API_PREFIX => '/test',
-                    RoutingOption::USE_HTTPS => true,
-                    RoutingOption::HTTPS_PORT => 443,
-                    RoutingOption::HTTP_PORT => 80,
-                ],
-                'middleware' => [
-                    MiddlewareOption::ALWAYS_RUN => [
-                        RoutingConfigurator::FRONTEND_MIDDLEWARE
-                    ],
-                    MiddlewareOption::ALIASES => [],
-                    MiddlewareOption::GROUPS => [],
-                    MiddlewareOption::PRIORITY_LIST => [],
-                ]
-            ]
-            , $this->directories, Environment::prod());
+        $new_kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::prod(),
+            $this->directories
+        );
+
+        $new_kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
         $pipeline = $new_kernel->container()->make(MiddlewarePipeline::class);
 
-        $request = new ServerRequest('GET', '/web1');
+        $request = new ServerRequest('GET', '/middleware1');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
@@ -163,7 +136,7 @@ final class MiddlewareCacheTest extends TestCase
             (string)$response->getBody()
         );
 
-        $request = new ServerRequest('GET', '/web2');
+        $request = new ServerRequest('GET', '/middleware2');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
@@ -197,13 +170,4 @@ final class MiddlewareCacheTest extends TestCase
         );
     }
 
-    protected function bundles(): array
-    {
-        return [
-            Environment::ALL => [
-                HttpRoutingBundle::class,
-                BetterWPHooksBundle::class
-            ]
-        ];
-    }
 }

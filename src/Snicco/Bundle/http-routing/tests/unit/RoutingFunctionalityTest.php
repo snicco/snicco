@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Middleware\SimpleTemplating;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
@@ -22,6 +22,7 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function dirname;
 use function is_file;
 use function unlink;
 
@@ -32,25 +33,33 @@ final class RoutingFunctionalityTest extends TestCase
 {
 
     private Directories $dirs;
-    private string $expected_cache_file;
+    private string $expected_route_cache_file;
+    private string $cache_dir;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->expected_cache_file = __DIR__ . '/fixtures/var/cache/prod.routes-generated.php';
-        if (is_file($this->expected_cache_file)) {
-            unlink($this->expected_cache_file);
+        $this->cache_dir = dirname(__DIR__) . '/fixtures/var/cache';
+        $this->expected_route_cache_file = $this->cache_dir . '/prod.routes-generated.php';
+        if (is_file($this->expected_route_cache_file)) {
+            unlink($this->expected_route_cache_file);
         }
-        $this->dirs = Directories::fromDefaults(__DIR__ . '/fixtures');
+        if (is_file($this->cache_dir . '/prod.config.php')) {
+            unlink($this->cache_dir . '/prod.config.php');
+        }
+        $this->dirs = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
     }
 
     protected function tearDown(): void
     {
-        if (is_file($this->expected_cache_file)) {
-            unlink($this->expected_cache_file);
+        if (is_file($this->expected_route_cache_file)) {
+            unlink($this->expected_route_cache_file);
         }
-        if (is_file(__DIR__ . '/fixtures/var/cache/prod.middleware-map-generated.php')) {
-            unlink(__DIR__ . '/fixtures/var/cache/prod.middleware-map-generated.php');
+        if (is_file($this->cache_dir . '/prod.config.php')) {
+            unlink($this->cache_dir . '/prod.config.php');
+        }
+        if (is_file($this->cache_dir . '/prod.middleware-map-generated.php')) {
+            unlink($this->cache_dir . '/prod.middleware-map-generated.php');
         }
         parent::tearDown();
     }
@@ -83,7 +92,7 @@ final class RoutingFunctionalityTest extends TestCase
             });
 
         $this->assertSame(RoutingBundleTestController::class, (string)$response->getBody());
-        $this->assertFalse(is_file($this->expected_cache_file));
+        $this->assertFalse(is_file($this->expected_route_cache_file));
     }
 
     /**
@@ -114,7 +123,8 @@ final class RoutingFunctionalityTest extends TestCase
             });
 
         $this->assertSame(RoutingBundleTestController::class, (string)$response->getBody());
-        $this->assertTrue(is_file($this->expected_cache_file));
+        $this->assertTrue(is_file($this->expected_route_cache_file));
+        $this->assertTrue(is_file($this->cache_dir . '/prod.middleware-map-generated.php'));
     }
 
     /**
