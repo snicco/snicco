@@ -34,7 +34,7 @@ trait BundleTestHelpers
     /**
      * @var string[]
      */
-    private ?array $fixture_config_files = [];
+    private array $fixture_config_files = [];
 
     protected function setUp(): void
     {
@@ -116,9 +116,9 @@ trait BundleTestHelpers
         /**
          * @var SplFileInfo $file_info
          */
-        foreach ($iterator as $path => $file_info) {
+        foreach ($iterator as $file_info) {
             if ($file_info->isFile() && $file_info->getExtension() === 'php') {
-                $this->fixture_config_files[] = $path;
+                $this->fixture_config_files[] = $file_info->getRealPath();
             }
         }
 
