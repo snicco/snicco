@@ -20,7 +20,6 @@ use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function dirname;
@@ -33,20 +32,6 @@ final class MiddlewareCacheTest extends TestCase
 {
 
     use BundleTestHelpers;
-
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->removePHPFilesRecursive($this->directories->cacheDir());
-        parent::tearDown();
-    }
 
     /**
      * @test
@@ -170,4 +155,8 @@ final class MiddlewareCacheTest extends TestCase
         );
     }
 
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }

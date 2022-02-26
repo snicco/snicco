@@ -21,7 +21,6 @@ use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Exception\MissingConfigKey;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function json_decode;
@@ -31,20 +30,6 @@ use const JSON_THROW_ON_ERROR;
 final class DebugBundleTest extends TestCase
 {
     use BundleTestHelpers;
-
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(__DIR__ . '/fixtures');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->removePHPFilesRecursive($this->directories->cacheDir());
-        parent::tearDown();
-    }
 
     /**
      * @test
@@ -391,4 +376,8 @@ final class DebugBundleTest extends TestCase
         $this->assertSame([__DIR__], $paths);
     }
 
+    protected function fixturesDir(): string
+    {
+        return __DIR__ . '/fixtures';
+    }
 }

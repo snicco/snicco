@@ -18,7 +18,6 @@ use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
@@ -32,13 +31,6 @@ final class ConfigExceptionsTest extends TestCase
 {
     use BundleTestHelpers;
 
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
-    }
 
     /**
      * @test
@@ -534,4 +526,8 @@ final class ConfigExceptionsTest extends TestCase
         $kernel->boot();
     }
 
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }

@@ -13,27 +13,12 @@ use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
 final class BetterWPHooksBundleTest extends TestCase
 {
     use BundleTestHelpers;
-
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(__DIR__ . '/fixtures');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->removePHPFilesRecursive($this->directories->cacheDir());
-        parent::tearDown();
-    }
 
     /**
      * @test
@@ -170,6 +155,10 @@ final class BetterWPHooksBundleTest extends TestCase
         $this->assertInstanceOf(WPEventDispatcher::class, $kernel->container()->make(EventDispatcher::class));
     }
 
+    protected function fixturesDir(): string
+    {
+        return __DIR__ . '/fixtures';
+    }
 }
 
 class ListenerDependency
