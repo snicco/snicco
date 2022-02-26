@@ -509,6 +509,12 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertCanBeResolved(ResponseFactory::class, $kernel);
         $this->assertCanBeResolved(ResponseFactoryInterface::class, $kernel);
         $this->assertCanBeResolved(StreamFactoryInterface::class, $kernel);
+
+        /**
+         * @var Psr17FactoryDiscovery $discovery
+         */
+        $discovery = $kernel->container()->make(Psr17FactoryDiscovery::class);
+        $this->assertInstanceOf(HttpFactory::class, $discovery->createResponseFactory());
     }
 
     protected function fixturesDir(): string
