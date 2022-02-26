@@ -19,6 +19,7 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use SplFileInfo;
 
 use function file_put_contents;
+use function in_array;
 use function is_dir;
 use function is_file;
 use function mkdir;
@@ -29,6 +30,11 @@ use function var_export;
 trait BundleTestHelpers
 {
     protected Directories $directories;
+
+    /**
+     * @var string[]
+     */
+    private array $fixture_config_files = [];
 
     protected function setUp(): void
     {
@@ -105,6 +111,18 @@ trait BundleTestHelpers
         }
 
         $this->directories = Directories::fromDefaults($fixtures_dir);
+        $iterator = new RecursiveDirectoryIterator($this->directories->configDir());
+
+        /**
+         * @var SplFileInfo $file_info
+         * @var string $path
+         */
+        foreach ($iterator as $path => $file_info) {
+            if ($file_info->isFile() && $file_info->getExtension() === 'php') {
+                $this->fixture_config_files[] = $path;
+            }
+        }
+
         $this->tearDownDirectories();
     }
 
@@ -112,9 +130,13 @@ trait BundleTestHelpers
     {
         $this->removePHPFilesRecursive($this->directories->cacheDir());
         $this->removePHPFilesRecursive($this->directories->logDir());
+        $this->removePHPFilesRecursive($this->directories->configDir(), $this->fixture_config_files);
     }
 
-    protected function removePHPFilesRecursive(string $base_dir): void
+    /**
+     * @param string[] $expect
+     */
+    protected function removePHPFilesRecursive(string $base_dir, array $expect = []): void
     {
         $iterator = new RecursiveDirectoryIterator($base_dir, FilesystemIterator::SKIP_DOTS);
         $objects = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
@@ -127,7 +149,7 @@ trait BundleTestHelpers
         foreach ($objects as $name => $file_info) {
             if ($file_info->isDir()) {
                 continue;
-            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php') {
+            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && !in_array($name, $expect)) {
                 $files[] = $name;
             }
         }

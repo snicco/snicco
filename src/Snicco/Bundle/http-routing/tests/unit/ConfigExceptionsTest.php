@@ -40,7 +40,9 @@ final class ConfigExceptionsTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('routing', []);
+            $config->set('routing', [
+                RoutingOption::HOST => ''
+            ]);
         });
 
         $this->expectException(InvalidArgumentException::class);

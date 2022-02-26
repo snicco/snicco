@@ -7,6 +7,7 @@ namespace Snicco\Bundle\Debug;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
+use RuntimeException;
 use Snicco\Bundle\Debug\Displayer\WhoopsHtmlDisplayer;
 use Snicco\Bundle\Debug\Displayer\WhoopsJsonDisplayer;
 use Snicco\Bundle\Debug\Option\DebugOption;
@@ -20,6 +21,12 @@ use SplFileInfo;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
+
+use function array_merge;
+use function array_replace;
+use function copy;
+use function dirname;
+use function is_file;
 
 final class DebugBundle implements Bundle
 {
@@ -61,11 +68,26 @@ final class DebugBundle implements Bundle
             WhoopsJsonDisplayer::class,
             WhoopsHtmlDisplayer::class
         ]);
-        $config->setIfMissing(DebugOption::KEY . '.' . DebugOption::EDITOR, 'phpstorm');
-        $config->setIfMissing(
-            DebugOption::KEY . '.' . DebugOption::APPLICATION_PATHS,
-            $this->allDirectoriesExpectVendor($kernel->directories())
-        );
+
+        $defaults = require dirname(__DIR__) . '/config/debug.php';
+
+        if (!is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
+            $copied = copy(
+                dirname(__DIR__) . '/config/debug.php',
+                $to
+            );
+            if (false === $copied) {
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException('Could not copy default debug.php config.');
+                // @codeCoverageIgnoreEnd
+            }
+        }
+
+        $defaults = array_merge($defaults, [
+            DebugOption::APPLICATION_PATHS => $this->allDirectoriesExpectVendor($kernel->directories())
+        ]);
+
+        $config->set('debug', array_replace($defaults, $config->getArray('debug', [])));
     }
 
     private function registerHttpDebugServices(Kernel $kernel): void
