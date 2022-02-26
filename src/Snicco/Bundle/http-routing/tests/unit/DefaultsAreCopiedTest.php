@@ -16,7 +16,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use function dirname;
 use function file_put_contents;
 use function is_file;
-use function unlink;
 use function var_export;
 
 /**
@@ -25,41 +24,6 @@ use function var_export;
 final class DefaultsAreCopiedTest extends TestCase
 {
     use BundleTestHelpers;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpDirectories();
-        if (is_file($this->directories->configDir() . '/http_error_handling.php')) {
-            unlink($this->directories->configDir() . '/http_error_handling.php');
-        }
-        if (is_file($this->directories->configDir() . '/routing.php')) {
-            unlink($this->directories->configDir() . '/routing.php');
-        }
-        if (is_file($this->directories->configDir() . '/middleware.php')) {
-            unlink($this->directories->configDir() . '/middleware.php');
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        if (is_file($this->directories->configDir() . '/http_error_handling.php')) {
-            unlink($this->directories->configDir() . '/http_error_handling.php');
-        }
-        if (is_file($this->directories->configDir() . '/routing.php')) {
-            unlink($this->directories->configDir() . '/routing.php');
-        }
-        if (is_file($this->directories->configDir() . '/middleware.php')) {
-            unlink($this->directories->configDir() . '/middleware.php');
-        }
-        $this->tearDownDirectories();
-        parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return __DIR__ . '/default-configs-test';
-    }
 
     /**
      * @test
@@ -283,6 +247,11 @@ final class DefaultsAreCopiedTest extends TestCase
         $kernel->boot();
 
         $this->assertFalse(is_file($this->directories->configDir() . '/http_error_handling.php'));
+    }
+
+    protected function fixturesDir(): string
+    {
+        return __DIR__ . '/default-configs-test';
     }
 
 
