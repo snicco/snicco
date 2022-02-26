@@ -105,6 +105,7 @@ trait BundleTestHelpers
         }
 
         $this->directories = Directories::fromDefaults($fixtures_dir);
+        $this->tearDownDirectories();
     }
 
     protected function tearDownDirectories(): void

@@ -16,16 +16,15 @@ use Snicco\Bundle\HttpRouting\HttpKernelRunner;
 use Snicco\Bundle\HttpRouting\ResponseEmitter\LaminasEmitterStack;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\Controller\HttpRunnerTestController;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function dirname;
 use function do_action;
-use function is_file;
 use function remove_all_filters;
 
 /**
@@ -34,15 +33,19 @@ use function remove_all_filters;
 final class HttpKernelRunnerTest extends WPTestCase
 {
 
+    use BundleTestHelpers;
+
     private Kernel $kernel;
     private HttpKernelRunner $http_dispatcher;
     private array $_get;
     private array $_server;
-    private Directories $directories;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->setUpDirectories();
+
         $_get = $_GET;
         $_server = $_SERVER;
         $this->_get = $_get;
@@ -50,7 +53,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $this->kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::testing(),
-            $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures')
+            $this->directories,
         );
         $this->kernel->boot();
         $this->http_dispatcher = $this->kernel->container()->make(HttpKernelRunner::class);
@@ -63,11 +66,14 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET = $this->_get;
         $_SERVER = $this->_server;
 
-        if (is_file($file = $this->directories->cacheDir() . '/prod.config.php')) {
-            $this->unlink($file);
-        }
+        $this->tearDownDirectories();
 
         parent::tearDown();
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -567,5 +573,4 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $this->assertInstanceOf(LaminasEmitterStack::class, $emitter);
     }
-
 }

@@ -11,7 +11,6 @@ use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function dirname;
@@ -20,21 +19,6 @@ final class BetterWPDBBundleTest extends WPTestCase
 {
 
     use BundleTestHelpers;
-
-    private string $base_dir;
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
-    }
-
-    protected function tearDown(): void
-    {
-        $this->removePHPFilesRecursive($this->directories->cacheDir());
-        parent::tearDown();
-    }
 
     /**
      * @test
@@ -145,6 +129,10 @@ final class BetterWPDBBundleTest extends WPTestCase
         $this->assertSame('select * from wp_users', $logger->logs[0]->sql);
     }
 
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }
 
 class TestQueryLogger implements QueryLogger

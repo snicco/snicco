@@ -29,7 +29,6 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function dirname;
@@ -41,14 +40,6 @@ final class HttpRoutingBundleTest extends TestCase
 {
 
     use BundleTestHelpers;
-
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
-    }
 
     /**
      * @test
@@ -520,4 +511,8 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertCanBeResolved(StreamFactoryInterface::class, $kernel);
     }
 
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }

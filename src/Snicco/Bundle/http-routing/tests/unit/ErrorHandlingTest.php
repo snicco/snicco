@@ -22,7 +22,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
@@ -47,21 +46,6 @@ final class ErrorHandlingTest extends TestCase
 {
 
     use BundleTestHelpers;
-
-    private Directories $directories;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
-        $this->removePHPFilesRecursive($this->directories->cacheDir());
-    }
-
-    protected function tearDown(): void
-    {
-        $this->removePHPFilesRecursive($this->directories->cacheDir());
-        parent::tearDown();
-    }
 
     /**
      * @test
@@ -521,6 +505,10 @@ final class ErrorHandlingTest extends TestCase
         );
     }
 
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }
 
 class Transformer1 implements ExceptionTransformer
