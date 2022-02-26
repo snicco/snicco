@@ -27,7 +27,6 @@ use function dirname;
 use function file_put_contents;
 use function is_file;
 use function json_decode;
-use function unlink;
 use function var_export;
 
 use const JSON_THROW_ON_ERROR;
@@ -35,41 +34,6 @@ use const JSON_THROW_ON_ERROR;
 final class DebugBundleTest extends TestCase
 {
     use BundleTestHelpers;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpDirectories();
-        if (is_file($this->directories->configDir() . '/debug.php')) {
-            unlink($this->directories->configDir() . '/debug.php');
-        }
-        if (is_file($this->directories->configDir() . '/middleware.php')) {
-            unlink($this->directories->configDir() . '/middleware.php');
-        }
-        if (is_file($this->directories->configDir() . '/http_error_handling.php')) {
-            unlink($this->directories->configDir() . '/http_error_handling.php');
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        $this->tearDownDirectories();
-        if (is_file($this->directories->configDir() . '/debug.php')) {
-            unlink($this->directories->configDir() . '/debug.php');
-        }
-        if (is_file($this->directories->configDir() . '/middleware.php')) {
-            unlink($this->directories->configDir() . '/middleware.php');
-        }
-        if (is_file($this->directories->configDir() . '/http_error_handling.php')) {
-            unlink($this->directories->configDir() . '/http_error_handling.php');
-        }
-        parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return __DIR__ . '/fixtures';
-    }
 
     /**
      * @test
@@ -486,6 +450,11 @@ final class DebugBundleTest extends TestCase
         $kernel->boot();
 
         $this->assertFalse(is_file($this->directories->configDir() . '/debug.php'));
+    }
+
+    protected function fixturesDir(): string
+    {
+        return __DIR__ . '/fixtures';
     }
 
 }

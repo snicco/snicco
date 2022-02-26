@@ -230,6 +230,7 @@ final class BundleTestHelpersTest extends TestCase
         }
     }
 
+
 }
 
 class ServiceA
