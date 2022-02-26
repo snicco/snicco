@@ -8,16 +8,19 @@ namespace Snicco\Bundle\Debug\Tests;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\Debug\DebugBundle;
 use Snicco\Bundle\Debug\Displayer\WhoopsHtmlDisplayer;
 use Snicco\Bundle\Debug\Displayer\WhoopsJsonDisplayer;
-use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
+use Snicco\Bundle\Debug\Option\DebugOption;
+use Snicco\Bundle\Debug\Tests\fixtures\StubDisplayer;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
+use Snicco\Component\Kernel\Exception\MissingConfigKey;
+use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
@@ -29,31 +32,17 @@ final class DebugBundleTest extends TestCase
 {
     use BootsKernelForBundleTest;
 
-    private string $base_dir;
     private Directories $directories;
-
-    /**
-     * @var array<'testing'|'prod'|'dev'|'staging'|'all', list< class-string<\Snicco\Component\Kernel\Bundle> >>
-     */
-    private array $bundles;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->base_dir = __DIR__ . '/fixtures/tmp';
-        $this->directories = $this->setUpDirectories($this->base_dir);
-        $this->bundles = [
-            Environment::ALL => [
-                BetterWPHooksBundle::class,
-                HttpRoutingBundle::class,
-                DebugBundle::class,
-            ],
-        ];
+        $this->directories = Directories::fromDefaults(__DIR__ . '/fixtures');
     }
 
     protected function tearDown(): void
     {
-        $this->tearDownDirectories($this->base_dir);
+        $this->removePHPFilesRecursive($this->directories->cacheDir());
         parent::tearDown();
     }
 
@@ -62,7 +51,12 @@ final class DebugBundleTest extends TestCase
      */
     public function test_runs_only_in_dev(): void
     {
-        $kernel = $this->bootWithFixedConfig([], $this->directories);
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::prod(),
+            $this->directories
+        );
+        $kernel->boot();
 
         $this->assertFalse($kernel->usesBundle(DebugBundle::ALIAS));
     }
@@ -72,7 +66,12 @@ final class DebugBundleTest extends TestCase
      */
     public function test_runs_only_in_dev_if_debug_is_enabled(): void
     {
-        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::dev(false));
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(false),
+            $this->directories
+        );
+        $kernel->boot();
 
         $this->assertFalse($kernel->usesBundle(DebugBundle::ALIAS));
     }
@@ -82,7 +81,12 @@ final class DebugBundleTest extends TestCase
      */
     public function test_runs_in_dev_with_debug_enabled(): void
     {
-        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::dev(true));
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(true),
+            $this->directories
+        );
+        $kernel->boot();
 
         $this->assertTrue($kernel->usesBundle(DebugBundle::ALIAS));
     }
@@ -90,13 +94,21 @@ final class DebugBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_whoops_displayers_are_prepended(): void
+    public function test_whoops_displayers_are_prepended_if_the_http_routing_bundle_is_used(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
         );
+
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [
+                StubDisplayer::class
+            ]);
+        });
+
+        $kernel->boot();
 
         $displayers = $kernel->config()->getListOfStrings(
             HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)
@@ -104,8 +116,35 @@ final class DebugBundleTest extends TestCase
 
         $this->assertSame([
             WhoopsHtmlDisplayer::class,
-            WhoopsJsonDisplayer::class
+            WhoopsJsonDisplayer::class,
+            StubDisplayer::class
         ], $displayers);
+    }
+
+    /**
+     * @test
+     */
+    public function whoops_displayers_are_not_prepended_if_the_http_routing_bundle_is_not_used(): void
+    {
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
+        );
+
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('bundles', [
+                DebugBundle::class
+            ]);
+        });
+
+        $kernel->boot();
+
+        $this->expectException(MissingConfigKey::class);
+
+        $kernel->config()->getListOfStrings(
+            'http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS
+        );
     }
 
     /**
@@ -113,11 +152,13 @@ final class DebugBundleTest extends TestCase
      */
     public function test_whoops_displayer_can_be_resolved(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
         );
+
+        $kernel->boot();
 
         $this->assertCanBeResolved(WhoopsHtmlDisplayer::class, $kernel);
     }
@@ -127,11 +168,13 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_use_whoops_for_text_html_requests(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
         );
+
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -160,11 +203,13 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_use_whoops_for_json_requests(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
         );
+
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -199,11 +244,13 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_not_use_whoops_for_json_requests_in_non_debug_mode(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(false)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(false),
+            $this->directories
         );
+
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -228,13 +275,15 @@ final class DebugBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_error_handler_will_use_not_use_whoops_for_non_html_requests(): void
+    public function test_error_handler_will_not_use_whoops_for_other_accept_headers(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(true),
+            $this->directories
         );
+
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -257,13 +306,14 @@ final class DebugBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_error_handler_will_not_use_whoops_for_debug_turned_off(): void
+    public function test_error_handler_will_not_use_whoops_if_debug_turned_off(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(false)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(false),
+            $this->directories
         );
+        $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
@@ -289,11 +339,13 @@ final class DebugBundleTest extends TestCase
      */
     public function test_debug_editor_defaults_to_phpstorm(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
         );
+
+        $kernel->boot();
 
         $this->assertSame('phpstorm', $kernel->config()->getString('debug.editor'));
     }
@@ -303,18 +355,40 @@ final class DebugBundleTest extends TestCase
      */
     public function test_application_paths_defaults_are_set(): void
     {
-        $kernel = $this->bootWithExtraConfig(
-            [],
-            Directories::fromDefaults(__DIR__ . '/fixtures'),
-            Environment::dev(true)
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
         );
 
-        $this->assertNotEmpty($kernel->config()->getListOfStrings('debug.application_paths'));
+        $kernel->boot();
+
+        $paths = $kernel->config()->getListOfStrings('debug.application_paths');
+
+        $this->assertNotEmpty($paths);
+        $this->assertNotContains(__DIR__ . '/fixtures/vendor', $paths);
     }
 
-    protected function bundles(): array
+    /**
+     * @test
+     */
+    public function test_application_paths_defaults_are_not_set_if_already_present(): void
     {
-        return $this->bundles;
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
+        );
+
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('debug.' . DebugOption::APPLICATION_PATHS, [__DIR__]);
+        });
+
+        $kernel->boot();
+
+        $paths = $kernel->config()->getListOfStrings('debug.application_paths');
+
+        $this->assertSame([__DIR__], $paths);
     }
 
 }
