@@ -6,13 +6,10 @@ declare(strict_types=1);
 namespace Snicco\Bundle\BetterWPDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
-use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;
-use Snicco\Component\Kernel\Bootstrapper;
-use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
@@ -30,13 +27,12 @@ final class BetterWPDBBundleTest extends WPTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->base_dir = dirname(__DIR__) . '/fixtures/tmp';
-        $this->directories = $this->setUpDirectories($this->base_dir);
+        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
     }
 
     protected function tearDown(): void
     {
-        $this->tearDownDirectories($this->base_dir);
+        $this->removePHPFilesRecursive($this->directories->cacheDir());
         parent::tearDown();
     }
 
@@ -45,7 +41,12 @@ final class BetterWPDBBundleTest extends WPTestCase
      */
     public function test_alias(): void
     {
-        $kernel = $this->bootWithFixedConfig([], $this->directories);
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->boot();
 
         $this->assertSame(true, $kernel->usesBundle('sniccowp/better-wpdb-bundle'));
     }
@@ -55,16 +56,44 @@ final class BetterWPDBBundleTest extends WPTestCase
      */
     public function test_runs_in_all_environments(): void
     {
-        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::testing());
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
-        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::prod());
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(),
+            $this->directories
+        );
+        $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
-        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::dev());
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::dev(false),
+            $this->directories
+        );
+        $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
-        $kernel = $this->bootWithFixedConfig([], $this->directories, Environment::staging());
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::staging(),
+            $this->directories
+        );
+        $kernel->boot();
+        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::prod(),
+            $this->directories
+        );
+        $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
     }
 
@@ -73,7 +102,12 @@ final class BetterWPDBBundleTest extends WPTestCase
      */
     public function test_better_wpdb_can_be_resolved(): void
     {
-        $kernel = $this->bootWithFixedConfig([], $this->directories);
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->boot();
         $this->assertCanBeResolved(BetterWPDB::class, $kernel);
     }
 
@@ -84,13 +118,17 @@ final class BetterWPDBBundleTest extends WPTestCase
      */
     public function a_custom_query_logger_is_used_if_bound(): void
     {
-        $kernel = $this->bootWithFixedConfig([
-            'app' => [
-                'bootstrappers' => [
-                    CustomQueryLoggerBootstrapper::class,
-                ]
-            ]
-        ], $this->directories);
+        $kernel = new Kernel(
+            $this->container(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()->instance(QueryLogger::class, new TestQueryLogger());
+        });
+
+        $kernel->boot();
+
         $this->assertCanBeResolved(BetterWPDB::class, $kernel);
         $this->assertCanBeResolved(QueryLogger::class, $kernel);
 
@@ -107,15 +145,6 @@ final class BetterWPDBBundleTest extends WPTestCase
         $this->assertSame('select * from wp_users', $logger->logs[0]->sql);
     }
 
-    protected function bundles(): array
-    {
-        return [
-            Environment::ALL => [
-                BetterWPDBBundle::class
-            ]
-        ];
-    }
-
 }
 
 class TestQueryLogger implements QueryLogger
@@ -129,27 +158,5 @@ class TestQueryLogger implements QueryLogger
     public function log(QueryInfo $info): void
     {
         $this->logs[] = $info;
-    }
-}
-
-class CustomQueryLoggerBootstrapper implements Bootstrapper
-{
-
-    public function shouldRun(Environment $env): bool
-    {
-        return true;
-    }
-
-    public function configure(WritableConfig $config, Kernel $kernel): void
-    {
-    }
-
-    public function register(Kernel $kernel): void
-    {
-        $kernel->container()->singleton(QueryLogger::class, fn() => new TestQueryLogger());
-    }
-
-    public function bootstrap(Kernel $kernel): void
-    {
     }
 }
