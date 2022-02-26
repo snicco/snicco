@@ -14,6 +14,8 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function dirname;
+
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
  */
@@ -27,7 +29,7 @@ final class ResponsePostProcessorTest extends TestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::testing(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            Directories::fromDefaults(dirname(__DIR__) . '/fixtures')
         );
 
         $kernel->boot();

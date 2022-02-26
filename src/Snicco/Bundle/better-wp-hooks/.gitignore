@@ -1,4 +1,7 @@
 /.phpunit.cache/
 /vendor
 composer.lock
-/tests/fixtures/tmp
+
+tests/fixtures/var/cache/*
+tests/fixtures/var/log/*
+!tests/fixtures/var/*/.gitkeep

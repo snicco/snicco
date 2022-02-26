@@ -41,7 +41,7 @@
             <exclude>src/Snicco/Bridge/*/tests/wordpress</exclude>
         </testsuite>
 
-        <testsuite name="Bundle">
+        <testsuite name="bundle">
             <directory suffix="Test.php">src/Snicco/Bundle/*/tests/</directory>
             <exclude>src/Snicco/Bundle/*/tests/integration</exclude>
             <exclude>src/Snicco/Bundle/*/tests/wordpress</exclude>

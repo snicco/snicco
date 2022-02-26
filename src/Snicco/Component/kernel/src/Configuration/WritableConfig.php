@@ -39,7 +39,7 @@ final class WritableConfig extends Config
      *
      * @note This method does not work for multidimensional arrays. The existing config has to be an array of scalars.
      *
-     * @param scalar|array<scalar> $extend_with
+     * @param ?scalar|array<?scalar> $extend_with
      */
     public function extend(string $key, $extend_with): void
     {
@@ -105,6 +105,19 @@ final class WritableConfig extends Config
     }
 
     /**
+     * @param mixed $value
+     */
+    public function setIfMissing(string $key, $value): void
+    {
+        if (!$this->has($key)) {
+            $this->set($key, $value);
+        }
+    }
+
+    /**
+     * @note Assuming you have [4,5,6]. ->prepend([1,2,3]) will result in [3,2,1,4,5,6].
+     *       Arrays are NOT merged. Each value is prepended individually.
+     *
      * @param scalar|scalar[] $value
      *
      * @throws LogicException If key is missing or not a numerical array.
@@ -149,8 +162,8 @@ final class WritableConfig extends Config
     }
 
     /**
-     * @param array<scalar> $extend_with
-     * @param array<scalar> $exiting_config
+     * @param array<?scalar> $extend_with
+     * @param array<?scalar> $exiting_config
      */
     private function mergedArrayConfig(array $extend_with, array $exiting_config): array
     {

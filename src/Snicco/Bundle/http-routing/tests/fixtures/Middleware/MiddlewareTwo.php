@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware;
+namespace Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware;
 
 
 use Psr\Http\Message\ResponseInterface;

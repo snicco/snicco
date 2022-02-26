@@ -21,8 +21,6 @@ use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
-use function array_merge;
-
 final class DebugBundle implements Bundle
 {
 
@@ -59,21 +57,15 @@ final class DebugBundle implements Bundle
 
     private function configureHttpRouting(WritableConfig $config, Kernel $kernel): void
     {
-        $displayers = $config->getListOfStrings(
-            $key = HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS),
-            []
+        $config->prepend(HttpErrorHandlingOption::KEY . '.' . HttpErrorHandlingOption::DISPLAYERS, [
+            WhoopsJsonDisplayer::class,
+            WhoopsHtmlDisplayer::class
+        ]);
+        $config->setIfMissing(DebugOption::KEY . '.' . DebugOption::EDITOR, 'phpstorm');
+        $config->setIfMissing(
+            DebugOption::KEY . '.' . DebugOption::APPLICATION_PATHS,
+            $this->allDirectoriesExpectVendor($kernel->directories())
         );
-        $prepended = array_merge([WhoopsHtmlDisplayer::class, WhoopsJsonDisplayer::class], $displayers);
-        $config->set($key, $prepended);
-
-        $config->extend('debug.' . DebugOption::EDITOR, 'phpstorm');
-
-        if (!$config->has('debug.' . DebugOption::APPLICATION_PATHS)) {
-            $config->extend(
-                'debug.' . DebugOption::APPLICATION_PATHS,
-                $this->allDirectoriesExpectVendor($kernel->directories())
-            );
-        }
     }
 
     private function registerHttpDebugServices(Kernel $kernel): void
