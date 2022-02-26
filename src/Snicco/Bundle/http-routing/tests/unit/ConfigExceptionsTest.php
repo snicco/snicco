@@ -8,12 +8,11 @@ namespace Snicco\Bundle\HttpRouting\Tests\unit;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
-use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareOne;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\Middleware\MiddlewareTwo;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareOne;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareTwo;
 use Snicco\Bundle\Testing\BootsKernelForBundleTest;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
@@ -27,6 +26,8 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use stdClass;
 
+use function dirname;
+
 final class ConfigExceptionsTest extends TestCase
 {
     use BootsKernelForBundleTest;
@@ -36,7 +37,24 @@ final class ConfigExceptionsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->directories = Directories::fromDefaults(__DIR__ . '/fixtures');
+        $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures');
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_routing_host_is_not_set(): void
+    {
+        $kernel = new Kernel($this->container(), Environment::testing(), $this->directories);
+
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing', []);
+        });
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('routing.host must be a non-empty-string');
+
+        $kernel->boot();
     }
 
     /**
@@ -53,16 +71,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, '');
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-                RoutingOption::WP_ADMIN_PREFIX => ''
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -79,16 +92,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::WP_LOGIN_PATH, '');
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-                RoutingOption::WP_LOGIN_PATH => ''
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -105,16 +113,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, ['foo' => 'bar']);
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-                RoutingOption::ROUTE_DIRECTORIES => ['foo' => 'bar']
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -131,16 +134,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, [__DIR__, __DIR__ . '/bogus']);
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-                RoutingOption::ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus']
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -157,17 +155,12 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::API_ROUTE_DIRECTORIES, [__DIR__, __DIR__ . '/bogus']);
+            $config->set('routing.' . RoutingOption::API_PREFIX, 'snicco');
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus'],
-                RoutingOption::API_PREFIX => 'snicco'
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -184,16 +177,14 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('routing', [
+                RoutingOption::HOST => 'snicco.com',
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus']
+            ]);
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__],
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -210,18 +201,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo']);
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'middleware' => [
-                MiddlewareOption::GROUPS => ['foo']
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -238,18 +222,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => 'bar']);
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'middleware' => [
-                MiddlewareOption::GROUPS => ['foo' => 'bar']
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -268,18 +245,11 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => ['bar', 1]]);
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'middleware' => [
-                MiddlewareOption::GROUPS => ['foo' => ['bar', 1]]
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -298,18 +268,14 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'middleware.' . MiddlewareOption::ALIASES,
+                ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
+            );
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'middleware' => [
-                MiddlewareOption::ALIASES => ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -328,19 +294,14 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'middleware.' . MiddlewareOption::ALIASES,
+                ['foo' => stdClass::class]
+            );
+        });
 
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-
-            ],
-            'middleware' => [
-                MiddlewareOption::ALIASES => ['foo' => stdClass::class]
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -359,22 +320,18 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'middleware' => [
-                MiddlewareOption::PRIORITY_LIST => [
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'middleware.' . MiddlewareOption::PRIORITY_LIST,
+                [
                     MiddlewareOne::class,
                     MiddlewareTwo::class,
                     stdClass::class,
                 ]
-            ]
-        ]);
+            );
+        });
 
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -393,23 +350,19 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'middleware' => [
-                MiddlewareOption::ALWAYS_RUN => [
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'middleware.' . MiddlewareOption::ALWAYS_RUN,
+                [
                     'frontend',
                     'admin',
                     'api',
                     'foo'
                 ]
-            ]
-        ]);
+            );
+        });
 
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -428,23 +381,18 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-
-            ],
-            'middleware' => [
-                MiddlewareOption::KERNEL_MIDDLEWARE => [
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'middleware.' . MiddlewareOption::KERNEL_MIDDLEWARE,
+                [
                     RoutingMiddleware::class,
                     RouteRunner::class,
                     stdClass::class,
                 ]
-            ]
-        ]);
+            );
+        });
 
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -463,21 +411,16 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-
-            ],
-            'http_error_handling' => [
-                HttpErrorHandlingOption::DISPLAYERS => [
-                    stdClass::class
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS,
+                [
+                    stdClass::class,
                 ]
-            ]
-        ]);
+            );
+        });
 
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -496,21 +439,16 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-
-            ],
-            'http_error_handling' => [
-                HttpErrorHandlingOption::TRANSFORMERS => [
-                    stdClass::class
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS,
+                [
+                    stdClass::class,
                 ]
-            ]
-        ]);
+            );
+        });
 
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -529,20 +467,16 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'http_error_handling' => [
-                HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
-                    stdClass::class
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set(
+                'http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT,
+                [
+                    stdClass::class,
                 ]
-            ]
-        ]);
+            );
+        });
 
-        $bundle->configure($config, $kernel);
+        $kernel->boot();
     }
 
     /**
@@ -563,22 +497,15 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-
-            ],
-            'http_error_handling' => [
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => LogLevel::ERROR,
                     stdClass::class => LogLevel::CRITICAL
                 ]
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
+            ]);
+        });
+        $kernel->boot();
     }
 
     /**
@@ -597,29 +524,14 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $bundle = new HttpRoutingBundle();
-
-        $config = WritableConfig::fromArray([
-            'routing' => [
-                'host' => 'foo.com',
-            ],
-            'http_error_handling' => [
+        $kernel->beforeConfiguration(function (WritableConfig $config) {
+            $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => 'bogus',
                 ]
-            ]
-        ]);
-
-        $bundle->configure($config, $kernel);
-    }
-
-    protected function bundles(): array
-    {
-        return [
-            Environment::ALL => [
-                HttpRoutingBundle::class
-            ]
-        ];
+            ]);
+        });
+        $kernel->boot();
     }
 
 }

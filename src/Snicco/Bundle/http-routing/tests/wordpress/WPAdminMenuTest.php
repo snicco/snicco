@@ -17,6 +17,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use WP_UnitTest_Factory_For_User;
 use WP_User;
 
+use function dirname;
 use function do_action;
 use function serialize;
 use function wp_set_current_user;
@@ -35,7 +36,7 @@ final class WPAdminMenuTest extends WPTestCase
         $this->kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::testing(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            Directories::fromDefaults(dirname(__DIR__) . '/fixtures')
         );
         $this->kernel->boot();
 

@@ -14,7 +14,8 @@ use Snicco\Bundle\HttpRouting\Event\ResponseSent;
 use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
 use Snicco\Bundle\HttpRouting\HttpKernelRunner;
 use Snicco\Bundle\HttpRouting\ResponseEmitter\LaminasEmitterStack;
-use Snicco\Bundle\HttpRouting\Tests\wordpress\fixtures\Controller\HttpRunnerTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\Controller\HttpRunnerTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
@@ -22,7 +23,9 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function dirname;
 use function do_action;
+use function is_file;
 use function remove_all_filters;
 
 /**
@@ -35,6 +38,7 @@ final class HttpKernelRunnerTest extends WPTestCase
     private HttpKernelRunner $http_dispatcher;
     private array $_get;
     private array $_server;
+    private Directories $directories;
 
     protected function setUp(): void
     {
@@ -46,7 +50,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $this->kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::testing(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories = Directories::fromDefaults(dirname(__DIR__) . '/fixtures')
         );
         $this->kernel->boot();
         $this->http_dispatcher = $this->kernel->container()->make(HttpKernelRunner::class);
@@ -58,6 +62,11 @@ final class HttpKernelRunnerTest extends WPTestCase
     {
         $_GET = $this->_get;
         $_SERVER = $this->_server;
+
+        if (is_file($file = $this->directories->cacheDir() . '/prod.config.php')) {
+            $this->unlink($file);
+        }
+
         parent::tearDown();
     }
 
@@ -69,7 +78,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::prod(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories,
         );
         $kernel->boot();
         $this->assertInstanceOf(
@@ -84,7 +93,7 @@ final class HttpKernelRunnerTest extends WPTestCase
     public function test_frontend_requests(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/frontend1';
+        $_SERVER['REQUEST_URI'] = '/frontend';
 
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
@@ -104,7 +113,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            return HttpRunnerTestController::class === (string)$response->getBody()
+            return RoutingBundleTestController::class === (string)$response->getBody()
                 && !$response instanceof DelegatedResponse;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -479,7 +488,7 @@ final class HttpKernelRunnerTest extends WPTestCase
     public function test_run_sends_a_frontend_response_immediately(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/frontend1';
+        $_SERVER['REQUEST_URI'] = '/frontend';
 
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
@@ -497,7 +506,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            return HttpRunnerTestController::class === (string)$response->getBody()
+            return RoutingBundleTestController::class === (string)$response->getBody()
                 && !$response instanceof DelegatedResponse;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -541,12 +550,12 @@ final class HttpKernelRunnerTest extends WPTestCase
     public function test_laminas_is_used_in_non_testing_env(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/frontend1';
+        $_SERVER['REQUEST_URI'] = '/frontend';
 
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::dev(),
-            Directories::fromDefaults(__DIR__ . '/fixtures')
+            $this->directories,
         );
         $kernel->boot();
 

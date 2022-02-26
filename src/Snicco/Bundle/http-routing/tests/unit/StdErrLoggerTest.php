@@ -13,6 +13,7 @@ use RuntimeException;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
 use stdClass;
 
+use function dirname;
 use function explode;
 use function file_get_contents;
 use function ini_set;
@@ -29,7 +30,7 @@ final class StdErrLoggerTest extends TestCase
     {
         parent::setUp();
 
-        $this->log_file = __DIR__ . '/fixtures/error.log';
+        $this->log_file = dirname(__DIR__) . '/fixtures/error.log';
         $prev = ini_set('error_log', $this->log_file);
         if (false === $prev) {
             throw new RuntimeException('Could not set php ini setting for error_log.');
