@@ -251,26 +251,6 @@ final class KernelTest extends TestCase
     /**
      * @test
      */
-    public function after_configuration_callbacks_can_be_added(): void
-    {
-        $kernel = new Kernel(
-            $this->createContainer(),
-            Environment::testing(),
-            Directories::fromDefaults($this->base_dir)
-        );
-
-        $kernel->afterConfiguration(function (WritableConfig $config, Kernel $kernel) {
-            $config->set('foo', $kernel->env()->asString());
-        });
-
-        $kernel->boot();
-
-        $this->assertSame('testing', $kernel->config()->get('foo'));
-    }
-
-    /**
-     * @test
-     */
     public function test_before_configuration_callbacks_can_be_added(): void
     {
         $kernel = new Kernel(
@@ -279,7 +259,7 @@ final class KernelTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config, Kernel $kernel) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config, Kernel $kernel) {
             $config->set('foo', $kernel->env()->asString());
         });
 
@@ -309,25 +289,6 @@ final class KernelTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
-    public function test_exception_if_after_configuration_callback_is_added_after_kernel_is_booted(): void
-    {
-        $kernel = new Kernel(
-            $this->createContainer(),
-            Environment::testing(),
-            Directories::fromDefaults($this->base_dir)
-        );
-
-        $kernel->boot();
-
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('configuration callbacks can not be added after the kernel was booted.');
-
-        $kernel->afterConfiguration(function () {
-        });
-    }
 
     /**
      * @test
@@ -345,7 +306,7 @@ final class KernelTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('configuration callbacks can not be added after the kernel was booted.');
 
-        $kernel->beforeConfiguration(function () {
+        $kernel->afterConfigurationLoaded(function () {
         });
     }
 

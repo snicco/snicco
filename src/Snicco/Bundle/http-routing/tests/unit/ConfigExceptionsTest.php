@@ -39,7 +39,7 @@ final class ConfigExceptionsTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', []);
         });
 
@@ -63,7 +63,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, '');
         });
 
@@ -84,7 +84,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::WP_LOGIN_PATH, '');
         });
 
@@ -105,7 +105,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, ['foo' => 'bar']);
         });
 
@@ -126,7 +126,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, [__DIR__, __DIR__ . '/bogus']);
         });
 
@@ -147,7 +147,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::API_ROUTE_DIRECTORIES, [__DIR__, __DIR__ . '/bogus']);
             $config->set('routing.' . RoutingOption::API_PREFIX, 'snicco');
         });
@@ -169,7 +169,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
                 RoutingOption::HOST => 'snicco.com',
                 RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus']
@@ -193,7 +193,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo']);
         });
 
@@ -214,7 +214,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => 'bar']);
         });
 
@@ -237,7 +237,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => ['bar', 1]]);
         });
 
@@ -260,7 +260,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::ALIASES,
                 ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
@@ -286,7 +286,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::ALIASES,
                 ['foo' => stdClass::class]
@@ -312,7 +312,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::PRIORITY_LIST,
                 [
@@ -342,7 +342,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::ALWAYS_RUN,
                 [
@@ -373,7 +373,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::KERNEL_MIDDLEWARE,
                 [
@@ -403,7 +403,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS,
                 [
@@ -431,7 +431,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS,
                 [
@@ -459,7 +459,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT,
                 [
@@ -489,7 +489,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => LogLevel::ERROR,
@@ -516,7 +516,7 @@ final class ConfigExceptionsTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => 'bogus',

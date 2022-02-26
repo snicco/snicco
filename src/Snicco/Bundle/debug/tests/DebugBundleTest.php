@@ -87,7 +87,7 @@ final class DebugBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [
                 StubDisplayer::class
             ]);
@@ -117,7 +117,7 @@ final class DebugBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 DebugBundle::class
             ]);
@@ -365,7 +365,7 @@ final class DebugBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('debug.' . DebugOption::APPLICATION_PATHS, [__DIR__]);
         });
 

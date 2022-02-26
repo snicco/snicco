@@ -44,7 +44,7 @@ final class MiddlewareCacheTest extends TestCase
             $this->directories
         );
 
-        $kernel->afterConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware', [
                 MiddlewareOption::ALWAYS_RUN => [
                     RoutingConfigurator::FRONTEND_MIDDLEWARE
@@ -75,7 +75,7 @@ final class MiddlewareCacheTest extends TestCase
             $this->directories
         );
 
-        $kernel->afterConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware', [
                 MiddlewareOption::ALWAYS_RUN => [
                     RoutingConfigurator::FRONTEND_MIDDLEWARE

@@ -57,12 +57,7 @@ final class Kernel
     /**
      * @var array<callable(WritableConfig,Kernel):void>
      */
-    private array $after_configuration_callbacks = [];
-
-    /**
-     * @var array<callable(WritableConfig,Kernel):void>
-     */
-    private array $before_configuration_callbacks = [];
+    private array $after_config_loaded_callbacks = [];
 
     public function __construct(
         DIContainer $container,
@@ -136,7 +131,8 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all bundles and bootstrappers have been registered.
+     * Adds a callback that will be run after all bundles and bootstrappers have been registered, but BEFORE
+     * they are bootstrapped. This is the last opportunity to modify services in the container before it gets locked.
      *
      * @param callable(Kernel):void $callback
      */
@@ -149,32 +145,17 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all configuration files have been loaded from disk and after all bundles
-     * were configured. This is the last option to modify the writable configuration before its written to disk.
-     * Callbacks will NOT be run if the configuration is cached.
-     *
-     * @param callable(WritableConfig, Kernel):void $callback
-     */
-    public function afterConfiguration(callable $callback): void
-    {
-        if ($this->booted) {
-            throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
-        }
-        $this->after_configuration_callbacks[] = $callback;
-    }
-
-    /**
      * Adds a callback that will be run after all configuration files have been loaded from disk but BEFORE all bundles are configured.
      * Callbacks will NOT be run if the configuration is cached.
      *
      * @param callable(WritableConfig, Kernel):void $callback
      */
-    public function beforeConfiguration(callable $callback): void
+    public function afterConfigurationLoaded(callable $callback): void
     {
         if ($this->booted) {
             throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
         }
-        $this->before_configuration_callbacks[] = $callback;
+        $this->after_config_loaded_callbacks[] = $callback;
     }
 
     private function loadConfiguration(): array
@@ -196,8 +177,7 @@ final class Kernel
             $writable_config->set('bundles', []);
         }
 
-        // @todo should these callbacks be allowed to change bundle and bootstrapper configuration?
-        foreach ($this->before_configuration_callbacks as $callback) {
+        foreach ($this->after_config_loaded_callbacks as $callback) {
             $callback($writable_config, $this);
         }
 
@@ -215,10 +195,6 @@ final class Kernel
         }
 
         $this->loaded_from_cache = false;
-
-        foreach ($this->after_configuration_callbacks as $callback) {
-            $callback($writable_config, $this);
-        }
 
         return $writable_config->toArray();
     }
