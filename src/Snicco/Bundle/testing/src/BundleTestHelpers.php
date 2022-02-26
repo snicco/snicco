@@ -16,8 +16,6 @@ use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
-use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\StrArr\Arr;
 use SplFileInfo;
 
 use function file_put_contents;
@@ -28,28 +26,35 @@ use function rmdir;
 use function unlink;
 use function var_export;
 
-trait BootsKernelForBundleTest
+trait BundleTestHelpers
 {
+    protected Directories $directories;
 
-    protected ?DIContainer $container = null;
-
-    protected function container(): DIContainer
+    protected function setUp(): void
     {
-        if (isset($this->container)) {
-            return $this->container;
-        }
+        parent::setUp();
+        $this->setUpDirectories();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->tearDownDirectories();
+        parent::tearDown();
+    }
+
+    abstract protected function fixturesDir(): string;
+
+    protected function newContainer(): DIContainer
+    {
         return new PimpleContainerAdapter();
     }
 
-    /**
-     * @return array<'testing'|'prod'|'dev'|'staging'|'all', list< class-string<\Snicco\Component\Kernel\Bundle> >>
-     */
-    abstract protected function bundles(): array;
-
-    protected function setUpDirectories(string $base_dir): Directories
+    protected function setUpDirectories(): void
     {
-        if (!is_dir($base_dir)) {
-            $res = mkdir($base_dir, 0775, true);
+        $fixtures_dir = $this->fixturesDir();
+
+        if (!is_dir($fixtures_dir)) {
+            $res = mkdir($fixtures_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create base directory');
@@ -57,7 +62,7 @@ trait BootsKernelForBundleTest
             }
         }
 
-        $config_dir = $base_dir . '/config';
+        $config_dir = $fixtures_dir . '/config';
 
         if (!is_dir($config_dir)) {
             $res = mkdir($config_dir, 0775, true);
@@ -77,7 +82,7 @@ trait BootsKernelForBundleTest
             }
         }
 
-        $cache_dir = $base_dir . '/var/cache';
+        $cache_dir = $fixtures_dir . '/var/cache';
 
         if (!is_dir($cache_dir)) {
             $res = mkdir($cache_dir, 0775, true);
@@ -88,7 +93,7 @@ trait BootsKernelForBundleTest
             }
         }
 
-        $log_dir = $base_dir . '/var/log';
+        $log_dir = $fixtures_dir . '/var/log';
 
         if (!is_dir($log_dir)) {
             $res = mkdir($log_dir, 0775, true);
@@ -99,16 +104,53 @@ trait BootsKernelForBundleTest
             }
         }
 
-        return Directories::fromDefaults($base_dir);
+        $this->directories = Directories::fromDefaults($fixtures_dir);
+        $this->tearDownDirectories();
     }
 
-    protected function tearDownDirectories(string $base_dir): void
+    protected function tearDownDirectories(): void
+    {
+        $this->removePHPFilesRecursive($this->directories->cacheDir());
+        $this->removePHPFilesRecursive($this->directories->logDir());
+    }
+
+    protected function removePHPFilesRecursive(string $base_dir): void
     {
         $iterator = new RecursiveDirectoryIterator($base_dir, FilesystemIterator::SKIP_DOTS);
         $objects = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
         $files = [];
-        $dirs = [];
 
+        /**
+         * @var string $name
+         * @var SplFileInfo $file_info
+         */
+        foreach ($objects as $name => $file_info) {
+            if ($file_info->isDir()) {
+                continue;
+            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php') {
+                $files[] = $name;
+            }
+        }
+
+        foreach ($files as $file) {
+            $res = unlink($file);
+            if (false === $res) {
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException("Could not remove test fixture file [$file].");
+                // @codeCoverageIgnoreEnd
+            }
+        }
+    }
+
+    /**
+     * This method will remove the provided directory recursively. You have been warnded.
+     */
+    protected function removeDirectoryRecursive(string $directory): void
+    {
+        $iterator = new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS);
+        $objects = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
+        $files = [];
+        $dirs = [];
         /**
          * @var string $name
          * @var SplFileInfo $file_info
@@ -130,7 +172,8 @@ trait BootsKernelForBundleTest
             }
         }
 
-        $dirs[] = $base_dir;
+        $dirs[] = $directory;
+
         foreach ($dirs as $dir) {
             $res = rmdir($dir);
             if (false === $res) {
@@ -139,46 +182,6 @@ trait BootsKernelForBundleTest
                 // @codeCoverageIgnoreEnd
             }
         }
-    }
-
-    /**
-     * @param array<string, array> $config
-     */
-    protected function bootWithFixedConfig(array $config, Directories $dirs, ?Environment $env = null): Kernel
-    {
-        if (!Arr::has($config, 'app.bootstrappers')) {
-            Arr::set($config, 'app.bootstrappers', []);
-        }
-        if (!Arr::has($config, 'bundles')) {
-            Arr::set($config, 'bundles', $this->bundles());
-        }
-        $kernel = new Kernel(
-            $this->container(),
-            $env ?: Environment::testing(),
-            $dirs,
-            new FixedConfigCache($config)
-        );
-
-        $kernel->boot();
-
-        return $kernel;
-    }
-
-    /**
-     * @param array<string, array> $extra
-     */
-    protected function bootWithExtraConfig(array $extra, Directories $dirs, ?Environment $env = null): Kernel
-    {
-        $kernel = new Kernel(
-            $this->container(),
-            $env ?: Environment::testing(),
-            $dirs,
-            new ExtraConfigCache($extra)
-        );
-
-        $kernel->boot();
-
-        return $kernel;
     }
 
     /**

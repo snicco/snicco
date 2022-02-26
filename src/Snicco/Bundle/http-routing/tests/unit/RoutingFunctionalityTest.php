@@ -10,7 +10,8 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Middleware\SimpleTemplating;
-use Snicco\Bundle\HttpRouting\Tests\unit\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
@@ -19,9 +20,9 @@ use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\Kernel\Kernel;
-use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function dirname;
 use function is_file;
 use function unlink;
 
@@ -31,28 +32,24 @@ use function unlink;
 final class RoutingFunctionalityTest extends TestCase
 {
 
-    private Directories $dirs;
-    private string $expected_cache_file;
+    use BundleTestHelpers;
+
+    private string $expected_route_cache_file;
+    private string $cache_dir;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->expected_cache_file = __DIR__ . '/fixtures/var/cache/prod.routes-generated.php';
-        if (is_file($this->expected_cache_file)) {
-            unlink($this->expected_cache_file);
+        $this->setUpDirectories();
+        $this->expected_route_cache_file = $this->directories->cacheDir() . '/prod.routes-generated.php';
+        if (is_file($this->expected_route_cache_file)) {
+            unlink($this->expected_route_cache_file);
         }
-        $this->dirs = Directories::fromDefaults(__DIR__ . '/fixtures');
     }
 
-    protected function tearDown(): void
+    protected function fixturesDir(): string
     {
-        if (is_file($this->expected_cache_file)) {
-            unlink($this->expected_cache_file);
-        }
-        if (is_file(__DIR__ . '/fixtures/var/cache/prod.middleware-map-generated.php')) {
-            unlink(__DIR__ . '/fixtures/var/cache/prod.middleware-map-generated.php');
-        }
-        parent::tearDown();
+        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -63,7 +60,7 @@ final class RoutingFunctionalityTest extends TestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::dev(),
-            $this->dirs
+            $this->directories
         );
 
         $kernel->boot();
@@ -83,7 +80,7 @@ final class RoutingFunctionalityTest extends TestCase
             });
 
         $this->assertSame(RoutingBundleTestController::class, (string)$response->getBody());
-        $this->assertFalse(is_file($this->expected_cache_file));
+        $this->assertFalse(is_file($this->expected_route_cache_file));
     }
 
     /**
@@ -94,7 +91,7 @@ final class RoutingFunctionalityTest extends TestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::prod(),
-            $this->dirs
+            $this->directories
         );
 
         $kernel->boot();
@@ -114,7 +111,8 @@ final class RoutingFunctionalityTest extends TestCase
             });
 
         $this->assertSame(RoutingBundleTestController::class, (string)$response->getBody());
-        $this->assertTrue(is_file($this->expected_cache_file));
+        $this->assertTrue(is_file($this->expected_route_cache_file));
+        $this->assertTrue(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
     }
 
     /**
@@ -126,7 +124,7 @@ final class RoutingFunctionalityTest extends TestCase
         $kernel = new Kernel(
             $container,
             Environment::dev(),
-            $this->dirs
+            $this->directories
         );
 
         $kernel->boot();
@@ -156,7 +154,7 @@ final class RoutingFunctionalityTest extends TestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::dev(),
-            $this->dirs
+            $this->directories
         );
 
         $kernel->boot();
@@ -186,7 +184,7 @@ final class RoutingFunctionalityTest extends TestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::dev(),
-            $this->dirs
+            $this->directories
         );
 
         $kernel->boot();
@@ -219,7 +217,7 @@ final class RoutingFunctionalityTest extends TestCase
         $kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::dev(),
-            $this->dirs
+            $this->directories
         );
 
         $kernel->boot();
@@ -242,6 +240,4 @@ final class RoutingFunctionalityTest extends TestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('', (string)$response->getBody());
     }
-
-
 }

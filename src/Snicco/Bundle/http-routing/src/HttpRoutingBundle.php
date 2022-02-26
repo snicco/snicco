@@ -294,10 +294,6 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindPsr17Discovery(DIContainer $container): void
     {
-        // Allow using other psr implementations.
-        if ($container->has(Psr17FactoryDiscovery::class)) {
-            return;
-        }
         $container->singleton(Psr17FactoryDiscovery::class, function (): Psr17FactoryDiscovery {
             return new Psr17FactoryDiscovery();
         });
@@ -393,14 +389,14 @@ final class HttpRoutingBundle implements Bundle
             );
         }
 
-        $config->extend(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX), '/wp-admin');
-        $config->extend(RoutingOption::key(RoutingOption::WP_LOGIN_PATH), '/wp-login.php');
-        $config->extend(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES), []);
-        $config->extend(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES), []);
-        $config->extend(RoutingOption::key(RoutingOption::API_PREFIX), '');
-        $config->extend(RoutingOption::key(RoutingOption::HTTP_PORT), 80);
-        $config->extend(RoutingOption::key(RoutingOption::HTTPS_PORT), 443);
-        $config->extend(RoutingOption::key(RoutingOption::USE_HTTPS), true);
+        $config->setIfMissing(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX), '/wp-admin');
+        $config->setIfMissing(RoutingOption::key(RoutingOption::WP_LOGIN_PATH), '/wp-login.php');
+        $config->setIfMissing(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES), []);
+        $config->setIfMissing(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES), []);
+        $config->setIfMissing(RoutingOption::key(RoutingOption::API_PREFIX), '');
+        $config->setIfMissing(RoutingOption::key(RoutingOption::HTTP_PORT), 80);
+        $config->setIfMissing(RoutingOption::key(RoutingOption::HTTPS_PORT), 443);
+        $config->setIfMissing(RoutingOption::key(RoutingOption::USE_HTTPS), true);
 
         // quick type checks.
         $config->getInteger(RoutingOption::key(RoutingOption::HTTP_PORT));
@@ -459,20 +455,15 @@ final class HttpRoutingBundle implements Bundle
 
     private function configureMiddleware(WritableConfig $config): void
     {
-        if (!$config->has(MiddlewareOption::key(MiddlewareOption::GROUPS))) {
-            $config->set(MiddlewareOption::key(MiddlewareOption::GROUPS), []);
-        }
-        $config->extend(MiddlewareOption::key(MiddlewareOption::ALIASES), []);
-        $config->extend(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST), []);
-        $config->extend(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN), []);
-
-        if (!$config->has($key = MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE))) {
-            $config->set($key, [
-                ErrorsToExceptions::class,
-                RoutingMiddleware::class,
-                RouteRunner::class
-            ]);
-        }
+        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::GROUPS), []);
+        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::ALIASES), []);
+        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST), []);
+        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN), []);
+        $config->setIfMissing(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE), [
+            ErrorsToExceptions::class,
+            RoutingMiddleware::class,
+            RouteRunner::class
+        ]);
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
             if (!is_string($key)) {
@@ -580,10 +571,10 @@ final class HttpRoutingBundle implements Bundle
             $config->set(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX), $name);
         }
 
-        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS), []);
-        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS), []);
-        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT), []);
-        $config->extend(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS), []);
+        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS), []);
+        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS), []);
+        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT), []);
+        $config->setIfMissing(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS), []);
 
         foreach (
             $config->getListOfStrings(

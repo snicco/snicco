@@ -57,7 +57,7 @@ final class Kernel
     /**
      * @var array<callable(WritableConfig,Kernel):void>
      */
-    private array $after_configuration_callbacks = [];
+    private array $after_config_loaded_callbacks = [];
 
     public function __construct(
         DIContainer $container,
@@ -79,7 +79,7 @@ final class Kernel
         }
 
         $cached_config = $this->config_cache->get($this->configCacheFile(), function () {
-            return $this->loadAllConfigFilesFromDisk();
+            return $this->loadConfiguration();
         });
 
         $this->read_only_config = ReadOnlyConfig::fromArray($cached_config);
@@ -131,7 +131,8 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all bundles and bootstrappers have been registered.
+     * Adds a callback that will be run after all bundles and bootstrappers have been registered, but BEFORE
+     * they are bootstrapped. This is the last opportunity to modify services in the container before it gets locked.
      *
      * @param callable(Kernel):void $callback
      */
@@ -144,20 +145,20 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all configuration calls have been loaded from disk.
+     * Adds a callback that will be run after all configuration files have been loaded from disk but BEFORE all bundles are configured.
      * Callbacks will NOT be run if the configuration is cached.
      *
      * @param callable(WritableConfig, Kernel):void $callback
      */
-    public function afterConfiguration(callable $callback): void
+    public function afterConfigurationLoaded(callable $callback): void
     {
         if ($this->booted) {
             throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
         }
-        $this->after_configuration_callbacks[] = $callback;
+        $this->after_config_loaded_callbacks[] = $callback;
     }
 
-    private function loadAllConfigFilesFromDisk(): array
+    private function loadConfiguration(): array
     {
         $config_dir = $this->dirs->configDir();
 
@@ -176,6 +177,10 @@ final class Kernel
             $writable_config->set('bundles', []);
         }
 
+        foreach ($this->after_config_loaded_callbacks as $callback) {
+            $callback($writable_config, $this);
+        }
+
         $this->setBundlesAndBootstrappers(
             $writable_config->getArray('bundles'),
             $writable_config->getListOfStrings('app.bootstrappers')
@@ -190,10 +195,6 @@ final class Kernel
         }
 
         $this->loaded_from_cache = false;
-
-        foreach ($this->after_configuration_callbacks as $callback) {
-            $callback($writable_config, $this);
-        }
 
         return $writable_config->toArray();
     }

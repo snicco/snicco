@@ -13,6 +13,8 @@ final class HttpErrorHandlingOption
     public const LOG_LEVELS = 'exception_log_levels';
     public const LOG_PREFIX = 'error_log_name';
 
+    public const KEY = 'http_error_handling';
+
     /**
      * @interal
      */

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\HttpRouting\Tests\unit\fixtures;
+namespace Snicco\Bundle\HttpRouting\Tests\fixtures;
 
 use function trigger_error;
 
