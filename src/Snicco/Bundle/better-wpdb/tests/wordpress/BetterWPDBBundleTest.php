@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\BetterWPDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
-use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;
@@ -19,7 +19,7 @@ use function dirname;
 final class BetterWPDBBundleTest extends WPTestCase
 {
 
-    use BootsKernelForBundleTest;
+    use BundleTestHelpers;
 
     private string $base_dir;
     private Directories $directories;
@@ -42,7 +42,7 @@ final class BetterWPDBBundleTest extends WPTestCase
     public function test_alias(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -57,7 +57,7 @@ final class BetterWPDBBundleTest extends WPTestCase
     public function test_runs_in_all_environments(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -65,7 +65,7 @@ final class BetterWPDBBundleTest extends WPTestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -73,7 +73,7 @@ final class BetterWPDBBundleTest extends WPTestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(false),
             $this->directories
         );
@@ -81,7 +81,7 @@ final class BetterWPDBBundleTest extends WPTestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::staging(),
             $this->directories
         );
@@ -89,7 +89,7 @@ final class BetterWPDBBundleTest extends WPTestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -103,7 +103,7 @@ final class BetterWPDBBundleTest extends WPTestCase
     public function test_better_wpdb_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -119,7 +119,7 @@ final class BetterWPDBBundleTest extends WPTestCase
     public function a_custom_query_logger_is_used_if_bound(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );

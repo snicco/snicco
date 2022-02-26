@@ -31,6 +31,19 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
+    public function test_setIfMissing(): void
+    {
+        $this->config->set('foo', null);
+        $this->config->setIfMissing('foo', 'bar');
+        $this->assertNull($this->config->get('foo'));
+
+        $this->config->setIfMissing('baz', 'biz');
+        $this->assertSame('biz', $this->config->get('baz'));
+    }
+
+    /**
+     * @test
+     */
     public function a_value_can_be_a_boolean_false(): void
     {
         $this->config->extend('foo', false);

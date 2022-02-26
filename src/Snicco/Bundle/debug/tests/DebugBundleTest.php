@@ -14,7 +14,7 @@ use Snicco\Bundle\Debug\Displayer\WhoopsJsonDisplayer;
 use Snicco\Bundle\Debug\Option\DebugOption;
 use Snicco\Bundle\Debug\Tests\fixtures\StubDisplayer;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
-use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
@@ -30,7 +30,7 @@ use const JSON_THROW_ON_ERROR;
 
 final class DebugBundleTest extends TestCase
 {
-    use BootsKernelForBundleTest;
+    use BundleTestHelpers;
 
     private Directories $directories;
 
@@ -52,7 +52,7 @@ final class DebugBundleTest extends TestCase
     public function test_runs_only_in_dev(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -67,7 +67,7 @@ final class DebugBundleTest extends TestCase
     public function test_runs_only_in_dev_if_debug_is_enabled(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(false),
             $this->directories
         );
@@ -82,7 +82,7 @@ final class DebugBundleTest extends TestCase
     public function test_runs_in_dev_with_debug_enabled(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(true),
             $this->directories
         );
@@ -97,7 +97,7 @@ final class DebugBundleTest extends TestCase
     public function test_whoops_displayers_are_prepended_if_the_http_routing_bundle_is_used(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -127,7 +127,7 @@ final class DebugBundleTest extends TestCase
     public function whoops_displayers_are_not_prepended_if_the_http_routing_bundle_is_not_used(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -153,7 +153,7 @@ final class DebugBundleTest extends TestCase
     public function test_whoops_displayer_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -169,7 +169,7 @@ final class DebugBundleTest extends TestCase
     public function test_error_handler_will_use_whoops_for_text_html_requests(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -204,7 +204,7 @@ final class DebugBundleTest extends TestCase
     public function test_error_handler_will_use_whoops_for_json_requests(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -245,7 +245,7 @@ final class DebugBundleTest extends TestCase
     public function test_error_handler_will_not_use_whoops_for_json_requests_in_non_debug_mode(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(false),
             $this->directories
         );
@@ -278,7 +278,7 @@ final class DebugBundleTest extends TestCase
     public function test_error_handler_will_not_use_whoops_for_other_accept_headers(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(true),
             $this->directories
         );
@@ -309,7 +309,7 @@ final class DebugBundleTest extends TestCase
     public function test_error_handler_will_not_use_whoops_if_debug_turned_off(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(false),
             $this->directories
         );
@@ -340,7 +340,7 @@ final class DebugBundleTest extends TestCase
     public function test_debug_editor_defaults_to_phpstorm(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -356,7 +356,7 @@ final class DebugBundleTest extends TestCase
     public function test_application_paths_defaults_are_set(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -375,7 +375,7 @@ final class DebugBundleTest extends TestCase
     public function test_application_paths_defaults_are_not_set_if_already_present(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );

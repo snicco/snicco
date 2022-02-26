@@ -16,7 +16,7 @@ use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Middleware\ErrorsToExceptions;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
-use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
@@ -40,7 +40,7 @@ use function dirname;
 final class HttpRoutingBundleTest extends TestCase
 {
 
-    use BootsKernelForBundleTest;
+    use BundleTestHelpers;
 
     private Directories $directories;
 
@@ -56,7 +56,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_exception_if_better_wp_hooks_bundle_is_not_used(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -79,7 +79,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_alias(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -94,7 +94,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_runs_in_all_environments(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -102,7 +102,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -110,7 +110,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(false),
             $this->directories
         );
@@ -118,7 +118,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::staging(),
             $this->directories
         );
@@ -132,7 +132,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_routing_wp_admin_prefix_defaults_to_wp_admin(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -141,7 +141,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertSame('/wp-admin', $kernel->config()->getString('routing.wp_admin_prefix'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -161,7 +161,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_routing_wp_login_path_has_a_default_set(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -170,7 +170,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertSame('/wp-login.php', $kernel->config()->getString('routing.wp_login_path'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -190,7 +190,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_routing_dirs_default_to_empty_array(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -207,7 +207,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertSame([], $kernel->config()->getListOfStrings('routing.api_route_directories'));
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -235,7 +235,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_middleware_options_have_defaults(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -253,7 +253,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_kernel_middleware_defaults_to_the_correct_routing_setup(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -271,7 +271,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_urlGenerator_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -286,7 +286,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_urlMatcher_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -307,7 +307,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_adminMenu_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -322,7 +322,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_routes_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -337,7 +337,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_pipeline_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -355,7 +355,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_pipeline_error_handler_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -383,7 +383,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function the_routing_middleware_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -398,7 +398,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function the_route_runner_middleware_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -413,7 +413,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_routing_can_be_resolved_in_production_mode(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::prod(),
             $this->directories
         );
@@ -428,7 +428,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_response_factory_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -445,7 +445,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_server_request__creator_can_be_resolved(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -460,7 +460,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_url_generation_context_is_taken_from_config(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );
@@ -493,7 +493,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_a_custom_psr17_discovery_can_be_used(): void
     {
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::dev(),
             $this->directories
         );

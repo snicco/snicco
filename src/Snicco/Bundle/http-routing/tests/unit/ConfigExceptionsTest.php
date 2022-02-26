@@ -13,7 +13,7 @@ use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareOne;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareTwo;
-use Snicco\Bundle\Testing\BootsKernelForBundleTest;
+use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
@@ -30,7 +30,7 @@ use function dirname;
 
 final class ConfigExceptionsTest extends TestCase
 {
-    use BootsKernelForBundleTest;
+    use BundleTestHelpers;
 
     private Directories $directories;
 
@@ -45,7 +45,7 @@ final class ConfigExceptionsTest extends TestCase
      */
     public function test_exception_if_routing_host_is_not_set(): void
     {
-        $kernel = new Kernel($this->container(), Environment::testing(), $this->directories);
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->beforeConfiguration(function (WritableConfig $config) {
             $config->set('routing', []);
@@ -66,7 +66,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage(RoutingOption::WP_ADMIN_PREFIX);
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -87,7 +87,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage(RoutingOption::WP_LOGIN_PATH);
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -108,7 +108,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage(RoutingOption::ROUTE_DIRECTORIES);
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -129,7 +129,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage(__DIR__ . '/bogus');
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -150,7 +150,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage(__DIR__ . '/bogus');
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -172,7 +172,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage('must be a non-empty-string if API routes are used.');
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -196,7 +196,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage(MiddlewareOption::GROUPS);
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -217,7 +217,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectExceptionMessage('Got [string] for key [foo]');
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -240,7 +240,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -263,7 +263,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -289,7 +289,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -315,7 +315,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -345,7 +345,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -376,7 +376,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -406,7 +406,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -434,7 +434,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -462,7 +462,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -492,7 +492,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
@@ -519,7 +519,7 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel = new Kernel(
-            $this->container(),
+            $this->newContainer(),
             Environment::testing(),
             $this->directories
         );
