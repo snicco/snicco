@@ -122,7 +122,7 @@ final class BundleTestHelpersTest extends TestCase
             Environment::testing(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle1::class]
             ]);
@@ -145,7 +145,7 @@ final class BundleTestHelpersTest extends TestCase
             Environment::testing(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle1::class]
             ]);
@@ -172,7 +172,7 @@ final class BundleTestHelpersTest extends TestCase
             Environment::testing(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle2::class]
             ]);
@@ -215,7 +215,7 @@ final class BundleTestHelpersTest extends TestCase
             Environment::testing(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle1::class]
             ]);

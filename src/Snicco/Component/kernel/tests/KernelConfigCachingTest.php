@@ -141,7 +141,7 @@ final class KernelConfigCachingTest extends TestCase
                 Directories::fromDefaults($this->fixtures_dir),
                 new TestConfigCache()
             );
-            $kernel->afterConfiguration(function (WritableConfig $config) use (&$run) {
+            $kernel->afterConfigurationLoaded(function (WritableConfig $config) use (&$run) {
                 if ($run === true) {
                     throw new RuntimeException('after configuration callback run for cached kernel');
                 } else {

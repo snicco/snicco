@@ -137,7 +137,7 @@ final class ErrorHandlingTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
@@ -182,7 +182,7 @@ final class ErrorHandlingTest extends TestCase
             Environment::prod(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::TRANSFORMERS => [
                     Transformer2::class,
@@ -230,7 +230,7 @@ final class ErrorHandlingTest extends TestCase
             Environment::prod(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::DISPLAYERS => [
                     CustomHtmlDisplayer::class,
@@ -268,7 +268,7 @@ final class ErrorHandlingTest extends TestCase
             Environment::testing(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     TypeError::class => LogLevel::WARNING

@@ -52,7 +52,7 @@ final class HttpRoutingBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [HttpRoutingBundle::class]
             ]);
@@ -137,7 +137,7 @@ final class HttpRoutingBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, '/wp/wp-admin');
         });
 
@@ -166,7 +166,7 @@ final class HttpRoutingBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::WP_LOGIN_PATH, '/wp/wp-login.php');
         });
 
@@ -186,7 +186,7 @@ final class HttpRoutingBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
                 RoutingOption::HOST => 'sniccowp.test'
             ]);
@@ -202,7 +202,7 @@ final class HttpRoutingBundleTest extends TestCase
             Environment::dev(),
             $this->directories
         );
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.route_directories', [
                 dirname(__DIR__) . '/fixtures/routes'
             ]);
@@ -456,7 +456,7 @@ final class HttpRoutingBundleTest extends TestCase
             $this->directories
         );
 
-        $kernel->beforeConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
                 RoutingOption::HOST => 'foo.com',
                 RoutingOption::ROUTE_DIRECTORIES => [],
