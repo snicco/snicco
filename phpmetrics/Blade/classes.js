@@ -134,9 +134,9 @@ var classes = [
         "totalSystemComplexity": 3604.05,
         "package": "Snicco\\Bridge\\Blade\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 1,
         "efferentCoupling": 14,
-        "instability": 1,
+        "instability": 0.93,
         "violations": {}
     },
     {

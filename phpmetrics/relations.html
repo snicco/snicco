@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-27 16:07:18        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-27 21:16:18        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1351,7 +1351,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000004f97ef41000000005b52494a",
+        "name": "\\anonymous@00000000446b38160000000073ceafc2",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1520,7 +1520,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000004f97fb1c000000005b52494a",
+        "name": "\\anonymous@00000000446b2c4b0000000073ceafc2",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2451,7 +2451,7 @@
         ]
     },
     {
-        "name": "\\anonymous@000000004f97f06f000000005b52494a",
+        "name": "\\anonymous@00000000446b27380000000073ceafc2",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
@@ -2773,6 +2773,7 @@
             "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
             "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
             "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\InvalidArgumentException",
             "\\RuntimeException",
             "\\Snicco\\Component\\Templating\\ViewEngine",
             "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
@@ -2852,17 +2853,15 @@
         ]
     },
     {
-        "name": "\\Snicco\\Bridge\\SessionPsr16\\Psr16SessionDriver",
+        "name": "\\Snicco\\Bundle\\Blade\\BladeBundle",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Session\\Driver\\SessionDriver",
-            "\\Psr\\SimpleCache\\CacheInterface",
-            "\\Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "\\Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
-            "\\Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent",
-            "\\Snicco\\Component\\Session\\Exception\\BadSessionID",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\Session\\Exception\\CouldNotWriteSessionContent"
+            "\\Snicco\\Component\\Kernel\\Bundle",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\RuntimeException",
+            "\\Snicco\\Bridge\\Blade\\BladeStandalone"
         ]
     },
     {
@@ -2883,6 +2882,20 @@
             "\\RuntimeException",
             "\\Snicco\\Bridge\\Blade\\BladeView",
             "\\BadMethodCallException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bridge\\SessionPsr16\\Psr16SessionDriver",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\Driver\\SessionDriver",
+            "\\Psr\\SimpleCache\\CacheInterface",
+            "\\Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "\\Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
+            "\\Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent",
+            "\\Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\Session\\Exception\\CouldNotWriteSessionContent"
         ]
     },
     {
