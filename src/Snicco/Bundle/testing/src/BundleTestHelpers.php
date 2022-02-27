@@ -9,6 +9,8 @@ use FilesystemIterator;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -16,7 +18,9 @@ use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use SplFileInfo;
+use Throwable;
 
 use function file_put_contents;
 use function in_array;
@@ -131,6 +135,22 @@ trait BundleTestHelpers
         $this->removePHPFilesRecursive($this->directories->cacheDir());
         $this->removePHPFilesRecursive($this->directories->logDir());
         $this->removePHPFilesRecursive($this->directories->configDir(), $this->fixture_config_files);
+    }
+
+    protected function withoutHttpErrorHandling(Kernel $kernel): void
+    {
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()->instance(
+                HttpErrorHandlerInterface::class,
+                new class implements HttpErrorHandlerInterface {
+
+                    public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
+                    {
+                        throw $e;
+                    }
+                }
+            );
+        });
     }
 
     /**
