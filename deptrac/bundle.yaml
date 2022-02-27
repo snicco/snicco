@@ -13,6 +13,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\BetterWPDB\\.*
 
+    - name: blade_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\Blade\\.*
+
     - name: debug_bundle
       collectors:
         - type: className
@@ -44,6 +49,13 @@ parameters:
       - testing_bundle
       - better_wpdb
       - kernel
+
+    blade_bundle:
+      - kernel
+      - testing_bundle # dev only
+      - templating
+      - templating_bundle
+      - blade
 
     debug_bundle:
       - psr7_error_handler

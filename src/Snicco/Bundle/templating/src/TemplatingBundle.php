@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Templating;
 
+use InvalidArgumentException;
 use RuntimeException;
 use Snicco\Bundle\Templating\Option\TemplatingOption;
 use Snicco\Component\Kernel\Bundle;
@@ -24,6 +25,7 @@ use function array_replace;
 use function copy;
 use function dirname;
 use function is_file;
+use function is_readable;
 
 final class TemplatingBundle implements Bundle
 {
@@ -42,6 +44,12 @@ final class TemplatingBundle implements Bundle
             'templating',
             array_replace($defaults, $config->getArray('templating', []))
         );
+
+        foreach ($config->getListOfStrings('templating.directories') as $directory) {
+            if (!is_readable($directory)) {
+                throw new InvalidArgumentException("templating.directories: Directory [$directory] is not readable.");
+            }
+        }
 
         $this->copyConfiguration($kernel);
     }
