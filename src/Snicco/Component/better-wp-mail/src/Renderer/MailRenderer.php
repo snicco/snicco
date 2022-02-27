@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Renderer;
 
-use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
+use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 
 interface MailRenderer
 {
@@ -13,9 +13,9 @@ interface MailRenderer
      *
      * @param array<string,mixed> $context
      *
-     * @throws CantRenderMailContent
+     * @throws CouldNotRenderMailContent
      */
-    public function getMailContent(string $template_name, array $context = []): string;
+    public function render(string $template_name, array $context = []): string;
 
     /**
      * @see AggregateRenderer

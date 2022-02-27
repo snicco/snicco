@@ -80,7 +80,7 @@ final class Mailer
                 );
             }
 
-            $html = $this->mail_renderer->getMailContent($html_template, $mail->context());
+            $html = $this->mail_renderer->render($html_template, $mail->context());
             $mail = $mail->withHtmlBody($html);
         }
 
@@ -91,7 +91,7 @@ final class Mailer
                     sprintf('The mail template renderer does not support text template [%s]', $text_template)
                 );
             }
-            $text = $this->mail_renderer->getMailContent($text_template, $mail->context());
+            $text = $this->mail_renderer->render($text_template, $mail->context());
             $mail = $mail->withTextBody($text);
         }
 

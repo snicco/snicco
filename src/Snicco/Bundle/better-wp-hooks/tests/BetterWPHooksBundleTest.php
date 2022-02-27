@@ -102,7 +102,6 @@ final class BetterWPHooksBundleTest extends TestCase
         $std = new stdClass();
         $std->value = 'foo';
 
-        /** @var stdClass $res */
         $res = $dispatcher->dispatch($std);
 
         $this->assertSame('foobar', $res->value);

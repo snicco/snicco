@@ -8,7 +8,8 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "sniccowp/kernel": "dev-master"
+    "sniccowp/kernel": "dev-master",
+    "sniccowp/better-wpdb": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
