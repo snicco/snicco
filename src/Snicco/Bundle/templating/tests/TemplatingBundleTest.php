@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Templating\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
@@ -282,6 +283,26 @@ final class TemplatingBundleTest extends TestCase
 
         $this->assertSame([
         ], $kernel->config()->getListOfStrings('templating.directories'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_directories_not_readable(): void
+    {
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('templating.directories', [__DIR__ . '/bogus']);
+        });
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('readable');
+
+        $kernel->boot();
     }
 
     /**
