@@ -1,5 +1,5 @@
 {
-  "name": "sniccowp/better-wpdb-bundle",
+  "name": "sniccowp/blade-bundle",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -8,6 +8,9 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
+    "sniccowp/templating": "dev-master",
+    "sniccowp/templating-bundle": "dev-master",
+    "sniccowp/blade-bridge": "dev-master",
     "sniccowp/kernel": "dev-master"
   },
   "require-dev": {
@@ -17,12 +20,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Bundle\\BetterWPDB\\": "src"
+      "Snicco\\Bundle\\Blade\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Bundle\\BetterWPDB\\Tests\\": "tests"
+      "Snicco\\Bundle\\Blade\\Tests\\": "tests"
     }
   },
   "minimum-stability": "stable"
