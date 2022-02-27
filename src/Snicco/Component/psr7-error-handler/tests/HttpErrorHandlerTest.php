@@ -7,7 +7,6 @@ namespace Snicco\Component\Psr7ErrorHandler\Tests;
 use Exception;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -445,7 +444,7 @@ class RequestLogContextWithException implements RequestLogContext
 
     private int $count = 0;
 
-    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
+    public function add(array $context, ExceptionInformation $information): array
     {
         if ($this->count === 0) {
             $e = new TypeError('bad bad type error.');
