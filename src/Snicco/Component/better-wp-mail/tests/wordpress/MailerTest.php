@@ -7,8 +7,8 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use LogicException;
 use MockPHPMailer;
-use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
+use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
@@ -407,7 +407,7 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
 
-        $this->expectException(CantRenderMailContent::class);
+        $this->expectException(CouldNotRenderMailContent::class);
 
         $email = new Email();
         $email = $email->withHtmlTemplate($this->fixtures_dir . '/mail.foobar-mail');
