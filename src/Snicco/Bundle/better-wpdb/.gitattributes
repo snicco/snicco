@@ -7,4 +7,3 @@
 .gitignore export-ignore
 phpunit.dist.yml export-ignore
 /tests export-ignore
-/testing export-ignore
