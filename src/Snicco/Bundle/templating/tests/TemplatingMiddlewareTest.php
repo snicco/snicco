@@ -49,10 +49,7 @@ final class TemplatingMiddlewareTest extends TestCase
             $config->set('templating.directories', [__DIR__ . '/fixtures/templates']);
         });
 
-        $this->withoutHttpErrorHandling($kernel);
-
         $kernel->boot();
-
 
         /**
          * @var MiddlewarePipeline $pipeline
