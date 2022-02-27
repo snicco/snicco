@@ -7,7 +7,7 @@ namespace Snicco\Bundle\HttpRouting\Tests\unit;
 use LogicException;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
@@ -332,7 +332,7 @@ final class ErrorHandlingTest extends TestCase
         $container[ExceptionInformationProvider::class] = function (): ExceptionInformationProvider {
             return new class implements ExceptionInformationProvider {
 
-                public function createFor(Throwable $e): ExceptionInformation
+                public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
                 {
                     return new ExceptionInformation(
                         500,
@@ -340,7 +340,8 @@ final class ErrorHandlingTest extends TestCase
                         'foo_title',
                         'foo_details',
                         $e,
-                        $e
+                        $e,
+                        $request,
                     );
                 }
             };
@@ -545,9 +546,9 @@ class Transformer2 implements ExceptionTransformer
 class PathLogContext implements RequestLogContext
 {
 
-    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
+    public function add(array $context, ExceptionInformation $information): array
     {
-        $context['path'] = $request->getUri()->getPath();
+        $context['path'] = $information->serverRequest()->getUri()->getPath();
         return $context;
     }
 }
@@ -555,9 +556,9 @@ class PathLogContext implements RequestLogContext
 class QueryStringLogContext implements RequestLogContext
 {
 
-    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
+    public function add(array $context, ExceptionInformation $information): array
     {
-        $context['query_string'] = $request->getUri()->getQuery();
+        $context['query_string'] = $information->serverRequest()->getUri()->getQuery();
         return $context;
     }
 

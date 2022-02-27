@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Tests\Information;
 
 use InvalidArgumentException;
+use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
@@ -26,7 +27,7 @@ final class TransformableInformationProviderTest extends TestCase
 
         $e = new HttpException(404, 'secret stuff');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, new ServerRequest('GET', '/'));
 
         $this->assertSame(404, $information->statusCode());
         $this->assertSame('Not Found', $information->safeTitle());

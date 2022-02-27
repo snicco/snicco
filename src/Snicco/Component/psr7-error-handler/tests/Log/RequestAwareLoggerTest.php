@@ -7,7 +7,6 @@ namespace Snicco\Component\Psr7ErrorHandler\Tests\Log;
 use GuzzleHttp\Psr7\ServerRequest;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\TestLogger;
@@ -43,10 +42,11 @@ final class RequestAwareLoggerTest extends TestCase
             'title',
             'safe_details',
             $e = new RuntimeException('secret stuff here'),
-            HttpException::fromPrevious(403, $e)
+            HttpException::fromPrevious(403, $e),
+            $this->request
         );
 
-        $logger->log($info, $this->request);
+        $logger->log($info);
 
         $this->assertTrue($test_logger->hasErrorRecords());
     }
@@ -64,10 +64,11 @@ final class RequestAwareLoggerTest extends TestCase
             'title',
             'safe_details',
             $e = new RuntimeException('secret stuff here'),
-            HttpException::fromPrevious(403, $e)
+            HttpException::fromPrevious(403, $e),
+            $this->request,
         );
 
-        $logger->log($info, $this->request);
+        $logger->log($info);
 
         $this->assertTrue(
             $test_logger->hasError([
@@ -93,10 +94,11 @@ final class RequestAwareLoggerTest extends TestCase
             'title',
             'safe_details',
             $e = new RuntimeException('secret stuff here'),
-            HttpException::fromPrevious(403, $e)
+            HttpException::fromPrevious(403, $e),
+            $this->request,
         );
 
-        $logger->log($info, $this->request);
+        $logger->log($info);
 
         $this->assertTrue(
             $test_logger->hasCritical([
@@ -127,10 +129,11 @@ final class RequestAwareLoggerTest extends TestCase
             'title',
             'safe_details',
             $e = new RuntimeException('secret stuff here'),
-            HttpException::fromPrevious(403, $e)
+            HttpException::fromPrevious(403, $e),
+            $this->request,
         );
 
-        $logger->log($info, $this->request);
+        $logger->log($info);
 
         $this->assertFalse($this->test_logger->hasErrorRecords());
         $this->assertTrue($this->test_logger->hasWarningRecords());
@@ -143,10 +146,11 @@ final class RequestAwareLoggerTest extends TestCase
             'title',
             'safe_details',
             $e = new InvalidArgumentException('secret stuff here'),
-            HttpException::fromPrevious(403, $e)
+            HttpException::fromPrevious(403, $e),
+            $this->request,
         );
 
-        $logger->log($info, $this->request);
+        $logger->log($info);
 
         $this->assertFalse($this->test_logger->hasWarningRecords());
         $this->assertTrue($this->test_logger->hasErrorRecords());
@@ -170,10 +174,11 @@ final class RequestAwareLoggerTest extends TestCase
             'title',
             'safe_details',
             $e = new RuntimeException('secret stuff here'),
-            HttpException::fromPrevious(403, $e)
+            HttpException::fromPrevious(403, $e),
+            $this->request,
         );
 
-        $logger->log($info, $this->request);
+        $logger->log($info);
 
         $this->assertTrue(
             $this->test_logger->hasError([
@@ -193,9 +198,9 @@ final class RequestAwareLoggerTest extends TestCase
 class PathLogContext implements RequestLogContext
 {
 
-    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
+    public function add(array $context, ExceptionInformation $information): array
     {
-        $context['path'] = $request->getUri()->getPath();
+        $context['path'] = $information->serverRequest()->getUri()->getPath();
         return $context;
     }
 
@@ -204,9 +209,9 @@ class PathLogContext implements RequestLogContext
 class MethodLogContext implements RequestLogContext
 {
 
-    public function add(array $context, RequestInterface $request, ExceptionInformation $information): array
+    public function add(array $context, ExceptionInformation $information): array
     {
-        $context['method'] = $request->getMethod();
+        $context['method'] = $information->serverRequest()->getMethod();
         return $context;
     }
 

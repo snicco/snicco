@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Log;
 
-use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
@@ -37,7 +36,7 @@ final class RequestAwareLogger
         }
     }
 
-    public function log(ExceptionInformation $exception_information, RequestInterface $request): void
+    public function log(ExceptionInformation $exception_information): void
     {
         $context = [
             'exception' => $e = $exception_information->originalException(),
@@ -45,7 +44,7 @@ final class RequestAwareLogger
         ];
 
         foreach ($this->context as $request_context) {
-            $context = $request_context->add($context, $request, $exception_information);
+            $context = $request_context->add($context, $exception_information);
         }
 
         $this->psr_logger->log(

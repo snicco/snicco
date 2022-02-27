@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Information;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
 final class ExceptionInformation
@@ -15,6 +16,7 @@ final class ExceptionInformation
     private string $safe_details;
     private Throwable $original;
     private Throwable $transformed;
+    private ServerRequestInterface $server_request;
 
     public function __construct(
         int $status_code,
@@ -22,7 +24,8 @@ final class ExceptionInformation
         string $title,
         string $safe_details,
         Throwable $original,
-        Throwable $transformed
+        Throwable $transformed,
+        ServerRequestInterface $request
     ) {
         $this->status_code = $status_code;
         $this->identifier = $identifier;
@@ -30,6 +33,7 @@ final class ExceptionInformation
         $this->original = $original;
         $this->safe_details = $safe_details;
         $this->transformed = $transformed;
+        $this->server_request = $request;
     }
 
     public function statusCode(): int
@@ -60,6 +64,11 @@ final class ExceptionInformation
     public function safeDetails(): string
     {
         return $this->safe_details;
+    }
+
+    public function serverRequest(): ServerRequestInterface
+    {
+        return $this->server_request;
     }
 
 }

@@ -16,6 +16,15 @@ use function array_values;
 final class VerbosityTest extends TestCase
 {
 
+    private ServerRequest $request;
+
+    protected function setUp(): void
+    {
+        $this->request = new ServerRequest('GET', '/');
+        parent::setUp();
+    }
+
+
     /**
      * @test
      */
@@ -30,7 +39,15 @@ final class VerbosityTest extends TestCase
         ];
 
         $e = new RuntimeException();
-        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e);
+        $info = new ExceptionInformation(
+            500,
+            'foo_id',
+            'foo_title',
+            'foo_details',
+            $e,
+            $e,
+            $this->request
+        );
         $request = new ServerRequest('GET', '/foo');
 
         $filtered = $filter->filter(

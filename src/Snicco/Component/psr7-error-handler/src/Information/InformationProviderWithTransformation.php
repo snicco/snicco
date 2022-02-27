@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Information;
 
 use InvalidArgumentException;
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\ExceptionIdentifier;
@@ -71,7 +72,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         );
     }
 
-    public function createFor(Throwable $e): ExceptionInformation
+    public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
     {
         $original = $e;
         $transformed = $this->transform($original);
@@ -87,6 +88,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             $details,
             $original,
             $transformed,
+            $request
         );
     }
 
