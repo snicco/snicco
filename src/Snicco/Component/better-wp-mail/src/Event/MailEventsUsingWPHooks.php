@@ -13,9 +13,9 @@ final class MailEventsUsingWPHooks implements MailEvents
 
     private WPMailAPI $wp;
 
-    public function __construct(WPMailAPI $wp)
+    public function __construct(WPMailAPI $wp = null)
     {
-        $this->wp = $wp;
+        $this->wp = $wp ?: new WPMailAPI();
     }
 
     public function fireSending(SendingEmail $sending_email): void
