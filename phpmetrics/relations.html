@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-27 22:14:29        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-27 23:45:10        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1351,7 +1351,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@00000000238cc36300000000576dac00",
+        "name": "\\anonymous@000000000fa4342a000000000afbc5ff",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1520,7 +1520,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@00000000238cd73e00000000576dac00",
+        "name": "\\anonymous@000000000fa42077000000000afbc5ff",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2410,7 +2410,7 @@
         ]
     },
     {
-        "name": "\\anonymous@00000000238cd66500000000576dac00",
+        "name": "\\anonymous@000000000fa4212c000000000afbc5ff",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
@@ -2885,6 +2885,44 @@
     },
     {
         "name": "\\Snicco\\Bundle\\BetterWPMail\\Option\\MailOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Encryption\\Option\\EncryptionOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Encryption\\EncryptionBundle",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Kernel\\Bundle",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\InvalidArgumentException",
+            "\\Defuse\\Crypto\\Key",
+            "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
+            "\\Snicco\\Component\\Kernel\\Configuration\\Config",
+            "\\RuntimeException"
+        ]
+    },
+    {
+        "name": "\\Defuse\\Crypto\\Key",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
+        "size": 3000,
+        "relations": [
+            "\\Defuse\\Crypto\\Key",
+            "\\Defuse\\Crypto\\Crypto"
+        ]
+    },
+    {
+        "name": "\\Defuse\\Crypto\\Crypto",
         "size": 3000,
         "relations": []
     },

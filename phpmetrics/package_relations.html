@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-27 22:14:29        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-27 23:45:10        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1473,6 +1473,27 @@
     },
     {
         "name": "Snicco\\Bundle\\BetterWPMail\\Option",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Encryption\\Option",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Encryption",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Kernel",
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "Snicco\\Component\\Kernel\\Configuration",
+            "global",
+            "Defuse\\Crypto"
+        ]
+    },
+    {
+        "name": "Defuse\\Crypto",
         "size": 3000,
         "relations": []
     },
