@@ -111,6 +111,12 @@ final class FakeTransport implements Transport
         );
     }
 
+    /**
+     * @template T
+     *
+     * @param class-string<T> $email_class
+     * @param Closure(T,Envelope):bool|null $closure
+     */
     public function assertSent(string $email_class, ?Closure $closure = null): void
     {
         PHPUnit::assertTrue(
