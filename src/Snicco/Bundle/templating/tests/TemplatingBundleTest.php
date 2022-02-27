@@ -299,10 +299,10 @@ final class TemplatingBundleTest extends TestCase
             $config->set('templating.directories', [__DIR__ . '/bogus']);
         });
 
-        $kernel->boot();
-
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('readable');
+
+        $kernel->boot();
     }
 
     /**
