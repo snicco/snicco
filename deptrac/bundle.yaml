@@ -28,6 +28,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\Debug\\.*
 
+    - name: encryption_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\Encryption\\.*
+
     - name: http_routing_bundle
       collectors:
         - type: className
@@ -75,6 +80,10 @@ parameters:
       - http_routing_bundle
       - testing_bundle # dev only
       - http_routing
+
+    encryption_bundle:
+      - kernel
+      - testing_bundle
 
     http_routing_bundle:
       - kernel
