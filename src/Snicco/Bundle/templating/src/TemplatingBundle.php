@@ -131,7 +131,7 @@ final class TemplatingBundle implements Bundle
     {
         $kernel->container()->singleton(ViewComposerCollection::class, function () use ($kernel) {
             $composer_collection = new ViewComposerCollection(
-                new PsrContainerViewComposerFactory($kernel->container()),
+                new PsrViewComposerFactory($kernel->container()),
                 $kernel->container()->make(GlobalViewContext::class)
             );
 
