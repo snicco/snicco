@@ -34,6 +34,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
     /**
      * @test
      * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress UndefinedClass
      */
     public function test_exception_for_bad_class(): void
     {
@@ -41,7 +42,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
 
         $this->expectException(BadViewComposer::class);
         $this->expectExceptionMessage(
-            'A view composer has to be a class-string or a closure.'
+            '$composer has to be a ViewComposer class-string'
         );
 
         $factory->create('ComplexComposer');
