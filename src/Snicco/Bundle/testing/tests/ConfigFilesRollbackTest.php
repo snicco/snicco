@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\Testing\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Snicco\Bundle\Testing\BundleTest;
 use Snicco\Bundle\Testing\BundleTestHelpers;
 
 use function is_file;
@@ -23,6 +24,7 @@ final class ConfigFilesRollbackTest extends TestCase
         if (is_file($file = $this->fixturesDir() . '/config/other-config.php')) {
             unlink($file);
         }
+        $this->bundle_test = new BundleTest($this->fixturesDir());
     }
 
     protected function tearDown(): void
@@ -43,13 +45,13 @@ final class ConfigFilesRollbackTest extends TestCase
      */
     public function configuration_files_that_are_created_are_removed_automatically(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         touch($this->directories->configDir() . '/other-config.php');
 
         $this->assertTrue(is_file($this->directories->configDir() . '/other-config.php'));
 
-        $this->tearDownDirectories();
+        $this->bundle_test->tearDownDirectories();
 
         $this->assertFalse(is_file($this->directories->configDir() . '/other-config.php'));
         $this->assertTrue(is_file($this->directories->configDir() . '/app.php'));
