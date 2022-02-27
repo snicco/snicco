@@ -23,6 +23,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\HttpRouting\\.*
 
+    - name: templating_bundle
+        collectors:
+            - type: className
+              regex: Snicco\\Bundle\\Templating\\.*
+
     - name: testing_bundle
       collectors:
         - type: className

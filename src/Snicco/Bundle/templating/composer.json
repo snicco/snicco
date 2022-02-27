@@ -1,0 +1,29 @@
+{
+  "name": "sniccowp/templating-bundle",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13",
+    "sniccowp/pimple-bridge": "dev-master",
+    "sniccowp/str-arr": "dev-master",
+    "nyholm/psr7": "^1.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bundle\\Templating\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bundle\\Templating\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "stable"
+}
