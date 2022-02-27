@@ -40,6 +40,7 @@
     "PHPMailer\\PHPMailer\\Exception",
     "_________TESTING_CLASSES_TEMPORARY__________",
     "Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
+    "Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
     "__________INTERNAL_SYMBOLS__________",
     "null",
     "true",
