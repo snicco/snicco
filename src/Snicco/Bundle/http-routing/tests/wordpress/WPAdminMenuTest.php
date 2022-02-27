@@ -33,6 +33,7 @@ final class WPAdminMenuTest extends WPTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->kernel = new Kernel(
             new PimpleContainerAdapter(),
             Environment::testing(),

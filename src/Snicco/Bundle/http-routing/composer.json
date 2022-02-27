@@ -22,6 +22,7 @@
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
     "sniccowp/testing-bundle": "dev-master",
+    "sniccowp/pimple-bridge": "dev-master",
     "nyholm/psr7": "^1.0.0",
     "guzzlehttp/psr7": "^2.1",
     "laminas/laminas-diactoros": "^2.8"

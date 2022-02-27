@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Tests;
 
 use InvalidArgumentException;
+use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
@@ -18,6 +19,14 @@ use Throwable;
 
 final class HttpInformationProviderTest extends TestCase
 {
+
+    private ServerRequest $server_request;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->server_request = new ServerRequest('GET', '/foo');
+    }
 
     /**
      * @test
@@ -37,7 +46,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new HttpException(404, 'secret stuff here');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertInstanceOf(ExceptionInformation::class, $information);
         $this->assertEquals(404, $information->statusCode());
@@ -79,7 +88,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new RuntimeException('transform_me');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertEquals(401, $information->statusCode());
         $this->assertEquals('foobar_e', $information->identifier());
@@ -109,7 +118,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new RuntimeException('dont_transform_me');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertEquals(500, $information->statusCode());
         $this->assertEquals('foo_id', $information->identifier());
@@ -129,7 +138,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new RuntimeException('transform_me');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertSame(403, $information->statusCode());
         $this->assertSame('foo', $information->identifier());
@@ -150,7 +159,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new UserFacingException('Secret stuff here');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertSame(500, $information->statusCode());
         $this->assertSame($e, $information->originalException());
@@ -169,7 +178,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new UserFacingException('Secret stuff here');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertSame(403, $information->statusCode());
         $this->assertSame('foobar_id', $information->identifier());
@@ -188,7 +197,7 @@ final class HttpInformationProviderTest extends TestCase
 
         $e = new UserFacingException('Secret stuff here');
 
-        $information = $provider->createFor($e);
+        $information = $provider->createFor($e, $this->server_request);
 
         $this->assertSame(500, $information->statusCode());
         $this->assertSame('foo_id', $information->identifier());

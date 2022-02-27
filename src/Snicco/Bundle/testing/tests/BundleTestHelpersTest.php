@@ -5,14 +5,17 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Tests;
 
+use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Snicco\Bundle\Testing\BundleTest;
 use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
 use function base64_encode;
 use function is_dir;
@@ -30,11 +33,12 @@ final class BundleTestHelpersTest extends TestCase
     {
         parent::setUp();
         $this->fixtures_dir = __DIR__ . '/tmp/' . base64_encode(random_bytes(16));
+        $this->bundle_test = new BundleTest($this->fixtures_dir);
     }
 
     protected function tearDown(): void
     {
-        $this->removeDirectoryRecursive(__DIR__ . '/tmp');
+        $this->bundle_test->removeDirectoryRecursive(__DIR__ . '/tmp');
         parent::tearDown();
     }
 
@@ -51,7 +55,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->assertFalse(is_dir($this->fixturesDir()));
         $this->assertFalse(is_file($this->fixturesDir() . '/config/app.php'));
 
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         $this->assertTrue(is_dir($this->fixturesDir()));
         $this->assertTrue(is_file($this->fixturesDir() . '/config/app.php'));
@@ -68,7 +72,7 @@ final class BundleTestHelpersTest extends TestCase
     {
         $this->assertFalse(is_dir($this->fixturesDir()));
 
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         $this->assertTrue(is_dir($this->fixturesDir()));
 
@@ -84,7 +88,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->assertTrue(is_file($this->directories->cacheDir() . '/staging.config.php'));
         $this->assertTrue(is_file($this->directories->cacheDir() . '/.gitkeep'));
 
-        $this->tearDownDirectories();
+        $this->bundle_test->tearDownDirectories();
 
         $this->assertFalse(is_file($this->directories->cacheDir() . '/prod.config.php'));
         $this->assertFalse(is_file($this->directories->cacheDir() . '/staging.config.php'));
@@ -97,7 +101,7 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function a_kernel_can_be_booted_with_the_created_directories(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         $kernel = new Kernel(
             $this->newContainer(),
@@ -115,7 +119,7 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_assertCanBeResolved_can_pass(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         $kernel = new Kernel(
             $this->newContainer(),
@@ -138,7 +142,7 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_assertCanBeResolved_can_fail(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         $kernel = new Kernel(
             $this->newContainer(),
@@ -166,7 +170,7 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_assertCanBeResolved_fails_for_other_instance(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel(
             $this->newContainer(),
             Environment::testing(),
@@ -192,7 +196,7 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_assertNotBound_can_pass(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel(
             $this->newContainer(),
             Environment::testing(),
@@ -209,7 +213,7 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_assertNotBound_can_fail(): void
     {
-        $this->setUpDirectories();
+        $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel(
             $this->newContainer(),
             Environment::testing(),
@@ -230,6 +234,31 @@ final class BundleTestHelpersTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function error_handling_can_be_disabled(): void
+    {
+        $this->directories = $this->bundle_test->setUpDirectories();
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::testing(),
+            $this->directories
+        );
+
+        $this->bundle_test->withoutHttpErrorHandling($kernel);
+        $kernel->boot();
+
+        /**
+         * @var HttpErrorHandlerInterface $handler
+         */
+        $handler = $kernel->container()->get(HttpErrorHandlerInterface::class);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('foo');
+
+        $handler->handle(new RuntimeException('foo'), new ServerRequest('GET', '/'));
+    }
 
 }
 

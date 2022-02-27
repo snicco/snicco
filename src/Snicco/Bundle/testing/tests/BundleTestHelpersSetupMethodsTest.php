@@ -41,7 +41,7 @@ final class BundleTestHelpersSetupMethodsTest extends TestCase
         $this->assertTrue(is_file(__DIR__ . '/fixtures/dir/file.php'));
         $this->assertTrue(is_file(__DIR__ . '/fixtures/dir/dir-nested/file-nested.php'));
 
-        $this->removePHPFilesRecursive(__DIR__ . '/fixtures/dir');
+        $this->bundle_test->removePHPFilesRecursive(__DIR__ . '/fixtures/dir');
 
         $this->assertTrue(is_dir(__DIR__ . '/fixtures/dir'));
         $this->assertTrue(is_dir(__DIR__ . '/fixtures/dir/dir-nested'));

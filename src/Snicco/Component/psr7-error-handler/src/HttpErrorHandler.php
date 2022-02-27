@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler;
 
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,12 +52,12 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
 
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        $info = $this->information_provider->createFor($e);
+        $info = $this->information_provider->createFor($e, $request);
 
         try {
-            $this->logException($info, $request);
+            $this->logException($info);
         } catch (Throwable $logging_error) {
-            $this->logException($this->information_provider->createFor($logging_error), $request);
+            $this->logException($this->information_provider->createFor($logging_error, $request));
         }
 
         try {
@@ -73,9 +72,9 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $this->withHttpHeaders($info->transformedException(), $response);
     }
 
-    private function logException(ExceptionInformation $info, RequestInterface $request): void
+    private function logException(ExceptionInformation $info): void
     {
-        $this->logger->log($info, $request);
+        $this->logger->log($info);
     }
 
     private function createResponse(ExceptionInformation $info, ExceptionDisplayer $displayer): ResponseInterface
@@ -91,7 +90,7 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $response->withHeader('content-type', $displayer->supportedContentType());
     }
 
-    private function findBestDisplayer(RequestInterface $request, ExceptionInformation $info): ExceptionDisplayer
+    private function findBestDisplayer(ServerRequestInterface $request, ExceptionInformation $info): ExceptionDisplayer
     {
         $displayers = array_values(
             $this->filter->filter($this->displayers, $request, $info)
@@ -117,10 +116,10 @@ final class HttpErrorHandler implements HttpErrorHandlerInterface
         return $html;
     }
 
-    private function handleDisplayError(Throwable $display_error, RequestInterface $request): ResponseInterface
+    private function handleDisplayError(Throwable $display_error, ServerRequestInterface $request): ResponseInterface
     {
-        $info = $this->information_provider->createFor($display_error);
-        $this->logException($info, $request);
+        $info = $this->information_provider->createFor($display_error, $request);
+        $this->logException($info);
         $res = $this->response_factory->createResponse(500);
         $res->getBody()->write('Internal Server Error');
         return $res->withHeader('content-type', 'text/plain');

@@ -16,6 +16,7 @@ use Snicco\Bundle\HttpRouting\HttpKernelRunner;
 use Snicco\Bundle\HttpRouting\ResponseEmitter\LaminasEmitterStack;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\Controller\HttpRunnerTestController;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\Testing\BundleTest;
 use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
@@ -44,7 +45,8 @@ final class HttpKernelRunnerTest extends WPTestCase
     {
         parent::setUp();
 
-        $this->setUpDirectories();
+        $this->bundle_test = new BundleTest($this->fixturesDir());
+        $this->directories = $this->bundle_test->setUpDirectories();
 
         $_get = $_GET;
         $_server = $_SERVER;
@@ -66,7 +68,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET = $this->_get;
         $_SERVER = $this->_server;
 
-        $this->tearDownDirectories();
+        $this->bundle_test->tearDownDirectories();
 
         parent::tearDown();
     }
