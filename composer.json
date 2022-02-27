@@ -43,6 +43,7 @@
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.1.1",
         "psr/simple-cache": "^1.0.0",
+        "sniccowp/pimple-bridge": "dev-master",
         "webimpress/safe-writer": "^2.2",
         "webmozart/assert": "^1.10"
     },

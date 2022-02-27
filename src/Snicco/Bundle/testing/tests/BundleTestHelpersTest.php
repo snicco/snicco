@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Tests;
 
+use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -14,6 +15,7 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 
 use function base64_encode;
 use function is_dir;
@@ -232,6 +234,31 @@ final class BundleTestHelpersTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function error_handling_can_be_disabled(): void
+    {
+        $this->directories = $this->bundle_test->setUpDirectories();
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::testing(),
+            $this->directories
+        );
+
+        $this->bundle_test->withoutHttpErrorHandling($kernel);
+        $kernel->boot();
+
+        /**
+         * @var HttpErrorHandlerInterface $handler
+         */
+        $handler = $kernel->container()->get(HttpErrorHandlerInterface::class);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('foo');
+
+        $handler->handle(new RuntimeException('foo'), new ServerRequest('GET', '/'));
+    }
 
 }
 
