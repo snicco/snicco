@@ -35,7 +35,7 @@ final class CanDisplayTest extends TestCase
         $filtered = $filter->filter(
             $displayers,
             $request,
-            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e)
+            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request)
         );
 
         $this->assertSame([$d1, $d2], $filtered);
@@ -45,7 +45,7 @@ final class CanDisplayTest extends TestCase
         $filtered = $filter->filter(
             $displayers,
             $request,
-            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e)
+            new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request)
         );
 
         $this->assertSame([$d3], array_values($filtered));
@@ -58,6 +58,7 @@ class CanDisplayRuntimeException implements ExceptionDisplayer
 
     public function display(ExceptionInformation $exception_information): string
     {
+        return 'runtime';
     }
 
     public function supportedContentType(): string

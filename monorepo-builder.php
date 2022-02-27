@@ -47,6 +47,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ComposerJsonSection::REQUIRE => [
             'sniccowp/http-routing' => '*',
             'sniccowp/psr7-error-handler' => '*',
+            'sniccowp/pimple-bridge' => '*',
         ],
         ComposerJsonSection::REQUIRE_DEV => [
             // temporary until split

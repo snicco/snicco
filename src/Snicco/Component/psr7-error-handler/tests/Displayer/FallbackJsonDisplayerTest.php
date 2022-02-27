@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Psr7ErrorHandler\Tests\Displayer;
 
 use Exception;
+use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackJsonDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
@@ -20,8 +21,9 @@ final class FallbackJsonDisplayerTest extends TestCase
     public function test_can_always_display(): void
     {
         $info = InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier());
+        $request = new ServerRequest('GET', '/');
 
-        $this->assertTrue((new FallbackJsonDisplayer())->canDisplay($info->createFor(new Exception())));
+        $this->assertTrue((new FallbackJsonDisplayer())->canDisplay($info->createFor(new Exception(), $request)));
     }
 
     /**

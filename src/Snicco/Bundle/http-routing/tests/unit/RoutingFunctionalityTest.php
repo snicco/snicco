@@ -11,6 +11,7 @@ use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Middleware\SimpleTemplating;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\Testing\BundleTest;
 use Snicco\Bundle\Testing\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
@@ -40,7 +41,8 @@ final class RoutingFunctionalityTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpDirectories();
+        $this->bundle_test = new BundleTest($this->fixturesDir());
+        $this->directories = $this->bundle_test->setUpDirectories();
         $this->expected_route_cache_file = $this->directories->cacheDir() . '/prod.routes-generated.php';
         if (is_file($this->expected_route_cache_file)) {
             unlink($this->expected_route_cache_file);
