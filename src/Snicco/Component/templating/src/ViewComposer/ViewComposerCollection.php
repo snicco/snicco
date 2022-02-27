@@ -25,13 +25,13 @@ final class ViewComposerCollection
         ?ViewComposerFactory $composer_factory = null,
         ?GlobalViewContext $global_view_context = null
     ) {
-        $this->composer_factory = $composer_factory ?? new NewableInstanceViewComposerFactory();
-        $this->global_view_context = $global_view_context ?? new GlobalViewContext();
+        $this->composer_factory = $composer_factory ?: new NewableInstanceViewComposerFactory();
+        $this->global_view_context = $global_view_context ?: new GlobalViewContext();
     }
 
     /**
      * @param string|list<string> $views
-     * @param class-string<ViewComposer>|Closure(View) $composer
+     * @param class-string<ViewComposer>|Closure(View):void $composer
      *
      * @psalm-suppress DocblockTypeContradiction
      *
@@ -90,8 +90,10 @@ final class ViewComposerCollection
             $view->with($name, $context);
         }
 
-        foreach ($this->matchingComposers($view) as $matchingComposer) {
-            $c = $this->composer_factory->create($matchingComposer);
+        foreach ($this->matchingComposers($view) as $composer) {
+            $c = $composer instanceof Closure
+                ? new ClosureViewComposer($composer)
+                : $this->composer_factory->create($composer);
             $c->compose($view);
         }
 
