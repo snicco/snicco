@@ -24,9 +24,9 @@ parameters:
           regex: Snicco\\Bundle\\HttpRouting\\.*
 
     - name: templating_bundle
-        collectors:
-            - type: className
-              regex: Snicco\\Bundle\\Templating\\.*
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\Templating\\.*
 
     - name: testing_bundle
       collectors:
@@ -34,25 +34,16 @@ parameters:
           regex: Snicco\\Bundle\\Testing\\.*
 
   ruleset:
-    testing_bundle:
-      - kernel
-      - str_arr
-      - pimple
-
     better_wp_hooks_bundle:
       - testing_bundle
       - better_wp_hooks
       - event_dispatcher
       - kernel
-      - str_arr # test only
-      - pimple # test only
 
     better_wpdb_bundle:
       - testing_bundle
       - better_wpdb
       - kernel
-      - str_arr # test only
-      - pimple # test only
 
     debug_bundle:
       - psr7_error_handler
@@ -60,9 +51,6 @@ parameters:
       - http_routing_bundle
       - testing_bundle # dev only
       - http_routing
-      - str_arr # dev only
-      - pimple # dev only
-      - better_wp_hooks_bundle # dev only
 
     http_routing_bundle:
       - kernel
@@ -72,6 +60,20 @@ parameters:
       - str_arr
       - event_dispatcher
       - better_wp_hooks_bundle
-      - pimple # dev only
       - testing_bundle # dev only
+      - pimple # dev only
+
+    testing_bundle:
+      - kernel
+      - psr7_error_handler
+      - pimple
+
+    templating_bundle:
+      - psr7_error_handler
+      - http_routing
+      - templating
+      - kernel
+      - testing_bundle # dev
+      - better_wp_hooks_bundle #dev
+      - http_routing_bundle # dev
 

@@ -7,12 +7,17 @@
     }
   ],
   "require": {
-    "php": "^7.4|^8.0"
+    "php": "^7.4|^8.0",
+    "sniccowp/templating": "dev-master",
+    "sniccowp/kernel": "dev-master",
+    "sniccowp/psr7-error-handler": "dev-master",
+    "sniccowp/http-routing": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
-    "sniccowp/pimple-bridge": "dev-master",
-    "sniccowp/str-arr": "dev-master",
+    "sniccowp/testing-bundle": "dev-master",
+    "sniccowp/http-routing-bundle": "dev-master",
+    "sniccowp/better-wp-hooks-bundle": "dev-master",
     "nyholm/psr7": "^1.0.0"
   },
   "autoload": {
