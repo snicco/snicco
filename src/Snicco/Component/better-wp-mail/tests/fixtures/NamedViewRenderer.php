@@ -9,7 +9,7 @@ use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 class NamedViewRenderer implements MailRenderer
 {
 
-    public function getMailContent(string $template_name, array $context = []): string
+    public function render(string $template_name, array $context = []): string
     {
         return $template_name;
     }

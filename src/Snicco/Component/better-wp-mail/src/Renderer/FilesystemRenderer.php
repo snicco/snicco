@@ -10,7 +10,7 @@ final class FilesystemRenderer implements MailRenderer
     /**
      * @psalm-suppress UnresolvableInclude
      */
-    public function getMailContent(string $template_name, array $context = []): string
+    public function render(string $template_name, array $context = []): string
     {
         ob_start();
         (static function () use ($template_name, $context) {
