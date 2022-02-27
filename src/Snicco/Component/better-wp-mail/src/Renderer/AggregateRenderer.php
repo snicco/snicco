@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Renderer;
 
-use Snicco\Component\BetterWPMail\Exception\CantRenderMailContent;
+use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 
 final class AggregateRenderer implements MailRenderer
 {
@@ -27,12 +27,12 @@ final class AggregateRenderer implements MailRenderer
     /**
      * @param array<string,mixed> $context
      *
-     * @throws CantRenderMailContent
+     * @throws CouldNotRenderMailContent
      */
-    public function getMailContent(string $template_name, array $context = []): string
+    public function render(string $template_name, array $context = []): string
     {
         if (isset($this->renderer_cache[$template_name])) {
-            return $this->renderer_cache[$template_name]->getMailContent($template_name, $context);
+            return $this->renderer_cache[$template_name]->render($template_name, $context);
         }
 
         $renderer = null;
@@ -47,12 +47,12 @@ final class AggregateRenderer implements MailRenderer
         }
 
         if (!$renderer) {
-            throw new CantRenderMailContent(
+            throw new CouldNotRenderMailContent(
                 "None of the given renderers supports the current the template [$template_name]."
             );
         }
 
-        return $renderer->getMailContent($template_name, $context);
+        return $renderer->render($template_name, $context);
     }
 
     public function supports(string $template_name, ?string $extension = null): bool

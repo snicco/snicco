@@ -195,7 +195,6 @@ final class TestableEventDispatcherTest extends TestCase
         });
         $this->fake_dispatcher->fake(EventStub::class);
 
-        /** @var EventStub $result */
         $result = $this->fake_dispatcher->dispatch($event = new EventStub('FOO', 'BAR'));
 
         $this->assertSame($event, $result);

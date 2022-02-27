@@ -6,7 +6,7 @@ namespace Snicco\Component\BetterWPMail\Exception;
 
 use RuntimeException;
 
-final class CantRenderMailContent extends RuntimeException
+final class CouldNotRenderMailContent extends RuntimeException
 {
 
 }

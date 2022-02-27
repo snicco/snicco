@@ -40,4 +40,13 @@ interface EventDispatcher extends EventDispatcherInterface
      */
     public function remove(string $event_name, $listener = null): void;
 
+    /**
+     * @template T of object
+     *
+     * @param T $event
+     *
+     * @return T
+     */
+    public function dispatch(object $event): object;
+
 }

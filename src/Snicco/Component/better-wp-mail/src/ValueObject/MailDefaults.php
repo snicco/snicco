@@ -14,12 +14,18 @@ final class MailDefaults
     private string $reply_to_name;
     private string $reply_to_email;
 
-    public function __construct(string $from_email, string $from_name, string $reply_to_email, string $reply_to_name)
-    {
-        $this->from_email = $from_email;
-        $this->from_name = $from_name;
-        $this->reply_to_name = $reply_to_name;
-        $this->reply_to_email = $reply_to_email;
+    public function __construct(
+        string $from_email = '',
+        string $from_name = '',
+        string $reply_to_email = '',
+        string $reply_to_name = ''
+    ) {
+        $wp = new WPMailAPI();
+
+        $this->from_email = empty($from_email) ? $wp->adminEmail() : $from_email;
+        $this->from_name = empty($from_name) ? $wp->siteName() : $from_name;
+        $this->reply_to_name = empty($reply_to_name) ? $this->from_name : $reply_to_name;
+        $this->reply_to_email = empty($reply_to_email) ? $this->from_email : $reply_to_email;
     }
 
     public static function fromWordPressSettings(WPMailAPI $wp = null): MailDefaults

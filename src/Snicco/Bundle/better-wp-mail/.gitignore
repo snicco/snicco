@@ -1,0 +1,6 @@
+/.phpunit.cache/
+/vendor
+composer.lock
+
+tests/fixtures/var/*
+!tests/fixtures/var/*/.gitkeep

@@ -13,6 +13,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\BetterWPDB\\.*
 
+    - name: better_wp_mail_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\BetterWPMail\\.*
+
     - name: blade_bundle
       collectors:
         - type: className
@@ -44,6 +49,13 @@ parameters:
       - better_wp_hooks
       - event_dispatcher
       - kernel
+
+    better_wp_mail_bundle:
+      - kernel
+      - testing_bundle
+      - templating
+      - better_wp_mail
+      - event_dispatcher
 
     better_wpdb_bundle:
       - testing_bundle
