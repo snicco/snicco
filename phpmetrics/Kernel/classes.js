@@ -520,9 +520,9 @@ var classes = [
         "totalSystemComplexity": 173.25,
         "package": "Snicco\\Component\\Kernel\\ValueObject\\",
         "pageRank": 0,
-        "afferentCoupling": 11,
+        "afferentCoupling": 12,
         "efferentCoupling": 4,
-        "instability": 0.27,
+        "instability": 0.25,
         "violations": {}
     },
     {
@@ -820,9 +820,9 @@ var classes = [
         "totalSystemComplexity": 15986.43,
         "package": "Snicco\\Component\\Kernel\\",
         "pageRank": 0,
-        "afferentCoupling": 9,
+        "afferentCoupling": 10,
         "efferentCoupling": 17,
-        "instability": 0.65,
+        "instability": 0.63,
         "violations": {}
     },
     {
@@ -1589,9 +1589,9 @@ var classes = [
         "totalSystemComplexity": 605.25,
         "package": "Snicco\\Component\\Kernel\\Configuration\\",
         "pageRank": 0,
-        "afferentCoupling": 8,
+        "afferentCoupling": 9,
         "efferentCoupling": 4,
-        "instability": 0.33,
+        "instability": 0.31,
         "violations": {}
     },
     {

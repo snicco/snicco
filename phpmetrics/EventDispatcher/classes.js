@@ -242,9 +242,9 @@ var classes = [
         "totalSystemComplexity": 15,
         "package": "Snicco\\Component\\EventDispatcher\\",
         "pageRank": 0,
-        "afferentCoupling": 6,
+        "afferentCoupling": 7,
         "efferentCoupling": 3,
-        "instability": 0.33,
+        "instability": 0.3,
         "violations": {}
     },
     {

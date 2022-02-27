@@ -377,9 +377,9 @@ var classes = [
         "totalSystemComplexity": 68.2,
         "package": "Snicco\\Component\\Templating\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
+        "afferentCoupling": 4,
         "efferentCoupling": 3,
-        "instability": 0.5,
+        "instability": 0.43,
         "violations": {}
     },
     {
