@@ -13,7 +13,8 @@
     "sniccowp/pimple-bridge": "dev-master"
   },
   "require-dev": {
-    "phpunit/phpunit": "9.5.13"
+    "phpunit/phpunit": "9.5.13",
+    "nyholm/psr7": "^1.0.0"
   },
   "autoload": {
     "psr-4": {
