@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-26 23:31:09        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-02-27 16:07:18        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -210,7 +210,7 @@
                             <path d="M0 0h24v24H0z" fill="none"/>
                             <path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/>
                         </svg>
-                        Violations (109)
+                        Violations (107)
                     </a>
                 </li>
                                     <li>
@@ -1280,7 +1280,6 @@
         "relations": [
             "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
             "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
-            "\\Snicco\\Component\\Templating\\ViewComposer\\ClosureViewComposer",
             "\\composer",
             "\\Snicco\\Component\\Templating\\Exception\\BadViewComposer"
         ]
@@ -1288,12 +1287,7 @@
     {
         "name": "\\Snicco\\Component\\Templating\\GlobalViewContext",
         "size": 3000,
-        "relations": [
-            "\\ArrayAccess",
-            "\\Snicco\\Component\\StrArr\\Arr",
-            "\\BadMethodCallException",
-            "\\"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Templating\\View\\View",
@@ -1303,7 +1297,11 @@
     {
         "name": "\\Snicco\\Component\\Templating\\ViewComposer\\ClosureViewComposer",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
+            "\\Closure",
+            "\\Snicco\\Component\\Templating\\View\\View"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
@@ -1335,11 +1333,7 @@
     {
         "name": "\\Snicco\\Component\\Templating\\ViewEngine",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
-            "\\Snicco\\Component\\Templating\\View\\View",
-            "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
@@ -1357,7 +1351,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000003bb8315f0000000013deb232",
+        "name": "\\anonymous@000000004f97ef41000000005b52494a",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1388,9 +1382,7 @@
     {
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Templating\\View\\PHPView",
@@ -1434,11 +1426,6 @@
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\RequestInterface",
         "size": 3000,
         "relations": []
     },
@@ -1488,6 +1475,11 @@
         "relations": []
     },
     {
+        "name": "\\Psr\\Http\\Message\\RequestInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Verbosity",
         "size": 3000,
         "relations": []
@@ -1528,7 +1520,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000003bb83e490000000013deb232",
+        "name": "\\anonymous@000000004f97fb1c000000005b52494a",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2438,14 +2430,34 @@
         "name": "\\Snicco\\Bundle\\Testing\\BundleTestHelpers",
         "size": 3000,
         "relations": [
+            "\\Snicco\\Bundle\\Testing\\BundleTest",
             "\\Snicco\\Component\\Kernel\\DIContainer",
-            "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
-            "\\RuntimeException",
-            "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
-            "\\RecursiveDirectoryIterator",
-            "\\RecursiveIteratorIterator",
             "\\Snicco\\Component\\Kernel\\Kernel",
             "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\BundleTest",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Kernel\\DIContainer",
+            "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
+            "\\RuntimeException",
+            "\\RecursiveDirectoryIterator",
+            "\\RecursiveIteratorIterator"
+        ]
+    },
+    {
+        "name": "\\anonymous@000000004f97f06f000000005b52494a",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Throwable",
+            "\\Psr\\Http\\Message\\ServerRequestInterface"
         ]
     },
     {
@@ -2750,6 +2762,65 @@
     },
     {
         "name": "\\Whoops\\Handler\\JsonResponseHandler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\TemplatingBundle",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Kernel\\Bundle",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\RuntimeException",
+            "\\Snicco\\Component\\Templating\\ViewEngine",
+            "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
+            "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
+            "\\Snicco\\Bundle\\Templating\\TemplatingMiddleware",
+            "\\Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
+            "\\Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
+            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
+            "\\Snicco\\Component\\Templating\\GlobalViewContext"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\TemplatingMiddleware",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "\\Snicco\\Component\\Templating\\ViewEngine"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+            "\\Snicco\\Component\\Templating\\ViewEngine",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "\\Snicco\\Component\\Templating\\View\\View",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
+            "\\Psr\\Container\\ContainerInterface",
+            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
+            "\\ReflectionClass",
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\Option\\TemplatingOption",
         "size": 3000,
         "relations": []
     },

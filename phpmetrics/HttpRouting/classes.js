@@ -1824,9 +1824,9 @@ var classes = [
         "totalSystemComplexity": 453.22,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 13,
+        "afferentCoupling": 14,
         "efferentCoupling": 12,
-        "instability": 0.48,
+        "instability": 0.46,
         "violations": {}
     },
     {
@@ -2327,9 +2327,9 @@ var classes = [
         "totalSystemComplexity": 28.67,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 16,
+        "afferentCoupling": 17,
         "efferentCoupling": 6,
-        "instability": 0.27,
+        "instability": 0.26,
         "violations": {}
     },
     {
@@ -7047,9 +7047,9 @@ var classes = [
         "totalSystemComplexity": 17689.48,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
-        "afferentCoupling": 19,
+        "afferentCoupling": 20,
         "efferentCoupling": 5,
-        "instability": 0.21,
+        "instability": 0.2,
         "violations": {}
     },
     {
@@ -7706,9 +7706,9 @@ var classes = [
         "totalSystemComplexity": 245167.71,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
-        "afferentCoupling": 37,
+        "afferentCoupling": 39,
         "efferentCoupling": 13,
-        "instability": 0.26,
+        "instability": 0.25,
         "violations": {}
     },
     {
