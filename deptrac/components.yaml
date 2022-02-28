@@ -73,10 +73,10 @@ parameters:
         - type: className
           regex: Snicco\\Component\\TestableClock\\.*
 
-    - name: wp_object_cache_psr16
+    - name: better_wp_cache
       collectors:
         - type: className
-          regex: Snicco\\Component\\WPObjectCachePsr16\\.*
+          regex: Snicco\\Component\\BetterWPCache\\.*
 
   ruleset:
 
@@ -109,5 +109,5 @@ parameters:
     templating:
       - str_arr
 
-    wp_object_cache_psr16:
+    better_wp_cache:
       - better_wp_api

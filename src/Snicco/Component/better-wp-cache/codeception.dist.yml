@@ -1,4 +1,4 @@
-namespace: Snicco\Component\WPObjectCachePsr16
+namespace: Snicco\Component\BetterWPCache
 paths:
   tests: tests
   output: tests/_output

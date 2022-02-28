@@ -1,6 +1,5 @@
 {
-  "name": "sniccowp/wp-object-cache-psr16",
-  "description": "Allows you to use the wp object cache in libraries that require a Psr16 CacheInterface",
+  "name": "sniccowp/better-wp-cache",
   "license": "MIT",
   "authors": [
     {
@@ -11,6 +10,10 @@
   "require": {
     "php": "^7.4|^8.0",
     "psr/simple-cache": "^1.0.0",
+    "psr/cache": "^1.0.0",
+    "cache/simple-cache-bridge": "^1.2.0",
+    "cache/taggable-cache": "1.2.0",
+    "cache/tag-interop": "^1.1",
     "sniccowp/better-wp-api": "dev-master"
   },
   "require-dev": {
@@ -20,12 +23,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Component\\WPObjectCachePsr16\\": "src"
+      "Snicco\\Component\\BetterWPCache\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\WPObjectCachePsr16\\Tests\\": "tests"
+      "Snicco\\Component\\BetterWPCache\\Tests\\": "tests"
     }
   },
   "config": {

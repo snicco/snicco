@@ -23,8 +23,10 @@
             <directory name="vendor"/>
             <!--            Only references global WP constants -->
             <file name="src/Snicco/Component/eloquent/src/WPDatabaseSettingsAPI.php"/>
-            <!--            This file is not our code. @see https://github.com/php-cache/integration-tests/issues/117-->
-            <file name="src/Snicco/Component/wp-object-cache-psr16/tests/wordpress/WPObjectCachePsr16Test.php"/>
+            <!--            These two files are not our code. @see https://github.com/php-cache/integration-tests/issues/117 -->
+            <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr6IntegrationTest.php"/>
+            <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr16IntegrationTest.php"/>
+            <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/TaggingIntegrationTest.php"/>
         </ignoreFiles>
     </projectFiles>
 
