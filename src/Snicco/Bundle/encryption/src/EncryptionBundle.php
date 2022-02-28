@@ -60,7 +60,6 @@ final class EncryptionBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        // TODO: Implement bootstrap() method.
     }
 
     public function alias(): string
