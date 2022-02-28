@@ -9,7 +9,7 @@
   "require": {
     "php": "^7.4|^8.0",
     "sniccowp/kernel": "dev-master",
-    "sniccwp/better-wp-cache": "dev-master"
+    "sniccowp/better-wp-cache": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
