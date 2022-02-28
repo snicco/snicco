@@ -48,6 +48,7 @@
         "psr/http-server-middleware": "^1.0.0",
         "psr/log": "^1.1.1",
         "psr/simple-cache": "^1.0.0",
+        "sniccwp/better-wp-cache": "dev-master",
         "webimpress/safe-writer": "^2.2",
         "webmozart/assert": "^1.10"
     },
@@ -75,6 +76,7 @@
             "Snicco\\Bridge\\SessionPsr16\\": "src/Snicco/Bridge/session-psr16/src",
             "Snicco\\Bridge\\SignedUrlMiddleware\\": "src/Snicco/Bridge/signed-url-middleware/src",
             "Snicco\\Bridge\\SignedUrlPsr16\\": "src/Snicco/Bridge/signed-url-psr16/src",
+            "Snicco\\Bundle\\BetterWPCache\\": "src/Snicco/Bundle/better-wp-cache/src",
             "Snicco\\Bundle\\BetterWPDB\\": "src/Snicco/Bundle/better-wpdb/src",
             "Snicco\\Bundle\\BetterWPHooks\\": "src/Snicco/Bundle/better-wp-hooks/src",
             "Snicco\\Bundle\\BetterWPMail\\": "src/Snicco/Bundle/better-wp-mail/src",
@@ -123,6 +125,7 @@
             "Snicco\\Bridge\\SessionPsr16\\Tests\\": "src/Snicco/Bridge/session-psr16/tests",
             "Snicco\\Bridge\\SignedUrlMiddleware\\Tests\\": "src/Snicco/Bridge/signed-url-middleware/tests",
             "Snicco\\Bridge\\SignedUrlPsr16\\Tests\\": "src/Snicco/Bridge/signed-url-psr16/tests",
+            "Snicco\\Bundle\\BetterWPCache\\Tests\\": "src/Snicco/Bundle/better-wp-cache/tests",
             "Snicco\\Bundle\\BetterWPDB\\Tests\\": "src/Snicco/Bundle/better-wpdb/tests",
             "Snicco\\Bundle\\BetterWPHooks\\Tests\\": "src/Snicco/Bundle/better-wp-hooks/tests",
             "Snicco\\Bundle\\BetterWPMailDB\\Tests\\": "src/Snicco/Bundle/better-wp-mail/tests",
@@ -225,6 +228,7 @@
     "replace": {
         "sniccowp/better-wp-api": "self.version",
         "sniccowp/better-wp-cache": "self.version",
+        "sniccowp/better-wp-cache-bundle": "self.version",
         "sniccowp/better-wp-hooks": "self.version",
         "sniccowp/better-wp-hooks-bundle": "self.version",
         "sniccowp/better-wp-mail": "self.version",

@@ -13,7 +13,6 @@
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
-    "lucatume/wp-browser": "~3.1.3",
     "sniccowp/testing-bundle": "dev-master"
   },
   "autoload": {
