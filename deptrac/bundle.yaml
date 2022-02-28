@@ -18,6 +18,11 @@ parameters:
         - type: className
           regex: Snicco\\Bundle\\BetterWPMail\\.*
 
+    - name: better_wp_cache_bundle
+      collectors:
+        - type: className
+          regex: Snicco\\Bundle\\BetterWPCache\\.*
+
     - name: blade_bundle
       collectors:
         - type: className
@@ -109,4 +114,9 @@ parameters:
       - testing_bundle # dev
       - better_wp_hooks_bundle #dev
       - http_routing_bundle # dev
+
+    better_wp_cache_bundle:
+      - testing_bundle
+      - kernel
+      - better_wp_cache
 

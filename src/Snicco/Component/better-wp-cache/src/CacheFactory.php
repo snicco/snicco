@@ -8,6 +8,7 @@ namespace Snicco\Component\BetterWPCache;
 use Cache\Bridge\SimpleCache\SimpleCacheBridge;
 use Cache\Taggable\TaggablePSR6PoolAdapter;
 use Cache\TagInterop\TaggableCacheItemPoolInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
 
 final class CacheFactory
@@ -29,7 +30,7 @@ final class CacheFactory
         return new SimpleCacheBridge(self::psr6($group));
     }
 
-    public static function taggable(WPObjectCachePsr6 $psr6): TaggableCacheItemPoolInterface
+    public static function taggable(CacheItemPoolInterface $psr6): TaggableCacheItemPoolInterface
     {
         return TaggablePSR6PoolAdapter::makeTaggable($psr6);
     }
