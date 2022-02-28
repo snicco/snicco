@@ -44,6 +44,12 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $psr = $response->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
         $this->assertSame($this->view, $psr->view());
+
+        $request = $this->frontendRequest('/foo', [], 'HEAD');
+
+        $response = $this->runNewPipeline($request);
+        $response->assertOk();
+        $response->assertIsHtml();
     }
 
     /**
@@ -75,6 +81,5 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $this->assertSame($this->view, $psr->view());
         $this->assertSame(['greet' => 'Calvin'], $psr->viewData());
     }
-
 }
 
