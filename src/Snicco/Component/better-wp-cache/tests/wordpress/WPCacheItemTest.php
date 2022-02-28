@@ -31,7 +31,7 @@ final class WPCacheItemTest extends WPTestCase
     /**
      * @test
      *
-     * @psalm-suppress InvalidArgument
+     * @psalm-suppress InvalidScalarArgument
      */
     public function test_invalid_argument_exception_expires_after(): void
     {
