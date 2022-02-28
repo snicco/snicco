@@ -24,6 +24,8 @@ use const E_NOTICE;
  * extend the provided test case because we already need to extend WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
+ *
+ * @psalm-suppress InternalClass
  */
 final class WPObjectCachePsr6Test extends WPTestCase
 {
