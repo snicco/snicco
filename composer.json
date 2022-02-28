@@ -20,6 +20,7 @@
         "ext-mbstring": "*",
         "ext-mysqli": "*",
         "cache/simple-cache-bridge": "^1.2.0",
+        "cache/tag-interop": "^1.1",
         "cache/taggable-cache": "1.2.0",
         "defuse/php-encryption": "^2.3",
         "filp/whoops": "^2.14.5",
