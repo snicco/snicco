@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\WPObjectCachePsr16;
+namespace Snicco\Component\BetterWPCache;
 
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 
@@ -10,11 +10,11 @@ use function wp_cache_flush;
 use function wp_cache_get_multiple;
 
 /**
- * @psalm-internal Snicco\Component\WPObjectCachePsr16
+ * @psalm-internal Snicco\Component\BetterWPCache
  *
  * @interal
  */
-final class WPCacheAPI extends BetterWPAPI
+class WPCacheAPI extends BetterWPAPI
 {
 
     /**
