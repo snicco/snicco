@@ -143,6 +143,7 @@ final class TemplatingBundle implements Bundle
                 $kernel->container()->make(GlobalViewContext::class)
             );
 
+
             /**
              * @var array<class-string<ViewComposer>, list<string>>
              */
@@ -158,6 +159,13 @@ final class TemplatingBundle implements Bundle
 
     private function bindGlobalViewContext(Kernel $kernel): void
     {
-        $kernel->container()->singleton(GlobalViewContext::class, fn() => new GlobalViewContext());
+        $kernel->container()->singleton(GlobalViewContext::class, function () use ($kernel) {
+            $context = new GlobalViewContext();
+            // This needs to be a closure.
+            $context->add('view', function () use ($kernel) {
+                return $kernel->container()->make(ViewEngine::class);
+            });
+            return $context;
+        });
     }
 }

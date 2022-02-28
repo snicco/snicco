@@ -81,6 +81,13 @@ final class TemplatingBundleTest extends TestCase
         $kernel->boot();
 
         $this->assertCanBeResolved(GlobalViewContext::class, $kernel);
+
+        /**
+         * @var GlobalViewContext $context
+         */
+        $context = $kernel->container()->get(GlobalViewContext::class);
+        $this->assertTrue(isset($context->get()['view']));
+        $this->assertInstanceOf(ViewEngine::class, $context->get()['view']);
     }
 
     /**
@@ -391,6 +398,6 @@ class CustomBundleComposer implements ViewComposer
 
     public function compose(View $view): void
     {
-        $view->with('foo', self::class);
+        $view->addContext('foo', self::class);
     }
 }

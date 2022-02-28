@@ -10,8 +10,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 
 /**
  * @psalm-internal Snicco\Component\Templating
- *
- * @interal
  */
 final class PHPView implements View
 {
@@ -54,7 +52,7 @@ final class PHPView implements View
         return $this->name;
     }
 
-    public function toString(): string
+    public function render(): string
     {
         return $this->engine->renderPhpView($this);
     }
@@ -63,15 +61,13 @@ final class PHPView implements View
      * @param string|array<string, mixed> $key
      * @param mixed $value
      */
-    public function with($key, $value = null): View
+    public function addContext($key, $value = null): void
     {
         if (is_array($key)) {
             $this->context = array_merge($this->context(), $key);
         } else {
             $this->context[$key] = $value;
         }
-
-        return $this;
     }
 
     /**
@@ -80,6 +76,11 @@ final class PHPView implements View
     public function context(): array
     {
         return $this->context;
+    }
+
+    public function withContext(array $context): void
+    {
+        $this->context = $context;
     }
 
     public function parent(): ?PHPView
@@ -142,5 +143,4 @@ final class PHPView implements View
 
         return $match;
     }
-
 }

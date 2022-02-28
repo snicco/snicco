@@ -6,9 +6,6 @@ namespace Snicco\Component\Templating\View;
 
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
-/**
- * @api
- */
 interface View
 {
 
@@ -17,13 +14,22 @@ interface View
      *
      * @throws ViewCantBeRendered If any kind of error occurs.
      */
-    public function toString(): string;
+    public function render(): string;
 
     /**
+     * Add (merge) context to the view object.
+     *
      * @param string|array<string, mixed> $key
      * @param mixed $value
      */
-    public function with($key, $value = null): View;
+    public function addContext($key, $value = null): void;
+
+    /**
+     * Replaces the current context with the provided context
+     *
+     * @param array<string,mixed> $context
+     */
+    public function withContext(array $context): void;
 
     /**
      * @return array<string,mixed>
