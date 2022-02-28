@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\WPObjectCachePsr16\Tests\wordpress;
+namespace Snicco\Component\BetterWPCache\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use DateInterval;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use RuntimeException;
-use Snicco\Component\WPObjectCachePsr16\WPCacheAPI;
-use Snicco\Component\WPObjectCachePsr16\WPObjectCachePsr16;
+use Snicco\Component\BetterWPCache\CacheFactory;
 use stdClass;
 use WP_Object_Cache;
 
@@ -24,7 +23,7 @@ use function sprintf;
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
  */
-final class WPObjectCachePsr16Test extends WPTestCase
+final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 {
 
     private CacheInterface $cache;
@@ -153,7 +152,7 @@ final class WPObjectCachePsr16Test extends WPTestCase
      */
     public function createSimpleCache()
     {
-        return new WPObjectCachePsr16(new WPCacheAPI());
+        return CacheFactory::psr16('testing');
     }
 
     /**
