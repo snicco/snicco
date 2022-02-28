@@ -40,19 +40,21 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $mailer = $this->getMailer($kernel);
 
         $email = (new Email())->withTo('c@web.de')->withHtmlTemplate('html-template');
-        $email = $email->withContext('mail_content', 'FOO');
-
+        $email = $email->withContext(['mail_content' => 'FOO', 'extra' => 'extra-bar']);
 
         $mailer->send($email);
 
         $transport->assertSent(Email::class, function (Email $email) {
-            $this->assertSame('<h1>FOO</h1>', $email->htmlBody());
-            $this->assertSame('FOO', $email->textBody());
+            $this->assertStringContainsString('<h1>FOO</h1>', (string)$email->htmlBody());
+            $this->assertStringContainsString('extra-bar', (string)$email->htmlBody());
+            $this->assertStringContainsString('FOO', (string)$email->textBody());
+            $this->assertStringContainsString('extra-bar', (string)$email->textBody());
             return true;
         });
 
         $transport->reset();
 
+        // Mail context is reset.
         $email = $email->withContext('mail_content', 'BAR');
         $mailer->send($email);
 

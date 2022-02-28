@@ -21,7 +21,7 @@ class BladeComponentsTest extends BladeTestCase
     public function basic_anonymous_components_work(): void
     {
         $view = $this->view_engine->make('anonymous-component');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('Hello World', $content);
     }
 
@@ -31,7 +31,7 @@ class BladeComponentsTest extends BladeTestCase
     public function props_work_on_anonymous_components(): void
     {
         $view = $this->view_engine->make('anonymous-component-props');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('ID:props-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
     }
 
@@ -43,7 +43,7 @@ class BladeComponentsTest extends BladeTestCase
         Blade::component(HelloWorld::class, 'hello-world');
 
         $view = $this->view_engine->make('class-component');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('Hello World Class BladeComponent', $content);
     }
 
@@ -54,12 +54,14 @@ class BladeComponentsTest extends BladeTestCase
     {
         Blade::component(Alert::class, 'alert');
 
-        $view = $this->view_engine->make('alert-component')->with('message', 'foo');
-        $content = $view->toString();
+        $view = $this->view_engine->make('alert-component');
+        $view->addContext('message', 'foo');
+        $content = $view->render();
         $this->assertViewContent('TYPE:error,MESSAGE:foo', $content);
 
-        $view = $this->view_engine->make('alert-component')->with('message', 'FOO');
-        $content = $view->toString();
+        $view = $this->view_engine->make('alert-component');
+        $view->addContext('message', 'FOO');
+        $content = $view->render();
         $this->assertViewContent('TYPE:error,MESSAGE:COMPONENT METHOD CALLED', $content);
     }
 
@@ -70,8 +72,9 @@ class BladeComponentsTest extends BladeTestCase
     {
         Blade::component(Dependency::class, 'with-dependency');
 
-        $view = $this->view_engine->make('with-dependency-component')->with('message', 'bar');
-        $content = $view->toString();
+        $view = $this->view_engine->make('with-dependency-component');
+        $view->addContext('message', 'bar');
+        $content = $view->render();
         $this->assertViewContent('MESSAGE:foobar', $content);
     }
 
@@ -82,8 +85,9 @@ class BladeComponentsTest extends BladeTestCase
     {
         Blade::component(AlertAttributes::class, 'alert-attributes');
 
-        $view = $this->view_engine->make('alert-attributes-component')->with('message', 'foo');
-        $content = $view->toString();
+        $view = $this->view_engine->make('alert-attributes-component');
+        $view->addContext('message', 'foo');
+        $content = $view->render();
         $this->assertViewContent('ID:alert-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
     }
 
@@ -94,16 +98,18 @@ class BladeComponentsTest extends BladeTestCase
     {
         Blade::component(ToUppercaseComponent::class, 'uppercase');
 
-        $view = $this->view_engine->make('uppercase-component')->with('content', 'foobar');
-        $content = $view->toString();
+        $view = $this->view_engine->make('uppercase-component');
+        $view->addContext('content', 'foobar');
+        $content = $view->render();
         $this->assertViewContent('TITLE:CALVIN,CONTENT:FOOBAR', $content);
 
         // with scope
-        $view = $this->view_engine->make('uppercase-component')->with([
+        $view = $this->view_engine->make('uppercase-component');
+        $view->addContext([
             'content' => 'foobar',
             'scoped' => 'wordpress',
         ]);
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('TITLE:CALVIN,CONTENT:FOOBAR,SCOPED:WORDPRESS', $content);
     }
 
@@ -114,8 +120,9 @@ class BladeComponentsTest extends BladeTestCase
     {
         Blade::component(InlineComponent::class, 'inline');
 
-        $view = $this->view_engine->make('inline-component')->with('content', 'foobar');
-        $content = $view->toString();
+        $view = $this->view_engine->make('inline-component');
+        $view->addContext('content', 'foobar');
+        $content = $view->render();
         $this->assertViewContent('Content:FOOBAR,SLOT:CALVIN', $content);
     }
 
@@ -124,13 +131,14 @@ class BladeComponentsTest extends BladeTestCase
      */
     public function dynamic_components_work(): void
     {
-        $view = $this->view_engine->make('dynamic-component')->with('componentName', 'hello');
-        $content = $view->toString();
+        $view = $this->view_engine->make('dynamic-component');
+        $view->addContext('componentName', 'hello');
+        $content = $view->render();
         $this->assertViewContent('Hello World', $content);
 
-        $view =
-            $this->view_engine->make('dynamic-component')->with('componentName', 'hello-calvin');
-        $content = $view->toString();
+        $view = $this->view_engine->make('dynamic-component');
+        $view->addContext('componentName', 'hello-calvin');
+        $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
 

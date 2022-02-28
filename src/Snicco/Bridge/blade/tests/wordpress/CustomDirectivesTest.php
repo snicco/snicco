@@ -84,13 +84,13 @@ class CustomDirectivesTest extends WPTestCase
         wp_set_current_user($user->ID);
 
         $view = $this->view('auth');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('AUTHENTICATED', $content);
 
         wp_logout();
 
         $view = $this->view('auth');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('', $content);
     }
 
@@ -102,13 +102,13 @@ class CustomDirectivesTest extends WPTestCase
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
         $view = $this->view('guest');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('YOU ARE A GUEST', $content);
 
         wp_set_current_user($this->factory()->user->create_and_get()->ID);
 
         $view = $this->view('guest');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('', $content);
     }
 
@@ -123,21 +123,21 @@ class CustomDirectivesTest extends WPTestCase
         wp_set_current_user($admin->ID);
 
         $view = $this->view('role');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('ADMIN', $content);
 
         $editor = $this->factory()->user->create_and_get(['role' => 'editor']);
         wp_set_current_user($editor->ID);
 
         $view = $this->view('role');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('EDITOR', $content);
 
         $author = $this->factory()->user->create_and_get(['role' => 'author']);
         wp_set_current_user($author->ID);
 
         $view = $this->view('role');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('', $content);
     }
 
