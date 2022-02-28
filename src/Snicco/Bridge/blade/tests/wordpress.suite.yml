@@ -1,4 +1,4 @@
-namespace: Snicco\Component\BetterWPCache\Tests\wordpress
+namespace: Snicco\Bridge\Blade\Tests\wordpress
 modules:
   enabled:
     - WPLoader
