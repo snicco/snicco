@@ -14,7 +14,14 @@ use WP_Object_Cache;
 
 use function method_exists;
 
-final class TaggingTest extends WPTestCase
+/**
+ * The test methods in this class are copied from
+ * https://github.com/php-cache/integration-tests/blob/master/src/ We can't
+ * extend the provided test case because we already need to extend WPTestCase.
+ *
+ * @see https://github.com/php-cache/integration-tests/issues/117
+ */
+final class TaggingIntegrationTest extends WPTestCase
 {
 
     /**
