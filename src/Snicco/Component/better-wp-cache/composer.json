@@ -13,6 +13,7 @@
     "psr/cache": "^1.0.0",
     "cache/simple-cache-bridge": "^1.2.0",
     "cache/taggable-cache": "1.2.0",
+    "cache/tag-interop": "^1.1",
     "sniccowp/better-wp-api": "dev-master"
   },
   "require-dev": {
