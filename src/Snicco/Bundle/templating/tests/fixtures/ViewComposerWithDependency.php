@@ -23,6 +23,6 @@ final class ViewComposerWithDependency implements ViewComposer
 
     public function compose(View $view): void
     {
-        $view->with('object_hash', spl_object_hash($this->stdClass));
+        $view->addContext('object_hash', spl_object_hash($this->stdClass));
     }
 }

@@ -18,7 +18,7 @@ class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('xss');
 
-        $this->assertStringStartsWith('&lt;script', $view->toString());
+        $this->assertStringStartsWith('&lt;script', $view->render());
     }
 
     /**
@@ -26,10 +26,10 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function xss_encoding_can_be_disabled(): void
     {
-        $view = $this->view('xss-disabled')
-            ->with('script', '<script type="text/javascript">alert("Hacked!");</script>');
+        $view = $this->view('xss-disabled');
+        $view->addContext('script', '<script type="text/javascript">alert("Hacked!");</script>');
 
-        $this->assertStringStartsWith('<script', $view->toString());
+        $this->assertStringStartsWith('<script', $view->render());
     }
 
     /**
@@ -37,8 +37,9 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function json_works(): void
     {
-        $view = $this->view('json')->with('json', ['foo' => 'bar']);
-        $content = $view->toString();
+        $view = $this->view('json');
+        $view->addContext('json', ['foo' => 'bar']);
+        $content = $view->render();
         $this->assertSame(['foo' => 'bar'], json_decode($content, true));
     }
 
@@ -47,16 +48,19 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function if_works(): void
     {
-        $view = $this->view('if')->with('records', ['foo']);
-        $content = $view->toString();
+        $view = $this->view('if');
+        $view->addContext('records', ['foo']);
+        $content = $view->render();
         $this->assertViewContent('I have one record!', $content);
 
-        $view = $this->view('if')->with('records', ['foo', 'bar']);
-        $content = $view->toString();
+        $view = $this->view('if');
+        $view->addContext('records', ['foo', 'bar']);
+        $content = $view->render();
         $this->assertViewContent('I have multiple records!', $content);
 
-        $view = $this->view('if')->with('records', []);
-        $content = $view->toString();
+        $view = $this->view('if');
+        $view->addContext('records', []);
+        $content = $view->render();
         $this->assertViewContent("I don't have any records!", $content);
     }
 
@@ -65,12 +69,14 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function unless_works(): void
     {
-        $view = $this->view('unless')->with('foo', 'foo');
-        $content = $view->toString();
+        $view = $this->view('unless');
+        $view->addContext('foo', 'foo');
+        $content = $view->render();
         $this->assertViewContent('', $content);
 
-        $view = $this->view('unless')->with('foo', 'bar');
-        $content = $view->toString();
+        $view = $this->view('unless');
+        $view->addContext('foo', 'bar');
+        $content = $view->render();
         $this->assertViewContent('UNLESS', $content);
     }
 
@@ -79,12 +85,15 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function empty_isset_works(): void
     {
-        $view = $this->view('isset-empty')->with('isset', 'foo')->with('empty', 'blabla');
-        $content = $view->toString();
+        $view = $this->view('isset-empty');
+        $view->addContext('isset', 'foo');
+        $view->addContext('empty', 'blabla');
+        $content = $view->render();
         $this->assertViewContent('ISSET', $content);
 
-        $view = $this->view('isset-empty')->with('empty', '');
-        $content = $view->toString();
+        $view = $this->view('isset-empty');
+        $view->addContext('empty', '');
+        $content = $view->render();
         $this->assertViewContent('EMPTY', $content);
     }
 
@@ -93,8 +102,9 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function including_a_subview_works(): void
     {
-        $view = $this->view('parent')->with('greeting', 'Hello');
-        $content = $view->toString();
+        $view = $this->view('parent');
+        $view->addContext('greeting', 'Hello');
+        $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
     }
 
@@ -103,12 +113,14 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function include_if_works(): void
     {
-        $view = $this->view('include-if')->with('greeting', 'Hello');
-        $content = $view->toString();
+        $view = $this->view('include-if');
+        $view->addContext('greeting', 'Hello');
+        $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
 
-        $view = $this->view('include-if-bogus')->with('greeting', 'Hello');
-        $content = $view->toString();
+        $view = $this->view('include-if-bogus');
+        $view->addContext('greeting', 'Hello');
+        $content = $view->render();
         $this->assertViewContent('', $content);
     }
 
@@ -117,12 +129,14 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function include_when_works(): void
     {
-        $view = $this->view('include-when')->with(['greeting' => 'Hello', 'foo' => 'foo']);
-        $content = $view->toString();
+        $view = $this->view('include-when');
+        $view->addContext(['greeting' => 'Hello', 'foo' => 'foo']);
+        $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
 
-        $view = $this->view('include-when')->with(['greeting' => 'Hello', 'foo' => 'bogus']);
-        $content = $view->toString();
+        $view = $this->view('include-when');
+        $view->addContext(['greeting' => 'Hello', 'foo' => 'bogus']);
+        $content = $view->render();
         $this->assertViewContent('', $content);
     }
 
@@ -131,12 +145,14 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function include_unless_works(): void
     {
-        $view = $this->view('include-unless')->with(['greeting' => 'Hello', 'foo' => 'foo']);
-        $content = $view->toString();
+        $view = $this->view('include-unless');
+        $view->addContext(['greeting' => 'Hello', 'foo' => 'foo']);
+        $content = $view->render();
         $this->assertViewContent('', $content);
 
-        $view = $this->view('include-unless')->with(['greeting' => 'Hello', 'foo' => 'bar']);
-        $content = $view->toString();
+        $view = $this->view('include-unless');
+        $view->addContext(['greeting' => 'Hello', 'foo' => 'bar']);
+        $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
 
@@ -145,8 +161,9 @@ class BladeFeaturesTest extends BladeTestCase
      */
     public function include_first_works(): void
     {
-        $view = $this->view('include-first')->with(['greeting' => 'Hello', 'foo' => 'foo']);
-        $content = $view->toString();
+        $view = $this->view('include-first');
+        $view->addContext(['greeting' => 'Hello', 'foo' => 'foo']);
+        $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
 
@@ -166,12 +183,14 @@ class BladeFeaturesTest extends BladeTestCase
 
         $collection = [$user1, $user2, $user3];
 
-        $view = $this->view('each')->with(['users' => $collection]);
-        $content = $view->toString();
+        $view = $this->view('each');
+        $view->addContext(['users' => $collection]);
+        $content = $view->render();
         $this->assertViewContent('Calvin.John.Jane.', $content);
 
-        $view = $this->view('each')->with(['users' => []]);
-        $content = $view->toString();
+        $view = $this->view('each');
+        $view->addContext(['users' => []]);
+        $content = $view->render();
         $this->assertViewContent('NO USERS', $content);
     }
 
@@ -181,7 +200,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function raw_php_works(): void
     {
         $view = $this->view('raw-php');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('10', $content);
     }
 
@@ -192,7 +211,7 @@ class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('service-injection');
         try {
-            $view->toString();
+            $view->render();
             $this->fail('@service was allowed.');
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
@@ -209,7 +228,7 @@ class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('csrf');
         try {
-            $view->toString();
+            $view->render();
             $this->fail('@csrf was allowed.');
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
@@ -226,7 +245,7 @@ class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('method');
         try {
-            $view->toString();
+            $view->render();
             $this->fail('@method was allowed.');
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
@@ -242,7 +261,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function section_directives_work(): void
     {
         $view = $this->view('section-child');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('FOOBAZ', $content);
     }
 
@@ -252,7 +271,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function php_files_can_be_rendered(): void
     {
         $view = $this->view('php-file');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('PHPONLYFILE', $content);
     }
 

@@ -32,9 +32,9 @@ final class ViewEngine
      */
     public function render(string $view, array $context = []): string
     {
-        $view = $this->make($view)->with($context);
-
-        return $view->toString();
+        $view = $this->make($view);
+        $view->addContext($context);
+        return $view->render();
     }
 
     /**
@@ -42,9 +42,7 @@ final class ViewEngine
      */
     public function make(string $view): View
     {
-        $view = $this->createView($view);
-
-        return $view->with('view', $this);
+        return $this->createView($view);
     }
 
     /**

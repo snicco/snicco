@@ -33,14 +33,14 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
     {
         $view = $this->getView($exception_information);
 
-        $view->with([
+        $view->addContext([
             'safe_title' => $exception_information->safeTitle(),
             'safe_details' => $exception_information->safeDetails(),
             'identifier' => $exception_information->identifier(),
             'status_code' => $exception_information->statusCode()
         ]);
 
-        return $view->toString();
+        return $view->render();
     }
 
     public function supportedContentType(): string

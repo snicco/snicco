@@ -9,10 +9,7 @@ use Snicco\Component\Templating\View\View;
 use Throwable;
 
 /**
- *
  * @psalm-internal Snicco\Bridge\Blade
- *
- * @internal
  */
 final class BladeView implements View, \Illuminate\Contracts\View\View
 {
@@ -24,28 +21,9 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
         $this->illuminate_view = $illuminate_view;
     }
 
-    public function render(): string
-    {
-        return $this->toString();
-    }
-
     public function name(): string
     {
         return $this->illuminate_view->name();
-    }
-
-    /**
-     * Add a piece of data to the view.
-     *
-     * @param string|array $key
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function with($key, $value = null): View
-    {
-        $this->illuminate_view->with($key, $value);
-        return $this;
     }
 
     public function getData(): array
@@ -53,7 +31,13 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
         return $this->context();
     }
 
-    public function toString(): string
+    public function with($key, $value = null)
+    {
+        $this->illuminate_view->with($key, $value);
+        return $this;
+    }
+
+    public function render(): string
     {
         try {
             return $this->illuminate_view->render();
@@ -64,6 +48,11 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
                 $e,
             );
         }
+    }
+
+    public function addContext($key, $value = null): void
+    {
+        $this->with($key, $value);
     }
 
     public function context(): array
@@ -78,4 +67,14 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
         return $this->illuminate_view->getPath();
     }
 
+    public function withContext(array $context): void
+    {
+        $this->illuminate_view = new \Illuminate\View\View(
+            $this->illuminate_view->getFactory(),
+            $this->illuminate_view->getEngine(),
+            $this->illuminate_view->name(),
+            $this->illuminate_view->getPath()
+        );
+        $this->illuminate_view->with($context);
+    }
 }
