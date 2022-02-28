@@ -11,6 +11,8 @@ use Snicco\Component\Templating\View\PHPView;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Throwable;
 
+use function array_filter;
+
 final class PHPViewFactory implements ViewFactory
 {
 
@@ -56,21 +58,22 @@ final class PHPViewFactory implements ViewFactory
     {
         $this->composer_collection->compose($view);
 
-        if ($view->parent() !== null) {
-            $view->parent()
-                ->with(
-                    array_filter($view->context(), function ($value) {
-                        return !$value instanceof ChildContent;
-                    })
-                )
-                ->with(
-                    '__content',
-                    new ChildContent(function () use ($view) {
-                        $this->requireView($view);
-                    })
-                );
+        $parent = $view->parent();
 
-            $this->render($view->parent());
+        if (null !== $parent) {
+            $parent->addContext(
+                array_filter($view->context(), function ($value) {
+                    return !$value instanceof ChildContent;
+                })
+            );
+            $parent->addContext(
+                '__content',
+                new ChildContent(function () use ($view) {
+                    $this->requireView($view);
+                })
+            );
+
+            $this->render($parent);
 
             return;
         }

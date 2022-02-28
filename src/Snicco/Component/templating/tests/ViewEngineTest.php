@@ -71,10 +71,10 @@ class ViewEngineTest extends TestCase
     public function a_view_can_be_created(): void
     {
         $view = $this->view_engine->make('foo.php');
-        $this->assertSame('foo', $view->toString());
+        $this->assertSame('foo', $view->render());
 
         $view = $this->view_engine->make('foo');
-        $this->assertSame('foo', $view->toString());
+        $this->assertSame('foo', $view->render());
     }
 
     /**
@@ -91,7 +91,7 @@ class ViewEngineTest extends TestCase
         $view = $this->view_engine->make($path);
         $this->assertInstanceOf(PHPView::class, $view);
         $this->assertSame($path, $view->path());
-        $this->assertSame('foo', $view->toString());
+        $this->assertSame('foo', $view->render());
     }
 
     /**
@@ -99,8 +99,9 @@ class ViewEngineTest extends TestCase
      */
     public function a_view_as_access_to_the_view_engine(): void
     {
+        $this->global_view_context->add('view', $this->view_engine);
         $view = $this->view_engine->make('has-engine.php');
-        $this->assertSame('View has engine: ' . get_class($this->view_engine), $view->toString());
+        $this->assertSame('View has engine: ' . get_class($this->view_engine), $view->render());
     }
 
     /**
@@ -109,10 +110,10 @@ class ViewEngineTest extends TestCase
     public function a_nested_view_can_be_rendered_with_dot_notation(): void
     {
         $view = $this->view_engine->make('components.input');
-        $this->assertEquals('input-component', $view->toString());
+        $this->assertEquals('input-component', $view->render());
 
         $view = $this->view_engine->make('components.input.php');
-        $this->assertEquals('input-component', $view->toString());
+        $this->assertEquals('input-component', $view->render());
     }
 
     /**
@@ -151,7 +152,7 @@ class ViewEngineTest extends TestCase
 
         $view = $this->view_engine->make('global-context.php');
 
-        $this->assertSame('baz', $view->toString());
+        $this->assertSame('baz', $view->render());
     }
 
     /**
@@ -164,7 +165,7 @@ class ViewEngineTest extends TestCase
 
         $view = $this->view_engine->make('multiple-globals');
 
-        $this->assertSame('baz:biz', $view->toString());
+        $this->assertSame('baz:biz', $view->render());
     }
 
     /**
@@ -175,7 +176,7 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
         $view = $this->view_engine->make('array-access-isset');
 
-        $this->assertSame('Isset works', $view->toString());
+        $this->assertSame('Isset works', $view->render());
     }
 
     /**
@@ -189,7 +190,7 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
         $view = $this->view_engine->make('array-access-set');
 
-        $view->toString();
+        $view->render();
     }
 
     /**
@@ -203,7 +204,7 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
         $view = $this->view_engine->make('array-access-unset');
 
-        $view->toString();
+        $view->render();
     }
 
     /**
@@ -214,7 +215,7 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
-            $view->with([
+            $view->addContext([
                 'test_context' => [
                     'foo' => ['bar' => 'biz'],
                 ],
@@ -223,7 +224,7 @@ class ViewEngineTest extends TestCase
 
         $view = $this->view_engine->make('context-priority');
 
-        $this->assertSame('biz', $view->toString());
+        $this->assertSame('biz', $view->render());
     }
 
     /**
@@ -234,21 +235,21 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
-            $view->with([
+            $view->addContext([
                 'test_context' => [
                     'foo' => ['bar' => 'biz'],
                 ]
             ]);
         });
 
-        $view = $this->view_engine->make('context-priority')
-            ->with([
-                'test_context' => [
-                    'foo' => ['bar' => 'boom'],
-                ],
-            ]);
+        $view = $this->view_engine->make('context-priority');
+        $view->addContext([
+            'test_context' => [
+                'foo' => ['bar' => 'boom'],
+            ],
+        ]);
 
-        $this->assertSame('boom', $view->toString());
+        $this->assertSame('boom', $view->render());
     }
 
     /**
@@ -256,9 +257,10 @@ class ViewEngineTest extends TestCase
      */
     public function one_view_can_be_rendered_from_within_another(): void
     {
+        $this->global_view_context->add('view', $this->view_engine);
         $view = $this->view_engine->make('inline-render');
 
-        $this->assertSame('foo:inline=>Hello Calvin', $view->toString());
+        $this->assertSame('foo:inline=>Hello Calvin', $view->render());
     }
 
     /**
@@ -266,8 +268,9 @@ class ViewEngineTest extends TestCase
      */
     public function views_can_extend_parent_views(): void
     {
-        $view = $this->view_engine->make('partials.post-title')->with('post_title', 'Foobar');
-        $this->assertSame('You are viewing post: Foobar', $view->toString());
+        $view = $this->view_engine->make('partials.post-title');
+        $view->addContext('post_title', 'Foobar');
+        $this->assertSame('You are viewing post: Foobar', $view->render());
     }
 
     /**
@@ -275,9 +278,10 @@ class ViewEngineTest extends TestCase
      */
     public function views_can_be_extended_multiple_times(): void
     {
-        $view = $this->view_engine->make('partials.post-body')->with('post_body', 'Foo');
+        $view = $this->view_engine->make('partials.post-body');
+        $view->addContext('post_body', 'Foo');
 
-        $this->assertSame('You are viewing post: Special Layout: Foo', $view->toString());
+        $this->assertSame('You are viewing post: Special Layout: Foo', $view->render());
     }
 
     /**
@@ -289,7 +293,7 @@ class ViewEngineTest extends TestCase
 
         ob_start();
         try {
-            $view->toString();
+            $view->render();
             $this->fail('The view should not be able to render.');
         } catch (ViewCantBeRendered $e) {
             $this->assertSame(
@@ -318,7 +322,7 @@ class ViewEngineTest extends TestCase
         );
 
         $view = $engine->make('foo');
-        $this->assertSame('foo modified', $view->toString());
+        $this->assertSame('foo modified', $view->render());
     }
 
     /**
@@ -328,11 +332,12 @@ class ViewEngineTest extends TestCase
     {
         $this->composers->addComposer(
             'post-layout',
-            fn(View $view) => $view->with('sidebar', 'hi')
+            fn(View $view) => $view->addContext('sidebar', 'hi')
         );
 
-        $view = $this->view_engine->make('partials.post-title')->with('post_title', 'Foobar');
-        $this->assertSame('You are viewing post: Foobar Our Sidebar: hi', $view->toString());
+        $view = $this->view_engine->make('partials.post-title');
+        $view->addContext('post_title', 'Foobar');
+        $this->assertSame('You are viewing post: Foobar Our Sidebar: hi', $view->render());
     }
 
     /**
@@ -346,7 +351,7 @@ class ViewEngineTest extends TestCase
         $view = $this->view_engine->make('partials.with-error');
         ob_start();
         try {
-            $view->toString();
+            $view->render();
         } finally {
             $this->assertSame('', ob_get_clean());
         }
@@ -357,8 +362,9 @@ class ViewEngineTest extends TestCase
      */
     public function child_view_context_is_shared_with_parent_view(): void
     {
-        $view = $this->view_engine->make('partials.share-var')->with('child_var', 'BAZ');
-        $this->assertSame('Var from child template: BAZ', $view->toString());
+        $view = $this->view_engine->make('partials.share-var');
+        $view->addContext('child_var', 'BAZ');
+        $this->assertSame('Var from child template: BAZ', $view->render());
     }
 
     /**

@@ -26,15 +26,13 @@ class TestView implements View
     }
 
 
-    public function with($key, $value = null): View
+    public function addContext($key, $value = null): void
     {
         if (is_array($key)) {
             $this->context = array_merge($this->context(), $key);
         } else {
             $this->context[$key] = $value;
         }
-
-        return $this;
     }
 
     public function context(): array
@@ -42,7 +40,7 @@ class TestView implements View
         return $this->context;
     }
 
-    public function toString(): string
+    public function render(): string
     {
         throw new BadMethodCallException(sprintf('Test double [%s] can not be rendered to string.', self::class));
     }
@@ -57,9 +55,13 @@ class TestView implements View
         return $this->name;
     }
 
+    public function withContext(array $context): void
+    {
+        $this->context = $context;
+    }
+
     public function parent(): ?PHPView
     {
         return null;
     }
-
 }

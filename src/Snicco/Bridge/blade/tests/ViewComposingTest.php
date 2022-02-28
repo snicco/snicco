@@ -21,12 +21,6 @@ class ViewComposingTest extends BladeTestCase
         $this->assertSame('calvin', $this->renderView('globals'));
     }
 
-    private function renderView(string $view): string
-    {
-        $view = $this->view_engine->make($view);
-        return $view->toString();
-    }
-
     /**
      * @test
      */
@@ -36,7 +30,7 @@ class ViewComposingTest extends BladeTestCase
         $this->composers->addComposer(
             'components.view-composer-parent',
             function (BladeView $view) {
-                $view->with(['name' => 'calvin']);
+                $view->addContext(['name' => 'calvin']);
             }
         );
 
@@ -49,10 +43,16 @@ class ViewComposingTest extends BladeTestCase
     public function a_view_composer_can_be_added_to_a_view(): void
     {
         $this->composers->addComposer('view-composer', function (BladeView $view) {
-            $view->with(['name' => 'calvin']);
+            $view->addContext(['name' => 'calvin']);
         });
 
         $this->assertViewContent('calvin', $this->renderView('view-composer'));
+    }
+
+    private function renderView(string $view): string
+    {
+        $view = $this->view_engine->make($view);
+        return $view->render();
     }
 
 }

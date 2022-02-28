@@ -16,7 +16,7 @@ class BladeLayoutsTest extends BladeTestCase
 
         $this->assertViewContent(
             'Name:foo,SIDEBAR:parent_sidebar.appended,BODY:foobar,FOOTER:default_footer',
-            $view->toString()
+            $view->render()
         );
     }
 
@@ -26,7 +26,7 @@ class BladeLayoutsTest extends BladeTestCase
     public function stacks_work(): void
     {
         $view = $this->view_engine->make('layouts.stack-child');
-        $content = $view->toString();
+        $content = $view->render();
         $this->assertViewContent('FOOBAZBAR', $content);
     }
 

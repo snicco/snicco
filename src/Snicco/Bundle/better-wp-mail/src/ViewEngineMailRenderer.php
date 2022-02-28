@@ -9,6 +9,7 @@ use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
+use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewEngine;
 
 final class ViewEngineMailRenderer implements MailRenderer
@@ -17,7 +18,7 @@ final class ViewEngineMailRenderer implements MailRenderer
     private ViewEngine $view_engine;
 
     /**
-     * @var array<string,bool>
+     * @var array<string,View>
      */
     private array $views = [];
 
@@ -29,7 +30,10 @@ final class ViewEngineMailRenderer implements MailRenderer
     public function render(string $template_name, array $context = []): string
     {
         try {
-            return $this->view_engine->render($template_name, $context);
+            $view = $this->getView($template_name);
+            // Use withContext instead of addContext here to completely reset the local view data.
+            $view->withContext($context);
+            return $view->render();
         } catch (ViewCantBeRendered $e) {
             throw new CouldNotRenderMailContent(
                 $e->getMessage(), 0, $e
@@ -39,17 +43,25 @@ final class ViewEngineMailRenderer implements MailRenderer
 
     public function supports(string $template_name, ?string $extension = null): bool
     {
+        try {
+            $this->getView($template_name);
+            return true;
+        } catch (ViewNotFound $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @throws ViewNotFound
+     */
+    private function getView(string $template_name): View
+    {
         if (isset($this->views[$template_name])) {
             return $this->views[$template_name];
         }
-
-        try {
-            $this->view_engine->make($template_name);
-            $this->views[$template_name] = true;
-            return true;
-        } catch (ViewNotFound $e) {
-            $this->views[$template_name] = false;
-        }
-        return false;
+        $view = $this->view_engine->make($template_name);
+        $this->views[$template_name] = $view;
+        return $view;
     }
+
 }

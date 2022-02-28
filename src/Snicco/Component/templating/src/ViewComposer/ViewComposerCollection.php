@@ -34,7 +34,6 @@ final class ViewComposerCollection
      * @param class-string<ViewComposer>|Closure(View):void $composer
      *
      * @psalm-suppress DocblockTypeContradiction
-     *
      */
     public function addComposer($views, $composer): void
     {
@@ -77,17 +76,16 @@ final class ViewComposerCollection
      * => global context
      * => view composer context
      * => local context
-     *
-     * @interal
-     *
-     * @psalm-suppress MixedAssignment
      */
     public function compose(View $view): void
     {
         $local_context = $view->context();
 
+        /**
+         * @var mixed $context
+         */
         foreach ($this->global_view_context->get() as $name => $context) {
-            $view->with($name, $context);
+            $view->addContext($name, $context);
         }
 
         foreach ($this->matchingComposers($view) as $composer) {
@@ -97,7 +95,7 @@ final class ViewComposerCollection
             $c->compose($view);
         }
 
-        $view->with($local_context);
+        $view->addContext($local_context);
     }
 
     /**
