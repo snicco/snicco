@@ -967,7 +967,7 @@ var classes = [
         "totalDataComplexity": 15,
         "totalSystemComplexity": 15,
         "package": "Snicco\\Component\\Session\\ValueObject\\",
-        "pageRank": 0.09,
+        "pageRank": 0.63,
         "afferentCoupling": 5,
         "efferentCoupling": 2,
         "instability": 0.29,

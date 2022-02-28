@@ -6170,7 +6170,7 @@ var classes = [
         "totalDataComplexity": 31.5,
         "totalSystemComplexity": 39.5,
         "package": "Snicco\\Component\\HttpRouting\\Http\\",
-        "pageRank": 0.01,
+        "pageRank": 0.02,
         "afferentCoupling": 4,
         "efferentCoupling": 4,
         "instability": 0.5,
