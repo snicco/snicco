@@ -1,0 +1,12 @@
+namespace: Snicco\Bridge\SessionWP\Tests\wordpress
+modules:
+  enabled:
+    - WPLoader
+  config:
+    WPLoader:
+      wpRootFolder: "%WP_ROOT_FOLDER%"
+      dbName: "%DB_NAME%"
+      dbHost: "%DB_HOST%"
+      dbUser: "%DB_USER%"
+      dbPassword: "%DB_PASSWORD%"
+      tablePrefix: "%DB_PREFIX%"
