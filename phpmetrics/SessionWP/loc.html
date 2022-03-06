@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-28 21:42:24        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -198,6 +198,52 @@
                     <th class="js-sort-number">Comment Weight</th>
                 </tr>
                 </thead>
+                                    <tr>
+                        <td><span class="path">Snicco\Bridge\SessionWP\WPDBSessionDriver</span></td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.18);");">
+                                81                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.13);");">
+                                25                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.2);");">
+                                933.48                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.09);");">
+                                71.74                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.72);");">
+                                34.17                                </span>
+                            </td>
+                                            </tr>
+                                    <tr>
+                        <td><span class="path">Snicco\Bridge\SessionWP\WPObjectCacheDriver</span></td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.06);");">
+                                29                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);");">
+                                0                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);");">
+                                76.08                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.03);");">
+                                24.21                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);");">
+                                0                                </span>
+                            </td>
+                                            </tr>
                             </table>
         </div>
     </div>
@@ -408,7 +454,52 @@
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    data = [];
+    data = [
+    {
+        "lloc": 29,
+        "percentile": 50
+    },
+    {
+        "lloc": 29,
+        "percentile": 55
+    },
+    {
+        "lloc": 29,
+        "percentile": 60
+    },
+    {
+        "lloc": 29,
+        "percentile": 65
+    },
+    {
+        "lloc": 29,
+        "percentile": 70
+    },
+    {
+        "lloc": 29,
+        "percentile": 75
+    },
+    {
+        "lloc": 29,
+        "percentile": 80
+    },
+    {
+        "lloc": 29,
+        "percentile": 85
+    },
+    {
+        "lloc": 29,
+        "percentile": 90
+    },
+    {
+        "lloc": 29,
+        "percentile": 95
+    },
+    {
+        "lloc": 29,
+        "percentile": 100
+    }
+];
 
     x.domain(data.map(function (d) {
         return d.percentile;

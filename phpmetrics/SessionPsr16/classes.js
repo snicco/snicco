@@ -119,9 +119,9 @@ var classes = [
         "totalSystemComplexity": 1570.07,
         "package": "Snicco\\Bridge\\SessionPsr16\\",
         "pageRank": 0,
-        "afferentCoupling": 0,
+        "afferentCoupling": 2,
         "efferentCoupling": 8,
-        "instability": 1,
+        "instability": 0.8,
         "violations": {}
     }
 ]

@@ -81,9 +81,9 @@ var classes = [
         "totalSystemComplexity": 20.33,
         "package": "Snicco\\Component\\TestableClock\\",
         "pageRank": 0,
-        "afferentCoupling": 7,
+        "afferentCoupling": 8,
         "efferentCoupling": 5,
-        "instability": 0.42,
+        "instability": 0.38,
         "violations": {}
     },
     {

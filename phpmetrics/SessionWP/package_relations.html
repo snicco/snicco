@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-28 21:42:24        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -357,7 +357,50 @@
 <script type="text/javascript">
 
 
-    var relations = [];
+    var relations = [
+    {
+        "name": "Snicco\\Bridge\\SessionWP",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Session\\Driver",
+            "Snicco\\Component\\BetterWPDB",
+            "Snicco\\Component\\TestableClock",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Component\\Session\\Exception",
+            "Snicco\\Bridge\\SessionPsr16"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Driver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPDB",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\TestableClock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Session\\ValueObject",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Exception",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bridge\\SessionPsr16",
+        "size": 3000,
+        "relations": []
+    }
+];
 
     /**
      * Thanks to http://bl.ocks.org/mbostock/raw/7607999/

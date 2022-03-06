@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-28 21:42:24        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -210,7 +210,7 @@
                             <path d="M0 0h24v24H0z" fill="none"/>
                             <path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/>
                         </svg>
-                        Violations (108)
+                        Violations (111)
                     </a>
                 </li>
                                     <li>
@@ -1122,6 +1122,7 @@
             "Snicco\\Component\\Session\\Driver",
             "global",
             "Snicco\\Component\\Session\\Serializer",
+            "Snicco\\Component\\Session",
             "Snicco\\Component\\TestableClock"
         ]
     },
@@ -1161,15 +1162,8 @@
             "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\StrArr",
             "global",
-            "Snicco\\Component\\Session\\Event",
-            "Snicco\\Component\\Session\\Exception"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Session\\Event",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Session"
+            "Snicco\\Component\\Session\\Exception",
+            "Snicco\\Component\\Session\\Event"
         ]
     },
     {
@@ -1177,6 +1171,13 @@
         "size": 3000,
         "relations": [
             "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Session"
         ]
     },
     {
@@ -1349,7 +1350,8 @@
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Psr\\Http\\Server",
             "Psr\\Log",
-            "global"
+            "global",
+            "Snicco\\Component\\BetterWPAPI"
         ]
     },
     {
@@ -1518,9 +1520,65 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\Encryption\\Option",
+        "name": "Snicco\\Bundle\\Session",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "Snicco\\Component\\Kernel",
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "Snicco\\Component\\Kernel\\Configuration",
+            "global",
+            "Snicco\\Component\\Session\\Driver",
+            "Snicco\\Component\\Session\\SessionManager",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Bridge\\SessionWP",
+            "Snicco\\Component\\BetterWPCache",
+            "Snicco\\Bridge\\SessionPsr16",
+            "Snicco\\Component\\Session\\Serializer",
+            "Snicco\\Bundle\\Session\\Middleware",
+            "Snicco\\Component\\Session",
+            "Snicco\\Bundle\\Encryption"
+        ]
+    },
+    {
+        "name": "Snicco\\Bridge\\SessionWP",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Session\\Driver",
+            "Snicco\\Component\\BetterWPDB",
+            "Snicco\\Component\\TestableClock",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Component\\Session\\Exception",
+            "Snicco\\Bridge\\SessionPsr16"
+        ]
+    },
+    {
+        "name": "Snicco\\Bridge\\SessionPsr16",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Session\\Driver",
+            "Psr\\SimpleCache",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Component\\Session\\Exception",
+            "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\Middleware",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "global",
+            "Snicco\\Bundle\\Session\\ValueObject",
+            "Snicco\\Component\\Session\\SessionManager",
+            "Psr\\Log",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Bundle\\Session\\Event",
+            "Snicco\\Component\\Session",
+            "Snicco\\Component\\HttpRouting\\Http",
+            "Psr\\Http\\Server"
+        ]
     },
     {
         "name": "Snicco\\Bundle\\Encryption",
@@ -1534,20 +1592,34 @@
         ]
     },
     {
-        "name": "Defuse\\Crypto",
+        "name": "Snicco\\Bundle\\Session\\Option",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Bridge\\SessionPsr16",
+        "name": "Snicco\\Bundle\\Session\\ValueObject",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Session\\Driver",
-            "Psr\\SimpleCache",
-            "Snicco\\Component\\Session\\ValueObject",
-            "Snicco\\Component\\Session\\Exception",
             "global"
         ]
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\BetterWPHooks\\EventMapping",
+            "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Bundle\\Encryption\\Option",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Defuse\\Crypto",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Illuminate\\Filesystem",
@@ -1661,9 +1733,10 @@
         "name": "Snicco\\Middleware\\WPAuth",
         "size": 3000,
         "relations": [
-            "Psr\\Http\\Server",
+            "Snicco\\Component\\HttpRouting\\Middleware",
             "Snicco\\Component\\BetterWPAPI",
             "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Component\\Psr7ErrorHandler"
         ]
     },

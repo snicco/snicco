@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-28 21:42:24        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -362,16 +362,16 @@
         "name": "\\Snicco\\Middleware\\WPAuth\\Authenticate",
         "size": 3000,
         "relations": [
-            "\\Psr\\Http\\Server\\MiddlewareInterface",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
             "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
             "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Psr\\Http\\Server\\RequestHandlerInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
             "\\Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ]
     },
     {
-        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
+        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
         "size": 3000,
         "relations": []
     },
@@ -386,12 +386,12 @@
         "relations": []
     },
     {
-        "name": "\\Psr\\Http\\Message\\ServerRequestInterface",
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
+        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
         "size": 3000,
         "relations": []
     },

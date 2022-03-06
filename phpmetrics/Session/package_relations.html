@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-28 21:42:24        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -367,6 +367,7 @@
             "Snicco\\Component\\Session\\Driver",
             "global",
             "Snicco\\Component\\Session\\Serializer",
+            "Snicco\\Component\\Session",
             "Snicco\\Component\\TestableClock"
         ]
     },
@@ -408,11 +409,6 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\TestableClock",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\Session",
         "size": 3000,
         "relations": [
@@ -421,9 +417,14 @@
             "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\StrArr",
             "global",
-            "Snicco\\Component\\Session\\Event",
-            "Snicco\\Component\\Session\\Exception"
+            "Snicco\\Component\\Session\\Exception",
+            "Snicco\\Component\\Session\\Event"
         ]
+    },
+    {
+        "name": "Snicco\\Component\\TestableClock",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\StrArr",
@@ -431,17 +432,17 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Session\\Event",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Session"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\Session\\Exception",
         "size": 3000,
         "relations": [
             "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Session"
         ]
     },
     {

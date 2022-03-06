@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-02-28 21:42:24        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -191,6 +191,17 @@
                         <th class="js-sort-number">Incoming package dep.</th>
                     </tr>
                     </thead>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\SessionWP</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.889</td>
+                            <td>0.111</td>
+                            <td>8</td>
+                            <td>6</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
                                     </table>
             </div>
         </div>
@@ -374,7 +385,16 @@
         width = 500 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    var spots = [];
+    var spots = [
+    {
+        "name": "Snicco\\Bridge\\SessionWP",
+        "abstraction": 0,
+        "instability": 0.8888888888888888,
+        "distance": 0.07856742013183865,
+        "normalizedDistance": 0.11111111111111116,
+        "classCount": 2
+    }
+];
 
     /*
      * value accessor - returns the value to encode for a given data object.
