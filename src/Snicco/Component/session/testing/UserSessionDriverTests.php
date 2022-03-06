@@ -10,8 +10,8 @@ use JsonException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Session\Driver\UserSessionsDriver;
 use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
-use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 
 use function array_key_first;
@@ -27,8 +27,6 @@ use function time;
  */
 trait UserSessionDriverTests
 {
-
-    use SessionHelpers;
 
     /**
      * @test
@@ -208,7 +206,7 @@ trait UserSessionDriverTests
 
         $_serialized = [];
         for ($i = 0; $i < $count; $i++) {
-            $session = $this->newSession();
+            $session = ReadWriteSession::createEmpty(time());
             $id = array_shift($ids);
 
             if (is_null($id)) {

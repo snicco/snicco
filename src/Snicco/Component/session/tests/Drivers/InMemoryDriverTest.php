@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Driver\UserSessionsDriver;
+use Snicco\Component\Session\Exception\CouldNotDestroySessions;
 use Snicco\Component\Session\Testing\SessionDriverTests;
 use Snicco\Component\Session\Testing\UserSessionDriverTests;
 use Snicco\Component\TestableClock\Clock;
@@ -17,6 +18,17 @@ final class InMemoryDriverTest extends TestCase
 
     use SessionDriverTests;
     use UserSessionDriverTests;
+
+    /**
+     * @test
+     */
+    public function garbage_collection_can_be_forced_to_fail(): void
+    {
+        $driver = new InMemoryDriver(null, true);
+        $this->expectException(CouldNotDestroySessions::class);
+        $this->expectExceptionMessage('force-failed');
+        $driver->gc(10);
+    }
 
     protected function createDriver(Clock $clock): SessionDriver
     {
@@ -32,4 +44,5 @@ final class InMemoryDriverTest extends TestCase
         }
         return $driver;
     }
+
 }

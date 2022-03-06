@@ -13,12 +13,15 @@ use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
+use Snicco\Component\Session\Exception\SessionWasAlreadyInvalidated;
+use Snicco\Component\Session\Exception\SessionWasAlreadyRotated;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\Session\ValueObject\SessionId;
 
 use function count;
+use function sleep;
 use function time;
 
 class ReadWriteSessionTest extends TestCase
@@ -696,7 +699,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testSessionRotatedEventIsStored(): void
+    public function test_session_rotated_event_is_stored(): void
     {
         $session = $this->newSession();
         $this->assertEmpty($session->releaseEvents());
@@ -967,6 +970,46 @@ class ReadWriteSessionTest extends TestCase
 
     /**
      * @test
+     */
+    public function test_userId_is_flushed(): void
+    {
+        $session = $this->newSession();
+        $session->setUserId(1);
+
+        $this->assertSame(1, $session->userId());
+
+        $session->flush();
+        $this->assertSame(null, $session->userId());
+
+        $session = $this->newSession();
+        $session->setUserId(1);
+
+        $session->invalidate();
+        $this->assertSame(null, $session->userId());
+    }
+
+    /**
+     * @test
+     */
+    public function test_userId_is_saved_to_driver(): void
+    {
+        $session = $this->newSession();
+        $session->setUserId(1);
+
+        $driver = new InMemoryDriver();
+
+        $session->saveUsing($driver, new JsonSerializer(), 'foo_validator', time());
+
+        $all = $driver->all();
+
+        $this->assertTrue(isset($all[$session->id()->selector()]));
+
+        $serialized_session = $driver->read($session->id()->selector());
+        $this->assertSame(1, $serialized_session->userId());
+    }
+
+    /**
+     * @test
      * @psalm-suppress InvalidScalarArgument
      */
     public function test_exception_for_non_string_non_int_user_id(): void
@@ -990,6 +1033,47 @@ class ReadWriteSessionTest extends TestCase
         $session->userId();
     }
 
+    /**
+     * @test
+     */
+    public function test_exception_if_session_is_rotated_twice(): void
+    {
+        $session = $this->newSession();
+        $session->rotate();
+
+        $this->expectException(SessionWasAlreadyRotated::class);
+
+        $session->rotate();
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_session_is_invalidated_twice(): void
+    {
+        $session = $this->newSession();
+        $session->invalidate();
+
+        $this->expectException(SessionWasAlreadyInvalidated::class);
+
+        $session->invalidate();
+    }
+
+    /**
+     * @test
+     */
+    public function test_isNew(): void
+    {
+        $driver = new InMemoryDriver();
+
+        $session = $this->newSession();
+        $this->assertTrue($session->isNew());
+
+        $session->saveUsing($driver, new JsonSerializer(), 'hashed_val', time());
+
+        $session = $this->reloadSession($session, $driver);
+        $this->assertFalse($session->isNew());
+    }
 
     private function newSession(string $id = null, array $data = []): ReadWriteSession
     {

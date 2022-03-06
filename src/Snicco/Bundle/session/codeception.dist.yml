@@ -1,0 +1,22 @@
+namespace: Snicco\Bridge\SessionWP
+paths:
+  tests: tests
+  output: tests/_output
+  data: tests/_data
+  support: tests/_support
+
+params:
+  - env
+
+settings:
+  colors: true
+  disallow_test_output: true
+  error_level: E_ALL
+  log_incomplete_skipped: true
+  report_useless_tests: true
+
+coverage:
+  enabled: true
+  include:
+    - src/*
+  show_uncovered: true

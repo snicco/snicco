@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionLottery;
 
+/**
+ * @psalm-suppress MixedArgumentTypeCoercion
+ */
 final class SessionConfigTest extends TestCase
 {
 
@@ -209,5 +212,6 @@ final class SessionConfigTest extends TestCase
         unset($this->defaults['garbage_collection_percentage']);
         (new SessionConfig($this->defaults));
     }
+
 
 }

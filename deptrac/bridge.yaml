@@ -56,6 +56,9 @@ parameters:
       - testable_clock #tests only
     session_wp:
       - session
+      - better_wpdb
+      - session_psr16
+      - better_wp_cache
       - testable_clock #tests only
     signed_url_middleware:
       - signed_url

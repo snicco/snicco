@@ -175,4 +175,13 @@ final class ReadOnlySessionTest extends TestCase
         $this->assertSame(10, $store->userId());
     }
 
+    /**
+     * @test
+     */
+    public function test_isNew(): void
+    {
+        $session = $this->newSession();
+        $this->assertTrue(ReadOnlySession::fromSession($session)->isNew());
+    }
+
 }

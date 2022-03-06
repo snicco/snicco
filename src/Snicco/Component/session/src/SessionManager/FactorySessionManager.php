@@ -56,16 +56,10 @@ final class FactorySessionManager implements SessionManager
 
         $session = $this->loadSessionFromDriver($id);
 
-        if ($this->isIdle($session)) {
+        if ($this->isIdle($session) || $this->isExpired($session)) {
             $session->invalidate();
-        }
-
-        if ($this->needsRotation($session)) {
+        } elseif ($this->needsRotation($session)) {
             $session->rotate();
-        }
-
-        if ($this->isExpired($session)) {
-            $session->invalidate();
         }
 
         return $session;
