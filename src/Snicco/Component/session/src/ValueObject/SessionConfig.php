@@ -82,6 +82,7 @@ final class SessionConfig
                 sprintf('same_site must be one of [%s].', implode(', ', $req))
             );
         } else {
+            /** @var 'Lax' | 'Strict' | 'None; Secure' same_site */
             $this->same_site = $same_site;
         }
 
