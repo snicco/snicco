@@ -17,6 +17,7 @@ use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\Encryption\DefuseEncryptor;
 use Snicco\Bundle\Encryption\EncryptionBundle;
 use Snicco\Bundle\Encryption\Option\EncryptionOption;
+use Snicco\Bundle\Session\DefuseSessionEncryptor;
 use Snicco\Bundle\Session\Middleware\StatefulRequest;
 use Snicco\Bundle\Session\Option\SessionOption;
 use Snicco\Bundle\Session\SessionBundle;
@@ -227,6 +228,34 @@ final class SessionBundleTest extends WPTestCase
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);
         $this->assertInstanceOf(EncryptedDriver::class, $kernel->container()->make(SessionDriver::class));
+    }
+
+    /**
+     * @test
+     */
+    public function test_session_encryptor(): void
+    {
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::dev(),
+            $this->directories
+        );
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('session', [
+                SessionOption::ENCRYPT_DATA => true,
+            ]);
+            $config->extend('bundles.all', EncryptionBundle::class);
+            $config->set('encryption', [
+                EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey()
+            ]);
+        });
+        $kernel->boot();
+
+        $session_encryptor = new DefuseSessionEncryptor($kernel->container()->make(DefuseEncryptor::class));
+
+        $ciphertext = $session_encryptor->encrypt('foo');
+        $this->assertNotSame('foo', $ciphertext);
+        $this->assertSame('foo', $session_encryptor->decrypt($ciphertext));
     }
 
     /**
