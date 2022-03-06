@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Session\Driver;
 
 use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\CouldNotDestroySessions;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
@@ -18,10 +19,12 @@ final class InMemoryDriver implements UserSessionsDriver
     private array $storage = [];
 
     private Clock $clock;
+    private bool $fail_gc;
 
-    public function __construct(Clock $clock = null)
+    public function __construct(Clock $clock = null, bool $fail_gc = false)
     {
         $this->clock = $clock ?? SystemClock::fromUTC();
+        $this->fail_gc = $fail_gc;
     }
 
     public function destroy(array $selectors): void
@@ -35,6 +38,9 @@ final class InMemoryDriver implements UserSessionsDriver
 
     public function gc(int $seconds_without_activity): void
     {
+        if ($this->fail_gc) {
+            throw new CouldNotDestroySessions('InMemory driver force-failed garbage collection.');
+        }
         $expiration = $this->calculateExpiration($seconds_without_activity);
 
         foreach ($this->storage as $sessionId => $session) {
@@ -60,7 +66,7 @@ final class InMemoryDriver implements UserSessionsDriver
     public function touch(string $selector, int $current_timestamp): void
     {
         if (!isset($this->storage[$selector])) {
-            throw BadSessionID::forSelector($selector, 'array');
+            throw BadSessionID::forSelector($selector, __CLASS__);
         }
 
         $this->storage[$selector]['last_activity'] = $current_timestamp;
