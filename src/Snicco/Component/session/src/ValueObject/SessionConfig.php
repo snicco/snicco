@@ -6,6 +6,7 @@ namespace Snicco\Component\Session\ValueObject;
 
 use InvalidArgumentException;
 
+use function array_replace;
 use function implode;
 use function in_array;
 use function ltrim;
@@ -19,9 +20,17 @@ final class SessionConfig
     private string $path;
     private string $cookie_name;
     private ?string $cookie_domain;
+
+    /**
+     * @var "Lax" | "Strict" | "None; Secure"
+     */
     private string $same_site;
     private bool $http_only;
     private bool $only_secure;
+
+    /**
+     * @var null|positive-int
+     */
     private ?int $absolute_lifetime_in_sec;
     private int $idle_timeout;
     private int $rotation_interval;
@@ -108,6 +117,36 @@ final class SessionConfig
         ]);
     }
 
+    /**
+     * @param array{
+     *     cookie_name?:string,
+     *     idle_timeout_in_sec?: positive-int,
+     *     rotation_interval_in_sec?: positive-int,
+     *     garbage_collection_percentage?: int,
+     *     absolute_lifetime_in_sec?: positive-int,
+     *     domain?: string,
+     *     same_site?: 'Lax'|'Strict'|'None',
+     *     path?:string,
+     *     http_only?: bool,
+     *     secure?: bool
+     * } $config
+     */
+    public static function mergeDefaults(string $cookie_name, array $config): SessionConfig
+    {
+        return new SessionConfig(
+            array_replace([
+                'path' => '/',
+                'cookie_name' => $cookie_name,
+                'http_only' => true,
+                'secure' => true,
+                'same_site' => 'Lax',
+                'idle_timeout_in_sec' => 60 * 15,
+                'rotation_interval_in_sec' => 60 * 10,
+                'garbage_collection_percentage' => 2,
+            ], $config)
+        );
+    }
+
     public function cookiePath(): string
     {
         return $this->path;
@@ -123,6 +162,9 @@ final class SessionConfig
         return $this->cookie_domain;
     }
 
+    /**
+     * @return  "Lax" | "Strict" | "None; Secure"
+     */
     public function sameSite(): string
     {
         return $this->same_site;
@@ -138,6 +180,9 @@ final class SessionConfig
         return $this->only_secure;
     }
 
+    /**
+     * @return positive-int|null
+     */
     public function absoluteLifetimeInSec(): ?int
     {
         return $this->absolute_lifetime_in_sec;
