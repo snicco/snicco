@@ -1059,6 +1059,22 @@ class ReadWriteSessionTest extends TestCase
         $session->invalidate();
     }
 
+    /**
+     * @test
+     */
+    public function test_isNew(): void
+    {
+        $driver = new InMemoryDriver();
+
+        $session = $this->newSession();
+        $this->assertTrue($session->isNew());
+
+        $session->saveUsing($driver, new JsonSerializer(), 'hashed_val', time());
+
+        $session = $this->reloadSession($session, $driver);
+        $this->assertFalse($session->isNew());
+    }
+
     private function newSession(string $id = null, array $data = []): ReadWriteSession
     {
         $id = $id ? SessionId::fromCookieId($id) : SessionId::new();
