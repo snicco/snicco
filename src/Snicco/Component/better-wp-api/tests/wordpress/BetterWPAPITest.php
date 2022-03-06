@@ -7,6 +7,7 @@ namespace Snicco\Component\BetterWPAPI\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use LogicException;
 use RuntimeException;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\BetterWPAPI\Tests\fixtures\TestWPAPI;
 use stdClass;
 use WP_Post;
@@ -348,6 +349,22 @@ final class BetterWPAPITest extends WPTestCase
 
         $this->assertFalse(current_user_can('edit_post', $post1->ID));
         $this->assertFalse($wp->currentUserCan('edit_post', $post1->ID));
+    }
+
+    /**
+     * @test
+     */
+    public function test_wp_nonce(): void
+    {
+        $wp = new BetterWPAPI();
+
+        $this->assertFalse($wp->verifyNonce('foo_nonce', 'foo_action'));
+
+        $valid_nonce = $wp->createNonce('foo_action');
+
+        $this->assertTrue($wp->verifyNonce($valid_nonce, 'foo_action'));
+        
+        $this->assertFalse($wp->verifyNonce($valid_nonce, 'bar_action'));
     }
 
 }

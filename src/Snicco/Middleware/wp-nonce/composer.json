@@ -1,0 +1,34 @@
+{
+  "name": "sniccowp/wp-nonce-middleware",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/http-routing": "dev-master",
+    "sniccowp/better-wp-api": "dev-master",
+    "sniccowp/psr7-error-handler": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Middleware\\WPNonce\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Middleware\\WPNonce\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}
