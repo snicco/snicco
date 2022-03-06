@@ -337,16 +337,25 @@ class Response implements ResponseInterface
         return (intval($this->getBody()->getSize())) === 0;
     }
 
+    /**
+     * @return  array<string,string>
+     */
     final public function flashMessages(): array
     {
         return $this->flash_messages;
     }
 
+    /**
+     * @return  array<string,string>
+     */
     final public function oldInput(): array
     {
         return $this->old_input;
     }
 
+    /**
+     * @return array<string,array<string,string[]>>
+     */
     final public function errors(): array
     {
         return $this->errors;
