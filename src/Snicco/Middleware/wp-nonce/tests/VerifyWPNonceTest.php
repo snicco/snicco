@@ -205,6 +205,21 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled()->psr()->assertOk();
     }
 
+    /**
+     * @test
+     */
+    public function test_does_nothing_for_read_request_that_is_not_a_view_response(): void
+    {
+        $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
+
+        $this->withNextMiddlewareResponse(function (Response $response) {
+            return $response;
+        });
+
+        $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
+        $response->assertNextMiddlewareCalled()->psr()->assertOk();
+    }
+
 }
 
 class VerifyNonceTestWPApi extends BetterWPAPI
