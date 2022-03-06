@@ -72,7 +72,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
         $this->db->preparedQuery(
             "insert into `$this->table_name` 
                  (selector, hashed_validator, last_activity,data, user_id) 
-                 values (?,?,?,?,?) ON DUPLICATE KEY UPDATE data = VALUES(data) , last_activity = VALUES(last_activity)",
+                 values (?,?,?,?,?) ON DUPLICATE KEY UPDATE data = VALUES(data) , last_activity = VALUES(last_activity), user_id = VALUES(user_id)",
             $data
         );
     }
