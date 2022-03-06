@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Snicco\Bundle\HttpRouting\Middleware\ErrorsToExceptions;
+use Snicco\Bundle\HttpRouting\Middleware\SetUserId;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
@@ -28,7 +29,9 @@ return [
         RoutingConfigurator::FRONTEND_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
-        RoutingConfigurator::GLOBAL_MIDDLEWARE => []
+        RoutingConfigurator::GLOBAL_MIDDLEWARE => [
+            SetUserId::class
+        ]
 //        'custom_group1' => [
 //            'foo',
 //            'custom_group2'
