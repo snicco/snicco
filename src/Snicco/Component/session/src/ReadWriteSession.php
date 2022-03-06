@@ -391,6 +391,11 @@ final class ReadWriteSession implements Session
         return $user_id;
     }
 
+    public function isNew(): bool
+    {
+        return $this->is_new;
+    }
+
     /**
      * @interal
      */
