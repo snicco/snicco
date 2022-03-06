@@ -47,21 +47,21 @@ final class Cookies
         $header = urlencode($cookie->name) . '=' . urlencode($cookie->value);
 
         if (is_string($properties['domain'])) {
-            $header .= '; domain=' . $properties['domain'];
+            $header .= '; Domain=' . $properties['domain'];
         }
 
         if (is_string($properties['path'])) {
-            $header .= '; path=' . $properties['path'];
+            $header .= '; Path=' . $properties['path'];
         }
 
         if (is_int($properties['expires'])) {
-            $header .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $properties['expires']);
+            $header .= '; Expires=' . gmdate('D, d-M-Y H:i:s', $properties['expires']) . ' GMT';
         }
 
         $header .= '; SameSite=' . $properties['same_site'];
 
         if ($properties['secure']) {
-            $header .= '; secure';
+            $header .= '; Secure';
         }
 
         if ($properties['host_only']) {

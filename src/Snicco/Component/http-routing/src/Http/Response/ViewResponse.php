@@ -8,6 +8,8 @@ namespace Snicco\Component\HttpRouting\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
+use function array_replace;
+
 final class ViewResponse extends Response
 {
     private string $view;
@@ -49,7 +51,7 @@ final class ViewResponse extends Response
     public function withViewData(array $data): ViewResponse
     {
         $new = clone $this;
-        $new->view_data = $data;
+        $new->view_data = array_replace($this->view_data, $data);
         return $new;
     }
 }
