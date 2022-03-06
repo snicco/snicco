@@ -302,6 +302,31 @@ final class FactorySessionManagerTest extends TestCase
     /**
      * @test
      */
+    public function sessions_can_be_idle_and_need_rotation_without_throwing_exceptions(): void
+    {
+        $this->idle_timeout = 2;
+        $this->rotation_interval = 1;
+
+        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+
+        $test_clock = new TestClock();
+        $test_clock->travelIntoFuture(4);
+
+        $manager = $this->getSessionManager($test_clock);
+        $new_session = $manager->start(new CookiePool([$this->cookie_name => $old_session->id()->asString()]));
+        $manager->save($new_session);
+        $new_id = $new_session->id();
+
+        $this->assertFalse($old_id->sameAs($new_id));
+
+        $this->expectException(BadSessionID::class);
+        $this->driver->read($old_session->id()->selector());
+    }
+
+    /**
+     * @test
+     */
     public function garbage_collection_works(): void
     {
         $test_clock = new TestClock();
