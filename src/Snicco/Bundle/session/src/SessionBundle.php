@@ -37,7 +37,6 @@ use Snicco\Component\Session\Serializer\PHPSerializer;
 use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\SessionManager\FactorySessionManager;
 use Snicco\Component\Session\SessionManager\SessionManager;
-use Snicco\Component\Session\SessionManager\SingleSessionSessionManager;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
 use function array_replace;
@@ -128,13 +127,11 @@ final class SessionBundle implements Bundle
     protected function bindSessionManager(Kernel $kernel): void
     {
         $kernel->container()->singleton(SessionManager::class, function () use ($kernel) {
-            $manager = new FactorySessionManager(
+            return new FactorySessionManager(
                 $kernel->container()->make(SessionConfig::class),
                 $kernel->container()->make(SessionDriver::class),
                 $this->resolveSerializer($kernel),
             );
-            return $manager;
-            return new SingleSessionSessionManager($manager);
         });
     }
 
