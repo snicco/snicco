@@ -8,9 +8,6 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
-/**
- * @api
- */
 final class MiddlewareTestResponse
 {
 
@@ -20,7 +17,9 @@ final class MiddlewareTestResponse
     public function __construct(ResponseInterface $response, bool $next_called = false)
     {
         $this->next_middleware_called = $next_called;
-        $this->response = new AssertableResponse(new Response($response));
+        // @todo this needs a test
+        $response = $response instanceof Response ? $response : new Response($response);
+        $this->response = new AssertableResponse($response);
     }
 
     public function assertNextMiddlewareCalled(): MiddlewareTestResponse

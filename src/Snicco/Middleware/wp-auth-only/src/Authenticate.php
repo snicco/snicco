@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace Snicco\Middleware\WPAuth;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\Middleware;
+use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 use function sprintf;
 
-final class Authenticate implements MiddlewareInterface
+final class Authenticate extends Middleware
 {
 
-    const KEY = '_user_id';
     private BetterWPAPI $wp;
 
     public function __construct(BetterWPAPI $wp = null)
@@ -24,15 +23,10 @@ final class Authenticate implements MiddlewareInterface
         $this->wp = $wp ?: new BetterWPAPI();
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if ($this->wp->isUserLoggedIn()) {
-            return $handler->handle(
-                $request->withAttribute(
-                    self::KEY,
-                    $this->wp->currentUserId()
-                )
-            );
+            return $next($request);
         }
 
         throw new HttpException(

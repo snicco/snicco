@@ -14,6 +14,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Bundle\HttpRouting\Middleware\ErrorsToExceptions;
+use Snicco\Bundle\HttpRouting\Middleware\SetUserId;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 use Snicco\Bundle\Testing\BundleTestHelpers;
@@ -230,13 +231,18 @@ final class HttpRoutingBundleTest extends TestCase
             Environment::dev(),
             $this->directories
         );
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('middleware', []);
+        });
         $kernel->boot();
 
         $this->assertSame([
             'frontend' => [],
             'admin' => [],
             'api' => [],
-            'global' => []
+            'global' => [
+                SetUserId::class
+            ]
         ], $kernel->config()->getArray('middleware.middleware_groups'));
         $this->assertSame([], $kernel->config()->getArray('middleware.always_run_middleware_groups'));
         $this->assertSame([], $kernel->config()->getArray('middleware.middleware_priority'));

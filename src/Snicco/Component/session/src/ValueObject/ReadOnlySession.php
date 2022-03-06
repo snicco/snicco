@@ -91,4 +91,9 @@ final class ReadOnlySession implements ImmutableSession
     {
         return $this->session->userId();
     }
+
+    public function isNew(): bool
+    {
+        return $this->session->isNew();
+    }
 }

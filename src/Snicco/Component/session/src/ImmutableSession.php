@@ -12,6 +12,13 @@ interface ImmutableSession
     public function id(): SessionId;
 
     /**
+     * Indicates if this session was newly created and has not been persisted yet.
+     *
+     * @return bool
+     */
+    public function isNew(): bool;
+
+    /**
      * @return string|int|null Return null if no user id has been set.
      */
     public function userId();

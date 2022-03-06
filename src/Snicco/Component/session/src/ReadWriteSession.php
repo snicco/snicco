@@ -11,6 +11,8 @@ use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
+use Snicco\Component\Session\Exception\SessionWasAlreadyInvalidated;
+use Snicco\Component\Session\Exception\SessionWasAlreadyRotated;
 use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
@@ -31,9 +33,7 @@ use function is_string;
 /**
  * You should depend on {@see MutableSession} or {@see ImmutableSession} depending on your use case.
  *
- * @interal
- * @psalm-internal Snicco\Component\Session
- *
+ * @psalm-internal Snicco
  */
 final class ReadWriteSession implements Session
 {
@@ -211,6 +211,9 @@ final class ReadWriteSession implements Session
 
     public function invalidate(): void
     {
+        if ($this->invalidated_id) {
+            throw new SessionWasAlreadyInvalidated('A session can only be invalidated once before saving.');
+        }
         $this->rotate();
         $this->flush();
     }
@@ -218,6 +221,9 @@ final class ReadWriteSession implements Session
     public function rotate(): void
     {
         $this->checkLocked();
+        if ($this->invalidated_id) {
+            throw new SessionWasAlreadyRotated('A session can only be rotated once before saving.');
+        }
         $this->invalidated_id = $this->id;
         $this->id = SessionId::new();
         $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
@@ -346,6 +352,7 @@ final class ReadWriteSession implements Session
                 $serializer->serialize($this->attributes),
                 $hashed_validator,
                 $this->last_activity,
+                $this->userId(),
             );
 
             $driver->write(
@@ -382,6 +389,11 @@ final class ReadWriteSession implements Session
         }
 
         return $user_id;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->is_new;
     }
 
     /**

@@ -466,4 +466,24 @@ class RequestTest extends TestCase
         $this->request->foo = 'bar';
     }
 
+    /**
+     * @test
+     */
+    public function test_user_id(): void
+    {
+        $this->assertSame(null, $this->request->userId());
+
+        $request = $this->request->withUserId(1);
+        $this->assertSame(1, $request->userId());
+
+        $this->assertSame(null, $this->request->userId());
+
+        $request = $this->request->withAttribute('snicco.user_id', 'foo');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('integer or null');
+        $request->userId();
+    }
+
+
 }

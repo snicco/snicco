@@ -143,7 +143,7 @@ final class Cookie
     }
 
     /**
-     * @param positive-int|DateTimeImmutable $timestamp
+     * @param 0|positive-int|DateTimeImmutable $timestamp
      */
     public function withExpiryTimestamp($timestamp): Cookie
     {

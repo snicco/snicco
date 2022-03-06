@@ -25,7 +25,7 @@ final class CookiesTest extends TestCase
 
         $this->assertSame([], $cookies->toHeaders());
         $this->assertSame(
-            ['foo=bar; path=/; SameSite=Lax; secure; HostOnly; HttpOnly'],
+            ['foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly'],
             $cookies_new->toHeaders()
         );
     }
@@ -48,15 +48,15 @@ final class CookiesTest extends TestCase
         $this->assertCount(3, $headers);
 
         $this->assertSame(
-            'foo=val1; domain=foo.com; path=/foo; SameSite=Lax; secure; HostOnly; HttpOnly',
+            'foo=val1; Domain=foo.com; Path=/foo; SameSite=Lax; Secure; HostOnly; HttpOnly',
             $headers[0]
         );
         $this->assertSame(
-            'bar=val2; path=/; SameSite=Strict; secure; HostOnly; HttpOnly',
+            'bar=val2; Path=/; SameSite=Strict; Secure; HostOnly; HttpOnly',
             $headers[1]
         );
         $this->assertSame(
-            'baz=' . urlencode('münchen') . '; path=/; SameSite=Lax; secure; HostOnly',
+            'baz=' . urlencode('münchen') . '; Path=/; SameSite=Lax; Secure; HostOnly',
             $headers[2]
         );
     }
