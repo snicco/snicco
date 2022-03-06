@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Http\Psr7;
 
 use BadMethodCallException;
+use InvalidArgumentException;
 use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -17,8 +18,10 @@ use stdClass;
 use Webmozart\Assert\Assert;
 
 use function filter_var;
+use function gettype;
 use function in_array;
 use function is_array;
+use function is_int;
 use function is_string;
 use function sprintf;
 use function strtok;
@@ -640,6 +643,26 @@ final class Request implements ServerRequestInterface
     public function withUploadedFiles(array $uploadedFiles)
     {
         return $this->new($this->psr_request->withUploadedFiles($uploadedFiles));
+    }
+
+    public function userId(): ?int
+    {
+        /** @var mixed $id */
+        $id = $this->getAttribute('snicco.user_id');
+        if (!is_int($id) && null !== $id) {
+            throw new InvalidArgumentException(
+                sprintf("snicco.user_id must be integer or null.\nGot [%s].", gettype($id))
+            );
+        }
+        return $id;
+    }
+
+    /**
+     * @return static
+     */
+    public function withUserId(int $user_id)
+    {
+        return $this->withAttribute('snicco.user_id', $user_id);
     }
 
     /**
