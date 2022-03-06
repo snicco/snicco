@@ -115,7 +115,8 @@
             "Snicco\\Middleware\\ShareCookies\\": "src/Snicco/Middleware/share-cookies/src",
             "Snicco\\Middleware\\TrailingSlash\\": "src/Snicco/Middleware/trailing-slash/src",
             "Snicco\\Middleware\\WPAuth\\": "src/Snicco/Middleware/wp-auth-only/src",
-            "Snicco\\Middleware\\WPCap\\": "src/Snicco/Middleware/wp-capability/src"
+            "Snicco\\Middleware\\WPCap\\": "src/Snicco/Middleware/wp-capability/src",
+            "Snicco\\Middleware\\WPNonce\\": "src/Snicco/Middleware/wp-nonce/src"
         }
     },
     "autoload-dev": {
@@ -172,7 +173,8 @@
             "Snicco\\Middleware\\ShareCookies\\Tests\\": "src/Snicco/Middleware/share-cookies/tests",
             "Snicco\\Middleware\\TrailingSlash\\Tests\\": "src/Snicco/Middleware/trailing-slash/tests",
             "Snicco\\Middleware\\WPAuth\\Tests\\": "src/Snicco/Middleware/wp-auth-only/tests",
-            "Snicco\\Middleware\\WPCap\\Tests\\": "src/Snicco/Middleware/wp-capability/tests"
+            "Snicco\\Middleware\\WPCap\\Tests\\": "src/Snicco/Middleware/wp-capability/tests",
+            "Snicco\\Middleware\\WPNonce\\Tests\\": "src/Snicco/Middleware/wp-nonce/tests"
         }
     },
     "config": {
@@ -275,7 +277,8 @@
         "sniccowp/testing-bundle": "self.version",
         "sniccowp/trailing-slash-middleware": "self.version",
         "sniccowp/wp-auth-only-middleware": "self.version",
-        "sniccowp/wp-capapility-middleware": "self.version"
+        "sniccowp/wp-capapility-middleware": "self.version",
+        "sniccowp/wp-nonce-middleware": "self.version"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

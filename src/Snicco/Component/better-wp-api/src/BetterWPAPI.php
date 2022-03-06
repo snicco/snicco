@@ -21,7 +21,9 @@ use function remove_filter;
 use function wp_cache_delete;
 use function wp_cache_get;
 use function wp_cache_set;
+use function wp_create_nonce;
 use function wp_get_current_user;
+use function wp_verify_nonce;
 
 /**
  * @note No new (public|protected) methods will be added to this class until a next major version.
@@ -151,6 +153,16 @@ class BetterWPAPI
     public function cacheDelete(string $key, string $group = ''): bool
     {
         return wp_cache_delete($key, $group);
+    }
+
+    public function verifyNonce(string $nonce, string $action): bool
+    {
+        return wp_verify_nonce($nonce, $action) !== false;
+    }
+
+    public function createNonce(string $form_action): string
+    {
+        return wp_create_nonce($form_action);
     }
 
 }

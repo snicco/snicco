@@ -68,6 +68,11 @@ parameters:
         - type: className
           regex: Snicco\\Middleware\\WPCap\\.*
 
+    - name: wp_nonce
+      collectors:
+        - type: className
+          regex: Snicco\\Middleware\\WPNonce\\.*
+
     - name: wp_guests_only
       collectors:
         - type: className
@@ -127,3 +132,8 @@ parameters:
     wp_guests_only:
       - http_routing
       - better_wp_api
+
+    wp_nonce:
+      - http_routing
+      - better_wp_api
+      - psr7_error_handler
