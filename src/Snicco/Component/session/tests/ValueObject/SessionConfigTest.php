@@ -213,16 +213,5 @@ final class SessionConfigTest extends TestCase
         (new SessionConfig($this->defaults));
     }
 
-    /**
-     * @test
-     */
-    public function test_exception_if_absolute_timeout_negative_int(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('positive-integer');
-
-        $this->defaults['absolute_lifetime_in_sec'] = 0;
-        (new SessionConfig($this->defaults));
-    }
 
 }
