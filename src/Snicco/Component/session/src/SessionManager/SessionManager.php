@@ -21,14 +21,12 @@ interface SessionManager
     public function start(CookiePool $cookie_pool): Session;
 
     /**
-     * @return SessionCookie
-     * A value object that provides valid parameters to use in {@see setcookie()}
+     * @return SessionCookie A value object that provides valid parameters to use in {@see setcookie()}
      */
     public function toCookie(ImmutableSession $session): SessionCookie;
 
     /**
      * @throws CouldNotWriteSessionContent If the session can't be saved.
-     * @throws CouldNotDestroySessions If garbage collection did not work.
      */
     public function save(Session $session): void;
 
