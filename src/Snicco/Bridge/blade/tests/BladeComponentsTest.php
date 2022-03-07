@@ -11,6 +11,7 @@ use Snicco\Bridge\Blade\Tests\fixtures\Components\Dependency;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\HelloWorld;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\InlineComponent;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\ToUppercaseComponent;
+use Snicco\Component\Templating\View\View;
 
 class BladeComponentsTest extends BladeTestCase
 {
@@ -84,6 +85,23 @@ class BladeComponentsTest extends BladeTestCase
     public function component_attributes_are_passed(): void
     {
         Blade::component(AlertAttributes::class, 'alert-attributes');
+
+        $view = $this->view_engine->make('alert-attributes-component');
+        $view->addContext('message', 'foo');
+        $content = $view->render();
+        $this->assertViewContent('ID:alert-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
+    }
+
+    /**
+     * @test
+     */
+    public function components_attributes_have_priority_over_view_composers_and_globals(): void
+    {
+        Blade::component(AlertAttributes::class, 'alert-attributes');
+
+        $this->composers->addComposer('alert-attributes-component', function (View $view) {
+            $view->addContext('message', 'bar');
+        });
 
         $view = $this->view_engine->make('alert-attributes-component');
         $view->addContext('message', 'foo');

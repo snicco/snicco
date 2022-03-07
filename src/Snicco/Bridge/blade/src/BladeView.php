@@ -8,17 +8,25 @@ use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
 use Throwable;
 
+use function is_array;
+
 /**
  * @psalm-internal Snicco\Bridge\Blade
  */
-final class BladeView implements View, \Illuminate\Contracts\View\View
+final class BladeView implements View
 {
 
     private \Illuminate\View\View $illuminate_view;
 
+    /**
+     * @var array<string,mixed>
+     */
+    private array $context;
+
     public function __construct(\Illuminate\View\View $illuminate_view)
     {
         $this->illuminate_view = $illuminate_view;
+        $this->context = $illuminate_view->getData();
     }
 
     public function name(): string
@@ -26,21 +34,11 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
         return $this->illuminate_view->name();
     }
 
-    public function getData(): array
-    {
-        return $this->context();
-    }
-
-    public function with($key, $value = null)
-    {
-        $this->illuminate_view->with($key, $value);
-        return $this;
-    }
-
     public function render(): string
     {
         try {
-            return $this->illuminate_view->render();
+            $view = $this->cloneView();
+            return $view->with($this->context)->render();
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
                 "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
@@ -52,14 +50,18 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
 
     public function addContext($key, $value = null): void
     {
-        $this->with($key, $value);
+        $context = is_array($key) ? $key : [$key => $value];
+        /**
+         * @var mixed $value
+         */
+        foreach ($context as $key => $value) {
+            $this->context[$key] = $value;
+        }
     }
 
     public function context(): array
     {
-        /** @var array<string,mixed> $data */
-        $data = $this->illuminate_view->getData();
-        return $data;
+        return $this->context;
     }
 
     public function path(): string
@@ -69,12 +71,17 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
 
     public function withContext(array $context): void
     {
-        $this->illuminate_view = new \Illuminate\View\View(
+        $this->context = $context;
+    }
+
+    private function cloneView(): \Illuminate\View\View
+    {
+        return new \Illuminate\View\View(
             $this->illuminate_view->getFactory(),
             $this->illuminate_view->getEngine(),
-            $this->illuminate_view->name(),
+            $this->illuminate_view->getName(),
             $this->illuminate_view->getPath()
         );
-        $this->illuminate_view->with($context);
     }
+
 }
