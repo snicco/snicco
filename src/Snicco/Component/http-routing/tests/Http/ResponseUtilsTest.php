@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
@@ -27,6 +28,7 @@ final class ResponseUtilsTest extends TestCase
     use CreatesPsrRequests;
 
     private ResponseUtils $response_utils;
+    private Request $request;
 
     protected function setUp(): void
     {
@@ -34,7 +36,7 @@ final class ResponseUtilsTest extends TestCase
         $this->response_utils = new ResponseUtils(
             $this->createUrlGenerator(),
             $this->createResponseFactory(),
-            $this->frontendRequest()
+            $this->request = $this->frontendRequest()
         );
     }
 
@@ -204,7 +206,7 @@ final class ResponseUtilsTest extends TestCase
         $response = $this->response_utils->view('view.php', ['foo' => 'bar']);
 
         $this->assertSame('view.php', $response->view());
-        $this->assertSame(['foo' => 'bar'], $response->viewData());
+        $this->assertEquals(['foo' => 'bar', 'request' => $this->request], $response->viewData());
     }
 
     /**
