@@ -9,10 +9,6 @@ use Snicco\Component\Session\Session;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionCookie;
 
-/**
- * Use this class if you want to only ever manage one session per request.
- * This class should not be used as a service locator to pass around a global session object.
- */
 final class SingleSessionSessionManager implements SessionManager
 {
 

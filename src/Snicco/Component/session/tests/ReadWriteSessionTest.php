@@ -13,8 +13,6 @@ use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
-use Snicco\Component\Session\Exception\SessionWasAlreadyInvalidated;
-use Snicco\Component\Session\Exception\SessionWasAlreadyRotated;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\ValueObject\SerializedSession;
@@ -1031,32 +1029,6 @@ class ReadWriteSessionTest extends TestCase
         $this->expectExceptionMessage('string or integer');
 
         $session->userId();
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_session_is_rotated_twice(): void
-    {
-        $session = $this->newSession();
-        $session->rotate();
-
-        $this->expectException(SessionWasAlreadyRotated::class);
-
-        $session->rotate();
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_session_is_invalidated_twice(): void
-    {
-        $session = $this->newSession();
-        $session->invalidate();
-
-        $this->expectException(SessionWasAlreadyInvalidated::class);
-
-        $session->invalidate();
     }
 
     /**
