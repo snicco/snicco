@@ -14,6 +14,8 @@ use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
+use function array_replace;
+
 final class ResponseUtils
 {
 
@@ -122,6 +124,10 @@ final class ResponseUtils
      */
     public function view(string $view_identifier, array $data = []): ViewResponse
     {
+        $data = array_replace([
+            'request' => $this->current_request,
+        ], $data);
+
         return $this->response_factory->view($view_identifier, $data);
     }
 
