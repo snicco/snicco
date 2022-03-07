@@ -104,4 +104,14 @@ class BladeViewTest extends BladeTestCase
         $this->assertViewContent('hello calvin', $html);
     }
 
+    /**
+     * @test
+     */
+    public function test_path_and_name(): void
+    {
+        $view = $this->view_engine->make('foo');
+        $this->assertSame('foo', $view->name());
+        $this->assertSame(__DIR__ . '/fixtures/views/foo.blade.php', $view->path());
+    }
+
 }
