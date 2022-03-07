@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Exception;
 
-use RuntimeException;
+use InvalidArgumentException;
 
-final class RouteNotFound extends RuntimeException
+final class RouteNotFound extends InvalidArgumentException
 {
 
     public static function name(string $name): RouteNotFound
