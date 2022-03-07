@@ -60,7 +60,7 @@ final class PHPView implements View
     /**
      * @psalm-mutation-free
      */
-    public function with($key, $value = null): PHPView
+    public function with($key, $value = null): View
     {
         $new = clone $this;
         if (is_array($key)) {

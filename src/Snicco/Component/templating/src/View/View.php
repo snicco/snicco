@@ -22,6 +22,8 @@ interface View
      * @param string|array<string, mixed> $key
      * @param mixed $value
      *
+     * @return static
+     *
      * @psalm-mutation-free
      */
     public function with($key, $value = null): self;
