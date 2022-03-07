@@ -33,7 +33,7 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
     {
         $view = $this->getView($exception_information);
 
-        $view->addContext([
+        $view = $view->with([
             'safe_title' => $exception_information->safeTitle(),
             'safe_details' => $exception_information->safeDetails(),
             'identifier' => $exception_information->identifier(),
@@ -81,18 +81,7 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
                 "errors.$status",
                 "exceptions.$status"
             ]);
-
-            foreach ($possible_views as $possible_view) {
-                try {
-                    $this->views[$information->identifier()] = $this->engine->make($possible_view);
-                    break;
-                } catch (ViewNotFound $e) {
-                    //
-                }
-            }
-            if (!isset($this->views[$information->identifier()])) {
-                throw new ViewNotFound();
-            }
+            $this->views[$information->identifier()] = $this->engine->make($possible_views);
         }
 
         return $this->views[$information->identifier()];
