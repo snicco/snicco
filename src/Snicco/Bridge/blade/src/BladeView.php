@@ -22,16 +22,24 @@ final class BladeView implements View
      * @var array<string,mixed>
      */
     private array $context;
+    private string $name;
+    private string $path;
 
     public function __construct(\Illuminate\View\View $illuminate_view)
     {
         $this->illuminate_view = $illuminate_view;
+        /** @psalm-suppress MixedPropertyTypeCoercion */
         $this->context = $illuminate_view->getData();
+        $this->name = $illuminate_view->name();
+        $this->path = $illuminate_view->getPath();
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function name(): string
     {
-        return $this->illuminate_view->name();
+        return $this->name;
     }
 
     public function render(): string
@@ -48,30 +56,36 @@ final class BladeView implements View
         }
     }
 
-    public function addContext($key, $value = null): void
+    /**
+     * @psalm-mutation-free
+     */
+    public function with($key, $value = null): BladeView
     {
+        $new = clone $this;
         $context = is_array($key) ? $key : [$key => $value];
         /**
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
-            $this->context[$key] = $value;
+            $new->context[$key] = $value;
         }
+        return $new;
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function context(): array
     {
         return $this->context;
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function path(): string
     {
-        return $this->illuminate_view->getPath();
-    }
-
-    public function withContext(array $context): void
-    {
-        $this->context = $context;
+        return $this->path;
     }
 
     private function cloneView(): \Illuminate\View\View

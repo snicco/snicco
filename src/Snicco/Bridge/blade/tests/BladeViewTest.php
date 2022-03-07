@@ -30,7 +30,7 @@ class BladeViewTest extends BladeTestCase
     public function variables_can_be_shared_with_a_view(): void
     {
         $view = $this->view_engine->make('variables');
-        $view->addContext('name', 'calvin');
+        $view = $view->with('name', 'calvin');
 
         $this->assertViewContent('hello calvin', $view->render());
     }
@@ -43,7 +43,7 @@ class BladeViewTest extends BladeTestCase
         $this->expectException(ViewCantBeRendered::class);
 
         $view = $this->view_engine->make('variables');
-        $view->addContext('bogus', 'calvin');
+        $view = $view->with('bogus', 'calvin');
 
         $this->assertViewContent('hello calvin', $view->render());
     }
@@ -89,16 +89,19 @@ class BladeViewTest extends BladeTestCase
     /**
      * @test
      */
-    public function test_with_context_replaces_context(): void
+    public function test_with_is_immutable(): void
     {
         $view = $this->view_engine->make('variables');
-        $view->addContext('name', 'calvin');
-        $html = $view->render();
+        $view1 = $view->with('name', 'calvin');
+        $html = $view1->render();
         $this->assertViewContent('hello calvin', $html);
 
-        $view->withContext(['name' => 'marlon']);
-        $html = $view->render();
+        $view2 = $view1->with(['name' => 'marlon']);
+        $html = $view2->render();
         $this->assertViewContent('hello marlon', $html);
+
+        $html = $view1->render();
+        $this->assertViewContent('hello calvin', $html);
     }
 
 }

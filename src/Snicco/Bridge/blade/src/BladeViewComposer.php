@@ -29,8 +29,7 @@ final class BladeViewComposer
             );
         }
         $view = $payload[0];
-        $blade_view = new BladeView($view);
-        $this->composers->compose($blade_view);
+        $blade_view = $this->composers->compose(new BladeView($view));
         $view->with($blade_view->context());
     }
 }
