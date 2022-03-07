@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
@@ -79,7 +81,13 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $psr = $response->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
         $this->assertSame($this->view, $psr->view());
-        $this->assertSame(['greet' => 'Calvin'], $psr->viewData());
+
+        $view_data = $psr->viewData();
+        $this->assertTrue(isset($view_data['greet']));
+        $this->assertTrue(isset($view_data['request']));
+        $this->assertSame('Calvin', $view_data['greet']);
+        $this->assertInstanceOf(Request::class, $view_data['request']);
+        $this->assertInstanceOf(Route::class, $view_data['request']->routingResult()->route());
     }
 }
 
