@@ -15,6 +15,7 @@ use Snicco\Bundle\Templating\TemplatingExceptionDisplayer;
 use Snicco\Bundle\Templating\TemplatingMiddleware;
 use Snicco\Bundle\Templating\Tests\fixtures\ViewComposerWithDependency;
 use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
@@ -87,8 +88,35 @@ final class TemplatingBundleTest extends TestCase
          */
         $context = $kernel->container()->get(GlobalViewContext::class);
         $this->assertTrue(isset($context->get()['view']));
+        $this->assertFalse(isset($context->get()['url']));
         $this->assertInstanceOf(ViewEngine::class, $context->get()['view']);
     }
+
+    /**
+     * @test
+     */
+    public function the_url_generator_is_added_to_the_global_context_if_routing_bundle_is_used(): void
+    {
+        $kernel = new Kernel(
+            $this->newContainer(),
+            Environment::testing(),
+            $this->directories
+        );
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
+        });
+        $kernel->boot();
+
+        $this->assertCanBeResolved(GlobalViewContext::class, $kernel);
+
+        /**
+         * @var GlobalViewContext $context
+         */
+        $context = $kernel->container()->get(GlobalViewContext::class);
+        $this->assertTrue(isset($context->get()['url']));
+        $this->assertInstanceOf(UrlGenerator::class, $context->get()['url']);
+    }
+
 
     /**
      * @test
