@@ -11,8 +11,6 @@ use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
-use Snicco\Component\Session\Exception\SessionWasAlreadyInvalidated;
-use Snicco\Component\Session\Exception\SessionWasAlreadyRotated;
 use Snicco\Component\Session\Serializer\Serializer;
 use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
@@ -86,7 +84,7 @@ final class ReadWriteSession implements Session
      */
     public function put($key, $value = null): void
     {
-        $this->checkLocked();
+        $this->checkIfLocked();
 
         if (!is_array($key)) {
             $key = [$key => $value];
@@ -143,13 +141,13 @@ final class ReadWriteSession implements Session
 
     public function flashInput(array $input): void
     {
-        $this->checkLocked();
+        $this->checkIfLocked();
         $this->flash('_old_input', $input);
     }
 
     public function flash(string $key, $value = true): void
     {
-        $this->checkLocked();
+        $this->checkIfLocked();
         $this->put($key, $value);
 
         $this->push('_flash.new', $key);
@@ -211,22 +209,24 @@ final class ReadWriteSession implements Session
 
     public function invalidate(): void
     {
-        if ($this->invalidated_id) {
-            throw new SessionWasAlreadyInvalidated('A session can only be invalidated once before saving.');
-        }
         $this->rotate();
         $this->flush();
     }
 
     public function rotate(): void
     {
-        $this->checkLocked();
-        if ($this->invalidated_id) {
-            throw new SessionWasAlreadyRotated('A session can only be rotated once before saving.');
+        $this->checkIfLocked();
+
+        $new_id = SessionId::new();
+
+        // It makes no sense to have a different invalidated ID than the one that was initially loaded.
+        // new ids are only saved when the session is saved.
+        if (null === $this->invalidated_id) {
+            $this->invalidated_id = $this->id;
+            $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
         }
-        $this->invalidated_id = $this->id;
-        $this->id = SessionId::new();
-        $this->recordEvent(new SessionRotated(ReadOnlySession::fromSession($this)));
+
+        $this->id = $new_id;
     }
 
     /**
@@ -234,7 +234,7 @@ final class ReadWriteSession implements Session
      */
     public function flush(): void
     {
-        $this->checkLocked();
+        $this->checkIfLocked();
         $internal = $this->get('_sniccowp');
         $this->attributes = [];
         $this->put('_sniccowp', $internal);
@@ -321,7 +321,7 @@ final class ReadWriteSession implements Session
 
     public function remove(string $key): void
     {
-        $this->checkLocked();
+        $this->checkIfLocked();
         Arr::forget($this->attributes, $key);
     }
 
@@ -366,7 +366,7 @@ final class ReadWriteSession implements Session
 
     public function forget($keys): void
     {
-        $this->checkLocked();
+        $this->checkIfLocked();
         Arr::forget($this->attributes, $keys);
     }
 
@@ -417,7 +417,7 @@ final class ReadWriteSession implements Session
     /**
      * @throws SessionIsLocked
      */
-    private function checkLocked(): void
+    private function checkIfLocked(): void
     {
         if ($this->locked) {
             throw new SessionIsLocked();

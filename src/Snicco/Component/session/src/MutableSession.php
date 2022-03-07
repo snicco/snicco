@@ -6,8 +6,6 @@ namespace Snicco\Component\Session;
 
 use Closure;
 use Snicco\Component\Session\Exception\SessionIsLocked;
-use Snicco\Component\Session\Exception\SessionWasAlreadyInvalidated;
-use Snicco\Component\Session\Exception\SessionWasAlreadyRotated;
 
 interface MutableSession
 {
@@ -23,7 +21,6 @@ interface MutableSession
      * Invalidate the session entirely. All data will be flushed.
      *
      * @throws SessionIsLocked
-     * @throws SessionWasAlreadyInvalidated
      */
     public function invalidate(): void;
 
@@ -31,7 +28,6 @@ interface MutableSession
      * Invalidates the session id and keeps the current data.
      *
      * @throws SessionIsLocked
-     * @throws SessionWasAlreadyRotated
      */
     public function rotate(): void;
 
