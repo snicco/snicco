@@ -665,6 +665,15 @@ final class Request implements ServerRequestInterface
         return $this->withAttribute('snicco.user_id', $user_id);
     }
 
+    public function routeIs(string $route_name): bool
+    {
+        $route = $this->routingResult()->route();
+        if (null === $route) {
+            return false;
+        }
+        return $route->getName() === $route_name;
+    }
+
     /**
      * @return static
      */

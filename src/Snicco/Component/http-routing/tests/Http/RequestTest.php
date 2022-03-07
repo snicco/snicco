@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
+use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use stdClass;
@@ -485,5 +487,19 @@ class RequestTest extends TestCase
         $request->userId();
     }
 
+    /**
+     * @test
+     */
+    public function test_routeIs(): void
+    {
+        $this->assertFalse($this->request->routeIs('foo'));
+
+        $route = Route::create('/foo', Route::DELEGATE, 'foo');
+
+        $request = $this->request->withAttribute(RoutingResult::class, RoutingResult::match($route));
+
+        $this->assertTrue($request->routeIs('foo'));
+        $this->assertFalse($request->routeIs('bar'));
+    }
 
 }
