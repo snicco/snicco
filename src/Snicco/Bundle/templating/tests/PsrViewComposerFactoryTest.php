@@ -64,8 +64,9 @@ final class PsrViewComposerFactoryTest extends TestCase
 
 class TestComposerNewable implements ViewComposer
 {
-    public function compose(View $view): void
+    public function compose(View $view): View
     {
+        return $view;
     }
 }
 
@@ -78,7 +79,8 @@ class TestComposerNotNewable implements ViewComposer
         $this->std = $std;
     }
 
-    public function compose(View $view): void
+    public function compose(View $view): View
     {
+        return $view;
     }
 }
