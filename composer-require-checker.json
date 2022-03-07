@@ -25,6 +25,8 @@
     "network_home_url",
     "add_menu_page",
     "add_submenu_page",
+    "wp_create_nonce",
+    "wp_verify_nonce",
     "__",
     "__________WORDPRESS_CLASSES__________",
     "WP_Error",

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Exception;
 
-use RuntimeException;
+use InvalidArgumentException;
 
-final class BadRouteParameter extends RuntimeException
+final class BadRouteParameter extends InvalidArgumentException
 {
 
     public static function becauseRegexDoesntMatch(
@@ -14,7 +14,7 @@ final class BadRouteParameter extends RuntimeException
         string $param_name,
         string $pattern,
         string $route_name
-    ): BadRouteParameter {
+    ): self {
         return new self(
             "Parameter [$param_name] for route [$route_name] must match [$pattern] to generate an URL. Given [$provided_value]."
         );
@@ -23,8 +23,8 @@ final class BadRouteParameter extends RuntimeException
     public static function becauseRequiredParameterIsMissing(
         string $required_segment,
         string $route_name
-    ): RuntimeException {
-        return new RuntimeException(
+    ): InvalidArgumentException {
+        return new self(
             "Required parameter [$required_segment] is missing for route [$route_name]."
         );
     }
