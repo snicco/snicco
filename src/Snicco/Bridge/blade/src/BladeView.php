@@ -59,7 +59,7 @@ final class BladeView implements View
     /**
      * @psalm-mutation-free
      */
-    public function with($key, $value = null): BladeView
+    public function with($key, $value = null): View
     {
         $new = clone $this;
         $context = is_array($key) ? $key : [$key => $value];

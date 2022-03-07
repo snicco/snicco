@@ -34,7 +34,6 @@ final class GlobalViewContext
      * @return array<string,mixed>
      *
      * @psalm-mutation-free
-     * @psalm-internal Snicco\Component\Templating
      */
     public function get(): array
     {

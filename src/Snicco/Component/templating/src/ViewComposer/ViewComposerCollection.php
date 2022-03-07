@@ -78,6 +78,7 @@ final class ViewComposerCollection
      * => local context
      *
      * @template T of View
+     *
      * @param T $view
      *
      * @return T
@@ -94,19 +95,14 @@ final class ViewComposerCollection
         }
 
         foreach ($this->matchingComposers($view) as $composer) {
-            $c = $composer instanceof Closure
-                ? new ClosureViewComposer($composer)
-                : $this->composer_factory->create($composer);
-            $view = $c->compose($view);
+            $view = $composer->compose($view);
         }
 
         return $view->with($local_context);
     }
 
     /**
-     * @return array<class-string<ViewComposer>|Closure(View):View>
-     *
-     * @psalm-mutation-free
+     * @return ViewComposer[]
      */
     private function matchingComposers(View $view): array
     {
@@ -116,7 +112,10 @@ final class ViewComposerCollection
         foreach ($this->composers as $composer) {
             foreach ($composer['views'] as $matches_for_view) {
                 if (Str::is($name, $matches_for_view)) {
-                    $matching[] = $composer['handler'];
+                    $handler = $composer['handler'];
+                    $matching[] = $handler instanceof Closure
+                        ? new ClosureViewComposer($handler)
+                        : $this->composer_factory->create($handler);
                 }
             }
         }

@@ -146,9 +146,6 @@ final class BladeStandalone
         ((new ViewServiceProvider($this->illuminate_container)))->register();
     }
 
-    /**
-     * @psalm-suppress UnusedClosureParam
-     */
     private function listenToEvents(): void
     {
         /** @var Dispatcher $event_dispatcher */
