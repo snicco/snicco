@@ -11,6 +11,7 @@ use Snicco\Bridge\Blade\Tests\fixtures\Components\Dependency;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\HelloWorld;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\InlineComponent;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\ToUppercaseComponent;
+use Snicco\Component\Templating\View\View;
 
 class BladeComponentsTest extends BladeTestCase
 {
@@ -55,12 +56,12 @@ class BladeComponentsTest extends BladeTestCase
         Blade::component(Alert::class, 'alert');
 
         $view = $this->view_engine->make('alert-component');
-        $view->addContext('message', 'foo');
+        $view = $view->with('message', 'foo');
         $content = $view->render();
         $this->assertViewContent('TYPE:error,MESSAGE:foo', $content);
 
         $view = $this->view_engine->make('alert-component');
-        $view->addContext('message', 'FOO');
+        $view = $view->with('message', 'FOO');
         $content = $view->render();
         $this->assertViewContent('TYPE:error,MESSAGE:COMPONENT METHOD CALLED', $content);
     }
@@ -73,7 +74,7 @@ class BladeComponentsTest extends BladeTestCase
         Blade::component(Dependency::class, 'with-dependency');
 
         $view = $this->view_engine->make('with-dependency-component');
-        $view->addContext('message', 'bar');
+        $view = $view->with('message', 'bar');
         $content = $view->render();
         $this->assertViewContent('MESSAGE:foobar', $content);
     }
@@ -86,7 +87,24 @@ class BladeComponentsTest extends BladeTestCase
         Blade::component(AlertAttributes::class, 'alert-attributes');
 
         $view = $this->view_engine->make('alert-attributes-component');
-        $view->addContext('message', 'foo');
+        $view = $view->with('message', 'foo');
+        $content = $view->render();
+        $this->assertViewContent('ID:alert-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
+    }
+
+    /**
+     * @test
+     */
+    public function components_attributes_have_priority_over_view_composers_and_globals(): void
+    {
+        Blade::component(AlertAttributes::class, 'alert-attributes');
+
+        $this->composers->addComposer('alert-attributes-component', function (View $view) {
+            return $view->with('message', 'bar');
+        });
+
+        $view = $this->view_engine->make('alert-attributes-component');
+        $view = $view->with('message', 'foo');
         $content = $view->render();
         $this->assertViewContent('ID:alert-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
     }
@@ -99,13 +117,13 @@ class BladeComponentsTest extends BladeTestCase
         Blade::component(ToUppercaseComponent::class, 'uppercase');
 
         $view = $this->view_engine->make('uppercase-component');
-        $view->addContext('content', 'foobar');
+        $view = $view->with('content', 'foobar');
         $content = $view->render();
         $this->assertViewContent('TITLE:CALVIN,CONTENT:FOOBAR', $content);
 
         // with scope
         $view = $this->view_engine->make('uppercase-component');
-        $view->addContext([
+        $view = $view->with([
             'content' => 'foobar',
             'scoped' => 'wordpress',
         ]);
@@ -121,7 +139,7 @@ class BladeComponentsTest extends BladeTestCase
         Blade::component(InlineComponent::class, 'inline');
 
         $view = $this->view_engine->make('inline-component');
-        $view->addContext('content', 'foobar');
+        $view = $view->with('content', 'foobar');
         $content = $view->render();
         $this->assertViewContent('Content:FOOBAR,SLOT:CALVIN', $content);
     }
@@ -132,12 +150,12 @@ class BladeComponentsTest extends BladeTestCase
     public function dynamic_components_work(): void
     {
         $view = $this->view_engine->make('dynamic-component');
-        $view->addContext('componentName', 'hello');
+        $view = $view->with('componentName', 'hello');
         $content = $view->render();
         $this->assertViewContent('Hello World', $content);
 
         $view = $this->view_engine->make('dynamic-component');
-        $view->addContext('componentName', 'hello-calvin');
+        $view = $view->with('componentName', 'hello-calvin');
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }

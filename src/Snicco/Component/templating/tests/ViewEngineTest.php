@@ -122,7 +122,7 @@ class ViewEngineTest extends TestCase
     public function non_existing_views_throw_an_exception(): void
     {
         $this->expectExceptionMessage(
-            'None of the used view factories can render the view [bogus.php].'
+            'None of the used view factories can render the any of the views [bogus.php]'
         );
         $this->expectException(ViewNotFound::class);
 
@@ -215,7 +215,7 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
-            $view->addContext([
+            return $view->with([
                 'test_context' => [
                     'foo' => ['bar' => 'biz'],
                 ],
@@ -235,7 +235,7 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
-            $view->addContext([
+            return $view->with([
                 'test_context' => [
                     'foo' => ['bar' => 'biz'],
                 ]
@@ -243,7 +243,7 @@ class ViewEngineTest extends TestCase
         });
 
         $view = $this->view_engine->make('context-priority');
-        $view->addContext([
+        $view = $view->with([
             'test_context' => [
                 'foo' => ['bar' => 'boom'],
             ],
@@ -269,7 +269,7 @@ class ViewEngineTest extends TestCase
     public function views_can_extend_parent_views(): void
     {
         $view = $this->view_engine->make('partials.post-title');
-        $view->addContext('post_title', 'Foobar');
+        $view = $view->with('post_title', 'Foobar');
         $this->assertSame('You are viewing post: Foobar', $view->render());
     }
 
@@ -279,7 +279,7 @@ class ViewEngineTest extends TestCase
     public function views_can_be_extended_multiple_times(): void
     {
         $view = $this->view_engine->make('partials.post-body');
-        $view->addContext('post_body', 'Foo');
+        $view = $view->with('post_body', 'Foo');
 
         $this->assertSame('You are viewing post: Special Layout: Foo', $view->render());
     }
@@ -332,11 +332,11 @@ class ViewEngineTest extends TestCase
     {
         $this->composers->addComposer(
             'post-layout',
-            fn(View $view) => $view->addContext('sidebar', 'hi')
+            fn(View $view) => $view->with('sidebar', 'hi')
         );
 
         $view = $this->view_engine->make('partials.post-title');
-        $view->addContext('post_title', 'Foobar');
+        $view = $view->with('post_title', 'Foobar');
         $this->assertSame('You are viewing post: Foobar Our Sidebar: hi', $view->render());
     }
 
@@ -363,7 +363,7 @@ class ViewEngineTest extends TestCase
     public function child_view_context_is_shared_with_parent_view(): void
     {
         $view = $this->view_engine->make('partials.share-var');
-        $view->addContext('child_var', 'BAZ');
+        $view = $view->with('child_var', 'BAZ');
         $this->assertSame('Var from child template: BAZ', $view->render());
     }
 
@@ -392,11 +392,36 @@ class ViewEngineTest extends TestCase
             $view_engine->make('foo.xml');
         } catch (ViewNotFound $e) {
             $this->assertStringStartsWith(
-                'None of the used view factories can render the view [foo.xml].',
+                'None of the used view factories can render the any of the views [foo.xml]',
                 $e->getMessage()
             );
         }
     }
+
+    /**
+     * @test
+     */
+    public function test_make_with_multiple_views(): void
+    {
+        $view = $this->view_engine->make(['bogus1', 'foo']);
+        $this->assertSame('foo', $view->name());
+
+        $this->expectException(ViewNotFound::class);
+        $this->view_engine->make(['bogus1', 'bogus2']);
+    }
+
+    /**
+     * @test
+     */
+    public function test_render_with_multiple_views(): void
+    {
+        $content = $this->view_engine->render(['bogus1', 'foo']);
+        $this->assertSame('foo', $content);
+
+        $this->expectException(ViewNotFound::class);
+        $this->view_engine->render(['bogus1', 'bogus2']);
+    }
+
 
 }
 

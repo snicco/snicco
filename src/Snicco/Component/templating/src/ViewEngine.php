@@ -9,6 +9,8 @@ use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
+use function implode;
+
 final class ViewEngine
 {
 
@@ -25,43 +27,47 @@ final class ViewEngine
     /**
      * Renders a view's content as a string.
      *
+     * @param string|string[] $view
      * @param array<string, mixed> $context
      *
      * @throws ViewNotFound
      * @throws ViewCantBeRendered
      */
-    public function render(string $view, array $context = []): string
+    public function render($view, array $context = []): string
     {
-        $view = $this->make($view);
-        $view->addContext($context);
+        $view = $this->make($view)->with($context);
         return $view->render();
     }
 
     /**
+     * @param string|string[] $view
      * @throws ViewNotFound When no view can be created with any view factory.
      */
-    public function make(string $view): View
+    public function make($view): View
     {
-        return $this->createView($view);
+        return $this->createFirstMatchingView((array)$view);
     }
 
     /**
+     * @param string[] $views
      * @throws ViewNotFound
      */
-    private function createView(string $view): View
+    private function createFirstMatchingView(array $views): View
     {
-        foreach ($this->view_factories as $view_factory) {
-            try {
-                return $view_factory->make($view);
-            } catch (ViewNotFound $e) {
-                //
+        foreach ($views as $view) {
+            foreach ($this->view_factories as $view_factory) {
+                try {
+                    return $view_factory->make($view);
+                } catch (ViewNotFound $e) {
+                    //
+                }
             }
         }
 
         throw new ViewNotFound(
             sprintf(
-                "None of the used view factories can render the view [%s].\nTried with:\n%s",
-                $view,
+                "None of the used view factories can render the any of the views [%s].\nTried with:\n%s",
+                implode(',', $views),
                 implode(
                     "\n",
                     array_map(function (ViewFactory $v) {

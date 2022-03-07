@@ -27,7 +27,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function xss_encoding_can_be_disabled(): void
     {
         $view = $this->view('xss-disabled');
-        $view->addContext('script', '<script type="text/javascript">alert("Hacked!");</script>');
+        $view = $view->with('script', '<script type="text/javascript">alert("Hacked!");</script>');
 
         $this->assertStringStartsWith('<script', $view->render());
     }
@@ -38,7 +38,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function json_works(): void
     {
         $view = $this->view('json');
-        $view->addContext('json', ['foo' => 'bar']);
+        $view = $view->with('json', ['foo' => 'bar']);
         $content = $view->render();
         $this->assertSame(['foo' => 'bar'], json_decode($content, true));
     }
@@ -49,17 +49,17 @@ class BladeFeaturesTest extends BladeTestCase
     public function if_works(): void
     {
         $view = $this->view('if');
-        $view->addContext('records', ['foo']);
+        $view = $view->with('records', ['foo']);
         $content = $view->render();
         $this->assertViewContent('I have one record!', $content);
 
         $view = $this->view('if');
-        $view->addContext('records', ['foo', 'bar']);
+        $view = $view->with('records', ['foo', 'bar']);
         $content = $view->render();
         $this->assertViewContent('I have multiple records!', $content);
 
         $view = $this->view('if');
-        $view->addContext('records', []);
+        $view = $view->with('records', []);
         $content = $view->render();
         $this->assertViewContent("I don't have any records!", $content);
     }
@@ -70,12 +70,12 @@ class BladeFeaturesTest extends BladeTestCase
     public function unless_works(): void
     {
         $view = $this->view('unless');
-        $view->addContext('foo', 'foo');
+        $view = $view->with('foo', 'foo');
         $content = $view->render();
         $this->assertViewContent('', $content);
 
         $view = $this->view('unless');
-        $view->addContext('foo', 'bar');
+        $view = $view->with('foo', 'bar');
         $content = $view->render();
         $this->assertViewContent('UNLESS', $content);
     }
@@ -86,13 +86,13 @@ class BladeFeaturesTest extends BladeTestCase
     public function empty_isset_works(): void
     {
         $view = $this->view('isset-empty');
-        $view->addContext('isset', 'foo');
-        $view->addContext('empty', 'blabla');
+        $view = $view->with('isset', 'foo');
+        $view = $view->with('empty', 'blabla');
         $content = $view->render();
         $this->assertViewContent('ISSET', $content);
 
         $view = $this->view('isset-empty');
-        $view->addContext('empty', '');
+        $view = $view->with('empty', '');
         $content = $view->render();
         $this->assertViewContent('EMPTY', $content);
     }
@@ -103,7 +103,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function including_a_subview_works(): void
     {
         $view = $this->view('parent');
-        $view->addContext('greeting', 'Hello');
+        $view = $view->with('greeting', 'Hello');
         $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
     }
@@ -114,12 +114,12 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_if_works(): void
     {
         $view = $this->view('include-if');
-        $view->addContext('greeting', 'Hello');
+        $view = $view->with('greeting', 'Hello');
         $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
 
         $view = $this->view('include-if-bogus');
-        $view->addContext('greeting', 'Hello');
+        $view = $view->with('greeting', 'Hello');
         $content = $view->render();
         $this->assertViewContent('', $content);
     }
@@ -130,12 +130,12 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_when_works(): void
     {
         $view = $this->view('include-when');
-        $view->addContext(['greeting' => 'Hello', 'foo' => 'foo']);
+        $view = $view->with(['greeting' => 'Hello', 'foo' => 'foo']);
         $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
 
         $view = $this->view('include-when');
-        $view->addContext(['greeting' => 'Hello', 'foo' => 'bogus']);
+        $view = $view->with(['greeting' => 'Hello', 'foo' => 'bogus']);
         $content = $view->render();
         $this->assertViewContent('', $content);
     }
@@ -146,12 +146,12 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_unless_works(): void
     {
         $view = $this->view('include-unless');
-        $view->addContext(['greeting' => 'Hello', 'foo' => 'foo']);
+        $view = $view->with(['greeting' => 'Hello', 'foo' => 'foo']);
         $content = $view->render();
         $this->assertViewContent('', $content);
 
         $view = $this->view('include-unless');
-        $view->addContext(['greeting' => 'Hello', 'foo' => 'bar']);
+        $view = $view->with(['greeting' => 'Hello', 'foo' => 'bar']);
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
@@ -162,7 +162,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_first_works(): void
     {
         $view = $this->view('include-first');
-        $view->addContext(['greeting' => 'Hello', 'foo' => 'foo']);
+        $view = $view->with(['greeting' => 'Hello', 'foo' => 'foo']);
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
@@ -184,12 +184,12 @@ class BladeFeaturesTest extends BladeTestCase
         $collection = [$user1, $user2, $user3];
 
         $view = $this->view('each');
-        $view->addContext(['users' => $collection]);
+        $view = $view->with(['users' => $collection]);
         $content = $view->render();
         $this->assertViewContent('Calvin.John.Jane.', $content);
 
         $view = $this->view('each');
-        $view->addContext(['users' => []]);
+        $view = $view->with(['users' => []]);
         $content = $view->render();
         $this->assertViewContent('NO USERS', $content);
     }

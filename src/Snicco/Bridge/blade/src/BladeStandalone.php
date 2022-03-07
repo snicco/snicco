@@ -15,13 +15,9 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Fluent;
-use Illuminate\View\View;
 use Illuminate\View\ViewServiceProvider;
-use RuntimeException;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-
-use function sprintf;
 
 final class BladeStandalone
 {
@@ -33,12 +29,12 @@ final class BladeStandalone
      */
     private array $view_directories;
 
-    private ViewComposerCollection $composers;
-
     /**
      * @var Container|Application
      */
     private $illuminate_container;
+
+    private BladeViewComposer $blade_view_composer;
 
     /**
      * @param string[] $view_directories
@@ -51,7 +47,7 @@ final class BladeStandalone
     ) {
         $this->view_cache_directory = $view_cache_directory;
         $this->view_directories = $view_directories;
-        $this->composers = $composers;
+        $this->blade_view_composer = new BladeViewComposer($composers);
         $this->illuminate_container = Container::getInstance();
         if (!Facade::getFacadeApplication() instanceof IlluminateContainer) {
             Facade::setFacadeApplication($this->illuminate_container);
@@ -150,27 +146,12 @@ final class BladeStandalone
         ((new ViewServiceProvider($this->illuminate_container)))->register();
     }
 
-    /**
-     * @psalm-suppress UnusedClosureParam
-     */
     private function listenToEvents(): void
     {
         /** @var Dispatcher $event_dispatcher */
         $event_dispatcher = $this->illuminate_container->make('events');
-        $event_dispatcher->listen('composing:*', function (string $event_name, array $payload): void {
-            if (!isset($payload[0]) || !$payload[0] instanceof View) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Expected payload[0] to be instance of [%s].',
-                        View::class,
-                    )
-                );
-            }
-            $this->composers->compose(new BladeView($payload[0]));
-        });
+        $event_dispatcher->listen('composing:*', [$this->blade_view_composer, 'handleEvent']);
     }
-
-    // Bind the dependencies that are needed for our view component to work.
 
     private function disableUnsupportedDirectives(): void
     {
@@ -198,12 +179,6 @@ final class BladeStandalone
      */
     private function bindFrameworkDependencies(): void
     {
-        $this->illuminate_container->resolving(BladeComponent::class,
-            function (BladeComponent $component) {
-                $component->setEngine($this->illuminate_container->make(BladeViewFactory::class));
-            }
-        );
-
         $this->illuminate_container->bindIf(BladeViewFactory::class, function (IlluminateContainer $container) {
             return new BladeViewFactory($container->make('view'), $this->view_directories);
         }, true);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
 use Snicco\Bridge\Blade\BladeComponent;
-use Snicco\Component\Templating\View\View;
 
 class AlertAttributes extends BladeComponent
 {
@@ -21,7 +20,7 @@ class AlertAttributes extends BladeComponent
         $this->message = $message;
     }
 
-    public function render(): View
+    public function render(): string
     {
         return $this->view('components.alert-attributes');
     }

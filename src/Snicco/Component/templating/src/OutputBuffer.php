@@ -12,7 +12,6 @@ use function ob_get_clean;
 use function ob_start;
 
 /**
- * @interal
  * @psalm-internal Snicco\Component\Templating
  */
 final class OutputBuffer
@@ -44,6 +43,9 @@ final class OutputBuffer
         return $output;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function remove(): void
     {
         $res = ob_end_clean();

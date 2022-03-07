@@ -58,16 +58,17 @@ final class PHPView implements View
     }
 
     /**
-     * @param string|array<string, mixed> $key
-     * @param mixed $value
+     * @psalm-mutation-free
      */
-    public function addContext($key, $value = null): void
+    public function with($key, $value = null): View
     {
+        $new = clone $this;
         if (is_array($key)) {
-            $this->context = array_merge($this->context(), $key);
+            $new->context = array_merge($this->context(), $key);
         } else {
-            $this->context[$key] = $value;
+            $new->context[$key] = $value;
         }
+        return $new;
     }
 
     /**
@@ -78,21 +79,11 @@ final class PHPView implements View
         return $this->context;
     }
 
-    public function withContext(array $context): void
-    {
-        $this->context = $context;
-    }
-
     public function parent(): ?PHPView
     {
         return $this->parent_view;
     }
 
-    /**
-     * Create a view instance for the given view's layout header, if any.
-     *
-     * @return PHPView|null
-     */
     private function parseParentView(): ?PHPView
     {
         $parent_view_name = $this->parseExtends();

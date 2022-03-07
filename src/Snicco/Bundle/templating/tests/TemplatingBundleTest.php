@@ -117,7 +117,6 @@ final class TemplatingBundleTest extends TestCase
         $this->assertInstanceOf(UrlGenerator::class, $context->get()['url']);
     }
 
-
     /**
      * @test
      */
@@ -182,7 +181,7 @@ final class TemplatingBundleTest extends TestCase
 
         $view = $engine->make('errors.403');
 
-        $composers->compose($view);
+        $view = $composers->compose($view);
 
         $context = $view->context();
         $this->assertTrue(isset($context['object_hash']));
@@ -424,8 +423,8 @@ final class TemplatingBundleTest extends TestCase
 class CustomBundleComposer implements ViewComposer
 {
 
-    public function compose(View $view): void
+    public function compose(View $view): View
     {
-        $view->addContext('foo', self::class);
+        return $view->with('foo', self::class);
     }
 }

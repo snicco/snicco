@@ -272,6 +272,8 @@ class Str
 
     /**
      * @param string $pattern For convenience foo/* will be transformed to foo.*
+     *
+     * @psalm-pure
      */
     public static function is(string $subject, string $pattern): bool
     {

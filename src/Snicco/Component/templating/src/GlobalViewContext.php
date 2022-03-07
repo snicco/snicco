@@ -10,8 +10,6 @@ use Closure;
 use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 
-use function call_user_func;
-
 final class GlobalViewContext
 {
 
@@ -33,17 +31,17 @@ final class GlobalViewContext
     }
 
     /**
-     * @interal
-     *
      * @return array<string,mixed>
      *
-     * @psalm-suppress MissingClosureReturnType
+     * @psalm-mutation-free
      */
     public function get(): array
     {
+        /** @psalm-suppress MissingClosureParamType */
+        /** @psalm-suppress MissingClosureReturnType */
         return array_map(function ($context) {
             return ($context instanceof Closure)
-                ? call_user_func($context)
+                ? $context()
                 : $context;
         }, $this->context);
     }

@@ -12,8 +12,12 @@ interface ViewComposer
     /**
      * Add context values to the passed view
      *
-     * @param View $view
+     * @template  T of View
+     *
+     * @param T $view
+     *
+     * @return T
      */
-    public function compose(View $view): void;
+    public function compose(View $view): View;
 
 }

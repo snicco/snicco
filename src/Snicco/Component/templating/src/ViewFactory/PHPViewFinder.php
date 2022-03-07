@@ -28,11 +28,9 @@ final class PHPViewFinder
     }
 
     /**
-     * @interal
-     * @psalm-internal Snicco\Component\Templating
-     *
      * @throws ViewNotFound
      *
+     * @psalm-internal Snicco\Component\Templating
      */
     public function filePath(string $view_name): string
     {
@@ -55,16 +53,14 @@ final class PHPViewFinder
     }
 
     /**
-     * @interal
-     *
      * @psalm-internal Snicco\Component\Templating
-     * @psalm-suppress UnresolvableInclude
      */
     public function includeFile(string $path, array $context): void
     {
         (static function () use ($path, $context): void {
             extract($context, EXTR_SKIP);
             unset($context);
+            /** @psalm-suppress UnresolvableInclude */
             require $path;
         })();
     }
