@@ -544,9 +544,9 @@ var classes = [
         "totalSystemComplexity": 41,
         "package": "Snicco\\Component\\Psr7ErrorHandler\\",
         "pageRank": 0,
-        "afferentCoupling": 6,
+        "afferentCoupling": 7,
         "efferentCoupling": 2,
-        "instability": 0.25,
+        "instability": 0.22,
         "violations": {}
     },
     {

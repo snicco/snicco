@@ -1825,9 +1825,9 @@ var classes = [
         "totalSystemComplexity": 453.22,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 19,
+        "afferentCoupling": 20,
         "efferentCoupling": 12,
-        "instability": 0.39,
+        "instability": 0.38,
         "violations": {}
     },
     {
@@ -2328,7 +2328,7 @@ var classes = [
         "totalSystemComplexity": 28.67,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 22,
+        "afferentCoupling": 23,
         "efferentCoupling": 6,
         "instability": 0.21,
         "violations": {}
@@ -4033,13 +4033,11 @@ var classes = [
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
-            "RuntimeException",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception\\BadRouteParameter",
-            "RuntimeException",
-            "RuntimeException"
+            "InvalidArgumentException",
+            "InvalidArgumentException"
         ],
         "parents": [
-            "RuntimeException"
+            "InvalidArgumentException"
         ],
         "lcom": 2,
         "length": 24,
@@ -4070,8 +4068,8 @@ var classes = [
         "totalSystemComplexity": 10,
         "package": "Snicco\\Component\\HttpRouting\\Routing\\Exception\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
-        "efferentCoupling": 3,
+        "afferentCoupling": 1,
+        "efferentCoupling": 1,
         "instability": 0.5,
         "violations": {}
     },
@@ -4299,12 +4297,12 @@ var classes = [
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
-            "RuntimeException",
+            "InvalidArgumentException",
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\RouteNotFound",
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\RouteNotFound"
         ],
         "parents": [
-            "RuntimeException"
+            "InvalidArgumentException"
         ],
         "lcom": 2,
         "length": 15,
@@ -7722,7 +7720,7 @@ var classes = [
         "totalSystemComplexity": 251224.2,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
-        "afferentCoupling": 44,
+        "afferentCoupling": 45,
         "efferentCoupling": 14,
         "instability": 0.24,
         "violations": {}

@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-06 18:48:53        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-07 10:29:00        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -977,8 +977,7 @@
         "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Exception\\BadRouteParameter",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Routing\\Exception\\BadRouteParameter",
-            "\\RuntimeException"
+            "\\InvalidArgumentException"
         ]
     },
     {
@@ -1351,7 +1350,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005b5c7af100000000094263e3",
+        "name": "\\anonymous@0000000032bd20b0000000004f523000",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1520,7 +1519,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005b5c781d00000000094263e3",
+        "name": "\\anonymous@0000000032bd225c000000004f523000",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2429,7 +2428,7 @@
         ]
     },
     {
-        "name": "\\anonymous@000000005b5c702800000000094263e3",
+        "name": "\\anonymous@0000000032bd308e000000004f523000",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
@@ -3293,6 +3292,20 @@
             "\\Psr\\Http\\Message\\ServerRequestInterface",
             "\\Psr\\Http\\Server\\RequestHandlerInterface",
             "\\Snicco\\Component\\Psr7ErrorHandler\\HttpException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Middleware\\WPNonce\\WPNonce",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
+            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce"
         ]
     },
     {

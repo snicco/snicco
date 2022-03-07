@@ -1825,9 +1825,9 @@ var classes = [
         "totalSystemComplexity": 453.22,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 19,
+        "afferentCoupling": 20,
         "efferentCoupling": 12,
-        "instability": 0.39,
+        "instability": 0.38,
         "violations": {}
     },
     {
@@ -2328,7 +2328,7 @@ var classes = [
         "totalSystemComplexity": 28.67,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 22,
+        "afferentCoupling": 23,
         "efferentCoupling": 6,
         "instability": 0.21,
         "violations": {}
@@ -4033,13 +4033,11 @@ var classes = [
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
-            "RuntimeException",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception\\BadRouteParameter",
-            "RuntimeException",
-            "RuntimeException"
+            "InvalidArgumentException",
+            "InvalidArgumentException"
         ],
         "parents": [
-            "RuntimeException"
+            "InvalidArgumentException"
         ],
         "lcom": 2,
         "length": 24,
@@ -4070,8 +4068,8 @@ var classes = [
         "totalSystemComplexity": 10,
         "package": "Snicco\\Component\\HttpRouting\\Routing\\Exception\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
-        "efferentCoupling": 3,
+        "afferentCoupling": 1,
+        "efferentCoupling": 1,
         "instability": 0.5,
         "violations": {}
     },
@@ -4299,12 +4297,12 @@ var classes = [
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
-            "RuntimeException",
+            "InvalidArgumentException",
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\RouteNotFound",
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\RouteNotFound"
         ],
         "parents": [
-            "RuntimeException"
+            "InvalidArgumentException"
         ],
         "lcom": 2,
         "length": 15,
@@ -7722,7 +7720,7 @@ var classes = [
         "totalSystemComplexity": 251224.2,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
-        "afferentCoupling": 44,
+        "afferentCoupling": 45,
         "efferentCoupling": 14,
         "instability": 0.24,
         "violations": {}
@@ -9919,7 +9917,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000005b5c7af100000000094263e3",
+        "name": "anonymous@0000000032bd20b0000000004f523000",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -11019,9 +11017,9 @@ var classes = [
         "totalSystemComplexity": 41,
         "package": "Snicco\\Component\\Psr7ErrorHandler\\",
         "pageRank": 0,
-        "afferentCoupling": 6,
+        "afferentCoupling": 7,
         "efferentCoupling": 2,
-        "instability": 0.25,
+        "instability": 0.22,
         "violations": {}
     },
     {
@@ -11672,7 +11670,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000005b5c781d00000000094263e3",
+        "name": "anonymous@0000000032bd225c000000004f523000",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -20179,15 +20177,29 @@ var classes = [
                 "public": true,
                 "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "verifyNonce",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createNonce",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
-        "nbMethodsIncludingGettersSetters": 13,
-        "nbMethods": 13,
+        "nbMethodsIncludingGettersSetters": 15,
+        "nbMethods": 15,
         "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 13,
+        "nbMethodsPublic": 15,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 16,
+        "wmc": 18,
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
@@ -20196,38 +20208,38 @@ var classes = [
             "WP_User"
         ],
         "parents": [],
-        "lcom": 12,
-        "length": 127,
-        "vocabulary": 37,
-        "volume": 661.6,
-        "difficulty": 8.13,
-        "effort": 5375.5,
-        "level": 0.12,
-        "bugs": 0.22,
-        "time": 299,
-        "intelligentContent": 81.43,
-        "number_operators": 23,
-        "number_operands": 104,
+        "lcom": 14,
+        "length": 136,
+        "vocabulary": 40,
+        "volume": 723.78,
+        "difficulty": 7.86,
+        "effort": 5686.86,
+        "level": 0.13,
+        "bugs": 0.24,
+        "time": 316,
+        "intelligentContent": 92.12,
+        "number_operators": 26,
+        "number_operands": 110,
         "number_operators_unique": 5,
-        "number_operands_unique": 32,
+        "number_operands_unique": 35,
         "cloc": 43,
-        "loc": 112,
-        "lloc": 69,
-        "mi": 80.56,
-        "mIwoC": 39.6,
-        "commentWeight": 40.96,
+        "loc": 120,
+        "lloc": 77,
+        "mi": 78.29,
+        "mIwoC": 38.29,
+        "commentWeight": 40,
         "kanDefect": 0.36,
         "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 7.19,
-        "relativeSystemComplexity": 8.19,
-        "totalStructuralComplexity": 13,
-        "totalDataComplexity": 93.5,
-        "totalSystemComplexity": 106.5,
+        "relativeDataComplexity": 8.13,
+        "relativeSystemComplexity": 9.13,
+        "totalStructuralComplexity": 15,
+        "totalDataComplexity": 122,
+        "totalSystemComplexity": 137,
         "package": "Snicco\\Component\\BetterWPAPI\\",
         "pageRank": 0,
-        "afferentCoupling": 9,
+        "afferentCoupling": 11,
         "efferentCoupling": 2,
-        "instability": 0.18,
+        "instability": 0.15,
         "violations": {}
     },
     {
@@ -22012,7 +22024,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000005b5c702800000000094263e3",
+        "name": "anonymous@0000000032bd308e000000004f523000",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -28898,6 +28910,174 @@ var classes = [
         "afferentCoupling": 0,
         "efferentCoupling": 6,
         "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Middleware\\WPNonce\\VerifyWPNonce",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "inputKey",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "handle",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 3,
+        "nbMethods": 3,
+        "nbMethodsPrivate": 1,
+        "nbMethodsPublic": 2,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 7,
+        "ccn": 5,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "Psr\\Http\\Message\\ResponseInterface",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "Snicco\\Middleware\\WPNonce\\WPNonce",
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
+        ],
+        "parents": [
+            "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
+        ],
+        "lcom": 2,
+        "length": 48,
+        "vocabulary": 20,
+        "volume": 207.45,
+        "difficulty": 4.38,
+        "effort": 907.6,
+        "level": 0.23,
+        "bugs": 0.07,
+        "time": 50,
+        "intelligentContent": 47.42,
+        "number_operators": 13,
+        "number_operands": 35,
+        "number_operators_unique": 4,
+        "number_operands_unique": 16,
+        "cloc": 0,
+        "loc": 30,
+        "lloc": 30,
+        "mi": 50.88,
+        "mIwoC": 50.88,
+        "commentWeight": 0,
+        "kanDefect": 0.36,
+        "relativeStructuralComplexity": 49,
+        "relativeDataComplexity": 0.63,
+        "relativeSystemComplexity": 49.63,
+        "totalStructuralComplexity": 147,
+        "totalDataComplexity": 1.88,
+        "totalSystemComplexity": 148.88,
+        "package": "Snicco\\Middleware\\WPNonce\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 7,
+        "instability": 0.88,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Middleware\\WPNonce\\WPNonce",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "__invoke",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createNonce",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "noHtml",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 4,
+        "nbMethods": 4,
+        "nbMethodsPrivate": 2,
+        "nbMethodsPublic": 2,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 6,
+        "ccn": 3,
+        "ccnMethodMax": 3,
+        "externals": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "Snicco\\Middleware\\WPNonce\\VerifyWPNonce"
+        ],
+        "parents": [],
+        "lcom": 1,
+        "length": 55,
+        "vocabulary": 22,
+        "volume": 245.27,
+        "difficulty": 7.5,
+        "effort": 1839.52,
+        "level": 0.13,
+        "bugs": 0.08,
+        "time": 102,
+        "intelligentContent": 32.7,
+        "number_operators": 15,
+        "number_operands": 40,
+        "number_operators_unique": 6,
+        "number_operands_unique": 16,
+        "cloc": 3,
+        "loc": 39,
+        "lloc": 36,
+        "mi": 69.74,
+        "mIwoC": 48.92,
+        "commentWeight": 20.83,
+        "kanDefect": 0.22,
+        "relativeStructuralComplexity": 16,
+        "relativeDataComplexity": 0.95,
+        "relativeSystemComplexity": 16.95,
+        "totalStructuralComplexity": 64,
+        "totalDataComplexity": 3.8,
+        "totalSystemComplexity": 67.8,
+        "package": "Snicco\\Middleware\\WPNonce\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 3,
+        "instability": 0.75,
         "violations": {}
     },
     {
