@@ -25,16 +25,23 @@ class TestView implements View
         $this->name = $name;
     }
 
-
-    public function addContext($key, $value = null): void
+    /**
+     * @psalm-mutation-free
+     */
+    public function with($key, $value = null): View
     {
+        $new = clone $this;
         if (is_array($key)) {
-            $this->context = array_merge($this->context(), $key);
+            $new->context = array_merge($this->context(), $key);
         } else {
-            $this->context[$key] = $value;
+            $new->context[$key] = $value;
         }
+        return $new;
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function context(): array
     {
         return $this->context;
@@ -45,21 +52,25 @@ class TestView implements View
         throw new BadMethodCallException(sprintf('Test double [%s] can not be rendered to string.', self::class));
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function path(): string
     {
         throw new BadMethodCallException('TestView.php has no path.');
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function name(): string
     {
         return $this->name;
     }
 
-    public function withContext(array $context): void
-    {
-        $this->context = $context;
-    }
-
+    /**
+     * @psalm-mutation-free
+     */
     public function parent(): ?PHPView
     {
         return null;

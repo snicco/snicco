@@ -30,7 +30,7 @@ class BladeViewTest extends BladeTestCase
     public function variables_can_be_shared_with_a_view(): void
     {
         $view = $this->view_engine->make('variables');
-        $view->addContext('name', 'calvin');
+        $view = $view->with('name', 'calvin');
 
         $this->assertViewContent('hello calvin', $view->render());
     }
@@ -43,7 +43,7 @@ class BladeViewTest extends BladeTestCase
         $this->expectException(ViewCantBeRendered::class);
 
         $view = $this->view_engine->make('variables');
-        $view->addContext('bogus', 'calvin');
+        $view = $view->with('bogus', 'calvin');
 
         $this->assertViewContent('hello calvin', $view->render());
     }
@@ -89,33 +89,29 @@ class BladeViewTest extends BladeTestCase
     /**
      * @test
      */
-    public function laravels_functions_are_implemented_correctly(): void
+    public function test_with_is_immutable(): void
     {
-        /** @var BladeView $view */
         $view = $this->view_engine->make('variables');
+        $view1 = $view->with('name', 'calvin');
+        $html = $view1->render();
+        $this->assertViewContent('hello calvin', $html);
 
-        $this->assertArrayNotHasKey('foo', $view->getData());
+        $view2 = $view1->with(['name' => 'marlon']);
+        $html = $view2->render();
+        $this->assertViewContent('hello marlon', $html);
 
-        $view->addContext('foo', 'bar');
-
-        $this->assertArrayHasKey('foo', $view->getData());
-
-        $this->assertSame(__DIR__ . '/fixtures/views/variables.blade.php', $view->path());
+        $html = $view1->render();
+        $this->assertViewContent('hello calvin', $html);
     }
 
     /**
      * @test
      */
-    public function test_with_context_replaces_context(): void
+    public function test_path_and_name(): void
     {
-        $view = $this->view_engine->make('variables');
-        $view->addContext('name', 'calvin');
-        $html = $view->render();
-        $this->assertViewContent('hello calvin', $html);
-
-        $view->withContext(['name' => 'marlon']);
-        $html = $view->render();
-        $this->assertViewContent('hello marlon', $html);
+        $view = $this->view_engine->make('foo');
+        $this->assertSame('foo', $view->name());
+        $this->assertSame(__DIR__ . '/fixtures/views/foo.blade.php', $view->path());
     }
 
 }

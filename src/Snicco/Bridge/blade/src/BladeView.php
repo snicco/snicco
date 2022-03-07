@@ -8,39 +8,45 @@ use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
 use Throwable;
 
+use function is_array;
+
 /**
  * @psalm-internal Snicco\Bridge\Blade
  */
-final class BladeView implements View, \Illuminate\Contracts\View\View
+final class BladeView implements View
 {
 
     private \Illuminate\View\View $illuminate_view;
 
+    /**
+     * @var array<string,mixed>
+     */
+    private array $context;
+    private string $name;
+    private string $path;
+
     public function __construct(\Illuminate\View\View $illuminate_view)
     {
         $this->illuminate_view = $illuminate_view;
+        /** @psalm-suppress MixedPropertyTypeCoercion */
+        $this->context = $illuminate_view->getData();
+        $this->name = $illuminate_view->name();
+        $this->path = $illuminate_view->getPath();
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function name(): string
     {
-        return $this->illuminate_view->name();
-    }
-
-    public function getData(): array
-    {
-        return $this->context();
-    }
-
-    public function with($key, $value = null)
-    {
-        $this->illuminate_view->with($key, $value);
-        return $this;
+        return $this->name;
     }
 
     public function render(): string
     {
         try {
-            return $this->illuminate_view->render();
+            $view = $this->cloneView();
+            return $view->with($this->context)->render();
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
                 "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
@@ -50,31 +56,46 @@ final class BladeView implements View, \Illuminate\Contracts\View\View
         }
     }
 
-    public function addContext($key, $value = null): void
+    /**
+     * @psalm-mutation-free
+     */
+    public function with($key, $value = null): View
     {
-        $this->with($key, $value);
+        $new = clone $this;
+        $context = is_array($key) ? $key : [$key => $value];
+        /**
+         * @var mixed $value
+         */
+        foreach ($context as $key => $value) {
+            $new->context[$key] = $value;
+        }
+        return $new;
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function context(): array
     {
-        /** @var array<string,mixed> $data */
-        $data = $this->illuminate_view->getData();
-        return $data;
+        return $this->context;
     }
 
+    /**
+     * @psalm-mutation-free
+     */
     public function path(): string
     {
-        return $this->illuminate_view->getPath();
+        return $this->path;
     }
 
-    public function withContext(array $context): void
+    private function cloneView(): \Illuminate\View\View
     {
-        $this->illuminate_view = new \Illuminate\View\View(
+        return new \Illuminate\View\View(
             $this->illuminate_view->getFactory(),
             $this->illuminate_view->getEngine(),
-            $this->illuminate_view->name(),
+            $this->illuminate_view->getName(),
             $this->illuminate_view->getPath()
         );
-        $this->illuminate_view->with($context);
     }
+
 }

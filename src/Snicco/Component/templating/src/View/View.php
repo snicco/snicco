@@ -12,34 +12,38 @@ interface View
     /**
      * Render the view to a string.
      *
-     * @throws ViewCantBeRendered If any kind of error occurs.
+     * @throws ViewCantBeRendered If any occurs during rendering
      */
     public function render(): string;
 
     /**
-     * Add (merge) context to the view object.
+     * Takes the provided context and returns a NEW instance that now has the merged context.
      *
      * @param string|array<string, mixed> $key
      * @param mixed $value
-     */
-    public function addContext($key, $value = null): void;
-
-    /**
-     * Replaces the current context with the provided context
      *
-     * @param array<string,mixed> $context
+     * @return static
+     *
+     * @psalm-mutation-free
      */
-    public function withContext(array $context): void;
+    public function with($key, $value = null): self;
 
     /**
      * @return array<string,mixed>
+     *
+     * @psalm-mutation-free
      */
     public function context(): array;
 
+    /**
+     * @psalm-mutation-free
+     */
     public function name(): string;
 
     /**
-     * @return string The full local path of the view.
+     * Returns The full local path of the view.
+     *
+     * @psalm-mutation-free
      */
     public function path(): string;
 

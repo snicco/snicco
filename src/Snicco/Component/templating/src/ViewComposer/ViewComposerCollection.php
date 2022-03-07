@@ -17,7 +17,7 @@ final class ViewComposerCollection
     private GlobalViewContext $global_view_context;
 
     /**
-     * @var array<array{views: list<string>, handler: class-string<ViewComposer>|Closure}>
+     * @var array<array{views: list<string>, handler: class-string<ViewComposer>|Closure(View):View}>
      */
     private array $composers = [];
 
@@ -31,9 +31,7 @@ final class ViewComposerCollection
 
     /**
      * @param string|list<string> $views
-     * @param class-string<ViewComposer>|Closure(View):void $composer
-     *
-     * @psalm-suppress DocblockTypeContradiction
+     * @param class-string<ViewComposer>|Closure(View):View $composer
      */
     public function addComposer($views, $composer): void
     {
@@ -47,6 +45,7 @@ final class ViewComposerCollection
             return;
         }
 
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!is_string($composer)) {
             throw new InvalidArgumentException(
                 'A view composer has to be a closure or a class name.'
@@ -72,12 +71,19 @@ final class ViewComposerCollection
     }
 
     /**
+     *
      * Composes the context the passed view in the following order.
      * => global context
      * => view composer context
      * => local context
+     *
+     * @template T of View
+     *
+     * @param T $view
+     *
+     * @return T
      */
-    public function compose(View $view): void
+    public function compose(View $view): View
     {
         $local_context = $view->context();
 
@@ -85,21 +91,18 @@ final class ViewComposerCollection
          * @var mixed $context
          */
         foreach ($this->global_view_context->get() as $name => $context) {
-            $view->addContext($name, $context);
+            $view = $view->with($name, $context);
         }
 
         foreach ($this->matchingComposers($view) as $composer) {
-            $c = $composer instanceof Closure
-                ? new ClosureViewComposer($composer)
-                : $this->composer_factory->create($composer);
-            $c->compose($view);
+            $view = $composer->compose($view);
         }
 
-        $view->addContext($local_context);
+        return $view->with($local_context);
     }
 
     /**
-     * @return list<Closure|class-string<ViewComposer>>
+     * @return ViewComposer[]
      */
     private function matchingComposers(View $view): array
     {
@@ -109,7 +112,10 @@ final class ViewComposerCollection
         foreach ($this->composers as $composer) {
             foreach ($composer['views'] as $matches_for_view) {
                 if (Str::is($name, $matches_for_view)) {
-                    $matching[] = $composer['handler'];
+                    $handler = $composer['handler'];
+                    $matching[] = $handler instanceof Closure
+                        ? new ClosureViewComposer($handler)
+                        : $this->composer_factory->create($handler);
                 }
             }
         }
