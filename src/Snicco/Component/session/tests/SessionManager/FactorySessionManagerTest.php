@@ -186,7 +186,7 @@ final class FactorySessionManagerTest extends TestCase
     /**
      * @test
      */
-    public function the_old_session_is_deleted_after_migrating_a_session(): void
+    public function the_old_session_is_deleted_after_rotating_a_session(): void
     {
         $old_id = $this->writeSessionWithData(['foo' => 'bar']);
 
@@ -198,6 +198,33 @@ final class FactorySessionManagerTest extends TestCase
 
         $this->assertNotNull($this->driver->read($new_id->selector()));
 
+        $this->expectException(BadSessionID::class);
+        $this->driver->read($old_id->selector());
+    }
+
+    /**
+     * @test
+     */
+    public function invalidating_an_expired_session_does_not_throw_an_exception(): void
+    {
+        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+
+        $test_clock = new TestClock();
+        $test_clock->travelIntoFuture($this->idle_timeout + 1);
+        $manager = $this->getSessionManager($test_clock);
+
+        $session = $manager->start(CookiePool::fromSuperGlobals());
+
+        $session->invalidate();
+        $manager->save($session);
+
+        $new_session = $manager->start(new CookiePool([$this->cookie_name => $session->id()->asString()]));
+        // id stays the same
+        $this->assertTrue($new_session->id()->sameAs($session->id()));
+        // data was flashed
+        $this->assertFalse($new_session->has('foo'));
+
+        // old id is gone.
         $this->expectException(BadSessionID::class);
         $this->driver->read($old_id->selector());
     }
