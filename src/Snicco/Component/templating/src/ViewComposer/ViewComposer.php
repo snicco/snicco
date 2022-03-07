@@ -14,6 +14,6 @@ interface ViewComposer
      *
      * @param View $view
      */
-    public function compose(View $view): void;
+    public function compose(View $view): View;
 
 }

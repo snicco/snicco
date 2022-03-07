@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\ViewFactory;
 
-use RuntimeException;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\OutputBuffer;
 use Snicco\Component\Templating\View\PHPView;
+use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Throwable;
 
@@ -35,9 +35,9 @@ final class PHPViewFactory implements ViewFactory
     }
 
     /**
-     * @interal
      * @throws ViewCantBeRendered
-     * @throws RuntimeException If output buffering can't be enabled. This should never happen.
+     *
+     * @psalm-internal Snicco\Component\Templating
      */
     public function renderPhpView(PHPView $view): string
     {
@@ -56,22 +56,23 @@ final class PHPViewFactory implements ViewFactory
 
     private function render(PHPView $view): void
     {
-        $this->composer_collection->compose($view);
+        $view = $this->composer_collection->compose($view);
 
         $parent = $view->parent();
 
         if (null !== $parent) {
-            $parent->addContext(
-                array_filter($view->context(), function ($value) {
-                    return !$value instanceof ChildContent;
-                })
-            );
-            $parent->addContext(
-                '__content',
-                new ChildContent(function () use ($view) {
-                    $this->requireView($view);
-                })
-            );
+            $parent = $parent
+                ->with(
+                    array_filter($view->context(), function ($value) {
+                        return !$value instanceof ChildContent;
+                    })
+                )
+                ->with(
+                    '__content',
+                    new ChildContent(function () use ($view) {
+                        $this->requireView($view);
+                    })
+                );
 
             $this->render($parent);
 
@@ -81,7 +82,7 @@ final class PHPViewFactory implements ViewFactory
         $this->requireView($view);
     }
 
-    private function requireView(PHPView $view): void
+    private function requireView(View $view): void
     {
         $this->finder->includeFile(
             $view->path(),
@@ -92,7 +93,6 @@ final class PHPViewFactory implements ViewFactory
     /**
      * @return never
      * @throws ViewCantBeRendered
-     *
      */
     private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
     {

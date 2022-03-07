@@ -42,7 +42,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
 
         $this->expectException(BadViewComposer::class);
         $this->expectExceptionMessage(
-            '$composer has to be a ViewComposer class-string'
+            'The view composer class [ComplexComposer] is not a newable.'
         );
 
         $factory->create('ComplexComposer');
@@ -60,8 +60,8 @@ class ComplexComposer implements ViewComposer
         $this->stdClass = $stdClass;
     }
 
-    public function compose(View $view): void
+    public function compose(View $view): View
     {
-        //
+        return $view;
     }
 }
