@@ -16,7 +16,7 @@ class InlineComponent extends BladeComponent
         $this->content = strtoupper($content);
     }
 
-    public function render()
+    public function render(): string
     {
         return <<<'blade'
 Content:{{$content}},SLOT:{{ $slot }}
