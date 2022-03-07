@@ -8,22 +8,27 @@ use Closure;
 use Snicco\Component\Templating\View\View;
 
 /**
- * @interal
  * @psalm-internal Snicco\Component\Templating
  */
 final class ClosureViewComposer implements ViewComposer
 {
 
+    /**
+     * @var Closure(View):View $composer
+     */
     private Closure $composer;
 
+    /**
+     * @param Closure(View):View $composer
+     */
     public function __construct(Closure $composer)
     {
         $this->composer = $composer;
     }
 
-    public function compose(View $view): void
+    public function compose(View $view): View
     {
-        call_user_func($this->composer, $view);
+        return ($this->composer)($view);
     }
 
 }

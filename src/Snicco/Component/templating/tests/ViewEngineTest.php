@@ -122,7 +122,7 @@ class ViewEngineTest extends TestCase
     public function non_existing_views_throw_an_exception(): void
     {
         $this->expectExceptionMessage(
-            'None of the used view factories can render the view [bogus.php].'
+            'None of the used view factories can render the any of the views [bogus.php]'
         );
         $this->expectException(ViewNotFound::class);
 
@@ -392,7 +392,7 @@ class ViewEngineTest extends TestCase
             $view_engine->make('foo.xml');
         } catch (ViewNotFound $e) {
             $this->assertStringStartsWith(
-                'None of the used view factories can render the view [foo.xml].',
+                'None of the used view factories can render the any of the views [foo.xml]',
                 $e->getMessage()
             );
         }
