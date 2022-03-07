@@ -31,9 +31,7 @@ final class ViewEngineMailRenderer implements MailRenderer
     {
         try {
             $view = $this->getView($template_name);
-            // Use withContext instead of addContext here to completely reset the local view data.
-            $view->withContext($context);
-            return $view->render();
+            return $view->with($context)->render();
         } catch (ViewCantBeRendered $e) {
             throw new CouldNotRenderMailContent(
                 $e->getMessage(), 0, $e
