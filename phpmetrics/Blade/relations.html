@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-07 11:42:33        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-07 18:25:36        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -363,6 +363,7 @@
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
+            "\\Snicco\\Bridge\\Blade\\BladeViewComposer",
             "\\Illuminate\\Container\\Container",
             "\\Illuminate\\Support\\Facades\\Facade",
             "\\Snicco\\Bridge\\Blade\\BladeViewFactory",
@@ -373,8 +374,6 @@
             "\\Illuminate\\Events\\Dispatcher",
             "\\Snicco\\Bridge\\Blade\\DummyApplication",
             "\\Illuminate\\View\\ViewServiceProvider",
-            "\\RuntimeException",
-            "\\Snicco\\Bridge\\Blade\\BladeView",
             "\\BadMethodCallException"
         ]
     },
@@ -382,6 +381,15 @@
         "name": "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\Blade\\BladeViewComposer",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
+            "\\RuntimeException",
+            "\\Snicco\\Bridge\\Blade\\BladeView"
+        ]
     },
     {
         "name": "\\Illuminate\\Container\\Container",
@@ -445,16 +453,6 @@
         "relations": []
     },
     {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\Blade\\BladeView",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\BadMethodCallException",
         "size": 3000,
         "relations": []
@@ -463,9 +461,7 @@
         "name": "\\Snicco\\Bridge\\Blade\\BladeComponent",
         "size": 3000,
         "relations": [
-            "\\Illuminate\\View\\Component",
-            "\\Snicco\\Bridge\\Blade\\BladeViewFactory",
-            "\\Snicco\\Bridge\\Blade\\BladeView"
+            "\\Illuminate\\View\\Component"
         ]
     },
     {
@@ -484,12 +480,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\View\\View",
+        "name": "\\Snicco\\Bridge\\Blade\\BladeView",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Illuminate\\Contracts\\View\\View",
+        "name": "\\Snicco\\Component\\Templating\\View\\View",
         "size": 3000,
         "relations": []
     },
@@ -500,6 +496,11 @@
     },
     {
         "name": "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
