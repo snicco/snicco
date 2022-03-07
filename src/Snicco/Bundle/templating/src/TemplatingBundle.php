@@ -8,6 +8,7 @@ namespace Snicco\Bundle\Templating;
 use InvalidArgumentException;
 use RuntimeException;
 use Snicco\Bundle\Templating\Option\TemplatingOption;
+use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
@@ -165,6 +166,11 @@ final class TemplatingBundle implements Bundle
             $context->add('view', function () use ($kernel) {
                 return $kernel->container()->make(ViewEngine::class);
             });
+
+            if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
+                $context->add('url', fn() => $kernel->container()->make(UrlGenerator::class));
+            }
+
             return $context;
         });
     }
