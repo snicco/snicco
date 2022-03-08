@@ -49,6 +49,7 @@
         "psr/log": "^1.1.1",
         "psr/simple-cache": "^1.0.0",
         "symfony/browser-kit": "^5.4",
+        "symfony/dom-crawler": "^5.4.6",
         "webimpress/safe-writer": "^2.2",
         "webmozart/assert": "^1.10"
     },
