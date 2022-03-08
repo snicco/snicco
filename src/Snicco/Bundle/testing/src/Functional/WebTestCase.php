@@ -188,7 +188,13 @@ abstract class WebTestCase extends WPTestCase
         return $this->kernel;
     }
 
-    final  protected function swapInstance(string $id, object $instance): void
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $id
+     * @param T $instance
+     */
+    final protected function swapInstance(string $id, object $instance): void
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
         $kernel->afterRegister(function (Kernel $kernel) use ($id, $instance) {

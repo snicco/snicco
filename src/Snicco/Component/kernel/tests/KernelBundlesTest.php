@@ -10,6 +10,9 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Exception\MissingConfigKey;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\Tests\fixtures\bundles\Bundle1;
+use Snicco\Component\Kernel\Tests\fixtures\bundles\Bundle2;
+use Snicco\Component\Kernel\Tests\fixtures\bundles\BundleAssertsMethodOrder;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
 use Snicco\Component\Kernel\Tests\helpers\FixedConfigCache;
@@ -150,12 +153,12 @@ final class KernelBundlesTest extends TestCase
         $app->boot();
 
         $this->assertTrue($app->config()->get('bundle1.configured'));
-        $this->assertTrue($app->container()['bundle1.registered']);
-        $this->assertTrue($app->container()['bundle1.booted']->val);
+        $this->assertTrue($app->container()[Bundle1::class]->registered);
+        $this->assertTrue($app->container()[Bundle1::class]->booted);
 
         $this->assertTrue($app->config()->get('bundle2.configured'));
-        $this->assertTrue($app->container()['bundle2.registered']);
-        $this->assertTrue($app->container()['bundle2.booted']->val);
+        $this->assertTrue($app->container()[Bundle2::class]->registered);
+        $this->assertTrue($app->container()[Bundle2::class]->booted);
     }
 
     /**
@@ -172,8 +175,8 @@ final class KernelBundlesTest extends TestCase
         $app->boot();
 
         $this->assertTrue($app->config()->get('bundle_that_asserts_order.configured'));
-        $this->assertTrue($app->container()['bundle_that_asserts_order.registered']);
-        $this->assertTrue($app->container()['bundle_that_asserts_order.bootstrapped']->val);
+        $this->assertTrue($app->container()[BundleAssertsMethodOrder::class]->registered);
+        $this->assertTrue($app->container()[BundleAssertsMethodOrder::class]->booted);
     }
 
     /**
@@ -197,7 +200,7 @@ final class KernelBundlesTest extends TestCase
         $app1->boot();
 
         $this->assertFalse(
-            isset($app1->container()['custom_env_bundle_run']),
+            isset($app1->container()[BundleWithCustomEnv::class]),
             'bundle was booted when it should not be.'
         );
 
@@ -220,8 +223,12 @@ final class KernelBundlesTest extends TestCase
         $app2->boot();
 
         $this->assertTrue(
-            $app2->container()['custom_env_bundle_run']->val,
+            $app2->container()[BundleWithCustomEnv::class]->booted,
             'bundle was not booted when it should be.'
+        );
+        $this->assertTrue(
+            $app2->container()[BundleWithCustomEnv::class]->registered,
+            'bundle was not registered when it should be.'
         );
     }
 
@@ -284,9 +291,9 @@ final class KernelBundlesTest extends TestCase
         }
 
         // register was called
-        $this->assertTrue($app->container()['bundle_that_configures.registered']);
+        $this->assertTrue($app->container()[BundleThatConfigures::class]->registered);
         // boot was called
-        $this->assertTrue($app->container()['bundle_that_configures.booted']->val);
+        $this->assertTrue($app->container()[BundleThatConfigures::class]->booted);
         // plugin is used
         $this->assertTrue($app->usesBundle('bundle_that_configures'));
     }
@@ -295,6 +302,9 @@ final class KernelBundlesTest extends TestCase
 
 class BundleThatConfigures implements Bundle
 {
+    public bool $registered = false;
+    public bool $booted = false;
+
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
@@ -303,10 +313,10 @@ class BundleThatConfigures implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()[$this->alias() . '.registered'] = true;
-        $std = new stdClass();
-        $std->val = false;
-        $kernel->container()[$this->alias() . '.booted'] = $std;
+        $instance = new self();
+        $instance->registered = true;
+
+        $kernel->container()[self::class] = $instance;
     }
 
     public function alias(): string
@@ -316,7 +326,7 @@ class BundleThatConfigures implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()[$this->alias() . '.booted']->val = true;
+        $kernel->container()[self::class]->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
@@ -329,6 +339,9 @@ class BundleThatConfigures implements Bundle
 class BundleWithCustomEnv implements Bundle
 {
 
+    public bool $registered = false;
+    public bool $booted = false;
+
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         //
@@ -336,14 +349,14 @@ class BundleWithCustomEnv implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $std = new stdClass();
-        $std->val = false;
-        $kernel->container()['custom_env_bundle_run'] = $std;
+        $instance = new self();
+        $instance->registered = true;
+        $kernel->container()[self::class] = $instance;
     }
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()['custom_env_bundle_run']->val = true;
+        $kernel->container()[self::class]->booted = true;
     }
 
     public function alias(): string

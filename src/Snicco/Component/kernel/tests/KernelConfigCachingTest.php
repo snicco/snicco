@@ -14,6 +14,7 @@ use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
+use stdClass;
 
 use function file_put_contents;
 use function is_file;
@@ -150,7 +151,7 @@ final class KernelConfigCachingTest extends TestCase
                 $config->set('foo_config', 'bar');
             });
             $kernel->afterRegister(function (Kernel $kernel) {
-                $kernel->container()->primitive('foo_container', 'bar');
+                $kernel->container()->instance(stdClass::class, new stdClass());
             });
             return $kernel;
         };
@@ -168,7 +169,7 @@ final class KernelConfigCachingTest extends TestCase
 
         $cached_kernel->boot();
 
-        $this->assertSame('bar', $cached_kernel->container()->get('foo_container'));
+        $this->assertEquals(new stdClass(), $cached_kernel->container()->get(stdClass::class));
         $this->assertSame('bar', $cached_kernel->config()->get('foo_config'));
     }
 

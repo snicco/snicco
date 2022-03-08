@@ -40,21 +40,21 @@ final class BetterWPCacheBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->singleton(CacheItemPoolInterface::class, function () use ($kernel) {
+        $kernel->container()->shared(CacheItemPoolInterface::class, function () use ($kernel) {
             /**
              * @var non-empty-string $group
              */
             $group = $kernel->config()->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
             return CacheFactory::psr6($group);
         });
-        $kernel->container()->singleton(CacheInterface::class, function () use ($kernel) {
+        $kernel->container()->shared(CacheInterface::class, function () use ($kernel) {
             /**
              * @var non-empty-string $group
              */
             $group = $kernel->config()->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
             return CacheFactory::psr16($group);
         });
-        $kernel->container()->singleton(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
+        $kernel->container()->shared(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
             return CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class));
         });
     }

@@ -151,7 +151,7 @@ final class TemplatingBundleTest extends TestCase
 
         $std_class = new stdClass();
         $kernel->afterRegister(function (Kernel $kernel) use ($std_class) {
-            $kernel->container()->singleton(ViewComposerWithDependency::class, function () use ($std_class) {
+            $kernel->container()->shared(ViewComposerWithDependency::class, function () use ($std_class) {
                 return new ViewComposerWithDependency($std_class);
             });
         });

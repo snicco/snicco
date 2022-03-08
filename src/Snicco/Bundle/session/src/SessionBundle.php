@@ -104,7 +104,7 @@ final class SessionBundle implements Bundle
 
     protected function bindSessionDriver(Kernel $kernel): void
     {
-        $kernel->container()->singleton(SessionDriver::class, function () use ($kernel) {
+        $kernel->container()->shared(SessionDriver::class, function () use ($kernel) {
             if ($kernel->env()->isTesting()) {
                 return new InMemoryDriver();
             }
@@ -126,7 +126,7 @@ final class SessionBundle implements Bundle
 
     protected function bindSessionManager(Kernel $kernel): void
     {
-        $kernel->container()->singleton(SessionManager::class, function () use ($kernel) {
+        $kernel->container()->shared(SessionManager::class, function () use ($kernel) {
             return new FactorySessionManager(
                 $kernel->container()->make(SessionConfig::class),
                 $kernel->container()->make(SessionDriver::class),
@@ -201,7 +201,7 @@ final class SessionBundle implements Bundle
 
     private function bindWPDBSessionDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
-        $kernel->container()->singleton(WPDBSessionDriver::class, function () use ($kernel, $config) {
+        $kernel->container()->shared(WPDBSessionDriver::class, function () use ($kernel, $config) {
             /** @var non-empty-string $table */
             $table = $config->getString('session.' . SessionOption::PREFIX);
 
@@ -215,7 +215,7 @@ final class SessionBundle implements Bundle
 
     private function bindObjectCacheDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
-        $kernel->container()->singleton(WPObjectCacheDriver::class, function () use ($kernel, $config) {
+        $kernel->container()->shared(WPObjectCacheDriver::class, function () use ($kernel, $config) {
             /** @var non-empty-string $group */
             $group = $config->getString('session.' . SessionOption::PREFIX);
 
@@ -232,7 +232,7 @@ final class SessionBundle implements Bundle
 
     private function bindSessionConfig(Kernel $kernel): void
     {
-        $kernel->container()->singleton(SessionConfig::class, function () use ($kernel) {
+        $kernel->container()->shared(SessionConfig::class, function () use ($kernel) {
             $cookie_name = $kernel->config()->getString('session.' . SessionOption::COOKIE_NAME);
             $config = $kernel->config()->getArray('session.' . SessionOption::CONFIG);
             /** @psalm-suppress MixedArgumentTypeCoercion $config */
@@ -276,7 +276,7 @@ final class SessionBundle implements Bundle
 
     private function bindMiddleware(Kernel $kernel): void
     {
-        $kernel->container()->singleton(StatefulRequest::class, function () use ($kernel) {
+        $kernel->container()->shared(StatefulRequest::class, function () use ($kernel) {
             return new StatefulRequest(
                 $kernel->container()->make(SessionManager::class),
                 $kernel->container()->make(LoggerInterface::class),

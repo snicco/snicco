@@ -39,7 +39,7 @@ final class BladeBundle implements Bundle
         }
 
         $container = $kernel->container();
-        $container->singleton(BladeViewFactory::class, function () use ($kernel) {
+        $container->shared(BladeViewFactory::class, function () use ($kernel) {
             $composers = $kernel->container()->make(ViewComposerCollection::class);
 
             $dir = $kernel->directories()->cacheDir() . '/blade';

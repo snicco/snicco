@@ -9,10 +9,13 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use stdClass;
 
 class Bundle2 implements Bundle
 {
+
+    public bool $registered = false;
+    public bool $booted = false;
+
 
     private ?string $alias;
 
@@ -37,22 +40,23 @@ class Bundle2 implements Bundle
     public function register(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!isset($container['bundle1.registered'])) {
+        if (!isset($container[Bundle1::class])) {
             throw new RuntimeException('bundle1 should have been registered first');
         }
-        $container['bundle2.registered'] = true;
-        $std = new stdClass();
-        $std->val = false;
-        $container['bundle2.booted'] = $std;
+
+        $instance = new self();
+        $instance->registered = true;
+
+        $container[self::class] = $instance;
     }
 
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!isset($container['bundle1.booted'])) {
+        if ($container[Bundle1::class]->booted === false) {
             throw new RuntimeException('bundle1 should have been booted first');
         }
-        $container['bundle2.booted']->val = true;
+        $container[self::class]->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
