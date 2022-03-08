@@ -9,7 +9,6 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
@@ -28,13 +27,13 @@ use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
+use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\BrowserKit\CookieJar;
-use Throwable;
 use Webmozart\Assert\Assert;
 use WP_UnitTest_Factory_For_User;
 
@@ -162,13 +161,7 @@ abstract class WebTestCase extends WPTestCase
         $kernel->afterRegister(function (Kernel $kernel) {
             $kernel->container()->instance(
                 HttpErrorHandler::class,
-                new class implements HttpErrorHandler {
-
-                    public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
-                    {
-                        throw $e;
-                    }
-                }
+                new TestErrorHandler()
             );
         });
     }
