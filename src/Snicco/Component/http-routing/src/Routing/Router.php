@@ -9,13 +9,13 @@ use FastRoute\BadRouteException;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
-use Psr\Container\ContainerInterface;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\CachedAdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
 use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\Cache\RouteCache;
+use Snicco\Component\HttpRouting\Routing\Condition\NewableRouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteConditionFactory;
 use Snicco\Component\HttpRouting\Routing\Exception\BadRouteConfiguration;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
@@ -41,12 +41,12 @@ use function serialize;
 final class Router
 {
 
-    private ContainerInterface $psr_container;
     private UrlGenerationContext $context;
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
     private RouteCache $route_cache;
     private RouteLoader $route_loader;
+    private RouteConditionFactory $condition_factory;
 
     private ?Configurator $routing_configurator = null;
     private ?UrlMatcher $url_matcher = null;
@@ -60,19 +60,19 @@ final class Router
     private ?array $route_data = null;
 
     public function __construct(
-        ContainerInterface $psr_container,
         UrlGenerationContext $context,
         RouteLoader $loader,
         ?RouteCache $cache = null,
         ?AdminArea $admin_area = null,
-        ?UrlEncoder $url_encoder = null
+        ?UrlEncoder $url_encoder = null,
+        RouteConditionFactory $condition_factory = null
     ) {
-        $this->psr_container = $psr_container;
         $this->context = $context;
         $this->route_loader = $loader;
         $this->admin_area = $admin_area ?: WPAdminArea::fromDefaults();
         $this->url_encoder = $url_encoder ?: new RFC3986Encoder();
         $this->route_cache = $cache ?: new NullCache();
+        $this->condition_factory = $condition_factory ?: new NewableRouteConditionFactory();
     }
 
     public function urlMatcher(): UrlMatcher
@@ -82,7 +82,7 @@ final class Router
                 new FastRouteDispatcher(
                     $this->routes(),
                     $this->routeData()['url_matcher'],
-                    new RouteConditionFactory($this->psr_container)
+                    $this->condition_factory,
                 ), $this->admin_area
             );
         }

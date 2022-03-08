@@ -263,7 +263,6 @@ abstract class HttpRunnerTestCase extends TestCase
         UrlGenerationContext $context = null
     ): Router {
         $routing = new Router(
-            $this->psr_container,
             $context ?: new UrlGenerationContext($this->app_domain),
             $loader ?: $this->nullLoader(),
             $cache ?: new NullCache(),
