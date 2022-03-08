@@ -33,8 +33,8 @@ final class NegotiateContentTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertSeeText('text/html');
-        $response->psr()->assertHeader('content-type', 'text/html; charset=UTF-8');
+        $response->assertableResponse()->assertSeeText('text/html');
+        $response->assertableResponse()->assertHeader('content-type', 'text/html; charset=UTF-8');
 
         $request = $this->frontendRequest()->withHeader(
             'accept',
@@ -44,9 +44,9 @@ final class NegotiateContentTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertSeeText('application/json');
-        $response->psr()->assertHeader('content-type', 'application/json; charset=UTF-8');
-        $response->psr()->assertHeader('content-language', 'en');
+        $response->assertableResponse()->assertSeeText('application/json');
+        $response->assertableResponse()->assertHeader('content-type', 'application/json; charset=UTF-8');
+        $response->assertableResponse()->assertHeader('content-language', 'en');
     }
 
     /**

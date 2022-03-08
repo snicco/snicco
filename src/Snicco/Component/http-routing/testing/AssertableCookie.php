@@ -28,7 +28,6 @@ final class AssertableCookie
 
     public string $same_site = '';
 
-    // @todo this needs a test
     public function __construct(string $set_cookie_header)
     {
         $parts = explode('; ', $set_cookie_header);
