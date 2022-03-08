@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing\Tests;
+namespace Snicco\Bundle\Testing\Tests\Bundle;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Bundle\Testing\BundleTest;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTest;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 
 use function is_file;
 use function touch;

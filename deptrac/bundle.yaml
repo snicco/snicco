@@ -130,6 +130,14 @@ parameters:
       - kernel
       - psr7_error_handler
       - pimple
+      - session
+      - session_bundle
+      - http_routing
+      - http_routing_bundle
+      - event_dispatcher
+      - better_wp_mail
+      - better_wpdb_bundle #dev
+      - str_arr #dev
 
     templating_bundle:
       - psr7_error_handler

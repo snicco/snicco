@@ -11,17 +11,17 @@ use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
+use Snicco\Component\Psr7ErrorHandler\ProductionErrorHandler;
 
 trait CreateHttpErrorHandler
 {
 
-    public function createHttpErrorHandler(ResponseFactoryInterface $response_factory): HttpErrorHandlerInterface
+    public function createHttpErrorHandler(ResponseFactoryInterface $response_factory): HttpErrorHandler
     {
-        return new HttpErrorHandler(
+        return new ProductionErrorHandler(
             $response_factory,
             new RequestAwareLogger(new NullLogger()),
             InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier()),

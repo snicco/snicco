@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Encryption\DefuseEncryptor;
 use Snicco\Bundle\Encryption\EncryptionBundle;
 use Snicco\Bundle\Encryption\Option\EncryptionOption;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;

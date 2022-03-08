@@ -10,7 +10,7 @@ use RuntimeException;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\BetterWPMail\BetterWPMailBundle;
 use Snicco\Bundle\BetterWPMail\Option\MailOption;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Mailer;

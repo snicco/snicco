@@ -10,26 +10,26 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
 use function sprintf;
 
-final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
+final class LazyHttpErrorHandler implements HttpErrorHandler
 {
 
     private ContainerInterface $psr_container;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
-    private HttpErrorHandlerInterface $error_handler;
+    private HttpErrorHandler $error_handler;
 
     public function __construct(ContainerInterface $c)
     {
-        if (!$c->has(HttpErrorHandlerInterface::class)) {
+        if (!$c->has(HttpErrorHandler::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The psr container needs a service for id [%s].',
-                    HttpErrorHandlerInterface::class
+                    HttpErrorHandler::class
                 )
             );
         }
@@ -43,8 +43,8 @@ final class LazyHttpErrorHandler implements HttpErrorHandlerInterface
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->error_handler)) {
-            /** @var HttpErrorHandlerInterface error_handler */
-            $this->error_handler = $this->psr_container->get(HttpErrorHandlerInterface::class);
+            /** @var HttpErrorHandler error_handler */
+            $this->error_handler = $this->psr_container->get(HttpErrorHandler::class);
         }
         return $this->error_handler->handle($e, $request);
     }
