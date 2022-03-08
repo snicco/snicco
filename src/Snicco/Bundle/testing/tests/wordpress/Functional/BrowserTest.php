@@ -226,6 +226,20 @@ final class BrowserTest extends WPTestCase
     }
 
     /**
+     * @test
+     */
+    public function test_assertable_dom(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->request('GET', '/foo');
+
+        $last_dom = $browser->lastDOM();
+
+        $last_dom->assertSelectorTextSame('h1', WebTestCaseController::class);
+    }
+
+    /**
      * @param array<string,mixed> $server
      */
     private function getBrowser(array $server = [], CookieJar $cookies = null): Browser

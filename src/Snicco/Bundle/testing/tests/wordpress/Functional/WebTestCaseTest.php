@@ -369,6 +369,47 @@ final class WebTestCaseTest extends WebTestCase
         $this->withDataInSession([]);
     }
 
+    /**
+     * @test
+     */
+    public function test_assertableDOM_is_available_after_request(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->request('GET', '/foo');
+
+        $last_dom = $browser->lastDOM();
+
+        $last_dom->assertSelectorTextSame('h1', WebTestCaseController::class);
+        $last_dom->assertSelectorExists('h1');
+        $last_dom->assertSelectorNotExists('h2');
+        $last_dom->assertSelectorTextNotContains('h1', 'foo');
+    }
+
+    /**
+     * @test
+     */
+    public function test_assertableDOM_throws_exception_if_response_was_delegated(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->request('GET', '/bogus');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The response was delegated to WordPress so that no DOM is available.');
+        $browser->lastDOM();
+    }
+
+    /**
+     * @test
+     */
+    public function test_assertableDOM_throws_exception_before_request(): void
+    {
+        $browser = $this->getBrowser();
+        $this->expectException(LogicException::class);
+        $browser->lastDOM();
+    }
+
 }
 
 class DummyTestExtension implements TestExtension
