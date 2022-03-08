@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\Testing\Functional\Concerns;
 
 use PHPUnit\Framework\Assert as PHPUnit;
+use Webmozart\Assert\Assert;
 use WP_UnitTest_Factory_For_User;
 use WP_User;
 
@@ -43,11 +44,13 @@ trait CreateWordPressUsers
 
     final protected function createUserWithRole(string $user_role, array $args = []): WP_User
     {
-        return $this->userFactory()->create_and_get(
+        $user = $this->userFactory()->create_and_get(
             array_merge([
                 'role' => $user_role,
             ], $args)
         );
+        Assert::isInstanceOf($user, WP_User::class);
+        return $user;
     }
 
     /**
