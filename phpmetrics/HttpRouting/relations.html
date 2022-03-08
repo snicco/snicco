@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-08 18:56:35        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-08 19:10:18        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -900,14 +900,14 @@
         "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Router",
         "size": 3000,
         "relations": [
-            "\\Psr\\Container\\ContainerInterface",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerationContext",
             "\\Snicco\\Component\\HttpRouting\\Routing\\RouteLoader\\RouteLoader",
+            "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory",
             "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\WPAdminArea",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\RFC3986Encoder",
             "\\Snicco\\Component\\HttpRouting\\Routing\\Cache\\NullCache",
+            "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\NewableRouteConditionFactory",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\UrlMatcher",
-            "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\FastRouteDispatcher",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\AdminRouteMatcher",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
@@ -926,6 +926,11 @@
         ]
     },
     {
+        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Cache\\NullCache",
         "size": 3000,
         "relations": [
@@ -933,14 +938,13 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory",
+        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\NewableRouteConditionFactory",
         "size": 3000,
         "relations": [
-            "\\Psr\\Container\\ContainerInterface",
+            "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory",
             "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteCondition",
             "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\ConditionBlueprint",
-            "\\LogicException",
-            "\\ReflectionClass",
+            "\\class",
             "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\NegatedRouteCondition"
         ]
     },
@@ -1159,6 +1163,11 @@
             "\\Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteCondition",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ]
+    },
+    {
+        "name": "\\class",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Http\\Cookie",
