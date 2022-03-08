@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-final class TestErrorHandler implements HttpErrorHandlerInterface
+final class TestErrorHandler implements HttpErrorHandler
 {
 
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface

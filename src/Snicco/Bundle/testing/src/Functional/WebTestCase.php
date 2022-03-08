@@ -27,7 +27,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Session\SessionManager\SessionManager;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
@@ -161,8 +161,8 @@ abstract class WebTestCase extends WPTestCase
         $kernel = $this->getNonBootedKernel(__METHOD__);
         $kernel->afterRegister(function (Kernel $kernel) {
             $kernel->container()->instance(
-                HttpErrorHandlerInterface::class,
-                new class implements HttpErrorHandlerInterface {
+                HttpErrorHandler::class,
+                new class implements HttpErrorHandler {
 
                     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
                     {

@@ -58,13 +58,13 @@ use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\DisplayerFilter;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
+use Snicco\Component\Psr7ErrorHandler\ProductionErrorHandler;
 use Throwable;
 
 use function array_map;
@@ -202,7 +202,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
     {
-        $container->singleton(HttpErrorHandlerInterface::class, function () use ($container, $kernel) {
+        $container->singleton(HttpErrorHandler::class, function () use ($container, $kernel) {
             $error_logger = $container[TestLogger::class] ?? $container->make(LoggerInterface::class);
 
             $information_provider = $this->informationProvider($kernel);
@@ -239,7 +239,7 @@ final class HttpRoutingBundle implements Bundle
                 return $container[$class] ?? new $class;
             }, $kernel->config()->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)));
 
-            return new HttpErrorHandler(
+            return new ProductionErrorHandler(
                 $container->make(ResponseFactoryInterface::class),
                 $logger,
                 $information_provider,

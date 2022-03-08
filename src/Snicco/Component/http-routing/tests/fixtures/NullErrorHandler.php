@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
 /**
@@ -14,7 +14,7 @@ use Throwable;
  *
  * @psalm-internal Snicco\Component\HttpRouting
  */
-final class NullErrorHandler implements HttpErrorHandlerInterface
+final class NullErrorHandler implements HttpErrorHandler
 {
 
     /**

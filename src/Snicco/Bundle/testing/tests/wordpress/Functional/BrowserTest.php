@@ -17,7 +17,7 @@ use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\BrowserKit\CookieJar;
@@ -232,7 +232,7 @@ final class BrowserTest extends WPTestCase
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(HttpErrorHandlerInterface::class, new TestErrorHandler());
+            $kernel->container()->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
         $kernel->boot();
         return new Browser(
