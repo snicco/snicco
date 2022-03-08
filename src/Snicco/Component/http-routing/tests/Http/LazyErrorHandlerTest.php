@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
 final class LazyErrorHandlerTest extends TestCase
@@ -36,14 +36,14 @@ final class LazyErrorHandlerTest extends TestCase
      */
     public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to(): void
     {
-        $this->pimple[HttpErrorHandlerInterface::class] = fn(): TestableErrorHandler => new TestableErrorHandler(
+        $this->pimple[HttpErrorHandler::class] = fn(): TestableErrorHandler => new TestableErrorHandler(
             function () {
                 throw new Exception('Should never be called');
             }
         );
         $lazy_handler = new LazyHttpErrorHandler($this->psr_container);
 
-        $this->assertInstanceOf(HttpErrorHandlerInterface::class, $lazy_handler);
+        $this->assertInstanceOf(HttpErrorHandler::class, $lazy_handler);
     }
 
     /**
@@ -54,7 +54,7 @@ final class LazyErrorHandlerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The psr container needs a service for id [' . HttpErrorHandlerInterface::class . '].'
+            'The psr container needs a service for id [' . HttpErrorHandler::class . '].'
         );
 
         new LazyHttpErrorHandler($this->psr_container);
@@ -75,7 +75,7 @@ final class LazyErrorHandlerTest extends TestCase
             return $response;
         });
 
-        $this->pimple[HttpErrorHandlerInterface::class] = function () use (
+        $this->pimple[HttpErrorHandler::class] = function () use (
             &$count,
             $real_handler
         ): TestableErrorHandler {
@@ -96,7 +96,7 @@ final class LazyErrorHandlerTest extends TestCase
 
 }
 
-class TestableErrorHandler implements HttpErrorHandlerInterface
+class TestableErrorHandler implements HttpErrorHandler
 {
 
     /**

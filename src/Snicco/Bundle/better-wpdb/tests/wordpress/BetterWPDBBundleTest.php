@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\BetterWPDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\QueryInfo;
 use Snicco\Component\BetterWPDB\QueryLogger;

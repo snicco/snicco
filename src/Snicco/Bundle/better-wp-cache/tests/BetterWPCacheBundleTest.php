@@ -11,7 +11,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
 use Snicco\Bundle\BetterWPCache\BetterWPCacheBundle;
 use Snicco\Bundle\BetterWPCache\Option\BetterWPCacheOption;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 

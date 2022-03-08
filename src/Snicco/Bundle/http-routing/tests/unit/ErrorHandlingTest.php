@@ -17,7 +17,7 @@ use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\Kernel\Configuration\WritableConfig;

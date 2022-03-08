@@ -7,7 +7,7 @@ namespace Snicco\Bundle\BetterWPHooks\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;

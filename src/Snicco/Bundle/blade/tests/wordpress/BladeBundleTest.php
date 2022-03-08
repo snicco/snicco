@@ -9,7 +9,7 @@ use Codeception\TestCase\WPTestCase;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeViewFactory;
 use Snicco\Bundle\Blade\BladeBundle;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;

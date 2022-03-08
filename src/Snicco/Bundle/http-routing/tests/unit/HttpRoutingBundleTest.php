@@ -17,7 +17,7 @@ use Snicco\Bundle\HttpRouting\Middleware\ErrorsToExceptions;
 use Snicco\Bundle\HttpRouting\Middleware\SetUserId;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
