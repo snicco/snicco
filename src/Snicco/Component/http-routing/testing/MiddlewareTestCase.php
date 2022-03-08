@@ -94,7 +94,7 @@ abstract class MiddlewareTestCase extends TestCase
         $this->next_middleware_response = $closure;
     }
 
-    final protected function runMiddleware(MiddlewareInterface $middleware, Request $request): MiddlewareTestResponse
+    final protected function runMiddleware(MiddlewareInterface $middleware, Request $request): MiddlewareTestResult
     {
         $this->next_called = false;
         $this->received_request_by_next_middleware = null;
@@ -124,7 +124,7 @@ abstract class MiddlewareTestCase extends TestCase
         /** @var Response $response */
         $response = $middleware->process($request, $this->next());
 
-        return new MiddlewareTestResponse(
+        return new MiddlewareTestResult(
             $response,
             $this->next_called
         );

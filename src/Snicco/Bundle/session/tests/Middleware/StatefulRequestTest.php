@@ -191,7 +191,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $response = $this->runMiddleware($m, $this->frontendRequest('/foo', [], 'POST'));
         $response->assertNextMiddlewareCalled();
 
-        $response = $response->psr()->getPsrResponse();
+        $response = $response->assertableResponse()->getPsrResponse();
         $cookies = $response->cookies();
 
         $headers = $cookies->toHeaders();
@@ -218,7 +218,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->getMiddleware(), $request_with_cookie);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertHeader('X-FOO', 'bar');
+        $response->assertableResponse()->assertHeader('X-FOO', 'bar');
     }
 
     /**
@@ -232,7 +232,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->getMiddleware(), $this->frontendRequest());
 
-        $response = $response->psr()->getPsrResponse();
+        $response = $response->assertableResponse()->getPsrResponse();
         $cookies = $response->cookies();
 
         $headers = $cookies->toHeaders();

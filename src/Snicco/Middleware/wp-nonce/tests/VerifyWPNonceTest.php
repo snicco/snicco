@@ -30,7 +30,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -66,7 +66,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
 
-        $psr = $response->psr()->getPsrResponse();
+        $psr = $response->assertableResponse()->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -89,7 +89,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runMiddleware($middleware, $request);
-        $psr = $response->psr()->getPsrResponse();
+        $psr = $response->assertableResponse()->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -114,7 +114,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
             ])
         );
 
-        $response->assertNextMiddlewareCalled()->psr()->assertOk();
+        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
     }
 
     /**
@@ -135,7 +135,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runMiddleware($middleware, $request);
-        $psr = $response->psr()->getPsrResponse();
+        $psr = $response->assertableResponse()->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -160,7 +160,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
             ])
         );
 
-        $response->assertNextMiddlewareCalled()->psr()->assertOk();
+        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
     }
 
     /**
@@ -177,7 +177,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runMiddleware($middleware, $request);
-        $psr = $response->psr()->getPsrResponse();
+        $psr = $response->assertableResponse()->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -202,7 +202,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
             ])
         );
 
-        $response->assertNextMiddlewareCalled()->psr()->assertOk();
+        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
     }
 
     /**
@@ -217,7 +217,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         });
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
-        $response->assertNextMiddlewareCalled()->psr()->assertOk();
+        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
     }
 
 }
