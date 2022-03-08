@@ -10,12 +10,20 @@
     "php": "^7.4|^8.0",
     "sniccowp/kernel": "dev-master",
     "sniccowp/psr7-error-handler": "dev-master",
+    "sniccowp/session": "dev-master",
+    "sniccowp/session-bundle": "dev-master",
+    "sniccowp/http-routing": "dev-master",
+    "sniccowp/event-dispatcher": "dev-master",
+    "sniccowp/better-wp-mail": "dev-master",
+    "sniccowp/http-routing-bundle": "dev-master",
     "sniccowp/pimple-bridge": "dev-master",
     "symfony/browser-kit": "^5.4.3",
     "symfony/dom-crawler": "^5.4.6",
     "webmozart/assert": "^1.10.0"
   },
   "require-dev": {
+    "sniccowp/better-wpdb-bundle": "dev-master",
+    "sniccowp/str-arr": "dev-master",
     "phpunit/phpunit": "9.5.13",
     "nyholm/psr7": "^1.0.0"
   },
