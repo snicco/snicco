@@ -12,7 +12,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Reflector;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
 use function array_map;
@@ -23,7 +23,7 @@ use function strtolower;
 final class MiddlewarePipeline
 {
 
-    private HttpErrorHandlerInterface $error_handler;
+    private HttpErrorHandler $error_handler;
     private MiddlewareFactory $middleware_factory;
     private ContainerInterface $container;
 
@@ -41,7 +41,7 @@ final class MiddlewarePipeline
      */
     private Closure $request_handler;
 
-    public function __construct(ContainerInterface $container, HttpErrorHandlerInterface $error_handler)
+    public function __construct(ContainerInterface $container, HttpErrorHandler $error_handler)
     {
         $this->container = $container;
         $this->middleware_factory = new MiddlewareFactory($this->container);

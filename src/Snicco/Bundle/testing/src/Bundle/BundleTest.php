@@ -15,7 +15,7 @@ use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use SplFileInfo;
 use Throwable;
 
@@ -56,8 +56,8 @@ final class BundleTest
     {
         $kernel->afterRegister(function (Kernel $kernel) {
             $kernel->container()->instance(
-                HttpErrorHandlerInterface::class,
-                new class implements HttpErrorHandlerInterface {
+                HttpErrorHandler::class,
+                new class implements HttpErrorHandler {
 
                     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
                     {

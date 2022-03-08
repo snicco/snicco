@@ -18,7 +18,6 @@ use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\CanDisplay;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Delegating;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\Verbosity;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
@@ -26,6 +25,7 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
+use Snicco\Component\Psr7ErrorHandler\ProductionErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\JsonExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer2;
@@ -44,10 +44,10 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @psalm-suppress PossiblyUndefinedIntArrayOffset
  */
-final class HttpErrorHandlerTest extends TestCase
+final class ProductionErrorHandlerTest extends TestCase
 {
 
-    private HttpErrorHandler $error_handler;
+    private ProductionErrorHandler $error_handler;
     private ServerRequestInterface $base_request;
     private ResponseFactoryInterface $response_factory;
 
@@ -352,7 +352,7 @@ final class HttpErrorHandlerTest extends TestCase
             new RequestLogContextWithException()
         );
 
-        $handler = new HttpErrorHandler(
+        $handler = new ProductionErrorHandler(
             $this->response_factory,
             $logger,
             new InformationProviderWithTransformation($this->error_data, $this->identifier),
@@ -381,7 +381,7 @@ final class HttpErrorHandlerTest extends TestCase
             $test_logger = new TestLogger(),
         );
 
-        $handler = new HttpErrorHandler(
+        $handler = new ProductionErrorHandler(
             $this->response_factory,
             $logger,
             new InformationProviderWithTransformation($this->error_data, $this->identifier),
@@ -413,7 +413,7 @@ final class HttpErrorHandlerTest extends TestCase
         array $displayers = [],
         array $transformers = [],
         LoggerInterface $logger = null
-    ): HttpErrorHandler {
+    ): ProductionErrorHandler {
         $filters = new Delegating(
             new Verbosity(false),
             new ContentType(),
@@ -428,7 +428,7 @@ final class HttpErrorHandlerTest extends TestCase
             ...$transformers
         );
 
-        return new HttpErrorHandler(
+        return new ProductionErrorHandler(
             $this->response_factory,
             $logger,
             $information_provider,

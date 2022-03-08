@@ -17,7 +17,7 @@ use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
 final class HttpKernelTest extends TestCase
@@ -29,7 +29,7 @@ final class HttpKernelTest extends TestCase
     public function test_exception_if_no_response_is_returned_in_middleware_pipeline(): void
     {
         $pipeline = new MiddlewarePipeline(
-            new PimpleContainerAdapter(), new class implements HttpErrorHandlerInterface {
+            new PimpleContainerAdapter(), new class implements HttpErrorHandler {
 
                 public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
                 {

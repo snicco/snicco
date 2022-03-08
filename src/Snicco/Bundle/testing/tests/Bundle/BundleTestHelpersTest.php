@@ -14,7 +14,7 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
 final class BundleTestHelpersTest extends TestCase
 {
@@ -243,9 +243,9 @@ final class BundleTestHelpersTest extends TestCase
         $kernel->boot();
 
         /**
-         * @var HttpErrorHandlerInterface $handler
+         * @var HttpErrorHandler $handler
          */
-        $handler = $kernel->container()->get(HttpErrorHandlerInterface::class);
+        $handler = $kernel->container()->get(HttpErrorHandler::class);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('foo');

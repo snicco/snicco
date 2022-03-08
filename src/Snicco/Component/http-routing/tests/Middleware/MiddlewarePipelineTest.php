@@ -25,7 +25,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
-use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
 class MiddlewarePipelineTest extends TestCase
 {
@@ -47,7 +47,7 @@ class MiddlewarePipelineTest extends TestCase
         $this->pimple_psr = new \Pimple\Psr11\Container($this->pimple);
         $this->response_factory = $this->createResponseFactory();
 
-        $this->pimple[HttpErrorHandlerInterface::class] = function (): HttpErrorHandlerInterface {
+        $this->pimple[HttpErrorHandler::class] = function (): HttpErrorHandler {
             return $this->createHttpErrorHandler(
                 $this->response_factory
             );
