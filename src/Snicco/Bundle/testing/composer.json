@@ -1,41 +1,42 @@
 {
-    "name": "sniccowp/testing-bundle",
-    "authors": [
-        {
-            "name": "Calvin Alkan",
-            "email": "calvin@snicco.de"
-        }
-    ],
-    "require": {
-        "php": "^7.4|^8.0",
-        "sniccowp/kernel": "dev-master",
-        "sniccowp/psr7-error-handler": "dev-master",
-        "sniccowp/session": "dev-master",
-        "sniccowp/session-bundle": "dev-master",
-        "sniccowp/http-routing": "dev-master",
-        "sniccowp/event-dispatcher": "dev-master",
-        "sniccowp/better-wp-mail": "dev-master",
-        "sniccowp/http-routing-bundle": "dev-master",
-        "sniccowp/pimple-bridge": "dev-master",
-        "symfony/browser-kit": "^5.4",
-        "symfony/dom-crawler": "^5.4.6",
-        "webmozart/assert": "^1.10"
-    },
-    "require-dev": {
-        "sniccowp/better-wpdb-bundle": "dev-master",
-        "sniccowp/str-arr": "dev-master",
-        "phpunit/phpunit": "9.5.13",
-        "nyholm/psr7": "^1.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Snicco\\Bundle\\Testing\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Snicco\\Bundle\\Testing\\Tests\\": "tests"
-        }
-    },
-    "minimum-stability": "stable"
+  "name": "sniccowp/testing-bundle",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/kernel": "dev-master",
+    "sniccowp/psr7-error-handler": "dev-master",
+    "sniccowp/session": "dev-master",
+    "sniccowp/session-bundle": "dev-master",
+    "sniccowp/http-routing": "dev-master",
+    "sniccowp/event-dispatcher": "dev-master",
+    "sniccowp/better-wp-mail": "dev-master",
+    "sniccowp/http-routing-bundle": "dev-master",
+    "sniccowp/pimple-bridge": "dev-master",
+    "symfony/browser-kit": "^5.4",
+    "symfony/dom-crawler": "^5.4.6",
+    "symfony/css-selector": "^5.4",
+    "webmozart/assert": "^1.10"
+  },
+  "require-dev": {
+    "sniccowp/better-wpdb-bundle": "dev-master",
+    "sniccowp/str-arr": "dev-master",
+    "phpunit/phpunit": "9.5.13",
+    "nyholm/psr7": "^1.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Bundle\\Testing\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Snicco\\Bundle\\Testing\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "stable"
 }
