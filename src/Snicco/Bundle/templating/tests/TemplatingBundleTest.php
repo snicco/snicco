@@ -14,7 +14,7 @@ use Snicco\Bundle\Templating\TemplatingBundle;
 use Snicco\Bundle\Templating\TemplatingExceptionDisplayer;
 use Snicco\Bundle\Templating\TemplatingMiddleware;
 use Snicco\Bundle\Templating\Tests\fixtures\ViewComposerWithDependency;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;

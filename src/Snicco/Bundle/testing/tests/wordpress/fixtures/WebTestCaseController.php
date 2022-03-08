@@ -3,17 +3,28 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing\Tests\fixtures;
+namespace Snicco\Bundle\Testing\Tests\wordpress\fixtures;
 
 use Psr\Http\Message\UploadedFileInterface;
+use Snicco\Component\BetterWPMail\Mailer;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\HttpRouting\Controller\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\Session\ImmutableSession;
+use Snicco\Component\Session\MutableSession;
 
 use function strpos;
 
 final class WebTestCaseController extends Controller
 {
+    private Mailer $mailer;
+
+    public function __construct(Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
     public function __invoke(): Response
     {
         return $this->respondWith()->html('<h1>' . __CLASS__ . '</h1>');
@@ -78,6 +89,36 @@ final class WebTestCaseController extends Controller
     public function fullUrl(Request $request): Response
     {
         return $this->respondWith()->html($request->fullUrl());
+    }
+
+    public function sendMail(Request $request): Response
+    {
+        $email = new Email();
+        $email = $email
+            ->withTo((string)$request->post('to'))
+            ->withTextBody((string)$request->post('message'));
+
+        $this->mailer->send($email);
+
+        return $this->respondWith()->html('Mail sent!');
+    }
+
+    public function incrementCounter(Request $request): Response
+    {
+        /** @var MutableSession $session */
+        $session = $request->getAttribute(MutableSession::class);
+
+        $session->increment('counter');
+
+        /** @var ImmutableSession $immutable_session */
+        $immutable_session = $request->getAttribute(ImmutableSession::class);
+
+        $info = [
+            'id' => $immutable_session->id()->asString(),
+            'counter' => $immutable_session->get('counter')
+        ];
+
+        return $this->respondWith()->json($info);
     }
 
 }

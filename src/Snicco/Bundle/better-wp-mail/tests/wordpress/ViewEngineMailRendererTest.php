@@ -11,7 +11,7 @@ use Snicco\Bundle\BetterWPMail\Option\MailOption;
 use Snicco\Bundle\BetterWPMail\ViewEngineMailRenderer;
 use Snicco\Bundle\Templating\Option\TemplatingOption;
 use Snicco\Bundle\Templating\TemplatingBundle;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;

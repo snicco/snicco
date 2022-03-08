@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing;
+namespace Snicco\Bundle\Testing\Bundle;
 
 use FilesystemIterator;
 use Psr\Http\Message\ResponseInterface;

@@ -8,7 +8,7 @@ namespace Snicco\Bundle\Templating\Tests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Templating\PsrViewComposerFactory;
-use Snicco\Bundle\Testing\BundleTest;
+use Snicco\Bundle\Testing\Bundle\BundleTest;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;

@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing\Tests\wordpress;
+namespace Snicco\Bundle\Testing\Tests\wordpress\Functional\Concerns;
 
 use Closure;
 use PHPUnit\Framework\AssertionFailedError;
-use Snicco\Bundle\Testing\WebTestCase;
+use Snicco\Bundle\Testing\Functional\WebTestCase;
 use WP_User;
+
+use function dirname;
 
 final class CreateWordPressUsersTest extends WebTestCase
 {
@@ -102,10 +104,14 @@ final class CreateWordPressUsersTest extends WebTestCase
         }
     }
 
-
     protected function createKernel(): Closure
     {
-        return require dirname(__DIR__) . '/fixtures/test-kernel.php';
+        return require dirname(__DIR__, 2) . '/fixtures/test-kernel.php';
+    }
+
+    protected function extensions(): array
+    {
+        return [];
     }
 
 }

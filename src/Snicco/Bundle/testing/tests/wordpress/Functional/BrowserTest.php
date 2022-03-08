@@ -3,30 +3,33 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing\Tests;
+namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 
 use BadMethodCallException;
 use Closure;
-use PHPUnit\Framework\TestCase;
+use Codeception\TestCase\WPTestCase;
 use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
-use Snicco\Bundle\Testing\Browser;
-use Snicco\Bundle\Testing\Tests\fixtures\WebTestCaseController;
+use Snicco\Bundle\Testing\Functional\Browser;
+use Snicco\Bundle\Testing\Tests\wordpress\fixtures\WebTestCaseController;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
+use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
+use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\DomCrawler\Crawler;
 
+use function dirname;
 use function filesize;
 use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
 
-final class BrowserTest extends TestCase
+final class BrowserTest extends WPTestCase
 {
 
     /**
@@ -37,7 +40,7 @@ final class BrowserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->boot_kernel_closure = require __DIR__ . '/fixtures/test-kernel.php';
+        $this->boot_kernel_closure = require dirname(__DIR__) . '/fixtures/test-kernel.php';
     }
 
     /**
@@ -171,7 +174,7 @@ final class BrowserTest extends TestCase
         $browser = $this->getBrowser();
 
         $browser->request('POST', '/files-as-json', [], [
-            'php-image-custom-name' => __DIR__ . '/fixtures/web-test-case/php-image.png'
+            'php-image-custom-name' => dirname(__DIR__) . '/fixtures/php-image.png'
         ]);
 
         $response = $browser->getResponse();
@@ -181,7 +184,7 @@ final class BrowserTest extends TestCase
         $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             [
-                'size' => filesize(__DIR__ . '/fixtures/web-test-case/php-image.png'),
+                'size' => filesize(dirname(__DIR__) . '/fixtures/php-image.png'),
                 'name' => 'php-image-custom-name'
             ]
         ], $body);
@@ -222,9 +225,15 @@ final class BrowserTest extends TestCase
             ->assertNotDelegated();
     }
 
+    /**
+     * @param array<string,mixed> $server
+     */
     private function getBrowser(array $server = [], CookieJar $cookies = null): Browser
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()->instance(HttpErrorHandlerInterface::class, new TestErrorHandler());
+        });
         $kernel->boot();
         return new Browser(
             $kernel->container()->make(HttpKernel::class),
