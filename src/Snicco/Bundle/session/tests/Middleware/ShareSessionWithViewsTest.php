@@ -59,7 +59,7 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->request_with_session);
         $response->assertNextMiddlewareCalled();
 
-        $view_response = $response->psr()->getPsrResponse();
+        $view_response = $response->assertableResponse()->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $view_response);
 
         $this->assertEquals([

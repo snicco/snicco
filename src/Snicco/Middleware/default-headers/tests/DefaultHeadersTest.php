@@ -23,8 +23,8 @@ class DefaultHeadersTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
 
-        $response->psr()->assertHeader('foo', 'bar');
-        $response->psr()->assertHeader('baz', 'biz');
+        $response->assertableResponse()->assertHeader('foo', 'bar');
+        $response->assertableResponse()->assertHeader('baz', 'biz');
     }
 
     /**
@@ -42,7 +42,7 @@ class DefaultHeadersTest extends MiddlewareTestCase
         );
         $response->assertNextMiddlewareCalled();
 
-        $response->psr()->assertHeader('foo', 'bar');
+        $response->assertableResponse()->assertHeader('foo', 'bar');
     }
 
 }

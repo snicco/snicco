@@ -21,7 +21,7 @@ final class SessionNoCacheTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertHeader('cache-control', 'max-age=0, must-revalidate, private');
+        $response->assertableResponse()->assertHeader('cache-control', 'max-age=0, must-revalidate, private');
     }
 
 }

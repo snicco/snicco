@@ -21,7 +21,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -38,7 +38,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('/foo', 302);
+        $response->assertableResponse()->assertRedirect('/foo', 302);
     }
 
     /**
@@ -55,7 +55,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('https://foo.com/bar', 302);
+        $response->assertableResponse()->assertRedirect('https://foo.com/bar', 302);
     }
 
     /**
@@ -71,7 +71,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertLocation('/exit?intended_redirect=https://bar.com/foo');
+        $response->assertableResponse()->assertLocation('/exit?intended_redirect=https://bar.com/foo');
     }
 
     /**
@@ -87,7 +87,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertLocation('/exit?intended_redirect=//bar.com:80/path/info');
+        $response->assertableResponse()->assertLocation('/exit?intended_redirect=//bar.com:80/path/info');
     }
 
     /**
@@ -103,7 +103,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('https://stripe.com/foo');
+        $response->assertableResponse()->assertRedirect('https://stripe.com/foo');
     }
 
     /**
@@ -120,7 +120,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertLocation('/exit?intended_redirect=https://paypal.com/pay');
+        $response->assertableResponse()->assertLocation('/exit?intended_redirect=https://paypal.com/pay');
     }
 
     /**
@@ -138,7 +138,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['*.stripe.com']), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('https://payments.stripe.com/foo');
+        $response->assertableResponse()->assertRedirect('https://payments.stripe.com/foo');
 
         $this->withNextMiddlewareResponse(function () {
             return $this->responseFactory()->redirect(
@@ -150,7 +150,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['*.stripe.com']), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('https://accounts.stripe.com/foo');
+        $response->assertableResponse()->assertRedirect('https://accounts.stripe.com/foo');
     }
 
     /**
@@ -169,7 +169,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('https://accounts.foo.com/foo');
+        $response->assertableResponse()->assertRedirect('https://accounts.foo.com/foo');
     }
 
     /**
@@ -187,7 +187,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware(), $request);
 
-        $response->psr()->assertRedirect('https://external-site.com');
+        $response->assertableResponse()->assertRedirect('https://external-site.com');
     }
 
     /**
@@ -206,7 +206,7 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com'], '/exit_page/'), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertRedirect('/exit_page/?intended_redirect=https://paypal.com/pay');
+        $response->assertableResponse()->assertRedirect('/exit_page/?intended_redirect=https://paypal.com/pay');
     }
 
     /**

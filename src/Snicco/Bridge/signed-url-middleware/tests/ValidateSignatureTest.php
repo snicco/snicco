@@ -53,7 +53,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $response = $this->runMiddleware($m, $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -107,11 +107,11 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertStatus(200);
+        $response->assertableResponse()->assertStatus(200);
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertStatus(200);
+        $response->assertableResponse()->assertStatus(200);
 
         $this->expectException(SignedUrlUsageExceeded::class);
         $this->expectExceptionMessage('path [/foo]');
@@ -137,11 +137,11 @@ final class ValidateSignatureTest extends MiddlewareTestCase
         $new_request = $this->frontendRequest($link->asString())->withHeader('User-Agent', 'bar');
 
         // User agent header matches
-        $this->runMiddleware($m, $new_request->withHeader('User-Agent', 'foo'))->psr()->assertOk();
+        $this->runMiddleware($m, $new_request->withHeader('User-Agent', 'foo'))->assertableResponse()->assertOk();
 
         $this->expectException(InvalidSignature::class);
         // User agent header did not match
-        $this->runMiddleware($m, $new_request)->psr()->assertForbidden();
+        $this->runMiddleware($m, $new_request)->assertableResponse()->assertForbidden();
     }
 
     /**
@@ -161,13 +161,13 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $request = $this->frontendRequest($link->asString(), [], 'POST');
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $this->expectException(InvalidSignature::class);
 
@@ -179,7 +179,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -199,13 +199,13 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $request = $this->frontendRequest($link->asString(), [], 'PUT');
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $this->expectException(InvalidSignature::class);
 
@@ -217,7 +217,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -237,13 +237,13 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $request = $this->frontendRequest($link->asString(), [], 'PATCH');
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $this->expectException(InvalidSignature::class);
 
@@ -255,7 +255,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -275,13 +275,13 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $request = $this->frontendRequest($link->asString(), [], 'DELETE');
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
 
         $this->expectException(InvalidSignature::class);
 
@@ -293,7 +293,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($m, $request);
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
 }
