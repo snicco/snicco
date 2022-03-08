@@ -230,7 +230,7 @@ final class FastRouteDispatcher implements UrlMatcher
 
         $args = [];
         foreach ($route->getConditions() as $blueprint) {
-            $instance = $this->condition_factory->create($blueprint);
+            $instance = ($this->condition_factory)($blueprint);
 
             if (!$instance->isSatisfied($request)) {
                 return false;

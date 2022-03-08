@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
-use LogicException;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\FalseRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
-use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
-use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteConditionsTest extends HttpRunnerTestCase
@@ -84,93 +81,6 @@ class RouteConditionsTest extends HttpRunnerTestCase
         $this->runNewPipeline($request)->assertOk();
 
         $this->assertSame(2, $GLOBALS['test']['maybe_condition_run']);
-    }
-
-    /**
-     * @test
-     * @psalm-suppress MixedArgument
-     */
-    public function a_condition_can_be_negated(): void
-    {
-        $foo = new Foo();
-        $foo->value = 'FOO_CONFIG';
-        $this->pimple[Foo::class] = fn(): Foo => $foo;
-
-        $this->pimple[RouteConditionWithDependency::class] = $this->pimple->protect(function (bool $pass) {
-            return new RouteConditionWithDependency(
-                $this->pimple[Foo::class],
-                $pass
-            );
-        });
-
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'r1',
-                '/foo/{param}',
-                [RoutingTestController::class, 'twoParams']
-            )->condition(RouteConditionWithDependency::class, false);
-
-            $configurator->get(
-                'r2',
-                '/bar/{param}',
-                [RoutingTestController::class, 'twoParams']
-            )->condition('!', RouteConditionWithDependency::class, false);
-        });
-
-        $response = $this->runNewPipeline($this->frontendRequest('/foo/bar'));
-        $response->assertDelegated();
-
-        $response = $this->runNewPipeline($this->frontendRequest('/bar/baz'));
-        $response->assertOk()->assertSeeText('baz:FOO_CONFIG');
-    }
-
-    /**
-     * @test
-     */
-    public function route_conditions_can_be_resolved_as_a_closure_from_the_container(): void
-    {
-        $this->pimple[RouteConditionWithDependency::class] = $this->pimple->protect(function (bool $pass) {
-            $foo = new Foo();
-            $foo->value = 'FOO_CLOSURE';
-            return new RouteConditionWithDependency(
-                $foo,
-                $pass
-            );
-        });
-
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'r1',
-                '/foo/{param}',
-                [RoutingTestController::class, 'twoParams']
-            )->condition(RouteConditionWithDependency::class, true);
-        });
-
-        $response = $this->runNewPipeline($this->frontendRequest('/foo/baz'));
-        $response->assertOk()->assertSeeText('baz:FOO_CLOSURE');
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_condition_closure_does_not_return_condition(): void
-    {
-        $this->pimple[RouteConditionWithDependency::class] = $this->pimple->protect(function (): Foo {
-            return new Foo();
-        });
-
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'r1',
-                '/foo/{param}',
-                [RoutingTestController::class, 'twoParams']
-            )->condition(RouteConditionWithDependency::class, true);
-        });
-
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('must return an instance of');
-
-        $this->runNewPipeline($this->frontendRequest('/foo/baz'));
     }
 
 }
