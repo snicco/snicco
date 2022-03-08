@@ -570,9 +570,9 @@ var classes = [
         "totalSystemComplexity": 159.2,
         "package": "Snicco\\Component\\Session\\ValueObject\\",
         "pageRank": 0.01,
-        "afferentCoupling": 6,
+        "afferentCoupling": 7,
         "efferentCoupling": 4,
-        "instability": 0.4,
+        "instability": 0.36,
         "violations": {}
     },
     {
@@ -985,9 +985,9 @@ var classes = [
         "totalSystemComplexity": 15,
         "package": "Snicco\\Component\\Session\\ValueObject\\",
         "pageRank": 0.63,
-        "afferentCoupling": 6,
+        "afferentCoupling": 7,
         "efferentCoupling": 2,
-        "instability": 0.25,
+        "instability": 0.22,
         "violations": {}
     },
     {

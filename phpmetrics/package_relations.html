@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-07 18:25:36        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-08 16:50:01        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -561,11 +561,11 @@
         "size": 3000,
         "relations": [
             "Psr\\Http\\Message",
-            "global",
             "Snicco\\Component\\Psr7ErrorHandler\\Log",
             "Snicco\\Component\\Psr7ErrorHandler\\Information",
             "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer"
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+            "global"
         ]
     },
     {
@@ -773,9 +773,10 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Log",
         "size": 3000,
         "relations": [
+            "Psr\\Log",
             "Snicco\\Component\\Psr7ErrorHandler\\Information",
             "global"
         ]
@@ -790,20 +791,19 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Log",
-        "size": 3000,
-        "relations": [
-            "Psr\\Log",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information",
-            "global"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
         "size": 3000,
         "relations": [
             "Psr\\Http\\Message",
             "Snicco\\Component\\Psr7ErrorHandler\\Information"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Information",
+            "global"
         ]
     },
     {
@@ -1246,40 +1246,34 @@
         ]
     },
     {
-        "name": "Snicco\\Bundle\\Testing",
+        "name": "Snicco\\Bundle\\Testing\\Functional",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Kernel",
-            "PHPUnit\\Framework",
-            "Snicco\\Component\\Psr7ErrorHandler",
-            "Psr\\Http\\Message",
+            "Symfony\\Component\\BrowserKit",
+            "Snicco\\Bundle\\HttpRouting",
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin",
+            "Snicco\\Component\\HttpRouting\\Routing",
+            "Snicco\\Component\\HttpRouting\\Testing",
             "global",
-            "Snicco\\Bridge\\Pimple",
-            "Snicco\\Component\\Kernel\\ValueObject"
-        ]
-    },
-    {
-        "name": "Snicco\\Bridge\\Pimple",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Kernel",
-            "Pimple",
-            "global",
-            "Snicco\\Component\\Kernel\\Exception"
-        ]
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\EventDispatcher",
-            "Psr\\Http\\Message",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Laminas\\HttpHandlerRunner\\Emitter"
+            "Webmozart\\Assert",
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Psr\\Http\\Message",
+            "Codeception\\TestCase",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Component\\Psr7ErrorHandler",
+            "Snicco\\Component\\EventDispatcher\\Testing",
+            "Snicco\\Component\\BetterWPMail\\Testing",
+            "Snicco\\Component\\Kernel",
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "Symfony\\Component\\DomCrawler",
+            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+            "PHPUnit\\Framework",
+            "PHPUnit\\Framework\\Constraint"
         ]
     },
     {
-        "name": "Laminas\\HttpHandlerRunner\\Emitter",
+        "name": "Symfony\\Component\\BrowserKit",
         "size": 3000,
         "relations": []
     },
@@ -1318,6 +1312,72 @@
             "Snicco\\Bundle\\HttpRouting\\Middleware",
             "Webimpress\\SafeWriter"
         ]
+    },
+    {
+        "name": "Codeception\\TestCase",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "PHPUnit\\Framework\\Constraint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
+        "size": 3000,
+        "relations": [
+            "PHPUnit\\Framework",
+            "global",
+            "Webmozart\\Assert"
+        ]
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Bundle",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Kernel",
+            "PHPUnit\\Framework",
+            "Snicco\\Bridge\\Pimple",
+            "Snicco\\Component\\Psr7ErrorHandler",
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Bridge\\Pimple",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Kernel",
+            "Pimple",
+            "global",
+            "Snicco\\Component\\Kernel\\Exception"
+        ]
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\EventDispatcher",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Laminas\\HttpHandlerRunner\\Emitter"
+        ]
+    },
+    {
+        "name": "Laminas\\HttpHandlerRunner\\Emitter",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Nyholm\\Psr7Server",

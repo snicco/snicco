@@ -771,9 +771,9 @@ var classes = [
         "totalSystemComplexity": 10424.84,
         "package": "Snicco\\Component\\HttpRouting\\Testing\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
+        "afferentCoupling": 4,
         "efferentCoupling": 6,
-        "instability": 0.67,
+        "instability": 0.6,
         "violations": {}
     },
     {
@@ -1535,7 +1535,7 @@ var classes = [
         "ccn": 3,
         "ccnMethodMax": 2,
         "externals": [
-            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler",
             "Psr\\Container\\ContainerInterface",
             "InvalidArgumentException",
             "Psr\\Http\\Message\\ResponseInterface",
@@ -1658,7 +1658,7 @@ var classes = [
         "ccnMethodMax": 5,
         "externals": [
             "Psr\\Container\\ContainerInterface",
-            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandlerInterface",
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler",
             "Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareFactory",
             "Snicco\\Component\\HttpRouting\\Middleware\\MiddlewarePipeline",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
@@ -1825,9 +1825,9 @@ var classes = [
         "totalSystemComplexity": 453.22,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 20,
+        "afferentCoupling": 21,
         "efferentCoupling": 12,
-        "instability": 0.38,
+        "instability": 0.36,
         "violations": {}
     },
     {
@@ -2328,9 +2328,9 @@ var classes = [
         "totalSystemComplexity": 28.67,
         "package": "Snicco\\Component\\HttpRouting\\Middleware\\",
         "pageRank": 0,
-        "afferentCoupling": 23,
+        "afferentCoupling": 24,
         "efferentCoupling": 6,
-        "instability": 0.21,
+        "instability": 0.2,
         "violations": {}
     },
     {
@@ -3594,9 +3594,9 @@ var classes = [
         "totalSystemComplexity": 84.6,
         "package": "Snicco\\Component\\HttpRouting\\Routing\\Admin\\",
         "pageRank": 0,
-        "afferentCoupling": 5,
+        "afferentCoupling": 7,
         "efferentCoupling": 4,
-        "instability": 0.44,
+        "instability": 0.36,
         "violations": {}
     },
     {
@@ -4692,9 +4692,9 @@ var classes = [
         "totalSystemComplexity": 220,
         "package": "Snicco\\Component\\HttpRouting\\Routing\\",
         "pageRank": 0.01,
-        "afferentCoupling": 7,
+        "afferentCoupling": 9,
         "efferentCoupling": 4,
-        "instability": 0.36,
+        "instability": 0.31,
         "violations": {}
     },
     {
@@ -7046,7 +7046,7 @@ var classes = [
         "totalSystemComplexity": 17689.48,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
-        "afferentCoupling": 21,
+        "afferentCoupling": 22,
         "efferentCoupling": 5,
         "instability": 0.19,
         "violations": {}
@@ -7727,9 +7727,9 @@ var classes = [
         "totalSystemComplexity": 282722.17,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
-        "afferentCoupling": 45,
+        "afferentCoupling": 47,
         "efferentCoupling": 14,
-        "instability": 0.24,
+        "instability": 0.23,
         "violations": {}
     },
     {

@@ -164,9 +164,9 @@ var classes = [
         "totalSystemComplexity": 6296.17,
         "package": "Snicco\\Component\\BetterWPMail\\Testing\\",
         "pageRank": 0,
-        "afferentCoupling": 1,
+        "afferentCoupling": 2,
         "efferentCoupling": 10,
-        "instability": 0.91,
+        "instability": 0.83,
         "violations": {}
     },
     {

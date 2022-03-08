@@ -163,9 +163,9 @@ var classes = [
         "totalSystemComplexity": 2949.2,
         "package": "Snicco\\Component\\EventDispatcher\\Testing\\",
         "pageRank": 0,
-        "afferentCoupling": 1,
+        "afferentCoupling": 2,
         "efferentCoupling": 7,
-        "instability": 0.88,
+        "instability": 0.78,
         "violations": {}
     },
     {
