@@ -88,7 +88,7 @@ final class BetterWPHooksBundleTest extends TestCase
         );
 
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->singleton(Listener::class, function () {
+            $kernel->container()->shared(Listener::class, function () {
                 return new Listener(new ListenerDependency());
             });
             $dispatcher = $kernel->container()->make(EventDispatcher::class);

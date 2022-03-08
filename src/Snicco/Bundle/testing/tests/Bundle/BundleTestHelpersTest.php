@@ -286,7 +286,7 @@ class TestingBundleBundle1 implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->singleton(ServiceA::class, fn() => new ServiceA(new ServiceB()));
+        $kernel->container()->shared(ServiceA::class, fn() => new ServiceA(new ServiceB()));
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -313,7 +313,7 @@ class TestingBundleBundle2 implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->singleton(ServiceA::class, fn() => new ServiceB());
+        $kernel->container()->shared(ServiceA::class, fn() => new ServiceB());
     }
 
     public function bootstrap(Kernel $kernel): void

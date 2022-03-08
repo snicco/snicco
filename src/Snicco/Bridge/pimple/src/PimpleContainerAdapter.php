@@ -23,13 +23,13 @@ final class PimpleContainerAdapter extends DIContainer
         $this->pimple = $container ?? new Container();
     }
 
-    public function factory(string $id, Closure $service): void
+    public function factory(string $id, callable $callable): void
     {
         if ($this->locked) {
             throw ContainerIsLocked::whileSettingId($id);
         }
         try {
-            $this->pimple[$id] = $this->pimple->factory($service);
+            $this->pimple[$id] = $this->pimple->factory(Closure::fromCallable($callable));
         } catch (FrozenServiceException $e) {
             throw FrozenService::forId($id);
         }
@@ -40,13 +40,13 @@ final class PimpleContainerAdapter extends DIContainer
         return $this->pimple[$id];
     }
 
-    public function singleton(string $id, Closure $service): void
+    public function shared(string $id, callable $callable): void
     {
         if ($this->locked) {
             throw ContainerIsLocked::whileSettingId($id);
         }
         try {
-            $this->pimple[$id] = $service;
+            $this->pimple[$id] = Closure::fromCallable($callable);
         } catch (FrozenServiceException $e) {
             throw FrozenService::forId($id);
         }

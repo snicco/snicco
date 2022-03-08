@@ -47,7 +47,7 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $container->singleton(Foo::class, function () {
+        $container->shared(Foo::class, function () {
             return new Foo();
         });
 
@@ -85,14 +85,14 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $foo = new Foo();
-        $container->instance('key', $foo);
+        $foo1 = new Foo();
+        $container->instance(Foo::class, $foo1);
 
-        $bar = new Bar();
-        $container->instance('key', $bar);
+        $foo2 = new Foo();
+        $container->instance(Foo::class, $foo2);
 
-        $val = $container['key'];
-        PHPUnit::assertSame($bar, $val);
+        $val = $container[Foo::class];
+        PHPUnit::assertSame($foo2, $val);
     }
 
     /**
@@ -105,10 +105,10 @@ trait DIContainerContractTest
         $container->factory(Foo::class, function () {
             return new Foo();
         });
-        $container->singleton(Bar::class, function () {
+        $container->shared(Bar::class, function () {
             return new Bar();
         });
-        $container->instance('foo.instance', new Foo());
+        $container->instance(Baz::class, new Baz());
 
         $foo = $container[Foo::class];
         PHPUnit::assertInstanceOf(Foo::class, $foo);
@@ -120,7 +120,7 @@ trait DIContainerContractTest
         PHPUnit::assertNotSame($foo, $new_foo);
 
         // Can still be overwritten because it's not resolved yet.
-        $container->singleton(Bar::class, function () {
+        $container->shared(Bar::class, function () {
             return new Bar();
         });
 
@@ -137,7 +137,7 @@ trait DIContainerContractTest
         }
 
         try {
-            $container->singleton(Bar::class, function () {
+            $container->shared(Bar::class, function () {
                 return new Bar();
             });
             PHPUnit::fail('No exception thrown');
@@ -145,19 +145,18 @@ trait DIContainerContractTest
             //
         }
 
-        $foo_as_instance = $container['foo.instance'];
-        PHPUnit::assertInstanceOf(Foo::class, $foo_as_instance);
+        $baz = $container[Baz::class];
+        PHPUnit::assertInstanceOf(Baz::class, $baz);
 
         try {
-            $container->factory('foo.instance', function () {
-                return new Foo();
+            $container->factory(Baz::class, function () {
+                return new Baz();
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
             //
         }
     }
-
 
     /**
      * @test
@@ -169,7 +168,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->singleton('foo', fn() => 'bar');
+        $container->shared(Foo::class, fn() => new Foo());
     }
 
     /**
@@ -182,7 +181,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->factory('foo', fn() => 'bar');
+        $container->factory(Foo::class, fn() => new Foo());
     }
 
     /**
@@ -195,7 +194,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->instance('foo', new stdClass());
+        $container->instance(stdClass::class, new stdClass());
     }
 
     /**
@@ -243,13 +242,13 @@ trait DIContainerContractTest
     /**
      * @test
      */
-    public function test_make_throws_exception_if_class_string_id_does_not_return_class(): void
+    public function test_make_throws_exception_if_class_different_class_is_returned(): void
     {
         $container = $this->createContainer();
-        $container[Foo::class] = new stdClass();
+        $container[Foo::class] = new Bar();
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Resolved value for class-string');
+        $this->expectExceptionMessage('Expected an instance of Snicco\Component\Kernel\Testing\Foo');
         $container[Foo::class];
     }
 
@@ -260,7 +259,7 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $container->singleton(Foo::class, function () {
+        $container->shared(Foo::class, function () {
             return new Foo();
         });
 
@@ -277,20 +276,18 @@ trait DIContainerContractTest
     public function test_offsetSet(): void
     {
         $container = $this->createContainer();
-        $container['foo'] = ($foo = new Foo());
+        $container[Foo::class] = ($foo = new Foo());
 
         // instance
-        PHPUnit::assertSame($foo, $container['foo']);
-        PHPUnit::assertSame($foo, $container['foo']);
+        PHPUnit::assertSame($foo, $container[Foo::class]);
 
         $bar = new Bar();
-        $container['bar'] = function () use ($bar) {
+        $container[Bar::class] = function () use ($bar) {
             return $bar;
         };
 
         // instance
-        PHPUnit::assertSame($bar, $container['bar']);
-        PHPUnit::assertSame($bar, $container['bar']);
+        PHPUnit::assertSame($bar, $container[Bar::class]);
     }
 
     /**
@@ -338,6 +335,33 @@ trait DIContainerContractTest
         PHPUnit::assertSame(false, $container->has(stdClass::class));
     }
 
+    /**
+     * @test
+     */
+    public function test_with_callables(): void
+    {
+        $container = $this->createContainer();
+        $container->factory(Foo::class, [$this, 'getFoo']);
+        $container->shared(Bar::class, [$this, 'getBar']);
+
+        PHPUnit::assertSame('callable_foo', $container[Foo::class]->value);
+        PHPUnit::assertSame('callable_bar', $container[Bar::class]->value);
+    }
+
+    public function getBar(): Bar
+    {
+        $bar = new Bar();
+        $bar->value = 'callable_bar';
+        return $bar;
+    }
+
+    public function getFoo(): Foo
+    {
+        $foo = new Foo();
+        $foo->value = 'callable_foo';
+        return $foo;
+    }
+
 }
 
 class Foo
@@ -346,6 +370,11 @@ class Foo
 }
 
 class Bar
+{
+    public string $value = 'bar';
+}
+
+class Baz
 {
 
 }
