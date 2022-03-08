@@ -43,7 +43,7 @@ final class MustMatchRouteTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
 }

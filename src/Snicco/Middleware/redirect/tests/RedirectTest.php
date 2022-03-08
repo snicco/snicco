@@ -25,7 +25,7 @@ class RedirectTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
         $response->assertNextMiddlewareNotCalled();
-        $response->psr()->assertRedirect('/bar')->assertStatus(301);
+        $response->assertableResponse()->assertRedirect('/bar')->assertStatus(301);
     }
 
     /**
@@ -40,7 +40,7 @@ class RedirectTest extends MiddlewareTestCase
         ]);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo/'));
-        $response->psr()->assertRedirect('https://foobar.com/foo')->assertStatus(301);
+        $response->assertableResponse()->assertRedirect('https://foobar.com/foo')->assertStatus(301);
     }
 
     /**
@@ -57,7 +57,7 @@ class RedirectTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/bogus'));
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
     }
 
     /**
@@ -79,13 +79,13 @@ class RedirectTest extends MiddlewareTestCase
         ]);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
-        $response->psr()->assertRedirect('/bar', 301);
+        $response->assertableResponse()->assertRedirect('/bar', 301);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/baz'));
-        $response->psr()->assertRedirect('/biz', 302);
+        $response->assertableResponse()->assertRedirect('/biz', 302);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/boo'));
-        $response->psr()->assertRedirect('/bam/', 307);
+        $response->assertableResponse()->assertRedirect('/bam/', 307);
     }
 
     /**
@@ -101,11 +101,11 @@ class RedirectTest extends MiddlewareTestCase
         ]);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo?page=60'));
-        $response->psr()->assertRedirect('/bar')->assertStatus(301);
+        $response->assertableResponse()->assertRedirect('/bar')->assertStatus(301);
         $response->assertNextMiddlewareNotCalled();
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo?page=50'));
-        $response->psr()->assertOk();
+        $response->assertableResponse()->assertOk();
         $response->assertNextMiddlewareCalled();
     }
 
@@ -122,10 +122,10 @@ class RedirectTest extends MiddlewareTestCase
         ]);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo/bar?page=60'));
-        $response->psr()->assertRedirect('/baz')->assertStatus(301);
+        $response->assertableResponse()->assertRedirect('/baz')->assertStatus(301);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo/bar?baz=biz'));
-        $response->psr()->assertRedirect('/baz')->assertStatus(301);
+        $response->assertableResponse()->assertRedirect('/baz')->assertStatus(301);
     }
 
     /**
@@ -141,10 +141,10 @@ class RedirectTest extends MiddlewareTestCase
         ]);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
-        $response->psr()->assertRedirect('/bar', 301);
+        $response->assertableResponse()->assertRedirect('/bar', 301);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/baz'));
-        $response->psr()->assertRedirect('/bar', 301);
+        $response->assertableResponse()->assertRedirect('/bar', 301);
     }
 
     /**

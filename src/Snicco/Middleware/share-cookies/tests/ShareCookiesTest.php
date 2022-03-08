@@ -27,7 +27,7 @@ class ShareCookiesTest extends MiddlewareTestCase
         );
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertHeader(
+        $response->assertableResponse()->assertHeader(
             'Set-Cookie',
             'foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly'
         );
@@ -51,7 +51,7 @@ class ShareCookiesTest extends MiddlewareTestCase
             $this->frontendRequest()
         );
 
-        $cookie_header = $response->psr()->getHeader('Set-Cookie');
+        $cookie_header = $response->assertableResponse()->getHeader('Set-Cookie');
 
         $this->assertSame(
             'foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly',
@@ -77,7 +77,7 @@ class ShareCookiesTest extends MiddlewareTestCase
             $this->frontendRequest()
         );
 
-        $cookie_header = $response->psr()->getHeader('Set-Cookie');
+        $cookie_header = $response->assertableResponse()->getHeader('Set-Cookie');
         $this->assertSame(
             'foo=deleted; Path=/; Expires=Thu, 01-Jan-1970 00:00:01 GMT; SameSite=Lax; Secure; HostOnly; HttpOnly',
             $cookie_header[0]
@@ -95,7 +95,7 @@ class ShareCookiesTest extends MiddlewareTestCase
         );
 
         $response->assertNextMiddlewareCalled();
-        $response->psr()->assertHeaderMissing('set-cookie');
+        $response->assertableResponse()->assertHeaderMissing('set-cookie');
     }
 
 }
