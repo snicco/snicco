@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\Testing\Functional;
 
 use BadMethodCallException;
+use LogicException;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
@@ -13,6 +14,7 @@ use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
@@ -63,6 +65,15 @@ final class Browser extends AbstractBrowser
     public function lastResponse(): AssertableResponse
     {
         return $this->getResponse();
+    }
+
+    public function lastDOM(): AssertableDOM
+    {
+        if ($this->lastResponse()->getPsrResponse() instanceof DelegatedResponse) {
+            throw new LogicException('The response was delegated to WordPress so that no DOM is available.');
+        }
+
+        return new AssertableDOM($this->getCrawler());
     }
 
     protected function doRequest(object $request): Response
