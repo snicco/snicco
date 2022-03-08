@@ -6,7 +6,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
-use Pimple\Container;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\DefaultRouteLoadingOptions;
@@ -27,7 +26,6 @@ final class RouterTest extends TestCase
     public function test_url_matcher_is_singleton(): void
     {
         $routing = new Router(
-            new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
@@ -48,7 +46,6 @@ final class RouterTest extends TestCase
     public function test_url_generator_is_singleton(): void
     {
         $routing = new Router(
-            new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1')
             ,
             new PHPFileRouteLoader(
@@ -70,7 +67,6 @@ final class RouterTest extends TestCase
     public function test_routes_is_singleton(): void
     {
         $routing = new Router(
-            new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
@@ -91,7 +87,6 @@ final class RouterTest extends TestCase
     public function test_admin_menu_is_singleton(): void
     {
         $routing = new Router(
-            new \Pimple\Psr11\Container(new Container()),
             new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],

@@ -171,11 +171,12 @@ final class HttpRoutingBundle implements Bundle
             );
 
             return new Router(
-                $container,
                 $context,
                 $loader,
                 $cache,
-                $admin_area
+                $admin_area,
+                null,
+                null,
             );
         });
     }

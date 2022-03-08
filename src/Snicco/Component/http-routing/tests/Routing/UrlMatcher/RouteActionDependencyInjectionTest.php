@@ -6,7 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
-use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithDependency;
+use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\RouteConditionWithArgs;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
@@ -91,33 +91,19 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 
     /**
      * @test
-     * @psalm-suppress MixedArgument
      */
     public function arguments_from_conditions_are_passed_after_class_dependencies(): void
     {
-        $foo = new Foo();
-        $foo->value = 'FOO_CONFIG';
-        $this->pimple[Foo::class] = fn(): Foo => $foo;
-
-        $this->pimple[RouteConditionWithDependency::class] = $this->pimple->protect(
-            function (bool $pass): RouteConditionWithDependency {
-                return new RouteConditionWithDependency(
-                    $this->pimple[Foo::class],
-                    $pass
-                );
-            }
-        );
-
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get(
                 'r1',
                 'teams/{team}/{player}',
                 [RoutingTestController::class, 'requestParamsConditionArgs']
-            )->condition(RouteConditionWithDependency::class, true);
+            )->condition(RouteConditionWithArgs::class, 'FOO', true);
         });
 
         $request = $this->frontendRequest('/teams/dortmund/calvin');
-        $this->assertResponseBody('dortmund:calvin:FOO_CONFIG', $request);
+        $this->assertResponseBody('dortmund:calvin:FOO', $request);
     }
 
 }
