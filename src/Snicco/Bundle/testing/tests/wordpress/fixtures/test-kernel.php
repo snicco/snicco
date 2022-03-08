@@ -11,6 +11,6 @@ return function (Environment $env) {
     return new Kernel(
         new PimpleContainerAdapter(),
         $env,
-        Directories::fromDefaults(__DIR__ . '/web-test-case')
+        Directories::fromDefaults(__DIR__)
     );
 };

@@ -2,26 +2,19 @@
 
 declare(strict_types=1);
 
-
-namespace Snicco\Bundle\Testing\Tests;
+namespace Snicco\Bundle\Testing\Tests\Bundle;
 
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Bundle\Testing\BundleTest;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTest;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandlerInterface;
-
-use function base64_encode;
-use function is_dir;
-use function is_file;
-use function random_bytes;
-use function touch;
 
 final class BundleTestHelpersTest extends TestCase
 {

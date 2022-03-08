@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing;
+namespace Snicco\Bundle\Testing\Bundle;
 
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\Container\ContainerExceptionInterface;
@@ -46,7 +46,7 @@ trait BundleTestHelpers
      * @template T
      * @param class-string<T> $class
      */
-    protected function assertCanBeResolved(string $class, Kernel $kernel): void
+    final protected function assertCanBeResolved(string $class, Kernel $kernel): void
     {
         try {
             /** @var T $resolved */
@@ -57,7 +57,7 @@ trait BundleTestHelpers
         PHPUnit::assertInstanceOf($class, $resolved);
     }
 
-    protected function assertNotBound(string $identifier, Kernel $kernel): void
+    final protected function assertNotBound(string $identifier, Kernel $kernel): void
     {
         try {
             $kernel->container()->get($identifier);

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing;
+namespace Snicco\Bundle\Testing\Functional;
 
 use BadMethodCallException;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -39,7 +39,7 @@ final class Browser extends AbstractBrowser
     private UrlPath $api_prefix;
 
     /**
-     * @param array<string,string> $server
+     * @param array<string,mixed> $server
      */
     public function __construct(
         HttpKernel $http_kernel,

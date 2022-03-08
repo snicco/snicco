@@ -14,7 +14,7 @@ use Snicco\Bundle\Debug\Displayer\WhoopsJsonDisplayer;
 use Snicco\Bundle\Debug\Option\DebugOption;
 use Snicco\Bundle\Debug\Tests\fixtures\StubDisplayer;
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;

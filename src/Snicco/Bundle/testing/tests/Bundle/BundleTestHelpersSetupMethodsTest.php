@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 
-namespace Snicco\Bundle\Testing\Tests;
+namespace Snicco\Bundle\Testing\Tests\Bundle;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Bundle\Testing\BundleTestHelpers;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\Kernel\ValueObject\Directories;
 
 use function is_dir;
