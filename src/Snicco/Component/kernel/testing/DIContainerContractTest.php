@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Testing;
 
-use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Exception\FrozenService;
@@ -99,50 +97,6 @@ trait DIContainerContractTest
 
     /**
      * @test
-     * @psalm-suppress InvalidArgument
-     */
-    final public function test_primitive(): void
-    {
-        $container = $this->createContainer();
-
-        $container->primitive('int', 1);
-        PHPUnit::assertSame(1, $container['int']);
-
-        $container->primitive('string', 'foo');
-        PHPUnit::assertSame('foo', $container['string']);
-
-        $container->primitive('array', []);
-        PHPUnit::assertSame([], $container['array']);
-
-        $container->primitive('true', true);
-        PHPUnit::assertSame(true, $container['true']);
-
-        $container->primitive('false', false);
-        PHPUnit::assertSame(false, $container['false']);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('$value must be a scalar or an array of scalars. Got [stdClass].');
-        $container->primitive('resource', new stdClass());
-    }
-
-    /**
-     * @test
-     * @psalm-suppress InvalidArgument
-     */
-    public function test_primitive_throws_for_non_scalar_array(): void
-    {
-        $container = $this->createContainer();
-
-        $container->primitive('strings', ['foo', 'bar']);
-        PHPUnit::assertSame(['foo', 'bar'], $container['strings']);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('$value must be a scalar or an array of scalars. Got [stdClass].');
-        $container->primitive('strings', ['foo', new stdClass()]);
-    }
-
-    /**
-     * @test
      */
     final public function test_overwritten_frozen_services_throws_exception(): void
     {
@@ -204,23 +158,6 @@ trait DIContainerContractTest
         }
     }
 
-    /**
-     * @test
-     */
-    final public function test_overwritten_primitive_throws_exception(): void
-    {
-        $container = $this->createContainer();
-
-        $container->primitive('baz', 'biz');
-
-        PHPUnit::assertEquals('biz', $container['baz']);
-
-        try {
-            $container->primitive('baz', 'boo');
-            PHPUnit::fail('Overwriting a primitive value should throw an exception.');
-        } catch (FrozenService $e) {
-        }
-    }
 
     /**
      * @test
@@ -264,19 +201,6 @@ trait DIContainerContractTest
     /**
      * @test
      */
-    public function test_lock_throws_for_primitive(): void
-    {
-        $container = $this->createContainer();
-        $container->lock();
-
-        $this->expectException(ContainerIsLocked::class);
-
-        $container->primitive('foo', 'bar');
-    }
-
-    /**
-     * @test
-     */
     public function test_lock_throws_exception_for_array_set(): void
     {
         $container = $this->createContainer();
@@ -284,7 +208,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = new stdClass();
     }
 
     /**
@@ -293,12 +217,12 @@ trait DIContainerContractTest
     public function test_lock_throws_exception_for_array_unset(): void
     {
         $container = $this->createContainer();
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = new stdClass();
         $container->lock();
 
         $this->expectException(ContainerIsLocked::class);
 
-        unset($container['foo']);
+        unset($container[stdClass::class]);
     }
 
     /**
@@ -322,7 +246,7 @@ trait DIContainerContractTest
     public function test_make_throws_exception_if_class_string_id_does_not_return_class(): void
     {
         $container = $this->createContainer();
-        $container[Foo::class] = 'foo';
+        $container[Foo::class] = new stdClass();
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Resolved value for class-string');
@@ -367,13 +291,6 @@ trait DIContainerContractTest
         // instance
         PHPUnit::assertSame($bar, $container['bar']);
         PHPUnit::assertSame($bar, $container['bar']);
-
-
-        $container['baz'] = 'biz';
-
-        // primitive
-        PHPUnit::assertSame('biz', $container['baz']);
-        PHPUnit::assertSame('biz', $container['baz']);
     }
 
     /**
@@ -382,15 +299,13 @@ trait DIContainerContractTest
     public function test_offsetUnset(): void
     {
         $container = $this->createContainer();
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = $std = new stdClass();
 
-        PHPUnit::assertSame('bar', $container['foo']);
+        PHPUnit::assertSame($std, $container[stdClass::class]);
 
-        unset($container['foo']);
+        unset($container[stdClass::class]);
 
-        $this->expectException(NotFoundExceptionInterface::class);
-
-        $container['foo'];
+        PHPUnit::assertFalse($container->has(stdClass::class));
     }
 
     /**
@@ -399,13 +314,13 @@ trait DIContainerContractTest
     public function test_offsetExists(): void
     {
         $container = $this->createContainer();
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = new stdClass();
 
-        PHPUnit::assertSame(true, isset($container['foo']));
+        PHPUnit::assertSame(true, isset($container[stdClass::class]));
 
-        unset($container['foo']);
+        unset($container[stdClass::class]);
 
-        PHPUnit::assertSame(false, isset($container['foo']));
+        PHPUnit::assertSame(false, isset($container[stdClass::class]));
     }
 
     /**
@@ -414,13 +329,13 @@ trait DIContainerContractTest
     public function test_has(): void
     {
         $container = $this->createContainer();
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = new stdClass();
 
-        PHPUnit::assertSame(true, $container->has('foo'));
+        PHPUnit::assertSame(true, $container->has(stdClass::class));
 
-        unset($container['foo']);
+        unset($container[stdClass::class]);
 
-        PHPUnit::assertSame(false, $container->has('foo'));
+        PHPUnit::assertSame(false, $container->has(stdClass::class));
     }
 
 }

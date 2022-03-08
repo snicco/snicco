@@ -16,7 +16,6 @@ use Webmozart\Assert\Assert;
 
 use function class_exists;
 use function interface_exists;
-use function is_scalar;
 
 /**
  * The DependencyInjection(DI) container takes care of lazily constructing and loading services
@@ -70,10 +69,12 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
     /**
      * @param mixed $offset
-     * @param Closure():object|object|scalar $value
+     * @param object|Closure():object $value
      */
     final public function offsetSet($offset, $value): void
     {
+        Assert::object($value);
+
         if ($value instanceof Closure) {
             /**
              * @var Closure():object $value
@@ -81,13 +82,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
             $this->singleton((string)$offset, $value);
             return;
         }
-
-        if (is_object($value)) {
-            $this->instance((string)$offset, $value);
-            return;
-        }
-
-        $this->primitive((string)$offset, $value);
+        $this->instance((string)$offset, $value);
     }
 
     /**
@@ -149,21 +144,6 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
         $this->singleton($id, function () use ($service) {
             return $service;
         });
-    }
-
-    /**
-     * Stores a primitive value in the container.
-     *
-     * @param string $id
-     * @param scalar|array<scalar> $value
-     */
-    final public function primitive(string $id, $value): void
-    {
-        if (!is_scalar($value)) {
-            Assert::isArray($value, '$value must be a scalar or an array of scalars. Got [%s].');
-            Assert::allScalar($value, '$value must be a scalar or an array of scalars. Got [%s].');
-        }
-        $this->singleton($id, fn() => $value);
     }
 
 }

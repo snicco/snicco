@@ -60,8 +60,8 @@ final class KernelBootstrappersTest extends TestCase
 
         $app->boot();
 
-        $this->assertTrue($app->container()['bootstrapper_1_registered']);
-        $this->assertTrue($app->container()['bootstrapper_1_booted']->val);
+        $this->assertTrue($app->container()[Bootstrap1::class]->registered);
+        $this->assertTrue($app->container()[Bootstrap1::class]->booted);
     }
 
     /**
@@ -77,11 +77,11 @@ final class KernelBootstrappersTest extends TestCase
 
         $app->boot();
 
-        $this->assertTrue($app->container()->get('bundle_info_registered'));
-        $this->assertTrue($app->container()->get('bundle_info_booted')->val);
+        $this->assertTrue($app->container()->make(BundleInfo::class)->registered);
+        $this->assertTrue($app->container()->make(BundleInfo::class)->booted);
 
-        $this->assertTrue($app->container()->get('bootstrapper_2_registered'));
-        $this->assertTrue($app->container()->get('bootstrapper_2_booted')->val);
+        $this->assertTrue($app->container()->make(Bootstrap2::class)->registered);
+        $this->assertTrue($app->container()->make(Bootstrap2::class)->booted);
     }
 
     /**
@@ -96,14 +96,14 @@ final class KernelBootstrappersTest extends TestCase
             new FixedConfigCache([
                 'app' => [
                     'bootstrappers' => [
-                        BootrstrapperWithExceptionInBoostrap::class,
+                        BootstrapperWithExceptionInBoostrap::class,
                     ],
                 ],
             ])
         );
 
         $this->expectException(ContainerIsLocked::class);
-        $this->expectExceptionMessage('id [foo]');
+        $this->expectExceptionMessage('id [stdClass]');
         $app->boot();
     }
 
@@ -111,6 +111,9 @@ final class KernelBootstrappersTest extends TestCase
 
 class BundleInfo implements Bundle
 {
+
+    public bool $registered = false;
+    public bool $booted = false;
 
     public function shouldRun(Environment $env): bool
     {
@@ -124,15 +127,14 @@ class BundleInfo implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()['bundle_info_registered'] = true;
-        $std = new stdClass();
-        $std->val = false;
-        $kernel->container()['bundle_info_booted'] = $std;
+        $b = new self();
+        $b->registered = true;
+        $kernel->container()[BundleInfo::class] = $b;
     }
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()['bundle_info_booted']->val = true;
+        $kernel->container()->make(BundleInfo::class)->booted = true;
     }
 
     public function alias(): string
@@ -145,6 +147,9 @@ class BundleInfo implements Bundle
 class Bootstrap1 implements Bootstrapper
 {
 
+    public bool $registered = false;
+    public bool $booted = false;
+
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         $config->set('bootstrapper1_configured', true);
@@ -152,17 +157,16 @@ class Bootstrap1 implements Bootstrapper
 
     public function register(Kernel $kernel): void
     {
+        $instance = new self();
+        $instance->registered = true;
         $c = $kernel->container();
-        $c['bootstrapper_1_registered'] = true;
-        $std = new stdClass();
-        $std->val = false;
-        $c['bootstrapper_1_booted'] = $std;
+        $c->instance(Bootstrap1::class, $instance);
     }
 
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        $container['bootstrapper_1_booted']->val = true;
+        $container->make(Bootstrap1::class)->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
@@ -175,6 +179,9 @@ class Bootstrap1 implements Bootstrapper
 class Bootstrap2 implements Bootstrapper
 {
 
+    public bool $registered = false;
+    public bool $booted = false;
+
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         //
@@ -183,22 +190,23 @@ class Bootstrap2 implements Bootstrapper
     public function register(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!$kernel->container()->has('bundle_info_registered')) {
+        if (!$kernel->container()->has(BundleInfo::class)) {
             throw new RuntimeException('Bootstrapper registered before bundle');
         }
-        $container['bootstrapper_2_registered'] = true;
-        $std = new stdClass();
-        $std->val = false;
-        $container['bootstrapper_2_booted'] = $std;
+
+        $instance = new self();
+        $instance->registered = true;
+
+        $container[self::class] = $instance;
     }
 
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!$container['bundle_info_booted']->val === true) {
+        if (!$container->make(BundleInfo::class)->booted === true) {
             throw new RuntimeException('Bootstrapper bootstrapped before bundle');
         }
-        $container['bootstrapper_2_booted']->val = true;
+        $container->make(self::class)->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
@@ -208,7 +216,7 @@ class Bootstrap2 implements Bootstrapper
 
 }
 
-class BootrstrapperWithExceptionInBoostrap implements Bootstrapper
+class BootstrapperWithExceptionInBoostrap implements Bootstrapper
 {
 
     public function shouldRun(Environment $env): bool
@@ -228,7 +236,7 @@ class BootrstrapperWithExceptionInBoostrap implements Bootstrapper
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()['foo'] = 'bar';
+        $kernel->container()[stdClass::class] = new stdClass();
     }
 
 }
