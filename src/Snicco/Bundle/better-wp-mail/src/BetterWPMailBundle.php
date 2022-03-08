@@ -72,7 +72,7 @@ final class BetterWPMailBundle implements Bundle
 
     private function bindMailer(Kernel $kernel): void
     {
-        $kernel->container()->singleton(Mailer::class, function () use ($kernel) {
+        $kernel->container()->shared(Mailer::class, function () use ($kernel) {
             $from_name = $kernel->config()->getString('mail.' . MailOption::FROM_NAME);
             $from_email = $kernel->config()->getString('mail.' . MailOption::FROM_EMAIL);
             $reply_to_name = $kernel->config()->getString('mail.' . MailOption::REPLY_TO_NAME);
@@ -109,7 +109,7 @@ final class BetterWPMailBundle implements Bundle
 
     private function bindTransport(Kernel $kernel): void
     {
-        $kernel->container()->singleton(Transport::class, function () use ($kernel): Transport {
+        $kernel->container()->shared(Transport::class, function () use ($kernel): Transport {
             if ($kernel->env()->isTesting()) {
                 return new FakeTransport();
             }
@@ -127,7 +127,7 @@ final class BetterWPMailBundle implements Bundle
 
     private function bindViewEngineRenderer(Kernel $kernel): void
     {
-        $kernel->container()->singleton(ViewEngineMailRenderer::class, function () use ($kernel) {
+        $kernel->container()->shared(ViewEngineMailRenderer::class, function () use ($kernel) {
             try {
                 $engine = $kernel->container()->make(ViewEngine::class);
             } catch (NotFoundExceptionInterface $e) {
@@ -148,7 +148,7 @@ final class BetterWPMailBundle implements Bundle
 
     private function bindMailEvents(Kernel $kernel): void
     {
-        $kernel->container()->singleton(MailEvents::class, function () use ($kernel) {
+        $kernel->container()->shared(MailEvents::class, function () use ($kernel) {
             $expose = $kernel->config()->getBoolean('mail.' . MailOption::EXPOSE_MAIL_EVENTS);
 
             if ($kernel->container()->has(EventDispatcher::class)) {

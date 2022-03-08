@@ -24,7 +24,7 @@ final class Bootstrapper implements \Snicco\Component\Kernel\Bootstrapper
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->singleton(WebTestCaseController::class, function () use ($kernel) {
+        $kernel->container()->shared(WebTestCaseController::class, function () use ($kernel) {
             return new WebTestCaseController(
                 $kernel->container()->make(Mailer::class)
             );

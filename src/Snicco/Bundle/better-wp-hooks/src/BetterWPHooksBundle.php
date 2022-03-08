@@ -41,7 +41,7 @@ final class BetterWPHooksBundle implements Bundle
 
         $hook_api = new WPHookAPI();
 
-        $container->singleton(EventDispatcher::class, function () use ($kernel, $container, $hook_api) {
+        $container->shared(EventDispatcher::class, function () use ($kernel, $container, $hook_api) {
             $listener_factory = new PsrListenerFactory($container);
             $dispatcher = new WPEventDispatcher(
                 new BaseEventDispatcher($listener_factory),
@@ -52,15 +52,15 @@ final class BetterWPHooksBundle implements Bundle
             }
             return $dispatcher;
         });
-        $container->singleton(EventDispatcherInterface::class, fn() => $container->make(EventDispatcher::class));
+        $container->shared(EventDispatcherInterface::class, fn() => $container->make(EventDispatcher::class));
 
         if ($kernel->env()->isTesting()) {
-            $container->singleton(TestableEventDispatcher::class, function () use ($container) {
+            $container->shared(TestableEventDispatcher::class, function () use ($container) {
                 return $container->make(EventDispatcher::class);
             });
         }
 
-        $container->singleton(EventMapper::class, fn() => new EventMapper(
+        $container->shared(EventMapper::class, fn() => new EventMapper(
             $container->make(EventDispatcher::class),
             $hook_api
         )

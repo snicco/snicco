@@ -9,10 +9,13 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use stdClass;
 
 class Bundle1 implements Bundle
 {
+
+    public bool $registered = false;
+    public bool $booted = false;
+
 
     private ?string $alias;
 
@@ -44,30 +47,30 @@ class Bundle1 implements Bundle
     {
         $container = $kernel->container();
 
-        if (isset($container['bundle2.registered'])) {
+        if (isset($container[Bundle2::class])) {
             throw new RuntimeException('bundle 2 registered first');
         }
         if (!$kernel->config()->get('bundle2.configured')) {
             throw new RuntimeException('bundle1 was registered before bundle2 was configured.');
         }
-        $container['bundle1.registered'] = true;
-        $std = new stdClass();
-        $std->val = false;
-        $container['bundle1.booted'] = $std;
+        $instance = new self();
+        $instance->registered = true;
+
+        $container[self::class] = $instance;
     }
 
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
 
-        if ($container['bundle2.booted']->val === true) {
+        if ($container[Bundle2::class]->booted) {
             throw new RuntimeException('bundle 2 booted first');
         }
-        if (!isset($container['bundle2.registered'])) {
+        if (!$container[Bundle2::class]->registered) {
             throw new RuntimeException('bundle1 was booted before bundle2 was registered.');
         }
 
-        $container['bundle1.booted']->val = true;
+        $container[Bundle1::class]->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
