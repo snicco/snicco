@@ -289,7 +289,6 @@ final class KernelTest extends TestCase
         });
     }
 
-
     /**
      * @test
      */
@@ -310,5 +309,22 @@ final class KernelTest extends TestCase
         });
     }
 
+    /**
+     * @test
+     */
+    public function test_booted(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $this->assertFalse($kernel->booted());
+
+        $kernel->boot();
+
+        $this->assertTrue($kernel->booted());
+    }
 
 }

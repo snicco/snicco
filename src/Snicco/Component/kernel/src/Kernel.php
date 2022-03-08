@@ -100,6 +100,11 @@ final class Kernel
         $this->booted = true;
     }
 
+    public function booted(): bool
+    {
+        return $this->booted;
+    }
+
     public function env(): Environment
     {
         return $this->env;
