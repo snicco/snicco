@@ -35,6 +35,7 @@ use Snicco\Component\Session\ValueObject\SessionId;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\BrowserKit\CookieJar;
 use Webmozart\Assert\Assert;
+use WP_UnitTest_Factory;
 use WP_UnitTest_Factory_For_User;
 
 use function array_map;
@@ -205,9 +206,9 @@ abstract class WebTestCase extends WPTestCase
 
     final protected function userFactory(): WP_UnitTest_Factory_For_User
     {
-        /** @psalm-suppress MixedPropertyFetch */
-        /** @psalm-suppress MixedReturnStatement */
-        return $this->factory()->user;
+        $factory = $this->factory();
+        Assert::isInstanceOf($factory, WP_UnitTest_Factory::class);
+        return $factory->user;
     }
 
     final protected function getBootedKernel(): Kernel
