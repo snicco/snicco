@@ -16,6 +16,7 @@ use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
+use stdClass;
 
 final class KernelTest extends TestCase
 {
@@ -203,7 +204,7 @@ final class KernelTest extends TestCase
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = new stdClass();
     }
 
     /**
@@ -217,13 +218,13 @@ final class KernelTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
 
-        $container['foo'] = 'bar';
+        $container[stdClass::class] = new stdClass();
 
         $app->boot();
 
         $this->expectException(ContainerIsLocked::class);
 
-        unset($container['foo']);
+        unset($container[stdClass::class]);
     }
 
     /**
@@ -238,14 +239,14 @@ final class KernelTest extends TestCase
         );
 
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->primitive('foo', 'bar');
+            $kernel->container()->instance(stdClass::class, new stdClass());
         });
 
-        $this->assertFalse($kernel->container()->has('foo'));
+        $this->assertFalse($kernel->container()->has(stdClass::class));
 
         $kernel->boot();
 
-        $this->assertSame('bar', $kernel->container()->get('foo'));
+        $this->assertTrue($kernel->container()->has(stdClass::class));
     }
 
     /**
@@ -284,8 +285,7 @@ final class KernelTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('register callbacks can not be added after the kernel was booted.');
 
-        $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->primitive('foo', 'bar');
+        $kernel->afterRegister(function () {
         });
     }
 
