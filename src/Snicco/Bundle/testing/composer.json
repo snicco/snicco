@@ -10,7 +10,10 @@
     "php": "^7.4|^8.0",
     "sniccowp/kernel": "dev-master",
     "sniccowp/psr7-error-handler": "dev-master",
-    "sniccowp/pimple-bridge": "dev-master"
+    "sniccowp/pimple-bridge": "dev-master",
+    "symfony/browser-kit": "^5.4.3",
+    "symfony/dom-crawler": "^5.4.6",
+    "webmozart/assert": "^1.10.0"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",

@@ -1,0 +1,10 @@
+<?php
+
+declare(strict_types=1);
+
+use Snicco\Bundle\Testing\Tests\fixtures\WebTestCaseController;
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
+
+return function (WebRoutingConfigurator $router) {
+    $router->get('check-if-api', '/check-api', [WebTestCaseController::class, 'checkIfApi']);
+};
