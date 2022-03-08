@@ -99,7 +99,7 @@ final class TemplatingBundle implements Bundle
 
     private function bindViewEngine(Kernel $kernel): void
     {
-        $kernel->container()->singleton(ViewEngine::class, function () use ($kernel) {
+        $kernel->container()->shared(ViewEngine::class, function () use ($kernel) {
             $class_names = $kernel->config()->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
 
             $factories = array_map(function (string $class_name) use ($kernel): ViewFactory {
@@ -113,7 +113,7 @@ final class TemplatingBundle implements Bundle
 
     private function bindPHPViewFactory(Kernel $kernel): void
     {
-        $kernel->container()->singleton(PHPViewFactory::class, function () use ($kernel) {
+        $kernel->container()->shared(PHPViewFactory::class, function () use ($kernel) {
             return new PHPViewFactory(
                 new PHPViewFinder($kernel->config()->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)),
                 $kernel->container()->make(ViewComposerCollection::class),
@@ -123,14 +123,14 @@ final class TemplatingBundle implements Bundle
 
     private function bindTemplatingMiddleware(Kernel $kernel): void
     {
-        $kernel->container()->singleton(TemplatingMiddleware::class, fn() => new TemplatingMiddleware(
+        $kernel->container()->shared(TemplatingMiddleware::class, fn() => new TemplatingMiddleware(
             fn() => $kernel->container()->make(ViewEngine::class)
         ));
     }
 
     private function bindExceptionDisplayer(Kernel $kernel): void
     {
-        $kernel->container()->singleton(
+        $kernel->container()->shared(
             TemplatingExceptionDisplayer::class,
             fn() => new TemplatingExceptionDisplayer($kernel->container()->make(ViewEngine::class))
         );
@@ -138,7 +138,7 @@ final class TemplatingBundle implements Bundle
 
     private function bindViewComposerCollection(Kernel $kernel): void
     {
-        $kernel->container()->singleton(ViewComposerCollection::class, function () use ($kernel) {
+        $kernel->container()->shared(ViewComposerCollection::class, function () use ($kernel) {
             $composer_collection = new ViewComposerCollection(
                 new PsrViewComposerFactory($kernel->container()),
                 $kernel->container()->make(GlobalViewContext::class)
@@ -160,7 +160,7 @@ final class TemplatingBundle implements Bundle
 
     private function bindGlobalViewContext(Kernel $kernel): void
     {
-        $kernel->container()->singleton(GlobalViewContext::class, function () use ($kernel) {
+        $kernel->container()->shared(GlobalViewContext::class, function () use ($kernel) {
             $context = new GlobalViewContext();
             // This needs to be a closure.
             $context->add('view', function () use ($kernel) {
@@ -170,7 +170,6 @@ final class TemplatingBundle implements Bundle
             if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
                 $context->add('url', fn() => $kernel->container()->make(UrlGenerator::class));
             }
-
             return $context;
         });
     }

@@ -6,7 +6,6 @@ namespace Snicco\Component\Kernel;
 
 use ArrayAccess;
 use Closure;
-use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface as PsrContainer;
 use Psr\Container\NotFoundExceptionInterface;
@@ -14,49 +13,71 @@ use ReturnTypeWillChange;
 use Snicco\Component\Kernel\Exception\FrozenService;
 use Webmozart\Assert\Assert;
 
-use function class_exists;
-use function interface_exists;
-
 /**
  * The DependencyInjection(DI) container takes care of lazily constructing and loading services
  * for your application.
- * The framework itself DOES NOT require your implementation to be capable of auto-wiring.
+ * The sniccowp core itself DOES NOT require your implementation to be capable of auto-wiring.
  * However, you are free to use a container that supports auto-wiring in your application code.
  */
 abstract class DIContainer implements ArrayAccess, PsrContainer
 {
 
     /**
-     * After the lock method is called state changing method on the container must throw an
-     * exception.
-     *
-     * @interal
-     * @psalm-internal Snicco\Component\Kernel
+     * After the lock method is called and method call that would change the container must throw {@see FrozenService}
      *
      * @throws FrozenService
+     *
+     * @psalm-internal Snicco\Component\Kernel
      */
     abstract public function lock(): void;
 
     /**
-     * Register a binding with the container.
-     * This will not be a singleton but a new object everytime it gets resolved.
+     * Register a lazy callable in the container.
+     * This method MUST return a new object every time the id is resolved from the container.
      *
-     * @template T
+     * @template T of object
      *
-     * @param string|class-string<T> $id
-     * @param Closure():T $service
+     * @param class-string<T> $id
+     * @param callable():T $callable
+     *
+     * @throws FrozenService When trying to overwrite an already resolved shared service.
+     */
+    abstract public function factory(string $id, callable $callable): void;
+
+    /**
+     * Register a lazy callable in the container that will only be called ONCE.
+     * After resolving the service once the same object instance MUST be returned every time its resolved.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $id
+     * @param callable():T $callable
+     *
+     * @throws FrozenService When trying to overwrite an already resolved shared service.
+     */
+    abstract public function shared(string $id, callable $callable): void;
+
+    /**
+     * Stores the passed instance as a shared service.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $id
+     * @param T $service
      *
      * @throws FrozenService When trying to overwrite an already resolved singleton.
      */
-    abstract public function factory(string $id, Closure $service): void;
+    final public function instance(string $id, object $service): void
+    {
+        $this->shared($id, fn() => $service);
+    }
 
     /**
-     * @template T
+     * @template T of object
      *
-     * @param string|class-string<T> $offset
+     * @param class-string<T> $offset
      *
-     * @psalm-return ($offset is class-string ? T : mixed)
-     * @return T|mixed
+     * @return T
      *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
@@ -64,86 +85,53 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
     #[ReturnTypeWillChange]
     final public function offsetGet($offset)
     {
-        return $this->make((string)$offset);
+        Assert::stringNotEmpty($offset);
+        return $this->make($offset);
     }
 
     /**
-     * @param mixed $offset
-     * @param object|Closure():object $value
+     * @template T of object
+     *
+     * @param class-string<T> $offset
+     * @param T|callable():T $value
      */
     final public function offsetSet($offset, $value): void
     {
+        Assert::stringNotEmpty($offset);
         Assert::object($value);
 
         if ($value instanceof Closure) {
             /**
              * @var Closure():object $value
              */
-            $this->singleton((string)$offset, $value);
+            $this->shared($offset, $value);
             return;
         }
-        $this->instance((string)$offset, $value);
+        $this->instance($offset, $value);
     }
 
     /**
-     * @template T
+     * @template T of object
      *
-     * @param string|class-string<T> $id
+     * @param class-string<T> $id
      *
-     * @psalm-return ($id is class-string ? T : mixed)
-     * @return T|mixed
+     * @return T
      *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
-     *
      */
     final public function make(string $id)
     {
         /**
-         * @psalm-suppress MixedAssignment
+         * @var mixed $res
          */
         $res = $this->get($id);
 
-        if (class_exists($id) || interface_exists($id)) {
-            if (!$res instanceof $id) {
-                throw new LogicException("Resolved value for class-string [$id] must be instance of [$id].");
-            }
-            /** @var T $res */
-            return $res;
-        }
+        Assert::isInstanceOf($res, $id);
 
-        /**
-         * @psalm-suppress MixedReturnStatement
-         */
         return $res;
     }
 
-    /**
-     * Register a lazy service in the container. Once the service is resolved the stored closure
-     * MUST be run and return the service defined in the closure. NOT the closure itself.
-     *
-     * @template T
-     *
-     * @param string|class-string<T> $id
-     * @param Closure():T $service
-     *
-     * @throws FrozenService When trying to overwrite an already resolved singleton.
-     */
-    abstract public function singleton(string $id, Closure $service): void;
-
-    /**
-     * Store the passed service as is in the container.
-     *
-     * @param string $id
-     * @param object $service
-     *
-     * @throws FrozenService When trying to overwrite an already resolved singleton.
-     */
-    final public function instance(string $id, object $service): void
-    {
-        $this->singleton($id, function () use ($service) {
-            return $service;
-        });
-    }
-
 }
+
+

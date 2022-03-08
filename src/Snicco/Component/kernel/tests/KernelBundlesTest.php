@@ -200,7 +200,7 @@ final class KernelBundlesTest extends TestCase
         $app1->boot();
 
         $this->assertFalse(
-            isset($app1->container()['custom_env_bundle_run']),
+            isset($app1->container()[BundleWithCustomEnv::class]),
             'bundle was booted when it should not be.'
         );
 
@@ -223,8 +223,12 @@ final class KernelBundlesTest extends TestCase
         $app2->boot();
 
         $this->assertTrue(
-            $app2->container()['custom_env_bundle_run']->val,
+            $app2->container()[BundleWithCustomEnv::class]->booted,
             'bundle was not booted when it should be.'
+        );
+        $this->assertTrue(
+            $app2->container()[BundleWithCustomEnv::class]->registered,
+            'bundle was not registered when it should be.'
         );
     }
 
@@ -335,6 +339,9 @@ class BundleThatConfigures implements Bundle
 class BundleWithCustomEnv implements Bundle
 {
 
+    public bool $registered = false;
+    public bool $booted = false;
+
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         //
@@ -342,14 +349,14 @@ class BundleWithCustomEnv implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $std = new stdClass();
-        $std->val = false;
-        $kernel->container()['custom_env_bundle_run'] = $std;
+        $instance = new self();
+        $instance->registered = true;
+        $kernel->container()[self::class] = $instance;
     }
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()['custom_env_bundle_run']->val = true;
+        $kernel->container()[self::class]->booted = true;
     }
 
     public function alias(): string

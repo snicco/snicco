@@ -139,7 +139,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRouter(Kernel $kernel): void
     {
-        $kernel->container()->singleton(Router::class, function () use ($kernel) {
+        $kernel->container()->shared(Router::class, function () use ($kernel) {
             $container = $kernel->container();
             $config = $kernel->config();
             $env = $kernel->env();
@@ -182,27 +182,27 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindUrlGenerator(DIContainer $container): void
     {
-        $container->singleton(UrlGenerator::class, fn() => $container->make(Router::class)->urlGenerator());
+        $container->shared(UrlGenerator::class, fn() => $container->make(Router::class)->urlGenerator());
     }
 
     private function bindUrlMatcher(DIContainer $container): void
     {
-        $container->singleton(UrlMatcher::class, fn() => $container->make(Router::class)->urlMatcher());
+        $container->shared(UrlMatcher::class, fn() => $container->make(Router::class)->urlMatcher());
     }
 
     private function bindAdminMenu(DIContainer $container): void
     {
-        $container->singleton(AdminMenu::class, function () use ($container) {
+        $container->shared(AdminMenu::class, function () use ($container) {
             return $container->make(Router::class)->adminMenu();
         });
-        $container->singleton(WPAdminMenu::class, function () use ($container) {
+        $container->shared(WPAdminMenu::class, function () use ($container) {
             return new WPAdminMenu($container->make(AdminMenu::class));
         });
     }
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
     {
-        $container->singleton(HttpErrorHandler::class, function () use ($container, $kernel) {
+        $container->shared(HttpErrorHandler::class, function () use ($container, $kernel) {
             $error_logger = $container[TestLogger::class] ?? $container->make(LoggerInterface::class);
 
             $information_provider = $this->informationProvider($kernel);
@@ -261,7 +261,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRoutingMiddleware(DIContainer $container): void
     {
-        $container->singleton(RoutingMiddleware::class, function () use ($container) {
+        $container->shared(RoutingMiddleware::class, function () use ($container) {
             return new RoutingMiddleware(
                 $container->make(UrlMatcher::class)
             );
@@ -270,7 +270,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRouteRunnerMiddleware(DIContainer $container, Kernel $kernel): void
     {
-        $container->singleton(RouteRunner::class, function () use ($container, $kernel) {
+        $container->shared(RouteRunner::class, function () use ($container, $kernel) {
             $middleware_resolver = ($kernel->env()->isProduction() || $kernel->env()->isStaging())
                 ? $this->getCachedMiddlewareResolver($kernel)
                 : $this->getMiddlewareResolver($kernel);
@@ -285,27 +285,27 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindResponseFactory(DIContainer $container): void
     {
-        $container->singleton(ResponseFactory::class, function () use ($container) {
+        $container->shared(ResponseFactory::class, function () use ($container) {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
             return new ResponseFactory(
                 $discovery->createResponseFactory(),
                 $discovery->createStreamFactory(),
             );
         });
-        $container->singleton(ResponseFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
-        $container->singleton(StreamFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
+        $container->shared(ResponseFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
+        $container->shared(StreamFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
     }
 
     private function bindPsr17Discovery(DIContainer $container): void
     {
-        $container->singleton(Psr17FactoryDiscovery::class, function (): Psr17FactoryDiscovery {
+        $container->shared(Psr17FactoryDiscovery::class, function (): Psr17FactoryDiscovery {
             return new Psr17FactoryDiscovery();
         });
     }
 
     private function bindServerRequestCreator(DIContainer $container): void
     {
-        $container->singleton(ServerRequestCreator::class, function () use ($container): ServerRequestCreator {
+        $container->shared(ServerRequestCreator::class, function () use ($container): ServerRequestCreator {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
             return new ServerRequestCreator(
                 $discovery->createServerRequestFactory(),
@@ -344,14 +344,14 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRoutes(DIContainer $container): void
     {
-        $container->singleton(Routes::class, fn() => $container->make(Router::class)->routes());
+        $container->shared(Routes::class, fn() => $container->make(Router::class)->routes());
     }
 
     private function bindLogger(Kernel $kernel): void
     {
         if ($kernel->env()->isTesting()) {
-            $kernel->container()->singleton(TestLogger::class, fn() => new TestLogger());
-            $kernel->container()->singleton(
+            $kernel->container()->shared(TestLogger::class, fn() => new TestLogger());
+            $kernel->container()->shared(
                 LoggerInterface::class,
                 fn() => $kernel->container()->make(TestLogger::class)
             );
@@ -359,7 +359,7 @@ final class HttpRoutingBundle implements Bundle
         }
 
         if (!$kernel->container()->has(LoggerInterface::class)) {
-            $kernel->container()->singleton(LoggerInterface::class, fn() => new StdErrLogger(
+            $kernel->container()->shared(LoggerInterface::class, fn() => new StdErrLogger(
                 $kernel->config()->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
             ));
         }
@@ -677,7 +677,7 @@ final class HttpRoutingBundle implements Bundle
     private function bindHttpRunner(Kernel $kernel): void
     {
         // The HttpKernel needs to be resolvable on it's on so that we can use it in functional tests.
-        $kernel->container()->singleton(HttpKernel::class, function () use ($kernel) {
+        $kernel->container()->shared(HttpKernel::class, function () use ($kernel) {
             /** @var class-string<MiddlewareInterface>[] $kernel_middleware */
             $kernel_middleware = $kernel->config()->getListOfStrings(
                 MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE)
@@ -693,7 +693,7 @@ final class HttpRoutingBundle implements Bundle
             );
         });
 
-        $kernel->container()->singleton(HttpKernelRunner::class, function () use ($kernel) {
+        $kernel->container()->shared(HttpKernelRunner::class, function () use ($kernel) {
             $container = $kernel->container();
 
             $dispatcher = $container->make(EventDispatcher::class);
@@ -716,7 +716,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindResponsePostProcessor(Kernel $kernel): void
     {
-        $kernel->container()->singleton(ResponsePostProcessor::class, function () use ($kernel) {
+        $kernel->container()->shared(ResponsePostProcessor::class, function () use ($kernel) {
             return new ResponsePostProcessor($kernel->env());
         });
     }
@@ -732,7 +732,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindErrorHandlingMiddleware(DIContainer $container): void
     {
-        $container->singleton(ErrorsToExceptions::class, function () use ($container) {
+        $container->shared(ErrorsToExceptions::class, function () use ($container) {
             return new ErrorsToExceptions(
                 $container->make(LoggerInterface::class)
             );

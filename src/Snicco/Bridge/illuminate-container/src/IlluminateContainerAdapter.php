@@ -24,16 +24,16 @@ final class IlluminateContainerAdapter extends DIContainer
         $this->illuminate_container = $container ?? new Container();
     }
 
-    public function factory(string $id, Closure $service): void
+    public function factory(string $id, callable $callable): void
     {
         $this->checkIfCanBeOverwritten($id);
-        $this->illuminate_container->bind($id, $service);
+        $this->illuminate_container->bind($id, Closure::fromCallable($callable));
     }
 
-    public function singleton(string $id, Closure $service): void
+    public function shared(string $id, callable $callable): void
     {
         $this->checkIfCanBeOverwritten($id);
-        $this->illuminate_container->singleton($id, $service);
+        $this->illuminate_container->singleton($id, Closure::fromCallable($callable));
     }
 
     public function get(string $id)

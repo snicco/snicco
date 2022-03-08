@@ -29,7 +29,7 @@ final class BetterWPDBBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->singleton(BetterWPDB::class, function () use ($kernel) {
+        $kernel->container()->shared(BetterWPDB::class, function () use ($kernel) {
             return BetterWPDB::fromWpdb($kernel->container()[QueryLogger::class] ?? null);
         });
     }

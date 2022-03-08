@@ -100,7 +100,7 @@ final class DebugBundle implements Bundle
             return $whoops;
         });
 
-        $kernel->container()->singleton(PrettyPageHandler::class, function () use ($kernel) {
+        $kernel->container()->shared(PrettyPageHandler::class, function () use ($kernel) {
             $handler = new FilterablePrettyPageHandler();
             $handler->handleUnconditionally(true);
 
@@ -114,13 +114,13 @@ final class DebugBundle implements Bundle
             return $handler;
         });
 
-        $kernel->container()->singleton(WhoopsHtmlDisplayer::class, function () use ($kernel) {
+        $kernel->container()->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
             $whoops = $kernel->container()->make(Run::class);
             $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
             return new WhoopsHtmlDisplayer($whoops);
         });
 
-        $kernel->container()->singleton(WhoopsJsonDisplayer::class, function () use ($kernel) {
+        $kernel->container()->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
             $whoops = $kernel->container()->make(Run::class);
 
             $handler = new JsonResponseHandler();
