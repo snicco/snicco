@@ -35,7 +35,7 @@ final class MiddlewarePipeline
     private ?Request $current_request = null;
 
     /**
-     * @var Closure(Request):ResponseInterface $request_handler
+     * @var Closure(Request):ResponseInterface
      * @psalm-var Closure(Request=):ResponseInterface $request_handler
      * @psalm-suppress PropertyNotSetInConstructor
      */

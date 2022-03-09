@@ -13,8 +13,6 @@ interface ImmutableSession
 
     /**
      * Indicates if this session was newly created and has not been persisted yet.
-     *
-     * @return bool
      */
     public function isNew(): bool;
 
@@ -60,8 +58,6 @@ interface ImmutableSession
 
     /**
      * Return all USER-PROVIDED entries in the session.
-     *
-     * @return array
      */
     public function all(): array;
 

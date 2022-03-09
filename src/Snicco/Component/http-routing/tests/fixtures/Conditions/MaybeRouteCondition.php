@@ -10,7 +10,9 @@ use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 class MaybeRouteCondition extends RouteCondition
 {
 
-    /** @var string|bool */
+    /**
+     * @var string|bool
+     */
     private $make_it_pass;
 
     public function __construct($make_it_pass)

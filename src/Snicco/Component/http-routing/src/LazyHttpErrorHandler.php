@@ -20,7 +20,9 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
 
     private ContainerInterface $psr_container;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private HttpErrorHandler $error_handler;
 
     public function __construct(ContainerInterface $c)

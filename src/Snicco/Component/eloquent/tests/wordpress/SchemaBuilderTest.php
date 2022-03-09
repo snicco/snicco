@@ -1985,17 +1985,13 @@ class TestSchemaBuilder extends MySqlBuilder
      *
      * @param string $table
      * @param string $column
-     *
-     * @return string
      */
     public function getColumnType($table, $column): string
     {
         return $this->getFullColumnInfo($table)[$column]->Type ?? '';
     }
 
-    /**
-     * @param null|string $table
-     */
+    
     public function getFullColumnInfo(?string $table): array
     {
         $query = 'show full columns from ?';

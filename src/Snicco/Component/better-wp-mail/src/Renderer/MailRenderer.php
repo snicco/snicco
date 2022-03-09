@@ -10,7 +10,6 @@ interface MailRenderer
 {
 
     /**
-     *
      * @param array<string,mixed> $context
      *
      * @throws CouldNotRenderMailContent

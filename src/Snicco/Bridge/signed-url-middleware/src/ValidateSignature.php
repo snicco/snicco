@@ -21,7 +21,7 @@ final class ValidateSignature implements MiddlewareInterface
     private SignedUrlValidator $validator;
 
     /**
-     * @var Closure(ServerRequestInterface):string | null $request_context
+     * @var Closure(ServerRequestInterface):string | null
      */
     private ?Closure $request_context;
 

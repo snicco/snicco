@@ -95,7 +95,6 @@ class Arr
      * @psalm-return ($number is 1 ? T : list<T>)
      *
      * @throws InvalidArgumentException If the requested count is greater than the number of array elements
-     *
      */
     public static function random(array $array, int $number = 1)
     {
@@ -520,7 +519,6 @@ class Arr
     }
 
     /**
-     * @param iterable $array
      * @return list<mixed>
      * @psalm-suppress MixedAssignment
      */

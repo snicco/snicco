@@ -77,7 +77,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param array $bindings
      * @param bool $useReadPdo
      *
-     * @return array
      * @throws QueryException
      */
     public function select($query, $bindings = [], $useReadPdo = true): array
@@ -94,7 +93,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      *
-     * @return array
      * @throws QueryException
      */
     public function selectFromWriteConnection($query, $bindings = []): array
@@ -108,7 +106,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      *
-     * @return bool
      * @throws QueryException
      */
     public function insert($query, $bindings = []): bool
@@ -122,7 +119,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      *
-     * @return bool
      * @throws QueryException
      */
     public function statement($query, $bindings = []): bool
@@ -141,7 +137,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      *
-     * @return int
      * @throws QueryException
      */
     public function update($query, $bindings = []): int
@@ -155,7 +150,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      *
-     * @return int
      * @throws QueryException
      */
     public function affectingStatement($query, $bindings = []): int
@@ -175,7 +169,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      *
-     * @return int
      * @throws QueryException
      */
     public function delete($query, $bindings = []): int
@@ -188,7 +181,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      *
      * @param string $query
      *
-     * @return bool
      * @throws QueryException
      */
     public function unprepared($query): bool
@@ -210,8 +202,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param string $query
      * @param array $bindings
      * @param bool $useReadPdo
-     *
-     * @return Generator
      */
     public function cursor($query, $bindings = [], $useReadPdo = true): Generator
     {
@@ -264,8 +254,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
 
     /**
      * Reconnect to the database if a PDO connection is missing.
-     *
-     * @return void
      */
     protected function reconnectIfMissingConnection()
     {

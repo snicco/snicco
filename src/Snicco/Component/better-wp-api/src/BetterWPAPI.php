@@ -58,7 +58,6 @@ class BetterWPAPI
     /**
      * @template T
      *
-     * @param string $hook_name
      * @param T $filterable_value
      * @param mixed ...$args
      *

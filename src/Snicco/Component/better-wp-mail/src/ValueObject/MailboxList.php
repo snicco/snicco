@@ -32,8 +32,6 @@ final class MailboxList implements Countable, IteratorAggregate
 
     /**
      * @param Mailbox[]|MailboxList $list
-     *
-     * @return MailboxList
      */
     public function merge($list): MailboxList
     {
@@ -68,8 +66,6 @@ final class MailboxList implements Countable, IteratorAggregate
 
     /**
      * @param string|Mailbox $address
-     *
-     * @return bool
      */
     public function has($address): bool
     {
@@ -78,10 +74,7 @@ final class MailboxList implements Countable, IteratorAggregate
         return isset($this->addresses[$address->address()]);
     }
 
-    /**
-     * @return void
-     */
-    private function addAddress(Mailbox $address)
+    private function addAddress(Mailbox $address): void
     {
         $email = $address->address();
 

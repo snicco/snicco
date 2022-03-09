@@ -20,7 +20,7 @@ final class BladeViewFactory implements ViewFactory
     private IlluminateViewFactory $view_factory;
 
     /**
-     * @var string[] $view_directories
+     * @var string[]
      */
     private array $view_directories;
 

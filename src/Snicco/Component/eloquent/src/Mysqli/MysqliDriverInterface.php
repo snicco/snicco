@@ -28,7 +28,6 @@ interface MysqliDriverInterface extends PDOAdapter
     public function isStillConnected(): bool;
 
     /**
-     * @return bool
      * @throws RuntimeException
      */
     public function reconnect(): bool;

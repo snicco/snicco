@@ -80,7 +80,6 @@ class EventMapperTest extends WPTestCase
 
     /**
      * @test
-     *
      */
     public function a_wordpress_action_can_be_mapped_to_a_custom_event_and_the_event_will_dispatch(): void
     {

@@ -23,7 +23,9 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
     private string $default_connection;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private ConnectionInterface $mysqli_connection;
 
     private IlluminateConnectionResolver $connection_resolver;
@@ -48,8 +50,6 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
     /**
      * @param string $name
-     *
-     * @return ConnectionInterface
      */
     public function connection($name = null): ConnectionInterface
     {

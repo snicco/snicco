@@ -93,7 +93,6 @@ final class Psr16Storage implements SignedUrlStorage
     }
 
     /**
-     * @param string $key
      * @return array{left_usages:positive-int, expires_at:positive-int}
      * @throws BadIdentifier
      */

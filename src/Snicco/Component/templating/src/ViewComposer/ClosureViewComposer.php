@@ -15,7 +15,7 @@ final class ClosureViewComposer implements ViewComposer
 {
 
     /**
-     * @var Closure(T):T $composer
+     * @var Closure(T):T
      */
     private Closure $composer;
 

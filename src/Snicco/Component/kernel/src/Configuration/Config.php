@@ -11,7 +11,6 @@ abstract class Config
 {
 
     /**
-     * @param string $key
      * @param mixed $default
      * @return mixed
      */

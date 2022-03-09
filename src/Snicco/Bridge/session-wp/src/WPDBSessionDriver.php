@@ -25,7 +25,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
 {
 
     /**
-     * @var non-empty-string $table_name
+     * @var non-empty-string
      */
     private string $table_name;
 

@@ -31,8 +31,6 @@ interface EventDispatcher extends EventDispatcherInterface
     public function subscribe(string $event_subscriber): void;
 
     /**
-     *
-     * @param string $event_name
      * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
      *
      * @throws CantRemoveListener
