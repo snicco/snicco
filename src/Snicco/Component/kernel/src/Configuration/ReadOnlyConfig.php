@@ -28,7 +28,7 @@ final class ReadOnlyConfig extends Config
      */
     public function get(string $key, $default = null)
     {
-        if (!Arr::has($this->items, $key)) {
+        if (! Arr::has($this->items, $key)) {
             throw new MissingConfigKey("The key [$key] does not exist in the configuration.");
         }
 

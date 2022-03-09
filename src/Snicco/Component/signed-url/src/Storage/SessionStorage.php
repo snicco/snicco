@@ -98,7 +98,7 @@ final class SessionStorage implements SignedUrlStorage
     {
         $stored = $this->getStored();
 
-        if (!isset($stored[$identifier])) {
+        if (! isset($stored[$identifier])) {
             return 0;
         }
 

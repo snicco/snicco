@@ -47,6 +47,7 @@ final class SessionBundleTest extends WPTestCase
     use BundleTestHelpers;
 
     private BetterWPDB $better_wpdb;
+
     private string $dbname;
 
     protected function setUp(): void
@@ -56,7 +57,7 @@ final class SessionBundleTest extends WPTestCase
         $this->directories = $this->bundle_test->setUpDirectories();
         $this->better_wpdb = BetterWPDB::fromWpdb();
         $this->better_wpdb->unprepared('drop table if exists `my_plugin_sessions`');
-        $this->dbname = (string)($_ENV['DB_NAME'] ?? '');
+        $this->dbname = (string) ($_ENV['DB_NAME'] ?? '');
     }
 
     protected function tearDown(): void
@@ -276,7 +277,6 @@ final class SessionBundleTest extends WPTestCase
         });
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);
-
 
         $kernel = new Kernel(
             $this->newContainer(),

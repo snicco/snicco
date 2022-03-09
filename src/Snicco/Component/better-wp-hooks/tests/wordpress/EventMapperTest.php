@@ -39,6 +39,7 @@ class EventMapperTest extends WPTestCase
     use AssertListenerResponse;
 
     private EventMapper $event_mapper;
+
     private BaseEventDispatcher $dispatcher;
 
     protected function setUp(): void
@@ -683,6 +684,7 @@ class ConditionalFilter implements MappedFilter
     use ClassAsPayload;
 
     public string $value1;
+
     private string $value2;
 
     public function __construct(string $value1, string $value2)
@@ -755,6 +757,7 @@ class EventFilter1 implements MappedFilter
     use ClassAsPayload;
 
     public string $foo;
+
     public string $bar;
 
     public function __construct(string $foo, string $bar)
@@ -780,6 +783,7 @@ class EventFilter2 implements MappedFilter
     use ClassAsPayload;
 
     public string $foo;
+
     public string $bar;
 
     public function __construct(string $foo, string $bar)
@@ -831,7 +835,9 @@ class FooActionEvent implements MappedHook
     use ClassAsPayload;
 
     private string $foo;
+
     private string $bar;
+
     private string $baz;
 
     public function __construct(string $foo, string $bar, string $baz)

@@ -17,6 +17,7 @@ final class ConfigLoaderTest extends TestCase
     use CreateTestContainer;
 
     private string $fixtures_dir;
+
     private string $cache_dir;
 
     protected function setUp(): void

@@ -65,7 +65,7 @@ trait WPDBTestHelpers
 
         $success = $wpdb->insert($table, $data, $format) !== false;
 
-        if (!$success) {
+        if (! $success) {
             $this->fail('Failed to insert with wpdb for test setup.');
         }
     }
@@ -105,7 +105,7 @@ trait WPDBTestHelpers
 
         $success = $wpdb->update($table, $data, $where, $data_format, $where_format) !== false;
 
-        if (!$success) {
+        if (! $success) {
             $this->fail('Failed to update with wpdb.');
         }
     }

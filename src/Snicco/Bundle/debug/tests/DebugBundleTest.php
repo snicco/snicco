@@ -180,7 +180,7 @@ final class DebugBundleTest extends TestCase
                 throw new RuntimeException('debug stuff');
             });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         // Not using the default handler
         $this->assertStringContainsString('whoops', $body);
@@ -215,7 +215,7 @@ final class DebugBundleTest extends TestCase
                 throw new RuntimeException('debug stuff');
             });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         /** @var array $decoded */
         $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
@@ -256,7 +256,7 @@ final class DebugBundleTest extends TestCase
                 throw new RuntimeException('debug stuff');
             });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringNotContainsString('whoops', $body);
     }
@@ -287,7 +287,7 @@ final class DebugBundleTest extends TestCase
             throw new RuntimeException('debug stuff');
         });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringNotContainsString('whoops', $body);
     }
@@ -317,7 +317,7 @@ final class DebugBundleTest extends TestCase
             throw new RuntimeException('debug stuff');
         });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         // Not using the default handler
         $this->assertStringNotContainsString('whoops', $body);

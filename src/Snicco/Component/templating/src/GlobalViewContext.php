@@ -60,7 +60,7 @@ final class GlobalViewContext
              */
             public function offsetExists($offset): bool
             {
-                return Arr::has($this->context, (string)$offset);
+                return Arr::has($this->context, (string) $offset);
             }
 
             /**
@@ -69,7 +69,7 @@ final class GlobalViewContext
              */
             public function offsetGet($offset)
             {
-                return Arr::get($this->context, (string)$offset);
+                return Arr::get($this->context, (string) $offset);
             }
 
             /**

@@ -17,22 +17,29 @@ use function ucfirst;
 final class SessionConfig
 {
     private string $path;
+
     private string $cookie_name;
+
     private ?string $cookie_domain;
 
     /**
      * @var "Lax" | "Strict" | "None; Secure"
      */
     private string $same_site;
+
     private bool $http_only;
+
     private bool $only_secure;
 
     /**
      * @var null|positive-int
      */
     private ?int $absolute_lifetime_in_sec;
+
     private int $idle_timeout;
+
     private int $rotation_interval;
+
     private int $gc_percentage;
 
     /**
@@ -55,7 +62,7 @@ final class SessionConfig
             ? '/' . ltrim($config['path'], '/')
             : '/';
 
-        if (!isset($config['cookie_name'])) {
+        if (! isset($config['cookie_name'])) {
             throw new InvalidArgumentException('A cookie name is required');
         } else {
             $this->cookie_name = $config['cookie_name'];
@@ -63,7 +70,7 @@ final class SessionConfig
 
         $this->absolute_lifetime_in_sec = $config['absolute_lifetime_in_sec'] ?? null;
 
-        if (!isset($config['idle_timeout_in_sec'])) {
+        if (! isset($config['idle_timeout_in_sec'])) {
             throw new InvalidArgumentException('An idle timeout is required.');
         } else {
             $this->idle_timeout = $config['idle_timeout_in_sec'];
@@ -76,7 +83,7 @@ final class SessionConfig
             $same_site = 'None; Secure';
         }
 
-        if (!in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'])) {
+        if (! in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'])) {
             throw new InvalidArgumentException(
                 sprintf('same_site must be one of [%s].', implode(', ', $req))
             );
@@ -85,7 +92,7 @@ final class SessionConfig
             $this->same_site = $same_site;
         }
 
-        if (!isset($config['rotation_interval_in_sec'])) {
+        if (! isset($config['rotation_interval_in_sec'])) {
             throw new InvalidArgumentException('A rotation interval is required.');
         } else {
             $this->rotation_interval = $config['rotation_interval_in_sec'];

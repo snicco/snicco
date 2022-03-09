@@ -25,6 +25,7 @@ use function call_user_func_array;
 final class ControllerAction
 {
     private object $controller_instance;
+
     private string $controller_method;
 
     /**
@@ -66,7 +67,7 @@ final class ControllerAction
      */
     public function middleware(): array
     {
-        if (!$this->controller_instance instanceof Controller) {
+        if (! $this->controller_instance instanceof Controller) {
             return [];
         }
 

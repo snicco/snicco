@@ -72,19 +72,19 @@ final class BaseEventDispatcher implements EventDispatcher
             return;
         }
 
-        if (!isset($this->listeners[$event_name])) {
+        if (! isset($this->listeners[$event_name])) {
             return;
         }
 
         $id = $this->parseListenerId($this->validatedListener($listener));
 
-        if (!isset($this->listeners[$event_name][$id])) {
+        if (! isset($this->listeners[$event_name][$id])) {
             return;
         }
 
         $listener = $this->listeners[$event_name][$id];
 
-        if (!$listener instanceof Closure && in_array(Unremovable::class, (array)class_implements($listener[0]))) {
+        if (! $listener instanceof Closure && in_array(Unremovable::class, (array) class_implements($listener[0]))) {
             throw CantRemoveListener::thatIsMarkedAsUnremovable(
                 $listener,
                 $event_name
@@ -96,9 +96,9 @@ final class BaseEventDispatcher implements EventDispatcher
 
     public function subscribe(string $event_subscriber): void
     {
-        if (!in_array(
+        if (! in_array(
             EventSubscriber::class,
-            (array)class_implements($event_subscriber),
+            (array) class_implements($event_subscriber),
             true
         )) {
             throw new InvalidArgumentException(
@@ -167,7 +167,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
     private function mergeReflectionListeners(string $event_name, array $listeners): array
     {
-        if (!class_exists($event_name)) {
+        if (! class_exists($event_name)) {
             return $listeners;
         }
 
@@ -177,7 +177,6 @@ final class BaseEventDispatcher implements EventDispatcher
             ? []
             // @codeCoverageIgnoreEnd
             : $interfaces;
-
 
         foreach ($interfaces as $interface) {
             $listeners = array_merge($listeners, $this->getListenersForEvent($interface, false));
@@ -245,28 +244,28 @@ final class BaseEventDispatcher implements EventDispatcher
         }
 
         if (is_string($listener)) {
-            if (!class_exists($listener)) {
+            if (! class_exists($listener)) {
                 throw InvalidListener::becauseListenerClassDoesntExist($listener);
             }
 
             $invokable = method_exists($listener, '__invoke');
 
-            if (!$invokable) {
+            if (! $invokable) {
                 throw InvalidListener::becauseListenerCantBeInvoked($listener);
             }
 
             return [$listener, '__invoke'];
         }
 
-        if (!is_array($listener)) {
+        if (! is_array($listener)) {
             throw new InvalidListener('Listeners must be a string, array or closure.');
         }
 
-        if (!class_exists($listener[0])) {
+        if (! class_exists($listener[0])) {
             throw InvalidListener::becauseListenerClassDoesntExist($listener[0]);
         }
 
-        if (!method_exists($listener[0], $listener[1])) {
+        if (! method_exists($listener[0], $listener[1])) {
             throw InvalidListener::becauseProvidedClassMethodDoesntExist($listener);
         }
         return $listener;

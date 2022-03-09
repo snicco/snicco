@@ -102,7 +102,7 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         $event_names = is_array($event_names) ? $event_names : [$event_names];
 
-        if (!count($event_names)) {
+        if (! count($event_names)) {
             throw new InvalidArgumentException('$event_names cant be an empty array.');
         }
 
@@ -158,7 +158,7 @@ final class TestableEventDispatcher implements EventDispatcher
             return;
         }
 
-        if (!$condition) {
+        if (! $condition) {
             $this->assertDispatchedTimes($event_name, 0);
         } else {
             PHPUnit::assertCount(
@@ -195,7 +195,7 @@ final class TestableEventDispatcher implements EventDispatcher
         }
 
         if (count($this->dont_fake)) {
-            return !in_array($event_name, $this->dont_fake, true);
+            return ! in_array($event_name, $this->dont_fake, true);
         }
 
         if (in_array($event_name, $this->events_to_fake, true)) {
@@ -213,7 +213,7 @@ final class TestableEventDispatcher implements EventDispatcher
         $passed = [];
 
         foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
-            if (!$callback_condition) {
+            if (! $callback_condition) {
                 $passed[] = $event;
                 continue;
             }
@@ -225,7 +225,7 @@ final class TestableEventDispatcher implements EventDispatcher
 
             $res = call_user_func_array($callback_condition, $payload);
 
-            if (!is_bool($res)) {
+            if (! is_bool($res)) {
                 throw new LogicException('Test closure that asserts events did not return boolean.');
             }
             if ($res) {

@@ -46,10 +46,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
             ->toArray();
 
         $this->assertCount(2, $records);
-        $this->assertEquals((object)[
+        $this->assertEquals((object) [
             'name' => 'berlin',
         ], $records[0]);
-        $this->assertEquals((object)[
+        $this->assertEquals((object) [
             'name' => 'munich',
         ], $records[1]);
     }
@@ -64,7 +64,7 @@ final class MysqliConnectionQueriesTest extends WPTestCase
             [2]
         );
 
-        $this->assertEquals((object)[
+        $this->assertEquals((object) [
             'name' => 'madrid',
         ], $records[0]);
     }

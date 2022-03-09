@@ -28,7 +28,9 @@ use const PATHINFO_FILENAME;
 final class PHPFileRouteLoader implements RouteLoader
 {
     public const VERSION_FLAG = '-v';
+
     public const FRONTEND_ROUTE_FILENAME = 'frontend';
+
     public const ADMIN_ROUTE_FILENAME = 'admin';
 
     // Match all files that end with ".php" and don't start with an underscore.
@@ -275,7 +277,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $param = $params[0] ?? null;
 
-        if (!$param instanceof ReflectionParameter || !$param->getType() instanceof ReflectionNamedType) {
+        if (! $param instanceof ReflectionParameter || ! $param->getType() instanceof ReflectionNamedType) {
             throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
         }
 

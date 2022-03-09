@@ -47,7 +47,7 @@ class Arr
      */
     public static function only(array $array, $keys): array
     {
-        return array_intersect_key($array, array_flip((array)$keys));
+        return array_intersect_key($array, array_flip((array) $keys));
     }
 
     /**
@@ -117,7 +117,7 @@ class Arr
 
         $results = [];
 
-        foreach ((array)$keys as $key) {
+        foreach ((array) $keys as $key) {
             if ($number === 1) {
                 return $array[$key];
             }
@@ -152,7 +152,7 @@ class Arr
     public static function forget(array &$array, $keys): void
     {
         $original = &$array;
-        $keys = (array)$keys;
+        $keys = (array) $keys;
         self::checkAllStringKeys($keys, 'forget');
 
         if (count($keys) === 0) {
@@ -270,7 +270,7 @@ class Arr
             // If the key doesn't exist at this depth, we will just create an empty array
             // to hold the next value, allowing us to create the arrays to hold final
             // values at the correct depth. Then we'll keep digging into the array.
-            if (!isset($array[$key]) || !is_array($array[$key])) {
+            if (! isset($array[$key]) || ! is_array($array[$key])) {
                 $array[$key] = [];
             }
 
@@ -382,7 +382,7 @@ class Arr
             return $array[$key];
         }
 
-        $key = (string)$key;
+        $key = (string) $key;
 
         if (false === strpos($key, '.')) {
             return $array[$key] ?? self::returnDefault($default);
@@ -437,7 +437,7 @@ class Arr
             unset($keys[$i]);
 
             if ($segment === '*') {
-                if (!is_array($target)) {
+                if (! is_array($target)) {
                     return self::returnDefault($default);
                 }
 
@@ -476,7 +476,7 @@ class Arr
         $results = [];
 
         foreach ($array as $values) {
-            if (!is_iterable($values)) {
+            if (! is_iterable($values)) {
                 continue;
             }
             foreach ($values as $value) {
@@ -489,7 +489,7 @@ class Arr
     private static function checkAllStringKeys(array $keys, string $called_method): void
     {
         foreach ($keys as $key) {
-            if (!is_string($key)) {
+            if (! is_string($key)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         "\$keys has to be a string or an array of string when calling [%s].\nGot [%s]",
@@ -506,7 +506,7 @@ class Arr
      */
     private static function checkIsArray($array, string $called_method): void
     {
-        if (!self::accessible($array)) {
+        if (! self::accessible($array)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "\$array has to be an array or instance of ArrayAccess when calling [%s].\nGot [%s]",
@@ -537,7 +537,7 @@ class Arr
      */
     private static function checkKeyStringInt($key, string $called_method): void
     {
-        if (!is_string($key) && !is_int($key)) {
+        if (! is_string($key) && ! is_int($key)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "\$key has to be a string or an integer when calling [%s].\nGot [%s]",

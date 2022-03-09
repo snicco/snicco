@@ -1287,7 +1287,6 @@ class SchemaBuilderTest extends WPTestCase
     /**
      * Foreign Key Constraints
      */
-
     protected function assertDbTable(string $table_name = 'wp_books'): AssertableWpDB
     {
         return new AssertableWpDB($table_name);
@@ -2048,7 +2047,6 @@ class TestSchemaBuilder extends MySqlBuilder
         return $this->getFullColumnInfo($table)[$column]->Type ?? '';
     }
 
-    
     public function getFullColumnInfo(?string $table): array
     {
         $query = 'show full columns from ?';

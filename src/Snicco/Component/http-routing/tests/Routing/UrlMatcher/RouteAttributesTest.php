@@ -263,7 +263,6 @@ class RouteAttributesTest extends HttpRunnerTestCase
                 ->middleware(['foo:FOO', 'bar:BAR']);
         });
 
-
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static . ':BAR:FOO', $request);
     }

@@ -267,7 +267,7 @@ class TransactionsTest extends WPTestCase
 
     private function createInitialTable(): void
     {
-        if (!Schema::hasTable('football_teams')) {
+        if (! Schema::hasTable('football_teams')) {
             Schema::create('football_teams', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('name')->unique();

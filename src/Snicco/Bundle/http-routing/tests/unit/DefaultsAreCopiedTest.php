@@ -40,7 +40,6 @@ final class DefaultsAreCopiedTest extends TestCase
 
         $kernel->boot();
 
-
         $this->assertTrue(is_file($this->directories->configDir() . '/routing.php'));
 
         $this->assertSame(

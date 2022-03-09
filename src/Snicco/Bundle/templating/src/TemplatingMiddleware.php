@@ -34,7 +34,7 @@ final class TemplatingMiddleware extends Middleware
     {
         $response = $next($request);
 
-        if (!$response instanceof ViewResponse) {
+        if (! $response instanceof ViewResponse) {
             return $response;
         }
 

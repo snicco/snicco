@@ -49,7 +49,7 @@ final class WritableConfig extends Config
             return;
         }
 
-        if (!is_array($existing_config)) {
+        if (! is_array($existing_config)) {
             return;
         }
 
@@ -70,7 +70,7 @@ final class WritableConfig extends Config
      */
     public function append(string $key, $value): void
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             throw new LogicException("Cant append to missing config key [$key].");
         }
         $current = $this->get($key);
@@ -108,7 +108,7 @@ final class WritableConfig extends Config
      */
     public function setIfMissing(string $key, $value): void
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             $this->set($key, $value);
         }
     }
@@ -124,7 +124,7 @@ final class WritableConfig extends Config
      */
     public function prepend(string $key, $value): void
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             throw new LogicException("Cant prepend to missing config key [$key].");
         }
         $current = $this->get($key);
@@ -173,7 +173,7 @@ final class WritableConfig extends Config
         $current = $exiting_config;
 
         foreach ($extend_with as $key => $value) {
-            if (!isset($current[$key])) {
+            if (! isset($current[$key])) {
                 $current[$key] = $value;
             }
         }

@@ -121,7 +121,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $this->assertSame(
             RoutingBundleTestController::class . ':middleware_one:middleware_three',
-            (string)$response->getBody()
+            (string) $response->getBody()
         );
 
         $request = new ServerRequest('GET', '/middleware2');
@@ -137,7 +137,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $this->assertSame(
             RoutingBundleTestController::class . ':middleware_two:middleware_one:middleware_three',
-            (string)$response->getBody()
+            (string) $response->getBody()
         );
 
         // Request with no routes
@@ -154,7 +154,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $this->assertSame(
             ':middleware_three',
-            (string)$response->getBody()
+            (string) $response->getBody()
         );
     }
 

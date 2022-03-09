@@ -42,7 +42,7 @@ final class ValidateSignature implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->check_only_unsafe_methods) {
-            if (!in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
+            if (! in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
                 return $handler->handle($request);
             }
         }

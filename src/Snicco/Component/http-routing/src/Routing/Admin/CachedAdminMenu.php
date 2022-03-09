@@ -49,7 +49,7 @@ final class CachedAdminMenu implements AdminMenu
 
         foreach ($this->serialized_menu_items as $item) {
             $res = unserialize($item);
-            if (!$res instanceof AdminMenuItem) {
+            if (! $res instanceof AdminMenuItem) {
                 throw new RuntimeException(
                     "Cached admin menu is corrupted.\nOne item could not be unserialized: [$item]"
                 );

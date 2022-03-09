@@ -31,9 +31,13 @@ use const SEEK_CUR;
 final class Attachment
 {
     private string $encoding = 'base64';
+
     private string $content_type;
+
     private string $filename;
+
     private string $disposition;
+
     private ?string $cid = null;
 
     /**
@@ -67,7 +71,7 @@ final class Attachment
         string $content_type = null,
         bool $inline = false
     ): Attachment {
-        if (!is_readable($path)) {
+        if (! is_readable($path)) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
         }
         $stream = @fopen($path, 'r');
@@ -91,7 +95,7 @@ final class Attachment
         string $content_type = null,
         bool $inline = false
     ): Attachment {
-        if (!is_string($data) && !is_resource($data)) {
+        if (! is_string($data) && ! is_resource($data)) {
             throw new InvalidArgumentException(
                 sprintf("\$data must be string or resource.\nGot [%s].", gettype($data))
             );
@@ -142,7 +146,7 @@ final class Attachment
 
     public function cid(): string
     {
-        if ('inline' !== $this->disposition || !isset($this->cid)) {
+        if ('inline' !== $this->disposition || ! isset($this->cid)) {
             throw new LogicException('Attachment is not embedded and has no cid.');
         }
         return $this->cid;

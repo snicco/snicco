@@ -21,7 +21,9 @@ use const PHP_INT_MIN;
 final class EventMapper
 {
     private EventDispatcher $event_dispatcher;
+
     private WPHookAPI $wp;
+
     private MappedHookFactory $event_factory;
 
     /**
@@ -98,11 +100,11 @@ final class EventMapper
             );
         }
 
-        if (!class_exists($map_to)) {
+        if (! class_exists($map_to)) {
             throw new InvalidArgumentException("The event class [$map_to] does not exist.");
         }
 
-        $interfaces = (array)class_implements($map_to);
+        $interfaces = (array) class_implements($map_to);
 
         if (in_array(MappedFilter::class, $interfaces, true)) {
             $this->mapped_filters[$wordpress_hook_name][$map_to] = true;
@@ -160,7 +162,7 @@ final class EventMapper
                 $args_from_wordpress_hooks
             );
 
-            if (!$event->shouldDispatch()) {
+            if (! $event->shouldDispatch()) {
                 // We don't need to return any values here.
                 return;
             }
@@ -183,7 +185,7 @@ final class EventMapper
                 $args_from_wordpress_hooks
             );
 
-            if (!isset($args_from_wordpress_hooks[0])) {
+            if (! isset($args_from_wordpress_hooks[0])) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
                     "Event mapper received invalid arguments from WP for mapped hook [$event_class]."
@@ -191,7 +193,7 @@ final class EventMapper
                 // @codeCoverageIgnoreEnd
             }
 
-            if (!$event->shouldDispatch()) {
+            if (! $event->shouldDispatch()) {
                 // It's crucial to return the first argument here.
                 return $args_from_wordpress_hooks[0];
             }
@@ -219,7 +221,7 @@ final class EventMapper
         // Unless there is another filter registered with the priority PHP_INT_MIN
         // all we have to do is add our mapped event at this priority.
         // Even if other callback were to be added later with the same priority they would still be run after ours.
-        if (!$wp_hook || empty($wp_hook->callbacks)) {
+        if (! $wp_hook || empty($wp_hook->callbacks)) {
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
             return;
         }

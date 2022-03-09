@@ -12,7 +12,9 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 final class NoRobots extends Middleware
 {
     private bool $noarchive;
+
     private bool $nofollow;
+
     private bool $noindex;
 
     public function __construct(bool $noindex = true, bool $nofollow = true, bool $noarchive = true)

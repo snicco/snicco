@@ -72,7 +72,7 @@ final class WPAdminMenu
 
     private function parseSlug(string $slug): string
     {
-        if (!Str::contains($slug, '.php')) {
+        if (! Str::contains($slug, '.php')) {
             throw new LogicException(
                 "Admin menu item with slug [$slug] is miss configured as it does not contain a path-segment with '.php'.\nPlease check your admin.php route file."
             );

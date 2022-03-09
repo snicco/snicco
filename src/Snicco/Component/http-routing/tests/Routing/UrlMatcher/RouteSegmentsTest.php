@@ -42,7 +42,6 @@ class RouteSegmentsTest extends HttpRunnerTestCase
             );
         });
 
-
         $request = $this->frontendRequest(rawurlencode('новости'));
         $this->assertResponseBody('static', $request);
 
@@ -62,7 +61,6 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $this->assertResponseBody('static', $this->frontendRequest('/foo'));
         $this->assertResponseBody('', $this->frontendRequest('/FOO'));
     }
-
 
     /**
      * @test

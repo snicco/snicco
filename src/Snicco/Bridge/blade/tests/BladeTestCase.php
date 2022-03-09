@@ -22,10 +22,15 @@ use function unlink;
 class BladeTestCase extends TestCase
 {
     protected string $blade_cache;
+
     protected string $blade_views;
+
     protected ViewEngine $view_engine;
+
     protected ViewComposerCollection $composers;
+
     protected GlobalViewContext $global_view_context;
+
     protected BladeStandalone $blade;
 
     /**

@@ -25,6 +25,7 @@ use function is_string;
 final class Psr16SessionDriver implements SessionDriver
 {
     private CacheInterface $cache;
+
     private int $idle_timeout_in_seconds;
 
     public function __construct(CacheInterface $cache, int $idle_timeout_in_seconds)
@@ -109,32 +110,32 @@ final class Psr16SessionDriver implements SessionDriver
             throw BadSessionID::forSelector($session_id, get_class($this->cache));
         }
 
-        if (!is_array($payload)) {
+        if (! is_array($payload)) {
             throw new CouldNotReadSessionContent("Session content for id [$session_id] is not an array.");
         }
 
-        if (!isset($payload['last_activity']) || !is_int($payload['last_activity'])) {
+        if (! isset($payload['last_activity']) || ! is_int($payload['last_activity'])) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [last_activity] is not an integer for selector [$session_id]."
             );
         }
 
-        if (!isset($payload['data']) || !is_string($payload['data'])) {
+        if (! isset($payload['data']) || ! is_string($payload['data'])) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [data] is not a string for selector [$session_id]."
             );
         }
 
-        if (!isset($payload['hashed_validator']) || !is_string($payload['hashed_validator'])) {
+        if (! isset($payload['hashed_validator']) || ! is_string($payload['hashed_validator'])) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [hashed_validator] is not a string for selector [$session_id]."
             );
         }
 
         if (
-            !array_key_exists('user_id', $payload)
+            ! array_key_exists('user_id', $payload)
             ||
-            (!is_string($payload['user_id']) && !is_int($payload['user_id']) && !is_null($payload['user_id']))
+            (! is_string($payload['user_id']) && ! is_int($payload['user_id']) && ! is_null($payload['user_id']))
         ) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [user_id] is not a null,string or integer for selector [$session_id]."

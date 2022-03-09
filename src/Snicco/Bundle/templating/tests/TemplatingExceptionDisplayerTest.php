@@ -129,7 +129,6 @@ final class TemplatingExceptionDisplayerTest extends TestCase
         $this->assertStringContainsString('403-frontend', $content);
     }
 
-
     private function getInformation(
         int $status_code,
         string $id,

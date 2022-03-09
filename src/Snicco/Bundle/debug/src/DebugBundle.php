@@ -70,7 +70,7 @@ final class DebugBundle implements Bundle
 
         $defaults = require dirname(__DIR__) . '/config/debug.php';
 
-        if (!is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
+        if (! is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
             $copied = copy(
                 dirname(__DIR__) . '/config/debug.php',
                 $to

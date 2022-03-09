@@ -24,9 +24,13 @@ use const PHP_INT_MIN;
 final class HttpKernelRunner
 {
     private HttpKernel $http_kernel;
+
     private ServerRequestCreator $request_creator;
+
     private EventDispatcherInterface $event_dispatcher;
+
     private ResponseEmitter $emitter;
+
     private StreamFactoryInterface $stream_factory;
 
     /**
@@ -112,11 +116,11 @@ final class HttpKernelRunner
             $send_headers = $response->shouldHeadersBeSent();
         }
 
-        if (!$send_headers) {
+        if (! $send_headers) {
             return;
         }
 
-        if (!$send_body) {
+        if (! $send_body) {
             $response = $response->withBody($this->stream_factory->createStream(''));
         }
 
@@ -151,11 +155,11 @@ final class HttpKernelRunner
             $send_body_now = true;
         }
 
-        if (!$send_headers) {
+        if (! $send_headers) {
             return;
         }
 
-        if (!$send_body_now) {
+        if (! $send_body_now) {
             if ($send_body) {
                 $stream = $response->getBody();
                 add_action('all_admin_notices', function () use ($stream) {

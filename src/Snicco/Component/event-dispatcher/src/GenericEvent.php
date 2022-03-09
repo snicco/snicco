@@ -9,6 +9,7 @@ use function get_class;
 final class GenericEvent implements Event
 {
     private array $arguments;
+
     private string $name;
 
     public function __construct(string $name, array $arguments = [])

@@ -16,7 +16,6 @@ class HttpException extends RuntimeException
      */
     private array $response_headers;
 
-
     /**
      * @param array<string,string> $response_headers
      */
@@ -45,7 +44,7 @@ class HttpException extends RuntimeException
             $status_code,
             $previous->getMessage(),
             $response_headers,
-            (int)$previous->getCode(),
+            (int) $previous->getCode(),
             $previous
         );
     }

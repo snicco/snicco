@@ -30,9 +30,13 @@ use function is_null;
 final class FactorySessionManager implements SessionManager
 {
     private SessionConfig $config;
+
     private SessionDriver $driver;
+
     private Clock $clock;
+
     private SessionEventDispatcher $event_dispatcher;
+
     private Serializer $serializer;
 
     public function __construct(
@@ -114,7 +118,7 @@ final class FactorySessionManager implements SessionManager
             $provided_validator = $this->hash($id->validator());
 
             // Do we have a timing-based side-channel attack?
-            if (!hash_equals($stored_validator, $provided_validator)) {
+            if (! hash_equals($stored_validator, $provided_validator)) {
                 try {
                     $this->driver->destroy([$id->selector()]);
                 } // @codeCoverageIgnoreStart

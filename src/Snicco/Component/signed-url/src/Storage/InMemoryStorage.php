@@ -42,7 +42,7 @@ final class InMemoryStorage implements SignedUrlStorage
 
     public function consume(string $identifier): void
     {
-        if (!isset($this->links[$identifier])) {
+        if (! isset($this->links[$identifier])) {
             throw BadIdentifier::for($identifier);
         }
 

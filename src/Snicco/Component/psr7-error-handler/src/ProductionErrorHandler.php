@@ -23,8 +23,11 @@ use function strtolower;
 final class ProductionErrorHandler implements HttpErrorHandler
 {
     private ResponseFactoryInterface $response_factory;
+
     private DisplayerFilter $filter;
+
     private RequestAwareLogger $logger;
+
     private ExceptionInformationProvider $information_provider;
 
     /**
@@ -126,7 +129,7 @@ final class ProductionErrorHandler implements HttpErrorHandler
 
     private function withHttpHeaders(Throwable $transformed, ResponseInterface $response): ResponseInterface
     {
-        if (!$transformed instanceof HttpException) {
+        if (! $transformed instanceof HttpException) {
             return $response;
         }
 

@@ -484,7 +484,7 @@ final class FactorySessionManagerTest extends TestCase
 
         /** @var array{0:string, 1:string } $parts */
         $parts = explode('|', $id->asString());
-        $tampered = $parts[0] . '|' . 'tempered' . (string)substr($parts[1], strlen('tempered'));
+        $tampered = $parts[0] . '|' . 'tempered' . (string) substr($parts[1], strlen('tempered'));
 
         $_COOKIE[$this->cookie_name] = $tampered;
 
@@ -510,7 +510,7 @@ final class FactorySessionManagerTest extends TestCase
 
         /** @var array{0:string, 1:string } $parts */
         $parts = explode('|', $id->asString());
-        $tampered = $parts[0] . '|' . 'tempered' . (string)substr($parts[1], strlen('tempered'));
+        $tampered = $parts[0] . '|' . 'tempered' . (string) substr($parts[1], strlen('tempered'));
 
         $_COOKIE[$this->cookie_name] = $tampered;
 

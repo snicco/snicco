@@ -28,7 +28,7 @@ final class RoutingMiddleware extends Middleware
     {
         $result = $this->url_matcher->dispatch($request);
 
-        if (!$result->isMatch()) {
+        if (! $result->isMatch()) {
             return $next($request);
         }
 

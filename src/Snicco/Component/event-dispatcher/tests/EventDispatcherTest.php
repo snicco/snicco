@@ -158,7 +158,7 @@ class EventDispatcherTest extends TestCase
         $dispatcher = $this->getDispatcher();
 
         $dispatcher->listen(stdClass::class, function (stdClass $event) {
-            $this->respondedToEvent(stdClass::class, 'closure1', (string)$event->foo . (string)$event->bar);
+            $this->respondedToEvent(stdClass::class, 'closure1', (string) $event->foo . (string) $event->bar);
         });
 
         $payload = new stdClass();

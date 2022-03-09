@@ -27,13 +27,15 @@ use const JSON_THROW_ON_ERROR;
 final class AssertableResponse
 {
     private Response $psr_response;
+
     private string $streamed_content;
+
     private int $status_code;
 
     public function __construct(Response $response)
     {
         $this->psr_response = $response;
-        $this->streamed_content = (string)$this->psr_response->getBody();
+        $this->streamed_content = (string) $this->psr_response->getBody();
         $this->status_code = $this->psr_response->getStatusCode();
     }
 
@@ -62,7 +64,7 @@ final class AssertableResponse
 
         PHPUnit::assertTrue(
             $this->psr_response->isSuccessful(),
-            'Response status code [' . (string)$this->status_code . '] is not a success status code.'
+            'Response status code [' . (string) $this->status_code . '] is not a success status code.'
         );
 
         return $this;

@@ -18,6 +18,7 @@ final class InMemoryDriver implements UserSessionsDriver
     private array $storage = [];
 
     private Clock $clock;
+
     private bool $fail_gc;
 
     public function __construct(Clock $clock = null, bool $fail_gc = false)
@@ -51,7 +52,7 @@ final class InMemoryDriver implements UserSessionsDriver
 
     public function read(string $selector): SerializedSession
     {
-        if (!isset($this->storage[$selector])) {
+        if (! isset($this->storage[$selector])) {
             throw BadSessionID::forSelector($selector, 'array');
         }
         return SerializedSession::fromString(
@@ -64,7 +65,7 @@ final class InMemoryDriver implements UserSessionsDriver
 
     public function touch(string $selector, int $current_timestamp): void
     {
-        if (!isset($this->storage[$selector])) {
+        if (! isset($this->storage[$selector])) {
             throw BadSessionID::forSelector($selector, __CLASS__);
         }
 

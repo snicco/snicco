@@ -24,11 +24,17 @@ use function strip_tags;
 class Email
 {
     protected string $subject = '';
+
     protected ?string $html = null;
+
     protected ?string $html_template = null;
+
     protected ?string $text_template = null;
+
     protected ?string $text = null;
+
     protected string $text_charset = 'utf-8';
+
     protected string $html_charset = 'utf-8';
 
     /**
@@ -413,7 +419,7 @@ class Email
 
     final public function htmlBody(): ?string
     {
-        if (!isset($this->html)) {
+        if (! isset($this->html)) {
             return null;
         }
 

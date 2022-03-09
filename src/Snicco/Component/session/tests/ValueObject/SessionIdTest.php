@@ -32,7 +32,7 @@ final class SessionIdTest extends TestCase
         $from_cookie = SessionId::fromCookieId($id->asString());
 
         $this->assertSame($id->asString(), $from_cookie->asString());
-        $this->assertSame((string)$id, (string)$from_cookie);
+        $this->assertSame((string) $id, (string) $from_cookie);
         $this->assertSame($id->selector(), $from_cookie->selector());
         $this->assertSame($id->validator(), $from_cookie->validator());
     }
@@ -96,6 +96,6 @@ final class SessionIdTest extends TestCase
         $this->assertSame($parts[1], $id->validator());
 
         $this->assertSame($id->selector() . '|' . $id->validator(), $id->asString());
-        $this->assertSame($id->selector() . '|' . $id->validator(), (string)$id);
+        $this->assertSame($id->selector() . '|' . $id->validator(), (string) $id);
     }
 }

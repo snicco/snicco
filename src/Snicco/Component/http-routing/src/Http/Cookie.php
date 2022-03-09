@@ -124,7 +124,7 @@ final class Cookie
             $same_site = 'None';
         }
 
-        if (!in_array($same_site, ['Lax', 'Strict', 'None'])) {
+        if (! in_array($same_site, ['Lax', 'Strict', 'None'])) {
             throw new LogicException(
                 "The value [$same_site] is not supported for the SameSite cookie."
             );
@@ -146,7 +146,7 @@ final class Cookie
      */
     public function withExpiryTimestamp($timestamp): Cookie
     {
-        if (!is_int($timestamp) && !$timestamp instanceof DateTimeImmutable) {
+        if (! is_int($timestamp) && ! $timestamp instanceof DateTimeImmutable) {
             throw new InvalidArgumentException(
                 '$timestamp must be an integer or DataTimeInterface'
             );

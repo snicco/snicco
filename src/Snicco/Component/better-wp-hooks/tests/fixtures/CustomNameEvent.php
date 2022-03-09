@@ -12,6 +12,7 @@ use function get_class;
 final class CustomNameEvent implements ExposeToWP, Event
 {
     public string $value;
+
     private ?string $name;
 
     public function __construct(string $value, string $name = null)

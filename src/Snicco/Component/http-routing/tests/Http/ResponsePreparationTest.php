@@ -13,7 +13,9 @@ class ResponsePreparationTest extends TestCase
     use CreateTestPsr17Factories;
 
     private ResponseFactory $factory;
+
     private ResponsePreparation $preparation;
+
     private Request $request;
 
     protected function setUp(): void

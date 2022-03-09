@@ -31,7 +31,6 @@ final class ConfigExceptionsTest extends TestCase
 {
     use BundleTestHelpers;
 
-
     /**
      * @test
      */

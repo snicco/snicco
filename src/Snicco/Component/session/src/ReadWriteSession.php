@@ -36,11 +36,17 @@ use function is_string;
 final class ReadWriteSession implements Session
 {
     private SessionId $id;
+
     private int $last_activity;
+
     private array $attributes;
+
     private array $original_attributes;
+
     private bool $locked = false;
+
     private bool $is_new = false;
+
     private ?SessionId $invalidated_id = null;
 
     /**
@@ -56,11 +62,11 @@ final class ReadWriteSession implements Session
         $this->id = $id;
         $this->attributes = $data;
 
-        if (!$this->has('_sniccowp.timestamps.created_at')) {
+        if (! $this->has('_sniccowp.timestamps.created_at')) {
             $this->put('_sniccowp.timestamps.created_at', $last_activity);
             $this->is_new = true;
         }
-        if (!$this->has('_sniccowp.timestamps.last_rotated')) {
+        if (! $this->has('_sniccowp.timestamps.last_rotated')) {
             $this->put('_sniccowp.timestamps.last_rotated', $last_activity);
         }
 
@@ -85,7 +91,7 @@ final class ReadWriteSession implements Session
     {
         $this->checkIfLocked();
 
-        if (!is_array($key)) {
+        if (! is_array($key)) {
             $key = [
                 $key => $value,
             ];
@@ -114,7 +120,7 @@ final class ReadWriteSession implements Session
     public function createdAt(): int
     {
         $ts = $this->get('_sniccowp.timestamps.created_at');
-        if (!is_int($ts)) {
+        if (! is_int($ts)) {
             throw new RuntimeException(
                 'The session storage seems corrupted as the value for key [_sniccowp.timestamps.created_at] is not an integer.'
             );
@@ -129,11 +135,11 @@ final class ReadWriteSession implements Session
 
     public function increment(string $key, int $amount = 1, int $start_value = 0): void
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             $this->put($key, $start_value);
         }
         $current = $this->get($key, 0);
-        if (!is_int($current)) {
+        if (! is_int($current)) {
             throw new LogicException("Current value for key [$key] is not an integer.");
         }
 
@@ -163,7 +169,7 @@ final class ReadWriteSession implements Session
     {
         $array = $this->get($key, []);
 
-        if (!is_array($array)) {
+        if (! is_array($array)) {
             throw new LogicException("Value for key [$key] is not an array.");
         }
 
@@ -181,7 +187,7 @@ final class ReadWriteSession implements Session
 
         return is_null($key)
             ? is_array($old) && count($old) > 0
-            : !is_null($old);
+            : ! is_null($old);
     }
 
     /**
@@ -194,7 +200,7 @@ final class ReadWriteSession implements Session
         if (null === $key) {
             return $old;
         }
-        if (!is_array($old)) {
+        if (! is_array($old)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('_old_input must be an associative array.');
             // @codeCoverageIgnoreEnd
@@ -260,7 +266,7 @@ final class ReadWriteSession implements Session
     public function lastRotation(): int
     {
         $ts = $this->get('_sniccowp.timestamps.last_rotated');
-        if (!is_int($ts)) {
+        if (! is_int($ts)) {
             throw new RuntimeException(
                 'The session storage seems corrupted as the value for key [_sniccowp.timestamps.last_rotated] is not an integer.'
             );
@@ -289,7 +295,7 @@ final class ReadWriteSession implements Session
 
     public function missing($keys): bool
     {
-        return !$this->exists($keys);
+        return ! $this->exists($keys);
     }
 
     public function exists($keys): bool
@@ -297,7 +303,7 @@ final class ReadWriteSession implements Session
         $keys = Arr::toArray($keys);
 
         foreach ($keys as $key) {
-            if (!Arr::has($this->attributes, $key)) {
+            if (! Arr::has($this->attributes, $key)) {
                 return false;
             }
         }
@@ -339,7 +345,7 @@ final class ReadWriteSession implements Session
     ): void {
         $this->last_activity = $current_timestamp;
 
-        if (!$this->isDirty()) {
+        if (! $this->isDirty()) {
             $driver->touch($this->id->selector(), $this->last_activity);
         } else {
             if ($this->invalidated_id instanceof SessionId) {
@@ -374,7 +380,7 @@ final class ReadWriteSession implements Session
     public function setUserId($user_id): void
     {
         /** @psalm-suppress DocblockTypeContradiction */
-        if (!is_string($user_id) && !is_int($user_id)) {
+        if (! is_string($user_id) && ! is_int($user_id)) {
             throw new InvalidArgumentException('$user_id must be string or integer.');
         }
 
@@ -385,7 +391,7 @@ final class ReadWriteSession implements Session
     {
         $user_id = $this->get('_user_id');
 
-        if (!is_string($user_id) && !is_int($user_id) && !is_null($user_id)) {
+        if (! is_string($user_id) && ! is_int($user_id) && ! is_null($user_id)) {
             throw new InvalidArgumentException('$user_id must be string or integer.');
         }
 
@@ -437,7 +443,7 @@ final class ReadWriteSession implements Session
     private function oldFlashes(): array
     {
         $old = Arr::get($this->attributes, '_flash.old', []);
-        if (!is_array($old)) {
+        if (! is_array($old)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('_flash.old must be an array of strings.');
             // @codeCoverageIgnoreEnd
@@ -457,7 +463,7 @@ final class ReadWriteSession implements Session
     {
         $new = $this->get('_flash.new', []);
 
-        if (!is_array($new)) {
+        if (! is_array($new)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('_flash.new must be an array of strings.');
             // @codeCoverageIgnoreEnd

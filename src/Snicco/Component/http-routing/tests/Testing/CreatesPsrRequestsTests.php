@@ -25,14 +25,14 @@ final class CreatesPsrRequestsTests extends TestCase
         $request = $this->frontendRequest('foo?bar=baz#section1');
         $this->assertInstanceOf(Request::class, $request);
 
-        $this->assertEquals('https://foo.com/foo?bar=baz#section1', (string)$request->getUri());
+        $this->assertEquals('https://foo.com/foo?bar=baz#section1', (string) $request->getUri());
         $this->assertEquals([
             'bar' => 'baz',
         ], $request->getQueryParams());
 
         $request = $this->frontendRequest('foo?city=foo bar');
         $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals('https://foo.com/foo?city=foo%20bar', (string)$request->getUri());
+        $this->assertEquals('https://foo.com/foo?city=foo%20bar', (string) $request->getUri());
         $this->assertEquals([
             'city' => 'foo bar',
         ], $request->getQueryParams());
@@ -48,7 +48,7 @@ final class CreatesPsrRequestsTests extends TestCase
 
         $this->assertEquals(
             'http://foobar.com:8080/foo?bar=baz#section1',
-            (string)$request->getUri()
+            (string) $request->getUri()
         );
         $this->assertEquals([
             'bar' => 'baz',
@@ -111,7 +111,7 @@ final class CreatesPsrRequestsTests extends TestCase
         $this->assertInstanceOf(Request::class, $request);
         $this->assertEquals(
             'https://foo.com/wp-admin/admin.php?page=foo&city=foo%20bar',
-            (string)$request->getUri()
+            (string) $request->getUri()
         );
         $this->assertEquals([
             'city' => 'foo bar',
@@ -138,7 +138,7 @@ final class CreatesPsrRequestsTests extends TestCase
         $this->assertInstanceOf(Request::class, $request);
         $this->assertEquals(
             'https://foo.com/foo/bar?page=foo&city=foo%20bar',
-            (string)$request->getUri()
+            (string) $request->getUri()
         );
         $this->assertEquals([
             'city' => 'foo bar',

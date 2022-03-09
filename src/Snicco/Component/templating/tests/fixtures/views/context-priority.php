@@ -7,4 +7,4 @@ declare(strict_types=1);
  */
 
 /** @psalm-suppress MixedArrayAccess */
-echo (string)($test_context['foo']['bar'] ?? 'Context foo.bar not set.');
+echo (string) ($test_context['foo']['bar'] ?? 'Context foo.bar not set.');

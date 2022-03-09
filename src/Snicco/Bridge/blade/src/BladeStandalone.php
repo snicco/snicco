@@ -48,7 +48,7 @@ final class BladeStandalone
         $this->view_directories = $view_directories;
         $this->blade_view_composer = new BladeViewComposer($composers);
         $this->illuminate_container = Container::getInstance();
-        if (!Facade::getFacadeApplication() instanceof IlluminateContainer) {
+        if (! Facade::getFacadeApplication() instanceof IlluminateContainer) {
             Facade::setFacadeApplication($this->illuminate_container);
         }
     }
@@ -80,14 +80,14 @@ final class BladeStandalone
 
         Blade::if('auth', fn () => $wp->isUserLoggedIn());
 
-        Blade::if('guest', fn () => !$wp->isUserLoggedIn());
+        Blade::if('guest', fn () => ! $wp->isUserLoggedIn());
 
         Blade::if('role', function (string $expression) use ($wp) {
             if ($expression === 'admin') {
                 $expression = 'administrator';
             }
             $user = $wp->currentUser();
-            if (!empty($user->roles) && is_array($user->roles)
+            if (! empty($user->roles) && is_array($user->roles)
                 && in_array(
                     $expression,
                     $user->roles,

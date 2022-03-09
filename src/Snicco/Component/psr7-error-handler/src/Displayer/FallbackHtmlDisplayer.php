@@ -38,7 +38,7 @@ final class FallbackHtmlDisplayer implements ExceptionDisplayer
         );
         return str_replace(
             '{{status}}',
-            htmlentities((string)$exception_information->statusCode(), ENT_QUOTES),
+            htmlentities((string) $exception_information->statusCode(), ENT_QUOTES),
             $content
         );
     }

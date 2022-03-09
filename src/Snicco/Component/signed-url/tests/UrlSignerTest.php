@@ -19,6 +19,7 @@ use Snicco\Component\TestableClock\TestClock;
 final class UrlSignerTest extends TestCase
 {
     private UrlSigner $url_signer;
+
     private InMemoryStorage $storage;
 
     protected function setUp(): void
@@ -102,7 +103,7 @@ final class UrlSignerTest extends TestCase
         $this->assertStringContainsString('signature=', $magic_link->asString());
         $this->assertSame('/foo', $magic_link->protects());
 
-        $this->assertSame($magic_link->asString(), (string)$magic_link);
+        $this->assertSame($magic_link->asString(), (string) $magic_link);
     }
 
     /**

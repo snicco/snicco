@@ -83,12 +83,14 @@ final class PsrEventDispatcherTest extends TestCase
 class Object1
 {
     public string $foo = 'foo';
+
     public string $bar = 'foo';
 }
 
 class StoppableEvent implements StoppableEventInterface
 {
     public bool $should_stop = false;
+
     public int $count = 1;
 
     public function isPropagationStopped(): bool

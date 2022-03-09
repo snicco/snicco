@@ -11,12 +11,17 @@ use function time;
 final class SignedUrl
 {
     public const EXPIRE_KEY = 'expires';
+
     public const SIGNATURE_KEY = 'signature';
 
     private string $link_target;
+
     private string $identifier;
+
     private int $expires_at;
+
     private int $max_usage;
+
     private string $protects;
 
     private function __construct(

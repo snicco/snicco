@@ -13,6 +13,7 @@ use Snicco\Component\Templating\View\View;
 final class ViewComposerCollection
 {
     private ViewComposerFactory $composer_factory;
+
     private GlobalViewContext $global_view_context;
 
     /**
@@ -45,19 +46,19 @@ final class ViewComposerCollection
         }
 
         /** @psalm-suppress DocblockTypeContradiction */
-        if (!is_string($composer)) {
+        if (! is_string($composer)) {
             throw new InvalidArgumentException(
                 'A view composer has to be a closure or a class name.'
             );
         }
 
-        if (!class_exists($composer)) {
+        if (! class_exists($composer)) {
             throw new InvalidArgumentException(
                 "[$composer] is not a valid class."
             );
         }
 
-        if (!in_array(ViewComposer::class, (array)class_implements($composer), true)) {
+        if (! in_array(ViewComposer::class, (array) class_implements($composer), true)) {
             throw new InvalidArgumentException(
                 sprintf('Class [%s] does not implement [%s]', $composer, ViewComposer::class)
             );

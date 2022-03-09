@@ -105,7 +105,6 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             }
         );
 
-
         $this->withMiddlewareAlias([
             'm' => MiddlewareWithClassAndParamDependencies::class,
         ]);
@@ -143,8 +142,11 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 class MiddlewareWithClassAndParamDependencies extends Middleware
 {
     private Foo $foo;
+
     private Bar $bar;
+
     private string $baz;
+
     private string $biz;
 
     public function __construct(Foo $foo, Bar $bar, string $baz, string $biz)
@@ -175,7 +177,7 @@ class MiddlewareWithTypedDefault extends Middleware
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        if (!is_null($this->foo)) {
+        if (! is_null($this->foo)) {
             throw new RuntimeException('Foo is not null');
         }
 

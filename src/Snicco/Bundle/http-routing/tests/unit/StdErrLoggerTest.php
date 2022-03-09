@@ -24,6 +24,7 @@ use function unlink;
 final class StdErrLoggerTest extends TestCase
 {
     private string $prev_error_log;
+
     private string $log_file;
 
     protected function setUp(): void

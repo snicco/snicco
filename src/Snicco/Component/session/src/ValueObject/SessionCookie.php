@@ -12,15 +12,20 @@ use function time;
 final class SessionCookie
 {
     private string $cookie_name;
+
     private string $session_id;
 
     /**
      * @var null|positive-int|0
      */
     private ?int $life_time;
+
     private bool $http_only;
+
     private bool $secure;
+
     private string $path;
+
     private ?string $domain;
 
     /**

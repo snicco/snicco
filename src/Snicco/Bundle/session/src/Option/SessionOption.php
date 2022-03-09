@@ -18,9 +18,13 @@ final class SessionOption
     public const CONFIG = 'config';
 
     public const COOKIE_NAME = 'cookie_name';
+
     public const DRIVER = 'driver';
+
     public const PREFIX = 'prefix';
+
     public const ENCRYPT_DATA = 'encrypt';
+
     public const SERIALIZER = 'serializer';
 
     public const MIDDLEWARE_GROUP = [

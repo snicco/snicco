@@ -13,6 +13,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 final class HandlingRequest
 {
     public Request $request;
+
     public float $time;
 
     public function __construct(Request $request, float $time)

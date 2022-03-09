@@ -167,7 +167,7 @@ final class WPMailTransport implements Transport
 
         $to = [];
         foreach ($envelope->recipients() as $recipient) {
-            if (!$merged->has($recipient)) {
+            if (! $merged->has($recipient)) {
                 $to[] = $recipient;
             }
         }

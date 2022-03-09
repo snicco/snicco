@@ -16,6 +16,7 @@ use function sprintf;
 final class IlluminateContainerAdapter extends DIContainer
 {
     private Container $illuminate_container;
+
     private bool $locked = false;
 
     public function __construct(Container $container = null)
@@ -47,16 +48,16 @@ final class IlluminateContainerAdapter extends DIContainer
 
     public function offsetExists($offset): bool
     {
-        return $this->illuminate_container->offsetExists((string)$offset);
+        return $this->illuminate_container->offsetExists((string) $offset);
     }
 
     #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if ($this->locked) {
-            throw ContainerIsLocked::whileRemovingId((string)$offset);
+            throw ContainerIsLocked::whileRemovingId((string) $offset);
         }
-        $this->illuminate_container->offsetUnset((string)$offset);
+        $this->illuminate_container->offsetUnset((string) $offset);
     }
 
     public function lock(): void
@@ -70,11 +71,11 @@ final class IlluminateContainerAdapter extends DIContainer
             throw ContainerIsLocked::whileSettingId($id);
         }
 
-        if (!$this->illuminate_container->resolved($id)) {
+        if (! $this->illuminate_container->resolved($id)) {
             return;
         }
 
-        if (!$this->illuminate_container->isShared($id)) {
+        if (! $this->illuminate_container->isShared($id)) {
             return;
         }
 

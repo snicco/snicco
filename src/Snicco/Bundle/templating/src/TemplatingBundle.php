@@ -46,7 +46,7 @@ final class TemplatingBundle implements Bundle
         );
 
         foreach ($config->getListOfStrings('templating.directories') as $directory) {
-            if (!is_readable($directory)) {
+            if (! is_readable($directory)) {
                 throw new InvalidArgumentException("templating.directories: Directory [$directory] is not readable.");
             }
         }
@@ -79,7 +79,7 @@ final class TemplatingBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
         $destination = $kernel->directories()->configDir() . '/templating.php';
@@ -142,7 +142,6 @@ final class TemplatingBundle implements Bundle
                 new PsrViewComposerFactory($kernel->container()),
                 $kernel->container()->make(GlobalViewContext::class)
             );
-
 
             /**
              * @var array<class-string<ViewComposer>, list<string>>

@@ -23,7 +23,6 @@ final class VerbosityTest extends TestCase
         parent::setUp();
     }
 
-
     /**
      * @test
      */

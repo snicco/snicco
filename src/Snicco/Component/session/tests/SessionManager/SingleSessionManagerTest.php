@@ -80,7 +80,6 @@ final class SingleSessionManagerTest extends TestCase
         $this->assertSame(0, $cookie->expiryTimestamp());
     }
 
-
     /**
      * @test
      */

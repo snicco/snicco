@@ -13,6 +13,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 final class ResponseSent
 {
     public Response $response;
+
     public bool $body_sent;
 
     public function __construct(Response $response, bool $body_sent)

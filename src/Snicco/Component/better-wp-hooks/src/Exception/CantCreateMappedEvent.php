@@ -25,6 +25,6 @@ final class CantCreateMappedEvent extends RuntimeException
 
         $message = sprintf($message, $event_class, implode(',', $args));
 
-        return new CantCreateMappedEvent($message, (int)$previous->getCode(), $previous);
+        return new CantCreateMappedEvent($message, (int) $previous->getCode(), $previous);
     }
 }

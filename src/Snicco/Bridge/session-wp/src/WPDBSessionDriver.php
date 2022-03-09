@@ -65,7 +65,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
             'hashed_validator' => $session->hashedValidator(),
             'last_activity' => $session->lastActivity(),
             'data' => $session->data(),
-            'user_id' => !is_null($user_id) ? strval($user_id) : null,
+            'user_id' => ! is_null($user_id) ? strval($user_id) : null,
         ];
 
         $this->db->preparedQuery(
@@ -105,7 +105,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
             ]
         );
 
-        if (0 === $rows && !$this->exists($selector)) {
+        if (0 === $rows && ! $this->exists($selector)) {
             throw BadSessionID::forSelector($selector, __CLASS__);
         }
     }

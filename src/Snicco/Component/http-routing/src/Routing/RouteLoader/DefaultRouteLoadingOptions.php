@@ -11,6 +11,7 @@ use Snicco\Component\StrArr\Str;
 final class DefaultRouteLoadingOptions implements RouteLoadingOptions
 {
     private UrlPath $api_base_prefix;
+
     private bool $add_middleware_for_api_files;
 
     public function __construct(string $base_api_prefix, bool $add_middleware_for_each_api_file = false)
@@ -27,7 +28,7 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
                 PHPFileRouteLoader::VERSION_FLAG
             );
             $file_basename = $_name . ".v$parsed_version";
-            $prefix = (string)$this->api_base_prefix->append($_name)->append("v$parsed_version");
+            $prefix = (string) $this->api_base_prefix->append($_name)->append("v$parsed_version");
         } else {
             $prefix = $this->api_base_prefix->append($file_basename)->asString();
         }

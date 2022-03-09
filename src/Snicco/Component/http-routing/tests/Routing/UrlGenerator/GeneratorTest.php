@@ -314,7 +314,6 @@ class GeneratorTest extends HttpRunnerTestCase
                 });
         });
 
-
         $this->assertSame('/baz', $routing->urlGenerator()->toRoute('foo.bar.baz'));
         $this->assertSame('/biz', $routing->urlGenerator()->toRoute('foo.biz'));
 
@@ -607,7 +606,6 @@ class GeneratorTest extends HttpRunnerTestCase
                     'player' => 'a{2,}calvin',
                 ]);
         });
-
 
         $url = $routing->urlGenerator()->toRoute('teams', [
             'team' => 'manchesterunitedx',

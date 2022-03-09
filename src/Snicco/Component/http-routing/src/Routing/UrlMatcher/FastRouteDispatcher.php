@@ -163,7 +163,7 @@ final class FastRouteDispatcher implements UrlMatcher
         $allowed_methods = [];
 
         foreach ($this->static_route_map as $method => $uri_map) {
-            if ($request_method === $method || !isset($uri_map[$path])) {
+            if ($request_method === $method || ! isset($uri_map[$path])) {
                 continue;
             }
 
@@ -223,7 +223,7 @@ final class FastRouteDispatcher implements UrlMatcher
         $request_has_trailing = Str::endsWith($request->path(), '/');
         $route_needs_trailing = Str::endsWith($route->getPattern(), '/');
 
-        if ($route_needs_trailing && $has_optional_segments && !$request_has_trailing) {
+        if ($route_needs_trailing && $has_optional_segments && ! $request_has_trailing) {
             return false;
         }
 
@@ -231,7 +231,7 @@ final class FastRouteDispatcher implements UrlMatcher
         foreach ($route->getConditions() as $blueprint) {
             $instance = ($this->condition_factory)($blueprint);
 
-            if (!$instance->isSatisfied($request)) {
+            if (! $instance->isSatisfied($request)) {
                 return false;
             }
 
@@ -255,7 +255,7 @@ final class FastRouteDispatcher implements UrlMatcher
         foreach ($variable_route_data as $data) {
             Assert::keyExists($data, 'regex');
             Assert::keyExists($data, 'routeMap');
-            if (!preg_match($data['regex'], $path, $matches)) {
+            if (! preg_match($data['regex'], $path, $matches)) {
                 continue;
             }
 

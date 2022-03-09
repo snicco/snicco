@@ -250,7 +250,7 @@ final class Route
      */
     public function middleware($middleware): Route
     {
-        foreach ((array)$middleware as $m) {
+        foreach ((array) $middleware as $m) {
             $this->addMiddleware($m);
         }
 
@@ -269,7 +269,7 @@ final class Route
     {
         $s = [];
 
-        foreach ((array)$segment_names as $segment_name) {
+        foreach ((array) $segment_names as $segment_name) {
             $s[$segment_name] = $allow_uppercase ? '[a-zA-Z]+' : '[a-z]+';
         }
 
@@ -290,7 +290,7 @@ final class Route
     {
         $s = [];
 
-        foreach ((array)$segment_names as $segment_name) {
+        foreach ((array) $segment_names as $segment_name) {
             $s[$segment_name] = $allow_uppercase ? '[a-zA-Z0-9]+' : '[a-z0-9]+';
         }
 
@@ -305,7 +305,7 @@ final class Route
     {
         $s = [];
 
-        foreach ((array)$segment_names as $segment_name) {
+        foreach ((array) $segment_names as $segment_name) {
             $s[$segment_name] = '[0-9]+';
         }
 
@@ -319,7 +319,7 @@ final class Route
     public function requireOneOf(string $segment_name, array $values): Route
     {
         $values = array_map(function ($value) {
-            $value = is_int($value) ? (string)$value : $value;
+            $value = is_int($value) ? (string) $value : $value;
             Assert::string($value);
             return $value;
         }, $values);
@@ -357,7 +357,7 @@ final class Route
         // @see https://regexr.com/6cn0d
         preg_match_all('/[^{]\w+(?=\??})/', $pattern, $names);
 
-        if (!empty($names[0])) {
+        if (! empty($names[0])) {
             Assert::uniqueValues(
                 $names[0],
                 'Route segment names have to be unique but %s of them %s duplicated.'
@@ -365,16 +365,15 @@ final class Route
             $this->segment_names = $names[0];
         }
 
-
         preg_match_all('/[^{]\w+(?=})/', $pattern, $required_names);
 
-        if (!empty($required_names[0])) {
+        if (! empty($required_names[0])) {
             $this->required_segments_names = $required_names[0];
         }
 
         preg_match_all('/[^{]\w+(?=\?})/', $pattern, $optional_names);
 
-        if (!empty($optional_names[0])) {
+        if (! empty($optional_names[0])) {
             $this->optional_segment_names = $optional_names[0];
         }
     }
@@ -393,11 +392,11 @@ final class Route
             ? $controller
             : explode('@', $controller);
 
-        if (!isset($controller[0])) {
+        if (! isset($controller[0])) {
             throw new InvalidArgumentException('Expected controller array to have a class and a method.');
         }
 
-        if (!isset($controller[1])) {
+        if (! isset($controller[1])) {
             $controller[1] = '__invoke';
         }
 
@@ -405,19 +404,19 @@ final class Route
         Assert::stringNotEmpty($controller[0], 'Expected controller class to be a string.');
         Assert::stringNotEmpty($controller[1], 'Expected controller method to be a string.');
 
-        if (!class_exists($controller[0])) {
-            $controller[0] = !empty($this->namespace)
+        if (! class_exists($controller[0])) {
+            $controller[0] = ! empty($this->namespace)
                 ? $this->namespace . '\\' . $controller[0]
                 : $controller[0];
 
-            if (!class_exists($controller[0])) {
+            if (! class_exists($controller[0])) {
                 throw new InvalidArgumentException(
                     sprintf('Controller class [%s] does not exist.', $controller[0]),
                 );
             }
         }
 
-        if (!method_exists($controller[0], $controller[1])) {
+        if (! method_exists($controller[0], $controller[1])) {
             throw new InvalidArgumentException(
                 sprintf('The method [%s::%s] is not callable.', $controller[0], $controller[1]),
             );
@@ -437,7 +436,7 @@ final class Route
 
     private function setName(?string $name): void
     {
-        if (!empty($name)) {
+        if (! empty($name)) {
             Assert::stringNotEmpty($name);
             Assert::notStartsWith($name, '.');
             Assert::notContains(
@@ -457,7 +456,7 @@ final class Route
      */
     private function addDefaultValue(string $key, $value): void
     {
-        if (!is_scalar($value) && !is_array($value)) {
+        if (! is_scalar($value) && ! is_array($value)) {
             throw new InvalidArgumentException('A route default value has to be a scalar or an array of scalars.');
         }
 

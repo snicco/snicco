@@ -91,7 +91,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $this->validateThatAdminRouteHasNoSegments($route);
 
         // It makes no sense to have a menu item without a dedicated action to handle it.
-        if (Route::DELEGATE === $action && !empty($menu_attributes)) {
+        if (Route::DELEGATE === $action && ! empty($menu_attributes)) {
             throw new BadRouteConfiguration("Route [$name] can not have an admin menu item without an action.");
         }
         // A menu item should explicitly not be added.
@@ -163,7 +163,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function include($file_or_closure): void
     {
         $routes = $file_or_closure;
-        if (!$routes instanceof Closure) {
+        if (! $routes instanceof Closure) {
             Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
             Assert::readable($file_or_closure, "The file $file_or_closure is not readable.");
             Assert::isInstanceOf(
@@ -327,7 +327,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function validateThatDelegatedAttributesAreEmpty(string $route_name): void
     {
-        if (!empty($this->delegate_attributes)) {
+        if (! empty($this->delegate_attributes)) {
             throw BadRouteConfiguration::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
         }
     }
@@ -377,7 +377,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         if ($parent_route instanceof Route) {
             $parent_name = $parent_route->getName();
 
-            if (!isset($this->menu_items[$parent_name])) {
+            if (! isset($this->menu_items[$parent_name])) {
                 throw new BadRouteConfiguration(
                     "Can not use route [$parent_name] as a parent for [{$route->getName()}] because it has no menu item."
                 );
@@ -396,7 +396,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
                         $parent_name,
                         $route->getName(),
                         $parent_name,
-                        (string)$parent_slug->parentSlug()
+                        (string) $parent_slug->parentSlug()
                     )
                 );
             }
@@ -423,7 +423,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             return;
         }
 
-        if (!is_string($parent) && !$parent instanceof Route) {
+        if (! is_string($parent) && ! $parent instanceof Route) {
             throw new BadRouteConfiguration(
                 '$parent has to be a string or an instance of Route.'
             );
@@ -466,7 +466,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         $route_pattern = $child_route->getPattern();
 
-        if (!UrlPath::fromString($route_pattern)->startsWith($compare_against)) {
+        if (! UrlPath::fromString($route_pattern)->startsWith($compare_against)) {
             throw new BadRouteConfiguration(
                 "Route pattern [$route_pattern] is incompatible with parent slug [$parent_slug].\nAffected route [{$child_route->getName()}]."
             );
@@ -528,7 +528,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupPrefix(UrlPath $path): UrlPath
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return $path;
         }
 
@@ -538,7 +538,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupName(string $route_name): string
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return $route_name;
         }
 
@@ -554,7 +554,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupNamespace(): string
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return '';
         }
 
@@ -564,7 +564,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function addGroupAttributes(Route $route): void
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return;
         }
 
@@ -585,7 +585,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function currentGroup(): ?RouteGroup
     {
-        if (!count($this->group_stack)) {
+        if (! count($this->group_stack)) {
             return null;
         }
         return array_reverse($this->group_stack)[0];

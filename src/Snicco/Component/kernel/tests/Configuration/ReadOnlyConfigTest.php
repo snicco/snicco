@@ -20,7 +20,7 @@ final class ReadOnlyConfigTest extends TestCase
             'foo' => 'bar',
             'baz' => [
                 'biz' => 'boo',
-                
+
             ],
         ]);
 
@@ -37,7 +37,7 @@ final class ReadOnlyConfigTest extends TestCase
             'foo' => 'bar',
             'baz' => [
                 'biz' => 'boo',
-                
+
             ],
         ]);
 
@@ -97,7 +97,6 @@ final class ReadOnlyConfigTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-
         $config->getArray('baz');
     }
 
@@ -112,7 +111,8 @@ final class ReadOnlyConfigTest extends TestCase
             ],
             'baz' => false,
             'biz' =>
-             'boo', ]);
+             'boo',
+        ]);
 
         $this->assertSame(false, $config->getBoolean('baz'));
         $this->assertSame(true, $config->getBoolean('foo.bar'));

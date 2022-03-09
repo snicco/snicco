@@ -31,6 +31,7 @@ use function urlencode;
 final class StatefulRequestTest extends MiddlewareTestCase
 {
     private InMemoryDriver $session_driver;
+
     private TestLogger $logger;
 
     /**
@@ -212,7 +213,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             /** @var ImmutableSession $session */
             $session = $request->getAttribute(ImmutableSession::class);
-            return $response->withAddedHeader('X-FOO', (string)$session->get('foo'));
+            return $response->withAddedHeader('X-FOO', (string) $session->get('foo'));
         });
 
         $response = $this->runMiddleware($this->getMiddleware(), $request_with_cookie);
@@ -333,7 +334,6 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $session->put('foo', 'bar');
         $session->setUserId(12);
         $manager->save($session);
-
 
         $request = $this->frontendRequest()->withCookieParams([
             'test_cookie' => $session->id()->asString(),

@@ -249,7 +249,6 @@ final class MailEventsTest extends WPTestCase
         $fake_transport->assertSentTo('m@web.de', TestEmail::class);
     }
 
-
     protected function fixturesDir(): string
     {
         return dirname(__DIR__) . '/fixtures';

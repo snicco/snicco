@@ -99,16 +99,16 @@ final class Psr16Storage implements SignedUrlStorage
     {
         $data = $this->cache->get($key);
 
-        if (null == $data || !is_array($data)) {
+        if (null == $data || ! is_array($data)) {
             throw BadIdentifier::for($identifier);
         }
 
-        if (!isset($data['left_usages']) || !is_int($data['left_usages']) || $data['left_usages'] <= 0) {
+        if (! isset($data['left_usages']) || ! is_int($data['left_usages']) || $data['left_usages'] <= 0) {
             throw new RuntimeException(
                 "Cache content for signed url with cache key [$key] are corrupted.\nMissing or invalid key [left_usages]."
             );
         }
-        if (!isset($data['expires_at']) || !is_int($data['expires_at']) || $data['expires_at'] <= 0) {
+        if (! isset($data['expires_at']) || ! is_int($data['expires_at']) || $data['expires_at'] <= 0) {
             throw new RuntimeException(
                 "Cache content for signed url with cache key [$key] are corrupted.\nMissing or invalid key [expires_at]."
             );

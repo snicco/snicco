@@ -49,7 +49,7 @@ final class LazyGenerator implements UrlGenerator
 
     private function lazyGenerator(): UrlGenerator
     {
-        if (!isset($this->generator)) {
+        if (! isset($this->generator)) {
             $get_generator = $this->get_generator;
             $this->generator = $get_generator();
         }

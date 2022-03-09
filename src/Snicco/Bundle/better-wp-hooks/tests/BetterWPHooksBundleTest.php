@@ -33,7 +33,6 @@ final class BetterWPHooksBundleTest extends TestCase
         $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
 
-
         $kernel = new Kernel(
             $this->newContainer(),
             Environment::dev(),
@@ -41,7 +40,6 @@ final class BetterWPHooksBundleTest extends TestCase
         );
         $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
-
 
         $kernel = new Kernel(
             $this->newContainer(),

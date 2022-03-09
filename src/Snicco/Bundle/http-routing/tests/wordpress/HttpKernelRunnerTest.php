@@ -36,8 +36,11 @@ final class HttpKernelRunnerTest extends WPTestCase
     use BundleTestHelpers;
 
     private Kernel $kernel;
+
     private HttpKernelRunner $http_dispatcher;
+
     private array $_get;
+
     private array $_server;
 
     protected function setUp(): void
@@ -120,8 +123,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            return RoutingBundleTestController::class === (string)$response->getBody()
-                && !$response instanceof DelegatedResponse;
+            return RoutingBundleTestController::class === (string) $response->getBody()
+                && ! $response instanceof DelegatedResponse;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
@@ -152,7 +155,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $body = (string)$response->getBody();
+            $body = (string) $response->getBody();
             $this->assertSame('', $body);
             $this->assertInstanceOf(DelegatedResponse::class, $response);
             return true;
@@ -247,7 +250,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame('', (string)$response->getBody());
+            $this->assertSame('', (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             return true;
         });
@@ -279,7 +282,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame('', (string)$response->getBody());
+            $this->assertSame('', (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             return true;
         });
@@ -345,7 +348,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame('', (string)$response->getBody());
+            $this->assertSame('', (string) $response->getBody());
             $this->assertSame('/foo', $response->getHeaderLine('location'));
             return true;
         });
@@ -377,7 +380,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame('no way', (string)$response->getBody());
+            $this->assertSame('no way', (string) $response->getBody());
             $this->assertSame(403, $response->getStatusCode());
             $this->assertTrue($response->hasHeader('content-length'));
             return true;
@@ -410,7 +413,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame('server error', (string)$response->getBody());
+            $this->assertSame('server error', (string) $response->getBody());
             $this->assertSame(500, $response->getStatusCode());
             $this->assertTrue($response->hasHeader('content-length'));
             return true;
@@ -443,7 +446,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame('', (string)$response->getBody());
+            $this->assertSame('', (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             $this->assertFalse($response->hasHeader('content-length'));
             $this->assertFalse($response->hasHeader('Content-length'));
@@ -481,7 +484,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame(HttpRunnerTestController::class, (string)$response->getBody());
+            $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             $this->assertTrue($response->hasHeader('content-length'));
             return true;
@@ -513,8 +516,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            return RoutingBundleTestController::class === (string)$response->getBody()
-                && !$response instanceof DelegatedResponse;
+            return RoutingBundleTestController::class === (string) $response->getBody()
+                && ! $response instanceof DelegatedResponse;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
@@ -543,7 +546,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            $this->assertSame(HttpRunnerTestController::class, (string)$response->getBody());
+            $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             $this->assertTrue($response->hasHeader('content-length'));
             return true;

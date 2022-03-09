@@ -24,6 +24,7 @@ use function time;
 final class UrlSigner
 {
     private SignedUrlStorage $storage;
+
     private HMAC $hasher;
 
     public function __construct(
@@ -114,7 +115,7 @@ final class UrlSigner
     {
         $parts = ($parts = parse_url($protect)) ? $parts : [];
 
-        if (!isset($parts['path']) && isset($parts['host']) && isset($parts['scheme'])) {
+        if (! isset($parts['path']) && isset($parts['host']) && isset($parts['scheme'])) {
             $parts['path'] = '/';
         }
 
@@ -172,7 +173,7 @@ final class UrlSigner
      */
     private function getQueryString(array $parts): ?string
     {
-        if (!isset($parts['query'])) {
+        if (! isset($parts['query'])) {
             return null;
         }
 
@@ -186,7 +187,7 @@ final class UrlSigner
 
     private function appendExpiryQueryParam(string $path, int $expires_at): string
     {
-        if (!strpos($path, '?')) {
+        if (! strpos($path, '?')) {
             return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
         }
 
