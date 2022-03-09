@@ -105,13 +105,13 @@ class RequestTest extends TestCase
 
     public function test_cookie(): void
     {
-        $this->assertSame(null, $this->request->cookie('foo'));
+        $this->assertNull($this->request->cookie('foo'));
 
         $request = $this->request->withCookieParams([
             'foo' => 'bar',
         ]);
 
-        $this->assertSame(null, $this->request->cookie('foo'));
+        $this->assertNull($this->request->cookie('foo'));
         $this->assertSame('bar', $request->cookie('foo'));
 
         $this->assertSame('default', $request->cookie('baz', 'default'));
@@ -255,7 +255,7 @@ class RequestTest extends TestCase
 
         $this->assertSame('12345567', $request->ip());
 
-        $this->assertSame(null, $this->frontendRequest('/foo')->ip());
+        $this->assertNull($this->frontendRequest('/foo')->ip());
     }
 
     /**
@@ -480,12 +480,12 @@ class RequestTest extends TestCase
      */
     public function test_user_id(): void
     {
-        $this->assertSame(null, $this->request->userId());
+        $this->assertNull($this->request->userId());
 
         $request = $this->request->withUserId(1);
         $this->assertSame(1, $request->userId());
 
-        $this->assertSame(null, $this->request->userId());
+        $this->assertNull($this->request->userId());
 
         $request = $this->request->withAttribute('snicco.user_id', 'foo');
 

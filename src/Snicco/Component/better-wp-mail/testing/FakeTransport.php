@@ -20,7 +20,6 @@ use function is_array;
 use function is_string;
 use function parse_url;
 use function sprintf;
-use function strval;
 
 final class FakeTransport implements Transport
 {
@@ -207,7 +206,7 @@ final class FakeTransport implements Transport
         if ('www.' === substr($site_name, 0, 4)) {
             $site_name = substr($site_name, 4);
         }
-        $from = 'wordpress@' . (strval($site_name));
+        $from = 'wordpress@' . ((string) $site_name);
 
         foreach (($headers) as $header) {
             if (strpos($header, 'Cc:') !== false) {

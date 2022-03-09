@@ -114,8 +114,8 @@ final class ReadOnlyConfigTest extends TestCase
              'boo',
         ]);
 
-        $this->assertSame(false, $config->getBoolean('baz'));
-        $this->assertSame(true, $config->getBoolean('foo.bar'));
+        $this->assertFalse($config->getBoolean('baz'));
+        $this->assertTrue($config->getBoolean('foo.bar'));
 
         $this->expectException(InvalidArgumentException::class);
 

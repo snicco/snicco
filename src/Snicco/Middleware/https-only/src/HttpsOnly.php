@@ -34,8 +34,10 @@ final class HttpsOnly extends Middleware
         if (! $request->isSecure()) {
             $uri = $request->getUri();
 
-            // transport security header is ignored for http access, so we don't set it here.
-            // @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
+            /**
+             * transport security header is ignored for http access, so we don't set it here.
+             * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
+             */
             $location = $uri->withScheme('https')->__toString();
 
             return $this->responseFactory()->redirect($location, 301);

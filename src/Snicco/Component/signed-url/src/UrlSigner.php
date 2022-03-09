@@ -18,7 +18,6 @@ use function parse_url;
 use function random_bytes;
 use function rtrim;
 use function strpos;
-use function strval;
 use function time;
 
 final class UrlSigner
@@ -188,10 +187,10 @@ final class UrlSigner
     private function appendExpiryQueryParam(string $path, int $expires_at): string
     {
         if (! strpos($path, '?')) {
-            return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
+            return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
         }
 
-        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
+        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
     }
 
     /**

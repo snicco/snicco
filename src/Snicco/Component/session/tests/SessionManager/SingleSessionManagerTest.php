@@ -76,7 +76,7 @@ final class SingleSessionManagerTest extends TestCase
 
         $cookie = $manager->toCookie($session1);
         $this->assertSame('test', $cookie->name());
-        $this->assertSame(null, $cookie->lifetime());
+        $this->assertNull($cookie->lifetime());
         $this->assertSame(0, $cookie->expiryTimestamp());
     }
 

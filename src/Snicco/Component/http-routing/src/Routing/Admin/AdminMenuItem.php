@@ -88,7 +88,7 @@ final class AdminMenuItem
      *     position?: int
      * } $attributes
      */
-    final public static function fromRoute(
+    public static function fromRoute(
         Route $route,
         array $attributes = [],
         ?string $parent_slug = null
@@ -127,32 +127,32 @@ final class AdminMenuItem
         );
     }
 
-    final public function pageTitle(): string
+    public function pageTitle(): string
     {
         return $this->page_title;
     }
 
-    final public function menuTitle(): string
+    public function menuTitle(): string
     {
         return $this->menu_title;
     }
 
-    final public function slug(): UrlPath
+    public function slug(): UrlPath
     {
         return UrlPath::fromString($this->menu_slug);
     }
 
-    final public function position(): ?int
+    public function position(): ?int
     {
         return $this->position;
     }
 
-    final public function requiredCapability(): ?string
+    public function requiredCapability(): ?string
     {
         return $this->capability;
     }
 
-    final public function icon(): ?string
+    public function icon(): ?string
     {
         return $this->icon;
     }

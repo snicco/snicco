@@ -138,7 +138,7 @@ class InteractsWithInputTest extends TestCase
         $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
             'foo' => 'bar',
         ]);
-        $this->assertSame(null, $request->query('foo'));
+        $this->assertNull($request->query('foo'));
 
         $request = $this->request->withQueryParams(
             [
@@ -190,7 +190,7 @@ class InteractsWithInputTest extends TestCase
         $request = $this->frontendRequest('/foo', [], 'POST')->withQueryParams([
             'foo' => 'bar',
         ]);
-        $this->assertSame(null, $request->post('foo'));
+        $this->assertNull($request->post('foo'));
 
         $request = $this->request->withParsedBody(
             [

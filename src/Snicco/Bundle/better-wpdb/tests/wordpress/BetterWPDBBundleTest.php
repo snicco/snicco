@@ -30,7 +30,7 @@ final class BetterWPDBBundleTest extends WPTestCase
         );
         $kernel->boot();
 
-        $this->assertSame(true, $kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
     }
 
     /**

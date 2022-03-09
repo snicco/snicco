@@ -24,7 +24,7 @@ final class RoutingBundleTestController
 
     public function triggerDeprecation(): string
     {
-        trigger_error(self::class, E_USER_DEPRECATED);
+        @trigger_error(self::class, E_USER_DEPRECATED);
         return self::class;
     }
 }

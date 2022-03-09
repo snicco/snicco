@@ -189,9 +189,9 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertSame('bar', $session->oldInput('foo'));
         $this->assertSame('baz', $session->oldInput('bar'));
-        $this->assertSame(null, $session->oldInput('boo'));
+        $this->assertNull($session->oldInput('boo'));
 
-        $this->assertSame(null, $session->oldInput('boo', 'default'));
+        $this->assertNull($session->oldInput('boo', 'default'));
         $this->assertSame('default', $session->oldInput('bogus', 'default'));
     }
 
@@ -323,7 +323,7 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertSame('bar', $session->get('foo'));
         $this->assertSame(0, $session->get('bar'));
-        $this->assertSame(true, $session->get('baz'));
+        $this->assertTrue($session->get('baz'));
 
         $session->saveUsing($driver = new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
@@ -994,7 +994,7 @@ class ReadWriteSessionTest extends TestCase
     {
         $session = $this->newSession();
 
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
 
         $session->setUserId(1);
         $this->assertSame(1, $session->userId());
@@ -1014,13 +1014,13 @@ class ReadWriteSessionTest extends TestCase
         $this->assertSame(1, $session->userId());
 
         $session->flush();
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
 
         $session = $this->newSession();
         $session->setUserId(1);
 
         $session->invalidate();
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
     }
 
     /**

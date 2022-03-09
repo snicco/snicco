@@ -126,11 +126,11 @@ final class SessionConfigTest extends TestCase
     public function testOnlyHttp(): void
     {
         unset($this->defaults['http_only']);
-        $this->assertSame(true, (new SessionConfig($this->defaults))->onlyHttp());
+        $this->assertTrue((new SessionConfig($this->defaults))->onlyHttp());
 
         $this->defaults['http_only'] = false;
 
-        $this->assertSame(false, (new SessionConfig($this->defaults))->onlyHttp());
+        $this->assertFalse((new SessionConfig($this->defaults))->onlyHttp());
     }
 
     /**
@@ -139,11 +139,11 @@ final class SessionConfigTest extends TestCase
     public function testOnlySecure(): void
     {
         unset($this->defaults['secure']);
-        $this->assertSame(true, (new SessionConfig($this->defaults))->onlySecure());
+        $this->assertTrue((new SessionConfig($this->defaults))->onlySecure());
 
         $this->defaults['secure'] = false;
 
-        $this->assertSame(false, (new SessionConfig($this->defaults))->onlySecure());
+        $this->assertFalse((new SessionConfig($this->defaults))->onlySecure());
     }
 
     /**
@@ -151,7 +151,7 @@ final class SessionConfigTest extends TestCase
      */
     public function testAbsoluteLifetime(): void
     {
-        $this->assertSame(null, (new SessionConfig($this->defaults))->absoluteLifetimeInSec());
+        $this->assertNull((new SessionConfig($this->defaults))->absoluteLifetimeInSec());
         $this->defaults['absolute_lifetime_in_sec'] = 10;
         $this->assertSame(10, (new SessionConfig($this->defaults))->absoluteLifetimeInSec());
     }

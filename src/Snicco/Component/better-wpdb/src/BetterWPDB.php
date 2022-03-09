@@ -24,10 +24,8 @@ use function array_merge;
 use function array_values;
 use function count;
 use function implode;
-use function intval;
 use function is_array;
 use function is_bool;
-use function is_double;
 use function is_int;
 use function is_scalar;
 use function is_string;
@@ -158,7 +156,7 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('START TRANSACTION', [], $e);
                 }
-                // @codeCoverageIgnoreEnd
+                /** @codeCoverageIgnoreEnd */
 
                 $end = microtime(true);
 
@@ -181,7 +179,7 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('COMMIT', [], $e);
                 }
-                // @codeCoverageIgnoreEnd
+                /** @codeCoverageIgnoreEnd */
 
                 $end = microtime(true);
 
@@ -393,7 +391,7 @@ final class BetterWPDB
         $result->bind_result($found);
         $result->fetch();
 
-        return intval($found) > 0;
+        return (int) $found > 0;
     }
 
     /**
@@ -625,7 +623,7 @@ final class BetterWPDB
     {
         $types = '';
         foreach ($bindings as $binding) {
-            if (is_double($binding)) {
+            if (is_float($binding)) {
                 $types .= 'd';
             } elseif (is_int($binding)) {
                 $types .= 'i';

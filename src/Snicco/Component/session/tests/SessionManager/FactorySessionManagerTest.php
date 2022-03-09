@@ -265,7 +265,7 @@ final class FactorySessionManagerTest extends TestCase
 
         $manager = $this->getSessionManager($test_clock);
         $session = $manager->start(CookiePool::fromSuperGlobals());
-        $this->assertSame(null, $session->get('foo'));
+        $this->assertNull($session->get('foo'));
     }
 
     /**
@@ -308,7 +308,7 @@ final class FactorySessionManagerTest extends TestCase
         $manager = $this->getSessionManager($clock);
         $session = $manager->start(CookiePool::fromSuperGlobals());
 
-        $this->assertSame(null, $session->get('foo'));
+        $this->assertNull($session->get('foo'));
     }
 
     /**
@@ -470,7 +470,7 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertSame($old_session->createdAt(), $new_session->createdAt());
         $this->assertSame($clock->currentTimestamp(), $new_session->lastRotation());
         $this->assertFalse($old_id->sameAs($new_id));
-        $this->assertSame(true, $listened);
+        $this->assertTrue($listened);
     }
 
     /**

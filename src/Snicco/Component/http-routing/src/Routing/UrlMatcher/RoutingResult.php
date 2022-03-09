@@ -7,7 +7,6 @@ namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
 use function array_map;
-use function intval;
 use function is_numeric;
 use function rawurldecode;
 
@@ -65,7 +64,7 @@ final class RoutingResult
         if (! isset($this->decoded_segments)) {
             $this->decoded_segments = array_map(function (string $value) {
                 if (is_numeric($value)) {
-                    return intval($value);
+                    return (int) $value;
                 }
                 return rawurldecode($value);
             }, $this->captured_segments);

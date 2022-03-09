@@ -9,15 +9,13 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
-use function strval;
-
 final class IntegerMiddleware extends Middleware
 {
     private string $val;
 
     public function __construct(int $val)
     {
-        $this->val = 'integer_' . strval($val);
+        $this->val = 'integer_' . (string) $val;
     }
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface

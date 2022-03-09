@@ -572,10 +572,10 @@ final class AssertableResponseTest extends TestCase
         $this->assertInstanceOf(AssertableCookie::class, $cookie);
         $this->assertSame('bar', $cookie->value);
         $this->assertSame('foo', $cookie->name);
-        $this->assertSame(true, $cookie->http_only);
+        $this->assertTrue($cookie->http_only);
         $this->assertSame('Lax', $cookie->same_site);
         $this->assertSame('/', $cookie->path);
-        $this->assertSame(true, $cookie->secure);
+        $this->assertTrue($cookie->secure);
     }
 
     /**

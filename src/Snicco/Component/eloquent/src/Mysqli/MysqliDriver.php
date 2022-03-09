@@ -205,7 +205,7 @@ final class MysqliDriver implements MysqliDriverInterface
         $types = '';
 
         foreach ($bindings as $binding) {
-            if (is_double($binding)) {
+            if (is_float($binding)) {
                 $types .= 'd';
             } elseif (is_int($binding)) {
                 $types .= 'i';

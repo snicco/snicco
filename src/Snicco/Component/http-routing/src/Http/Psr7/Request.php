@@ -78,7 +78,7 @@ final class Request implements ServerRequestInterface
      * @param mixed $value
      * @return never
      */
-    final public function __set(string $name, $value)
+    public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
             sprintf("Cannot set undefined property [$name] on immutable class [%s]", self::class)

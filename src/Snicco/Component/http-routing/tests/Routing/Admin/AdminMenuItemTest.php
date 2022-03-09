@@ -28,9 +28,9 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('My Page', $item->menuTitle());
         $this->assertSame('My Page', $item->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
-        $this->assertSame(null, $item->requiredCapability());
-        $this->assertSame(null, $item->icon());
-        $this->assertSame(null, $item->position());
+        $this->assertNull($item->requiredCapability());
+        $this->assertNull($item->icon());
+        $this->assertNull($item->position());
 
         $route = Route::create(
             '/wp-admin/admin.php/foo',
@@ -43,9 +43,9 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('My Page', $item->menuTitle());
         $this->assertSame('My Page', $item->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
-        $this->assertSame(null, $item->requiredCapability());
-        $this->assertSame(null, $item->icon());
-        $this->assertSame(null, $item->position());
+        $this->assertNull($item->requiredCapability());
+        $this->assertNull($item->icon());
+        $this->assertNull($item->position());
     }
 
     /**
@@ -70,9 +70,9 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('My explicit page title', $item->menuTitle());
         $this->assertSame('My explicit page title', $item->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
-        $this->assertSame(null, $item->requiredCapability());
-        $this->assertSame(null, $item->icon());
-        $this->assertSame(null, $item->position());
+        $this->assertNull($item->requiredCapability());
+        $this->assertNull($item->icon());
+        $this->assertNull($item->position());
 
         $route = Route::create(
             '/wp-admin/admin.php/foo',

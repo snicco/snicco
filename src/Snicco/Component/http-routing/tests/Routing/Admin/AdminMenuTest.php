@@ -83,18 +83,18 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame('My Route', $first->menuTitle());
         $this->assertSame('My Route', $first->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $first->slug()->asString());
-        $this->assertSame(null, $first->icon());
-        $this->assertSame(null, $first->requiredCapability());
-        $this->assertSame(null, $first->icon());
+        $this->assertNull($first->icon());
+        $this->assertNull($first->requiredCapability());
+        $this->assertNull($first->icon());
 
         $second = $items[1];
 
         $this->assertSame('Second Route', $second->menuTitle());
         $this->assertSame('Second Route', $second->pageTitle());
         $this->assertSame('/wp-admin/admin.php/bar', $second->slug()->asString());
-        $this->assertSame(null, $second->icon());
-        $this->assertSame(null, $second->requiredCapability());
-        $this->assertSame(null, $second->icon());
+        $this->assertNull($second->icon());
+        $this->assertNull($second->requiredCapability());
+        $this->assertNull($second->icon());
     }
 
     /**
@@ -119,9 +119,9 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame('My explicit menu title', $first->menuTitle());
         $this->assertSame('My explicit menu title', $first->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $first->slug()->asString());
-        $this->assertSame(null, $first->icon());
-        $this->assertSame(null, $first->requiredCapability());
-        $this->assertSame(null, $first->icon());
+        $this->assertNull($first->icon());
+        $this->assertNull($first->requiredCapability());
+        $this->assertNull($first->icon());
     }
 
     /**

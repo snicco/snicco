@@ -333,7 +333,7 @@ class Response implements ResponseInterface
 
     final public function hasEmptyBody(): bool
     {
-        return (intval($this->getBody()->getSize())) === 0;
+        return ((int) ($this->getBody()->getSize())) === 0;
     }
 
     /**

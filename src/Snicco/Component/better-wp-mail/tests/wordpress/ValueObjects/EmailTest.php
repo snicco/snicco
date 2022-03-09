@@ -353,7 +353,7 @@ final class EmailTest extends WPTestCase
     {
         $email = new Email();
 
-        $this->assertSame(null, $email->htmlTemplate());
+        $this->assertNull($email->htmlTemplate());
 
         $email = $email->withHtmlTemplate('foobar.php');
 
@@ -367,7 +367,7 @@ final class EmailTest extends WPTestCase
     {
         $email = new Email();
 
-        $this->assertSame(null, $email->textTemplate());
+        $this->assertNull($email->textTemplate());
 
         $email = $email->withTextTemplate('foobar.txt');
 
@@ -380,7 +380,7 @@ final class EmailTest extends WPTestCase
     public function test_htmlBody(): void
     {
         $email = new Email();
-        $this->assertSame(null, $email->htmlBody());
+        $this->assertNull($email->htmlBody());
 
         $email = $email->withHtmlBody('<h1>Foo</h1>');
 
@@ -393,7 +393,7 @@ final class EmailTest extends WPTestCase
     public function test_textBody(): void
     {
         $email = new Email();
-        $this->assertSame(null, $email->textBody());
+        $this->assertNull($email->textBody());
 
         $email = $email->withTextBody('Foo');
 

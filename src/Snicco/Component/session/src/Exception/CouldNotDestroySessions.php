@@ -8,7 +8,6 @@ use RuntimeException;
 use Throwable;
 
 use function implode;
-use function intval;
 use function sprintf;
 
 final class CouldNotDestroySessions extends RuntimeException
@@ -27,7 +26,7 @@ final class CouldNotDestroySessions extends RuntimeException
                 implode(',', $ids),
                 $driver_identifier
             ),
-            intval($previous ? $previous->getCode() : 0),
+            (int) ($previous ? $previous->getCode() : 0),
             $previous
         );
     }

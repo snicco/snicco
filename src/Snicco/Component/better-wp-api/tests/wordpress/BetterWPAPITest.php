@@ -50,7 +50,7 @@ final class BetterWPAPITest extends WPTestCase
         $wp = new TestWPAPI();
 
         $wp->doAction('foobar', 'foo', 'bar');
-        $this->assertSame(true, $called);
+        $this->assertTrue($called);
     }
 
     /**
@@ -168,7 +168,7 @@ final class BetterWPAPITest extends WPTestCase
         }, 10, 2);
 
         do_action('foobar', 'foo', 'bar');
-        $this->assertSame(true, $called);
+        $this->assertTrue($called);
     }
 
     /**
@@ -266,19 +266,19 @@ final class BetterWPAPITest extends WPTestCase
         $this->assertSame('bar', $wp->cacheGet('foo'));
 
         $wp->cacheDelete('foo');
-        $this->assertSame(false, $wp->cacheGet('foo'));
+        $this->assertFalse($wp->cacheGet('foo'));
 
         $this->assertFalse($wp->cacheGet('foo', 'foo_group'));
 
         $wp->cacheSet('foo', 'bar', 'foo_group');
         $this->assertSame('bar', $wp->cacheGet('foo', 'foo_group'));
-        $this->assertSame(false, $wp->cacheGet('foo', 'bar_group'));
+        $this->assertFalse($wp->cacheGet('foo', 'bar_group'));
 
         $wp->cacheDelete('foo', 'bar_group');
         $this->assertSame('bar', $wp->cacheGet('foo', 'foo_group'));
 
         $wp->cacheDelete('foo', 'foo_group');
-        $this->assertSame(false, $wp->cacheGet('foo', 'foo_group'));
+        $this->assertFalse($wp->cacheGet('foo', 'foo_group'));
     }
 
     /**

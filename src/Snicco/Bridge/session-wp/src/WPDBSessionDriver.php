@@ -13,11 +13,9 @@ use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
 
 use function count;
-use function intval;
 use function is_numeric;
 use function rtrim;
 use function str_repeat;
-use function strval;
 
 final class WPDBSessionDriver implements UserSessionsDriver
 {
@@ -63,7 +61,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
             'hashed_validator' => $session->hashedValidator(),
             'last_activity' => $session->lastActivity(),
             'data' => $session->data(),
-            'user_id' => null !== $user_id ? strval($user_id) : null,
+            'user_id' => null !== $user_id ? (string) $user_id : null,
         ];
 
         $this->db->preparedQuery(
@@ -184,7 +182,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
 
         $user_id = $data['user_id'];
 
-        $user_id = is_numeric($user_id) ? intval($user_id) : $user_id;
+        $user_id = is_numeric($user_id) ? (int) $user_id : $user_id;
 
         return SerializedSession::fromString(
             $data['data'],
