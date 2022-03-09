@@ -64,7 +64,7 @@ final class BundleTest
     {
         $fixtures_dir = $this->fixtures_dir;
 
-        if (!is_dir($fixtures_dir)) {
+        if (! is_dir($fixtures_dir)) {
             $res = mkdir($fixtures_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -75,7 +75,7 @@ final class BundleTest
 
         $config_dir = $fixtures_dir . '/config';
 
-        if (!is_dir($config_dir)) {
+        if (! is_dir($config_dir)) {
             $res = mkdir($config_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -84,7 +84,7 @@ final class BundleTest
             }
         }
 
-        if (!is_file($config_dir . '/app.php')) {
+        if (! is_file($config_dir . '/app.php')) {
             $res = file_put_contents($config_dir . '/app.php', '<?php return ' . var_export([], true) . ';');
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -95,7 +95,7 @@ final class BundleTest
 
         $cache_dir = $fixtures_dir . '/var/cache';
 
-        if (!is_dir($cache_dir)) {
+        if (! is_dir($cache_dir)) {
             $res = mkdir($cache_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -106,7 +106,7 @@ final class BundleTest
 
         $log_dir = $fixtures_dir . '/var/log';
 
-        if (!is_dir($log_dir)) {
+        if (! is_dir($log_dir)) {
             $res = mkdir($log_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -151,7 +151,7 @@ final class BundleTest
         foreach ($objects as $name => $file_info) {
             if ($file_info->isDir()) {
                 continue;
-            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && !in_array($name, $expect)) {
+            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && ! in_array($name, $expect)) {
                 $files[] = $name;
             }
         }

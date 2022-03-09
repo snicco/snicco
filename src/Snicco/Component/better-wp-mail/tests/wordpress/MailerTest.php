@@ -33,6 +33,7 @@ use function wp_mail;
 final class MailerTest extends WPTestCase
 {
     private string $fixtures_dir;
+
     private MockPHPMailer $php_mailer;
 
     protected function setUp(): void

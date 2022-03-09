@@ -24,6 +24,7 @@ use function sprintf;
 final class MysqliDriver implements MysqliDriverInterface
 {
     private mysqli $mysqli;
+
     private MysqliReconnect $reconnect;
 
     public function __construct(mysqli $mysqli, MysqliReconnect $reconnect)
@@ -95,7 +96,7 @@ final class MysqliDriver implements MysqliDriverInterface
 
     public function lastInsertId(): int
     {
-        return (int)$this->mysqli->insert_id;
+        return (int) $this->mysqli->insert_id;
     }
 
     public function isStillConnected(): bool
@@ -193,11 +194,11 @@ final class MysqliDriver implements MysqliDriverInterface
             throw new QueryException($sql, $bindings, $e);
         }
 
-        if (!$stmt instanceof mysqli_stmt) {
+        if (! $stmt instanceof mysqli_stmt) {
             throw new QueryException($sql, $bindings, $this->lastException());
         }
 
-        if (!count($bindings)) {
+        if (! count($bindings)) {
             return $stmt;
         }
 
@@ -225,7 +226,7 @@ final class MysqliDriver implements MysqliDriverInterface
             );
         }
 
-        if (!$success) {
+        if (! $success) {
             throw new QueryException(
                 $sql,
                 $copy,
@@ -285,7 +286,7 @@ final class MysqliDriver implements MysqliDriverInterface
     {
         try {
             $result = $stmt->get_result();
-            if (!$result instanceof mysqli_result) {
+            if (! $result instanceof mysqli_result) {
                 throw $this->lastException();
             }
         } catch (mysqli_sql_exception $e) {

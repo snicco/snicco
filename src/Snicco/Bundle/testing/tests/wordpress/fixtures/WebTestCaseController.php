@@ -79,7 +79,7 @@ final class WebTestCaseController extends Controller
          * @var string $value
          */
         foreach ($request->getServerParams() as $name => $value) {
-            if (strpos((string)$name, 'X-') === 0) {
+            if (strpos((string) $name, 'X-') === 0) {
                 $string .= "$name=$value";
             }
         }
@@ -95,8 +95,8 @@ final class WebTestCaseController extends Controller
     {
         $email = new Email();
         $email = $email
-            ->withTo((string)$request->post('to'))
-            ->withTextBody((string)$request->post('message'));
+            ->withTo((string) $request->post('to'))
+            ->withTextBody((string) $request->post('message'));
 
         $this->mailer->send($email);
 

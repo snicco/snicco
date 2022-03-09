@@ -56,9 +56,13 @@ abstract class HttpRunnerTestCase extends TestCase
     public const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
 
     protected string $app_domain = 'foobar.com';
+
     protected string $routes_dir;
+
     protected Container $pimple;
+
     protected ContainerInterface $psr_container;
+
     private Router $routing;
 
     /**
@@ -133,7 +137,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
     final protected function runNewPipeline(Request $request): AssertableResponse
     {
-        if (!isset($this->routing)) {
+        if (! isset($this->routing)) {
             $this->routing = $this->newRoutingFacade();
         }
         $pipeline = $this->newPipeline();

@@ -19,7 +19,9 @@ use function array_replace;
 final class ResponseUtils
 {
     private UrlGenerator $url_generator;
+
     private ResponseFactory $response_factory;
+
     private Request $current_request;
 
     public function __construct(
@@ -90,7 +92,7 @@ final class ResponseUtils
      */
     public function refresh(): RedirectResponse
     {
-        return $this->redirectTo((string)$this->current_request->getUri());
+        return $this->redirectTo((string) $this->current_request->getUri());
     }
 
     /**

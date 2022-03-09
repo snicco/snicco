@@ -23,7 +23,9 @@ use function strtolower;
 final class MiddlewarePipeline
 {
     private HttpErrorHandler $error_handler;
+
     private MiddlewareFactory $middleware_factory;
+
     private ContainerInterface $container;
 
     /**
@@ -84,7 +86,7 @@ final class MiddlewarePipeline
 
     private function run(): Response
     {
-        if (!isset($this->current_request)) {
+        if (! isset($this->current_request)) {
             throw new LogicException(
                 'You cant run a middleware pipeline twice without calling send() first.'
             );

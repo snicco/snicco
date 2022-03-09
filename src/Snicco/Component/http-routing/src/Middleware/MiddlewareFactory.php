@@ -42,7 +42,7 @@ final class MiddlewareFactory
                 /** @var mixed $middleware */
                 $middleware = $middleware(...array_values($route_arguments));
             }
-            if (!$middleware instanceof MiddlewareInterface) {
+            if (! $middleware instanceof MiddlewareInterface) {
                 throw new LogicException(
                     sprintf(
                         "Resolving a middleware from the container must return an instance of [%s].\nGot [%s]",

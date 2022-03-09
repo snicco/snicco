@@ -194,7 +194,6 @@ final class AdminMenuTest extends HttpRunnerTestCase
             });
         });
 
-
         $items = $routing->adminMenu()->items();
 
         $this->assertCount(3, $items);
@@ -325,7 +324,6 @@ final class AdminMenuTest extends HttpRunnerTestCase
                 RoutingConfigurator::MIDDLEWARE_KEY => [RoutingConfigurator::ADMIN_MIDDLEWARE],
             ]);
         });
-
 
         $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=sub1'))
             ->assertOk()

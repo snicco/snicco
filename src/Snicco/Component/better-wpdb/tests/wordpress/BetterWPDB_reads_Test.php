@@ -58,7 +58,6 @@ final class BetterWPDB_reads_Test extends WPTestCase
             "insert into test_table (test_string, test_bool) values('baz', true)",
         );
 
-
         $stmt = $this->better_wpdb->select('select * from test_table where id = ?', [1]);
         $this->assertSame(1, $stmt->num_rows);
 

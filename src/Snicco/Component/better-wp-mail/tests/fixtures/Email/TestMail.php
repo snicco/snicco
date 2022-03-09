@@ -9,5 +9,6 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 class TestMail extends Email
 {
     protected string $subject = 'foo';
+
     protected ?string $text = 'bar';
 }

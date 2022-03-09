@@ -28,6 +28,7 @@ final class MiddlewareTest extends TestCase
     use CreateUrlGenerator;
 
     private \Pimple\Psr11\Container $pimple_psr;
+
     private Container $pimple;
 
     protected function setUp(): void
@@ -60,7 +61,7 @@ final class MiddlewareTest extends TestCase
 
         $response = $middleware->process($this->frontendRequest(), $this->getNext());
 
-        $this->assertSame('/foo', (string)$response->getBody());
+        $this->assertSame('/foo', (string) $response->getBody());
     }
 
     /**
@@ -113,7 +114,7 @@ final class MiddlewareTest extends TestCase
             }
         );
 
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**
@@ -190,7 +191,7 @@ final class MiddlewareTest extends TestCase
             }
         );
 
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**

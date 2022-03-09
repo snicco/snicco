@@ -33,9 +33,13 @@ class MiddlewarePipelineTest extends TestCase
     use CreateHttpErrorHandler;
 
     private MiddlewarePipeline $pipeline;
+
     private Request $request;
+
     private ResponseFactory $response_factory;
+
     private Container $pimple;
+
     private ContainerInterface $pimple_psr;
 
     protected function setUp(): void
@@ -89,7 +93,7 @@ class MiddlewarePipelineTest extends TestCase
             ->through([MiddlewareBlueprint::from(PipelineTestMiddleware1::class)])
             ->then(function (ServerRequestInterface $request) {
                 return $this->response_factory->html(
-                    (string)$request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE)
+                    (string) $request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE)
                 );
             });
 
@@ -156,8 +160,8 @@ class MiddlewarePipelineTest extends TestCase
             )
             ->then(function (ServerRequestInterface $request) {
                 return $this->response_factory->html(
-                    (string)$request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE) .
-                    (string)$request->getAttribute(PipelineTestMiddleware2::ATTRIBUTE)
+                    (string) $request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE) .
+                    (string) $request->getAttribute(PipelineTestMiddleware2::ATTRIBUTE)
                 );
             });
 
@@ -221,7 +225,7 @@ class MiddlewarePipelineTest extends TestCase
                 return $this->response_factory->html('foo_handler');
             });
 
-        $this->assertSame('foo_handler:FOO_M', (string)$response->getBody());
+        $this->assertSame('foo_handler:FOO_M', (string) $response->getBody());
 
         $response = $this->pipeline
             ->send($this->request)
@@ -230,7 +234,7 @@ class MiddlewarePipelineTest extends TestCase
                 return $this->response_factory->html('foo_handler');
             });
 
-        $this->assertSame('foo_handler:FOO_M_DIFFERENT', (string)$response->getBody());
+        $this->assertSame('foo_handler:FOO_M_DIFFERENT', (string) $response->getBody());
     }
 
     /**
@@ -256,7 +260,7 @@ class MiddlewarePipelineTest extends TestCase
                 throw new RuntimeException('This should never run.');
             });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringEndsWith('foo_middleware', $body);
@@ -284,7 +288,7 @@ class MiddlewarePipelineTest extends TestCase
                 throw new RuntimeException('error');
             });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringEndsWith(':bar_middleware:foo_middleware', $body);
@@ -372,6 +376,7 @@ class StopMiddleware extends Middleware
 class PipelineTestMiddleware1 extends Middleware
 {
     public const ATTRIBUTE = 'pipeline1';
+
     private string $value_to_add;
 
     public function __construct(string $value_to_add = 'foo')
@@ -390,6 +395,7 @@ class PipelineTestMiddleware1 extends Middleware
 class PipelineTestMiddleware2 extends Middleware
 {
     public const ATTRIBUTE = 'pipeline2';
+
     private string $value_to_add;
 
     public function __construct(string $value_to_add = 'bar')

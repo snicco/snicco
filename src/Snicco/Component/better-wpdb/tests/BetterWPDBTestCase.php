@@ -53,7 +53,7 @@ class BetterWPDBTestCase extends WPTestCase
         $record = $this->better_wpdb->selectRow('select * from test_table where id = ?', [$id]);
 
         foreach ($expected as $name => $value) {
-            if (!array_key_exists($name, $record)) {
+            if (! array_key_exists($name, $record)) {
                 $this->fail("Record does not have key [$name].");
             }
             $this->assertSame($value, $record[$name]);

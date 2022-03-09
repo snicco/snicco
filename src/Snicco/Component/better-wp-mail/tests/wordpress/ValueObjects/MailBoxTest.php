@@ -39,7 +39,7 @@ final class MailBoxTest extends WPTestCase
         $address = Mailbox::create('Calvin Alkan <calvin@web.de>');
         $this->assertSame('calvin@web.de', $address->address());
         $this->assertSame('Calvin Alkan <calvin@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan <calvin@web.de>', (string )$address);
+        $this->assertSame('Calvin Alkan <calvin@web.de>', (string) $address);
         $this->assertSame('Calvin Alkan', $address->name());
     }
 

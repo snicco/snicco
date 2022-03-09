@@ -112,7 +112,7 @@ class TestSubject implements Countable
 class TestTraversable implements Iterator
 {
     #[ReturnTypeWillChange]
-    
+
     public function current()
     {
     }
@@ -122,7 +122,7 @@ class TestTraversable implements Iterator
     }
 
     #[ReturnTypeWillChange]
-    
+
     public function key()
     {
     }

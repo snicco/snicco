@@ -110,6 +110,7 @@ final class KernelBootstrappersTest extends TestCase
 class BundleInfo implements Bundle
 {
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function shouldRun(Environment $env): bool
@@ -143,6 +144,7 @@ class BundleInfo implements Bundle
 class Bootstrap1 implements Bootstrapper
 {
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
@@ -173,6 +175,7 @@ class Bootstrap1 implements Bootstrapper
 class Bootstrap2 implements Bootstrapper
 {
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
@@ -183,7 +186,7 @@ class Bootstrap2 implements Bootstrapper
     public function register(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!$kernel->container()->has(BundleInfo::class)) {
+        if (! $kernel->container()->has(BundleInfo::class)) {
             throw new RuntimeException('Bootstrapper registered before bundle');
         }
 
@@ -196,7 +199,7 @@ class Bootstrap2 implements Bootstrapper
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!$container->make(BundleInfo::class)->booted === true) {
+        if (! $container->make(BundleInfo::class)->booted === true) {
             throw new RuntimeException('Bootstrapper bootstrapped before bundle');
         }
         $container->make(self::class)->booted = true;

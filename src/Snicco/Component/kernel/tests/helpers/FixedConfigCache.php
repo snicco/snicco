@@ -13,14 +13,14 @@ final class FixedConfigCache implements ConfigCache
 
     public function __construct(array $config)
     {
-        if (!isset($config['app'])) {
+        if (! isset($config['app'])) {
             $config['app'] = [];
         }
-        if (!isset($config['app']['bootstrappers'])) {
+        if (! isset($config['app']['bootstrappers'])) {
             /** @psalm-suppress MixedArrayAssignment */
             $config['app']['bootstrappers'] = [];
         }
-        if (!isset($config['bundles'])) {
+        if (! isset($config['bundles'])) {
             $config['bundles'] = [];
         }
         $this->config = $config;

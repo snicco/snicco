@@ -22,6 +22,7 @@ use function sprintf;
 abstract class Middleware implements MiddlewareInterface
 {
     private ContainerInterface $container;
+
     private ?Request $current_request = null;
 
     /**
@@ -38,7 +39,7 @@ abstract class Middleware implements MiddlewareInterface
     {
         $request = Request::fromPsr($request);
 
-        if (!$handler instanceof NextMiddleware) {
+        if (! $handler instanceof NextMiddleware) {
             $handler = new NextMiddleware(function (Request $request) use ($handler) {
                 return $handler->handle($request);
             });
@@ -60,7 +61,7 @@ abstract class Middleware implements MiddlewareInterface
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The UrlGenerator is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }
@@ -75,7 +76,7 @@ abstract class Middleware implements MiddlewareInterface
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The ResponseFactory is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }
@@ -92,7 +93,7 @@ abstract class Middleware implements MiddlewareInterface
 
     private function currentRequest(): Request
     {
-        if (!isset($this->current_request)) {
+        if (! isset($this->current_request)) {
             throw new RuntimeException(sprintf('current request not set on middleware [%s]', static::class));
         }
         return $this->current_request;

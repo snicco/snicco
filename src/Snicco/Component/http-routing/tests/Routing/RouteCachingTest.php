@@ -161,9 +161,9 @@ class RouteCachingTest extends HttpRunnerTestCase
         $this->assertTrue(isset($items[1]));
         $this->assertTrue(isset($items[2]));
 
-        $this->assertSame('/wp-admin/admin.php/foo', (string)$items[0]->slug());
-        $this->assertSame('/wp-admin/admin.php/bar', (string)$items[1]->slug());
-        $this->assertSame('/wp-admin/admin.php/baz', (string)$items[2]->slug());
+        $this->assertSame('/wp-admin/admin.php/foo', (string) $items[0]->slug());
+        $this->assertSame('/wp-admin/admin.php/bar', (string) $items[1]->slug());
+        $this->assertSame('/wp-admin/admin.php/baz', (string) $items[2]->slug());
     }
 }
 

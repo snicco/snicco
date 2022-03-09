@@ -67,7 +67,7 @@ final class Redirect extends Middleware
         $arr = [301, 302, 303, 307, 308];
         $_r = [];
         foreach ($redirects as $status => $redirect) {
-            if (!in_array($status, $arr, true)) {
+            if (! in_array($status, $arr, true)) {
                 throw new InvalidArgumentException(
                     sprintf('$status must be one of [%s].', implode(',', $arr))
                 );

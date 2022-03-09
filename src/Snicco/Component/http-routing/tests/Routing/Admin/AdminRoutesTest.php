@@ -261,7 +261,7 @@ class AdminRoutesTest extends HttpRunnerTestCase
         });
 
         $request = $this->adminRequest('/wp-admin/admin.php?page=foo');
-        $as_string = (string)$request->getUri();
+        $as_string = (string) $request->getUri();
         $this->assertStringContainsString('page=foo', $as_string);
         $this->assertResponseBody($as_string, $request);
     }

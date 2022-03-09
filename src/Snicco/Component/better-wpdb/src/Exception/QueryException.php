@@ -27,15 +27,15 @@ class QueryException extends RuntimeException
             if (is_null($binding)) {
                 return 'null';
             }
-            if (!is_string($binding)) {
-                return (string)$binding;
+            if (! is_string($binding)) {
+                return (string) $binding;
             }
             return "'$binding'";
         }, $bindings);
 
         $message .= "\nBindings: [" . implode(', ', $bindings) . ']';
 
-        parent::__construct($message, ($prev) ? (int)$prev->getCode() : 0, $prev);
+        parent::__construct($message, ($prev) ? (int) $prev->getCode() : 0, $prev);
     }
 
     /**

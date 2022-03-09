@@ -34,7 +34,6 @@ final class BundleTestHelpersSetupMethodsTest extends TestCase
         touch(__DIR__ . '/fixtures/dir/file.php');
         touch(__DIR__ . '/fixtures/dir/dir-nested/file-nested.php');
 
-
         $this->assertTrue(is_dir(__DIR__ . '/fixtures/dir'));
         $this->assertTrue(is_dir(__DIR__ . '/fixtures/dir/dir-nested'));
         $this->assertTrue(is_file(__DIR__ . '/fixtures/dir/file.php'));

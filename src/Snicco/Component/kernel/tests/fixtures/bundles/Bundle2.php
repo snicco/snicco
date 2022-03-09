@@ -13,8 +13,8 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 class Bundle2 implements Bundle
 {
     public bool $registered = false;
-    public bool $booted = false;
 
+    public bool $booted = false;
 
     private ?string $alias;
 
@@ -30,7 +30,7 @@ class Bundle2 implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        if (!$config->has('bundle1.configured')) {
+        if (! $config->has('bundle1.configured')) {
             throw new RuntimeException('bundle1 should have been configured first.');
         }
         $config->set('bundle2.configured', true);
@@ -39,7 +39,7 @@ class Bundle2 implements Bundle
     public function register(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!isset($container[Bundle1::class])) {
+        if (! isset($container[Bundle1::class])) {
             throw new RuntimeException('bundle1 should have been registered first');
         }
 

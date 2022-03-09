@@ -156,7 +156,6 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
             $this->assertSame('cant log.', $e->getMessage());
         }
 
-
         $this->assertRecordCount(1);
     }
 }
