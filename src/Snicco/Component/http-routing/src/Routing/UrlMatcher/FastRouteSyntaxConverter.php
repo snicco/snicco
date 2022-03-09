@@ -111,7 +111,7 @@ final class FastRouteSyntaxConverter
             return $match[0] . ':' . $regex;
         }, $url, 1);
 
-        if (null == $url) {
+        if (null === $url) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException("preg_replace_callback returned an error for url [$url].");
             // @codeCoverageIgnoreEnd

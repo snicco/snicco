@@ -8,7 +8,6 @@ use function array_map;
 use function array_shift;
 use function is_float;
 use function is_int;
-use function is_null;
 use function preg_replace_callback;
 use function strval;
 
@@ -66,7 +65,7 @@ final class QueryInfo
             if (is_int($binding) || is_float($binding)) {
                 return strval($binding);
             }
-            if (is_null($binding)) {
+            if (null === $binding) {
                 return 'null';
             }
             $binding = (string) $binding;

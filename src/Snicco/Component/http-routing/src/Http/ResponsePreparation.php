@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Snicco\Component\HttpRouting\Http;
 
 use Psr\Http\Message\StreamFactoryInterface;
@@ -159,7 +161,7 @@ final class ResponsePreparation
 
     private function fixProtocol(Response $response, Request $request): Response
     {
-        if ('HTTP/1.0' != $request->server('SERVER_PROTOCOL')) {
+        if ('HTTP/1.0' !== $request->server('SERVER_PROTOCOL')) {
             $response = $response->withProtocolVersion('1.1');
         }
 

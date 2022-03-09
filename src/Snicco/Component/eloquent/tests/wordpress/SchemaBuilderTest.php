@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Snicco\Component\Eloquent\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;

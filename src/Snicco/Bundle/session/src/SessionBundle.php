@@ -143,7 +143,7 @@ final class SessionBundle implements Bundle
 
         $serializer = $config->getString('session.' . SessionOption::SERIALIZER);
 
-        if (! class_exists($serializer) || ! in_array(Serializer::class, (array) class_implements($serializer))) {
+        if (! class_exists($serializer) || ! in_array(Serializer::class, (array) class_implements($serializer), true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'session.' . SessionOption::SERIALIZER . " has to be a class-name that implements [%s].\nGot [%s].",
@@ -154,7 +154,7 @@ final class SessionBundle implements Bundle
         }
 
         $driver = $config->getString('session.' . SessionOption::DRIVER);
-        if (! class_exists($driver) || ! in_array(SessionDriver::class, (array) class_implements($driver))) {
+        if (! class_exists($driver) || ! in_array(SessionDriver::class, (array) class_implements($driver), true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'session.' . SessionOption::DRIVER . " has to be a class-name that implements [%s].\nGot [%s].",

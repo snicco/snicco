@@ -218,7 +218,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $itemKey = $item->getKey();
             $this->assertEquals($itemKey, $key, 'Keys must be preserved when fetching multiple items');
             $this->assertEquals($key !== 'biz', $item->isHit());
-            $this->assertTrue(in_array($key, $keys), 'Cache key can not change.');
+            $this->assertTrue(in_array($key, $keys, true), 'Cache key can not change.');
 
             // Remove $key for $keys
             foreach ($keys as $k => $v) {
@@ -700,7 +700,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         );
         $item = $this->cache->getItem('key');
         $this->assertTrue(null === $item->get(), 'Wrong data type. If we store null we must get an null back.');
-        $this->assertTrue(is_null($item->get()), 'Wrong data type. If we store null we must get an null back.');
+        $this->assertTrue(null === $item->get(), 'Wrong data type. If we store null we must get an null back.');
         $this->assertTrue($item->isHit(), 'isHit() should return true when null are stored. ');
     }
 

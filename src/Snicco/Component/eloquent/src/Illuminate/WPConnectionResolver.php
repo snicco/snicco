@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Snicco\Component\Eloquent\Illuminate;
 
 use Illuminate\Database\ConnectionInterface;
@@ -52,7 +54,7 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
      */
     public function connection($name = null): ConnectionInterface
     {
-        if (is_null($name)) {
+        if (null === $name) {
             $name = $this->getDefaultConnection();
         }
 

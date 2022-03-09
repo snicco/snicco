@@ -99,7 +99,7 @@ final class Psr16Storage implements SignedUrlStorage
     {
         $data = $this->cache->get($key);
 
-        if (null == $data || ! is_array($data)) {
+        if (null === $data || ! is_array($data)) {
             throw BadIdentifier::for($identifier);
         }
 

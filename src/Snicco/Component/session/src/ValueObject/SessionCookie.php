@@ -6,7 +6,6 @@ namespace Snicco\Component\Session\ValueObject;
 
 use Snicco\Component\Session\SessionManager\SessionManager;
 
-use function is_null;
 use function time;
 
 final class SessionCookie
@@ -104,7 +103,7 @@ final class SessionCookie
      */
     public function expiryTimestamp(): int
     {
-        if (is_null($this->life_time)) {
+        if (null === $this->life_time) {
             return 0;
         }
 

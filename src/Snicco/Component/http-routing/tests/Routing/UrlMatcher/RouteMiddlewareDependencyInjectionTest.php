@@ -18,8 +18,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-use function is_null;
-
 class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 {
     protected function setUp(): void
@@ -177,7 +175,7 @@ class MiddlewareWithTypedDefault extends Middleware
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        if (! is_null($this->foo)) {
+        if (null !== $this->foo) {
             throw new RuntimeException('Foo is not null');
         }
 

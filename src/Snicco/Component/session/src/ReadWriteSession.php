@@ -25,7 +25,6 @@ use function count;
 use function filter_var;
 use function is_array;
 use function is_int;
-use function is_null;
 use function is_string;
 
 /**
@@ -185,9 +184,9 @@ final class ReadWriteSession implements Session
     {
         $old = $this->oldInput($key);
 
-        return is_null($key)
+        return null === $key
             ? is_array($old) && count($old) > 0
-            : ! is_null($old);
+            : null !== $old;
     }
 
     /**
@@ -391,7 +390,7 @@ final class ReadWriteSession implements Session
     {
         $user_id = $this->get('_user_id');
 
-        if (! is_string($user_id) && ! is_int($user_id) && ! is_null($user_id)) {
+        if (! is_string($user_id) && ! is_int($user_id) && null !== $user_id) {
             throw new InvalidArgumentException('$user_id must be string or integer.');
         }
 

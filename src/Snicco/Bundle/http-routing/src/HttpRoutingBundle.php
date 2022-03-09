@@ -504,7 +504,8 @@ final class HttpRoutingBundle implements Bundle
                 || ! class_exists($class)
                 || ! in_array(
                     MiddlewareInterface::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 throw new InvalidArgumentException(
                     "Middleware alias [$alias] has to resolve to a middleware class."
@@ -517,7 +518,8 @@ final class HttpRoutingBundle implements Bundle
                 ! class_exists($class)
                 || ! in_array(
                     MiddlewareInterface::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
@@ -532,7 +534,8 @@ final class HttpRoutingBundle implements Bundle
                 ! class_exists($class)
                 || ! in_array(
                     MiddlewareInterface::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
@@ -580,7 +583,8 @@ final class HttpRoutingBundle implements Bundle
                 ! class_exists($class)
                 || ! in_array(
                     ExceptionDisplayer::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
@@ -599,7 +603,8 @@ final class HttpRoutingBundle implements Bundle
                 ! class_exists($class)
                 || ! in_array(
                     ExceptionTransformer::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
@@ -618,7 +623,8 @@ final class HttpRoutingBundle implements Bundle
                 ! class_exists($class)
                 || ! in_array(
                     RequestLogContext::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
@@ -648,7 +654,8 @@ final class HttpRoutingBundle implements Bundle
                 || ! class_exists($class)
                 || ! in_array(
                     Throwable::class,
-                    (array) class_implements($class)
+                    (array) class_implements($class),
+                    true
                 )) {
                 $class = (string) $class;
                 throw new InvalidArgumentException(

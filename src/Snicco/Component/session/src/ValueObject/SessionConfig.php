@@ -83,7 +83,7 @@ final class SessionConfig
             $same_site = 'None; Secure';
         }
 
-        if (! in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'])) {
+        if (! in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'], true)) {
             throw new InvalidArgumentException(
                 sprintf('same_site must be one of [%s].', implode(', ', $req))
             );

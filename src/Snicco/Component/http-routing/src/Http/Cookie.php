@@ -124,7 +124,7 @@ final class Cookie
             $same_site = 'None';
         }
 
-        if (! in_array($same_site, ['Lax', 'Strict', 'None'])) {
+        if (! in_array($same_site, ['Lax', 'Strict', 'None'], true)) {
             throw new LogicException(
                 "The value [$same_site] is not supported for the SameSite cookie."
             );

@@ -29,7 +29,6 @@ use function is_array;
 use function is_bool;
 use function is_double;
 use function is_int;
-use function is_null;
 use function is_scalar;
 use function is_string;
 use function microtime;
@@ -379,7 +378,7 @@ final class BetterWPDB
 
         foreach ($conditions as $col_name => $value) {
             $col_name = $this->escIdentifier($col_name);
-            if (is_null($value)) {
+            if (null === $value) {
                 $wheres[] = "$col_name is null";
             } else {
                 $wheres[] = "$col_name = ?";
@@ -463,19 +462,19 @@ final class BetterWPDB
                     throw new InvalidArgumentException('Each record has to be a non-empty-array.');
                 }
                 // only create the insert sql once.
-                $sql = is_null($sql)
+                $sql = null === $sql
                     ? $this->buildInsertSql($table, array_keys($record))
                     : $sql;
 
                 // only create one prepared statement
-                $stmt = is_null($stmt)
+                $stmt = null === $stmt
                     ? $this->mysqli->prepare($sql)
                     : $stmt;
 
                 $bindings = $this->convertBindings($record);
 
                 // Retrieve the expected types from the first record.
-                if (is_null($expected_types)) {
+                if (null === $expected_types) {
                     $expected_types = (string) $this->paramTypes($bindings);
                 }
 
@@ -650,7 +649,7 @@ final class BetterWPDB
         $b = [];
 
         foreach ($bindings as $binding) {
-            if (! is_scalar($binding) && ! is_null($binding)) {
+            if (! is_scalar($binding) && null !== $binding) {
                 throw new InvalidArgumentException('All bindings have to be of type scalar or null.');
             }
             if (is_bool($binding)) {
@@ -698,7 +697,7 @@ final class BetterWPDB
             }
 
             $col_name = $this->escIdentifier($col_name);
-            if (is_null($value)) {
+            if (null === $value) {
                 $wheres[] = "$col_name is null";
             } else {
                 $wheres[] = "$col_name = ?";
