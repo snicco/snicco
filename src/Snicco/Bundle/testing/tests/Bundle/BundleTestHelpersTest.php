@@ -244,9 +244,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->bundle_test->withoutHttpErrorHandling($kernel);
         $kernel->boot();
 
-        /**
-         * @var HttpErrorHandler $handler
-         */
+        /** @var HttpErrorHandler $handler */
         $handler = $kernel->container()->get(HttpErrorHandler::class);
 
         $this->expectException(RuntimeException::class);

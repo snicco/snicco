@@ -101,7 +101,7 @@ final class SessionBundle implements Bundle
         return self::ALIAS;
     }
 
-    protected function bindSessionDriver(Kernel $kernel): void
+    private function bindSessionDriver(Kernel $kernel): void
     {
         $kernel->container()->shared(SessionDriver::class, function () use ($kernel) {
             if ($kernel->env()->isTesting()) {
@@ -123,7 +123,7 @@ final class SessionBundle implements Bundle
         });
     }
 
-    protected function bindSessionManager(Kernel $kernel): void
+    private function bindSessionManager(Kernel $kernel): void
     {
         $kernel->container()->shared(SessionManager::class, function () use ($kernel) {
             return new FactorySessionManager(

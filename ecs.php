@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\ArrayNotation\ArraySyntaxFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\EasyCodingStandard\ValueObject\Option;
@@ -17,18 +16,20 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services = $containerConfigurator->services();
 
-    $services->set(ArraySyntaxFixer::class)
-        ->call('configure', [
-            [
-                'syntax' => 'short',
-            ]
-        ]);
-
-//     run and fix, one by one
     $containerConfigurator->import(SetList::SPACES);
     $containerConfigurator->import(SetList::ARRAY);
     $containerConfigurator->import(SetList::DOCBLOCK);
     $containerConfigurator->import(SetList::PSR_12);
-//    $containerConfigurator->import(SetList::CLEAN_CODE);
-//    $services->set(OrderedImportsFixer::class);
+    $containerConfigurator->import(SetList::CLEAN_CODE);
+
+    $services->set(OrderedImportsFixer::class)->call('configure', [
+        [
+            'sort_algorithm' => 'alpha',
+            'imports_order' => [
+                'class',
+                'function',
+                'const',
+            ]
+        ]
+    ]);
 };

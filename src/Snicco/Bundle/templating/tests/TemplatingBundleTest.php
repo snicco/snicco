@@ -83,9 +83,7 @@ final class TemplatingBundleTest extends TestCase
 
         $this->assertCanBeResolved(GlobalViewContext::class, $kernel);
 
-        /**
-         * @var GlobalViewContext $context
-         */
+        /** @var GlobalViewContext $context */
         $context = $kernel->container()->get(GlobalViewContext::class);
         $this->assertTrue(isset($context->get()['view']));
         $this->assertFalse(isset($context->get()['url']));
@@ -109,9 +107,7 @@ final class TemplatingBundleTest extends TestCase
 
         $this->assertCanBeResolved(GlobalViewContext::class, $kernel);
 
-        /**
-         * @var GlobalViewContext $context
-         */
+        /** @var GlobalViewContext $context */
         $context = $kernel->container()->get(GlobalViewContext::class);
         $this->assertTrue(isset($context->get()['url']));
         $this->assertInstanceOf(UrlGenerator::class, $context->get()['url']);

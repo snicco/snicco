@@ -7,7 +7,6 @@ namespace Snicco\Component\SignedUrl\Tests\Storage;
 use ArrayAccess;
 use PHPUnit\Framework\TestCase;
 use ReturnTypeWillChange;
-use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
 use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\Storage\SessionStorage;

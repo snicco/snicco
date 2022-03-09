@@ -57,9 +57,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             $this->validateKey($key);
         }
 
-        /**
-         * @var array<non-empty-string,string|false> $fetched
-         */
+        /** @var array<non-empty-string,string|false> $fetched */
         $fetched = $this->wp_object_cache->cacheGetMultiple($keys, $this->wp_cache_group);
 
         $items = [];
@@ -241,9 +239,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             return $item;
         }
 
-        /**
-         * @var mixed $serialized_value
-         */
+        /** @var mixed $serialized_value */
         $serialized_value = $this->wp_object_cache->cacheGet(
             $key,
             $this->wp_cache_group,
@@ -268,9 +264,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             return WPCacheItem::miss($key);
         }
 
-        /**
-         * @var mixed $value
-         */
+        /** @var mixed $value */
         $value = unserialize($serialized_value);
         if (false === $value && 'b:0;' !== $serialized_value) {
             return WPCacheItem::miss($key);

@@ -59,9 +59,7 @@ final class ErrorHandlingTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
 
         $response = $pipeline
@@ -147,9 +145,7 @@ final class ErrorHandlingTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
 
         $pipeline
@@ -276,9 +272,7 @@ final class ErrorHandlingTest extends TestCase
         });
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
 
         $pipeline
@@ -352,9 +346,7 @@ final class ErrorHandlingTest extends TestCase
         );
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/foo');
@@ -390,9 +382,7 @@ final class ErrorHandlingTest extends TestCase
 
             $kernel->boot();
 
-            /**
-             * @var HttpKernel $http_kernel
-             */
+            /** @var HttpKernel $http_kernel */
             $http_kernel = $kernel->container()->make(HttpKernel::class);
 
             $request = new ServerRequest('GET', '/trigger-notice');
@@ -408,9 +398,7 @@ final class ErrorHandlingTest extends TestCase
                 'the error was handled by the global exception handler, not the kernel.'
             );
 
-            /**
-             * @var TestLogger $logger
-             */
+            /** @var TestLogger $logger */
             $logger = $kernel->container()->make(TestLogger::class);
             $this->assertTrue(
                 $logger->hasCritical([
@@ -442,9 +430,7 @@ final class ErrorHandlingTest extends TestCase
 
             $kernel->boot();
 
-            /**
-             * @var HttpKernel $http_kernel
-             */
+            /** @var HttpKernel $http_kernel */
             $http_kernel = $kernel->container()->make(HttpKernel::class);
 
             $request = new ServerRequest('GET', '/trigger-notice');
@@ -484,9 +470,7 @@ final class ErrorHandlingTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var HttpKernel $http_kernel
-         */
+        /** @var HttpKernel $http_kernel */
         $http_kernel = $kernel->container()->make(HttpKernel::class);
 
         $request = new ServerRequest('GET', '/trigger-deprecation');
@@ -495,9 +479,7 @@ final class ErrorHandlingTest extends TestCase
 
         $this->assertSame(200, $response->getStatusCode());
 
-        /**
-         * @var TestLogger $test_logger
-         */
+        /** @var TestLogger $test_logger */
         $test_logger = $kernel->container()->make(TestLogger::class);
         $this->assertTrue(
             $test_logger->hasInfoThatContains('PHP Deprecated')

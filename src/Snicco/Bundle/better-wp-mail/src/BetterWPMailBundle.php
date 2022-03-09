@@ -84,9 +84,7 @@ final class BetterWPMailBundle implements Bundle
                 $reply_to_name
             );
 
-            /**
-             * @var class-string<MailRenderer>[] $renderer_names
-             */
+            /** @var class-string<MailRenderer>[] $renderer_names */
             $renderer_names = $kernel->config()->getListOfStrings('mail.' . MailOption::RENDERER);
             $renderers = array_map(function ($class) use ($kernel) {
                 if ($class === FilesystemRenderer::class) {

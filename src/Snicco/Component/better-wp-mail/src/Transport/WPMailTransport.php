@@ -91,7 +91,7 @@ final class WPMailTransport implements Transport
      * Throwing explicit exceptions we also allow a far better usage for clients since they would
      * have to create their own hook callbacks otherwise.
      */
-    protected function handleFailure(): Closure
+    private function handleFailure(): Closure
     {
         $closure = /** @return never */
             function (WP_Error $error) {

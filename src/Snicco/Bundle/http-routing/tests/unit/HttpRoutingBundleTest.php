@@ -520,9 +520,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertCanBeResolved(ResponseFactoryInterface::class, $kernel);
         $this->assertCanBeResolved(StreamFactoryInterface::class, $kernel);
 
-        /**
-         * @var Psr17FactoryDiscovery $discovery
-         */
+        /** @var Psr17FactoryDiscovery $discovery */
         $discovery = $kernel->container()->make(Psr17FactoryDiscovery::class);
         $this->assertInstanceOf(HttpFactory::class, $discovery->createResponseFactory());
     }

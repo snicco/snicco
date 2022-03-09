@@ -46,9 +46,7 @@ final class WPAdminMenuTest extends WPTestCase
          */
         $user_factory = $this->factory()->user;
 
-        /**
-         * @var WP_User $user
-         */
+        /** @var WP_User $user */
         $user = $user_factory->create_and_get([
             'role' => 'administrator',
         ]);
@@ -65,9 +63,7 @@ final class WPAdminMenuTest extends WPTestCase
         $menu = [];
         $submenu = [];
 
-        /**
-         * @var WPAdminMenu $wp_admin_menu
-         */
+        /** @var WPAdminMenu $wp_admin_menu */
         $wp_admin_menu = $this->kernel->container()->make(WPAdminMenu::class);
 
         $wp_admin_menu->setUp();
@@ -88,9 +84,7 @@ final class WPAdminMenuTest extends WPTestCase
         $menu = [];
         $submenu = [];
 
-        /**
-         * @var WPAdminMenu $wp_admin_menu
-         */
+        /** @var WPAdminMenu $wp_admin_menu */
         $wp_admin_menu = $this->kernel->container()->make(WPAdminMenu::class);
 
         $wp_admin_menu->setUp();
@@ -107,9 +101,7 @@ final class WPAdminMenuTest extends WPTestCase
 
         $this->assertTrue(isset($submenu['server_error']));
 
-        /**
-         * @var list<string> $foo
-         */
+        /** @var list<string> $foo */
         $foo = $menu[0];
 
         $this->assertSame('FOO_TITLE', $foo[0] ?? '');

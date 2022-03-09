@@ -122,7 +122,7 @@ final class Environment
 
     public function isCli(): bool
     {
-        return (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg');
+        return PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg';
     }
 
     /**

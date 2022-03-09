@@ -51,9 +51,7 @@ final class TemplatingMiddlewareTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $kernel->container()->get(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('GET', '/'));
@@ -92,9 +90,7 @@ final class TemplatingMiddlewareTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $kernel->container()->get(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('GET', '/'));

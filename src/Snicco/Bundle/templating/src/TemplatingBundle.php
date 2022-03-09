@@ -143,9 +143,7 @@ final class TemplatingBundle implements Bundle
                 $kernel->container()->make(GlobalViewContext::class)
             );
 
-            /**
-             * @var array<class-string<ViewComposer>, list<string>>
-             */
+            /** @var array<class-string<ViewComposer>, list<string>> */
             $composers = $kernel->config()->getArray('templating.' . TemplatingOption::VIEW_COMPOSERS);
 
             foreach ($composers as $class => $views) {

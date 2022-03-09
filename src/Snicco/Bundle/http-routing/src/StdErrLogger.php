@@ -49,19 +49,13 @@ final class StdErrLogger extends AbstractLogger
     {
         $level = (string) $level;
 
-        /**
-         * @var array<string> $additional
-         */
+        /** @var array<string> $additional */
         $additional = [];
 
-        /**
-         * @var array<string,string> $replacements
-         */
+        /** @var array<string,string> $replacements */
         $replacements = [];
 
-        /**
-         * @var Throwable|null $exception
-         */
+        /** @var Throwable|null $exception */
         $exception = null;
 
         /**
