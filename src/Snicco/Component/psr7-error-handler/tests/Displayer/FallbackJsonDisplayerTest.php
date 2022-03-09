@@ -11,6 +11,9 @@ use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackJsonDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 
+/**
+ * @internal
+ */
 final class FallbackJsonDisplayerTest extends TestCase
 {
     /**

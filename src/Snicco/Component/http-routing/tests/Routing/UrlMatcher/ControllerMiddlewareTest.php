@@ -11,6 +11,9 @@ use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+/**
+ * @internal
+ */
 final class ControllerMiddlewareTest extends HttpRunnerTestCase
 {
     /**
@@ -69,7 +72,6 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
         $response->assertSeeText('handle:bar_middleware:foo_middleware');
     }
 }
-
 
 class ArrayMiddlewareController extends Controller
 {

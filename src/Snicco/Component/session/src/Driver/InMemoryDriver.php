@@ -13,7 +13,7 @@ use Snicco\Component\TestableClock\SystemClock;
 final class InMemoryDriver implements UserSessionsDriver
 {
     /**
-     * @var array<string,array{data:string, last_activity:positive-int, hashed_validator:string, user_id: string|int|null}>
+     * @var array<string,array{data:string, last_activity:positive-int, hashed_validator:string, user_id: int|string|null}>
      */
     private array $storage = [];
 
@@ -55,6 +55,7 @@ final class InMemoryDriver implements UserSessionsDriver
         if (! isset($this->storage[$selector])) {
             throw BadSessionID::forSelector($selector, 'array');
         }
+
         return SerializedSession::fromString(
             $this->storage[$selector]['data'],
             $this->storage[$selector]['hashed_validator'],
@@ -114,6 +115,7 @@ final class InMemoryDriver implements UserSessionsDriver
                 $return[$selector] = $this->read($selector);
             }
         }
+
         return $return;
     }
 

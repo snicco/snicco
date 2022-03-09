@@ -11,6 +11,9 @@ use Snicco\Component\BetterWPCache\WPCacheItem;
 
 use function time;
 
+/**
+ * @internal
+ */
 final class WPCacheItemTest extends WPTestCase
 {
     /**

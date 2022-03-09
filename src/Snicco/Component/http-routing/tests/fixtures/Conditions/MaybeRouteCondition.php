@@ -10,7 +10,7 @@ use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 class MaybeRouteCondition extends RouteCondition
 {
     /**
-     * @var string|bool
+     * @var bool|string
      */
     private $make_it_pass;
 
@@ -22,10 +22,10 @@ class MaybeRouteCondition extends RouteCondition
     public function isSatisfied(Request $request): bool
     {
         $val = $GLOBALS['test']['maybe_condition_run'] ?? 0;
-        $val++;
+        ++$val;
         $GLOBALS['test']['maybe_condition_run'] = $val;
 
-        return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
+        return true === $this->make_it_pass || 'foobar' === $this->make_it_pass;
     }
 
     public function getArguments(Request $request): array

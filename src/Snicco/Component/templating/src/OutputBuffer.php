@@ -39,6 +39,7 @@ final class OutputBuffer
             throw new RuntimeException('Buffered output could not be retrieved.');
             // @codeCoverageIgnoreEnd
         }
+
         return $output;
     }
 

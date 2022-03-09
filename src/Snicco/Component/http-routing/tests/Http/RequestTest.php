@@ -17,14 +17,17 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use stdClass;
 
-class RequestTest extends TestCase
+/**
+ * @internal
+ */
+final class RequestTest extends TestCase
 {
+    use CreatesPsrRequests;
+    use CreateTestPsr17Factories;
+
     private Request $request;
 
     private ServerRequestInterface $psr_request;
-
-    use CreatesPsrRequests;
-    use CreateTestPsr17Factories;
 
     protected function setUp(): void
     {
@@ -34,7 +37,7 @@ class RequestTest extends TestCase
         $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
     }
 
-    public function testIsImmutable(): void
+    public function test_is_immutable(): void
     {
         $request = $this->frontendRequest('foo');
 
@@ -49,7 +52,7 @@ class RequestTest extends TestCase
         $this->assertSame('POST', $next->getMethod());
     }
 
-    public function testGetPath(): void
+    public function test_get_path(): void
     {
         $request = $this->frontendRequest('/foo/bar');
         $this->assertSame('/foo/bar', $request->path());
@@ -70,7 +73,7 @@ class RequestTest extends TestCase
         $this->assertSame('/', $request->path());
     }
 
-    public function testGetUrl(): void
+    public function test_get_url(): void
     {
         $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
@@ -85,7 +88,7 @@ class RequestTest extends TestCase
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
     }
 
-    public function testGetFullUrl(): void
+    public function test_get_full_url(): void
     {
         $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
@@ -122,7 +125,7 @@ class RequestTest extends TestCase
         $this->assertSame('bar', $request->cookie('foo'));
     }
 
-    public function testFullUrlIs(): void
+    public function test_full_url_is(): void
     {
         $request = $this->frontendRequest('https://example.com/foo/bar');
 
@@ -132,7 +135,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->fullUrlIs('https://example.com/foo/*'));
     }
 
-    public function testPathIs(): void
+    public function test_path_is(): void
     {
         $request = $this->frontendRequest('https://example.com/foo/bar');
 
@@ -154,7 +157,7 @@ class RequestTest extends TestCase
         $this->assertTrue($request->pathIs('/münchen/*'));
     }
 
-    public function testDecodedPath(): void
+    public function test_decoded_path(): void
     {
         $request = $this->frontendRequest('/münchen/düsseldorf');
 
@@ -168,7 +171,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_IsSecure(): void
+    public function test__is_secure(): void
     {
         $request = $this->frontendRequest('http://foobar.com');
         $this->assertFalse($request->isSecure());
@@ -206,7 +209,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_isFrontend(): void
+    public function test_is_frontend(): void
     {
         $request = new Request(
             $this->psr_request
@@ -220,7 +223,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_isAdminArea(): void
+    public function test_is_admin_area(): void
     {
         $request = new Request($this->psr_request, Request::TYPE_ADMIN_AREA);
 
@@ -232,7 +235,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_isApiEndpoint(): void
+    public function test_is_api_endpoint(): void
     {
         $request = new Request($this->psr_request, Request::TYPE_API);
 
@@ -314,7 +317,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_userAgent(): void
+    public function test_user_agent(): void
     {
         $this->assertNull($this->request->userAgent());
 
@@ -328,7 +331,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_getRequestTarget(): void
+    public function test_get_request_target(): void
     {
         $request = $this->frontendRequest('https://foobar.com/baz?biz=boo#section1');
 
@@ -341,7 +344,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_getHeader(): void
+    public function test_get_header(): void
     {
         $request = $this->request->withHeader('foo', 'bar');
 
@@ -362,7 +365,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_getHeaders(): void
+    public function test_get_headers(): void
     {
         $request = $this->request
             ->withAddedHeader('foo', 'bar1')
@@ -387,7 +390,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_hasHeader(): void
+    public function test_has_header(): void
     {
         $request = $this->request->withHeader('foo', 'bar');
         $this->assertTrue($request->hasHeader('foo'));
@@ -399,7 +402,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_getBody(): void
+    public function test_get_body(): void
     {
         $this->assertSame('', (string) $this->request->getBody());
 
@@ -412,7 +415,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_getUploadedFiles(): void
+    public function test_get_uploaded_files(): void
     {
         $this->assertSame([], $this->request->getUploadedFiles());
 
@@ -429,7 +432,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_getAttributes(): void
+    public function test_get_attributes(): void
     {
         $this->assertSame([], $this->request->getAttributes());
         $request = $this->request
@@ -497,7 +500,7 @@ class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test_routeIs(): void
+    public function test_route_is(): void
     {
         $this->assertFalse($this->request->routeIs('foo'));
 

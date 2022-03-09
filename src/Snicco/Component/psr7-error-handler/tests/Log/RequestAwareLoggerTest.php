@@ -16,6 +16,9 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 
+/**
+ * @internal
+ */
 final class RequestAwareLoggerTest extends TestCase
 {
     private ServerRequestInterface $request;
@@ -199,6 +202,7 @@ class PathLogContext implements RequestLogContext
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['path'] = $information->serverRequest()->getUri()->getPath();
+
         return $context;
     }
 }
@@ -208,6 +212,7 @@ class MethodLogContext implements RequestLogContext
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['method'] = $information->serverRequest()->getMethod();
+
         return $context;
     }
 }

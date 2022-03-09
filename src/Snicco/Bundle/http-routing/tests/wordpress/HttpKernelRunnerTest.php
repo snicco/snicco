@@ -29,6 +29,8 @@ use function remove_all_filters;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class HttpKernelRunnerTest extends WPTestCase
 {
@@ -72,11 +74,6 @@ final class HttpKernelRunnerTest extends WPTestCase
         $this->bundle_test->tearDownDirectories();
 
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -150,13 +147,14 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->body_sent === false;
+            return false === $event->body_sent;
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $body = (string) $response->getBody();
             $this->assertSame('', $body);
             $this->assertInstanceOf(DelegatedResponse::class, $response);
+
             return true;
         });
         $dispatcher->assertNotDispatched(TerminatedResponse::class);
@@ -245,12 +243,14 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
             $this->assertFalse($event->body_sent);
+
             return true;
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $this->assertSame('', (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
+
             return true;
         });
         $dispatcher->assertNotDispatched(TerminatedResponse::class);
@@ -277,12 +277,14 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
             $this->assertFalse($event->body_sent);
+
             return true;
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $this->assertSame('', (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
+
             return true;
         });
         $dispatcher->assertNotDispatched(TerminatedResponse::class);
@@ -343,12 +345,14 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
             $this->assertTrue($event->body_sent);
+
             return true;
         });
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $this->assertSame('', (string) $response->getBody());
             $this->assertSame('/foo', $response->getHeaderLine('location'));
+
             return true;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -375,6 +379,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
             $this->assertTrue($event->body_sent);
+
             return true;
         });
 
@@ -382,6 +387,7 @@ final class HttpKernelRunnerTest extends WPTestCase
             $this->assertSame('no way', (string) $response->getBody());
             $this->assertSame(403, $response->getStatusCode());
             $this->assertTrue($response->hasHeader('content-length'));
+
             return true;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -408,6 +414,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
             $this->assertTrue($event->body_sent);
+
             return true;
         });
 
@@ -415,6 +422,7 @@ final class HttpKernelRunnerTest extends WPTestCase
             $this->assertSame('server error', (string) $response->getBody());
             $this->assertSame(500, $response->getStatusCode());
             $this->assertTrue($response->hasHeader('content-length'));
+
             return true;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -441,6 +449,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(HandledRequest::class);
         $dispatcher->assertDispatched(function (ResponseSent $event) {
             $this->assertFalse($event->body_sent);
+
             return true;
         });
 
@@ -449,6 +458,7 @@ final class HttpKernelRunnerTest extends WPTestCase
             $this->assertNotEmpty($response->getHeaders());
             $this->assertFalse($response->hasHeader('content-length'));
             $this->assertFalse($response->hasHeader('Content-length'));
+
             return true;
         });
 
@@ -486,6 +496,7 @@ final class HttpKernelRunnerTest extends WPTestCase
             $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             $this->assertTrue($response->hasHeader('content-length'));
+
             return true;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -548,6 +559,7 @@ final class HttpKernelRunnerTest extends WPTestCase
             $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
             $this->assertNotEmpty($response->getHeaders());
             $this->assertTrue($response->hasHeader('content-length'));
+
             return true;
         });
         $dispatcher->assertDispatched(TerminatedResponse::class);
@@ -575,5 +587,10 @@ final class HttpKernelRunnerTest extends WPTestCase
         $emitter = $property->getValue($http_runner);
 
         $this->assertInstanceOf(LaminasEmitterStack::class, $emitter);
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 }

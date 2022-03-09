@@ -15,6 +15,9 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class BetterWPHooksBundleTest extends TestCase
 {
     use BundleTestHelpers;

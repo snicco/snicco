@@ -29,12 +29,12 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
         $this->callback = $callback;
     }
 
-    public function process(PsrRequest $request, RequestHandlerInterface $handler): PsrResponse
+    public function __invoke(PsrRequest $request): Response
     {
         return $this->delegate($request);
     }
 
-    public function __invoke(PsrRequest $request): Response
+    public function process(PsrRequest $request, RequestHandlerInterface $handler): PsrResponse
     {
         return $this->delegate($request);
     }

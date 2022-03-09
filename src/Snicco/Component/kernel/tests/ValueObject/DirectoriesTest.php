@@ -10,6 +10,9 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class DirectoriesTest extends TestCase
 {
     private string $valid_base_dir;

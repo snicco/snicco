@@ -26,7 +26,7 @@ final class ViewEngine
     /**
      * Renders a view's content as a string.
      *
-     * @param string|string[] $view
+     * @param string|string[]      $view
      * @param array<string, mixed> $context
      *
      * @throws ViewNotFound
@@ -35,12 +35,14 @@ final class ViewEngine
     public function render($view, array $context = []): string
     {
         $view = $this->make($view)->with($context);
+
         return $view->render();
     }
 
     /**
      * @param string|string[] $view
-     * @throws ViewNotFound When no view can be created with any view factory.
+     *
+     * @throws ViewNotFound when no view can be created with any view factory
      */
     public function make($view): View
     {
@@ -49,6 +51,7 @@ final class ViewEngine
 
     /**
      * @param string[] $views
+     *
      * @throws ViewNotFound
      */
     private function createFirstMatchingView(array $views): View
@@ -58,7 +61,6 @@ final class ViewEngine
                 try {
                     return $view_factory->make($view);
                 } catch (ViewNotFound $e) {
-                    //
                 }
             }
         }

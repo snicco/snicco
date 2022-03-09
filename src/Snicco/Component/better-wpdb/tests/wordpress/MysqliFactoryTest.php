@@ -7,6 +7,9 @@ namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPDB\MysqliFactory;
 
+/**
+ * @internal
+ */
 final class MysqliFactoryTest extends WPTestCase
 {
     /**

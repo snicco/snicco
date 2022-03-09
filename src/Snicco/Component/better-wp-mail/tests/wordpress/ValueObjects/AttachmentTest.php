@@ -9,6 +9,9 @@ use InvalidArgumentException;
 use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Attachment;
 
+/**
+ * @internal
+ */
 final class AttachmentTest extends WPTestCase
 {
     /**

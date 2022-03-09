@@ -286,6 +286,7 @@ final class HttpRoutingBundle implements Bundle
     {
         $container->shared(ResponseFactory::class, function () use ($container) {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
+
             return new ResponseFactory(
                 $discovery->createResponseFactory(),
                 $discovery->createStreamFactory(),
@@ -306,6 +307,7 @@ final class HttpRoutingBundle implements Bundle
     {
         $container->shared(ServerRequestCreator::class, function () use ($container): ServerRequestCreator {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
+
             return new ServerRequestCreator(
                 $discovery->createServerRequestFactory(),
                 $discovery->createUriFactory(),
@@ -337,6 +339,7 @@ final class HttpRoutingBundle implements Bundle
         return MiddlewareCache::get($cache_file, function () use ($kernel) {
             $resolver = $this->getMiddlewareResolver($kernel);
             $routes = $kernel->container()->make(Routes::class);
+
             return $resolver->createMiddlewareCache($routes, $kernel->container());
         });
     }
@@ -354,6 +357,7 @@ final class HttpRoutingBundle implements Bundle
                 LoggerInterface::class,
                 fn () => $kernel->container()->make(TestLogger::class)
             );
+
             return;
         }
 
@@ -467,15 +471,16 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::GROUPS
-                    ) . " has to an associative array of string => array pairs.\nGot key [$key]."
+                    ) . " has to an associative array of string => array pairs.\nGot key [{$key}]."
                 );
             }
             if (! is_array($middleware)) {
                 $type = gettype($middleware);
+
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::GROUPS
-                    ) . " has to an associative array of string => array pairs.\nGot [$type] for key [$key]."
+                    ) . " has to an associative array of string => array pairs.\nGot [{$type}] for key [{$key}]."
                 );
             }
 
@@ -485,8 +490,9 @@ final class HttpRoutingBundle implements Bundle
             foreach ($middleware as $index => $m) {
                 if (! is_string($m)) {
                     $type = gettype($m);
+
                     throw new InvalidArgumentException(
-                        "Middleware group [$key] has to contain only strings.\nGot [$type] at index [$index]."
+                        "Middleware group [{$key}] has to contain only strings.\nGot [{$type}] at index [{$index}]."
                     );
                 }
             }
@@ -508,7 +514,7 @@ final class HttpRoutingBundle implements Bundle
                     true
                 )) {
                 throw new InvalidArgumentException(
-                    "Middleware alias [$alias] has to resolve to a middleware class."
+                    "Middleware alias [{$alias}] has to resolve to a middleware class."
                 );
             }
         }
@@ -524,7 +530,7 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::PRIORITY_LIST
-                    ) . " has to be a list of middleware class-strings.\nGot [$class]."
+                    ) . " has to be a list of middleware class-strings.\nGot [{$class}]."
                 );
             }
         }
@@ -540,7 +546,7 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::KERNEL_MIDDLEWARE
-                    ) . " has to be a list of middleware class-strings.\nGot [$class]."
+                    ) . " has to be a list of middleware class-strings.\nGot [{$class}]."
                 );
             }
         }
@@ -557,7 +563,7 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::ALWAYS_RUN
-                    ) . " can only contain [frontend,api,admin,global].\nGot [$group_name]."
+                    ) . " can only contain [frontend,api,admin,global].\nGot [{$group_name}]."
                 );
             }
         }
@@ -589,7 +595,7 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::DISPLAYERS
-                    ) . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [$class]."
+                    ) . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [{$class}]."
                 );
             }
         }
@@ -609,7 +615,7 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::TRANSFORMERS
-                    ) . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [$class]."
+                    ) . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [{$class}]."
                 );
             }
         }
@@ -629,7 +635,7 @@ final class HttpRoutingBundle implements Bundle
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
-                    ) . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [$class]."
+                    ) . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [{$class}]."
                 );
             }
         }
@@ -658,8 +664,9 @@ final class HttpRoutingBundle implements Bundle
                     true
                 )) {
                 $class = (string) $class;
+
                 throw new InvalidArgumentException(
-                    "[$class] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
+                    "[{$class}] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::LOG_LEVELS
                     )
                 );
@@ -670,7 +677,7 @@ final class HttpRoutingBundle implements Bundle
 
                 throw new InvalidArgumentException(
                     sprintf(
-                        "[$level] is not a valid PSR-3 log-level for exception class " . $class . "\nValid levels: [%s]",
+                        "[{$level}] is not a valid PSR-3 log-level for exception class " . $class . "\nValid levels: [%s]",
                         implode(',', $valid_levels)
                     )
                 );
@@ -757,13 +764,13 @@ final class HttpRoutingBundle implements Bundle
         }
 
         $copied = copy(
-            dirname(__DIR__) . "/config/$namespace.php",
+            dirname(__DIR__) . "/config/{$namespace}.php",
             $destination
         );
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy default routing.php config to path $destination");
+            throw new RuntimeException("Could not copy default routing.php config to path {$destination}");
             // @codeCoverageIgnoreEnd
         }
     }

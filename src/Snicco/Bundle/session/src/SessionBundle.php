@@ -118,6 +118,7 @@ final class SessionBundle implements Bundle
                     new DefuseSessionEncryptor($kernel->container()->make(DefuseEncryptor::class))
                 );
             }
+
             return $driver;
         });
     }
@@ -217,14 +218,12 @@ final class SessionBundle implements Bundle
             /** @var non-empty-string $group */
             $group = $config->getString('session.' . SessionOption::PREFIX);
 
-            $driver = new WPObjectCacheDriver(
+            return new WPObjectCacheDriver(
                 new Psr16SessionDriver(
                     CacheFactory::psr16($group),
                     $kernel->container()->make(SessionConfig::class)->idleTimeoutInSec()
                 )
             );
-
-            return $driver;
         });
     }
 
@@ -267,7 +266,7 @@ final class SessionBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default session config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default session config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }

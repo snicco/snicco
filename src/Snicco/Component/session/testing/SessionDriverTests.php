@@ -147,6 +147,7 @@ trait SessionDriverTests
         } catch (BadSessionID $e) {
             PHPUnit::assertStringContainsString('session1', $e->getMessage());
         }
+
         try {
             $driver->read('session2');
             PHPUnit::fail('Session [session2] should not have been read.');

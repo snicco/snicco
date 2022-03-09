@@ -78,6 +78,7 @@ final class Cookie
     {
         $cookie = clone $this;
         $cookie->properties['http_only'] = false;
+
         return $cookie;
     }
 
@@ -85,6 +86,7 @@ final class Cookie
     {
         $cookie = clone $this;
         $cookie->properties['http_only'] = true;
+
         return $cookie;
     }
 
@@ -120,13 +122,13 @@ final class Cookie
     {
         $same_site = ucwords($same_site);
 
-        if ($same_site === 'None; Secure') {
+        if ('None; Secure' === $same_site) {
             $same_site = 'None';
         }
 
         if (! in_array($same_site, ['Lax', 'Strict', 'None'], true)) {
             throw new LogicException(
-                "The value [$same_site] is not supported for the SameSite cookie."
+                "The value [{$same_site}] is not supported for the SameSite cookie."
             );
         }
 
@@ -134,7 +136,7 @@ final class Cookie
 
         $cookie->properties['same_site'] = $same_site;
 
-        if ($same_site === 'None') {
+        if ('None' === $same_site) {
             $cookie->properties['secure'] = true;
         }
 
@@ -142,7 +144,7 @@ final class Cookie
     }
 
     /**
-     * @param 0|positive-int|DateTimeImmutable $timestamp
+     * @param 0|DateTimeImmutable|positive-int $timestamp
      */
     public function withExpiryTimestamp($timestamp): Cookie
     {

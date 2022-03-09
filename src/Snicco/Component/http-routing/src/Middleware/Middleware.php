@@ -56,8 +56,7 @@ abstract class Middleware implements MiddlewareInterface
     {
         try {
             /** @var UrlGenerator $url */
-            $url = $this->container->get(UrlGenerator::class);
-            return $url;
+            return $this->container->get(UrlGenerator::class);
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The UrlGenerator is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
@@ -71,8 +70,7 @@ abstract class Middleware implements MiddlewareInterface
     {
         try {
             /** @var ResponseFactory $factory */
-            $factory = $this->container->get(ResponseFactory::class);
-            return $factory;
+            return $this->container->get(ResponseFactory::class);
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The ResponseFactory is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
@@ -96,6 +94,7 @@ abstract class Middleware implements MiddlewareInterface
         if (! isset($this->current_request)) {
             throw new RuntimeException(sprintf('current request not set on middleware [%s]', static::class));
         }
+
         return $this->current_request;
     }
 }

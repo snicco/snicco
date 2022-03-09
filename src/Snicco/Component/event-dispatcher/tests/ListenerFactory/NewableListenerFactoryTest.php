@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
+/**
+ * @internal
+ */
 final class NewableListenerFactoryTest extends TestCase
 {
     /**

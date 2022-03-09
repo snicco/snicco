@@ -18,12 +18,12 @@ final class SerializedSession
     private string $hashed_validator;
 
     /**
-     * @var null|string|int
+     * @var int|string|null
      */
     private $user_id;
 
     /**
-     * @param null|string|int $user_id
+     * @param int|string|null $user_id
      */
     private function __construct(string $data, string $hashed_validator, int $last_activity, $user_id = null)
     {
@@ -39,7 +39,7 @@ final class SerializedSession
     }
 
     /**
-     * @param null|string|int $user_id
+     * @param int|string|null $user_id
      */
     public static function fromString(
         string $string,

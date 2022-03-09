@@ -18,7 +18,7 @@ final class CantCreateListener extends RuntimeException
         Throwable $previous
     ): self {
         $message =
-            "The listener class [$listener] could not be instantiated while dispatching [$event_name].";
+            "The listener class [{$listener}] could not be instantiated while dispatching [{$event_name}].";
 
         return new self($message, (int) $previous->getCode(), $previous);
     }

@@ -30,7 +30,7 @@ final class FileRouteCache implements RouteCache
     {
         $result = $this->readFile($this->path);
 
-        if ($result !== null) {
+        if (null !== $result) {
             return $result;
         }
         $data = $loader();
@@ -40,7 +40,7 @@ final class FileRouteCache implements RouteCache
     }
 
     /**
-     * @return null|array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}
+     * @return array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}|null
      */
     private function readFile(string $path): ?array
     {

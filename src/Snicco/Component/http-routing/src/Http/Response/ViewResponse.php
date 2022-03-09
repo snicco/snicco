@@ -33,6 +33,7 @@ final class ViewResponse extends Response
     {
         $new = clone $this;
         $new->view = $view;
+
         return $new;
     }
 
@@ -51,6 +52,7 @@ final class ViewResponse extends Response
     {
         $new = clone $this;
         $new->view_data = array_replace($this->view_data, $data);
+
         return $new;
     }
 }

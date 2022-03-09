@@ -23,7 +23,7 @@ final class ShareCookies extends Middleware
     {
         $cookie_headers = $response->cookies()->toHeaders();
 
-        if ($cookie_headers === []) {
+        if ([] === $cookie_headers) {
             return $response;
         }
 

@@ -124,6 +124,7 @@ final class ProductionErrorHandler implements HttpErrorHandler
         $this->logException($info);
         $res = $this->response_factory->createResponse(500);
         $res->getBody()->write('Internal Server Error');
+
         return $res->withHeader('content-type', 'text/plain');
     }
 
@@ -138,6 +139,7 @@ final class ProductionErrorHandler implements HttpErrorHandler
                 $response = $response->withHeader($name, $value);
             }
         }
+
         return $response;
     }
 }

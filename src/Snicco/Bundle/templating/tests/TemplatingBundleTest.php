@@ -32,6 +32,9 @@ use function is_file;
 use function spl_object_hash;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class TemplatingBundleTest extends TestCase
 {
     use BundleTestHelpers;

@@ -23,6 +23,7 @@ final class BooleanMiddleware extends Middleware
         $response = $next($request);
 
         $response->getBody()->write(':' . $this->val);
+
         return $response;
     }
 }

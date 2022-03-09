@@ -13,6 +13,9 @@ use function date_default_timezone_get;
 use function date_default_timezone_set;
 use function usleep;
 
+/**
+ * @internal
+ */
 final class SystemClockTest extends TestCase
 {
     private string $current_timezone;

@@ -130,6 +130,7 @@ final class Kernel
                 'The applications config can only be accessed after bootstrapping.'
             );
         }
+
         return $this->read_only_config;
     }
 
@@ -175,7 +176,7 @@ final class Kernel
 
         if (! $writable_config->has('app')) {
             throw new InvalidArgumentException(
-                "The [app.php] config file was not found in the config dir [$config_dir]."
+                "The [app.php] config file was not found in the config dir [{$config_dir}]."
             );
         }
         if (! $writable_config->has('app.bootstrappers')) {
@@ -261,7 +262,7 @@ final class Kernel
         if (isset($this->bundles[$alias])) {
             throw new RuntimeException(
                 sprintf(
-                    "2 bundles in your application share the same alias [$alias].\nAffected [%s]",
+                    "2 bundles in your application share the same alias [{$alias}].\nAffected [%s]",
                     implode(',', [get_class($this->bundles[$alias]), get_class($bundle)])
                 )
             );
@@ -306,6 +307,7 @@ final class Kernel
         if ($environment->isProduction() || $environment->isStaging()) {
             return new PHPFileCache();
         }
+
         return new NullCache();
     }
 }

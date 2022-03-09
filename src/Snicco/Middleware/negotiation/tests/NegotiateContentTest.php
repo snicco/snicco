@@ -10,6 +10,9 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\Negotiation\NegotiateContent;
 
+/**
+ * @internal
+ */
 final class NegotiateContentTest extends MiddlewareTestCase
 {
     /**
@@ -19,6 +22,7 @@ final class NegotiateContentTest extends MiddlewareTestCase
     {
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             $response->getBody()->write($request->getHeaderLine('accept'));
+
             return $response;
         });
 

@@ -68,8 +68,7 @@ class WPDatabaseSettingsAPI extends BetterWPAPI
         try {
             // This is a protected property in wpdb, but it has __get() access.
             /** @var mysqli $mysqli */
-            $mysqli = $this->wpdb()->dbh;
-            return $mysqli;
+            return $this->wpdb()->dbh;
         } catch (Throwable $e) {
             // @codeCoverageIgnoreStart
 

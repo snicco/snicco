@@ -21,7 +21,7 @@ use function strpos;
 final class Redirect extends Middleware
 {
     /**
-     * @var  array<string,array{to: string, status: positive-int}>
+     * @var array<string,array{to: string, status: positive-int}>
      */
     private array $redirects;
 
@@ -60,6 +60,7 @@ final class Redirect extends Middleware
 
     /**
      * @param array<positive-int,array<string,string>> $redirects
+     *
      * @return array<string,array{to: string, status: positive-int}>
      */
     private function normalize(array $redirects): array
@@ -86,6 +87,7 @@ final class Redirect extends Middleware
                 ];
             }
         }
+
         return $_r;
     }
 }

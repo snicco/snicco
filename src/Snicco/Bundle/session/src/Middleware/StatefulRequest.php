@@ -56,11 +56,10 @@ final class StatefulRequest extends Middleware
     {
         if ($this->is_handling_request) {
             $this->invalidate_next_session = true;
+
             return;
         }
-        /*
-         * A user got logged out by WordPress. We have to invalidate the session if one is currently active.
-         */
+        // A user got logged out by WordPress. We have to invalidate the session if one is currently active.
         $session = $this->session_manager->start(CookiePool::fromSuperGlobals());
 
         /*
@@ -81,11 +80,10 @@ final class StatefulRequest extends Middleware
     {
         if ($this->is_handling_request) {
             $this->rotate_next_session = true;
+
             return;
         }
-        /*
-        * A user got logged in by WordPress. We have to rotate the session id.
-        */
+        // A user got logged in by WordPress. We have to rotate the session id.
         $session = $this->session_manager->start(CookiePool::fromSuperGlobals());
 
         /*
@@ -147,6 +145,7 @@ final class StatefulRequest extends Middleware
         if ($request->isReadVerb() && ! $request->getAttribute(self::ALLOW_WRITE_SESSION_FOR_READ_VERBS)) {
             return $request;
         }
+
         return $request->withAttribute(MutableSession::class, $session);
     }
 

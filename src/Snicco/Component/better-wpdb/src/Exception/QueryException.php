@@ -19,7 +19,7 @@ class QueryException extends RuntimeException
      */
     public function __construct(string $message, string $sql, array $bindings, ?Throwable $prev = null)
     {
-        $message .= "\nQuery: [$sql]";
+        $message .= "\nQuery: [{$sql}]";
 
         $bindings = array_map(function ($binding) {
             if (null === $binding) {
@@ -28,7 +28,8 @@ class QueryException extends RuntimeException
             if (! is_string($binding)) {
                 return (string) $binding;
             }
-            return "'$binding'";
+
+            return "'{$binding}'";
         }, $bindings);
 
         $message .= "\nBindings: [" . implode(', ', $bindings) . ']';

@@ -24,6 +24,7 @@ final class RedirectResponse extends Response
     {
         $res = clone $this;
         $res->bypass_validation = true;
+
         return $res;
     }
 }

@@ -19,11 +19,13 @@ use function method_exists;
  * extend the provided test case because we already need to extend WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
+ *
+ * @internal
  */
 final class TaggingIntegrationTest extends WPTestCase
 {
     /**
-     * @type array with functionName => reason.
+     * @var array with functionName => reason.
      */
     protected $skippedTests = [];
 
@@ -68,7 +70,7 @@ final class TaggingIntegrationTest extends WPTestCase
      */
     public function tearDownService()
     {
-        if ($this->cache !== null) {
+        if (null !== $this->cache) {
             $this->cache->clear();
         }
     }
@@ -96,7 +98,7 @@ final class TaggingIntegrationTest extends WPTestCase
         ];
     }
 
-    public function testMultipleTags()
+    public function test_multiple_tags()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -120,7 +122,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertTrue($this->cache->hasItem('key4'));
     }
 
-    public function testPreviousTag()
+    public function test_previous_tag()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -141,7 +143,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertCount(1, $item->getPreviousTags());
     }
 
-    public function testPreviousTagDeferred()
+    public function test_previous_tag_deferred()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -158,7 +160,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertCount(1, $item->getPreviousTags());
     }
 
-    public function testTagAccessorWithEmptyTag()
+    public function test_tag_accessor_with_empty_tag()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -171,8 +173,10 @@ final class TaggingIntegrationTest extends WPTestCase
 
     /**
      * @dataProvider invalidKeys
+     *
+     * @param mixed $tag
      */
-    public function testTagAccessorWithInvalidTag($tag)
+    public function test_tag_accessor_with_invalid_tag($tag)
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -183,7 +187,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $item->setTags([$tag]);
     }
 
-    public function testTagAccessorDuplicateTags()
+    public function test_tag_accessor_duplicate_tags()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -201,7 +205,7 @@ final class TaggingIntegrationTest extends WPTestCase
      * The tag must be removed whenever we remove an item. If not, when creating a new item
      * with the same key will get the same tags.
      */
-    public function testRemoveTagWhenItemIsRemoved()
+    public function test_remove_tag_when_item_is_removed()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -226,7 +230,7 @@ final class TaggingIntegrationTest extends WPTestCase
         );
     }
 
-    public function testClearPool()
+    public function test_clear_pool()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -247,7 +251,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertTrue($this->cache->hasItem('key'), 'Tags should be removed when the pool was cleared.');
     }
 
-    public function testInvalidateTag()
+    public function test_invalidate_tag()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -274,7 +278,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertTrue($this->cache->hasItem('key'), 'Item key list should be removed when clearing the tags');
     }
 
-    public function testInvalidateTags()
+    public function test_invalidate_tags()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -302,7 +306,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * When an item is overwritten we need to clear tags for original item.
      */
-    public function testTagsAreCleanedOnSave()
+    public function test_tags_are_cleaned_on_save()
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);

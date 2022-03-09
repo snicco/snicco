@@ -18,6 +18,9 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class KernelTest extends TestCase
 {
     use CreateTestContainer;
@@ -156,7 +159,7 @@ final class KernelTest extends TestCase
         $dir = $this->base_dir . '/base_dir_without_app_config/config';
 
         $this->expectExceptionMessage(
-            "The [app.php] config file was not found in the config dir [$dir]."
+            "The [app.php] config file was not found in the config dir [{$dir}]."
         );
 
         $app->boot();

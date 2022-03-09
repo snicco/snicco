@@ -67,6 +67,7 @@ final class RequestAwareLogger
         foreach ($this->log_levels as $type => $level) {
             if ($e instanceof $type) {
                 $user_defined_level = $level;
+
                 break;
             }
         }

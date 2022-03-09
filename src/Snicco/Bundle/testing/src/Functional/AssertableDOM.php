@@ -96,9 +96,9 @@ final class AssertableDOM
         PHPUnit::assertThat(
             $this->crawler,
             LogicalAnd::fromConstraints(
-                new CrawlerSelectorExists("input[name=\"$fieldName\"]"),
+                new CrawlerSelectorExists("input[name=\"{$fieldName}\"]"),
                 new CrawlerSelectorAttributeValueSame(
-                    "input[name=\"$fieldName\"]",
+                    "input[name=\"{$fieldName}\"]",
                     'value',
                     $expectedValue
                 )
@@ -115,10 +115,10 @@ final class AssertableDOM
         PHPUnit::assertThat(
             $this->crawler,
             LogicalAnd::fromConstraints(
-                new CrawlerSelectorExists("input[name=\"$fieldName\"]"),
+                new CrawlerSelectorExists("input[name=\"{$fieldName}\"]"),
                 new LogicalNot(
                     new CrawlerSelectorAttributeValueSame(
-                        "input[name=\"$fieldName\"]",
+                        "input[name=\"{$fieldName}\"]",
                         'value',
                         $expectedValue
                     )
@@ -133,8 +133,8 @@ final class AssertableDOM
         PHPUnit::assertThat(
             $this->crawler,
             LogicalAnd::fromConstraints(
-                new CrawlerSelectorExists("input[name=\"$fieldName\"]"),
-                new CrawlerSelectorAttributeValueSame("input[name=\"$fieldName\"]", 'checked', 'checked')
+                new CrawlerSelectorExists("input[name=\"{$fieldName}\"]"),
+                new CrawlerSelectorAttributeValueSame("input[name=\"{$fieldName}\"]", 'checked', 'checked')
             ),
             $message
         );
@@ -145,9 +145,9 @@ final class AssertableDOM
         PHPUnit::assertThat(
             $this->crawler,
             LogicalAnd::fromConstraints(
-                new CrawlerSelectorExists("input[name=\"$fieldName\"]"),
+                new CrawlerSelectorExists("input[name=\"{$fieldName}\"]"),
                 new LogicalNot(
-                    new CrawlerSelectorAttributeValueSame("input[name=\"$fieldName\"]", 'checked', 'checked')
+                    new CrawlerSelectorAttributeValueSame("input[name=\"{$fieldName}\"]", 'checked', 'checked')
                 )
             ),
             $message

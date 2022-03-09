@@ -15,7 +15,7 @@ final class SessionCookie
     private string $session_id;
 
     /**
-     * @var null|positive-int|0
+     * @var 0|positive-int|null
      */
     private ?int $life_time;
 
@@ -28,17 +28,17 @@ final class SessionCookie
     private ?string $domain;
 
     /**
-     * @var 'Lax' | 'Strict' | 'None; Secure'
+     * @var 'Lax'|'None; Secure'|'Strict'
      */
     private string $same_site;
 
     /**
-     * This class MUST only be constructed with {@see SessionManager::toCookie()}
+     * This class MUST only be constructed with {@see SessionManager::toCookie()}.
      *
      * @psalm-internal Snicco\Component\Session
      *
-     * @param 'Lax' | 'Strict' | 'None; Secure' $same_site
-     * @param null|positive-int|0 $life_time
+     * @param 'Lax'|'None; Secure'|'Strict' $same_site
+     * @param 0|positive-int|null           $life_time
      */
     public function __construct(
         string $cookie_name,
@@ -71,7 +71,7 @@ final class SessionCookie
     }
 
     /**
-     * @return "Lax" | "Strict" | "None; Secure"
+     * @return "Lax"|"None; Secure"|"Strict"
      */
     public function sameSite(): string
     {
@@ -99,7 +99,7 @@ final class SessionCookie
     }
 
     /**
-     * @return positive-int|0
+     * @return 0|positive-int
      */
     public function expiryTimestamp(): int
     {

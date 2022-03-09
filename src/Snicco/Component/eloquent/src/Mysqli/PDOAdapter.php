@@ -30,7 +30,8 @@ interface PDOAdapter
     public function beginTransaction(): bool;
 
     /**
-     * @return int|false
+     * @return false|int
+     *
      * @see \PDO::exec()
      */
     public function exec(string $statement);

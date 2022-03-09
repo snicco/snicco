@@ -12,6 +12,9 @@ use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 
 use const MYSQLI_ASSOC;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
 {
     /**

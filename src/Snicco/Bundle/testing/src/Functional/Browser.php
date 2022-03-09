@@ -80,6 +80,24 @@ final class Browser extends AbstractBrowser
         return new AssertableDOM($this->getCrawler());
     }
 
+    /**
+     * @return never
+     */
+    public function getRequest()
+    {
+        throw new BadMethodCallException(__METHOD__ . ' is not implemented since psr7 requests are immutable.');
+    }
+
+    public function getResponse(): AssertableResponse
+    {
+        $response = parent::getResponse();
+        Assert::isInstanceOf($response, Response::class);
+
+        /** @var Response $response */
+
+        return new AssertableResponse($response);
+    }
+
     protected function doRequest(object $request): Response
     {
         Assert::isInstanceOf($request, Request::class);
@@ -135,31 +153,14 @@ final class Browser extends AbstractBrowser
 
         parse_str($psr_server_request->getUri()->getQuery(), $query);
 
-        if (strpos($psr_server_request->getUri()->getPath(), $this->admin_area_prefix->asString()) === 0) {
+        if (0 === strpos($psr_server_request->getUri()->getPath(), $this->admin_area_prefix->asString())) {
             $type = Request::TYPE_ADMIN_AREA;
-        } elseif (strpos($psr_server_request->getUri()->getPath(), $this->api_prefix->asString()) === 0) {
+        } elseif (0 === strpos($psr_server_request->getUri()->getPath(), $this->api_prefix->asString())) {
             $type = Request::TYPE_API;
         } else {
             $type = Request::TYPE_FRONTEND;
         }
+
         return Request::fromPsr($psr_server_request->withQueryParams($query), $type);
-    }
-
-    /**
-     * @return never
-     */
-    public function getRequest()
-    {
-        throw new BadMethodCallException(__METHOD__ . ' is not implemented since psr7 requests are immutable.');
-    }
-
-    public function getResponse(): AssertableResponse
-    {
-        $response = parent::getResponse();
-        Assert::isInstanceOf($response, Response::class);
-
-        /** @var Response $response */
-
-        return new AssertableResponse($response);
     }
 }

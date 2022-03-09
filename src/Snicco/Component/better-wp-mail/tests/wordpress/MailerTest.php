@@ -29,6 +29,8 @@ use function wp_mail;
 
 /**
  * @psalm-suppress PossiblyUndefinedIntArrayOffset
+ *
+ * @internal
  */
 final class MailerTest extends WPTestCase
 {
@@ -310,8 +312,8 @@ final class MailerTest extends WPTestCase
 
         $header = $this->getSentMails()[0]['header'];
 
-        $this->assertStringContainsString("From: $site_name <$admin_email>", $header);
-        $this->assertStringContainsString("Reply-To: $site_name <$admin_email>", $header);
+        $this->assertStringContainsString("From: {$site_name} <{$admin_email}>", $header);
+        $this->assertStringContainsString("Reply-To: {$site_name} <{$admin_email}>", $header);
     }
 
     /**
@@ -807,7 +809,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('filename=my-elephant', $body);
 
         $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
     }
 
     /**
@@ -848,7 +850,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('filename=my-elephant', $body);
 
         $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
     }
 
     /**
@@ -896,7 +898,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Disposition: inline;', $body);
         $this->assertStringContainsString('filename=php-elephant-inline', $body);
         $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
 
         // Attachment
         $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
@@ -957,7 +959,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Disposition: inline;', $body);
         $this->assertStringContainsString('filename=php-elephant-inline', $body);
         $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
     }
 
     /**
@@ -1067,7 +1069,6 @@ final class MailerTest extends WPTestCase
     private function getSentMails(): array
     {
         /** @var list<array{header: string, body:string, subject:string}> $mails */
-        $mails = $this->php_mailer->mock_sent;
-        return $mails;
+        return $this->php_mailer->mock_sent;
     }
 }

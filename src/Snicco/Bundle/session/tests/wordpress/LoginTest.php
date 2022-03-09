@@ -33,6 +33,9 @@ use function wp_signon;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class LoginTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -70,11 +73,6 @@ final class LoginTest extends WPTestCase
         $this->bundle_test->tearDownDirectories();
         unset($_COOKIE['test_cookie']);
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -156,6 +154,7 @@ final class LoginTest extends WPTestCase
                     'user_password' => 'password',
                 ]);
                 ob_end_clean();
+
                 return new Response();
             });
 
@@ -250,5 +249,10 @@ final class LoginTest extends WPTestCase
         ]);
         ob_end_clean();
         $this->assertCount(0, $this->driver->all());
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 }

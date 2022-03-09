@@ -46,6 +46,7 @@ final class MysqliDriver implements MysqliDriverInterface
         while ($row = $result->fetch_object()) {
             $values[] = $row;
         }
+
         return $values;
     }
 
@@ -62,7 +63,7 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw new QueryException($sql, $bindings, $e);
             }
 
-            return $res === true;
+            return true === $res;
         }
 
         $stmt = $this->createPreparedStatement($sql, $bindings);
@@ -82,7 +83,7 @@ final class MysqliDriver implements MysqliDriverInterface
             throw new QueryException($sql, [], $e);
         }
 
-        return $result === true;
+        return true === $result;
     }
 
     public function doCursorSelect(string $sql, array $bindings): mysqli_result
@@ -107,6 +108,7 @@ final class MysqliDriver implements MysqliDriverInterface
     public function reconnect(): bool
     {
         $this->mysqli = $this->reconnect->getMysqli();
+
         return true;
     }
 

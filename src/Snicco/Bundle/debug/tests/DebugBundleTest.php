@@ -30,6 +30,9 @@ use function var_export;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class DebugBundleTest extends TestCase
 {
     use BundleTestHelpers;

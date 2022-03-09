@@ -7,6 +7,9 @@ namespace Snicco\Bundle\Session\Tests\Middleware;
 use Snicco\Bundle\Session\Middleware\SessionNoCache;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
+/**
+ * @internal
+ */
 final class SessionNoCacheTest extends MiddlewareTestCase
 {
     /**

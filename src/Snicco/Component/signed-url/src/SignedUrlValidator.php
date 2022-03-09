@@ -37,9 +37,9 @@ final class SignedUrlValidator
     }
 
     /**
-     * @param string $request_target $psr_request->getRequestTarget() ||
-     *     $_SERVER['PATHINFO].?$_SERVER['QUERY_STRING']
-     * @param string $request_context Any additional request context to check against.
+     * @param string $request_target  $psr_request->getRequestTarget() ||
+     *                                $_SERVER['PATHINFO].?$_SERVER['QUERY_STRING']
+     * @param string $request_context any additional request context to check against
      *
      * @throws InvalidSignature
      * @throws SignedUrlExpired
@@ -53,11 +53,11 @@ final class SignedUrlValidator
         );
 
         if (! isset($query_as_array[SignedUrl::SIGNATURE_KEY])) {
-            throw new InvalidSignature("Missing signature parameter for path [$path].");
+            throw new InvalidSignature("Missing signature parameter for path [{$path}].");
         }
 
         if (! isset($query_as_array[SignedUrl::EXPIRE_KEY])) {
-            throw new InvalidSignature("Missing expires parameter for path [$path].");
+            throw new InvalidSignature("Missing expires parameter for path [{$path}].");
         }
 
         $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
@@ -108,7 +108,7 @@ final class SignedUrlValidator
 
         if (null === $qs) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_replace returned null for query_string [$query_string].");
+            throw new RuntimeException("preg_replace returned null for query_string [{$query_string}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -123,14 +123,15 @@ final class SignedUrlValidator
 
         if ($diff < 0) {
             $diff = abs($diff);
-            throw new SignedUrlExpired("Signed url expired by [$diff] seconds for path [$path].");
+
+            throw new SignedUrlExpired("Signed url expired by [{$diff}] seconds for path [{$path}].");
         }
     }
 
     private function validateSignature(string $expected_signature, string $provided_signature, string $path): void
     {
         if (! hash_equals($expected_signature, $provided_signature)) {
-            throw new InvalidSignature("Invalid signature for path [$path].");
+            throw new InvalidSignature("Invalid signature for path [{$path}].");
         }
     }
 
@@ -140,7 +141,7 @@ final class SignedUrlValidator
             $this->storage->consume($identifier);
         } catch (BadIdentifier $e) {
             throw new SignedUrlUsageExceeded(
-                "Signed url usages exceeded for path [$path].",
+                "Signed url usages exceeded for path [{$path}].",
                 $e->getCode(),
                 $e
             );

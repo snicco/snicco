@@ -22,6 +22,7 @@ class FooMiddleware extends Middleware
         $response = $next($request);
 
         $response->getBody()->write(':' . $this->foo);
+
         return $response;
     }
 }

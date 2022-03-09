@@ -11,7 +11,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class RouteAttributesTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteAttributesTest extends HttpRunnerTestCase
 {
     /**
      * @test
@@ -37,6 +40,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo', [], 'POST');
+
         try {
             $this->runNewPipeline($request);
             $this->fail('Expected exception.');
@@ -45,6 +49,7 @@ class RouteAttributesTest extends HttpRunnerTestCase
         }
 
         $request = $this->frontendRequest('/foo/bar', [], 'POST');
+
         try {
             $this->runNewPipeline($request);
             $this->fail('Expected exception.');

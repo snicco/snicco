@@ -33,8 +33,10 @@ use const PHP_INT_MIN;
 
 /**
  * @psalm-suppress UnusedClosureParam
+ *
+ * @internal
  */
-class EventMapperTest extends WPTestCase
+final class EventMapperTest extends WPTestCase
 {
     use AssertListenerResponse;
 
@@ -59,7 +61,7 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
-     * ACTIONS
+     * ACTIONS.
      */
 
     /**
@@ -152,7 +154,7 @@ class EventMapperTest extends WPTestCase
         $count = 0;
         add_action('empty', function () use (&$count) {
             /** @var int $count */
-            $count++;
+            ++$count;
         }, 5);
 
         $this->event_mapper->map('empty', EmptyActionEvent::class, 4);
@@ -176,7 +178,7 @@ class EventMapperTest extends WPTestCase
         $count = 0;
         add_action('empty', function () use (&$count) {
             /** @var int $count */
-            $count++;
+            ++$count;
         }, 5);
 
         $this->event_mapper->map('empty', EmptyActionEvent::class, 4);
@@ -184,12 +186,12 @@ class EventMapperTest extends WPTestCase
 
         $this->dispatcher->listen(function (EmptyActionEvent $event) use (&$count) {
             $this->assertSame(0, $count, 'Priority mapping did not work correctly.');
-            $count++;
+            ++$count;
         });
 
         $this->dispatcher->listen(function (EmptyActionEvent2 $event) use (&$count) {
             $this->assertSame(2, $count, 'Priority mapping did not work correctly.');
-            $count++;
+            ++$count;
         });
 
         do_action('empty');
@@ -206,14 +208,14 @@ class EventMapperTest extends WPTestCase
 
         add_action(EmptyActionEvent::class, function () use (&$count) {
             /** @var int $count */
-            $count++;
+            ++$count;
         }, 1);
 
         $this->event_mapper->map('action', EmptyActionEvent::class);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
             $this->assertSame(0, $count);
-            $count++;
+            ++$count;
         });
 
         do_action('action');
@@ -222,7 +224,7 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
-     * FILTERS
+     * FILTERS.
      */
 
     /**
@@ -317,7 +319,7 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
-     * MAP_FIRST
+     * MAP_FIRST.
      */
 
     /**
@@ -330,12 +332,12 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
 
         add_action('wp_hook', function () use (&$count) {
-            $count++;
+            ++$count;
         }, PHP_INT_MIN);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
             $this->assertSame(0, $count, 'Mapped Event did not run first.');
-            $count++;
+            ++$count;
         });
 
         do_action('wp_hook');
@@ -351,14 +353,14 @@ class EventMapperTest extends WPTestCase
         $count = 0;
 
         add_action('wp_hook', function () use (&$count) {
-            $count++;
+            ++$count;
         }, PHP_INT_MIN, 10);
 
         $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
             $this->assertSame(0, $count, 'Mapped Event did not run first.');
-            $count++;
+            ++$count;
         });
 
         do_action('wp_hook');
@@ -374,14 +376,14 @@ class EventMapperTest extends WPTestCase
         $count = 0;
 
         add_action('wp_hook', function () use (&$count) {
-            $count++;
+            ++$count;
         }, 10, 1);
 
         $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
             $this->assertSame(0, $count, 'Mapped Event did not run first.');
-            $count++;
+            ++$count;
         });
 
         do_action('wp_hook');
@@ -398,29 +400,29 @@ class EventMapperTest extends WPTestCase
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(1, $count);
-            $count++;
+            ++$count;
         }, PHP_INT_MIN);
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(2, $count);
-            $count++;
+            ++$count;
         }, PHP_INT_MIN);
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(3, $count);
-            $count++;
+            ++$count;
         }, 20);
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(4, $count);
-            $count++;
+            ++$count;
         }, 50);
 
         $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
             $this->assertSame(0, $count, 'Mapped Event did not run first.');
-            $count++;
+            ++$count;
         });
 
         do_action('wp_hook');
@@ -449,7 +451,7 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
-     * MAP_LAST
+     * MAP_LAST.
      */
 
     /**
@@ -462,7 +464,7 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->mapLast('wp_hook', EmptyActionEvent::class);
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
-            $count++;
+            ++$count;
         });
 
         do_action('wp_hook');
@@ -480,27 +482,27 @@ class EventMapperTest extends WPTestCase
         $this->event_mapper->mapLast('wp_hook', EmptyActionEvent::class);
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
             $this->assertSame(4, $count, 'Mapped Event did not run last.');
-            $count++;
+            ++$count;
         });
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(0, $count);
-            $count++;
+            ++$count;
         }, 50);
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(1, $count);
-            $count++;
+            ++$count;
         }, 100);
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(2, $count);
-            $count++;
+            ++$count;
         }, 200);
 
         add_action('wp_hook', function () use (&$count) {
             $this->assertSame(3, $count);
-            $count++;
+            ++$count;
         }, PHP_INT_MAX);
 
         do_action('wp_hook');
@@ -509,7 +511,7 @@ class EventMapperTest extends WPTestCase
     }
 
     /**
-     * VALIDATION
+     * VALIDATION.
      */
 
     /**
@@ -588,6 +590,7 @@ class EventMapperTest extends WPTestCase
         add_filter('filter', function ($value1, $value2) {
             $this->assertSame('foo', $value1);
             $this->assertSame('PREVENT', $value2);
+
             return $value1 . ':filtered';
         }, 10, 2);
 
@@ -610,6 +613,7 @@ class EventMapperTest extends WPTestCase
         add_filter('filter', function ($value1, $value2) {
             $this->assertSame('CUSTOM', $value1);
             $this->assertSame('bar', $value2);
+
             return $value1 . ':filtered';
         }, 10, 2);
 
@@ -634,7 +638,7 @@ class EventMapperTest extends WPTestCase
         $count = 0;
         add_action('action', function (string $value) use (&$count) {
             $this->assertSame('PREVENT', $value);
-            $count++;
+            ++$count;
         }, 10, 2);
 
         do_action('action', 'PREVENT');
@@ -695,7 +699,7 @@ class ConditionalFilter implements MappedFilter
 
     public function shouldDispatch(): bool
     {
-        return $this->value2 !== 'PREVENT';
+        return 'PREVENT' !== $this->value2;
     }
 
     public function filterableAttribute()
@@ -718,7 +722,7 @@ class ConditionalAction implements MappedHook
 
     public function shouldDispatch(): bool
     {
-        return $this->value !== 'PREVENT';
+        return 'PREVENT' !== $this->value;
     }
 }
 

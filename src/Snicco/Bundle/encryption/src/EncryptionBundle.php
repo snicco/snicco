@@ -38,6 +38,7 @@ final class EncryptionBundle implements Bundle
                 $config_key . " is not set.\nGenerate a new config_key by running 'vendor/bin/generate-defuse-key'"
             );
         }
+
         try {
             $this->validateKey($config, $config_key);
         } catch (BadFormatException $e) {
@@ -88,7 +89,7 @@ final class EncryptionBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }

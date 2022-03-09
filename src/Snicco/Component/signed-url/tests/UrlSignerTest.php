@@ -15,6 +15,9 @@ use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
 use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
+/**
+ * @internal
+ */
 final class UrlSignerTest extends TestCase
 {
     private UrlSigner $url_signer;
@@ -133,7 +136,7 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
-    public function testCanBeCreatedForOnlySlash(): void
+    public function test_can_be_created_for_only_slash(): void
     {
         $magic_link = $this->url_signer->sign('/', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -142,7 +145,7 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
-    public function testCanBeCreatedForOnlyHost(): void
+    public function test_can_be_created_for_only_host(): void
     {
         $magic_link = $this->url_signer->sign('https://foo.com', 10);
         $this->assertInstanceOf(SignedUrl::class, $magic_link);
@@ -154,7 +157,7 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
-    public function testCanBeCreatedWithExistingQueryParams(): void
+    public function test_can_be_created_with_existing_query_params(): void
     {
         $magic_link = $this->url_signer->sign('/web?foo=bar&baz=biz', 10);
         $this->assertStringStartsWith('/web?foo=bar&baz=biz', $magic_link->asString());

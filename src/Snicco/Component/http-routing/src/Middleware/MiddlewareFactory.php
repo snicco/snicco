@@ -60,6 +60,7 @@ final class MiddlewareFactory
         if ($middleware instanceof Middleware) {
             $middleware->setContainer($this->container);
         }
+
         return $middleware;
     }
 }

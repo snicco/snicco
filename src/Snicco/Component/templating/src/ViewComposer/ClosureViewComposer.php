@@ -27,7 +27,7 @@ final class ClosureViewComposer implements ViewComposer
     }
 
     /**
-     * Add context values to the passed view
+     * Add context values to the passed view.
      *
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress InvalidReturnStatement

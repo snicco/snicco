@@ -18,8 +18,8 @@ interface View
     /**
      * Takes the provided context and returns a NEW instance that now has the merged context.
      *
-     * @param string|array<string, mixed> $key
-     * @param mixed $value
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
      *
      * @return static
      *

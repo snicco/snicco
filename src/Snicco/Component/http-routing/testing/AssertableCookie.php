@@ -39,21 +39,25 @@ final class AssertableCookie
             $part = trim($part);
             if (Str::startsWith($part, 'Path')) {
                 $this->path = Str::afterFirst($part, '=');
+
                 continue;
             }
             if (Str::startsWith($part, 'SameSite')) {
                 $this->same_site = Str::afterFirst($part, '=');
+
                 continue;
             }
             if (Str::startsWith($part, 'Expires')) {
                 $this->expires = Str::afterFirst($part, '=');
+
                 continue;
             }
-            if ($part === 'Secure') {
+            if ('Secure' === $part) {
                 $this->secure = true;
+
                 continue;
             }
-            if ($part === 'HttpOnly') {
+            if ('HttpOnly' === $part) {
                 $this->http_only = true;
             }
         }

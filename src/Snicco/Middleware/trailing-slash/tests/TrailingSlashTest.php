@@ -8,7 +8,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\TrailingSlash\TrailingSlash;
 
-class TrailingSlashTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class TrailingSlashTest extends MiddlewareTestCase
 {
     /**
      * @test

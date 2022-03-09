@@ -36,18 +36,19 @@ final class ResponseUtils
     /**
      * Redirects to a path on the same domain.
      *
-     * @param array<string,string|int> $extra
+     * @param array<string,int|string> $extra
      *
      * @see UrlGenerator::to()
      */
     public function redirectTo(string $path, int $status_code = 302, array $extra = []): RedirectResponse
     {
         $location = $this->url_generator->to($path, $extra);
+
         return $this->response_factory->redirect($location, $status_code);
     }
 
     /**
-     * @param array<string,string|int> $arguments
+     * @param array<string,int|string> $arguments
      *
      * @throws RouteNotFound
      *
@@ -56,6 +57,7 @@ final class ResponseUtils
     public function redirectToRoute(string $name, array $arguments = [], int $status_code = 302): RedirectResponse
     {
         $location = $this->url_generator->toRoute($name, $arguments);
+
         return $this->redirectTo($location, $status_code);
     }
 
@@ -63,7 +65,7 @@ final class ResponseUtils
      * Tries to create a redirect response to a "home" route and falls back to "/" if no home route
      * exists.
      *
-     * @param array<string,string|int> $arguments
+     * @param array<string,int|string> $arguments
      */
     public function redirectHome(array $arguments = [], int $status_code = 302): RedirectResponse
     {
@@ -77,7 +79,7 @@ final class ResponseUtils
     }
 
     /**
-     * @param array<string,string|int> $arguments
+     * @param array<string,int|string> $arguments
      *
      * @see UrlGenerator::toLogin()
      */
@@ -114,6 +116,7 @@ final class ResponseUtils
     {
         $referer = $this->current_request->getHeaderLine('referer');
         $location = empty($referer) ? $fallback : $referer;
+
         return $this->redirectTo($location);
     }
 

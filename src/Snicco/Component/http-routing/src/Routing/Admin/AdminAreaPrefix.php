@@ -18,14 +18,14 @@ final class AdminAreaPrefix
         $this->prefix = $prefix;
     }
 
-    public static function fromString(string $prefix): AdminAreaPrefix
-    {
-        return new self('/' . trim($prefix, '/'));
-    }
-
     public function __toString()
     {
         return $this->asString();
+    }
+
+    public static function fromString(string $prefix): AdminAreaPrefix
+    {
+        return new self('/' . trim($prefix, '/'));
     }
 
     public function asString(): string

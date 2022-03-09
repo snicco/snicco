@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Session\ValueObject\SessionErrors;
 
+/**
+ * @internal
+ */
 final class SessionErrorsTest extends TestCase
 {
     /**
@@ -65,7 +68,7 @@ final class SessionErrorsTest extends TestCase
     /**
      * @test
      */
-    public function test_hasKey(): void
+    public function test_has_key(): void
     {
         $errors = new SessionErrors([
             'default' => [
@@ -74,7 +77,6 @@ final class SessionErrorsTest extends TestCase
                     'bar',
                 ],
                 'key2' => [
-
                 ],
             ],
             'form2' => [
@@ -110,7 +112,6 @@ final class SessionErrorsTest extends TestCase
                     'bar',
                 ],
                 'key2' => [
-
                 ],
             ],
             'form2' => [

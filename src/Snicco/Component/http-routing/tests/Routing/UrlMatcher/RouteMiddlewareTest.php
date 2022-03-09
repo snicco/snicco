@@ -21,7 +21,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\IntegerMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use stdClass;
 
-class RouteMiddlewareTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteMiddlewareTest extends HttpRunnerTestCase
 {
     /**
      * @test
@@ -52,7 +55,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            "Alias [alias1] resolves to invalid middleware class-string [stdClass].\nExpected: [Psr\Http\Server\MiddlewareInterface]"
+            "Alias [alias1] resolves to invalid middleware class-string [stdClass].\nExpected: [Psr\\Http\\Server\\MiddlewareInterface]"
         );
         $this->runNewPipeline($this->frontendRequest());
     }
@@ -374,7 +377,6 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         });
 
         $this->withMiddlewareGroups([
-
             'baz_group' => [
                 BazMiddleware::class,
                 'bar_group',
@@ -386,7 +388,6 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             'foo_group' => [
                 FooMiddleware::class,
             ],
-
         ]);
 
         $request = $this->frontendRequest('/foo');

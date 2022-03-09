@@ -44,6 +44,7 @@ trait BundleTestHelpers
 
     /**
      * @template T
+     *
      * @param class-string<T> $class
      */
     final protected function assertCanBeResolved(string $class, Kernel $kernel): void
@@ -52,7 +53,7 @@ trait BundleTestHelpers
             /** @var T $resolved */
             $resolved = $kernel->container()->get($class);
         } catch (ContainerExceptionInterface $e) {
-            PHPUnit::fail("Class [$class] could not be resolved.\nMessage: " . $e->getMessage());
+            PHPUnit::fail("Class [{$class}] could not be resolved.\nMessage: " . $e->getMessage());
         }
         PHPUnit::assertInstanceOf($class, $resolved);
     }
@@ -61,7 +62,7 @@ trait BundleTestHelpers
     {
         try {
             $kernel->container()->get($identifier);
-            PHPUnit::fail("Identifier [$identifier] was bound in the container.");
+            PHPUnit::fail("Identifier [{$identifier}] was bound in the container.");
         } catch (NotFoundExceptionInterface $e) {
             PHPUnit::assertStringContainsString($identifier, $e->getMessage());
         }

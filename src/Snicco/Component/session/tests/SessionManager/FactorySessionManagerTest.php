@@ -28,6 +28,9 @@ use function strlen;
 use function substr;
 use function time;
 
+/**
+ * @internal
+ */
 final class FactorySessionManagerTest extends TestCase
 {
     /**
@@ -408,7 +411,7 @@ final class FactorySessionManagerTest extends TestCase
     /**
      * @test
      */
-    public function testSessionCookie(): void
+    public function test_session_cookie(): void
     {
         $manager = $this->getSessionManager(null, [
             'cookie_name' => 'foobar_cookie',
@@ -581,6 +584,7 @@ final class FactorySessionManagerTest extends TestCase
         $manager->save($session);
 
         $_COOKIE[$this->cookie_name] = $id->asString();
+
         return $id;
     }
 }

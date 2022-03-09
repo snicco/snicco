@@ -12,6 +12,9 @@ use Snicco\Bundle\Testing\Functional\WebTestCase;
 use function dirname;
 use function get_current_user_id;
 
+/**
+ * @internal
+ */
 final class AuthenticateWithWordPressTest extends WebTestCase
 {
     /**
@@ -31,7 +34,7 @@ final class AuthenticateWithWordPressTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertGuest(): void
+    public function test_assert_guest(): void
     {
         $this->assertIsGuest();
         $admin = $this->createAdmin();
@@ -39,6 +42,7 @@ final class AuthenticateWithWordPressTest extends WebTestCase
 
         try {
             $this->assertIsGuest();
+
             throw new RuntimeException('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
             $this->assertStringStartsWith("The current user [{$admin->ID}] is not a guest.", $e->getMessage());
@@ -48,13 +52,14 @@ final class AuthenticateWithWordPressTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertAuthenticated(): void
+    public function test_assert_authenticated(): void
     {
         $admin = $this->createAdmin();
         $editor = $this->createEditor();
 
         try {
             $this->assertIsAuthenticated($admin);
+
             throw new RuntimeException('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
             $this->assertStringStartsWith('The current user is a guest.', $e->getMessage());
@@ -69,10 +74,11 @@ final class AuthenticateWithWordPressTest extends WebTestCase
 
         try {
             $this->assertIsAuthenticated($admin);
+
             throw new RuntimeException('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
             $this->assertStringStartsWith(
-                "The current user [$editor->ID] is not the expected one [$admin->ID].",
+                "The current user [{$editor->ID}] is not the expected one [{$admin->ID}].",
                 $e->getMessage()
             );
         }

@@ -8,7 +8,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\DefaultHeaders\DefaultHeaders;
 
-class DefaultHeadersTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class DefaultHeadersTest extends MiddlewareTestCase
 {
     /**
      * @test

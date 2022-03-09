@@ -58,6 +58,7 @@ final class RouteGroup
 
     /**
      * @param string[] $old_middleware
+     *
      * @return string[]
      */
     private function mergeMiddleware(array $old_middleware): array

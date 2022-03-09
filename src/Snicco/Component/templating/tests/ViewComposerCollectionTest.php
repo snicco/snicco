@@ -14,7 +14,10 @@ use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
 
-class ViewComposerCollectionTest extends TestCase
+/**
+ * @internal
+ */
+final class ViewComposerCollectionTest extends TestCase
 {
     private ViewComposerFactory $factory;
 

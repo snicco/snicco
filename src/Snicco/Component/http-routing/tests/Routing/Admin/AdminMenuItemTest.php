@@ -10,6 +10,9 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
+/**
+ * @internal
+ */
 final class AdminMenuItemTest extends TestCase
 {
     /**

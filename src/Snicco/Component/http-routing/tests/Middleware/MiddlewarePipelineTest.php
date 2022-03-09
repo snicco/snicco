@@ -27,7 +27,10 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
-class MiddlewarePipelineTest extends TestCase
+/**
+ * @internal
+ */
+final class MiddlewarePipelineTest extends TestCase
 {
     use CreateTestPsr17Factories;
     use CreateHttpErrorHandler;
@@ -388,6 +391,7 @@ class PipelineTestMiddleware1 extends Middleware
     {
         $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
         $response->getBody()->write(':pm1');
+
         return $response;
     }
 }
@@ -407,6 +411,7 @@ class PipelineTestMiddleware2 extends Middleware
     {
         $response = $next->process($request->withAttribute(self::ATTRIBUTE, $this->value_to_add), $next);
         $response->getBody()->write(':pm2');
+
         return $response;
     }
 }

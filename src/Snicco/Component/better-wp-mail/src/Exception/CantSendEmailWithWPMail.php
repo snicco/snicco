@@ -31,8 +31,8 @@ final class CantSendEmailWithWPMail extends RuntimeException implements CantSend
         $extra = json_encode($error->errors, JSON_THROW_ON_ERROR);
 
         return new self(
-            "wp_mail() failure. Message: [$message].",
-            "Errors: [$extra]."
+            "wp_mail() failure. Message: [{$message}].",
+            "Errors: [{$extra}]."
         );
     }
 

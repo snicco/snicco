@@ -50,7 +50,7 @@ class HttpException extends RuntimeException
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function headers(): array
     {

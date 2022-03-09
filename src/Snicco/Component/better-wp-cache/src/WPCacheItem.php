@@ -37,7 +37,7 @@ final class WPCacheItem implements CacheItemInterface
 
     /**
      * @param non-empty-string $key
-     * @param mixed $value
+     * @param mixed            $value
      */
     public function __construct(string $key, $value, bool $is_hit)
     {
@@ -68,6 +68,7 @@ final class WPCacheItem implements CacheItemInterface
     {
         $this->value = $value;
         $this->is_hit = true;
+
         return $this;
     }
 
@@ -91,7 +92,7 @@ final class WPCacheItem implements CacheItemInterface
 
     public function expiresAfter($time)
     {
-        if ($time === null) {
+        if (null === $time) {
             $this->expiration_timestamp = null;
         } elseif ($time instanceof DateInterval) {
             $date = new DateTime();

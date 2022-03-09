@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Exception\MissingConfigKey;
 
+/**
+ * @internal
+ */
 final class ReadOnlyConfigTest extends TestCase
 {
     /**
@@ -20,7 +23,6 @@ final class ReadOnlyConfigTest extends TestCase
             'foo' => 'bar',
             'baz' => [
                 'biz' => 'boo',
-
             ],
         ]);
 
@@ -37,7 +39,6 @@ final class ReadOnlyConfigTest extends TestCase
             'foo' => 'bar',
             'baz' => [
                 'biz' => 'boo',
-
             ],
         ]);
 
@@ -110,8 +111,7 @@ final class ReadOnlyConfigTest extends TestCase
                 'bar' => true,
             ],
             'baz' => false,
-            'biz' =>
-             'boo',
+            'biz' => 'boo',
         ]);
 
         $this->assertFalse($config->getBoolean('baz'));

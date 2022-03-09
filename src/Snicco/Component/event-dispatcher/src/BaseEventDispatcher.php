@@ -30,12 +30,12 @@ final class BaseEventDispatcher implements EventDispatcher
     private ListenerFactory $listener_factory;
 
     /**
-     * @var array<string, array<string, Closure|array{0:class-string, 1:string}>>
+     * @var array<string, array<string, array{0:class-string, 1:string}|Closure>>
      */
     private array $listeners = [];
 
     /**
-     * @var array<string, array<Closure|array{0:class-string, 1:string}>>
+     * @var array<string, array<array{0:class-string, 1:string}|Closure>>
      */
     private array $listener_cache = [];
 
@@ -69,6 +69,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
         if (null === $listener) {
             unset($this->listeners[$event_name]);
+
             return;
         }
 
@@ -122,8 +123,10 @@ final class BaseEventDispatcher implements EventDispatcher
     {
         if ($event_name instanceof Closure) {
             $this->listen(ClosureTypeHint::first($event_name), $event_name);
+
             return;
-        } elseif (null === $listener) {
+        }
+        if (null === $listener) {
             throw new InvalidArgumentException('$listener can not be null if first $event_name is not a closure.');
         }
 
@@ -141,24 +144,24 @@ final class BaseEventDispatcher implements EventDispatcher
         if ($event instanceof Event) {
             return $event;
         }
+
         return GenericEvent::fromObject($event);
     }
 
     /**
-     * @return array<Closure|array{0: class-string, 1:string}>
+     * @return array<array{0: class-string, 1:string}|Closure>
      */
     private function getListenersForEvent(string $event_name, bool $include_reflection = true): array
     {
         if (isset($this->listener_cache[$event_name])) {
             return $this->listener_cache[$event_name];
-        } else {
-            $listeners = $this->listeners[$event_name] ?? [];
+        }
+        $listeners = $this->listeners[$event_name] ?? [];
 
-            /** @var array<Closure|array{0: class-string, 1:string}> $listeners */
-            $listeners = $include_reflection
+        /** @var array<array{0: class-string, 1:string}|Closure> $listeners */
+        $listeners = $include_reflection
                 ? $this->mergeReflectionListeners($event_name, $listeners)
                 : $listeners;
-        }
 
         $this->listener_cache[$event_name] = $listeners;
 
@@ -187,11 +190,12 @@ final class BaseEventDispatcher implements EventDispatcher
         if ($parent && (new ReflectionClass($parent))->isAbstract()) {
             $listeners = array_merge($listeners, $this->getListenersForEvent($parent, false));
         }
+
         return $listeners;
     }
 
     /**
-     * @param Closure|array{0:class-string, 1:string} $listener
+     * @param array{0:class-string, 1:string}|Closure $listener
      *
      * @psalm-suppress MixedAssignment
      */
@@ -202,6 +206,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
         if ($listener instanceof Closure) {
             $listener(...$payload);
+
             return;
         }
 
@@ -219,7 +224,7 @@ final class BaseEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param Closure|array{0:class-string, 1:string} $validated_listener
+     * @param array{0:class-string, 1:string}|Closure $validated_listener
      */
     private function parseListenerId($validated_listener): string
     {
@@ -231,8 +236,9 @@ final class BaseEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param Closure|class-string|array{0:class-string, 1:string} $listener
-     * @return Closure|array{0: class-string, 1:string}
+     * @param array{0:class-string, 1:string}|class-string|Closure $listener
+     *
+     * @return array{0: class-string, 1:string}|Closure
      *
      * @psalm-suppress DocblockTypeContradiction
      * @psalm-suppress MixedArgument
@@ -268,6 +274,7 @@ final class BaseEventDispatcher implements EventDispatcher
         if (! method_exists($listener[0], $listener[1])) {
             throw InvalidListener::becauseProvidedClassMethodDoesntExist($listener);
         }
+
         return $listener;
     }
 }

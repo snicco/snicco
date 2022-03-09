@@ -18,6 +18,9 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class KernelBootstrappersTest extends TestCase
 {
     use CreateTestContainer;
@@ -120,7 +123,6 @@ class BundleInfo implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -180,7 +182,6 @@ class Bootstrap2 implements Bootstrapper
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -199,7 +200,7 @@ class Bootstrap2 implements Bootstrapper
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (! $container->make(BundleInfo::class)->booted === true) {
+        if (true === ! $container->make(BundleInfo::class)->booted) {
             throw new RuntimeException('Bootstrapper bootstrapped before bundle');
         }
         $container->make(self::class)->booted = true;
@@ -220,12 +221,10 @@ class BootstrapperWithExceptionInBoostrap implements Bootstrapper
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
     {
-        //
     }
 
     public function bootstrap(Kernel $kernel): void

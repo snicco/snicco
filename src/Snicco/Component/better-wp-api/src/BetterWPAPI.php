@@ -57,7 +57,7 @@ class BetterWPAPI
     /**
      * @template T
      *
-     * @param T $filterable_value
+     * @param T     $filterable_value
      * @param mixed ...$args
      *
      * @return T
@@ -71,7 +71,7 @@ class BetterWPAPI
         $actual = gettype($return_value);
         if ($actual !== $expected) {
             throw new InvalidArgumentException(
-                "Initial value for filter [$hook_name] is $expected. Returned [$actual]."
+                "Initial value for filter [{$hook_name}] is {$expected}. Returned [{$actual}]."
             );
         }
         if ('object' === $expected) {
@@ -84,7 +84,7 @@ class BetterWPAPI
 
             if ($value_class !== $returned_class) {
                 throw new InvalidArgumentException(
-                    "Initial value for filter [$hook_name] is an instance of [$value_class]. Returned [$returned_class]."
+                    "Initial value for filter [{$hook_name}] is an instance of [{$value_class}]. Returned [{$returned_class}]."
                 );
             }
         }
@@ -97,6 +97,7 @@ class BetterWPAPI
     /**
      * @param mixed $value
      * @param mixed ...$args
+     *
      * @return mixed
      */
     public function applyFilters(string $hook_name, $value, ...$args)
@@ -133,7 +134,7 @@ class BetterWPAPI
     }
 
     /**
-     * @return mixed|false
+     * @return false|mixed
      */
     public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
     {
@@ -155,7 +156,7 @@ class BetterWPAPI
 
     public function verifyNonce(string $nonce, string $action): bool
     {
-        return wp_verify_nonce($nonce, $action) !== false;
+        return false !== wp_verify_nonce($nonce, $action);
     }
 
     public function createNonce(string $form_action): string

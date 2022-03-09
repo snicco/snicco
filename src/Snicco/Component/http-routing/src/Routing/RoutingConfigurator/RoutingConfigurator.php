@@ -27,6 +27,7 @@ interface RoutingConfigurator
 
     /**
      * @param string|string[] $middleware
+     *
      * @return static
      */
     public function middleware($middleware);
@@ -43,7 +44,6 @@ interface RoutingConfigurator
 
     /**
      * @param Closure(static) $create_routes
-     *
      * @param array{
      *     namespace?:string,
      *     prefix?:string,
@@ -54,8 +54,8 @@ interface RoutingConfigurator
     public function group(Closure $create_routes, array $extra_attributes = []): void;
 
     /**
-     * @param string|Closure(static) $file_or_closure Either the full path to route file that will
-     *                                                  return a closure or the closure itself
+     * @param Closure(static)|string $file_or_closure Either the full path to route file that will
+     *                                                return a closure or the closure itself
      */
     public function include($file_or_closure): void;
 

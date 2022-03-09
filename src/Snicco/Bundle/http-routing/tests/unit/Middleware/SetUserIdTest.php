@@ -8,6 +8,9 @@ use Snicco\Bundle\HttpRouting\Middleware\SetUserId;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
+/**
+ * @internal
+ */
 final class SetUserIdTest extends MiddlewareTestCase
 {
     /**

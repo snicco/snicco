@@ -15,7 +15,7 @@ final class BadRouteParameter extends InvalidArgumentException
         string $route_name
     ): self {
         return new self(
-            "Parameter [$param_name] for route [$route_name] must match [$pattern] to generate an URL. Given [$provided_value]."
+            "Parameter [{$param_name}] for route [{$route_name}] must match [{$pattern}] to generate an URL. Given [{$provided_value}]."
         );
     }
 
@@ -24,7 +24,7 @@ final class BadRouteParameter extends InvalidArgumentException
         string $route_name
     ): InvalidArgumentException {
         return new self(
-            "Required parameter [$required_segment] is missing for route [$route_name]."
+            "Required parameter [{$required_segment}] is missing for route [{$route_name}]."
         );
     }
 }

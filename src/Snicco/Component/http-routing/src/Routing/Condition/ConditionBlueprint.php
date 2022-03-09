@@ -31,12 +31,12 @@ final class ConditionBlueprint
     public array $passed_args;
 
     /**
-     * @param class-string<RouteCondition>|"!" $condition_class
-     * @param array<scalar> $arguments
+     * @param "!"|class-string<RouteCondition> $condition_class
+     * @param array<scalar>                    $arguments
      */
     public function __construct(string $condition_class, array $arguments = [])
     {
-        if ($condition_class === RouteCondition::NEGATE) {
+        if (RouteCondition::NEGATE === $condition_class) {
             /** @var string $condition_class */
             $condition_class = array_shift($arguments);
             $this->is_negated = true;

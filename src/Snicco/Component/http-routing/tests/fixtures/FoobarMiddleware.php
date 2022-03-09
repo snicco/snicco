@@ -26,6 +26,7 @@ class FoobarMiddleware extends Middleware
         $response = $next($request);
 
         $response->getBody()->write(':' . $this->val);
+
         return $response;
     }
 }

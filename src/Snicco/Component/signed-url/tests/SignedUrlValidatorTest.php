@@ -19,6 +19,9 @@ use Snicco\Component\TestableClock\TestClock;
 
 use function str_replace;
 
+/**
+ * @internal
+ */
 final class SignedUrlValidatorTest extends TestCase
 {
     private UrlSigner $url_signer;
@@ -113,6 +116,7 @@ final class SignedUrlValidatorTest extends TestCase
         $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
+
         try {
             $validator->validate($string);
             $this->fail('No exception thrown for tampered signature.');
@@ -294,7 +298,7 @@ final class SignedUrlValidatorTest extends TestCase
      */
     public function additional_request_data_can_be_added_for_validation(): void
     {
-        /** @var null|string $pre */
+        /** @var string|null $pre */
         $pre = $_SERVER['HTTP_USER_AGENT'] ?? null;
         $_SERVER['HTTP_USER_AGENT'] = 'foobar';
 
@@ -311,19 +315,17 @@ final class SignedUrlValidatorTest extends TestCase
             $validator->validate($signed_url->asString());
             $this->fail('Invalid signature passed validation.');
         } catch (InvalidSignature $e) {
-            //
         }
 
         try {
             $validator->validate($signed_url->asString(), 'bogus');
             $this->fail('Invalid signature passed validation.');
         } catch (InvalidSignature $e) {
-            //
         }
 
         $validator->validate($signed_url->asString(), $_SERVER['HTTP_USER_AGENT']);
 
-        if ($pre === null) {
+        if (null === $pre) {
             unset($_SERVER['HTTP_USER_AGENT']);
         } else {
             $_SERVER['HTTP_USER_AGENT'] = $pre;

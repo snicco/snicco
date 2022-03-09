@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 
 return [

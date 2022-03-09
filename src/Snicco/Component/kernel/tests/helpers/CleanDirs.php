@@ -24,7 +24,7 @@ trait CleanDirs
 
             /** @var SplFileInfo $file */
             foreach ($iterator as $file) {
-                if ($file->getExtension() === 'php') {
+                if ('php' === $file->getExtension()) {
                     unlink($file->getRealPath());
                 }
             }

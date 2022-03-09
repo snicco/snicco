@@ -16,6 +16,9 @@ use Snicco\Component\BetterWPMail\Tests\fixtures\Email\WelcomeEmail;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\WPMailAPI;
 
+/**
+ * @internal
+ */
 final class MailerEventsTest extends WPTestCase
 {
     protected function setUp(): void
@@ -37,7 +40,7 @@ final class MailerEventsTest extends WPTestCase
         add_filter(
             WelcomeEmail::class,
             function (SendingEmail $email) use (&$count) {
-                $count++;
+                ++$count;
             }
         );
 
@@ -99,7 +102,7 @@ final class MailerEventsTest extends WPTestCase
         add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count) {
             $this->assertSame('foo', $sent_email->email()->htmlBody());
             $this->assertTrue($sent_email->envelope()->recipients()->has('c@web.de'));
-            $count++;
+            ++$count;
         });
 
         $mailer = new Mailer(
@@ -129,6 +132,7 @@ final class MailerEventsTest extends WPTestCase
     private function getSentMails(): array
     {
         global $phpmailer;
+
         return $phpmailer->mock_sent;
     }
 }

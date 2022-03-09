@@ -21,6 +21,9 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
+/**
+ * @internal
+ */
 final class ShareSessionWithViewsTest extends MiddlewareTestCase
 {
     private Session $session;
@@ -53,7 +56,6 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
         $this->session->flash(SessionErrors::class, [
             'default' => [
                 'key1' => ['error1', 'error2'],
-
             ],
         ]);
 

@@ -35,6 +35,8 @@ use function dirname;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class HttpRoutingBundleTest extends TestCase
 {
@@ -268,7 +270,7 @@ final class HttpRoutingBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_urlGenerator_can_be_resolved(): void
+    public function test_url_generator_can_be_resolved(): void
     {
         $kernel = new Kernel(
             $this->newContainer(),
@@ -283,7 +285,7 @@ final class HttpRoutingBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_urlMatcher_can_be_resolved(): void
+    public function test_url_matcher_can_be_resolved(): void
     {
         $kernel = new Kernel(
             $this->newContainer(),
@@ -304,7 +306,7 @@ final class HttpRoutingBundleTest extends TestCase
     /**
      * @test
      */
-    public function test_adminMenu_can_be_resolved(): void
+    public function test_admin_menu_can_be_resolved(): void
     {
         $kernel = new Kernel(
             $this->newContainer(),

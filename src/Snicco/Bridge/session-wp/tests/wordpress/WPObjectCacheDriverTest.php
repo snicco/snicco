@@ -15,6 +15,9 @@ use Snicco\Component\TestableClock\TestClock;
 
 use function sleep;
 
+/**
+ * @internal
+ */
 final class WPObjectCacheDriverTest extends WPTestCase
 {
     use SessionDriverTests;

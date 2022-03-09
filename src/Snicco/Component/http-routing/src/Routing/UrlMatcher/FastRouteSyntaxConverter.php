@@ -54,7 +54,7 @@ final class FastRouteSyntaxConverter
     }
 
     /**
-     * This method makes sure that /foo/{bar?}/{baz?} becomes /foo[/{bar}[/{baz}]]
+     * This method makes sure that /foo/{bar?}/{baz?} becomes /foo[/{bar}[/{baz}]].
      *
      * @param string[] $optional_segment_names
      */
@@ -100,7 +100,7 @@ final class FastRouteSyntaxConverter
     {
         $regex = $this->replaceEscapedForwardSlashes($pattern);
 
-        $pattern = sprintf("/(%s(?=\\}))/", preg_quote($param_name, '/'));
+        $pattern = sprintf('/(%s(?=\\}))/', preg_quote($param_name, '/'));
 
         $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
             if (! isset($match[0])) {
@@ -108,12 +108,13 @@ final class FastRouteSyntaxConverter
                 return $regex;
                 // @codeCoverageIgnoreEnd
             }
+
             return $match[0] . ':' . $regex;
         }, $url, 1);
 
         if (null === $url) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_replace_callback returned an error for url [$url].");
+            throw new RuntimeException("preg_replace_callback returned an error for url [{$url}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -134,6 +135,7 @@ final class FastRouteSyntaxConverter
         $url = rtrim($url, ']');
         $l2 = strlen($url);
         $url .= '[/]' . str_repeat(']', $l1 - $l2);
+
         return $url;
     }
 }

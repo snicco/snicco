@@ -30,7 +30,10 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\ListenerWithoutMeth
 use Snicco\Component\EventDispatcher\Tests\fixtures\Listener\UnremovableListener;
 use stdClass;
 
-class EventDispatcherTest extends TestCase
+/**
+ * @internal
+ */
+final class EventDispatcherTest extends TestCase
 {
     use AssertListenerResponse;
 

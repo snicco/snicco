@@ -42,12 +42,12 @@ final class Request implements ServerRequestInterface
     private ServerRequestInterface $psr_request;
 
     /**
-     * @var "frontend"|"admin"|"api"
+     * @var "admin"|"api"|"frontend"
      */
     private string $type;
 
     /**
-     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     * @param self::TYPE_ADMIN_AREA|self::TYPE_API|self::TYPE_FRONTEND $type
      */
     public function __construct(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND)
     {
@@ -64,25 +64,27 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     * @param mixed $value
+     *
+     * @return never
+     */
+    public function __set(string $name, $value)
+    {
+        throw new BadMethodCallException(
+            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", self::class)
+        );
+    }
+
+    /**
+     * @param self::TYPE_ADMIN_AREA|self::TYPE_API|self::TYPE_FRONTEND $type
      */
     public static function fromPsr(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND): Request
     {
         if ($psr_request instanceof Request) {
             return $psr_request;
         }
-        return new self($psr_request, $type);
-    }
 
-    /**
-     * @param mixed $value
-     * @return never
-     */
-    public function __set(string $name, $value)
-    {
-        throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [$name] on immutable class [%s]", self::class)
-        );
+        return new self($psr_request, $type);
     }
 
     public function userAgent(): ?string
@@ -91,15 +93,17 @@ final class Request implements ServerRequestInterface
         if (false === $user_agent || '' === $user_agent) {
             return null;
         }
+
         return $user_agent;
     }
 
     /**
-     * Returns schema + host + path
+     * Returns schema + host + path.
      */
     public function url(): string
     {
         $full = (string) $this->getUri();
+
         return Str::pregReplace($full, '/\?.*/', '');
     }
 
@@ -111,7 +115,7 @@ final class Request implements ServerRequestInterface
      */
     public function cookie(string $name, ?string $default = null): ?string
     {
-        /** @var array<string,string|non-empty-list<string>> $cookies */
+        /** @var array<string,non-empty-list<string>|string> $cookies */
         $cookies = $this->getCookieParams();
         if (! isset($cookies[$name])) {
             return $default;
@@ -121,6 +125,7 @@ final class Request implements ServerRequestInterface
         } else {
             $cookie = $cookies[$name];
         }
+
         return $cookie;
     }
 
@@ -130,6 +135,7 @@ final class Request implements ServerRequestInterface
         if (! $res instanceof RoutingResult) {
             return RoutingResult::noMatch();
         }
+
         return $res;
     }
 
@@ -170,6 +176,7 @@ final class Request implements ServerRequestInterface
     public function decodedPath(): string
     {
         $path = $this->path();
+
         return implode(
             '/',
             array_map(function ($part) {
@@ -187,6 +194,7 @@ final class Request implements ServerRequestInterface
         if ('' === $path) {
             $path = '/';
         }
+
         return $path;
     }
 
@@ -223,6 +231,7 @@ final class Request implements ServerRequestInterface
         if (! is_string($ip)) {
             return null;
         }
+
         return $ip;
     }
 
@@ -335,6 +344,7 @@ final class Request implements ServerRequestInterface
      * Supports 'dot' notation and accessing nested values with * wildcards.
      *
      * @param mixed $default
+     *
      * @return mixed
      */
     public function query(?string $key = null, $default = null)
@@ -344,6 +354,7 @@ final class Request implements ServerRequestInterface
         if (null === $key) {
             return $query;
         }
+
         return Arr::dataGet($query, $key, $default);
     }
 
@@ -363,9 +374,10 @@ final class Request implements ServerRequestInterface
      * Supports 'dot' notation and accessing nested values with * wildcards.
      *
      * @param mixed $default
-     * @return mixed
      *
-     * @throws RuntimeException If parsed body is not an array.
+     * @throws RuntimeException if parsed body is not an array
+     *
+     * @return mixed
      */
     public function post(?string $key = null, $default = null)
     {
@@ -382,6 +394,7 @@ final class Request implements ServerRequestInterface
         if (null === $key) {
             return $parsed_body;
         }
+
         return Arr::dataGet($parsed_body, $key, $default);
     }
 
@@ -405,8 +418,7 @@ final class Request implements ServerRequestInterface
     public function realMethod(): string
     {
         /** @var string $method */
-        $method = Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
-        return $method;
+        return Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
     }
 
     /**
@@ -467,7 +479,7 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * @param string|non-empty-array<string> $keys
+     * @param non-empty-array<string>|string $keys
      */
     public function hasAny($keys): bool
     {
@@ -656,6 +668,7 @@ final class Request implements ServerRequestInterface
                 sprintf("snicco.user_id must be integer or null.\nGot [%s].", gettype($id))
             );
         }
+
         return $id;
     }
 
@@ -673,6 +686,7 @@ final class Request implements ServerRequestInterface
         if (null === $route) {
             return false;
         }
+
         return $route->getName() === $route_name;
     }
 
@@ -691,7 +705,7 @@ final class Request implements ServerRequestInterface
 
     private function matchesType(string $match_against, string $accept_header): bool
     {
-        if ($accept_header === '*/*' || $accept_header === '*') {
+        if ('*/*' === $accept_header || '*' === $accept_header) {
             return true;
         }
 
@@ -699,7 +713,7 @@ final class Request implements ServerRequestInterface
 
         if (false === $tok) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not parse accept header [$match_against].");
+            throw new RuntimeException("Could not parse accept header [{$match_against}].");
             // @codeCoverageIgnoreEnd
         }
 

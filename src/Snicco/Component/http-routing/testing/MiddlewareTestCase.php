@@ -152,6 +152,7 @@ abstract class MiddlewareTestCase extends TestCase
         if (! isset($this->response_utils)) {
             throw new LogicException('response utils can only be accessed during the next middleware response.');
         }
+
         return $this->response_utils;
     }
 
@@ -183,6 +184,7 @@ abstract class MiddlewareTestCase extends TestCase
             );
             $this->received_request_by_next_middleware = $request;
             $this->next_called = true;
+
             return $response;
         };
 

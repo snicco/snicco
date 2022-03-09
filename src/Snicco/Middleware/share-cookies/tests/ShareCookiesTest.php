@@ -9,7 +9,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\ShareCookies\ShareCookies;
 
-class ShareCookiesTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class ShareCookiesTest extends MiddlewareTestCase
 {
     /**
      * @test

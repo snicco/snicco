@@ -12,7 +12,7 @@ final class FrozenService extends RuntimeException implements ContainerException
     public static function forId(string $id): FrozenService
     {
         return new self(
-            "The id [$id] is locked because it is shared and has already been resolved."
+            "The id [{$id}] is locked because it is shared and has already been resolved."
         );
     }
 }

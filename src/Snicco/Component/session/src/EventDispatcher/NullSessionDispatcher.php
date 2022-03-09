@@ -8,6 +8,5 @@ final class NullSessionDispatcher implements SessionEventDispatcher
 {
     public function dispatchAll(array $events): void
     {
-        //
     }
 }

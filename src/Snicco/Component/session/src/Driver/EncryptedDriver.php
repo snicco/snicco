@@ -92,6 +92,7 @@ final class EncryptedDriver implements UserSessionsDriver
         if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
+
         return $this->driver->getAllForUserId($user_id);
     }
 }

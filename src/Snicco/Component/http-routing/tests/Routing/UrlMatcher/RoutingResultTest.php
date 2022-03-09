@@ -8,7 +8,10 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 
-class RoutingResultTest extends TestCase
+/**
+ * @internal
+ */
+final class RoutingResultTest extends TestCase
 {
     /**
      * @test
@@ -68,7 +71,7 @@ class RoutingResultTest extends TestCase
     /**
      * @test
      */
-    public function test_noMatch(): void
+    public function test_no_match(): void
     {
         $res = RoutingResult::noMatch();
 

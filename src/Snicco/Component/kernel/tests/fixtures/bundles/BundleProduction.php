@@ -21,7 +21,6 @@ final class BundleProduction implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string

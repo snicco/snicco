@@ -21,6 +21,9 @@ use Snicco\Component\StrArr\Str;
 
 use function random_int;
 
+/**
+ * @internal
+ */
 final class StrTest extends TestCase
 {
     /**
@@ -123,7 +126,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_endsWith(): void
+    public function test_ends_with(): void
     {
         $this->assertTrue(Str::endsWith('jason', 'on'));
         $this->assertTrue(Str::endsWith('jason', 'jason'));
@@ -146,7 +149,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_doesNotEndWith(): void
+    public function test_does_not_end_with(): void
     {
         $this->assertFalse(Str::doesNotEndWith('jason', 'on'));
         $this->assertFalse(Str::doesNotEndWith('jason', 'jason'));
@@ -188,7 +191,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_afterLast(): void
+    public function test_after_last(): void
     {
         $this->assertSame('tte', Str::afterLast('yvette', 'yve'));
         $this->assertSame('e', Str::afterLast('yvette', 't'));
@@ -228,7 +231,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_ucFirst(): void
+    public function test_uc_first(): void
     {
         $this->assertSame('Snicco', Str::ucfirst('Snicco'));
         $this->assertSame('Snicco framework', Str::ucfirst('snicco framework'));
@@ -268,7 +271,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_betweenFirst(): void
+    public function test_between_first(): void
     {
         $this->assertSame('', Str::betweenFirst('abc', 'a', 'b'));
         $this->assertSame('abc', Str::betweenFirst('abc', '', 'c'));
@@ -294,7 +297,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_beforeLast(): void
+    public function test_before_last(): void
     {
         $this->assertSame('yve', Str::beforeLast('yvette', 'tte'));
         $this->assertSame('yvet', Str::beforeLast('yvette', 't'));
@@ -352,7 +355,7 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::is('Dusseldorf', 'Dü*'));
     }
 
-    public function test_replaceFirst(): void
+    public function test_replace_first(): void
     {
         $this->assertSame('fooqux foobar', Str::replaceFirst('bar', 'qux', 'foobar foobar'));
         $this->assertSame(
@@ -370,7 +373,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_pregReplace(): void
+    public function test_preg_replace(): void
     {
         $str = '.....foo.....';
 
@@ -383,7 +386,7 @@ final class StrTest extends TestCase
     /**
      * @test
      */
-    public function test_pregReplace_error_for_malformed_utf8(): void
+    public function test_preg_replace_error_for_malformed_utf8(): void
     {
         try {
             Str::pregReplace("0123456789\xFF", '/\d/', 'x');

@@ -49,6 +49,7 @@ final class Secret
         Assert::stringNotEmpty($parts[1], 'Your stored secret seems to be malformed.');
 
         Assert::same(Binary::safeStrlen($parts[1]), (int) ($parts[0]) * 2);
+
         return new self($string);
     }
 

@@ -23,6 +23,9 @@ use Snicco\Component\Templating\ViewEngine;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class ViewEngineMailRendererTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -51,6 +54,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
             $this->assertStringContainsString('extra-bar', (string) $email->htmlBody());
             $this->assertStringContainsString('FOO', (string) $email->textBody());
             $this->assertStringContainsString('extra-bar', (string) $email->textBody());
+
             return true;
         });
 
@@ -63,6 +67,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $transport->assertSent(Email::class, function (Email $email) {
             $this->assertSame('<h1>BAR</h1>', $email->htmlBody());
             $this->assertSame('BAR', $email->textBody());
+
             return true;
         });
     }
@@ -155,14 +160,14 @@ final class ViewEngineMailRendererTest extends WPTestCase
                 ],
             ]);
         });
+
         return $kernel;
     }
 
     private function getTransport(Kernel $kernel): FakeTransport
     {
         /** @var FakeTransport $transport */
-        $transport = $kernel->container()->get(Transport::class);
-        return $transport;
+        return $kernel->container()->get(Transport::class);
     }
 
     private function getMailer(Kernel $kernel): Mailer

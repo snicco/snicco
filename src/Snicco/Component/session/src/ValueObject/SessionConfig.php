@@ -23,7 +23,7 @@ final class SessionConfig
     private ?string $cookie_domain;
 
     /**
-     * @var "Lax" | "Strict" | "None; Secure"
+     * @var "Lax"|"None; Secure"|"Strict"
      */
     private string $same_site;
 
@@ -32,7 +32,7 @@ final class SessionConfig
     private bool $only_secure;
 
     /**
-     * @var null|positive-int
+     * @var positive-int|null
      */
     private ?int $absolute_lifetime_in_sec;
 
@@ -64,22 +64,20 @@ final class SessionConfig
 
         if (! isset($config['cookie_name'])) {
             throw new InvalidArgumentException('A cookie name is required');
-        } else {
-            $this->cookie_name = $config['cookie_name'];
         }
+        $this->cookie_name = $config['cookie_name'];
 
         $this->absolute_lifetime_in_sec = $config['absolute_lifetime_in_sec'] ?? null;
 
         if (! isset($config['idle_timeout_in_sec'])) {
             throw new InvalidArgumentException('An idle timeout is required.');
-        } else {
-            $this->idle_timeout = $config['idle_timeout_in_sec'];
         }
+        $this->idle_timeout = $config['idle_timeout_in_sec'];
 
         $this->cookie_domain = $config['domain'] ?? null;
 
         $same_site = ucfirst(strtolower($config['same_site'] ?? 'Lax'));
-        if ($same_site === 'None') {
+        if ('None' === $same_site) {
             $same_site = 'None; Secure';
         }
 
@@ -87,16 +85,14 @@ final class SessionConfig
             throw new InvalidArgumentException(
                 sprintf('same_site must be one of [%s].', implode(', ', $req))
             );
-        } else {
-            /** @var 'Lax' | 'Strict' | 'None; Secure' same_site */
-            $this->same_site = $same_site;
         }
+        /** @var 'Lax'|'None; Secure'|'Strict' same_site */
+        $this->same_site = $same_site;
 
         if (! isset($config['rotation_interval_in_sec'])) {
             throw new InvalidArgumentException('A rotation interval is required.');
-        } else {
-            $this->rotation_interval = $config['rotation_interval_in_sec'];
         }
+        $this->rotation_interval = $config['rotation_interval_in_sec'];
 
         $gc_percentage = $config['garbage_collection_percentage'] ?? -1;
         if ($gc_percentage < 0 || $gc_percentage > 100) {
@@ -170,7 +166,7 @@ final class SessionConfig
     }
 
     /**
-     * @return  "Lax" | "Strict" | "None; Secure"
+     * @return "Lax"|"None; Secure"|"Strict"
      */
     public function sameSite(): string
     {

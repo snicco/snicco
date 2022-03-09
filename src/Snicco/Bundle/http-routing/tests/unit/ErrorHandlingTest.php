@@ -41,6 +41,8 @@ use const E_USER_NOTICE;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class ErrorHandlingTest extends TestCase
 {
@@ -370,6 +372,7 @@ final class ErrorHandlingTest extends TestCase
         $handled_by_global_handler = false;
         set_error_handler(function () use (&$handled_by_global_handler): bool {
             $handled_by_global_handler = true;
+
             return false;
         });
 
@@ -418,6 +421,7 @@ final class ErrorHandlingTest extends TestCase
         $handled_by_global_handler = false;
         set_error_handler(function () use (&$handled_by_global_handler): bool {
             $handled_by_global_handler = true;
+
             return true;
         });
 
@@ -500,9 +504,10 @@ class Transformer1 implements ExceptionTransformer
             return new HttpException(401, 'test');
         }
 
-        if ($e->getMessage() === 'error1') {
+        if ('error1' === $e->getMessage()) {
             return new HttpException(403, 'custom1');
         }
+
         return $e;
     }
 }
@@ -511,9 +516,10 @@ class Transformer2 implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
-        if ($e->getMessage() === 'error1') {
+        if ('error1' === $e->getMessage()) {
             return new HttpException(404, 'custom2');
         }
+
         return $e;
     }
 }
@@ -523,6 +529,7 @@ class PathLogContext implements RequestLogContext
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['path'] = $information->serverRequest()->getUri()->getPath();
+
         return $context;
     }
 }
@@ -532,6 +539,7 @@ class QueryStringLogContext implements RequestLogContext
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['query_string'] = $information->serverRequest()->getUri()->getQuery();
+
         return $context;
     }
 }

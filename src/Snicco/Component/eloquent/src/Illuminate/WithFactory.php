@@ -20,7 +20,8 @@ trait WithFactory
     {
         $model = Str::afterLast(static::class, '\\');
         $factory = $model . 'Factory';
-        $factory = trim(static::$factory_namespace, "\\") . '\\' . $factory;
+        $factory = trim(static::$factory_namespace, '\\') . '\\' . $factory;
+
         return new $factory();
     }
 }

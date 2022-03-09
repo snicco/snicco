@@ -20,6 +20,7 @@ interface Event
      * You can use the "ClassAsPayload" trait to achieve this behaviour.
      *
      * @return mixed
+     *
      * @see ClassAsPayload
      */
     public function payload();

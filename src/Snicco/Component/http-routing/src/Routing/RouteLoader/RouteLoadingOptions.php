@@ -8,21 +8,21 @@ interface RouteLoadingOptions
 {
     /**
      * @return  array{
-     *     namespace?:string,
-     *     prefix?:string,
-     *     name?:string,
-     *     middleware?: string[]
-     * }
+     *          namespace?:string,
+     *          prefix?:string,
+     *          name?:string,
+     *          middleware?: string[]
+     *          }
      */
     public function getApiRouteAttributes(string $file_basename, ?string $parsed_version): array;
 
     /**
      * @return  array{
-     *     namespace?:string,
-     *     prefix?:string,
-     *     name?:string,
-     *     middleware?: string[]
-     * }
+     *          namespace?:string,
+     *          prefix?:string,
+     *          name?:string,
+     *          middleware?: string[]
+     *          }
      */
     public function getRouteAttributes(string $file_basename): array;
 }

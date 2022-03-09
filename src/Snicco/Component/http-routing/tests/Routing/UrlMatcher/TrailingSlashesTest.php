@@ -8,7 +8,10 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class TrailingSlashesTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class TrailingSlashesTest extends HttpRunnerTestCase
 {
     /**
      * @test

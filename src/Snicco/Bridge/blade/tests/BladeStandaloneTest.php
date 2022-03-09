@@ -14,6 +14,9 @@ use Snicco\Bridge\Blade\DummyApplication;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
+/**
+ * @internal
+ */
 final class BladeStandaloneTest extends BladeTestCase
 {
     /**

@@ -10,6 +10,9 @@ use wpdb;
 
 use function str_repeat;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
 {
     private wpdb $wpdb;

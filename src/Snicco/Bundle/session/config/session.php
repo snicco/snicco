@@ -18,7 +18,6 @@ return [
      * For a full list of options see SessionConfig::mergeDefaults()
      */
     SessionOption::CONFIG => [
-
         // The path where the session cookie is available.
         // You should leave this option as is. Otherwise, the cookie won't be available if users are logged-in/logged-out.
         'path' => '/',

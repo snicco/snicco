@@ -176,6 +176,7 @@ abstract class WebTestCase extends WPTestCase
     {
         $transport = $this->getBootedKernel()->container()->make(Transport::class);
         Assert::isInstanceOf($transport, FakeTransport::class);
+
         return $transport;
     }
 
@@ -192,7 +193,7 @@ abstract class WebTestCase extends WPTestCase
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param T $instance
+     * @param T               $instance
      */
     final protected function swapInstance(string $id, object $instance): void
     {
@@ -207,6 +208,7 @@ abstract class WebTestCase extends WPTestCase
         if (! isset($this->browser)) {
             $this->browser = $this->createBrowser();
         }
+
         return $this->browser;
     }
 
@@ -214,6 +216,7 @@ abstract class WebTestCase extends WPTestCase
     {
         $factory = $this->factory();
         Assert::isInstanceOf($factory, WP_UnitTest_Factory::class);
+
         return $factory->user;
     }
 
@@ -223,6 +226,7 @@ abstract class WebTestCase extends WPTestCase
         if (! $kernel->booted()) {
             $kernel->boot();
         }
+
         return $kernel;
     }
 
@@ -270,15 +274,16 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getKernel();
         if ($kernel->booted()) {
-            throw new LogicException("Method [$__METHOD__] can not be used if the kernel was already booted.");
+            throw new LogicException("Method [{$__METHOD__}] can not be used if the kernel was already booted.");
         }
+
         return $kernel;
     }
 
     private function assertBrowserNotCreated(string $__METHOD__): void
     {
         if (isset($this->browser)) {
-            throw new LogicException("Method [$__METHOD__] can not be used if the browser was already created.");
+            throw new LogicException("Method [{$__METHOD__}] can not be used if the browser was already created.");
         }
     }
 }

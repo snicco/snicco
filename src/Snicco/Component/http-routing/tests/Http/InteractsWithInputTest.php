@@ -10,7 +10,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
-class InteractsWithInputTest extends TestCase
+/**
+ * @internal
+ */
+final class InteractsWithInputTest extends TestCase
 {
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
@@ -100,7 +103,7 @@ class InteractsWithInputTest extends TestCase
     /**
      * @test
      */
-    public function testInputIsAliasForAll(): void
+    public function test_input_is_alias_for_all(): void
     {
         $request = $this->request->withQueryParams(
             [
@@ -254,7 +257,7 @@ class InteractsWithInputTest extends TestCase
     /**
      * @test
      */
-    public function test_queryString(): void
+    public function test_query_string(): void
     {
         $request = $this->frontendRequest('https://foobar.com?foo=bar&baz=biz&=');
 
@@ -371,13 +374,11 @@ class InteractsWithInputTest extends TestCase
             'foo' => [
                 'bar' => 'baz',
                 'baz' => 'biz',
-
             ],
         ], $request->only(['foo']));
         $this->assertSame([
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ], $request->only('foo.bar'));
     }
@@ -483,7 +484,7 @@ class InteractsWithInputTest extends TestCase
     /**
      * @test
      */
-    public function test_hasAny(): void
+    public function test_has_any(): void
     {
         $request = $this->request->withQueryParams([
             'name' => 'calvin',
@@ -507,7 +508,6 @@ class InteractsWithInputTest extends TestCase
             'foo' => [
                 'bar' => null,
                 'baz' => '',
-
             ],
         ]);
         $this->assertTrue($request->hasAny('foo.bar'));
@@ -530,7 +530,7 @@ class InteractsWithInputTest extends TestCase
     /**
      * @test
      */
-    public function testFilled(): void
+    public function test_filled(): void
     {
         $request = $this->request->withQueryParams([
             'dev' => 'calvin',
@@ -580,7 +580,6 @@ class InteractsWithInputTest extends TestCase
             'foo' => [
                 'bar' => null,
                 'baz' => '',
-
             ],
         ])->withParsedBody(
             [

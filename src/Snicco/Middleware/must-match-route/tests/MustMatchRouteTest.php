@@ -8,6 +8,9 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\MustMatchRoute\MustMatchRoute;
 
+/**
+ * @internal
+ */
 final class MustMatchRouteTest extends MiddlewareTestCase
 {
     /**

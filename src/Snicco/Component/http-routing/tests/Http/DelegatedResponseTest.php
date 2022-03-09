@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
+/**
+ * @internal
+ */
 final class DelegatedResponseTest extends TestCase
 {
     use CreateTestPsr17Factories;
@@ -23,7 +26,7 @@ final class DelegatedResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_sendHeaders(): void
+    public function test_send_headers(): void
     {
         $response = $this->factory->delegate();
         $this->assertTrue($response->shouldHeadersBeSent());

@@ -47,6 +47,7 @@ final class BladeView implements View
     {
         try {
             $view = $this->cloneView();
+
             return $view->with($this->context)->render();
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
@@ -59,6 +60,9 @@ final class BladeView implements View
 
     /**
      * @psalm-mutation-free
+     *
+     * @param mixed      $key
+     * @param mixed|null $value
      */
     public function with($key, $value = null): View
     {
@@ -72,6 +76,7 @@ final class BladeView implements View
         foreach ($context as $key => $value) {
             $new->context[$key] = $value;
         }
+
         return $new;
     }
 

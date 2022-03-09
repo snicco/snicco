@@ -28,6 +28,7 @@ final class PimpleContainerAdapter extends DIContainer
         if ($this->locked) {
             throw ContainerIsLocked::whileSettingId($id);
         }
+
         try {
             $this->pimple[$id] = $this->pimple->factory(Closure::fromCallable($callable));
         } catch (FrozenServiceException $e) {
@@ -45,6 +46,7 @@ final class PimpleContainerAdapter extends DIContainer
         if ($this->locked) {
             throw ContainerIsLocked::whileSettingId($id);
         }
+
         try {
             $this->pimple[$id] = Closure::fromCallable($callable);
         } catch (FrozenServiceException $e) {

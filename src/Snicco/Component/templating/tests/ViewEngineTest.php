@@ -26,7 +26,10 @@ use function realpath;
 
 use const DIRECTORY_SEPARATOR;
 
-class ViewEngineTest extends TestCase
+/**
+ * @internal
+ */
+final class ViewEngineTest extends TestCase
 {
     private ViewEngine $view_engine;
 
@@ -87,7 +90,7 @@ class ViewEngineTest extends TestCase
         $path = realpath($this->view_dir . '/foo.php');
 
         if (false === $path) {
-            throw new RuntimeException("test view [$path] does not exist.");
+            throw new RuntimeException("test view [{$path}] does not exist.");
         }
 
         $view = $this->view_engine->make($path);
@@ -167,13 +170,11 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ]);
         $this->global_view_context->add('global2', [
             'foo' => [
                 'bar' => 'biz',
-
             ],
         ]);
 
@@ -190,7 +191,6 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ]);
         $view = $this->view_engine->make('array-access-isset');
@@ -209,7 +209,6 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ]);
         $view = $this->view_engine->make('array-access-set');
@@ -228,7 +227,6 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ]);
         $view = $this->view_engine->make('array-access-unset');
@@ -244,7 +242,6 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', [
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ]);
 
@@ -271,7 +268,6 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', [
             'foo' => [
                 'bar' => 'baz',
-
             ],
         ]);
 
@@ -281,7 +277,6 @@ class ViewEngineTest extends TestCase
                     'foo' => [
                         'bar' => 'biz',
                     ],
-
                 ],
             ]);
         });
@@ -338,6 +333,7 @@ class ViewEngineTest extends TestCase
         $view = $this->view_engine->make('bad-function');
 
         ob_start();
+
         try {
             $view->render();
             $this->fail('The view should not be able to render.');
@@ -396,6 +392,7 @@ class ViewEngineTest extends TestCase
 
         $view = $this->view_engine->make('partials.with-error');
         ob_start();
+
         try {
             $view->render();
         } finally {
@@ -476,6 +473,7 @@ class TestTwigViewFactory implements ViewFactory
         if (! strpos($view, 'twig')) {
             throw new ViewNotFound();
         }
+
         return new TestView($view);
     }
 }

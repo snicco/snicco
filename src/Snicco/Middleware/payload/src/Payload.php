@@ -44,13 +44,14 @@ abstract class Payload extends Middleware
         }
 
         $request = $request->withParsedBody($this->parse($request->getBody()));
+
         return $next($request);
     }
 
     /**
-     * @return array<string,mixed>
-     *
      * @throws CantParseRequestBody
+     *
+     * @return array<string,mixed>
      */
     abstract protected function parse(StreamInterface $stream): array;
 
@@ -63,7 +64,7 @@ abstract class Payload extends Middleware
         $content_type = $request->getHeaderLine('content-type');
 
         foreach ($this->content_types as $allowedType) {
-            if (strpos($content_type, $allowedType) === 0) {
+            if (0 === strpos($content_type, $allowedType)) {
                 return true;
             }
         }

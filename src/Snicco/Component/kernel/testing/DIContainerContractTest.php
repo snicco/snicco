@@ -132,7 +132,6 @@ trait DIContainerContractTest
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
-            //
         }
 
         try {
@@ -141,7 +140,6 @@ trait DIContainerContractTest
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
-            //
         }
 
         $baz = $container[Baz::class];
@@ -153,7 +151,6 @@ trait DIContainerContractTest
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
-            //
         }
     }
 
@@ -351,6 +348,7 @@ trait DIContainerContractTest
     {
         $bar = new Bar();
         $bar->value = 'callable_bar';
+
         return $bar;
     }
 
@@ -358,6 +356,7 @@ trait DIContainerContractTest
     {
         $foo = new Foo();
         $foo->value = 'callable_foo';
+
         return $foo;
     }
 }

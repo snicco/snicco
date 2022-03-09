@@ -12,7 +12,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 use function dirname;
 
-class ViewRoutesTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class ViewRoutesTest extends HttpRunnerTestCase
 {
     private string $view;
 

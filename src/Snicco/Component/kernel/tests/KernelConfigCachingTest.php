@@ -20,6 +20,9 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class KernelConfigCachingTest extends TestCase
 {
     use CreateTestContainer;
@@ -132,7 +135,7 @@ final class KernelConfigCachingTest extends TestCase
     /**
      * @test
      */
-    public function afterRegister_callbacks_are_run_if_the_config_is_cached(): void
+    public function after_register_callbacks_are_run_if_the_config_is_cached(): void
     {
         $get_kernel = function (): Kernel {
             static $run = false;
@@ -143,16 +146,17 @@ final class KernelConfigCachingTest extends TestCase
                 new TestConfigCache()
             );
             $kernel->afterConfigurationLoaded(function (WritableConfig $config) use (&$run) {
-                if ($run === true) {
+                if (true === $run) {
                     throw new RuntimeException('after configuration callback run for cached kernel');
-                } else {
-                    $run = true;
                 }
+                $run = true;
+
                 $config->set('foo_config', 'bar');
             });
             $kernel->afterRegister(function (Kernel $kernel) {
                 $kernel->container()->instance(stdClass::class, new stdClass());
             });
+
             return $kernel;
         };
 
@@ -172,7 +176,6 @@ final class KernelConfigCachingTest extends TestCase
         $this->assertSame('bar', $cached_kernel->config()->get('foo_config'));
     }
 }
-
 
 class TestConfigCache implements ConfigCache
 {

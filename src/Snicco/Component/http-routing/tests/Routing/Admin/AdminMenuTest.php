@@ -18,6 +18,8 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 /**
  * @psalm-suppress PossiblyUndefinedIntArrayOffset
+ *
+ * @internal
  */
 final class AdminMenuTest extends HttpRunnerTestCase
 {
@@ -232,7 +234,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function test_exception_for_passing_a_route_inside_subPages(): void
+    public function test_exception_for_passing_a_route_inside_sub_pages(): void
     {
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage(
@@ -301,7 +303,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function it_works_with_nested_grouping_and_supPages(): void
+    public function it_works_with_nested_grouping_and_sup_pages(): void
     {
         $this->withMiddlewareGroups([
             'admin' => [FoobarMiddleware::class],
@@ -526,7 +528,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         foreach ($routing->adminMenu()->items() as $key => $item) {
             $this->assertIsInt($key);
             $this->assertInstanceOf(AdminMenuItem::class, $item);
-            $count++;
+            ++$count;
         }
         $this->assertSame(3, $count);
     }

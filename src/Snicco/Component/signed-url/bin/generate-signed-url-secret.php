@@ -16,6 +16,7 @@ $possible_autoloader = [
 foreach ($possible_autoloader as $file) {
     if (file_exists($file)) {
         require $file;
+
         break;
     }
 }

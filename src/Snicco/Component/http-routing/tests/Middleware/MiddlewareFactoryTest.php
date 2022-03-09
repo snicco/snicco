@@ -18,6 +18,9 @@ use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
+/**
+ * @internal
+ */
 final class MiddlewareFactoryTest extends TestCase
 {
     private MiddlewareFactory $factory;

@@ -15,7 +15,7 @@ use function strtr;
 use function trim;
 
 /**
- * https://datatracker.ietf.org/doc/html/rfc3986
+ * https://datatracker.ietf.org/doc/html/rfc3986.
  */
 final class RFC3986Encoder implements UrlEncoder
 {
@@ -56,7 +56,7 @@ final class RFC3986Encoder implements UrlEncoder
     private $query_special;
 
     /**
-     * @param null|array<string,string> $query_special
+     * @param array<string,string>|null $query_special
      */
     public function __construct(?array $query_special = null)
     {
@@ -70,7 +70,7 @@ final class RFC3986Encoder implements UrlEncoder
 
     public function encodeQuery(array $query): string
     {
-        if ($query === []) {
+        if ([] === $query) {
             return '';
         }
 

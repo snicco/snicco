@@ -7,7 +7,10 @@ namespace Snicco\Middleware\NoRobots\Tests;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\NoRobots\NoRobots;
 
-class NoRobotsTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class NoRobotsTest extends MiddlewareTestCase
 {
     /**
      * @test

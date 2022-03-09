@@ -25,6 +25,8 @@ use const E_NOTICE;
  * @see https://github.com/php-cache/integration-tests/issues/117
  *
  * @psalm-suppress InternalClass
+ *
+ * @internal
  */
 final class WPObjectCachePsr6Test extends WPTestCase
 {
@@ -39,7 +41,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
     /**
      * @test
      */
-    public function test_deleteItems_returns_false_if_one_item_cant_be_deleted(): void
+    public function test_delete_items_returns_false_if_one_item_cant_be_deleted(): void
     {
         $keys = ['key1', 'key2'];
 
@@ -49,6 +51,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
                 if ('key2' === $key) {
                     return false;
                 }
+
                 return parent::cacheDelete($key, $group);
             }
         };
@@ -76,6 +79,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
                 if ('key2' === $key) {
                     return false;
                 }
+
                 return parent::cacheSet($key, $data, $group, $expire);
             }
         };
@@ -189,6 +193,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
         $notice_triggered = false;
         set_error_handler(function () use (&$notice_triggered) {
             $notice_triggered = true;
+
             return true;
         }, E_NOTICE);
 
@@ -197,6 +202,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
                 public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
                 {
                     $found = true;
+
                     return 'not-serialized';
                 }
             };

@@ -13,6 +13,9 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 
 use function add_action;
 
+/**
+ * @internal
+ */
 final class WPMailTransportTest extends WPTestCase
 {
     /**

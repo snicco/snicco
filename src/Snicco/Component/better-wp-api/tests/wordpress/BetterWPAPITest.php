@@ -23,6 +23,8 @@ use function wp_set_current_user;
 
 /**
  * @psalm-suppress UndefinedMagicMethod
+ *
+ * @internal
  */
 final class BetterWPAPITest extends WPTestCase
 {
@@ -38,7 +40,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_doAction(): void
+    public function test_do_action(): void
     {
         $called = false;
         add_action('foobar', function (string $foo, string $bar) use (&$called) {
@@ -56,12 +58,13 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_applyFilters(): void
+    public function test_apply_filters(): void
     {
         add_filter('foobar', function (string $foo, string $bar, array $baz) {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $this->assertSame(['baz', 'biz'], $baz);
+
             return 'filtered';
         }, 10, 3);
 
@@ -74,12 +77,13 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_applyFiltersStrict(): void
+    public function test_apply_filters_strict(): void
     {
         add_filter('filter1', function (string $foo, string $bar, array $baz) {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $this->assertSame(['baz', 'biz'], $baz);
+
             return 'filtered';
         }, 10, 3);
 
@@ -87,6 +91,7 @@ final class BetterWPAPITest extends WPTestCase
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $this->assertSame(['baz', 'biz'], $baz);
+
             return 1;
         }, 10, 3);
 
@@ -102,16 +107,18 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_applyFiltersStrict_with_object_works(): void
+    public function test_apply_filters_strict_with_object_works(): void
     {
         add_filter('filter1', function (stdClass $std) {
             $std->foo = 'foo';
+
             return $std;
         }, 10, 3);
 
         add_filter('filter1', function (stdClass $class) {
             $this->assertTrue(isset($class->foo));
             $class->bar = 'bar';
+
             return $class;
         }, 10, 3);
 
@@ -128,15 +135,17 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_applyFiltersStrict_with_object_fails(): void
+    public function test_apply_filters_strict_with_object_fails(): void
     {
         add_filter('filter1', function (stdClass $std) {
             $std->foo = 'bar';
+
             return $std;
         }, 10, 3);
 
         add_filter('filter1', function (stdClass $class) {
             $this->assertTrue(isset($class->foo));
+
             return new TestWPAPI();
         }, 10, 3);
 
@@ -155,7 +164,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_addAction(): void
+    public function test_add_action(): void
     {
         $called = false;
 
@@ -174,12 +183,13 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_addFilter(): void
+    public function test_add_filter(): void
     {
         $wp = new TestWPAPI();
         $wp->addFilter('foobar', function (string $foo, string $bar) {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
+
             return 'filtered';
         }, 10, 2);
 
@@ -191,7 +201,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_removeFilter(): void
+    public function test_remove_filter(): void
     {
         $cb = /** @return never */
             function () {
@@ -221,7 +231,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_isUserLoggedIn(): void
+    public function test_is_user_logged_in(): void
     {
         $wp = new TestWPAPI();
         $this->assertFalse($wp->isUserLoggedIn());
@@ -238,7 +248,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_getCurrentUser_getCurrentUserId(): void
+    public function test_get_current_user_get_current_user_id(): void
     {
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();
@@ -284,7 +294,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_currentUserCan(): void
+    public function test_current_user_can(): void
     {
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();
@@ -312,7 +322,7 @@ final class BetterWPAPITest extends WPTestCase
     /**
      * @test
      */
-    public function test_currentUserCanWithArgs(): void
+    public function test_current_user_can_with_args(): void
     {
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();

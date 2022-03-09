@@ -24,6 +24,7 @@ final class Delegating implements DisplayerFilter
         foreach ($this->filters as $filter) {
             $displayers = $filter->filter($displayers, $request, $info);
         }
+
         return $displayers;
     }
 }

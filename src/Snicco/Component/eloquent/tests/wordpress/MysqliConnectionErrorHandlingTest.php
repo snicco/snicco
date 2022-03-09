@@ -14,9 +14,21 @@ use function mysqli_report;
 
 use const MYSQLI_REPORT_OFF;
 
+/**
+ * @internal
+ */
 final class MysqliConnectionErrorHandlingTest extends WPTestCase
 {
     private MysqliConnection $connection;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->connection = (new MysqliFactory())->create();
+        // This is the default behaviour in WordPress whether we like it or not.
+        // need to set this explicitly because in PHP8.1 is enabled by default
+        mysqli_report(MYSQLI_REPORT_OFF);
+    }
 
     /**
      * @test
@@ -140,14 +152,5 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
                 'foo' => 'bar',
             ], $e->getBindings());
         }
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->connection = (new MysqliFactory())->create();
-        // This is the default behaviour in WordPress whether we like it or not.
-        // need to set this explicitly because in PHP8.1 is enabled by default
-        mysqli_report(MYSQLI_REPORT_OFF);
     }
 }

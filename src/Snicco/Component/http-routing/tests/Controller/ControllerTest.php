@@ -14,6 +14,9 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+/**
+ * @internal
+ */
 final class ControllerTest extends HttpRunnerTestCase
 {
     /**
@@ -93,13 +96,13 @@ final class ControllerTest extends HttpRunnerTestCase
 
 class ResponseUtilsTestController extends Controller
 {
-    public function responseWith(): ResponseUtils
-    {
-        return parent::respondWith();
-    }
-
     public function __invoke()
     {
         return $this->respondWith()->refresh();
+    }
+
+    public function responseWith(): ResponseUtils
+    {
+        return parent::respondWith();
     }
 }

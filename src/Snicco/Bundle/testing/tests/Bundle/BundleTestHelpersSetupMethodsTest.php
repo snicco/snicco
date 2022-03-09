@@ -12,6 +12,9 @@ use function is_dir;
 use function is_file;
 use function touch;
 
+/**
+ * @internal
+ */
 final class BundleTestHelpersSetupMethodsTest extends TestCase
 {
     use BundleTestHelpers;
@@ -19,7 +22,7 @@ final class BundleTestHelpersSetupMethodsTest extends TestCase
     /**
      * @test
      */
-    public function setUp_and_tearDown_methods_work(): void
+    public function set_up_and_tear_down_methods_work(): void
     {
         $this->assertInstanceOf(Directories::class, $this->directories);
         $this->assertSame($this->fixturesDir(), $this->directories->baseDir());

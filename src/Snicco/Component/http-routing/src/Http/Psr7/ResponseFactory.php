@@ -42,6 +42,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         if (! $should_headers_be_sent) {
             $response = $response->withoutSendingHeaders();
         }
+
         return $response;
     }
 
@@ -49,6 +50,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     {
         Assert::range($code, 100, 599);
         $psr_response = $this->psr_response->createResponse($code, $reasonPhrase);
+
         return new Response($psr_response);
     }
 
@@ -73,7 +75,8 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     }
 
     /**
-     * @param string|array|Response|Psr7Response|stdClass|JsonSerializable|Responsable $response
+     * @param array|JsonSerializable|Psr7Response|Responsable|Response|stdClass|string $response
+     *
      * @throws JsonException
      */
     public function toResponse($response): Response
@@ -111,8 +114,8 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         Assert::allString(array_keys($data));
 
         /** @var array<string,mixed> $data */
-
         $response = new ViewResponse($view, $this->createResponse());
+
         return $response->withViewData($data);
     }
 
@@ -124,6 +127,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
 
     /**
      * @param mixed $data
+     *
      * @throws JsonException
      */
     public function json($data, int $status_code = 200, int $options = 0, int $depth = 512): Response
@@ -139,6 +143,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     public function redirect(string $location, int $status_code = 302): RedirectResponse
     {
         $psr = $this->createResponse($status_code);
+
         return (new RedirectResponse($psr))->to($location);
     }
 }

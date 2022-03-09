@@ -36,11 +36,11 @@ final class UrlSigner
 
     /**
      * @param non-empty-string $target
-     * @param positive-int $lifetime_in_sec
-     * @param positive-int $max_usage
+     * @param positive-int     $lifetime_in_sec
+     * @param positive-int     $max_usage
      *
      * @throws UnavailableStorage
-     * @throws Exception if random_bytes can't be generated
+     * @throws Exception          if random_bytes can't be generated
      */
     public function sign(
         string $target,
@@ -114,7 +114,7 @@ final class UrlSigner
     {
         $parts = ($parts = parse_url($protect)) ? $parts : [];
 
-        if (! isset($parts['path']) && isset($parts['host']) && isset($parts['scheme'])) {
+        if (! isset($parts['path']) && isset($parts['host'], $parts['scheme'])) {
             $parts['path'] = '/';
         }
 
@@ -125,9 +125,9 @@ final class UrlSigner
 
     private function validateUrlParts(array $parsed, string $target): void
     {
-        if ($parsed['path'] === '/' && $target !== '/' && strpos($target, 'http') !== 0) {
+        if ('/' === $parsed['path'] && '/' !== $target && 0 !== strpos($target, 'http')) {
             throw new InvalidArgumentException(
-                "$target is not a valid path."
+                "{$target} is not a valid path."
             );
         }
 
@@ -198,7 +198,7 @@ final class UrlSigner
      */
     private function getDomainAndSchema(array $parts): ?string
     {
-        if (isset($parts['host']) && isset($parts['scheme'])) {
+        if (isset($parts['host'], $parts['scheme'])) {
             return $parts['scheme'] . '://' . $parts['host'];
         }
 

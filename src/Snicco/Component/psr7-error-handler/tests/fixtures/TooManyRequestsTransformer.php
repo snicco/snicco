@@ -17,6 +17,7 @@ final class TooManyRequestsTransformer implements ExceptionTransformer
                 'X-Retry-After' => 10,
             ]);
         }
+
         return $e;
     }
 }

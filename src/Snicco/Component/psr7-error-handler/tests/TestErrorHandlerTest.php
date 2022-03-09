@@ -9,6 +9,9 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 
+/**
+ * @internal
+ */
 final class TestErrorHandlerTest extends TestCase
 {
     /**

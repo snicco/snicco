@@ -58,24 +58,26 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run a select statement and return a single result.
      *
      * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo can be ignored.
+     * @param array  $bindings
+     * @param bool   $useReadPdo can be ignored
+     *
+     * @throws QueryException
      *
      * @return mixed
-     * @throws QueryException
      */
     public function selectOne($query, $bindings = [], $useReadPdo = true)
     {
         $result = $this->select($query, $bindings);
+
         return array_shift($result);
     }
 
     /**
-     * Run a select statement against the database and return a set of rows
+     * Run a select statement against the database and return a set of rows.
      *
      * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo
+     * @param array  $bindings
+     * @param bool   $useReadPdo
      *
      * @throws QueryException
      */
@@ -85,13 +87,14 @@ final class MysqliConnection extends IlluminateMysqlConnection
             if ($this->pretending) {
                 return [];
             }
+
             return $this->mysqli_driver->doSelect($query, $bindings);
         });
     }
 
     /**
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
      * @throws QueryException
      */
@@ -104,7 +107,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an insert statement against the database.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
      * @throws QueryException
      */
@@ -117,7 +120,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Execute an SQL statement and return the boolean result.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
      * @throws QueryException
      */
@@ -127,6 +130,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             if ($this->pretending) {
                 return true;
             }
+
             return $this->mysqli_driver->doStatement($query, $bindings);
         });
     }
@@ -135,7 +139,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an update statement against the database.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
      * @throws QueryException
      */
@@ -148,7 +152,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an SQL statement and get the number of rows affected.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
      * @throws QueryException
      */
@@ -167,7 +171,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run a delete statement against the database.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
      * @throws QueryException
      */
@@ -189,6 +193,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             if ($this->pretending) {
                 return true;
             }
+
             return $this->mysqli_driver->doUnprepared($query);
         });
     }
@@ -200,16 +205,17 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Every mysqli_driver method seems to be iterating over the result array.
      *
      * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo
+     * @param array  $bindings
+     * @param bool   $useReadPdo
      */
     public function cursor($query, $bindings = [], $useReadPdo = true): Generator
     {
-        /** @var mysqli_result|array $result */
+        /** @var array|mysqli_result $result */
         $result = $this->run($query, $bindings, function ($query, $bindings) {
             if ($this->pretending) {
                 return [];
             }
+
             return $this->mysqli_driver->doCursorSelect($query, $bindings);
         });
 
@@ -226,8 +232,9 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an SQL statement through the mysqli_driver class.
      *
      * @template T
-     * @param string $query
-     * @param array $bindings
+     *
+     * @param string                   $query
+     * @param array                    $bindings
      * @param Closure(string,array): T $callback
      *
      * @return T

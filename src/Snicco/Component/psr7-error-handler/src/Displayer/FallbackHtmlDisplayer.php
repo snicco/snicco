@@ -21,7 +21,7 @@ final class FallbackHtmlDisplayer implements ExceptionDisplayer
 
         if (false === $content) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Cant read fallback error template at location [$file].");
+            throw new RuntimeException("Cant read fallback error template at location [{$file}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -36,6 +36,7 @@ final class FallbackHtmlDisplayer implements ExceptionDisplayer
             htmlentities($exception_information->identifier(), ENT_QUOTES),
             $content
         );
+
         return str_replace(
             '{{status}}',
             htmlentities((string) $exception_information->statusCode(), ENT_QUOTES),

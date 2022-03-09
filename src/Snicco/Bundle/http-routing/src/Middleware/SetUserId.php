@@ -22,6 +22,7 @@ final class SetUserId extends Middleware
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $user_id = $this->wp->currentUserId();
+
         return $next($request->withUserId($user_id));
     }
 }

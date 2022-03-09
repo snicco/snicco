@@ -14,6 +14,9 @@ use stdClass;
 
 use function serialize;
 
+/**
+ * @internal
+ */
 final class CachedRouteCollectionTest extends TestCase
 {
     /**
@@ -68,7 +71,7 @@ final class CachedRouteCollectionTest extends TestCase
         $count = 0;
         foreach ($routes as $route) {
             $this->assertInstanceOf(Route::class, $route);
-            $count++;
+            ++$count;
         }
         $this->assertSame(2, $count);
     }
@@ -120,7 +123,7 @@ final class CachedRouteCollectionTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_for_invalid_route_getByName(): void
+    public function test_exception_for_invalid_route_get_by_name(): void
     {
         Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -138,7 +141,7 @@ final class CachedRouteCollectionTest extends TestCase
     /**
      * @test
      */
-    public function test_getName_and_iterator_in_order(): void
+    public function test_get_name_and_iterator_in_order(): void
     {
         $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
         $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
@@ -153,7 +156,7 @@ final class CachedRouteCollectionTest extends TestCase
         $count = 0;
         foreach ($routes as $route) {
             $this->assertInstanceOf(Route::class, $route);
-            $count++;
+            ++$count;
         }
         $this->assertSame(2, $count);
     }

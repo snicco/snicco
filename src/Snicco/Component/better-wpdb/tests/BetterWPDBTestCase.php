@@ -9,7 +9,10 @@ use Snicco\Component\BetterWPDB\BetterWPDB;
 
 use function array_key_exists;
 
-class BetterWPDBTestCase extends WPTestCase
+/**
+ * @internal
+ */
+final class BetterWPDBTestCase extends WPTestCase
 {
     protected BetterWPDB $better_wpdb;
 
@@ -53,7 +56,7 @@ class BetterWPDBTestCase extends WPTestCase
 
         foreach ($expected as $name => $value) {
             if (! array_key_exists($name, $record)) {
-                $this->fail("Record does not have key [$name].");
+                $this->fail("Record does not have key [{$name}].");
             }
             $this->assertSame($value, $record[$name]);
         }

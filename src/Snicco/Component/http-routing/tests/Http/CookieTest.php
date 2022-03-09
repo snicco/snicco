@@ -10,12 +10,15 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Http\Cookie;
 
-class CookieTest extends TestCase
+/**
+ * @internal
+ */
+final class CookieTest extends TestCase
 {
     /**
      * @test
      */
-    public function testIsImmutable(): void
+    public function test_is_immutable(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie2 = $cookie->withPath('/web');
@@ -28,7 +31,7 @@ class CookieTest extends TestCase
     /**
      * @test
      */
-    public function testDefault(): void
+    public function test_default(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -49,7 +52,7 @@ class CookieTest extends TestCase
     /**
      * @test
      */
-    public function testAllowJs(): void
+    public function test_allow_js(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withJsAccess();
@@ -80,7 +83,7 @@ class CookieTest extends TestCase
     /**
      * @test
      */
-    public function testAllowUnsecure(): void
+    public function test_allow_unsecure(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withUnsecureHttp();
@@ -101,7 +104,7 @@ class CookieTest extends TestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function testSameSite(): void
+    public function test_same_site(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withSameSite('Strict');
@@ -172,7 +175,7 @@ class CookieTest extends TestCase
     /**
      * @test
      */
-    public function testExpiresInteger(): void
+    public function test_expires_integer(): void
     {
         $cookie = new Cookie('foo', 'bar');
         $cookie = $cookie->withExpiryTimestamp(1000);
@@ -190,7 +193,7 @@ class CookieTest extends TestCase
     /**
      * @test
      */
-    public function testExpiresDatetimeInterface(): void
+    public function test_expires_datetime_interface(): void
     {
         $cookie = new Cookie('foo', 'bar');
 
@@ -213,7 +216,7 @@ class CookieTest extends TestCase
      * @test
      * @psalm-suppress InvalidScalarArgument
      */
-    public function testExpiresInvalidArgumentThrowsException(): void
+    public function test_expires_invalid_argument_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $cookie = new Cookie('foo', 'bar');
@@ -225,7 +228,7 @@ class CookieTest extends TestCase
     /**
      * @test
      */
-    public function testValueIsNotUrlEncoded(): void
+    public function test_value_is_not_url_encoded(): void
     {
         $cookie = new Cookie('foo_cookie', 'foo bar');
 

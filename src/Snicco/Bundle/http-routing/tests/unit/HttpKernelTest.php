@@ -16,6 +16,9 @@ use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 
+/**
+ * @internal
+ */
 final class HttpKernelTest extends TestCase
 {
     /**

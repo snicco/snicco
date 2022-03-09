@@ -13,6 +13,9 @@ use Snicco\Component\Session\ValueObject\ReadOnlySession;
 
 use function time;
 
+/**
+ * @internal
+ */
 final class ReadOnlySessionTest extends TestCase
 {
     use SessionHelpers;
@@ -95,7 +98,7 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_hasOldInput(): void
+    public function test_has_old_input(): void
     {
         $session = $this->newSession();
         $session->flashInput([
@@ -162,7 +165,7 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_oldInput(): void
+    public function test_old_input(): void
     {
         $session = $this->newSession();
         $session->flashInput([
@@ -195,7 +198,7 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_userId(): void
+    public function test_user_id(): void
     {
         $session = $this->newSession();
         $session->setUserId(10);
@@ -206,7 +209,7 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_isNew(): void
+    public function test_is_new(): void
     {
         $session = $this->newSession();
         $this->assertTrue(ReadOnlySession::fromSession($session)->isNew());

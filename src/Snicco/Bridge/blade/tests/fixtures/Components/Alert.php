@@ -25,6 +25,6 @@ class Alert extends BladeComponent
 
     public function isUppercaseFoo(string $foo): bool
     {
-        return $foo === 'FOO';
+        return 'FOO' === $foo;
     }
 }

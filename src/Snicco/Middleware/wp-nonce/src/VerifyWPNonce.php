@@ -27,6 +27,7 @@ final class VerifyWPNonce extends Middleware
     public static function inputKey(): string
     {
         $month = date('m');
+
         return sha1(self::class . $month);
     }
 
@@ -50,7 +51,7 @@ final class VerifyWPNonce extends Middleware
         $nonce = (string) $request->post(self::inputKey(), '');
 
         if (! $this->wp->verifyNonce($nonce, $current_path)) {
-            throw new HttpException(401, "Nonce check failed for request path [$current_path].");
+            throw new HttpException(401, "Nonce check failed for request path [{$current_path}].");
         }
 
         return $next($request);

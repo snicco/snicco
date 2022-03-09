@@ -131,7 +131,7 @@ abstract class HttpRunnerTestCase extends TestCase
         $this->assertSame(
             $expected,
             $b = $response->body(),
-            "Expected response body [$expected] for path [{$request->path()}].\nGot [$b]."
+            "Expected response body [{$expected}] for path [{$request->path()}].\nGot [{$b}]."
         );
     }
 
@@ -144,6 +144,7 @@ abstract class HttpRunnerTestCase extends TestCase
         $response = $pipeline->send($request)->then(function () {
             throw new RuntimeException('Middleware pipeline exhausted.');
         });
+
         return new AssertableResponse($response);
     }
 
@@ -182,6 +183,7 @@ abstract class HttpRunnerTestCase extends TestCase
     final protected function generator(UrlGenerationContext $context = null): UrlGenerator
     {
         $this->routing = $this->newRoutingFacade(null, null, $context);
+
         return $this->routing->urlGenerator();
     }
 
@@ -208,7 +210,6 @@ abstract class HttpRunnerTestCase extends TestCase
 
             public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
             {
-                //
             }
         };
 
@@ -233,7 +234,6 @@ abstract class HttpRunnerTestCase extends TestCase
 
             public function loadWebRoutes(WebRoutingConfigurator $configurator): void
             {
-                //
             }
 
             public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
@@ -288,8 +288,7 @@ abstract class HttpRunnerTestCase extends TestCase
     {
         $error_handler = new NullErrorHandler();
 
-        unset($this->pimple[RoutingMiddleware::class]);
-        unset($this->pimple[RouteRunner::class]);
+        unset($this->pimple[RoutingMiddleware::class], $this->pimple[RouteRunner::class]);
 
         $this->pimple[RoutingMiddleware::class] = function (): RoutingMiddleware {
             return new RoutingMiddleware($this->routing->urlMatcher());
@@ -322,12 +321,10 @@ abstract class HttpRunnerTestCase extends TestCase
         return new class() implements RouteLoader {
             public function loadWebRoutes(WebRoutingConfigurator $configurator): void
             {
-                //
             }
 
             public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
             {
-                //
             }
         };
     }

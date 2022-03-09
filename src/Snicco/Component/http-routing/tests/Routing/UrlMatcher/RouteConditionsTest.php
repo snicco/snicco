@@ -11,7 +11,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\TrueRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class RouteConditionsTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteConditionsTest extends HttpRunnerTestCase
 {
     /**
      * @test

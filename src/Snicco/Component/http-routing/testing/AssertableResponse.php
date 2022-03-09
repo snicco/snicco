@@ -55,6 +55,7 @@ final class AssertableResponse
                 get_class($this->psr_response)
             )
         );
+
         return $this;
     }
 
@@ -77,6 +78,7 @@ final class AssertableResponse
             $this->psr_response,
             'Expected response to not be delegated.'
         );
+
         return $this;
     }
 
@@ -94,7 +96,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $status,
             $this->status_code,
-            "Expected response status code to be [$status].\nGot [$this->status_code]."
+            "Expected response status code to be [{$status}].\nGot [{$this->status_code}]."
         );
 
         return $this;
@@ -103,6 +105,7 @@ final class AssertableResponse
     public function assertCreated(): AssertableResponse
     {
         $this->assertStatus(201);
+
         return $this;
     }
 
@@ -122,6 +125,7 @@ final class AssertableResponse
     public function assertNotFound(): AssertableResponse
     {
         $this->assertStatus(404);
+
         return $this;
     }
 
@@ -135,6 +139,7 @@ final class AssertableResponse
     public function assertUnauthorized(): AssertableResponse
     {
         $this->assertStatus(401);
+
         return $this;
     }
 
@@ -142,7 +147,7 @@ final class AssertableResponse
     {
         PHPUnit::assertFalse(
             $this->psr_response->hasHeader($header_name),
-            "Header [$header_name] was not expected to be in the response.."
+            "Header [{$header_name}] was not expected to be in the response.."
         );
 
         return $this;
@@ -174,7 +179,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $location,
             $actual = $this->psr_response->getHeaderLine('Location'),
-            "Expected location header to be [$location].\nGot [$actual]."
+            "Expected location header to be [{$location}].\nGot [{$actual}]."
         );
 
         return $this;
@@ -184,7 +189,7 @@ final class AssertableResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->hasHeader($header_name),
-            "Response does not have header [$header_name]."
+            "Response does not have header [{$header_name}]."
         );
 
         if (null === $value) {
@@ -196,7 +201,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $value,
             $actual,
-            "Value [$actual] for header [$header_name] does not match [$value]."
+            "Value [{$actual}] for header [{$header_name}] does not match [{$value}]."
         );
 
         return $this;
@@ -222,10 +227,10 @@ final class AssertableResponse
         PHPUnit::assertNotEquals(
             0,
             $count,
-            "Response does not have cookie matching name [$cookie_name]."
+            "Response does not have cookie matching name [{$cookie_name}]."
         );
 
-        PHPUnit::assertSame(1, $count, "The cookie [$cookie_name] was sent [$count] times.");
+        PHPUnit::assertSame(1, $count, "The cookie [{$cookie_name}] was sent [{$count}] times.");
 
         return new AssertableCookie($headers[0]);
     }
@@ -244,7 +249,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $path,
             parse_url($location, PHP_URL_PATH),
-            "Redirect path [$path] does not match location header [$location]."
+            "Redirect path [{$path}] does not match location header [{$location}]."
         );
 
         return $this;
@@ -279,8 +284,9 @@ final class AssertableResponse
         PHPUnit::assertSame(
             $expected,
             $this->streamed_content,
-            "Response body does not match expected [$expected]."
+            "Response body does not match expected [{$expected}]."
         );
+
         return $this;
     }
 
@@ -300,7 +306,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $expected,
             $actual = $this->psr_response->getHeaderLine('content-type'),
-            "Expected content-type [$expected] but received [$actual]."
+            "Expected content-type [{$expected}] but received [{$actual}]."
         );
     }
 
@@ -312,7 +318,7 @@ final class AssertableResponse
         PHPUnit::assertSame(
             $expected,
             $this->streamed_content,
-            "Response json body does not match expected [$expected]."
+            "Response json body does not match expected [{$expected}]."
         );
 
         return $this;
@@ -321,6 +327,7 @@ final class AssertableResponse
     public function assertIsJson(): AssertableResponse
     {
         $this->assertContentType('application/json');
+
         return $this;
     }
 
@@ -338,7 +345,7 @@ final class AssertableResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->isRedirection(),
-            "Status code [$this->status_code] is not a redirection status code."
+            "Status code [{$this->status_code}] is not a redirection status code."
         );
     }
 
@@ -351,7 +358,7 @@ final class AssertableResponse
         PHPUnit::assertStringContainsString(
             $value,
             $compare_to,
-            "Response body does not contain [$value]."
+            "Response body does not contain [{$value}]."
         );
 
         return $this;
@@ -366,7 +373,7 @@ final class AssertableResponse
         PHPUnit::assertStringNotContainsString(
             $value,
             $compare_to,
-            "Response body contains [$value]."
+            "Response body contains [{$value}]."
         );
 
         return $this;

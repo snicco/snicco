@@ -11,6 +11,9 @@ use Snicco\Component\Kernel\Configuration\PHPFileCache;
 use function is_file;
 use function unlink;
 
+/**
+ * @internal
+ */
 final class PHPFileCacheTest extends TestCase
 {
     private string $cache_file;

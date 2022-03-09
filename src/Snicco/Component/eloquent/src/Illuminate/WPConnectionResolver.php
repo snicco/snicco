@@ -42,11 +42,11 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
     /**
      * Handle calls from the DB Facade and proxy them to the default connection
-     * if the user did not request a specific connection via the DB::connection() method;
+     * if the user did not request a specific connection via the DB::connection() method;.
      */
     public function __call(string $method, array $parameters)
     {
-        return $this->connection()->$method(...$parameters);
+        return $this->connection()->{$method}(...$parameters);
     }
 
     /**
@@ -87,9 +87,8 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
         if (isset($this->mysqli_connection)) {
             return $this->mysqli_connection;
-        } else {
-            $this->mysqli_connection = $this->mysqli_connection_factory->create();
         }
+        $this->mysqli_connection = $this->mysqli_connection_factory->create();
 
         return $this->mysqli_connection;
     }

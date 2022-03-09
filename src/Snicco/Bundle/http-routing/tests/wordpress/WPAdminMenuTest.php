@@ -23,6 +23,8 @@ use function wp_set_current_user;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class WPAdminMenuTest extends WPTestCase
 {

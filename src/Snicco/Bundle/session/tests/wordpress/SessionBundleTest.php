@@ -41,6 +41,9 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class SessionBundleTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -64,11 +67,6 @@ final class SessionBundleTest extends WPTestCase
         $this->better_wpdb->unprepared('drop table if exists my_plugin_sessions');
         $this->bundle_test->tearDownDirectories();
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -537,6 +535,11 @@ final class SessionBundleTest extends WPTestCase
             ]);
         });
         $kernel->boot();
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 }
 

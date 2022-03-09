@@ -15,7 +15,7 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
             return new $composer();
         } catch (Throwable $e) {
             throw new BadViewComposer(
-                "The view composer class [$composer] is not a newable.",
+                "The view composer class [{$composer}] is not a newable.",
                 (int) $e->getCode(),
                 $e
             );

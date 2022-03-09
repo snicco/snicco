@@ -16,6 +16,7 @@ final class FilesystemRenderer implements MailRenderer
             extract($context, EXTR_SKIP);
             require $template_name;
         })();
+
         return ob_get_clean() ?: '';
     }
 
@@ -25,6 +26,7 @@ final class FilesystemRenderer implements MailRenderer
             return false;
         }
         $intersect = array_intersect([$extension], ['txt', 'php', 'html']);
+
         return count($intersect) > 0;
     }
 }

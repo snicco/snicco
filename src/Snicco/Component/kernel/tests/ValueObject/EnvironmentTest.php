@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+/**
+ * @internal
+ */
 final class EnvironmentTest extends TestCase
 {
     /**

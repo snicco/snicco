@@ -9,7 +9,10 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\WPAuth\Authenticate;
 
-class AuthenticateTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class AuthenticateTest extends MiddlewareTestCase
 {
     /**
      * @test

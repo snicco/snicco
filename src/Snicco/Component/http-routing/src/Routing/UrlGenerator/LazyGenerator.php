@@ -52,6 +52,7 @@ final class LazyGenerator implements UrlGenerator
             $get_generator = $this->get_generator;
             $this->generator = $get_generator();
         }
+
         return $this->generator;
     }
 }

@@ -9,7 +9,7 @@ use Snicco\Component\Templating\View\View;
 interface ViewComposer
 {
     /**
-     * Add context values to the passed view
+     * Add context values to the passed view.
      *
      * @template  T of View
      *

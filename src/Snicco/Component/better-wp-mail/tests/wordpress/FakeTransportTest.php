@@ -14,6 +14,9 @@ use function dirname;
 use function get_option;
 use function wp_mail;
 
+/**
+ * @internal
+ */
 final class FakeTransportTest extends WPTestCase
 {
     /**
@@ -28,7 +31,7 @@ final class FakeTransportTest extends WPTestCase
             return 'bogus';
         });
 
-        if (get_option('home') !== 'bogus') {
+        if ('bogus' !== get_option('home')) {
             throw new RuntimeException('Could not update home url in test setup.');
         }
 
@@ -50,7 +53,7 @@ final class FakeTransportTest extends WPTestCase
             return 'https://www.foobar.com';
         });
 
-        if (get_option('home') !== 'https://www.foobar.com') {
+        if ('https://www.foobar.com' !== get_option('home')) {
             throw new RuntimeException('Could not update home url in test setup.');
         }
 

@@ -27,6 +27,9 @@ use function time;
 use function urldecode;
 use function urlencode;
 
+/**
+ * @internal
+ */
 final class StatefulRequestTest extends MiddlewareTestCase
 {
     private InMemoryDriver $session_driver;
@@ -184,6 +187,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
             $session->put('foo', 'bar');
             /** @var ImmutableSession $immutable_session */
             $immutable_session = $request->getAttribute(ImmutableSession::class);
+
             return $response->withAddedHeader('s-id', $immutable_session->id()->asString());
         });
 
@@ -212,6 +216,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             /** @var ImmutableSession $session */
             $session = $request->getAttribute(ImmutableSession::class);
+
             return $response->withAddedHeader('X-FOO', (string) $session->get('foo'));
         });
 

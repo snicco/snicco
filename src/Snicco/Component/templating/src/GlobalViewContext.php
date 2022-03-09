@@ -18,7 +18,7 @@ final class GlobalViewContext
     private array $context = [];
 
     /**
-     * @param mixed|Closure():mixed $context
+     * @param Closure():mixed|mixed $context
      */
     public function add(string $name, $context): void
     {
@@ -65,6 +65,7 @@ final class GlobalViewContext
 
             /**
              * @param mixed $offset
+             *
              * @return mixed
              */
             public function offsetGet($offset)

@@ -16,11 +16,11 @@ interface EventDispatcher extends EventDispatcherInterface
     /**
      * @template T of object
      *
-     * @param string|Closure(T) $event_name If the event name is a closure the event will be
-     * retrieved from the first typehinted parameter in the closure.
-     * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
+     * @param Closure(T)|string                                         $event_name if the event name is a closure the event will be
+     *                                                                              retrieved from the first typehinted parameter in the closure
+     * @param array{0:class-string, 1:string}|class-string|Closure|null $listener
      *
-     * @throws InvalidListener|ReflectionException|InvalidArgumentException
+     * @throws InvalidArgumentException|InvalidListener|ReflectionException
      */
     public function listen($event_name, $listener = null): void;
 
@@ -30,7 +30,7 @@ interface EventDispatcher extends EventDispatcherInterface
     public function subscribe(string $event_subscriber): void;
 
     /**
-     * @param null|Closure|class-string|array{0:class-string, 1:string} $listener
+     * @param array{0:class-string, 1:string}|class-string|Closure|null $listener
      *
      * @throws CantRemoveListener
      * @throws InvalidListener

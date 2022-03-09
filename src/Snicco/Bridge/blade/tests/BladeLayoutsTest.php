@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade\Tests;
 
-class BladeLayoutsTest extends BladeTestCase
+/**
+ * @internal
+ */
+final class BladeLayoutsTest extends BladeTestCase
 {
     /**
      * @test

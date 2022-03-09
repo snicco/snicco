@@ -12,6 +12,9 @@ use WP_User;
 
 use function array_merge;
 
+/**
+ * @internal
+ */
 final class MailBoxTest extends WPTestCase
 {
     protected function setUp(): void
@@ -173,7 +176,7 @@ final class MailBoxTest extends WPTestCase
     public function test_custom_validation_function_can_be_set(): void
     {
         Mailbox::$email_validator = function (string $email): bool {
-            return $email === 'calvin@web.de';
+            return 'calvin@web.de' === $email;
         };
 
         // ok
@@ -193,7 +196,6 @@ final class MailBoxTest extends WPTestCase
     public function test_exception_if_validation_function_does_not_return_bool(): void
     {
         Mailbox::$email_validator = function () {
-            //
         };
 
         $this->expectException(LogicException::class);

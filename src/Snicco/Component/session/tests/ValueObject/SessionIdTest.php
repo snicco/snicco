@@ -10,12 +10,15 @@ use Snicco\Component\Session\ValueObject\SessionId;
 use function explode;
 use function strlen;
 
+/**
+ * @internal
+ */
 final class SessionIdTest extends TestCase
 {
     /**
      * @test
      */
-    public function test_createFresh_uses_new_id(): void
+    public function test_create_fresh_uses_new_id(): void
     {
         $session_id = SessionId::new();
         $session_id2 = SessionId::new();
@@ -26,7 +29,7 @@ final class SessionIdTest extends TestCase
     /**
      * @test
      */
-    public function test_fromCookieId_with_valid_id_will_use_the_same_id(): void
+    public function test_from_cookie_id_with_valid_id_will_use_the_same_id(): void
     {
         $id = SessionId::new();
         $from_cookie = SessionId::fromCookieId($id->asString());
@@ -40,7 +43,7 @@ final class SessionIdTest extends TestCase
     /**
      * @test
      */
-    public function test_fromCookie_with_invalid_id_will_create_a_new_id(): void
+    public function test_from_cookie_with_invalid_id_will_create_a_new_id(): void
     {
         $from_cookie = SessionId::fromCookieId('foo|bar');
 
@@ -64,7 +67,7 @@ final class SessionIdTest extends TestCase
     /**
      * @test
      */
-    public function test_sameAs(): void
+    public function test_same_as(): void
     {
         $id1 = SessionId::new();
         $id2 = SessionId::new();

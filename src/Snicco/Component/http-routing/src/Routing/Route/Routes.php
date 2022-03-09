@@ -25,7 +25,7 @@ interface Routes extends Countable, IteratorAggregate
     public function toArray(): array;
 
     /**
-     * @return Traversable|array<string,Route>
+     * @return array<string,Route>|Traversable
      * @psalm-return  Traversable<string,Route>
      */
     public function getIterator(): Traversable;

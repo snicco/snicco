@@ -14,6 +14,9 @@ use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer
 
 use function array_values;
 
+/**
+ * @internal
+ */
 final class ContentTypeTest extends TestCase
 {
     private ServerRequest $request;

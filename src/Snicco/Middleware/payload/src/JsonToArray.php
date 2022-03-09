@@ -27,9 +27,10 @@ final class JsonToArray extends Payload
     {
         $json = trim((string) $stream);
 
-        if ($json === '') {
+        if ('' === $json) {
             return [];
         }
+
         try {
             $res = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 

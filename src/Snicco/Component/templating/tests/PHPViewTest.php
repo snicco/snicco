@@ -10,6 +10,9 @@ use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
+/**
+ * @internal
+ */
 final class PHPViewTest extends TestCase
 {
     private PHPViewFactory $php_view_factory;

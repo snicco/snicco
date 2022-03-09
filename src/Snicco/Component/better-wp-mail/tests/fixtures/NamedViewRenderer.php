@@ -15,6 +15,6 @@ class NamedViewRenderer implements MailRenderer
 
     public function supports(string $template_name, ?string $extension = null): bool
     {
-        return $extension === 'php' || strpos($template_name, '.') !== false;
+        return 'php' === $extension || false !== strpos($template_name, '.');
     }
 }

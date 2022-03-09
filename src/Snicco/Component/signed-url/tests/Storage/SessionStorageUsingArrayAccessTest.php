@@ -15,6 +15,9 @@ use Snicco\Component\SignedUrl\Testing\SignedUrlStorageTests;
 use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\Clock;
 
+/**
+ * @internal
+ */
 final class SessionStorageUsingArrayAccessTest extends TestCase
 {
     use SignedUrlStorageTests;
@@ -46,6 +49,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
     protected function createStorage(Clock $clock): SignedUrlStorage
     {
         $arr = $this->getArrayAccess();
+
         return new SessionStorage($arr, $clock);
     }
 
@@ -56,7 +60,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
 
             /**
              * @param int|string $offset
-             * @param mixed $value
+             * @param mixed      $value
              */
             #[ReturnTypeWillChange]
             public function offsetSet($offset, $value)
@@ -84,6 +88,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
 
             /**
              * @param int|string $offset
+             *
              * @return mixed
              */
             #[ReturnTypeWillChange]

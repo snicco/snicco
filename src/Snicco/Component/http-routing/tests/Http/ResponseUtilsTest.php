@@ -19,6 +19,9 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class ResponseUtilsTest extends TestCase
 {
     use CreateTestPsr17Factories;
@@ -42,7 +45,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectTo(): void
+    public function test_redirect_to(): void
     {
         $response = $this->response_utils->redirectTo('/foo', 303, [
             'baz' => 'biz',
@@ -74,7 +77,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectAway(): void
+    public function test_redirect_away(): void
     {
         $response = $this->response_utils->externalRedirect('https://location.com', 303);
 
@@ -86,7 +89,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectToRoute(): void
+    public function test_redirect_to_route(): void
     {
         $route = Route::create('/foo/{param}', Route::DELEGATE, 'route1');
 
@@ -113,7 +116,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectHome_goes_to_the_home_route_if_it_exists(): void
+    public function test_redirect_home_goes_to_the_home_route_if_it_exists(): void
     {
         $home_route = Route::create('/home/{user_id}', Route::DELEGATE, 'home');
         $routes = new RouteCollection([$home_route]);
@@ -136,7 +139,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectHome_with_no_home_route_defaults_to_the_base_path(): void
+    public function test_redirect_home_with_no_home_route_defaults_to_the_base_path(): void
     {
         $response = $this->response_utils->redirectHome([
             'foo' => 'bar',
@@ -149,7 +152,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectToLogin(): void
+    public function test_redirect_to_login(): void
     {
         $response = $this->response_utils->redirectToLogin([
             'foo' => 'bar',
@@ -162,7 +165,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectToLogin_with_route(): void
+    public function test_redirect_to_login_with_route(): void
     {
         $home_route = Route::create('/login', Route::DELEGATE, 'auth.login');
         $routes = new RouteCollection([$home_route]);
@@ -184,7 +187,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectBack_with_referer_header(): void
+    public function test_redirect_back_with_referer_header(): void
     {
         $response_utils = new ResponseUtils(
             $this->createUrlGenerator(),
@@ -201,7 +204,7 @@ final class ResponseUtilsTest extends TestCase
     /**
      * @test
      */
-    public function test_redirectBack_without_referer(): void
+    public function test_redirect_back_without_referer(): void
     {
         $response = $this->response_utils->redirectBack();
         $this->assertSame('/', $response->getHeaderLine('location'));

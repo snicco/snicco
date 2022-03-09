@@ -23,16 +23,16 @@ final class FilterablePrettyPageHandler extends PrettyPageHandler
         $frames->filter(function (Frame $frame) {
             $class = (string) $frame->getClass();
 
-            if ($class === NextMiddleware::class) {
+            if (NextMiddleware::class === $class) {
                 return false;
             }
 
-            if ($class === MiddlewarePipeline::class) {
-                return $frame->getFunction() !== 'runNext';
+            if (MiddlewarePipeline::class === $class) {
+                return 'runNext' !== $frame->getFunction();
             }
 
-            if ($class === Middleware::class) {
-                return $frame->getFunction() !== 'process';
+            if (Middleware::class === $class) {
+                return 'process' !== $frame->getFunction();
             }
 
             return true;

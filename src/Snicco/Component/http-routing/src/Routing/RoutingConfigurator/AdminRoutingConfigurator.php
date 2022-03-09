@@ -16,8 +16,7 @@ interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
      * $action !== Route::DELEGATE && $menu_attributes !== null
      * Passing an array of attributes has no effect when the Route delegates the response handling.
      *
-     * @param class-string|array{0:class-string, 1:string} $action
-     *
+     * @param array{0:class-string, 1:string}|class-string $action
      * @param array{
      *     menu_title?: string,
      *     page_title?: string,
@@ -25,7 +24,6 @@ interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
      *     capability?: string,
      *     position?: int
      * } $menu_attributes
-     *
      * @param Route|string|null $parent
      *
      * @throws BadRouteConfiguration

@@ -1,8 +1,6 @@
 <?php
 
-/*
- * Extends: post-layout
- */
+// Extends: post-layout
 
 declare(strict_types=1);
 

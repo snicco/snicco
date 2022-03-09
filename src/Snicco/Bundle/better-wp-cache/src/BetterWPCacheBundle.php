@@ -42,11 +42,13 @@ final class BetterWPCacheBundle implements Bundle
         $kernel->container()->shared(CacheItemPoolInterface::class, function () use ($kernel) {
             /** @var non-empty-string $group */
             $group = $kernel->config()->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
+
             return CacheFactory::psr6($group);
         });
         $kernel->container()->shared(CacheInterface::class, function () use ($kernel) {
             /** @var non-empty-string $group */
             $group = $kernel->config()->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
+
             return CacheFactory::psr16($group);
         });
         $kernel->container()->shared(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
@@ -56,7 +58,6 @@ final class BetterWPCacheBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -78,7 +79,7 @@ final class BetterWPCacheBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }

@@ -33,46 +33,6 @@ trait WithTestTables
         static::$tables_created = true;
     }
 
-    private function dropTables(): void
-    {
-        foreach ($this->tables as $table) {
-            Schema::dropIfExists($table);
-        }
-    }
-
-    private function createTables(): void
-    {
-        Schema::create('countries', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('continent');
-            $table->timestamps();
-        });
-
-        Schema::create('cities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('country_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            $table->integer('population');
-            $table->timestamps();
-        });
-
-        Schema::create('activities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        Schema::create('activity_city', function (Blueprint $table) {
-            $table->integer('city_id');
-            $table->integer('activity_id');
-            $table->integer('popularity')->nullable();
-        });
-    }
-
     protected function insertInitialRecords(): void
     {
         DB::table('countries')->insert([
@@ -157,5 +117,45 @@ trait WithTestTables
                 'population' => 6,
             ],
         ]);
+    }
+
+    private function dropTables(): void
+    {
+        foreach ($this->tables as $table) {
+            Schema::dropIfExists($table);
+        }
+    }
+
+    private function createTables(): void
+    {
+        Schema::create('countries', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('continent');
+            $table->timestamps();
+        });
+
+        Schema::create('cities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('country_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->integer('population');
+            $table->timestamps();
+        });
+
+        Schema::create('activities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('activity_city', function (Blueprint $table) {
+            $table->integer('city_id');
+            $table->integer('activity_id');
+            $table->integer('popularity')->nullable();
+        });
     }
 }

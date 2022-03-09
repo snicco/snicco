@@ -33,6 +33,7 @@ final class MiddlewareCache
      * }
      *
      * @param Closure(): return $loader
+     *
      * @throws ExceptionInterface
      */
     public static function get(string $cache_file, Closure $loader): MiddlewareResolver
@@ -50,7 +51,7 @@ final class MiddlewareCache
 
         restore_error_handler();
 
-        if (is_array($cached_value) && isset($cached_value['route_map']) && isset($cached_value['request_map'])) {
+        if (is_array($cached_value) && isset($cached_value['route_map'], $cached_value['request_map'])) {
             /** @psalm-suppress MixedArgument */
             return MiddlewareResolver::fromCache($cached_value['route_map'], $cached_value['request_map']);
         }

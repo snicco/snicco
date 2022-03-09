@@ -43,12 +43,13 @@ class Response implements ResponseInterface
 
     /**
      * @param mixed $value
+     *
      * @return never
      */
     final public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [$name] on immutable class [%s]", static::class)
+            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", static::class)
         );
     }
 
@@ -209,6 +210,7 @@ class Response implements ResponseInterface
 
     /**
      * @param array<string,string> $flash
+     *
      * @return static
      */
     final public function withFlashMessages(array $flash)
@@ -227,6 +229,7 @@ class Response implements ResponseInterface
 
     /**
      * @param array<string,string> $old_input
+     *
      * @return static
      */
     final public function withOldInput(array $old_input)
@@ -311,18 +314,21 @@ class Response implements ResponseInterface
     final public function isRedirection(): bool
     {
         $status = $this->getStatusCode();
+
         return $status >= 300 && $status < 400;
     }
 
     final public function isClientError(): bool
     {
         $status = $this->getStatusCode();
+
         return $status >= 400 && $status < 500;
     }
 
     final public function isServerError(): bool
     {
         $status = $this->getStatusCode();
+
         return $status >= 500 && $status < 600;
     }
 
@@ -337,7 +343,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function flashMessages(): array
     {
@@ -345,7 +351,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function oldInput(): array
     {
@@ -367,6 +373,7 @@ class Response implements ResponseInterface
     {
         $new = clone $this;
         $new->psr7_response = $new_psr_response;
+
         return $new;
     }
 }

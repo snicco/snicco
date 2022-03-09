@@ -17,6 +17,9 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use stdClass;
 use TypeError;
 
+/**
+ * @internal
+ */
 final class RouteTest extends TestCase
 {
     /**
@@ -435,7 +438,7 @@ final class RouteTest extends TestCase
     /**
      * @test
      */
-    public function test_matchesOnlyTrailing(): void
+    public function test_matches_only_trailing(): void
     {
         $route = $this->newRoute('/foo');
         $this->assertFalse($route->matchesOnlyWithTrailingSlash());

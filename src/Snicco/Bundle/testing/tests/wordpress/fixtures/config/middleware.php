@@ -7,7 +7,6 @@ use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 return [
     MiddlewareOption::GROUPS => [
         'global' => [
-
         ],
     ],
 ];
