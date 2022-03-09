@@ -32,11 +32,17 @@ use const UPLOAD_ERR_OK;
 final class Browser extends AbstractBrowser
 {
     private HttpKernel $http_kernel;
+
     private Psr17FactoryDiscovery $psr17_factories;
+
     private UploadedFileFactoryInterface $file_factory;
+
     private ServerRequestFactoryInterface $request_factory;
+
     private StreamFactoryInterface $stream_factory;
+
     private AdminAreaPrefix $admin_area_prefix;
+
     private UrlPath $api_prefix;
 
     /**
@@ -91,7 +97,7 @@ final class Browser extends AbstractBrowser
         /** @var Response $response */
 
         return new \Symfony\Component\BrowserKit\Response(
-            (string)$response->getBody(),
+            (string) $response->getBody(),
             $response->getStatusCode(),
             $response->getHeaders()
         );

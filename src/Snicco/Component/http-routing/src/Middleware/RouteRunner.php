@@ -16,7 +16,9 @@ use Snicco\Component\HttpRouting\Routing;
 final class RouteRunner extends Middleware
 {
     private MiddlewarePipeline $pipeline;
+
     private MiddlewareResolver $middleware_resolver;
+
     private ContainerInterface $container;
 
     public function __construct(
@@ -41,7 +43,7 @@ final class RouteRunner extends Middleware
         $result = $request->routingResult();
         $route = $result->route();
 
-        if (!$route) {
+        if (! $route) {
             return $this->delegate($request);
         }
 
@@ -76,7 +78,7 @@ final class RouteRunner extends Middleware
     {
         $middleware = $this->middleware_resolver->resolveForRequestWithoutRoute($request);
 
-        if (!count($middleware)) {
+        if (! count($middleware)) {
             return $this->responseFactory()->delegate();
         }
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use PhpCsFixer\Fixer\ArrayNotation\ArraySyntaxFixer;
+use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
@@ -24,8 +25,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ]);
 
 //     run and fix, one by one
-//    $containerConfigurator->import(SetList::SPACES);
-//     $containerConfigurator->import(SetList::ARRAY);
+    $containerConfigurator->import(SetList::SPACES);
+    $containerConfigurator->import(SetList::ARRAY);
     $containerConfigurator->import(SetList::DOCBLOCK);
     $containerConfigurator->import(SetList::PSR_12);
+//    $containerConfigurator->import(SetList::CLEAN_CODE);
+//    $services->set(OrderedImportsFixer::class);
 };

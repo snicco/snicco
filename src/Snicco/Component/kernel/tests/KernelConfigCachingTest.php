@@ -26,6 +26,7 @@ final class KernelConfigCachingTest extends TestCase
     use CleanDirs;
 
     private string $fixtures_dir;
+
     private string $base_dir_with_bundles;
 
     protected function setUp(): void
@@ -154,7 +155,6 @@ final class KernelConfigCachingTest extends TestCase
             });
             return $kernel;
         };
-
 
         $expected_path = Directories::fromDefaults($this->fixtures_dir)->cacheDir() . '/' . 'prod.config.php';
         $this->assertFalse(is_file($expected_path));

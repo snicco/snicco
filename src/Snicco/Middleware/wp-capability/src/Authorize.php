@@ -16,7 +16,9 @@ use function sprintf;
 final class Authorize implements MiddlewareInterface
 {
     private string $capability;
+
     private ?int $object_id;
+
     private BetterWPAPI $wp;
 
     public function __construct(string $capability, int $object_id = null, BetterWPAPI $wp = null)

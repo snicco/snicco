@@ -26,7 +26,7 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
 
     public function __construct(ContainerInterface $c)
     {
-        if (!$c->has(HttpErrorHandler::class)) {
+        if (! $c->has(HttpErrorHandler::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The psr container needs a service for id [%s].',
@@ -43,7 +43,7 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
      */
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        if (!isset($this->error_handler)) {
+        if (! isset($this->error_handler)) {
             /** @var HttpErrorHandler error_handler */
             $this->error_handler = $this->psr_container->get(HttpErrorHandler::class);
         }

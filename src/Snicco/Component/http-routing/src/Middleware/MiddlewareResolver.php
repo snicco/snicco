@@ -34,6 +34,7 @@ use const SORT_REGULAR;
 final class MiddlewareResolver
 {
     public const MIDDLEWARE_DELIMITER = ':';
+
     public const ARGUMENT_SEPARATOR = ',';
 
     /**
@@ -243,7 +244,7 @@ final class MiddlewareResolver
 
         $blueprints = $this->sort($blueprints);
 
-        if (!empty($prepend)) {
+        if (! empty($prepend)) {
             $blueprints = array_merge(
                 $this->parse($prepend, $this->middleware_groups),
                 $blueprints
@@ -284,7 +285,7 @@ final class MiddlewareResolver
                 continue;
             }
 
-            if (!isset($groups[$middleware_id])) {
+            if (! isset($groups[$middleware_id])) {
                 throw InvalidMiddleware::becauseItsNotAnAliasOrGroup($middleware_string);
             }
 
@@ -331,7 +332,7 @@ final class MiddlewareResolver
             return array_search($a, $middleware) - array_search($b, $middleware);
         });
 
-        if (!$success) {
+        if (! $success) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('middleware could not be sorted.');
             // @codeCoverageIgnoreEnd

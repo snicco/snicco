@@ -27,6 +27,7 @@ final class KernelBundlesTest extends TestCase
     use CleanDirs;
 
     private string $base_dir;
+
     private string $base_dir_with_bundles;
 
     protected function setUp(): void
@@ -301,8 +302,8 @@ final class KernelBundlesTest extends TestCase
 class BundleThatConfigures implements Bundle
 {
     public bool $registered = false;
-    public bool $booted = false;
 
+    public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
@@ -336,6 +337,7 @@ class BundleThatConfigures implements Bundle
 class BundleWithCustomEnv implements Bundle
 {
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void

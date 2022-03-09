@@ -15,6 +15,7 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 trait BundleTestHelpers
 {
     protected BundleTest $bundle_test;
+
     protected Directories $directories;
 
     /**

@@ -33,6 +33,7 @@ use function strval;
 final class ResponsePreparation
 {
     private StreamFactoryInterface $stream_factory;
+
     private string $charset;
 
     public function __construct(StreamFactoryInterface $stream_factory, string $charset = 'UTF-8')
@@ -55,7 +56,7 @@ final class ResponsePreparation
 
     private function fixDate(Response $response): Response
     {
-        if (!$response->hasHeader('date')) {
+        if (! $response->hasHeader('date')) {
             $response = $response->withHeader('date', gmdate('D, d M Y H:i:s') . ' GMT');
         }
 
@@ -84,7 +85,7 @@ final class ResponsePreparation
         }
 
         // public if s-maxage is defined, private otherwise
-        if (!Str::contains($header, 's-maxage')) {
+        if (! Str::contains($header, 's-maxage')) {
             return $response->withHeader('Cache-Control', $header . ', private');
         }
 
@@ -124,15 +125,15 @@ final class ResponsePreparation
         if ($content_type === '') {
             $response = $response->withContentType("text/html; charset=$this->charset");
         } elseif (Str::startsWith($content_type, 'text/')
-            && !Str::contains($content_type, 'charset')) {
+            && ! Str::contains($content_type, 'charset')) {
             $content_type = trim($content_type, ';');
             $response = $response->withContentType("$content_type; charset=$this->charset");
         }
 
         // Fix Content-Length, don't add if anything is buffered since we will mess up plugins that use it.
-        if (!$response->hasHeader('content-length')
-            && !$response->hasEmptyBody()
-            && !ob_get_length()
+        if (! $response->hasHeader('content-length')
+            && ! $response->hasEmptyBody()
+            && ! ob_get_length()
         ) {
             $size = strval($response->getBody()->getSize());
             $response = $response->withHeader('content-length', $size);

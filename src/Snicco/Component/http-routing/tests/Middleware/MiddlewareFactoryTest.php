@@ -21,6 +21,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 final class MiddlewareFactoryTest extends TestCase
 {
     private MiddlewareFactory $factory;
+
     private Container $pimple;
 
     protected function setUp(): void
@@ -133,7 +134,6 @@ final class MiddlewareFactoryTest extends TestCase
             }
         );
 
-
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
             sprintf(
@@ -153,7 +153,9 @@ final class MiddlewareFactoryTest extends TestCase
 class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 {
     public string $bar;
+
     public string $baz;
+
     private Foo $foo;
 
     public function __construct(Foo $foo, string $bar, string $baz)

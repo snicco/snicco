@@ -13,8 +13,8 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 final class BundleAssertsMethodOrder implements Bundle
 {
     public bool $registered = false;
-    public bool $booted = false;
 
+    public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
@@ -30,7 +30,7 @@ final class BundleAssertsMethodOrder implements Bundle
     {
         $container = $kernel->container();
 
-        if (!$kernel->config()->get($this->alias() . '.configured')) {
+        if (! $kernel->config()->get($this->alias() . '.configured')) {
             throw new RuntimeException('register was called before configure.');
         }
 
@@ -42,13 +42,13 @@ final class BundleAssertsMethodOrder implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        if (!$kernel->config()->get($this->alias() . '.configured')) {
+        if (! $kernel->config()->get($this->alias() . '.configured')) {
             throw new RuntimeException('bootstrap was called before configure.');
         }
 
         $container = $kernel->container();
 
-        if (!isset($container[self::class])) {
+        if (! isset($container[self::class])) {
             throw new RuntimeException('bootstrap was called before register.');
         }
 

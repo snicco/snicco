@@ -23,6 +23,7 @@ use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
 final class MysqliConnection extends IlluminateMysqlConnection
 {
     public const CONNECTION_NAME = 'wp_mysqli_connection';
+
     private MysqliDriverInterface $mysqli_driver;
 
     public function __construct(MysqliDriverInterface $mysqli_driver, WPDatabaseSettingsAPI $wp)
@@ -40,7 +41,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             'password' => $wp->dbPassword(),
             'charset' => $wp->dbCharset(),
             // important. Don't set this to an empty string as it is by default in WordPress.
-            'collation' => !empty($wp->dbCollate()) ? $wp->dbCollate() : null,
+            'collation' => ! empty($wp->dbCollate()) ? $wp->dbCollate() : null,
             'prefix' => $wp->tablePrefix(),
             'name' => self::CONNECTION_NAME,
         ]);
@@ -256,7 +257,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     protected function reconnectIfMissingConnection()
     {
-        if (!$this->mysqli_driver->isStillConnected()) {
+        if (! $this->mysqli_driver->isStillConnected()) {
             $this->mysqli_driver->reconnect();
         }
     }

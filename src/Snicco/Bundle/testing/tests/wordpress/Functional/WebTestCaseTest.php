@@ -138,7 +138,7 @@ final class WebTestCaseTest extends WebTestCase
 
         $response->assertOk();
 
-        $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'foo' => 'bar',
@@ -239,7 +239,7 @@ final class WebTestCaseTest extends WebTestCase
         $response = $browser->lastResponse();
         $response->assertOk();
 
-        $info = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $info = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
 
         $this->assertEquals([
             'id' => $id->asString(),
@@ -272,7 +272,7 @@ final class WebTestCaseTest extends WebTestCase
         $response = $browser->lastResponse();
         $response->assertOk();
 
-        $info = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $info = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
 
         $this->assertEquals([
             'id' => $id->asString(),
@@ -422,6 +422,7 @@ final class WebTestCaseTest extends WebTestCase
 class DummyTestExtension implements TestExtension
 {
     public bool $setUp = false;
+
     public bool $tearDown = false;
 
     public function setUp(): void

@@ -70,12 +70,12 @@ final class QueryInfo
             if (is_null($binding)) {
                 return 'null';
             }
-            $binding = (string)$binding;
+            $binding = (string) $binding;
             return "'$binding'";
         }, $bindings);
 
         /** @var non-empty-string $sql */
-        $sql = (string)preg_replace_callback('/\?/', function () use (&$bindings): string {
+        $sql = (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
             /** @var string[] $bindings */
             return strval(array_shift($bindings));
         }, $sql_with_placeholders);

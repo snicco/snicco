@@ -37,7 +37,7 @@ final class VerifyWPNonce extends Middleware
 
         if ($request->isReadVerb()) {
             $response = $next($request);
-            if (!$response instanceof ViewResponse) {
+            if (! $response instanceof ViewResponse) {
                 return $response;
             }
 
@@ -48,9 +48,9 @@ final class VerifyWPNonce extends Middleware
             );
         }
 
-        $nonce = (string)$request->post(self::inputKey(), '');
+        $nonce = (string) $request->post(self::inputKey(), '');
 
-        if (!$this->wp->verifyNonce($nonce, $current_path)) {
+        if (! $this->wp->verifyNonce($nonce, $current_path)) {
             throw new HttpException(401, "Nonce check failed for request path [$current_path].");
         }
 

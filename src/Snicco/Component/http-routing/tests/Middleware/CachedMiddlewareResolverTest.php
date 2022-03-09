@@ -193,7 +193,6 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
             ],
         ], $cache['route_map']['r3']);
 
-
         $this->assertSame([], $cache['request_map']['global']);
         $this->assertSame([], $cache['request_map']['api']);
         $this->assertSame([], $cache['request_map']['admin']);

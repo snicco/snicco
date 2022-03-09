@@ -47,6 +47,7 @@ abstract class WebTestCase extends WPTestCase
     use AuthenticateWithWordPress;
 
     private ?Kernel $kernel = null;
+
     private ?Browser $browser = null;
 
     /**
@@ -116,7 +117,7 @@ abstract class WebTestCase extends WPTestCase
 
         $kernel = $this->getBootedKernel();
 
-        if (!$kernel->usesBundle(SessionBundle::ALIAS)) {
+        if (! $kernel->usesBundle(SessionBundle::ALIAS)) {
             throw new LogicException('You are not using the session-bundle in your bundles.php config.');
         }
 
@@ -181,7 +182,7 @@ abstract class WebTestCase extends WPTestCase
 
     final protected function getKernel(): Kernel
     {
-        if (!isset($this->kernel)) {
+        if (! isset($this->kernel)) {
             $this->kernel = ($this->createKernel())(Environment::testing());
         }
 
@@ -204,7 +205,7 @@ abstract class WebTestCase extends WPTestCase
 
     final protected function getBrowser(): Browser
     {
-        if (!isset($this->browser)) {
+        if (! isset($this->browser)) {
             $this->browser = $this->createBrowser();
         }
         return $this->browser;
@@ -220,7 +221,7 @@ abstract class WebTestCase extends WPTestCase
     final protected function getBootedKernel(): Kernel
     {
         $kernel = $this->getKernel();
-        if (!$kernel->booted()) {
+        if (! $kernel->booted()) {
             $kernel->boot();
         }
         return $kernel;

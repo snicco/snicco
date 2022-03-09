@@ -24,6 +24,7 @@ final class FakeMailerTest extends WPTestCase
     use AssertFails;
 
     private array $mail_data = [];
+
     private FakeTransport $fake_transport;
 
     /**

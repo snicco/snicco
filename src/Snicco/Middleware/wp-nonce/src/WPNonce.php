@@ -17,7 +17,9 @@ use const ENT_QUOTES;
 final class WPNonce
 {
     private UrlGenerator $generator;
+
     private string $current_path;
+
     private BetterWPAPI $wp;
 
     public function __construct(UrlGenerator $generator, BetterWPAPI $wp, string $current_path)
