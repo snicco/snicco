@@ -10,7 +10,6 @@ use function array_map;
 use function explode;
 use function http_build_query;
 use function implode;
-use function is_null;
 use function rawurlencode;
 use function strtr;
 use function trim;
@@ -61,7 +60,7 @@ final class RFC3986Encoder implements UrlEncoder
      */
     public function __construct(?array $query_special = null)
     {
-        $this->query_special = is_null($query_special)
+        $this->query_special = null === $query_special
             ? [
                 '=' => '%3D',
                 '&' => '%26',

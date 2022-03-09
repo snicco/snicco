@@ -279,8 +279,8 @@ class Response implements ResponseInterface
 
     final public function isRedirect(string $location = null): bool
     {
-        return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308])
-            && (null === $location || $location == $this->getHeaderLine('Location'));
+        return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308], true)
+            && (null === $location || $location === $this->getHeaderLine('Location'));
     }
 
     final public function isSuccessful(): bool
@@ -328,7 +328,7 @@ class Response implements ResponseInterface
 
     final public function isEmpty(): bool
     {
-        return in_array($this->getStatusCode(), [204, 205, 304]);
+        return in_array($this->getStatusCode(), [204, 205, 304], true);
     }
 
     final public function hasEmptyBody(): bool

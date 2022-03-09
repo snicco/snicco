@@ -16,7 +16,6 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 use WP_Error;
 
 use function count;
-use function is_null;
 use function trim;
 
 final class WPMailTransport implements Transport
@@ -58,7 +57,7 @@ final class WPMailTransport implements Transport
             $content_type = "Content-Type: text/plain; charset={$email->textCharset()}";
         }
 
-        if (is_null($message)) {
+        if (null === $message) {
             $message = '';
         }
 

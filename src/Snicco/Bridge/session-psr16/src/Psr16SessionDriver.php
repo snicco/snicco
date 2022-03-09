@@ -19,7 +19,6 @@ use function array_key_exists;
 use function get_class;
 use function is_array;
 use function is_int;
-use function is_null;
 use function is_string;
 
 final class Psr16SessionDriver implements SessionDriver
@@ -135,7 +134,7 @@ final class Psr16SessionDriver implements SessionDriver
         if (
             ! array_key_exists('user_id', $payload)
             ||
-            (! is_string($payload['user_id']) && ! is_int($payload['user_id']) && ! is_null($payload['user_id']))
+            (! is_string($payload['user_id']) && ! is_int($payload['user_id']) && null !== $payload['user_id'])
         ) {
             throw new InvalidArgumentException(
                 "Cache corrupted. [user_id] is not a null,string or integer for selector [$session_id]."

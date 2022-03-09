@@ -141,7 +141,7 @@ final class MiddlewareResolver
             $controller_action->middleware()
         );
 
-        if (false !== ($key = array_search('global', $route_middleware))) {
+        if (false !== ($key = array_search('global', $route_middleware, true))) {
             unset($route_middleware[$key]);
         }
 
@@ -235,7 +235,7 @@ final class MiddlewareResolver
         // Split out the global middleware since global middleware should always run first
         // independently of priority.
         $prepend = [];
-        if (false !== ($key = array_search('global', $middleware))) {
+        if (false !== ($key = array_search('global', $middleware, true))) {
             unset($middleware[$key]);
             $prepend = ['global'];
         }
@@ -329,7 +329,7 @@ final class MiddlewareResolver
             }
 
             // Keep relative order from original array.
-            return array_search($a, $middleware) - array_search($b, $middleware);
+            return array_search($a, $middleware, true) - array_search($b, $middleware, true);
         });
 
         if (! $success) {
@@ -343,7 +343,7 @@ final class MiddlewareResolver
 
     private function priorityForMiddleware(MiddlewareBlueprint $blueprint): int
     {
-        $priority = array_search($blueprint->class, $this->middleware_by_increasing_priority);
+        $priority = array_search($blueprint->class, $this->middleware_by_increasing_priority, true);
 
         return $priority !== false ? $priority : -1;
     }

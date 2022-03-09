@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;

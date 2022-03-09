@@ -67,7 +67,7 @@ final class BaseEventDispatcher implements EventDispatcher
     {
         $this->resetListenerCache($event_name);
 
-        if (is_null($listener)) {
+        if (null === $listener) {
             unset($this->listeners[$event_name]);
             return;
         }
@@ -84,7 +84,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
         $listener = $this->listeners[$event_name][$id];
 
-        if (! $listener instanceof Closure && in_array(Unremovable::class, (array) class_implements($listener[0]))) {
+        if (! $listener instanceof Closure && in_array(Unremovable::class, (array) class_implements($listener[0]), true)) {
             throw CantRemoveListener::thatIsMarkedAsUnremovable(
                 $listener,
                 $event_name

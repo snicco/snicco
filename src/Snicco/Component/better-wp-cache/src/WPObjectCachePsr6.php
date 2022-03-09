@@ -11,7 +11,6 @@ use Snicco\Component\BetterWPCache\Exception\Psr6InvalidArgumentException;
 use function array_keys;
 use function get_class;
 use function gettype;
-use function is_null;
 use function is_string;
 use function preg_match;
 use function serialize;
@@ -111,7 +110,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
 
         $expiration = $item->expirationTimestamp();
 
-        if (is_null($expiration)) {
+        if (null === $expiration) {
             // (int) 0 means cache forever for the WPObjectCache
             $wp_cache_ttl = 0;
         } elseif ($expiration <= time()) {
@@ -286,7 +285,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $item = clone $deferred['item'];
         $expiration = $deferred['expiration'];
 
-        if (is_null($expiration)) {
+        if (null === $expiration) {
             return $item;
         }
         if ($expiration <= time()) {

@@ -14,7 +14,6 @@ use function explode;
 use function get_class;
 use function gettype;
 use function implode;
-use function is_null;
 use function is_object;
 use function is_scalar;
 use function is_string;
@@ -130,7 +129,7 @@ final class StdErrLogger extends AbstractLogger
     {
         $previous = $exception->getPrevious();
 
-        $message = $this->exceptionToString($exception, is_null($previous));
+        $message = $this->exceptionToString($exception, null === $previous);
 
         if ($previous instanceof Throwable) {
             $message .= "\n\tCaused by: " . $this->exceptionToString($previous, true);

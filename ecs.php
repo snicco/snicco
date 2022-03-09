@@ -22,6 +22,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::PSR_12);
     $containerConfigurator->import(SetList::CLEAN_CODE);
     $containerConfigurator->import(SetList::NAMESPACES);
+    $containerConfigurator->import(SetList::STRICT);
 
     $services->set(OrderedImportsFixer::class)->call('configure', [
         [

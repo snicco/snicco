@@ -150,7 +150,7 @@ final class BundleTest
         foreach ($objects as $name => $file_info) {
             if ($file_info->isDir()) {
                 continue;
-            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && ! in_array($name, $expect)) {
+            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && ! in_array($name, $expect, true)) {
                 $files[] = $name;
             }
         }

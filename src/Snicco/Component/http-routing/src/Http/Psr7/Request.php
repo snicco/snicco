@@ -276,7 +276,7 @@ final class Request implements ServerRequestInterface
 
     public function isMethodSafe(): bool
     {
-        return in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
+        return in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE'], true);
     }
 
     public function isAjax(): bool
@@ -286,7 +286,7 @@ final class Request implements ServerRequestInterface
 
     public function isXmlHttpRequest(): bool
     {
-        return 'XMLHttpRequest' == $this->getHeaderLine('X-Requested-With');
+        return 'XMLHttpRequest' === $this->getHeaderLine('X-Requested-With');
     }
 
     public function isSendingJson(): bool
@@ -697,7 +697,7 @@ final class Request implements ServerRequestInterface
 
         $tok = strtok($match_against, '/');
 
-        if (false == $tok) {
+        if (false === $tok) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not parse accept header [$match_against].");
             // @codeCoverageIgnoreEnd
@@ -712,7 +712,7 @@ final class Request implements ServerRequestInterface
 
     private function inputSource(): array
     {
-        $input = in_array($this->realMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])
+        $input = in_array($this->realMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'], true)
             ? $this->getParsedBody()
             : $this->getQueryParams();
 

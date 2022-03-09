@@ -97,7 +97,7 @@ final class SignedUrlValidatorTest extends TestCase
 
         $string = preg_replace('/expires=\d+/', 'expires=' . (string) (time() + 100), $signed_url->asString());
 
-        if (false == $string) {
+        if (false === $string) {
             throw new RuntimeException('preg_replace failed in test');
         }
 

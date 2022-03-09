@@ -22,7 +22,6 @@ use Snicco\Component\TestableClock\SystemClock;
 use Throwable;
 
 use function hash_equals;
-use function is_null;
 
 /**
  * This session manager will always return a new session object when start is being called.
@@ -158,7 +157,7 @@ final class FactorySessionManager implements SessionManager
     private function isExpired(Session $session): bool
     {
         $abs_lifetime = $this->config->absoluteLifetimeInSec();
-        if (is_null($abs_lifetime)) {
+        if (null === $abs_lifetime) {
             return false;
         }
 

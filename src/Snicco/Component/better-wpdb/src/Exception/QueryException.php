@@ -10,7 +10,6 @@ use Throwable;
 
 use function array_map;
 use function implode;
-use function is_null;
 use function is_string;
 
 class QueryException extends RuntimeException
@@ -23,7 +22,7 @@ class QueryException extends RuntimeException
         $message .= "\nQuery: [$sql]";
 
         $bindings = array_map(function ($binding) {
-            if (is_null($binding)) {
+            if (null === $binding) {
                 return 'null';
             }
             if (! is_string($binding)) {

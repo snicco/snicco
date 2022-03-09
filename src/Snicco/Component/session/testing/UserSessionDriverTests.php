@@ -18,7 +18,6 @@ use function array_keys;
 use function array_merge;
 use function array_shift;
 use function hash;
-use function is_null;
 use function time;
 
 /**
@@ -204,7 +203,7 @@ trait UserSessionDriverTests
             $session = ReadWriteSession::createEmpty(time());
             $id = array_shift($ids);
 
-            if (is_null($id)) {
+            if (null === $id) {
                 throw new InvalidArgumentException('Id cant be null.');
             }
 

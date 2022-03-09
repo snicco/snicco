@@ -15,7 +15,6 @@ use function array_diff_key;
 use function array_key_exists;
 use function array_map;
 use function array_merge;
-use function is_null;
 use function ltrim;
 use function parse_str;
 use function preg_match;
@@ -251,7 +250,7 @@ final class Generator implements UrlGenerator
 
     private function requiredScheme(?bool $secure): string
     {
-        if (is_null($secure)) {
+        if (null === $secure) {
             return $this->context->httpsByDefault() ? 'https' : 'http';
         }
 
