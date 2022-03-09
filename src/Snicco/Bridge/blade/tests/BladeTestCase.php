@@ -19,7 +19,7 @@ use function preg_replace;
 use function trim;
 use function unlink;
 
-class BladeTestCase extends TestCase
+abstract class BladeTestCase extends TestCase
 {
     protected string $blade_cache;
 
