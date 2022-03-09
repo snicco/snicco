@@ -36,7 +36,6 @@ use function sprintf;
 
 final class BetterWPMailBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/better-wp-mail-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -181,5 +180,4 @@ final class BetterWPMailBundle implements Bundle
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

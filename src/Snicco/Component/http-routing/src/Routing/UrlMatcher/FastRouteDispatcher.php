@@ -75,7 +75,6 @@ use function preg_match;
  */
 final class FastRouteDispatcher implements UrlMatcher
 {
-
     private Routes $routes;
 
     private RouteConditionFactory $condition_factory;
@@ -279,5 +278,4 @@ final class FastRouteDispatcher implements UrlMatcher
 
         return RoutingResult::noMatch();
     }
-
 }

@@ -125,5 +125,4 @@ final class OpenRedirectProtection extends Middleware
     {
         return $this->respondWith()->redirectTo($this->exit_path, 302, ['intended_redirect' => $location]);
     }
-
 }

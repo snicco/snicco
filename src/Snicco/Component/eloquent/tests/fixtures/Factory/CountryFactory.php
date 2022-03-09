@@ -9,7 +9,6 @@ use Snicco\Component\StrArr\Arr;
 
 class CountryFactory extends Factory
 {
-
     public function definition()
     {
         return [
@@ -43,5 +42,4 @@ class CountryFactory extends Factory
             ];
         });
     }
-
 }

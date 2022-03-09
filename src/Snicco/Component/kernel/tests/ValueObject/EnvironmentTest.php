@@ -10,7 +10,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class EnvironmentTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -211,5 +210,4 @@ final class EnvironmentTest extends TestCase
         $env = Environment::prod();
         $this->assertTrue($env->isCli());
     }
-
 }

@@ -17,7 +17,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransfo
  */
 final class TransformableInformationProviderTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -82,5 +81,4 @@ final class TransformableInformationProviderTest extends TestCase
             ]
         ], new SplHashIdentifier());
     }
-
 }

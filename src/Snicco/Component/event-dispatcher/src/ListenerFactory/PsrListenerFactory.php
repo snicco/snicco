@@ -10,7 +10,6 @@ use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 
 final class PsrListenerFactory implements ListenerFactory
 {
-
     private ContainerInterface $psr_container;
 
     public function __construct(ContainerInterface $psr_container)
@@ -28,5 +27,4 @@ final class PsrListenerFactory implements ListenerFactory
             throw CantCreateListener::fromPrevious($listener_class, $event_name, $e);
         }
     }
-
 }

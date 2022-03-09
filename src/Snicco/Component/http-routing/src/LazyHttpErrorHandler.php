@@ -17,7 +17,6 @@ use function sprintf;
 
 final class LazyHttpErrorHandler implements HttpErrorHandler
 {
-
     private ContainerInterface $psr_container;
 
     /**
@@ -50,5 +49,4 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
         }
         return $this->error_handler->handle($e, $request);
     }
-
 }

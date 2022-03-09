@@ -12,7 +12,6 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 
 interface SessionDriver
 {
-
     /**
      * Returns the data of the session with the given selector.
      * It is NOT required to check if the session can still be considered active.
@@ -45,5 +44,4 @@ interface SessionDriver
      * @throws CouldNotWriteSessionContent
      */
     public function touch(string $selector, int $current_timestamp): void;
-
 }

@@ -221,5 +221,4 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
             []
         );
     }
-
 }

@@ -40,7 +40,6 @@ use function serialize;
  */
 final class Router
 {
-
     private UrlGenerationContext $context;
     private AdminArea $admin_area;
     private UrlEncoder $url_encoder;
@@ -83,7 +82,8 @@ final class Router
                     $this->routes(),
                     $this->routeData()['url_matcher'],
                     $this->condition_factory,
-                ), $this->admin_area
+                ),
+                $this->admin_area
             );
         }
         return $this->url_matcher;
@@ -185,5 +185,4 @@ final class Router
             'admin_menu' => $menu,
         ];
     }
-
 }

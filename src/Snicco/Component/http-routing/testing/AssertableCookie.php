@@ -14,7 +14,6 @@ use function trim;
  */
 final class AssertableCookie
 {
-
     public string $value;
     public string $name;
 
@@ -58,5 +57,4 @@ final class AssertableCookie
             }
         }
     }
-
 }

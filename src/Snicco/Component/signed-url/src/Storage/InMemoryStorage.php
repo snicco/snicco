@@ -11,7 +11,6 @@ use Snicco\Component\TestableClock\SystemClock;
 
 final class InMemoryStorage implements SignedUrlStorage
 {
-
     /**
      * @var array<string,array{expires_at: int, usages_left: int}>
      */
@@ -61,5 +60,4 @@ final class InMemoryStorage implements SignedUrlStorage
     {
         return $this->links;
     }
-
 }

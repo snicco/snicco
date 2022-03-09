@@ -7,5 +7,4 @@ namespace Snicco\Component\EventDispatcher;
 
 interface Unremovable
 {
-
 }

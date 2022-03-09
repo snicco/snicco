@@ -16,7 +16,6 @@ use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
 
 class ViewComposerCollectionTest extends TestCase
 {
-
     private ViewComposerFactory $factory;
 
     protected function setUp(): void
@@ -258,7 +257,7 @@ class ViewComposerCollectionTest extends TestCase
     public function global_context_can_be_a_closure(): void
     {
         $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
-        $global_context->add('foo', fn() => 'bar');
+        $global_context->add('foo', fn () => 'bar');
 
         $view = new TestView('foo_view');
 
@@ -271,26 +270,20 @@ class ViewComposerCollectionTest extends TestCase
     {
         return new ViewComposerCollection($this->factory, $global_view_context);
     }
-
 }
 
 class TestComposer implements ViewComposer
 {
-
     public function compose(View $view): View
     {
         return $view->with(['foo' => 'baz']);
     }
-
 }
 
 class ComposerWithoutInterface
 {
-
     public function compose(View $view): View
     {
         return $view->with(['foo' => 'baz']);
     }
-
 }
-

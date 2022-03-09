@@ -18,7 +18,6 @@ use Throwable;
 
 final class LazyErrorHandlerTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private Container $pimple;
@@ -36,7 +35,7 @@ final class LazyErrorHandlerTest extends TestCase
      */
     public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to(): void
     {
-        $this->pimple[HttpErrorHandler::class] = fn(): TestableErrorHandler => new TestableErrorHandler(
+        $this->pimple[HttpErrorHandler::class] = fn (): TestableErrorHandler => new TestableErrorHandler(
             function () {
                 throw new Exception('Should never be called');
             }
@@ -50,8 +49,7 @@ final class LazyErrorHandlerTest extends TestCase
      * @test
      */
     public function an_exception_is_thrown_if_the_lazy_error_handler_doesnt_have_the_http_error_handler_interface(
-    ): void
-    {
+    ): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'The psr container needs a service for id [' . HttpErrorHandler::class . '].'
@@ -93,12 +91,10 @@ final class LazyErrorHandlerTest extends TestCase
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('foo error', (string)$response->getBody());
     }
-
 }
 
 class TestableErrorHandler implements HttpErrorHandler
 {
-
     /**
      * @var Closure(Throwable, ServerRequestInterface) :ResponseInterface
      */
@@ -116,5 +112,4 @@ class TestableErrorHandler implements HttpErrorHandler
     {
         return call_user_func($this->return, $e, $request);
     }
-
 }

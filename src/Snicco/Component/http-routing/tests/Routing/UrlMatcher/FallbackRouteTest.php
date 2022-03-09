@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class FallbackRouteTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -172,5 +171,4 @@ class FallbackRouteTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/bar/baz/');
         $this->assertResponseBody('fallback:bar/baz/', $request);
     }
-
 }

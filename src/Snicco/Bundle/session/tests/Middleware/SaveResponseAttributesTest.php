@@ -21,7 +21,6 @@ use Snicco\Component\Session\ValueObject\SessionConfig;
 
 final class SaveResponseAttributesTest extends MiddlewareTestCase
 {
-
     private Request $request;
     private Session $session;
 
@@ -117,5 +116,4 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         $this->expectExceptionMessage('No mutable session');
         $this->runMiddleware($middleware, $this->frontendRequest());
     }
-
 }

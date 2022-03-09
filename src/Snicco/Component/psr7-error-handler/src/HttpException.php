@@ -9,7 +9,6 @@ use Throwable;
 
 class HttpException extends RuntimeException
 {
-
     private int $status_code;
 
     /**
@@ -63,5 +62,4 @@ class HttpException extends RuntimeException
     {
         return $this->status_code;
     }
-
 }

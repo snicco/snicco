@@ -12,7 +12,6 @@ use function dirname;
 
 final class DirectoriesTest extends TestCase
 {
-
     private string $valid_base_dir;
 
     protected function setUp(): void
@@ -122,5 +121,4 @@ final class DirectoriesTest extends TestCase
             __DIR__ . '/log'
         );
     }
-
 }

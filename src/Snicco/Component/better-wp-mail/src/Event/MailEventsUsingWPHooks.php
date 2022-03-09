@@ -10,7 +10,6 @@ use function get_class;
 
 final class MailEventsUsingWPHooks implements MailEvents
 {
-
     private WPMailAPI $wp;
 
     public function __construct(WPMailAPI $wp = null)
@@ -27,5 +26,4 @@ final class MailEventsUsingWPHooks implements MailEvents
     {
         $this->wp->doAction(EmailWasSent::class, $email_was_sent);
     }
-
 }

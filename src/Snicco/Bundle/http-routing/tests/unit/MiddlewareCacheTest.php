@@ -30,7 +30,6 @@ use function is_file;
  */
 final class MiddlewareCacheTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**

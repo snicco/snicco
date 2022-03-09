@@ -15,7 +15,6 @@ use stdClass;
  */
 interface Responsable
 {
-
     /**
      * Convert an object to a something type
      * that can be processed be the response factory
@@ -24,5 +23,4 @@ interface Responsable
      * @see ResponseFactory::toResponse()
      */
     public function toResponsable();
-
 }

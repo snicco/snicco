@@ -13,7 +13,6 @@ use function time;
 
 final class SerializedSessionTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -99,6 +98,4 @@ final class SerializedSessionTest extends TestCase
             true
         );
     }
-
-
 }

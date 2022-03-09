@@ -29,7 +29,6 @@ use function rtrim;
 
 final class WPEloquentStandalone
 {
-
     /**
      * @var Container|Application
      */
@@ -141,7 +140,7 @@ final class WPEloquentStandalone
     private function bindTransactionManager(): void
     {
         $this->illuminate_container->singletonIf('db.transactions', function () {
-            return new DatabaseTransactionsManager;
+            return new DatabaseTransactionsManager();
         });
     }
 
@@ -167,5 +166,4 @@ final class WPEloquentStandalone
             return $connection_resolver;
         });
     }
-
 }

@@ -10,7 +10,6 @@ use Snicco\Component\BetterWPDB\Exception\QueryException;
 
 final class QueryExceptionTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -29,5 +28,4 @@ final class QueryExceptionTest extends WPTestCase
         );
         $this->assertStringContainsString("Bindings: [null, 10, 'string']", $e->getMessage());
     }
-
 }

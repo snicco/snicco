@@ -21,7 +21,6 @@ use function unlink;
 
 class BladeTestCase extends TestCase
 {
-
     protected string $blade_cache;
     protected string $blade_views;
     protected ViewEngine $view_engine;
@@ -84,5 +83,4 @@ class BladeTestCase extends TestCase
             unlink($file->getRealPath());
         }
     }
-
 }

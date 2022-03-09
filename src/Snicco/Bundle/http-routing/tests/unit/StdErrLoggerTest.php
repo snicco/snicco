@@ -118,7 +118,7 @@ final class StdErrLoggerTest extends TestCase
             LogLevel::ERROR,
             '{to_string}',
             [
-                'to_string' => new class {
+                'to_string' => new class() {
                     public function __toString(): string
                     {
                         return 'object_to_string';
@@ -140,7 +140,10 @@ final class StdErrLoggerTest extends TestCase
     {
         $logger = new StdErrLogger();
 
-        $logger->log(LogLevel::ERROR, '{object_here}', [
+        $logger->log(
+            LogLevel::ERROR,
+            '{object_here}',
+            [
                 'object_here' => new stdClass()
             ]
         );
@@ -158,7 +161,10 @@ final class StdErrLoggerTest extends TestCase
     {
         $logger = new StdErrLogger();
 
-        $logger->log(LogLevel::ERROR, '{arr}', [
+        $logger->log(
+            LogLevel::ERROR,
+            '{arr}',
+            [
                 'arr' => []
             ]
         );
@@ -291,6 +297,4 @@ final class StdErrLoggerTest extends TestCase
         }
         return $content;
     }
-
-
 }

@@ -15,7 +15,6 @@ use const JSON_THROW_ON_ERROR;
 
 class GuestsOnlyTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -133,13 +132,10 @@ class GuestsOnlyTest extends MiddlewareTestCase
     ): GuestsOnly {
         return new GuestsOnly($redirect_url, $json_message, $scopable_wp);
     }
-
-
 }
 
 class GuestOnlyTestWPAPI extends BetterWPAPI
 {
-
     private bool $is_logged_in;
 
     public function __construct(bool $is_logged_in)
@@ -151,5 +147,4 @@ class GuestOnlyTestWPAPI extends BetterWPAPI
     {
         return $this->is_logged_in;
     }
-
 }

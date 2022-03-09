@@ -16,7 +16,6 @@ use Snicco\Component\Session\ImmutableSession;
 
 final class ShareSessionWithViews extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);

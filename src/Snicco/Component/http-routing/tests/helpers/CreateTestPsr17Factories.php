@@ -19,7 +19,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
  */
 trait CreateTestPsr17Factories
 {
-
     public static function __callStatic(string $name, array $arguments)
     {
         return static::{$name}($arguments);
@@ -57,5 +56,4 @@ trait CreateTestPsr17Factories
             $this->psrStreamFactory(),
         );
     }
-
 }

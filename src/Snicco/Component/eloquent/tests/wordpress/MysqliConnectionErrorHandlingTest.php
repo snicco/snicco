@@ -16,7 +16,6 @@ use const MYSQLI_REPORT_OFF;
 
 final class MysqliConnectionErrorHandlingTest extends WPTestCase
 {
-
     private MysqliConnection $connection;
 
     /**
@@ -135,5 +134,4 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         // need to set this explicitly because in PHP8.1 is enabled by default
         mysqli_report(MYSQLI_REPORT_OFF);
     }
-
 }

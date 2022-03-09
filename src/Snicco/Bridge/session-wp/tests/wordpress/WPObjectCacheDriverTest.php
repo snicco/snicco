@@ -34,5 +34,4 @@ final class WPObjectCacheDriverTest extends WPTestCase
     {
         sleep($seconds);
     }
-
 }

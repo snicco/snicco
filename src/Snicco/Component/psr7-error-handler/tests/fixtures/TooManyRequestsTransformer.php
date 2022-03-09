@@ -10,7 +10,6 @@ use Throwable;
 
 final class TooManyRequestsTransformer implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         if ($e instanceof SlowDown) {
@@ -18,5 +17,4 @@ final class TooManyRequestsTransformer implements ExceptionTransformer
         }
         return $e;
     }
-
 }

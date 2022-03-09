@@ -10,7 +10,6 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 
 interface UserSessionsDriver extends SessionDriver
 {
-
     /**
      * @throws CouldNotDestroySessions
      */
@@ -36,5 +35,4 @@ interface UserSessionsDriver extends SessionDriver
      * @return iterable<string,SerializedSession>
      */
     public function getAllForUserId($user_id): iterable;
-
 }

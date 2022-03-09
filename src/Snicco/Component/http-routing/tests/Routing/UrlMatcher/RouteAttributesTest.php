@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteAttributesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -325,7 +324,4 @@ class RouteAttributesTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/bar');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
-
 }
-
-

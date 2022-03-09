@@ -6,7 +6,6 @@ namespace Snicco\Bridge\Blade\Tests;
 
 class BladeLayoutsTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -29,5 +28,4 @@ class BladeLayoutsTest extends BladeTestCase
         $content = $view->render();
         $this->assertViewContent('FOOBAZBAR', $content);
     }
-
 }

@@ -14,7 +14,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class GeneratorTest extends HttpRunnerTestCase
 {
-
     protected string $app_domain = 'foobar.com';
 
     /**
@@ -740,5 +739,4 @@ class GeneratorTest extends HttpRunnerTestCase
 
         $routing->urlGenerator()->toRoute('foo', ['required' => []]);
     }
-
 }

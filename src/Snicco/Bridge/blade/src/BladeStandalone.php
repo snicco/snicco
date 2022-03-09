@@ -21,7 +21,6 @@ use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 final class BladeStandalone
 {
-
     private string $view_cache_directory;
 
     /**
@@ -79,9 +78,9 @@ final class BladeStandalone
     {
         $wp = $wp ?: new BetterWPAPI();
 
-        Blade::if('auth', fn() => $wp->isUserLoggedIn());
+        Blade::if('auth', fn () => $wp->isUserLoggedIn());
 
-        Blade::if('guest', fn() => !$wp->isUserLoggedIn());
+        Blade::if('guest', fn () => !$wp->isUserLoggedIn());
 
         Blade::if('role', function (string $expression) use ($wp) {
             if ($expression === 'admin') {
@@ -183,5 +182,4 @@ final class BladeStandalone
             return new BladeViewFactory($container->make('view'), $this->view_directories);
         }, true);
     }
-
 }

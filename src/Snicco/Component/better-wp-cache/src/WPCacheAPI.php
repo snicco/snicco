@@ -16,7 +16,6 @@ use function wp_cache_get_multiple;
  */
 class WPCacheAPI extends BetterWPAPI
 {
-
     /**
      * @param string[] $keys
      *
@@ -33,5 +32,4 @@ class WPCacheAPI extends BetterWPAPI
     {
         return wp_cache_flush();
     }
-
 }

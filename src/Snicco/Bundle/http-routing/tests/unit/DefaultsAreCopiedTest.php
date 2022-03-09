@@ -178,8 +178,7 @@ final class DefaultsAreCopiedTest extends TestCase
      * @test
      */
     public function the_default_error_handling_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(
-    ): void
-    {
+    ): void {
         $kernel = new Kernel(
             $this->newContainer(),
             Environment::dev(),
@@ -253,6 +252,4 @@ final class DefaultsAreCopiedTest extends TestCase
     {
         return __DIR__ . '/default-configs-test';
     }
-
-
 }

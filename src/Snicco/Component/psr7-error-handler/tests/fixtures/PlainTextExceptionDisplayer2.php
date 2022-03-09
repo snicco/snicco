@@ -9,7 +9,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 final class PlainTextExceptionDisplayer2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return 'plain_text2';
@@ -29,5 +28,4 @@ final class PlainTextExceptionDisplayer2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }

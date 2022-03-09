@@ -14,7 +14,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -105,5 +104,4 @@ class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/teams/dortmund/calvin');
         $this->assertResponseBody('dortmund:calvin:FOO', $request);
     }
-
 }

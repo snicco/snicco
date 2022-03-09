@@ -9,7 +9,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 interface Bootstrapper
 {
-
     /**
      * This is the first method that is called on every bundle and bootstrapper.
      * Returning false will not run any further code.
@@ -42,5 +41,4 @@ interface Bootstrapper
      * @note The service container is locked at this point. No services can be registered.
      */
     public function bootstrap(Kernel $kernel): void;
-
 }

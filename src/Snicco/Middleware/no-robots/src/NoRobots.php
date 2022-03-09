@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class NoRobots extends Middleware
 {
-
     private bool $noarchive;
     private bool $nofollow;
     private bool $noindex;
@@ -41,5 +40,4 @@ final class NoRobots extends Middleware
 
         return $response;
     }
-
 }

@@ -15,7 +15,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class JsonToArray extends Payload
 {
-
     public function __construct()
     {
         parent::__construct(['application/json']);
@@ -58,5 +57,4 @@ final class JsonToArray extends Payload
             );
         }
     }
-
 }

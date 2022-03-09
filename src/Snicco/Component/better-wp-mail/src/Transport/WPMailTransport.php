@@ -21,7 +21,6 @@ use function trim;
 
 final class WPMailTransport implements Transport
 {
-
     private WPMailAPI $wp;
 
     public function __construct(WPMailAPI $wp = null)
@@ -154,7 +153,7 @@ final class WPMailTransport implements Transport
             }
         };
 
-        $this->wp->addAction('phpmailer_init', $closure, 99999, 1,);
+        $this->wp->addAction('phpmailer_init', $closure, 99999, 1, );
 
         return $closure;
     }
@@ -205,5 +204,4 @@ final class WPMailTransport implements Transport
         $mailer->clearCustomHeaders();
         $mailer->clearReplyTos();
     }
-
 }

@@ -15,7 +15,6 @@ use function is_array;
  */
 final class BladeView implements View
 {
-
     private \Illuminate\View\View $illuminate_view;
 
     /**
@@ -97,5 +96,4 @@ final class BladeView implements View
             $this->illuminate_view->getPath()
         );
     }
-
 }

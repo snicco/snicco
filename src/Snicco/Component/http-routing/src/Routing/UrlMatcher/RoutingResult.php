@@ -13,7 +13,6 @@ use function rawurldecode;
 
 final class RoutingResult
 {
-
     private ?Route $route;
 
     /**
@@ -90,5 +89,4 @@ final class RoutingResult
     {
         return new self($route, $captured_segments);
     }
-
 }

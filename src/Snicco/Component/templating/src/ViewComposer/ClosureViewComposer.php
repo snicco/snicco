@@ -13,7 +13,6 @@ use Snicco\Component\Templating\View\View;
  */
 final class ClosureViewComposer implements ViewComposer
 {
-
     /**
      * @var Closure(T):T
      */
@@ -38,5 +37,4 @@ final class ClosureViewComposer implements ViewComposer
     {
         return ($this->composer)($view);
     }
-
 }

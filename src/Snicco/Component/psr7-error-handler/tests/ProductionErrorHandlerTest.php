@@ -46,7 +46,6 @@ use const JSON_THROW_ON_ERROR;
  */
 final class ProductionErrorHandlerTest extends TestCase
 {
-
     private ProductionErrorHandler $error_handler;
     private ServerRequestInterface $base_request;
     private ResponseFactoryInterface $response_factory;
@@ -251,7 +250,8 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertStringContainsString('plain_text2', $body);
 
         $e = new Exception('Secret message here.');
-        $handler = $this->createErrorHandler([
+        $handler = $this->createErrorHandler(
+            [
                 new PlainTextExceptionDisplayer(),
                 new PlainTextExceptionDisplayer2(),
                 new JsonExceptionDisplayer(),
@@ -436,12 +436,10 @@ final class ProductionErrorHandlerTest extends TestCase
             ...$displayers
         );
     }
-
 }
 
 class RequestLogContextWithException implements RequestLogContext
 {
-
     private int $count = 0;
 
     public function add(array $context, ExceptionInformation $information): array
@@ -453,12 +451,10 @@ class RequestLogContextWithException implements RequestLogContext
         }
         return $context;
     }
-
 }
 
 class DisplayerWithException implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         throw new TypeError('display type error.');
@@ -478,5 +474,4 @@ class DisplayerWithException implements ExceptionDisplayer
     {
         return true;
     }
-
 }

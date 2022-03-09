@@ -21,7 +21,6 @@ use function sprintf;
 
 abstract class Controller
 {
-
     /**
      * @var ControllerMiddleware[]
      */
@@ -40,7 +39,7 @@ abstract class Controller
     {
         $middleware = array_filter(
             $this->middleware,
-            fn(ControllerMiddleware $m) => $m->appliesTo($controller_method)
+            fn (ControllerMiddleware $m) => $m->appliesTo($controller_method)
         );
 
         $middleware_for_method = [];
@@ -131,5 +130,4 @@ abstract class Controller
         }
         return $this->current_request;
     }
-
 }

@@ -9,7 +9,6 @@ use Snicco\Middleware\NoRobots\NoRobots;
 
 class NoRobotsTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -77,5 +76,4 @@ class NoRobotsTest extends MiddlewareTestCase
         $this->assertContains('nofollow', $header);
         $this->assertNotContains('noarchive', $header);
     }
-
 }

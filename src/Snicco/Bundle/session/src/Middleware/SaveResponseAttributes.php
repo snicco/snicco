@@ -15,7 +15,6 @@ use Snicco\Component\Session\MutableSession;
 
 final class SaveResponseAttributes extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);

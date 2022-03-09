@@ -13,7 +13,6 @@ use function usleep;
 
 final class TestClockTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -98,5 +97,4 @@ final class TestClockTest extends TestCase
 
         $this->assertEquals($ts1 - 101, $clock->currentTimestamp());
     }
-
 }

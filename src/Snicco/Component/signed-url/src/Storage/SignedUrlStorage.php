@@ -10,7 +10,6 @@ use Snicco\Component\SignedUrl\SignedUrl;
 
 interface SignedUrlStorage
 {
-
     /**
      * Decrement the number of left usages for the signed url by one.
      * Remove the signed url from storage if the new left usage is zero.
@@ -31,5 +30,4 @@ interface SignedUrlStorage
      * @throws UnavailableStorage If garbage collection fails.
      */
     public function gc(): void;
-
 }

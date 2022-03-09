@@ -9,7 +9,6 @@ use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
 class RouteConditionWithArgs extends RouteCondition
 {
-
     private bool $make_it_pass;
     private string $val;
 
@@ -28,5 +27,4 @@ class RouteConditionWithArgs extends RouteCondition
     {
         return ['condition_arg' => $this->val];
     }
-
 }

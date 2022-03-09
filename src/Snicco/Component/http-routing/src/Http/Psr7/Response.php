@@ -14,7 +14,6 @@ use function sprintf;
 
 class Response implements ResponseInterface
 {
-
     private ResponseInterface $psr7_response;
     private Cookies $cookies;
 

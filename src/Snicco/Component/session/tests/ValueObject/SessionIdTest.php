@@ -12,7 +12,6 @@ use function strlen;
 
 final class SessionIdTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -99,5 +98,4 @@ final class SessionIdTest extends TestCase
         $this->assertSame($id->selector() . '|' . $id->validator(), $id->asString());
         $this->assertSame($id->selector() . '|' . $id->validator(), (string)$id);
     }
-
 }

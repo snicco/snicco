@@ -8,12 +8,10 @@ use Snicco\Component\Session\ImmutableSession;
 
 final class SessionRotated
 {
-
     public ImmutableSession $session;
 
     public function __construct(ImmutableSession $session)
     {
         $this->session = $session;
     }
-
 }

@@ -10,7 +10,6 @@ use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 
 final class MailboxListTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -69,5 +68,4 @@ final class MailboxListTest extends WPTestCase
         $this->assertTrue($list->has('Calvin Alkan <calvin@web.de>'));
         $this->assertTrue($list->has(Mailbox::create('calvin@web.de')));
     }
-
 }

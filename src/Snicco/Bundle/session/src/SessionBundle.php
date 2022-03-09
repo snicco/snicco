@@ -50,7 +50,6 @@ use function sprintf;
 
 final class SessionBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/session-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -284,5 +283,4 @@ final class SessionBundle implements Bundle
             );
         });
     }
-
 }

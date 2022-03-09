@@ -10,7 +10,6 @@ use Snicco\Component\BetterWPDB\QueryLogger;
 
 final class TestLogger implements QueryLogger
 {
-
     /**
      * @var QueryInfo[]
      */

@@ -9,7 +9,6 @@ namespace Snicco\Component\BetterWPHooks\EventMapping;
  */
 interface MappedFilter extends MappedHook
 {
-
     /**
      * The returned value of this method will be returned to the calling filter.
      * One way to use this is to return the value of a PUBLIC and TYPE-HINTED property on your
@@ -20,5 +19,4 @@ interface MappedFilter extends MappedHook
      * @return mixed
      */
     public function filterableAttribute();
-
 }

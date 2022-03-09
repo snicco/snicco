@@ -12,7 +12,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class JsonSerializer implements Serializer
 {
-
     public function serialize(array $session_data): string
     {
         return json_encode($session_data, JSON_THROW_ON_ERROR);

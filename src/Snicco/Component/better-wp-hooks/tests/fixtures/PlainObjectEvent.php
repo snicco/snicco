@@ -8,12 +8,10 @@ use Snicco\Component\BetterWPHooks\EventMapping\ExposeToWP;
 
 final class PlainObjectEvent implements ExposeToWP
 {
-
     public string $value;
 
     public function __construct(string $value)
     {
         $this->value = $value;
     }
-
 }

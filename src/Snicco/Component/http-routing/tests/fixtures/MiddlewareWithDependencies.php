@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
 class MiddlewareWithDependencies extends Middleware
 {
-
     public Foo $foo;
     public Bar $bar;
 
@@ -30,5 +29,4 @@ class MiddlewareWithDependencies extends Middleware
         $response->getBody()->write(':' . $this->foo->value . $this->bar->value);
         return $response;
     }
-
 }

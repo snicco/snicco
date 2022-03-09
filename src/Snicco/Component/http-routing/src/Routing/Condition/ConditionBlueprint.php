@@ -18,7 +18,6 @@ use function sprintf;
  */
 final class ConditionBlueprint
 {
-
     public bool $is_negated = false;
 
     /**
@@ -56,5 +55,4 @@ final class ConditionBlueprint
         $this->class = $condition_class;
         $this->passed_args = $arguments;
     }
-
 }

@@ -14,7 +14,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class CantSendEmailWithWPMail extends RuntimeException implements CantSendEmail
 {
-
     private string $debug_data;
 
     public function __construct(string $message = '', string $debug_data = '', Throwable $previous = null)
@@ -41,5 +40,4 @@ final class CantSendEmailWithWPMail extends RuntimeException implements CantSend
     {
         return $this->debug_data;
     }
-
 }

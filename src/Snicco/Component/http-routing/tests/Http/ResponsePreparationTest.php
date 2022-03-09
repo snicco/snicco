@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class ResponsePreparationTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private ResponseFactory $factory;
@@ -237,5 +236,4 @@ class ResponsePreparationTest extends TestCase
 
         $this->assertFalse($prepared->hasHeader('content-length'));
     }
-
 }

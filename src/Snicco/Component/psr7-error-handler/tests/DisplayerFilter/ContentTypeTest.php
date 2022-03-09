@@ -16,7 +16,6 @@ use function array_values;
 
 final class ContentTypeTest extends TestCase
 {
-
     private ServerRequest $request;
 
     protected function setUp(): void
@@ -91,12 +90,10 @@ final class ContentTypeTest extends TestCase
 
         $this->assertSame([$d2], array_values($filtered));
     }
-
 }
 
 class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -116,12 +113,10 @@ class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -141,12 +136,10 @@ class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class JsonExceptionDisplayer1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -166,12 +159,10 @@ class JsonExceptionDisplayer1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class JsonExceptionDisplayer2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -191,5 +182,4 @@ class JsonExceptionDisplayer2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }

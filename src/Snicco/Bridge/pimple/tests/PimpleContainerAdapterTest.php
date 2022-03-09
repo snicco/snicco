@@ -11,12 +11,10 @@ use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
 final class PimpleContainerAdapterTest extends TestCase
 {
-
     use DIContainerContractTest;
 
-    function createContainer(): DIContainer
+    public function createContainer(): DIContainer
     {
         return new PimpleContainerAdapter();
     }
-
 }

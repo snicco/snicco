@@ -15,7 +15,6 @@ use const MYSQLI_ASSOC;
 
 final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      *
@@ -82,6 +81,4 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
         $this->assertSame([], $first->bindings);
         $this->assertTrue($first->end > $first->start);
     }
-
-
 }

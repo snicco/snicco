@@ -24,7 +24,6 @@ use function strval;
 
 final class SignedUrlValidator
 {
-
     private SignedUrlStorage $storage;
     private Clock $clock;
     private HMAC $hmac;
@@ -140,9 +139,10 @@ final class SignedUrlValidator
             $this->storage->consume($identifier);
         } catch (BadIdentifier $e) {
             throw new SignedUrlUsageExceeded(
-                "Signed url usages exceeded for path [$path].", $e->getCode(), $e
+                "Signed url usages exceeded for path [$path].",
+                $e->getCode(),
+                $e
             );
         }
     }
-
 }

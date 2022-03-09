@@ -15,7 +15,6 @@ use Webmozart\Assert\Assert;
  */
 final class MiddlewareBlueprint
 {
-
     /**
      * @var class-string<MiddlewareInterface>
      */
@@ -56,5 +55,4 @@ final class MiddlewareBlueprint
             'args' => $this->arguments
         ];
     }
-
 }

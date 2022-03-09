@@ -30,7 +30,6 @@ use function time;
 
 final class FactorySessionManagerTest extends TestCase
 {
-
     /**
      * @var positive-int
      */
@@ -550,7 +549,4 @@ final class FactorySessionManagerTest extends TestCase
         $_COOKIE[$this->cookie_name] = $id->asString();
         return $id;
     }
-
-
 }
-

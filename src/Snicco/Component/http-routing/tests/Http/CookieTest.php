@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Http\Cookie;
 
 class CookieTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -232,5 +231,4 @@ class CookieTest extends TestCase
 
         $this->assertSame('foo bar', $cookie->value);
     }
-
 }

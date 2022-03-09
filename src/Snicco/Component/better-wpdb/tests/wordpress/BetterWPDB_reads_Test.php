@@ -17,7 +17,6 @@ use function array_keys;
 
 final class BetterWPDB_reads_Test extends WPTestCase
 {
-
     private BetterWPDB $better_wpdb;
 
     protected function setUp(): void
@@ -32,7 +31,8 @@ final class BetterWPDB_reads_Test extends WPTestCase
   `test_int` INTEGER UNSIGNED DEFAULT NULL,
   `test_bool` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;', []
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;',
+            []
         );
 
         parent::setUp();
@@ -399,5 +399,4 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
-
 }

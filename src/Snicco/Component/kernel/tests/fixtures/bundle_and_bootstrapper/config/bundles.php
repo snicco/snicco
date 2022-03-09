@@ -11,4 +11,4 @@ return [
         BundleInfo::class,
     ],
 
-]; 
+];

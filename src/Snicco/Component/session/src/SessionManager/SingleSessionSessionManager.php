@@ -11,7 +11,6 @@ use Snicco\Component\Session\ValueObject\SessionCookie;
 
 final class SingleSessionSessionManager implements SessionManager
 {
-
     private SessionManager $session_manager;
     private ?Session $session = null;
 

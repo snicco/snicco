@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
 class InspectsRequestTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
     use CreateUrlGenerator;
@@ -228,5 +227,4 @@ class InspectsRequestTest extends TestCase
 
         $this->assertSame('POST', $request->realMethod());
     }
-
 }

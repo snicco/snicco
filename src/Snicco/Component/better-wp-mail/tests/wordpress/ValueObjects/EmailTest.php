@@ -16,7 +16,6 @@ use function fopen;
 
 final class EmailTest extends WPTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -500,5 +499,4 @@ final class EmailTest extends WPTestCase
 
         $email->addContext('images', 'foo');
     }
-
 }

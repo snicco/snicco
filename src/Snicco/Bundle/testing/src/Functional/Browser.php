@@ -31,7 +31,6 @@ use const UPLOAD_ERR_OK;
 
 final class Browser extends AbstractBrowser
 {
-
     private HttpKernel $http_kernel;
     private Psr17FactoryDiscovery $psr17_factories;
     private UploadedFileFactoryInterface $file_factory;
@@ -158,5 +157,4 @@ final class Browser extends AbstractBrowser
 
         return new AssertableResponse($response);
     }
-
 }

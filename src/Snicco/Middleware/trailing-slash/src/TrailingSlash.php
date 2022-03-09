@@ -16,7 +16,6 @@ use function rtrim;
 
 final class TrailingSlash extends Middleware
 {
-
     private bool $trailing_slash;
 
     public function __construct(bool $trailing_slash = true)
@@ -50,5 +49,4 @@ final class TrailingSlash extends Middleware
 
         return $this->responseFactory()->redirect($redirect_to, 301);
     }
-
 }

@@ -22,7 +22,6 @@ use function sprintf;
  */
 final class WPCacheItem implements CacheItemInterface
 {
-
     /**
      * @var mixed
      */
@@ -125,5 +124,4 @@ final class WPCacheItem implements CacheItemInterface
     {
         return new self($key, null, false);
     }
-
 }

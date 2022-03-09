@@ -24,7 +24,6 @@ use Snicco\Component\StrArr\Str;
  */
 class SchemaBuilderTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
 
     /**
@@ -1368,7 +1367,8 @@ class SchemaBuilderTest extends WPTestCase
             $table->integer('discounted_price')->storedAs('price -5')->unsigned();
         });
 
-        $this->wpdbInsert('wp_books',
+        $this->wpdbInsert(
+            'wp_books',
             [
                 'id' => 1,
                 'first_name' => 'calvin',
@@ -1411,7 +1411,8 @@ class SchemaBuilderTest extends WPTestCase
             $table->integer('discounted_price')->virtualAs('price -5')->unsigned();
         });
 
-        $this->wpdbInsert('wp_books',
+        $this->wpdbInsert(
+            'wp_books',
             [
                 'id' => 1,
                 'first_name' => 'calvin',
@@ -1942,7 +1943,6 @@ class SchemaBuilderTest extends WPTestCase
             $this->builder->drop('authors');
         }
     }
-
 }
 
 /**
@@ -1952,7 +1952,6 @@ class SchemaBuilderTest extends WPTestCase
  */
 class TestSchemaBuilder extends MySqlBuilder
 {
-
     /**
      * @var string|null
      */
@@ -2076,7 +2075,4 @@ class TestSchemaBuilder extends MySqlBuilder
         $results = $this->connection->select($query, $bindings);
         return $results[0]->Collation;
     }
-
 }
-
-

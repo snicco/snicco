@@ -11,7 +11,6 @@ use function sprintf;
 
 final class TestClock implements Clock
 {
-
     private DateTimeImmutable $now;
 
     public function __construct(DateTimeImmutable $now = null)
@@ -40,5 +39,4 @@ final class TestClock implements Clock
     {
         return $this->now;
     }
-
 }

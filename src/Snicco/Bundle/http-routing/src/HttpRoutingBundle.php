@@ -85,7 +85,6 @@ use function sprintf;
 
 final class HttpRoutingBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/http-routing-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -152,12 +151,12 @@ final class HttpRoutingBundle implements Bundle
             );
 
             $loader = $container[RouteLoader::class] ?? new PHPFileRouteLoader(
-                    $config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)),
-                    $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)),
-                    $container[RouteLoadingOptions::class] ?? new DefaultRouteLoadingOptions(
+                $config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)),
+                $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)),
+                $container[RouteLoadingOptions::class] ?? new DefaultRouteLoadingOptions(
                         $config->getString(RoutingOption::key(RoutingOption::API_PREFIX))
                     ),
-                );
+            );
 
             $cache = ($env->isStaging() || $env->isProduction())
                 ? new FileRouteCache(
@@ -183,12 +182,12 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindUrlGenerator(DIContainer $container): void
     {
-        $container->shared(UrlGenerator::class, fn() => $container->make(Router::class)->urlGenerator());
+        $container->shared(UrlGenerator::class, fn () => $container->make(Router::class)->urlGenerator());
     }
 
     private function bindUrlMatcher(DIContainer $container): void
     {
-        $container->shared(UrlMatcher::class, fn() => $container->make(Router::class)->urlMatcher());
+        $container->shared(UrlMatcher::class, fn () => $container->make(Router::class)->urlMatcher());
     }
 
     private function bindAdminMenu(DIContainer $container): void
@@ -209,15 +208,15 @@ final class HttpRoutingBundle implements Bundle
             $information_provider = $this->informationProvider($kernel);
 
             $displayer_filter = $container[DisplayerFilter::class] ?? new Delegating(
-                    new ContentType(),
-                    new Verbosity($kernel->env()->isDebug()),
-                    new CanDisplay(),
-                );
+                new ContentType(),
+                new Verbosity($kernel->env()->isDebug()),
+                new CanDisplay(),
+            );
 
             $log_context = array_map(
                 function ($class) {
                     /** @var class-string<RequestLogContext> $class */
-                    return new $class;
+                    return new $class();
                 },
                 $kernel->config()->getListOfStrings(
                     HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT)
@@ -237,7 +236,7 @@ final class HttpRoutingBundle implements Bundle
 
             $displayers = array_map(function ($class) use ($container) {
                 /** @var class-string<ExceptionDisplayer> $class */
-                return $container[$class] ?? new $class;
+                return $container[$class] ?? new $class();
             }, $kernel->config()->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)));
 
             return new ProductionErrorHandler(
@@ -293,8 +292,8 @@ final class HttpRoutingBundle implements Bundle
                 $discovery->createStreamFactory(),
             );
         });
-        $container->shared(ResponseFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
-        $container->shared(StreamFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
+        $container->shared(ResponseFactoryInterface::class, fn () => $container->make(ResponseFactory::class));
+        $container->shared(StreamFactoryInterface::class, fn () => $container->make(ResponseFactory::class));
     }
 
     private function bindPsr17Discovery(DIContainer $container): void
@@ -345,22 +344,22 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRoutes(DIContainer $container): void
     {
-        $container->shared(Routes::class, fn() => $container->make(Router::class)->routes());
+        $container->shared(Routes::class, fn () => $container->make(Router::class)->routes());
     }
 
     private function bindLogger(Kernel $kernel): void
     {
         if ($kernel->env()->isTesting()) {
-            $kernel->container()->shared(TestLogger::class, fn() => new TestLogger());
+            $kernel->container()->shared(TestLogger::class, fn () => new TestLogger());
             $kernel->container()->shared(
                 LoggerInterface::class,
-                fn() => $kernel->container()->make(TestLogger::class)
+                fn () => $kernel->container()->make(TestLogger::class)
             );
             return;
         }
 
         if (!$kernel->container()->has(LoggerInterface::class)) {
-            $kernel->container()->shared(LoggerInterface::class, fn() => new StdErrLogger(
+            $kernel->container()->shared(LoggerInterface::class, fn () => new StdErrLogger(
                 $kernel->config()->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
             ));
         }
@@ -380,7 +379,7 @@ final class HttpRoutingBundle implements Bundle
         $identifier = new SplHashIdentifier();
         $transformers = array_map(function ($class) {
             /** @var class-string<ExceptionTransformer> $class */
-            return new $class;
+            return new $class();
         }, $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)));
 
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
@@ -763,5 +762,4 @@ final class HttpRoutingBundle implements Bundle
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

@@ -16,7 +16,6 @@ use function array_values;
 
 class AuthorizeTest extends MiddlewareTestCase
 {
-
     private Request $request;
 
     protected function setUp(): void
@@ -105,12 +104,10 @@ class AuthorizeTest extends MiddlewareTestCase
     {
         return new Authorize($cap, $id, $wp);
     }
-
 }
 
 class AuthorizeTestBetterWPAPI extends BetterWPAPI
 {
-
     /**
      * @var Closure(string, mixed...):bool
      */
@@ -128,7 +125,4 @@ class AuthorizeTestBetterWPAPI extends BetterWPAPI
     {
         return call_user_func($this->user_can, $capability, ...array_values($args));
     }
-
 }
-
-

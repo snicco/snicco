@@ -23,7 +23,6 @@ use function var_export;
 
 final class EncryptionBundleTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**

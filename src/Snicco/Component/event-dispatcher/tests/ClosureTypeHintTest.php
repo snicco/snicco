@@ -16,7 +16,6 @@ use stdClass;
  */
 final class ClosureTypeHintTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -55,6 +54,4 @@ final class ClosureTypeHintTest extends TestCase
 
         ClosureTypeHint::first($closure);
     }
-
-
 }

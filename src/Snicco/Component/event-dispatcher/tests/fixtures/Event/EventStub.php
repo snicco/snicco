@@ -10,7 +10,6 @@ use Snicco\Component\EventDispatcher\Event;
 
 class EventStub implements Event
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -22,5 +21,4 @@ class EventStub implements Event
         $this->val1 = $foo;
         $this->val2 = $bar;
     }
-
 }

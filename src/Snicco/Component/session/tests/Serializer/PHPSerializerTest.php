@@ -13,7 +13,6 @@ use function serialize;
 
 final class PHPSerializerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -46,6 +45,4 @@ final class PHPSerializerTest extends TestCase
         $s = new PHPSerializer();
         $s->deserialize(serialize('foo'));
     }
-
-
 }

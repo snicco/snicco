@@ -9,18 +9,17 @@ use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 interface UrlGenerator
 {
-
-    const FRAGMENT_KEY = '_fragment';
+    public const FRAGMENT_KEY = '_fragment';
 
     /**
      * Generate an absolute URL, e.g. 'https://example.com/foo/bar'.
      */
-    const ABSOLUTE_URL = 0;
+    public const ABSOLUTE_URL = 0;
 
     /**
      * Generate an absolute path, e.g. '/foo/bar'.
      */
-    const ABSOLUTE_PATH = 1;
+    public const ABSOLUTE_PATH = 1;
 
     /**
      * @param string $path The path MUST NOT be urlencoded.
@@ -56,6 +55,4 @@ interface UrlGenerator
      * @param array<string,string|int> $arguments
      */
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string;
-
-
 }

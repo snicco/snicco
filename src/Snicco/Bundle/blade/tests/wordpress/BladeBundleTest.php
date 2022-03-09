@@ -19,7 +19,6 @@ use function is_dir;
 
 final class BladeBundleTest extends WPTestCase
 {
-
     use BundleTestHelpers;
 
     protected function tearDown(): void
@@ -108,5 +107,4 @@ final class BladeBundleTest extends WPTestCase
 
         $kernel->boot();
     }
-
 }

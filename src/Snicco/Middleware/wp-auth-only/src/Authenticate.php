@@ -15,7 +15,6 @@ use function sprintf;
 
 final class Authenticate extends Middleware
 {
-
     private BetterWPAPI $wp;
 
     public function __construct(BetterWPAPI $wp = null)

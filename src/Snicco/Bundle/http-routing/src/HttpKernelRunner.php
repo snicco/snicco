@@ -23,7 +23,6 @@ use const PHP_INT_MIN;
 
 final class HttpKernelRunner
 {
-
     private HttpKernel $http_kernel;
     private ServerRequestCreator $request_creator;
     private EventDispatcherInterface $event_dispatcher;
@@ -185,5 +184,4 @@ final class HttpKernelRunner
     {
         return $this->api_prefix && Str::startsWith($request->getUri()->getPath(), $this->api_prefix);
     }
-    
 }

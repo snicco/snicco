@@ -15,7 +15,6 @@ use function array_values;
 
 final class VerbosityTest extends TestCase
 {
-
     private ServerRequest $request;
 
     protected function setUp(): void
@@ -67,12 +66,10 @@ final class VerbosityTest extends TestCase
 
         $this->assertSame([$d3, $d4], array_values($filtered));
     }
-
 }
 
 class Verbose1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -92,12 +89,10 @@ class Verbose1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class Verbose2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -117,12 +112,10 @@ class Verbose2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerbose1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -142,12 +135,10 @@ class NonVerbose1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerbose2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -167,5 +158,4 @@ class NonVerbose2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }

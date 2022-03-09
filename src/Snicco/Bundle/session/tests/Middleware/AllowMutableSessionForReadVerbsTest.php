@@ -13,7 +13,6 @@ use Snicco\Component\Session\ImmutableSession;
 
 final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -43,5 +42,4 @@ final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 
         $this->runMiddleware($middleware, $request)->assertNextMiddlewareCalled();
     }
-
 }

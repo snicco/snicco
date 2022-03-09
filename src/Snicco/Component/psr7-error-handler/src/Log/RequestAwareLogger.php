@@ -11,7 +11,6 @@ use Throwable;
 
 final class RequestAwareLogger
 {
-
     private LoggerInterface $psr_logger;
 
     /**
@@ -78,5 +77,4 @@ final class RequestAwareLogger
 
         return $status_code >= 500 ? LogLevel::CRITICAL : LogLevel::ERROR;
     }
-
 }

@@ -14,7 +14,6 @@ use function unlink;
 
 final class FileRouteCacheTest extends TestCase
 {
-
     private string $test_cache_file;
 
     protected function setUp(): void
@@ -96,5 +95,4 @@ final class FileRouteCacheTest extends TestCase
             }
         }
     }
-
 }

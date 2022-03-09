@@ -10,11 +10,9 @@ use Snicco\Component\HttpRouting\Routing\Exception\MethodNotAllowed;
 
 interface UrlMatcher
 {
-
     /**
      * @throws MethodNotAllowed
      * @throws BadRouteConfiguration
      */
     public function dispatch(Request $request): RoutingResult;
-
 }

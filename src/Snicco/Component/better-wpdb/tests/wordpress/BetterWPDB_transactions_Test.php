@@ -16,7 +16,6 @@ use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 
 final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      */
@@ -118,8 +117,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
      */
     public function an_error_during_logging_the_commit_query_doesnt_rollback_the_already_commit_transaction(): void
     {
-        $logger = new class implements QueryLogger {
-
+        $logger = new class() implements QueryLogger {
             /**
              * @var QueryInfo[]
              */
@@ -147,5 +145,4 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 
         $this->assertRecordCount(1);
     }
-
 }

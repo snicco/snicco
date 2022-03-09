@@ -13,7 +13,6 @@ use function json_encode;
 
 final class JsonSerializerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -45,5 +44,4 @@ final class JsonSerializerTest extends TestCase
         $s = new JsonSerializer();
         $s->deserialize("\xB1\x31");
     }
-
 }

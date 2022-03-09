@@ -11,7 +11,6 @@ use Whoops\Run;
 
 final class WhoopsJsonDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -20,6 +19,4 @@ final class WhoopsJsonDisplayerTest extends TestCase
         $displayer = new WhoopsJsonDisplayer(new Run());
         $this->assertTrue($displayer->isVerbose());
     }
-
-
 }

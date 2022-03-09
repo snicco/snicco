@@ -9,7 +9,6 @@ use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
 class MaybeRouteCondition extends RouteCondition
 {
-
     /**
      * @var string|bool
      */
@@ -33,5 +32,4 @@ class MaybeRouteCondition extends RouteCondition
     {
         return [];
     }
-
 }

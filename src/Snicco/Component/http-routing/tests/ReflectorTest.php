@@ -15,8 +15,6 @@ use Traversable;
 
 final class ReflectorTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -86,18 +84,14 @@ final class ReflectorTest extends TestCase
     {
         $this->assertSame('string', Reflector::firstParameterType(ClassWithConstructor::class));
     }
-
-
 }
 
 class NoConstructor
 {
-
 }
 
 class ClassWithConstructor
 {
-
     public function __construct(string $foo)
     {
     }
@@ -105,22 +99,18 @@ class ClassWithConstructor
     public function someMethod(string $foo, string $bar): void
     {
     }
-
 }
 
 class TestSubject implements Countable
 {
-
     public function count(): int
     {
         return 0;
     }
-
 }
 
 class TestTraversable implements Iterator
 {
-
     #[ReturnTypeWillChange]
     
     public function current()
@@ -146,5 +136,4 @@ class TestTraversable implements Iterator
     {
         //
     }
-
 }

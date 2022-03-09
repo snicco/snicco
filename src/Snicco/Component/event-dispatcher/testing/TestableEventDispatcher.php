@@ -21,7 +21,6 @@ use function is_bool;
 
 final class TestableEventDispatcher implements EventDispatcher
 {
-
     private EventDispatcher $real_dispatcher;
 
     /**
@@ -236,5 +235,4 @@ final class TestableEventDispatcher implements EventDispatcher
 
         return $passed;
     }
-
 }

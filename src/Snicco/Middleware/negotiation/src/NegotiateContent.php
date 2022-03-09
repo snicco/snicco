@@ -14,7 +14,6 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 final class NegotiateContent extends Middleware
 {
-
     private array $content_types;
 
     /**
@@ -55,7 +54,8 @@ final class NegotiateContent extends Middleware
 
         if (406 === $response->getStatusCode()) {
             throw new HttpException(
-                406, "Failed content negotiation for path [{$request->path()}]."
+                406,
+                "Failed content negotiation for path [{$request->path()}]."
             );
         }
         return $response;
@@ -88,5 +88,4 @@ final class NegotiateContent extends Middleware
             return $language->process($request, $next);
         });
     }
-
 }

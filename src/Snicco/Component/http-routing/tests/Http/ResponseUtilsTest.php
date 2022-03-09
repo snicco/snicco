@@ -22,7 +22,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class ResponseUtilsTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
     use CreatesPsrRequests;
@@ -231,5 +230,4 @@ final class ResponseUtilsTest extends TestCase
         $this->assertSame(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR), (string)$response->getBody());
         $this->assertSame('application/json', $response->getHeaderline('content-type'));
     }
-
 }

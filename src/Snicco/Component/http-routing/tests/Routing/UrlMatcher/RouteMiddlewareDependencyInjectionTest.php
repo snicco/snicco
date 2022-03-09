@@ -22,7 +22,6 @@ use function is_null;
 
 class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -92,8 +91,8 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->pimple[Foo::class] = fn(): Foo => $foo;
-        $this->pimple[Bar::class] = fn(): Bar => $bar;
+        $this->pimple[Foo::class] = fn (): Foo => $foo;
+        $this->pimple[Bar::class] = fn (): Bar => $bar;
 
         $this->pimple[MiddlewareWithClassAndParamDependencies::class] = $this->pimple->protect(
             function (string $foo, string $bar) {
@@ -139,13 +138,10 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
     }
-
-
 }
 
 class MiddlewareWithClassAndParamDependencies extends Middleware
 {
-
     private Foo $foo;
     private Bar $bar;
     private string $baz;
@@ -166,12 +162,10 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
         $response->getBody()->write(':' . $this->foo->value . $this->bar->value . $this->baz . $this->biz);
         return $response;
     }
-
 }
 
 class MiddlewareWithTypedDefault extends Middleware
 {
-
     private ?Foo $foo;
 
     public function __construct(?Foo $foo = null)
@@ -187,5 +181,4 @@ class MiddlewareWithTypedDefault extends Middleware
 
         return $next($request);
     }
-
 }

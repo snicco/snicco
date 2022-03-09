@@ -24,7 +24,6 @@ use function strval;
 
 final class FakeTransport implements Transport
 {
-
     private WPMailAPI $wp;
 
     /**
@@ -63,7 +62,7 @@ final class FakeTransport implements Transport
 
     public function assertNotSent(string $email_class): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($email_class, fn() => true));
+        $times = count($this->sentEmailsThatMatchCondition($email_class, fn () => true));
 
         PHPUnit::assertSame(
             0,
@@ -79,7 +78,7 @@ final class FakeTransport implements Transport
 
     public function assertSentTimes(string $mailable_class, int $expected): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn() => true));
+        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn () => true));
 
         PHPUnit::assertSame(
             $expected,
@@ -181,7 +180,7 @@ final class FakeTransport implements Transport
     {
         $class = get_class($email);
 
-        $this->sent_mails[$class][] = [$email, $envelope,];
+        $this->sent_mails[$class][] = [$email, $envelope, ];
     }
 
     /**
@@ -287,5 +286,4 @@ final class FakeTransport implements Transport
     {
         return isset($this->sent_mails[$mailable_class]);
     }
-
 }

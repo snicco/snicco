@@ -15,7 +15,6 @@ use function random_int;
  */
 final class SessionLottery
 {
-
     private int $percentage;
 
     public function __construct(int $percentage)
@@ -42,5 +41,4 @@ final class SessionLottery
     {
         return random_int(0, 99) < $this->percentage;
     }
-
 }

@@ -30,7 +30,6 @@ use const SEEK_CUR;
 
 final class Attachment
 {
-
     private string $encoding = 'base64';
     private string $content_type;
     private string $filename;
@@ -155,5 +154,4 @@ final class Attachment
             fclose($this->body);
         }
     }
-
 }

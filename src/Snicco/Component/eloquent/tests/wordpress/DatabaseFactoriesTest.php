@@ -21,7 +21,6 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 
 class DatabaseFactoriesTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
     use WithTestTables;
 
@@ -375,8 +374,4 @@ class DatabaseFactoriesTest extends WPTestCase
         DB::rollBack();
         parent::tearDown();
     }
-
 }
-
-
-

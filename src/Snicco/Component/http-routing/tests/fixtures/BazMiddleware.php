@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 
 class BazMiddleware extends Middleware
 {
-
     private string $baz;
 
     public function __construct($baz = 'baz_middleware')
@@ -25,5 +24,4 @@ class BazMiddleware extends Middleware
         $response->getBody()->write(':' . $this->baz);
         return $response;
     }
-
 }

@@ -16,7 +16,6 @@ use function array_values;
 
 final class CanDisplayTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -50,12 +49,10 @@ final class CanDisplayTest extends TestCase
 
         $this->assertSame([$d3], array_values($filtered));
     }
-
 }
 
 class CanDisplayRuntimeException implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return 'runtime';
@@ -75,12 +72,10 @@ class CanDisplayRuntimeException implements ExceptionDisplayer
     {
         return $exception_information->originalException() instanceof RuntimeException;
     }
-
 }
 
 class CanDisplayRuntimeException2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
     }
@@ -99,12 +94,10 @@ class CanDisplayRuntimeException2 implements ExceptionDisplayer
     {
         return $exception_information->originalException() instanceof RuntimeException;
     }
-
 }
 
 class CanDisplayInvalidArgException implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
     }
@@ -123,5 +116,4 @@ class CanDisplayInvalidArgException implements ExceptionDisplayer
     {
         return $exception_information->originalException() instanceof InvalidArgumentException;
     }
-
 }

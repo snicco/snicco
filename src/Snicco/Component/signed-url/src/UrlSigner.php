@@ -23,7 +23,6 @@ use function time;
 
 final class UrlSigner
 {
-
     private SignedUrlStorage $storage;
     private HMAC $hasher;
 
@@ -205,5 +204,4 @@ final class UrlSigner
 
         return null;
     }
-
 }

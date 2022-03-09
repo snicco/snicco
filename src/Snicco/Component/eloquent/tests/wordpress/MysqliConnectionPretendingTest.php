@@ -17,7 +17,6 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 
 final class MysqliConnectionPretendingTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
     use WithTestTables;
 
@@ -186,5 +185,4 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         DB::rollBack();
         parent::tearDown();
     }
-
 }

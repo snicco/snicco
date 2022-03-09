@@ -23,7 +23,6 @@ use function method_exists;
  */
 final class TaggingIntegrationTest extends WPTestCase
 {
-
     /**
      * @type array with functionName => reason.
      */
@@ -318,5 +317,4 @@ final class TaggingIntegrationTest extends WPTestCase
         $pool->invalidateTags(['foo']);
         $this->assertTrue($pool->getItem('key')->isHit());
     }
-
 }

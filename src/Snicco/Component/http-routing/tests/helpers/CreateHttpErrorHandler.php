@@ -18,7 +18,6 @@ use Snicco\Component\Psr7ErrorHandler\ProductionErrorHandler;
 
 trait CreateHttpErrorHandler
 {
-
     public function createHttpErrorHandler(ResponseFactoryInterface $response_factory): HttpErrorHandler
     {
         return new ProductionErrorHandler(
@@ -28,5 +27,4 @@ trait CreateHttpErrorHandler
             new Delegating(new CanDisplay(), new ContentType(), new Verbosity(true)),
         );
     }
-
 }

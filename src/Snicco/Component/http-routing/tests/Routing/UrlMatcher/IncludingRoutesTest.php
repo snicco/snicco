@@ -14,7 +14,6 @@ use Snicco\Component\HttpRouting\Tests\Routing\RouteLoader\PHPFileRouteLoaderTes
 
 final class IncludingRoutesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      * @psalm-suppress InvalidScalarArgument
@@ -91,5 +90,4 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
             $this->frontendRequest(PHPFileRouteLoaderTest::PARTIAL_PATH)
         );
     }
-
 }

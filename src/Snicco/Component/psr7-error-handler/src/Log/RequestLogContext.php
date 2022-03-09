@@ -8,7 +8,5 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 interface RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array;
-
 }

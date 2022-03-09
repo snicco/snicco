@@ -16,7 +16,6 @@ use function serialize;
 
 final class CachedRouteCollectionTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -170,5 +169,4 @@ final class CachedRouteCollectionTest extends TestCase
             );
         }
     }
-
 }

@@ -27,7 +27,6 @@ use function time;
  */
 trait UserSessionDriverTests
 {
-
     /**
      * @test
      */
@@ -225,5 +224,4 @@ trait UserSessionDriverTests
         }
         return $_serialized;
     }
-
 }

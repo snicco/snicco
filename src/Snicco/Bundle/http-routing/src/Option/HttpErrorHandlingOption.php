@@ -22,5 +22,4 @@ final class HttpErrorHandlingOption
     {
         return 'http_error_handling.' . $constant;
     }
-
 }

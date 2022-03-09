@@ -16,7 +16,6 @@ use function array_filter;
 
 final class TemplatingExceptionDisplayer implements ExceptionDisplayer
 {
-
     private ViewEngine $engine;
 
     /**
@@ -86,5 +85,4 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
 
         return $this->views[$information->identifier()];
     }
-
 }

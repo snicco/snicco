@@ -169,6 +169,4 @@ final class ViewEngineMailRendererTest extends WPTestCase
     {
         return $kernel->container()->make(Mailer::class);
     }
-
-
 }

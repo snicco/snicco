@@ -11,7 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class DefaultHeaders implements MiddlewareInterface
 {
-
     /**
      * @var  array<string,string>
      */

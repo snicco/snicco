@@ -13,7 +13,6 @@ use Snicco\Component\Session\SessionManager\SessionManager;
  */
 interface Session extends ImmutableSession, MutableSession
 {
-
     /**
      * Release all lifecycle events and clear them afterwards.
      *
@@ -32,5 +31,4 @@ interface Session extends ImmutableSession, MutableSession
         string $hashed_validator,
         int $current_timestamp
     ): void;
-
 }

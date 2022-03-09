@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 
 interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
 {
-
     /**
      * A menu item will be added in the following scenario:
      * $action !== Route::DELEGATE && $menu_attributes !== null
@@ -45,5 +44,4 @@ interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
      * @throws BadRouteConfiguration
      */
     public function subPages(Route $parent_route, Closure $routes): void;
-
 }

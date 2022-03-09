@@ -76,5 +76,4 @@ final class FakeTransportTest extends WPTestCase
             return 1 === count($mail->attachments());
         });
     }
-
 }

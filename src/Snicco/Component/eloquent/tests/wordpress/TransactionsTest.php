@@ -21,7 +21,6 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 
 class TransactionsTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
 
     /**
@@ -250,5 +249,4 @@ class TransactionsTest extends WPTestCase
             Schema::drop('football_teams');
         }
     }
-
 }

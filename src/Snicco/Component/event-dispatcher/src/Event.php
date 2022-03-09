@@ -6,7 +6,6 @@ namespace Snicco\Component\EventDispatcher;
 
 interface Event
 {
-
     /**
      * The name that will be used to search for matching listeners.
      * Its recommend using the fully qualified class name.
@@ -24,5 +23,4 @@ interface Event
      * @see ClassAsPayload
      */
     public function payload();
-
 }

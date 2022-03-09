@@ -10,7 +10,5 @@ use Throwable;
 
 interface HttpErrorHandler
 {
-
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface;
-
 }

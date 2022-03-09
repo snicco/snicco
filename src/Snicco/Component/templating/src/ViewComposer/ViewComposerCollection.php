@@ -12,7 +12,6 @@ use Snicco\Component\Templating\View\View;
 
 final class ViewComposerCollection
 {
-
     private ViewComposerFactory $composer_factory;
     private GlobalViewContext $global_view_context;
 
@@ -120,5 +119,4 @@ final class ViewComposerCollection
         }
         return $matching;
     }
-
 }

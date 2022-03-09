@@ -10,7 +10,6 @@ use Throwable;
 
 final class ParameterBasedHookFactory implements MappedHookFactory
 {
-
     public function make(string $event_class, array $wordpress_hook_arguments): MappedHook
     {
         try {
@@ -23,5 +22,4 @@ final class ParameterBasedHookFactory implements MappedHookFactory
             );
         }
     }
-
 }

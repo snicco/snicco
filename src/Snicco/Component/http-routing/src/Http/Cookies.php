@@ -14,7 +14,6 @@ use function urlencode;
  */
 final class Cookies
 {
-
     /**
      * @var array<string,Cookie>
      */
@@ -74,5 +73,4 @@ final class Cookies
 
         return $header;
     }
-
 }

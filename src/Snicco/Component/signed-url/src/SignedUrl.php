@@ -10,9 +10,8 @@ use function time;
 
 final class SignedUrl
 {
-
-    const EXPIRE_KEY = 'expires';
-    const SIGNATURE_KEY = 'signature';
+    public const EXPIRE_KEY = 'expires';
+    public const SIGNATURE_KEY = 'signature';
 
     private string $link_target;
     private string $identifier;
@@ -79,5 +78,4 @@ final class SignedUrl
     {
         return $this->protects;
     }
-
 }

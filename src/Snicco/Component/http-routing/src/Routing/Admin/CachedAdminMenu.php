@@ -12,7 +12,6 @@ use function unserialize;
 
 final class CachedAdminMenu implements AdminMenu
 {
-
     /**
      * @var string[]
      */

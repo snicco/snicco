@@ -20,7 +20,6 @@ use function range;
 
 final class WritableConfig extends Config
 {
-
     private array $items;
 
     public function __construct(?array $items = null)
@@ -194,5 +193,4 @@ final class WritableConfig extends Config
 
         return array_keys($array) === range(0, count($array) - 1);
     }
-
 }

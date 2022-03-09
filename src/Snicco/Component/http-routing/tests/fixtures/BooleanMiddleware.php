@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class BooleanMiddleware extends Middleware
 {
-
     private string $val;
 
     public function __construct(bool $val)
@@ -26,5 +25,4 @@ final class BooleanMiddleware extends Middleware
         $response->getBody()->write(':' . $this->val);
         return $response;
     }
-
 }

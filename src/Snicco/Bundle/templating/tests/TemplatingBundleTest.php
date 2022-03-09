@@ -422,7 +422,6 @@ final class TemplatingBundleTest extends TestCase
 
 class CustomBundleComposer implements ViewComposer
 {
-
     public function compose(View $view): View
     {
         return $view->with('foo', self::class);

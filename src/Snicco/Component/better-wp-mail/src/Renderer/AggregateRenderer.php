@@ -8,7 +8,6 @@ use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 
 final class AggregateRenderer implements MailRenderer
 {
-
     /**
      * @var MailRenderer[]
      */
@@ -59,5 +58,4 @@ final class AggregateRenderer implements MailRenderer
     {
         return true;
     }
-
 }

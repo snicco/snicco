@@ -14,7 +14,6 @@ use function unlink;
  */
 trait CleanDirs
 {
-
     /**
      * @param string[] $dirs
      */
@@ -31,5 +30,4 @@ trait CleanDirs
             }
         }
     }
-
 }

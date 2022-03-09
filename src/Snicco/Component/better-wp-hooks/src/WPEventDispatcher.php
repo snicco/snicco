@@ -12,7 +12,6 @@ use Snicco\Component\EventDispatcher\GenericEvent;
 
 final class WPEventDispatcher implements EventDispatcher
 {
-
     private EventDispatcher $dispatcher;
     private WPHookAPI $wp;
 
@@ -71,5 +70,4 @@ final class WPEventDispatcher implements EventDispatcher
     {
         $this->dispatcher->subscribe($event_subscriber);
     }
-
 }

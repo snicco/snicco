@@ -12,12 +12,10 @@ use Snicco\Component\TestableClock\Clock;
 
 final class InMemoryStorageTest extends TestCase
 {
-
     use SignedUrlStorageTests;
 
     protected function createStorage(Clock $clock): SignedUrlStorage
     {
         return new InMemoryStorage($clock);
     }
-
 }

@@ -8,7 +8,6 @@ use Throwable;
 
 final class BadIdentifier extends SignedUrlException
 {
-
     public static function for(string $id, Throwable $previous = null): BadIdentifier
     {
         return new self(
@@ -17,5 +16,4 @@ final class BadIdentifier extends SignedUrlException
             $previous
         );
     }
-
 }

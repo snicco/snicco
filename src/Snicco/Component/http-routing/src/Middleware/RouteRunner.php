@@ -15,7 +15,6 @@ use Snicco\Component\HttpRouting\Routing;
 
 final class RouteRunner extends Middleware
 {
-
     private MiddlewarePipeline $pipeline;
     private MiddlewareResolver $middleware_resolver;
     private ContainerInterface $container;
@@ -88,5 +87,4 @@ final class RouteRunner extends Middleware
                 return $this->responseFactory()->delegate();
             });
     }
-
 }

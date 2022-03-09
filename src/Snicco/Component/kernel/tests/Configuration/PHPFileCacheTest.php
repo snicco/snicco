@@ -14,7 +14,6 @@ use function unlink;
 
 final class PHPFileCacheTest extends TestCase
 {
-
     private string $cache_file;
 
     protected function setUp(): void
@@ -84,6 +83,4 @@ final class PHPFileCacheTest extends TestCase
             'foo' => 'bar'
         ], $res);
     }
-
-
 }

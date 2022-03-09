@@ -20,7 +20,6 @@ use function sprintf;
  */
 final class AllowMutableSessionForReadVerbs implements MiddlewareInterface
 {
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($request->getAttribute(ImmutableSession::class)) {

@@ -14,7 +14,6 @@ use Traversable;
  */
 interface Routes extends Countable, IteratorAggregate
 {
-
     /**
      * @throws RouteNotFound
      */
@@ -30,5 +29,4 @@ interface Routes extends Countable, IteratorAggregate
      * @psalm-return  Traversable<string,Route>
      */
     public function getIterator(): Traversable;
-
 }

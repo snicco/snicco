@@ -12,7 +12,6 @@ use Snicco\Component\TestableClock\SystemClock;
 
 final class InMemoryDriver implements UserSessionsDriver
 {
-
     /**
      * @var array<string,array{data:string, last_activity:positive-int, hashed_validator:string, user_id: string|int|null}>
      */

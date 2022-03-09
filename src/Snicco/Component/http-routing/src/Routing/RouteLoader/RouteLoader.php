@@ -10,9 +10,7 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 
 interface RouteLoader
 {
-
     public function loadWebRoutes(WebRoutingConfigurator $configurator): void;
 
     public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void;
-
 }

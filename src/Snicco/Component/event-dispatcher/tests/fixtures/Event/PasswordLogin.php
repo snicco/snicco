@@ -9,7 +9,6 @@ use Snicco\Component\EventDispatcher\ClassAsPayload;
 
 class PasswordLogin extends AbstractLogin
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -22,5 +21,4 @@ class PasswordLogin extends AbstractLogin
     {
         return 'password login';
     }
-
 }

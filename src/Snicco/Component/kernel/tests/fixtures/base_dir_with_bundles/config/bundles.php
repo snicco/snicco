@@ -22,4 +22,4 @@ return [
         BundleProduction::class,
     ]
 
-]; 
+];

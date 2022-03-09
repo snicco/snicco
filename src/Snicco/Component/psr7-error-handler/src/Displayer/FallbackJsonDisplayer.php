@@ -13,7 +13,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class FallbackJsonDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return json_encode([

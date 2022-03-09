@@ -36,7 +36,6 @@ use const PHP_INT_MIN;
  */
 class EventMapperTest extends WPTestCase
 {
-
     use AssertListenerResponse;
 
     private EventMapper $event_mapper;
@@ -676,12 +675,10 @@ class EventMapperTest extends WPTestCase
 
         do_action('foo');
     }
-
 }
 
 class ConditionalFilter implements MappedFilter
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -703,12 +700,10 @@ class ConditionalFilter implements MappedFilter
     {
         return $this->value1;
     }
-
 }
 
 class ConditionalAction implements MappedHook
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -723,19 +718,16 @@ class ConditionalAction implements MappedHook
     {
         return $this->value !== 'PREVENT';
     }
-
 }
 
 class NormalEvent implements Event
 {
-
     use ClassAsName;
     use ClassAsPayload;
 }
 
 class EventFilterWithNoArgs implements MappedFilter
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -755,12 +747,10 @@ class EventFilterWithNoArgs implements MappedFilter
     {
         return true;
     }
-
 }
 
 class EventFilter1 implements MappedFilter
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -782,12 +772,10 @@ class EventFilter1 implements MappedFilter
     {
         return true;
     }
-
 }
 
 class EventFilter2 implements MappedFilter
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -809,12 +797,10 @@ class EventFilter2 implements MappedFilter
     {
         return true;
     }
-
 }
 
 class EmptyActionEvent implements MappedHook
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -824,12 +810,10 @@ class EmptyActionEvent implements MappedHook
     {
         return true;
     }
-
 }
 
 class EmptyActionEvent2 implements MappedHook
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -839,12 +823,10 @@ class EmptyActionEvent2 implements MappedHook
     {
         return true;
     }
-
 }
 
 class FooActionEvent implements MappedHook
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -868,12 +850,10 @@ class FooActionEvent implements MappedHook
     {
         return true;
     }
-
 }
 
 class ActionWithArrayArguments implements MappedHook
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -891,5 +871,4 @@ class ActionWithArrayArguments implements MappedHook
     {
         return true;
     }
-
 }

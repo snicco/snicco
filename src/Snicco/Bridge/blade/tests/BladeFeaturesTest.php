@@ -10,7 +10,6 @@ use stdClass;
 
 class BladeFeaturesTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -279,5 +278,4 @@ class BladeFeaturesTest extends BladeTestCase
     {
         return $this->view_engine->make('blade-features.' . $view);
     }
-
 }

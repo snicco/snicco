@@ -24,7 +24,6 @@ use function is_string;
 
 final class Psr16SessionDriver implements SessionDriver
 {
-
     private CacheInterface $cache;
     private int $idle_timeout_in_seconds;
 

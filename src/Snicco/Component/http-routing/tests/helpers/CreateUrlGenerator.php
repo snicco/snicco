@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
-
 /**
  * @internal
  *
@@ -19,7 +18,6 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
  */
 trait CreateUrlGenerator
 {
-
     final protected function createUrlGenerator(
         UrlGenerationContext $context = null,
         Routes $routes = null
@@ -30,5 +28,4 @@ trait CreateUrlGenerator
             WPAdminArea::fromDefaults(),
         );
     }
-
 }

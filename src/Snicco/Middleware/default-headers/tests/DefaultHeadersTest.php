@@ -10,7 +10,6 @@ use Snicco\Middleware\DefaultHeaders\DefaultHeaders;
 
 class DefaultHeadersTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -44,5 +43,4 @@ class DefaultHeadersTest extends MiddlewareTestCase
 
         $response->assertableResponse()->assertHeader('foo', 'bar');
     }
-
 }

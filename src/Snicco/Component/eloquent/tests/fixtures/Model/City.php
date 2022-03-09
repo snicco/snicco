@@ -6,7 +6,6 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Model;
 
 class City extends TestWPModel
 {
-
     public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Country::class);
@@ -16,5 +15,4 @@ class City extends TestWPModel
     {
         return $this->belongsToMany(Activity::class);
     }
-
 }

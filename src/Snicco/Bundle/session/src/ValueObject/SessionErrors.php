@@ -16,7 +16,6 @@ use function is_string;
  */
 final class SessionErrors
 {
-
     /**
      * @var array<string,array<string,string[]>>
      */
@@ -82,5 +81,4 @@ final class SessionErrors
     {
         return count($this->all($namespace));
     }
-
 }

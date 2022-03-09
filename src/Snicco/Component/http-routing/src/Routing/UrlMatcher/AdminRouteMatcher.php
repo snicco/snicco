@@ -43,5 +43,4 @@ final class AdminRouteMatcher implements UrlMatcher
 
         return $request->withUri($new_uri);
     }
-
 }

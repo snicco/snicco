@@ -23,7 +23,6 @@ use function strval;
 
 final class SignedUrlValidatorTest extends TestCase
 {
-
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
     private HMAC $hmac;
@@ -331,5 +330,4 @@ final class SignedUrlValidatorTest extends TestCase
         }
         $this->assertTrue(true);
     }
-
 }

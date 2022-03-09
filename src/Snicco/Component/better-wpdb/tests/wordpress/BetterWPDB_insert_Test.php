@@ -13,7 +13,6 @@ use stdClass;
 
 final class BetterWPDB_insert_Test extends BetterWPDBTestCase
 {
-
     protected function tearDown(): void
     {
         $this->better_wpdb->preparedQuery('drop table if exists no_auto_incr');
@@ -70,7 +69,8 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
   `id` bigint unsigned NOT NULL,
   `test_string` varchar(30) COLLATE utf8mb4_unicode_520_ci UNIQUE NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;', []
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;',
+            []
         );
 
         $stmt = $this->better_wpdb->insert('no_auto_incr', ['id' => 10, 'test_string' => 'foo']);
@@ -175,5 +175,4 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
-
 }

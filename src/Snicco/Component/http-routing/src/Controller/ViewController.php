@@ -17,7 +17,6 @@ use function array_slice;
  */
 final class ViewController extends Controller
 {
-
     /**
      * @param mixed ...$args
      */
@@ -44,5 +43,4 @@ final class ViewController extends Controller
 
         return $response;
     }
-
 }

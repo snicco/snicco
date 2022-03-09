@@ -14,7 +14,6 @@ use function serialize;
 
 final class CachedAdminMenuTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -61,5 +60,4 @@ final class CachedAdminMenuTest extends TestCase
 
         $menu->items();
     }
-
 }

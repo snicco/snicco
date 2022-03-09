@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class MiddlewareThatAlwaysThrowsException extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         throw new RuntimeException(MiddlewareThatAlwaysThrowsException::class);

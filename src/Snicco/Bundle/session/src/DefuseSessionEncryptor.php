@@ -10,7 +10,6 @@ use Snicco\Component\Session\SessionEncryptor;
 
 final class DefuseSessionEncryptor implements SessionEncryptor
 {
-
     private DefuseEncryptor $defuse;
 
     public function __construct(DefuseEncryptor $defuse)

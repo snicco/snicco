@@ -13,7 +13,6 @@ use Psr\SimpleCache\CacheInterface;
 
 final class CacheFactory
 {
-
     /**
      * @param non-empty-string $group
      */
@@ -34,5 +33,4 @@ final class CacheFactory
     {
         return TaggablePSR6PoolAdapter::makeTaggable($psr6);
     }
-
 }

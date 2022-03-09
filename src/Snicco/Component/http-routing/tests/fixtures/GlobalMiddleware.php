@@ -11,8 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class GlobalMiddleware implements MiddlewareInterface
 {
-
-    const run_times = 'global_middleware';
+    public const run_times = 'global_middleware';
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -24,5 +23,4 @@ class GlobalMiddleware implements MiddlewareInterface
 
         return $handler->handle($request);
     }
-
 }

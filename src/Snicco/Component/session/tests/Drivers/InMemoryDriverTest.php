@@ -15,7 +15,6 @@ use Snicco\Component\TestableClock\Clock;
 
 final class InMemoryDriverTest extends TestCase
 {
-
     use SessionDriverTests;
     use UserSessionDriverTests;
 
@@ -44,5 +43,4 @@ final class InMemoryDriverTest extends TestCase
         }
         return $driver;
     }
-
 }

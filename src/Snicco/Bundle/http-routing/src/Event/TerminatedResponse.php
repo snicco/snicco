@@ -7,5 +7,4 @@ namespace Snicco\Bundle\HttpRouting\Event;
 
 final class TerminatedResponse
 {
-
 }

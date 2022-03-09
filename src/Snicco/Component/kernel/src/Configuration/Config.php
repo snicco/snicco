@@ -9,7 +9,6 @@ use Webmozart\Assert\Assert;
 
 abstract class Config
 {
-
     /**
      * @param mixed $default
      * @return mixed
@@ -55,5 +54,4 @@ abstract class Config
         Assert::isArray($val, "Expected an array for config key [$key].\nGot: [%s]");
         return $val;
     }
-
 }

@@ -14,5 +14,4 @@ final class MailOption
     public const RENDERER = 'renderer';
     public const TRANSPORT = 'transport';
     public const EXPOSE_MAIL_EVENTS = 'expose_events';
-
 }

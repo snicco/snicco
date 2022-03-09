@@ -6,9 +6,7 @@ namespace Snicco\Component\Psr7ErrorHandler;
 
 interface UserFacing
 {
-
     public function title(): string;
 
     public function safeMessage(): string;
-
 }

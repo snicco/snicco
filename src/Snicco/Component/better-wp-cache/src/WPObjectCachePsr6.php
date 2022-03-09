@@ -20,10 +20,8 @@ use function sprintf;
 use function time;
 use function unserialize;
 
-
 final class WPObjectCachePsr6 implements CacheItemPoolInterface
 {
-
     private WPCacheAPI $wp_object_cache;
     private string $wp_cache_group;
 

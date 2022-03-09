@@ -17,12 +17,11 @@ use const PHP_SAPI;
  */
 final class Environment
 {
-
-    const TESTING = 'testing';
-    const PROD = 'prod';
-    const DEV = 'dev';
-    const STAGING = 'staging';
-    const ALL = 'all';
+    public const TESTING = 'testing';
+    public const PROD = 'prod';
+    public const DEV = 'dev';
+    public const STAGING = 'staging';
+    public const ALL = 'all';
 
     private string $environment;
 
@@ -129,5 +128,4 @@ final class Environment
     {
         return [self::TESTING, self::PROD, self::DEV, self::STAGING];
     }
-
 }

@@ -10,5 +10,4 @@ namespace Snicco\Component\BetterWPHooks\EventMapping;
  */
 interface ExposeToWP
 {
-
 }

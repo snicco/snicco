@@ -21,7 +21,6 @@ use function sprintf;
 
 abstract class Middleware implements MiddlewareInterface
 {
-
     private ContainerInterface $container;
     private ?Request $current_request = null;
 
@@ -98,5 +97,4 @@ abstract class Middleware implements MiddlewareInterface
         }
         return $this->current_request;
     }
-
 }

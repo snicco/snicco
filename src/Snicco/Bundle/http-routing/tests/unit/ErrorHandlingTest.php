@@ -44,7 +44,6 @@ use const E_USER_NOTICE;
  */
 final class ErrorHandlingTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -311,7 +310,7 @@ final class ErrorHandlingTest extends TestCase
         $this->assertInstanceOf(StdErrLogger::class, $kernel->container()->make(LoggerInterface::class));
 
         $container = $this->newContainer();
-        $container[LoggerInterface::class] = fn(): NullLogger => new NullLogger();
+        $container[LoggerInterface::class] = fn (): NullLogger => new NullLogger();
 
         $kernel = new Kernel(
             $container,
@@ -330,8 +329,7 @@ final class ErrorHandlingTest extends TestCase
     {
         $container = $this->newContainer();
         $container[ExceptionInformationProvider::class] = function (): ExceptionInformationProvider {
-            return new class implements ExceptionInformationProvider {
-
+            return new class() implements ExceptionInformationProvider {
                 public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
                 {
                     return new ExceptionInformation(
@@ -510,13 +508,10 @@ final class ErrorHandlingTest extends TestCase
     {
         return dirname(__DIR__) . '/fixtures';
     }
-
-
 }
 
 class Transformer1 implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         if ($e instanceof LogicException) {
@@ -532,8 +527,6 @@ class Transformer1 implements ExceptionTransformer
 
 class Transformer2 implements ExceptionTransformer
 {
-
-
     public function transform(Throwable $e): Throwable
     {
         if ($e->getMessage() === 'error1') {
@@ -545,7 +538,6 @@ class Transformer2 implements ExceptionTransformer
 
 class PathLogContext implements RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['path'] = $information->serverRequest()->getUri()->getPath();
@@ -555,18 +547,15 @@ class PathLogContext implements RequestLogContext
 
 class QueryStringLogContext implements RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['query_string'] = $information->serverRequest()->getUri()->getQuery();
         return $context;
     }
-
 }
 
 class CustomHtmlDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return 'foobar';

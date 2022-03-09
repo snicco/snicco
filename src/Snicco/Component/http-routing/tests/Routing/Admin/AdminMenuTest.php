@@ -21,7 +21,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
  */
 final class AdminMenuTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -530,5 +529,3 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->assertSame(3, $count);
     }
 }
-
-

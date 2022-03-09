@@ -9,7 +9,6 @@ use RuntimeException;
 
 final class ContainerIsLocked extends RuntimeException implements ContainerExceptionInterface
 {
-
     public static function whileSettingId(string $id): ContainerIsLocked
     {
         return new self(
@@ -23,5 +22,4 @@ final class ContainerIsLocked extends RuntimeException implements ContainerExcep
             "The id [$offset] can not be unset on the container because its locked already."
         );
     }
-
 }

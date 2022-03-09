@@ -456,5 +456,4 @@ final class DebugBundleTest extends TestCase
     {
         return __DIR__ . '/fixtures';
     }
-
 }

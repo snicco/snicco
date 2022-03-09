@@ -14,7 +14,6 @@ use function strval;
 
 final class Secret
 {
-
     private string $hex_encoded;
 
     /**
@@ -73,5 +72,4 @@ final class Secret
 
         return $this->as_bytes;
     }
-
 }

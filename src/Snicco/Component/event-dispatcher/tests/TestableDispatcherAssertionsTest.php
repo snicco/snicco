@@ -19,7 +19,6 @@ use function sprintf;
 
 final class TestableDispatcherAssertionsTest extends TestCase
 {
-
     use AssertPHPUnitFailures;
     use AssertListenerResponse;
 
@@ -64,7 +63,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             '1 event[s] dispatched',
-            fn() => $this->fake_dispatcher->assertNotingDispatched()
+            fn () => $this->fake_dispatcher->assertNotingDispatched()
         );
     }
 
@@ -132,8 +131,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      * @test
      */
     public function assertDispatched_can_fail_when_the_event_was_dispatched_but_the_additional_condition_didnt_match(
-    ): void
-    {
+    ): void {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO', 'BAZ']));
 
         $this->assertFailsWithMessageStarting(
@@ -365,12 +363,11 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched and the condition passed.', EventStub::class),
-            fn() => $this->fake_dispatcher->assertNotDispatched(
+            fn () => $this->fake_dispatcher->assertNotDispatched(
                 function (EventStub $event_stub) {
                     return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAZ';
                 }
             )
         );
     }
-
 }

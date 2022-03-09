@@ -26,7 +26,6 @@ use function strlen;
  */
 final class FastRouteSyntaxConverter
 {
-
     public function convert(Route $route): string
     {
         $route_url = $route->getPattern();
@@ -137,5 +136,4 @@ final class FastRouteSyntaxConverter
         $url .= '[/]' . str_repeat(']', $l1 - $l2);
         return $url;
     }
-
 }

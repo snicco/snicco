@@ -17,7 +17,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 final class ControllerTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -91,12 +90,10 @@ final class ControllerTest extends HttpRunnerTestCase
 
         $controller->responseWith()->refresh();
     }
-
 }
 
 class ResponseUtilsTestController extends Controller
 {
-
     public function responseWith(): ResponseUtils
     {
         return parent::respondWith();
@@ -106,5 +103,4 @@ class ResponseUtilsTestController extends Controller
     {
         return $this->respondWith()->refresh();
     }
-
 }

@@ -8,7 +8,6 @@ use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 interface View
 {
-
     /**
      * Render the view to a string.
      *
@@ -46,5 +45,4 @@ interface View
      * @psalm-mutation-free
      */
     public function path(): string;
-
 }

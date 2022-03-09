@@ -33,7 +33,6 @@ use const SORT_REGULAR;
 
 final class MiddlewareResolver
 {
-
     public const MIDDLEWARE_DELIMITER = ':';
     public const ARGUMENT_SEPARATOR = ',';
 
@@ -471,5 +470,4 @@ final class MiddlewareResolver
         }
         return $blueprints;
     }
-
 }

@@ -19,7 +19,6 @@ use function count;
  */
 final class RouteCollection implements Routes
 {
-
     /**
      * @var array<string,Route>
      */
@@ -61,5 +60,4 @@ final class RouteCollection implements Routes
     {
         return new ArrayIterator($this->toArray());
     }
-
 }

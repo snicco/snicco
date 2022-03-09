@@ -14,7 +14,6 @@ use Snicco\Component\Session\ValueObject\SessionLottery;
  */
 final class SessionConfigTest extends TestCase
 {
-
     private array $defaults;
 
     protected function setUp(): void
@@ -212,6 +211,4 @@ final class SessionConfigTest extends TestCase
         unset($this->defaults['garbage_collection_percentage']);
         (new SessionConfig($this->defaults));
     }
-
-
 }

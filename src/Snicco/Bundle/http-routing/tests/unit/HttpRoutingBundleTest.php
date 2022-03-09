@@ -39,7 +39,6 @@ use function dirname;
  */
 final class HttpRoutingBundleTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**

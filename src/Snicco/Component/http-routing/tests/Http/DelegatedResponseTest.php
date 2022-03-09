@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 final class DelegatedResponseTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private ResponseFactory $factory;
@@ -35,5 +34,4 @@ final class DelegatedResponseTest extends TestCase
         // immutable
         $this->assertTrue($response->shouldHeadersBeSent());
     }
-
 }

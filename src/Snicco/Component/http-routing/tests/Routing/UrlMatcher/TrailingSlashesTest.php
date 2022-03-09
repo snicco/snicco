@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class TrailingSlashesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -176,5 +175,4 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/no_trailing/foo/');
         $this->assertResponseBody('', $request);
     }
-
 }

@@ -20,7 +20,6 @@ use stdClass;
 
 final class KernelBootstrappersTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
@@ -106,12 +105,10 @@ final class KernelBootstrappersTest extends TestCase
         $this->expectExceptionMessage('id [stdClass]');
         $app->boot();
     }
-
 }
 
 class BundleInfo implements Bundle
 {
-
     public bool $registered = false;
     public bool $booted = false;
 
@@ -141,12 +138,10 @@ class BundleInfo implements Bundle
     {
         return 'bundle_info';
     }
-
 }
 
 class Bootstrap1 implements Bootstrapper
 {
-
     public bool $registered = false;
     public bool $booted = false;
 
@@ -173,12 +168,10 @@ class Bootstrap1 implements Bootstrapper
     {
         return true;
     }
-
 }
 
 class Bootstrap2 implements Bootstrapper
 {
-
     public bool $registered = false;
     public bool $booted = false;
 
@@ -213,12 +206,10 @@ class Bootstrap2 implements Bootstrapper
     {
         return true;
     }
-
 }
 
 class BootstrapperWithExceptionInBoostrap implements Bootstrapper
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -238,5 +229,4 @@ class BootstrapperWithExceptionInBoostrap implements Bootstrapper
     {
         $kernel->container()[stdClass::class] = new stdClass();
     }
-
 }

@@ -22,7 +22,6 @@ use function strtolower;
 
 final class ProductionErrorHandler implements HttpErrorHandler
 {
-
     private ResponseFactoryInterface $response_factory;
     private DisplayerFilter $filter;
     private RequestAwareLogger $logger;
@@ -138,5 +137,4 @@ final class ProductionErrorHandler implements HttpErrorHandler
         }
         return $response;
     }
-
 }

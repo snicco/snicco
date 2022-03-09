@@ -17,7 +17,6 @@ use function array_values;
 
 final class DelegatingTest extends TestCase
 {
-
     private ServerRequest $request;
 
     protected function setUp(): void
@@ -83,12 +82,10 @@ final class DelegatingTest extends TestCase
 
         $this->assertSame([$d2], array_values($filtered));
     }
-
 }
 
 class VerbosePlain implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -108,12 +105,10 @@ class VerbosePlain implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerbosePlain implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -133,12 +128,10 @@ class NonVerbosePlain implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class VerboseJson implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -158,12 +151,10 @@ class VerboseJson implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerboseJson implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -183,5 +174,4 @@ class NonVerboseJson implements ExceptionDisplayer
     {
         return true;
     }
-
 }

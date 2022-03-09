@@ -33,7 +33,6 @@ use function trim;
  */
 final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigurator
 {
-
     /**
      * @var list<RouteGroup>
      */
@@ -594,5 +593,4 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     {
         array_pop($this->group_stack);
     }
-
 }

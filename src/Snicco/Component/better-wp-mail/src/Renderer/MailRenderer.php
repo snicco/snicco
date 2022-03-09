@@ -8,7 +8,6 @@ use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 
 interface MailRenderer
 {
-
     /**
      * @param array<string,mixed> $context
      *
@@ -20,5 +19,4 @@ interface MailRenderer
      * @see AggregateRenderer
      */
     public function supports(string $template_name, ?string $extension = null): bool;
-
 }

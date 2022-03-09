@@ -9,7 +9,6 @@ use Webmozart\Assert\Assert;
 
 final class AdminAreaPrefix
 {
-
     private string $prefix;
 
     private function __construct(string $prefix)
@@ -38,5 +37,4 @@ final class AdminAreaPrefix
     {
         return (string)UrlPath::fromString($this->prefix)->append($path);
     }
-
 }

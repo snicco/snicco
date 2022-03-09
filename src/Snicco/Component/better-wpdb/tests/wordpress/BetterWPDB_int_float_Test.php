@@ -10,7 +10,6 @@ use wpdb;
 
 final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
 {
-
     private wpdb $wpdb;
 
     protected function setUp(): void
@@ -47,5 +46,4 @@ final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
         $this->assertSame('20.20', $wpdb_result['test_float']);
         $this->assertSame('1', $wpdb_result['test_bool']);
     }
-
 }

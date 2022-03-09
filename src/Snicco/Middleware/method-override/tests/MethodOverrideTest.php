@@ -9,7 +9,6 @@ use Snicco\Middleware\MethodOverride\MethodOverride;
 
 class MethodOverrideTest extends MiddlewareTestCase
 {
-
     private MethodOverride $middleware;
 
     protected function setUp(): void
@@ -122,6 +121,4 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $this->assertSame('POST', $this->receivedRequest()->getMethod());
     }
-
-
 }

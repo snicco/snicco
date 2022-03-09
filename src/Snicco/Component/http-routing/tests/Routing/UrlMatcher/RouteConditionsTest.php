@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteConditionsTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -82,5 +81,4 @@ class RouteConditionsTest extends HttpRunnerTestCase
 
         $this->assertSame(2, $GLOBALS['test']['maybe_condition_run']);
     }
-
 }

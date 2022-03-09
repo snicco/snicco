@@ -17,7 +17,6 @@ use function dirname;
 
 final class BetterWPDBBundleTest extends WPTestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -137,7 +136,6 @@ final class BetterWPDBBundleTest extends WPTestCase
 
 class TestQueryLogger implements QueryLogger
 {
-
     /**
      * @var QueryInfo[]
      */

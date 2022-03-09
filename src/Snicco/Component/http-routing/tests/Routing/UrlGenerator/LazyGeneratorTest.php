@@ -22,7 +22,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
  */
 final class LazyGeneratorTest extends TestCase
 {
-
     use CreatesPsrRequests;
     use CreateTestPsr17Factories;
 
@@ -111,5 +110,4 @@ final class LazyGeneratorTest extends TestCase
 
         $this->assertSame(1, $this->constructed);
     }
-
 }

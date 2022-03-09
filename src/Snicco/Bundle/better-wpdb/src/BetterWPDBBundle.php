@@ -14,7 +14,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class BetterWPDBBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/better-wpdb-bundle';
 
     public function shouldRun(Environment $env): bool

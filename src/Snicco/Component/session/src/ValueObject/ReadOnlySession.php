@@ -9,7 +9,6 @@ use Snicco\Component\Session\Session;
 
 final class ReadOnlySession implements ImmutableSession
 {
-
     private Session $session;
 
     private function __construct(Session $session)

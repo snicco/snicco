@@ -10,7 +10,6 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 
 final class EncryptedDriver implements UserSessionsDriver
 {
-
     private SessionDriver $driver;
     private SessionEncryptor $encryptor;
 

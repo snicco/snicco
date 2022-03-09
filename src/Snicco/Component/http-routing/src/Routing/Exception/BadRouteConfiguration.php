@@ -10,7 +10,6 @@ use Throwable;
 
 final class BadRouteConfiguration extends LogicException
 {
-
     public static function fromPrevious(Throwable $previous): BadRouteConfiguration
     {
         return new self($previous->getMessage(), (int)$previous->getCode(), $previous);
@@ -58,5 +57,4 @@ final class BadRouteConfiguration extends LogicException
             "Admin routes can not define route parameters.\nViolating route [$name]."
         );
     }
-
 }

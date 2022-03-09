@@ -17,7 +17,6 @@ use function get_class;
 
 final class MailEventsUsingBetterWPHooks implements MailEvents
 {
-
     private EventDispatcher $dispatcher;
     private MailEvents $mail_events;
 

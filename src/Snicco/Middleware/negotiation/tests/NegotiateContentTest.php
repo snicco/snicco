@@ -12,7 +12,6 @@ use Snicco\Middleware\Negotiation\NegotiateContent;
 
 final class NegotiateContentTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -69,5 +68,4 @@ final class NegotiateContentTest extends MiddlewareTestCase
             $this->assertStringStartsWith('Failed content negotiation', $e->getMessage());
         }
     }
-
 }

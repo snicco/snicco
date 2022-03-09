@@ -12,7 +12,6 @@ use Snicco\Component\Templating\OutputBuffer;
  */
 final class ChildContent
 {
-
     private Closure $content;
 
     public function __construct(Closure $content)
@@ -26,5 +25,4 @@ final class ChildContent
         ($this->content)();
         return OutputBuffer::get();
     }
-
 }

@@ -16,7 +16,6 @@ use const JSON_THROW_ON_ERROR;
 
 class ResponseTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private ResponseFactory $factory;
@@ -405,5 +404,4 @@ class ResponseTest extends TestCase
         $response = $this->response->withStatus(403);
         $this->assertTrue($response->isForbidden());
     }
-
 }

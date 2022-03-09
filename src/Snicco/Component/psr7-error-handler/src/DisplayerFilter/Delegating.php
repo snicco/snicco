@@ -9,7 +9,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 final class Delegating implements DisplayerFilter
 {
-
     /**
      * @var DisplayerFilter[]
      */
@@ -27,5 +26,4 @@ final class Delegating implements DisplayerFilter
         }
         return $displayers;
     }
-
 }

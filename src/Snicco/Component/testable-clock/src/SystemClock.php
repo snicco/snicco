@@ -9,7 +9,6 @@ use DateTimeZone;
 
 final class SystemClock implements Clock
 {
-
     private DateTimeZone $timezone;
 
     public function __construct(?DateTimeZone $timezone = null)
@@ -31,5 +30,4 @@ final class SystemClock implements Clock
     {
         return new self(new DateTimeZone('UTC'));
     }
-
 }

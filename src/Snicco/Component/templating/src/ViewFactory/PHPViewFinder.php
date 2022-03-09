@@ -13,7 +13,6 @@ use const DIRECTORY_SEPARATOR;
 
 final class PHPViewFinder
 {
-
     /**
      * @var list<string>
      */
@@ -71,7 +70,7 @@ final class PHPViewFinder
      */
     private function normalize(array $directories): array
     {
-        return array_map(fn(string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
+        return array_map(fn (string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     private function normalizeViewName(string $view_name): string
@@ -82,5 +81,4 @@ final class PHPViewFinder
         $name = trim($name, '/');
         return str_replace('.', '/', $name);
     }
-
 }

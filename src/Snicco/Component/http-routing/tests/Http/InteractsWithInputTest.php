@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class InteractsWithInputTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
 
@@ -488,5 +487,4 @@ class InteractsWithInputTest extends TestCase
         $this->assertTrue($request->missing(['foo.bax', 'foo.baz']));
         $this->assertTrue($request->missing(['boom']));
     }
-
 }

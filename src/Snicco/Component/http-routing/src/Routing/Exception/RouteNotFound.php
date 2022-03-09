@@ -8,7 +8,6 @@ use InvalidArgumentException;
 
 final class RouteNotFound extends InvalidArgumentException
 {
-
     public static function name(string $name): RouteNotFound
     {
         return new self("There is no route with name [$name].");
@@ -20,5 +19,4 @@ final class RouteNotFound extends InvalidArgumentException
             "Route accessed with bad name.\nRoute with real name [$real_name] is stored with name [$used_name]."
         );
     }
-
 }

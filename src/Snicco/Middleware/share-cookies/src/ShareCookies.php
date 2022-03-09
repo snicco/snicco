@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class ShareCookies extends Middleware
 {
-
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
@@ -34,5 +33,4 @@ final class ShareCookies extends Middleware
 
         return $response;
     }
-
 }

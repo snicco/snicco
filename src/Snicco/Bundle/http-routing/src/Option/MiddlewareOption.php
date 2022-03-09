@@ -20,5 +20,4 @@ final class MiddlewareOption
     {
         return 'middleware.' . $constant;
     }
-
 }

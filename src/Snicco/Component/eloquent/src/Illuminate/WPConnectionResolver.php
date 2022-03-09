@@ -20,7 +20,6 @@ use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
  */
 final class WPConnectionResolver implements IlluminateConnectionResolver
 {
-
     private string $default_connection;
 
     /**
@@ -92,5 +91,4 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
         return $this->mysqli_connection;
     }
-
 }

@@ -13,7 +13,6 @@ use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 
 interface EventDispatcher extends EventDispatcherInterface
 {
-
     /**
      * @template T of object
      *
@@ -46,5 +45,4 @@ interface EventDispatcher extends EventDispatcherInterface
      * @return T
      */
     public function dispatch(object $event): object;
-
 }

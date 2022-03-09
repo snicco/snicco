@@ -15,7 +15,6 @@ use function is_file;
 
 class RouteCachingTest extends HttpRunnerTestCase
 {
-
     private string $route_cache_file;
 
     protected function setUp(): void
@@ -166,15 +165,12 @@ class RouteCachingTest extends HttpRunnerTestCase
         $this->assertSame('/wp-admin/admin.php/bar', (string)$items[1]->slug());
         $this->assertSame('/wp-admin/admin.php/baz', (string)$items[2]->slug());
     }
-
 }
 
 class Controller
 {
-
     public function handle(): string
     {
         return 'foo';
     }
-
 }

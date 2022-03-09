@@ -57,5 +57,4 @@ final class WPNonce
     {
         return htmlentities($nonce, ENT_QUOTES, 'UTF-8');
     }
-
 }

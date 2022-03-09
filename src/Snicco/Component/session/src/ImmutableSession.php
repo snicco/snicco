@@ -8,7 +8,6 @@ use Snicco\Component\Session\ValueObject\SessionId;
 
 interface ImmutableSession
 {
-
     public function id(): SessionId;
 
     /**
@@ -89,6 +88,4 @@ interface ImmutableSession
      * @return mixed
      */
     public function get(string $key, $default = null);
-
-
 }

@@ -17,7 +17,6 @@ use function is_callable;
 
 final class ValidateSignature implements MiddlewareInterface
 {
-
     private SignedUrlValidator $validator;
 
     /**
@@ -56,5 +55,4 @@ final class ValidateSignature implements MiddlewareInterface
 
         return $handler->handle($request);
     }
-
 }

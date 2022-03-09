@@ -787,7 +787,7 @@ class ReadWriteSessionTest extends TestCase
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->putIfMissing('foo', fn() => 'bar');
+        $session->putIfMissing('foo', fn () => 'bar');
     }
 
     /**
@@ -1074,12 +1074,10 @@ class ReadWriteSessionTest extends TestCase
         $session->saveUsing($driver, new JsonSerializer(), 'v', time());
         return $this->reloadSession($session, $driver);
     }
-
 }
 
 class SpyDriver implements SessionDriver
 {
-
     public array $written = [];
     public array $touched = [];
 
@@ -1107,6 +1105,4 @@ class SpyDriver implements SessionDriver
     {
         $this->touched[$selector] = $current_timestamp;
     }
-
 }
-

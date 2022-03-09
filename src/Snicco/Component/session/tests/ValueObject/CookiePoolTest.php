@@ -9,7 +9,6 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 
 final class CookiePoolTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -36,5 +35,4 @@ final class CookiePoolTest extends TestCase
 
         $_COOKIE = $cookie;
     }
-
 }

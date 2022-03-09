@@ -13,7 +13,6 @@ use function sprintf;
 
 final class CouldNotDestroySessions extends RuntimeException
 {
-
     /**
      * @param string[] $ids
      */
@@ -27,8 +26,9 @@ final class CouldNotDestroySessions extends RuntimeException
                 'Cant destroy session ids [%s] with the [%s] driver.',
                 implode(',', $ids),
                 $driver_identifier
-            ), intval($previous ? $previous->getCode() : 0), $previous
+            ),
+            intval($previous ? $previous->getCode() : 0),
+            $previous
         );
     }
-
 }

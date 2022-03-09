@@ -252,29 +252,24 @@ final class BundleTestHelpersTest extends TestCase
 
         $handler->handle(new RuntimeException('foo'), new ServerRequest('GET', '/'));
     }
-
 }
 
 class ServiceA
 {
-
     private ServiceB $b;
 
     public function __construct(ServiceB $b)
     {
         $this->b = $b;
     }
-
 }
 
 class ServiceB
 {
-
 }
 
 class TestingBundleBundle1 implements Bundle
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -286,7 +281,7 @@ class TestingBundleBundle1 implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(ServiceA::class, fn() => new ServiceA(new ServiceB()));
+        $kernel->container()->shared(ServiceA::class, fn () => new ServiceA(new ServiceB()));
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -301,7 +296,6 @@ class TestingBundleBundle1 implements Bundle
 
 class TestingBundleBundle2 implements Bundle
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -313,7 +307,7 @@ class TestingBundleBundle2 implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(ServiceA::class, fn() => new ServiceB());
+        $kernel->container()->shared(ServiceA::class, fn () => new ServiceB());
     }
 
     public function bootstrap(Kernel $kernel): void

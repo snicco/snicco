@@ -15,7 +15,6 @@ use RuntimeException;
  */
 final class MysqliReconnect
 {
-
     /**
      * @param Closure(): mysqli $reconnect_callable
      */
@@ -44,5 +43,4 @@ final class MysqliReconnect
 
         throw new RuntimeException('Cant reconnect with the database.');
     }
-
 }

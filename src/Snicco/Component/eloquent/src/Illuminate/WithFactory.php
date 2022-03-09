@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
 
 trait WithFactory
 {
-
     use WithIlluminateFactory;
 
     /**
@@ -24,5 +23,4 @@ trait WithFactory
         $factory = trim(static::$factory_namespace, "\\") . '\\' . $factory;
         return new $factory();
     }
-
 }

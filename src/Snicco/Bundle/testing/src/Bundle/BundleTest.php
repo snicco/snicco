@@ -214,5 +214,4 @@ final class BundleTest
         $this->removePHPFilesRecursive($this->directories->logDir());
         $this->removePHPFilesRecursive($this->directories->configDir(), $this->fixture_config_files);
     }
-
 }

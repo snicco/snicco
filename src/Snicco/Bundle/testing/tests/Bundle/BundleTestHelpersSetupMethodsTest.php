@@ -15,7 +15,6 @@ use function touch;
 
 final class BundleTestHelpersSetupMethodsTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**

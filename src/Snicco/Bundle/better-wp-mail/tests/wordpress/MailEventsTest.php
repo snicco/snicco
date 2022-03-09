@@ -28,7 +28,6 @@ use function get_class;
 
 final class MailEventsTest extends WPTestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -255,10 +254,8 @@ final class MailEventsTest extends WPTestCase
     {
         return dirname(__DIR__) . '/fixtures';
     }
-
 }
 
 class TestEmail extends Email
 {
-
 }

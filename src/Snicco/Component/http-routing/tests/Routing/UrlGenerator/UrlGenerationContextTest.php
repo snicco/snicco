@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
 final class UrlGenerationContextTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -52,6 +51,4 @@ final class UrlGenerationContextTest extends TestCase
 
         new UrlGenerationContext('https://foo.com');
     }
-
-
 }

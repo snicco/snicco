@@ -6,7 +6,6 @@ namespace Snicco\Component\Kernel;
 
 interface Bundle extends Bootstrapper
 {
-
     /**
      * The alias of your bundle is used in various places during the bootstrapping process.
      * Aliases MUST BE UNIQUE per application and MUST be considered part of the public API
@@ -14,5 +13,4 @@ interface Bundle extends Bootstrapper
      * the bundle alias should be set to the composer identifier on packagist.
      */
     public function alias(): string;
-
 }

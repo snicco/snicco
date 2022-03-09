@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Schema;
 
 trait WithTestTables
 {
-
     protected static $tables_created = false;
 
     /**
@@ -98,5 +97,4 @@ trait WithTestTables
             ['name' => 'los angeles', 'country_id' => 7, 'population' => 6],
         ]);
     }
-
 }

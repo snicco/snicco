@@ -13,7 +13,6 @@ use stdClass;
 
 final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      */
@@ -78,5 +77,4 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
-
 }

@@ -11,7 +11,6 @@ use Throwable;
 
 final class TestErrorHandler implements HttpErrorHandler
 {
-
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         throw $e;

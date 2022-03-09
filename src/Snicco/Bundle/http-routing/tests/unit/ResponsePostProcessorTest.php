@@ -53,5 +53,4 @@ final class ResponsePostProcessorTest extends TestCase
          */
         $this->assertTrue($response_post_processor->did_shutdown);
     }
-
 }

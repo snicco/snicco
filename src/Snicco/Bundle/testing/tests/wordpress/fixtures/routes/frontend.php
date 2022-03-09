@@ -14,7 +14,10 @@ return function (WebRoutingConfigurator $router) {
     $router->get('check-api-frontend', '/check-api', [WebTestCaseController::class, 'checkIfApi']);
     $router->get('full', '/full-url', [WebTestCaseController::class, 'fullUrl']);
     $router->get('custom-server', '/custom-server-vars', [WebTestCaseController::class, 'serverVars']);
-    $router->post('session-counter', '/increment-counter', [WebTestCaseController::class, 'incrementCounter']
+    $router->post(
+        'session-counter',
+        '/increment-counter',
+        [WebTestCaseController::class, 'incrementCounter']
     )->middleware(
         StatefulRequest::class
     );

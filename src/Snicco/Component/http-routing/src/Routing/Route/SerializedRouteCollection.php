@@ -20,7 +20,6 @@ use function unserialize;
  */
 final class SerializedRouteCollection implements Routes
 {
-
     /**
      * @var array<string,string>
      */

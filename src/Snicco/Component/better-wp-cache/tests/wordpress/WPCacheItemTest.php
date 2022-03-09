@@ -14,7 +14,6 @@ use function time;
 
 final class WPCacheItemTest extends WPTestCase
 {
-
     /**
      * @test
      *
@@ -52,5 +51,4 @@ final class WPCacheItemTest extends WPTestCase
         $item->expiresAfter($internal);
         $this->assertEqualsWithDelta(time() + 2, $item->expirationTimestamp(), 0.1);
     }
-
 }

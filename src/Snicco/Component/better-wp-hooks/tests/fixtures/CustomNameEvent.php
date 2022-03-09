@@ -11,7 +11,6 @@ use function get_class;
 
 final class CustomNameEvent implements ExposeToWP, Event
 {
-
     public string $value;
     private ?string $name;
 
@@ -30,5 +29,4 @@ final class CustomNameEvent implements ExposeToWP, Event
     {
         return $this;
     }
-
 }

@@ -17,7 +17,6 @@ use Whoops\Handler\PrettyPageHandler;
  */
 final class FilterablePrettyPageHandler extends PrettyPageHandler
 {
-
     protected function getExceptionFrames(): FrameCollection
     {
         $frames = parent::getExceptionFrames();
@@ -42,5 +41,4 @@ final class FilterablePrettyPageHandler extends PrettyPageHandler
 
         return $frames;
     }
-
 }

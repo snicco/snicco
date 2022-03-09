@@ -8,7 +8,6 @@ use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 
 class NamedViewRenderer implements MailRenderer
 {
-
     public function render(string $template_name, array $context = []): string
     {
         return $template_name;
@@ -18,5 +17,4 @@ class NamedViewRenderer implements MailRenderer
     {
         return $extension === 'php' || strpos($template_name, '.') !== false;
     }
-
 }

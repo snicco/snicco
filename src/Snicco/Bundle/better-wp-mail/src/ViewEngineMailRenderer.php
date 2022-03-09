@@ -14,7 +14,6 @@ use Snicco\Component\Templating\ViewEngine;
 
 final class ViewEngineMailRenderer implements MailRenderer
 {
-
     private ViewEngine $view_engine;
 
     /**
@@ -34,7 +33,9 @@ final class ViewEngineMailRenderer implements MailRenderer
             return $view->with($context)->render();
         } catch (ViewCantBeRendered $e) {
             throw new CouldNotRenderMailContent(
-                $e->getMessage(), 0, $e
+                $e->getMessage(),
+                0,
+                $e
             );
         }
     }
@@ -61,5 +62,4 @@ final class ViewEngineMailRenderer implements MailRenderer
         $this->views[$template_name] = $view;
         return $view;
     }
-
 }

@@ -25,10 +25,8 @@ use function preg_match;
 
 use const PATHINFO_FILENAME;
 
-
 final class PHPFileRouteLoader implements RouteLoader
 {
-
     public const VERSION_FLAG = '-v';
     public const FRONTEND_ROUTE_FILENAME = 'frontend';
     public const ADMIN_ROUTE_FILENAME = 'admin';
@@ -258,7 +256,7 @@ final class PHPFileRouteLoader implements RouteLoader
                         )
                     );
                     break;
-                default;
+                default:
                     throw new InvalidArgumentException("The option [$key] is not supported.");
             }
         }

@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteSegmentsTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -168,7 +167,8 @@ class RouteSegmentsTest extends HttpRunnerTestCase
     public function optional_parameters_work_at_the_end_of_the_url(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1',
+            $configurator->get(
+                'r1',
                 'users/{id}/{name?}',
                 [RoutingTestController::class, 'users']
             );
@@ -440,5 +440,4 @@ class RouteSegmentsTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/en/foo/bar');
         $this->assertResponseBody('en:bar', $request);
     }
-
 }

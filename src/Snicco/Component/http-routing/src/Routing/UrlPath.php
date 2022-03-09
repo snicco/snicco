@@ -15,7 +15,6 @@ use function rtrim;
  */
 final class UrlPath
 {
-
     // without leading slash
     private string $path;
 
@@ -112,5 +111,4 @@ final class UrlPath
 
         return ltrim($path, '/');
     }
-
 }

@@ -19,7 +19,6 @@ use stdClass;
 
 class RequestTest extends TestCase
 {
-
     private Request $request;
     private ServerRequestInterface $psr_request;
     use CreatesPsrRequests;
@@ -501,5 +500,4 @@ class RequestTest extends TestCase
         $this->assertTrue($request->routeIs('foo'));
         $this->assertFalse($request->routeIs('bar'));
     }
-
 }

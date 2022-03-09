@@ -27,7 +27,6 @@ use function sprintf;
 
 final class BaseEventDispatcher implements EventDispatcher
 {
-
     private ListenerFactory $listener_factory;
 
     /**
@@ -272,5 +271,4 @@ final class BaseEventDispatcher implements EventDispatcher
         }
         return $listener;
     }
-
 }

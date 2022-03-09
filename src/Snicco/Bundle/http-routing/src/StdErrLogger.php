@@ -38,7 +38,6 @@ use const PHP_EOL;
  */
 final class StdErrLogger extends AbstractLogger
 {
-
     private string $channel;
 
     public function __construct(string $channel = 'request')
@@ -163,6 +162,4 @@ final class StdErrLogger extends AbstractLogger
         }
         return $message;
     }
-
 }
-

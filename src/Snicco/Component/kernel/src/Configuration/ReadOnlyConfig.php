@@ -9,7 +9,6 @@ use Snicco\Component\StrArr\Arr;
 
 final class ReadOnlyConfig extends Config
 {
-
     private array $items;
 
     private function __construct(array $items)
@@ -40,5 +39,4 @@ final class ReadOnlyConfig extends Config
     {
         return $this->items;
     }
-
 }

@@ -20,7 +20,6 @@ use function time;
 
 final class EncryptedDriverTest extends TestCase
 {
-
     use SessionDriverTests;
     use UserSessionDriverTests;
 
@@ -137,8 +136,7 @@ final class EncryptedDriverTest extends TestCase
 
     private function notUserSessionDriver(): SessionDriver
     {
-        return new class implements SessionDriver {
-
+        return new class() implements SessionDriver {
             public function read(string $selector): SerializedSession
             {
                 throw new BadMethodCallException(__METHOD__);
@@ -165,6 +163,4 @@ final class EncryptedDriverTest extends TestCase
             }
         };
     }
-
 }
-

@@ -15,7 +15,6 @@ use function strpos;
 
 abstract class Payload extends Middleware
 {
-
     /**
      * @var string[]
      */
@@ -71,5 +70,4 @@ abstract class Payload extends Middleware
 
         return false;
     }
-
 }

@@ -16,7 +16,6 @@ use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 final class BladeStandaloneTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -73,5 +72,4 @@ final class BladeStandaloneTest extends BladeTestCase
 
         $this->assertSame('bar', $config['foo']);
     }
-
 }

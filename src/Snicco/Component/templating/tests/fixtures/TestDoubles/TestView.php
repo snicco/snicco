@@ -12,7 +12,6 @@ use function sprintf;
 
 class TestView implements View
 {
-
     /**
      * @var array<string,mixed>
      */

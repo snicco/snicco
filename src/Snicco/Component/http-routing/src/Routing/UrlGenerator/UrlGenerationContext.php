@@ -52,6 +52,4 @@ final class UrlGenerationContext
     {
         return $this->https_by_default;
     }
-    
-
 }

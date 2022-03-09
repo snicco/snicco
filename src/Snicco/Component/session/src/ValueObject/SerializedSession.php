@@ -12,7 +12,6 @@ use function is_string;
 
 final class SerializedSession
 {
-
     private string $data;
     private int $last_activity;
     private string $hashed_validator;
@@ -72,5 +71,4 @@ final class SerializedSession
     {
         return $this->user_id;
     }
-
 }

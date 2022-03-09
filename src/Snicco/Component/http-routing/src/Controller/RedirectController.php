@@ -15,7 +15,6 @@ use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
  */
 final class RedirectController extends Controller
 {
-
     /**
      * @param mixed ...$args
      *
@@ -60,5 +59,4 @@ final class RedirectController extends Controller
 
         return $this->respondWith()->redirectToRoute($route, $arguments, $status_code);
     }
-
 }

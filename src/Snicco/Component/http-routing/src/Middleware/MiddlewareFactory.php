@@ -20,7 +20,6 @@ use function sprintf;
  */
 final class MiddlewareFactory
 {
-
     private ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)
@@ -63,5 +62,4 @@ final class MiddlewareFactory
         }
         return $middleware;
     }
-
 }

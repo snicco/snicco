@@ -14,7 +14,6 @@ use function get_user_by;
 
 trait CreateWordPressUsers
 {
-
     abstract protected function userFactory(): WP_UnitTest_Factory_For_User;
 
     final protected function createAdmin(array $args = []): WP_User
@@ -70,5 +69,4 @@ trait CreateWordPressUsers
         $id = $user instanceof WP_User ? $user->ID : $user;
         PHPUnit::assertNotInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [$id] does exist.");
     }
-
 }

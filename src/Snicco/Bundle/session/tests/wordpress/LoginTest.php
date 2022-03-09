@@ -265,5 +265,4 @@ final class LoginTest extends WPTestCase
         ob_end_clean();
         $this->assertCount(0, $this->driver->all());
     }
-
 }

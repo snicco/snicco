@@ -16,7 +16,6 @@ use Snicco\Component\TestableClock\TestClock;
  */
 trait SignedUrlStorageTests
 {
-
     /**
      * @test
      */
@@ -71,7 +70,7 @@ trait SignedUrlStorageTests
     /**
      * @test
      */
-    final function the_url_is_removed_from_storage_after_the_last_max_usages(): void
+    final public function the_url_is_removed_from_storage_after_the_last_max_usages(): void
     {
         $storage = $this->createStorage(new TestClock());
 
@@ -98,7 +97,7 @@ trait SignedUrlStorageTests
     /**
      * @test
      */
-    final function decrementing_a_missing_signature_throws_an_exception(): void
+    final public function decrementing_a_missing_signature_throws_an_exception(): void
     {
         $storage = $this->createStorage(new TestClock());
 
@@ -143,5 +142,4 @@ trait SignedUrlStorageTests
     }
 
     abstract protected function createStorage(Clock $clock): SignedUrlStorage;
-
 }

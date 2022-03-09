@@ -14,7 +14,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class AdminRoutesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -50,8 +49,7 @@ class AdminRoutesTest extends HttpRunnerTestCase
      * @test
      */
     public function an_exception_is_thrown_if_admin_routes_are_registered_with_pending_attributes_without_a_call_to_group(
-    ): void
-    {
+    ): void {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('group');
 
@@ -230,8 +228,7 @@ class AdminRoutesTest extends HttpRunnerTestCase
      * @test
      */
     public function admin_routes_do_not_match_for_non_admin_requests_that_have_the_same_rewritten_url_but_are_not_loaded_from_withing_the_admin_dashboard(
-    ): void
-    {
+    ): void {
         $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
             $configurator->page(
                 'r1',
@@ -266,5 +263,4 @@ class AdminRoutesTest extends HttpRunnerTestCase
         $this->assertStringContainsString('page=foo', $as_string);
         $this->assertResponseBody($as_string, $request);
     }
-
 }

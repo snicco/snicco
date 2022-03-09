@@ -12,7 +12,6 @@ use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 
 final class TestErrorHandlerTest extends TestCase
 {
-
     /**
      * @test
      */

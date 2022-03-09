@@ -8,7 +8,5 @@ use Throwable;
 
 interface ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable;
-
 }

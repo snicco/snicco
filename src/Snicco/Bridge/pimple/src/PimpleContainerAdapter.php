@@ -14,7 +14,6 @@ use Snicco\Component\Kernel\Exception\FrozenService;
 
 final class PimpleContainerAdapter extends DIContainer
 {
-
     private Container $pimple;
     private bool $locked = false;
 
@@ -75,5 +74,4 @@ final class PimpleContainerAdapter extends DIContainer
     {
         $this->locked = true;
     }
-
 }

@@ -9,7 +9,6 @@ use Snicco\Middleware\HttpsOnly\HttpsOnly;
 
 final class HttpsOnlyTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -54,5 +53,4 @@ final class HttpsOnlyTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->assertableResponse()->assertOk();
     }
-
 }

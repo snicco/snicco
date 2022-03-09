@@ -9,7 +9,6 @@ use Throwable;
 
 final class NewableListenerFactory implements ListenerFactory
 {
-
     /**
      * @psalm-suppress MixedMethodCall
      */
@@ -25,5 +24,4 @@ final class NewableListenerFactory implements ListenerFactory
             );
         }
     }
-
 }
