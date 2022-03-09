@@ -37,7 +37,7 @@ final class EncryptionBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString()
+                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
         });
         $kernel->boot();
@@ -56,7 +56,7 @@ final class EncryptionBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString()
+                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
         });
         $kernel->boot();
@@ -76,7 +76,7 @@ final class EncryptionBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString()
+                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
         });
         $kernel->boot();
@@ -127,7 +127,7 @@ final class EncryptionBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString() . 'bad'
+                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString() . 'bad',
             ]);
         });
 
@@ -183,7 +183,9 @@ final class EncryptionBundleTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/encryption.php',
-            '<?php return ' . var_export([EncryptionOption::KEY_ASCII => $key], true) . ';'
+            '<?php return ' . var_export([
+                EncryptionOption::KEY_ASCII => $key,
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/encryption.php'));
@@ -194,7 +196,9 @@ final class EncryptionBundleTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [EncryptionOption::KEY_ASCII => $key],
+            [
+                EncryptionOption::KEY_ASCII => $key,
+            ],
             require $this->directories->configDir() . '/encryption.php'
         );
     }
@@ -211,7 +215,7 @@ final class EncryptionBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString()
+                EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
         });
 

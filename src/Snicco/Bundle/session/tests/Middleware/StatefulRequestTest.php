@@ -128,7 +128,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $this->assertCount(1, $this->session_driver->all());
 
         $request = $this->frontendRequest()->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()->asString(),
         ]);
         $response = $this->runMiddleware($this->getMiddleware(), $request);
         $response->assertNextMiddlewareCalled();
@@ -206,7 +206,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $this->assertSame(urlencode($response->getHeaderLine('s-id')), $cookie->value);
 
         $request_with_cookie = $this->frontendRequest()->withCookieParams([
-            'test_cookie' => urldecode($cookie->value)
+            'test_cookie' => urldecode($cookie->value),
         ]);
 
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
@@ -282,7 +282,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
 
         $this->logger->hasError([
-            'message' => 'Garbage collection failed.'
+            'message' => 'Garbage collection failed.',
         ]);
     }
 
@@ -336,7 +336,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
 
         $request = $this->frontendRequest()->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()->asString(),
         ]);
         $this->runMiddleware($this->getMiddleware(), $request->withUserId(1));
 

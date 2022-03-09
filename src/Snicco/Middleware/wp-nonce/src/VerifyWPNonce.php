@@ -42,7 +42,9 @@ final class VerifyWPNonce extends Middleware
             }
 
             return $response->withViewData(
-                ['wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path)]
+                [
+                    'wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path),
+                ]
             );
         }
 

@@ -33,8 +33,12 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withMiddlewareGroups(['frontend' => [FooMiddleware::class]]);
-        $this->withMiddlewareAlias(['partial' => BarMiddleware::class]);
+        $this->withMiddlewareGroups([
+            'frontend' => [FooMiddleware::class],
+        ]);
+        $this->withMiddlewareAlias([
+            'partial' => BarMiddleware::class,
+        ]);
         self::$web_include_partial = false;
         $this->bad_routes = dirname(__DIR__, 2) . '/fixtures/bad-routes';
         $this->api_routes = $this->routes_dir . '/api';
@@ -299,7 +303,10 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
      */
     public function the_default_options_can_include_the_file_name_as_middleware_for_each_api_file(): void
     {
-        $this->withMiddlewareGroups(['rest.v1' => [BarMiddleware::class], 'partials' => [FooMiddleware::class]]);
+        $this->withMiddlewareGroups([
+            'rest.v1' => [BarMiddleware::class],
+            'partials' => [FooMiddleware::class],
+        ]);
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],
@@ -458,7 +465,9 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
      */
     public function test_all_custom_options(): void
     {
-        $this->withMiddlewareGroups(['custom_middleware' => [FooMiddleware::class]]);
+        $this->withMiddlewareGroups([
+            'custom_middleware' => [FooMiddleware::class],
+        ]);
 
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
@@ -467,7 +476,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
                 RoutingConfigurator::NAME_KEY => 'foo',
                 RoutingConfigurator::NAMESPACE_KEY => self::CONTROLLER_NAMESPACE,
                 RoutingConfigurator::MIDDLEWARE_KEY => ['custom_middleware'],
-                RoutingConfigurator::PREFIX_KEY => '/custom_prefix'
+                RoutingConfigurator::PREFIX_KEY => '/custom_prefix',
             ])
         );
 
@@ -491,7 +500,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
             [],
             [$this->api_routes],
             new ConfigurableLoadingOptions([
-                'bogus' => 'foo'
+                'bogus' => 'foo',
             ])
         );
 
@@ -503,7 +512,9 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
      */
     public function a_file_named_admin_has_the_admin_middleware_and_prefix_prepended(): void
     {
-        $this->withMiddlewareGroups(['admin' => [FooMiddleware::class]]);
+        $this->withMiddlewareGroups([
+            'admin' => [FooMiddleware::class],
+        ]);
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],

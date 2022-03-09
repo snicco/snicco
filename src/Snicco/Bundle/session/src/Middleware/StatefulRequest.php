@@ -157,7 +157,7 @@ final class StatefulRequest extends Middleware
             'samesite' => $same_site,
             'secure' => $cookie->secureOnly(),
             'path' => $cookie->path(),
-            'httponly' => $cookie->httpOnly()
+            'httponly' => $cookie->httpOnly(),
         ]);
     }
 
@@ -222,7 +222,9 @@ final class StatefulRequest extends Middleware
         try {
             $this->session_manager->gc();
         } catch (CouldNotDestroySessions $e) {
-            $this->logger->log(LogLevel::ERROR, 'Garbage collection failed.', ['exception' => $e]);
+            $this->logger->log(LogLevel::ERROR, 'Garbage collection failed.', [
+                'exception' => $e,
+            ]);
         }
     }
 }

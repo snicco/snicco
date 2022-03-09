@@ -75,7 +75,7 @@ final class RoutingFunctionalityTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
@@ -106,7 +106,7 @@ final class RoutingFunctionalityTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
@@ -139,7 +139,7 @@ final class RoutingFunctionalityTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
@@ -169,7 +169,7 @@ final class RoutingFunctionalityTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
@@ -200,7 +200,7 @@ final class RoutingFunctionalityTest extends TestCase
             ->through([
                 SimpleTemplating::class,
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
@@ -233,7 +233,7 @@ final class RoutingFunctionalityTest extends TestCase
             ->through([
                 SimpleTemplating::class,
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('no routing performed');
             });

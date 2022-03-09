@@ -15,7 +15,10 @@ final class TransformContentType implements ExceptionTransformer
         return HttpException::fromPrevious(
             500,
             $e,
-            ['content-type' => 'application/json', 'X-Foo' => 'BAR']
+            [
+                'content-type' => 'application/json',
+                'X-Foo' => 'BAR',
+            ]
         );
     }
 }

@@ -305,7 +305,9 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $regex = sprintf('(?!%s).+', implode('|', $dont_match_request_including));
 
         $route = $this->any(Route::FALLBACK_NAME, '/{path}', $fallback_action)
-            ->requirements(['path' => $regex])
+            ->requirements([
+                'path' => $regex,
+            ])
             ->condition(RouteCondition::NEGATE, IsAdminDashboardRequest::class);
 
         $this->locked = true;

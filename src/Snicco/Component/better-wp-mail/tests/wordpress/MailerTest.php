@@ -53,13 +53,22 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer(new WPMailTransport());
 
-        $admin1 = $this->createAdmin(['user_email' => 'admin1@web.de', 'display_name' => 'admin1']);
-        $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
+        $admin1 = $this->createAdmin([
+            'user_email' => 'admin1@web.de',
+            'display_name' => 'admin1',
+        ]);
+        $admin2 = $this->createAdmin([
+            'user_email' => 'admin2@web.de',
+            'display_name' => 'admin2',
+        ]);
 
         $email = new Email();
         $email = $email->withTo([['c@web.de', 'Calvin Alkan'], ['m@web.de', 'Marlon Alkan']])
             ->withCc(
-                [['name' => 'Jon', 'email' => 'jon@web.de'], ['jane@web.de', 'Jane Doe']]
+                [[
+                    'name' => 'Jon',
+                    'email' => 'jon@web.de',
+                ], ['jane@web.de', 'Jane Doe']]
             )
             ->withBcc([$admin1, $admin2])
             ->withSubject('Hi Calvin')
@@ -112,10 +121,15 @@ final class MailerTest extends WPTestCase
 
         $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), null, $config);
 
-        $email = (new Email())->withTo(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])
+        $email = (new Email())->withTo([
+            'name' => 'Calvin Alkan',
+            'email' => 'c@web.de',
+        ])
             ->withTextBody('foo')
             ->withSubject('foo')
-            ->addCustomHeaders(['X-FOO' => 'BAR']);
+            ->addCustomHeaders([
+                'X-FOO' => 'BAR',
+            ]);
 
         $mailer->send($email);
 
@@ -255,7 +269,10 @@ final class MailerTest extends WPTestCase
         $email = (new Email())->withTo('Calvin Alkan <c@web.de>')
             ->withSubject('Hello Calvin')
             ->withHtmlTemplate($this->fixtures_dir . '/php-mail.php')
-            ->addContext(['foo' => 'FOO', 'baz' => 'BAZ']);
+            ->addContext([
+                'foo' => 'FOO',
+                'baz' => 'BAZ',
+            ]);
 
         $mailer->send($email);
 
@@ -352,8 +369,14 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer(new WPMailTransport());
 
-        $admin1 = $this->createAdmin(['user_email' => 'admin1@web.de', 'display_name' => 'admin1']);
-        $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
+        $admin1 = $this->createAdmin([
+            'user_email' => 'admin1@web.de',
+            'display_name' => 'admin1',
+        ]);
+        $admin2 = $this->createAdmin([
+            'user_email' => 'admin2@web.de',
+            'display_name' => 'admin2',
+        ]);
 
         $email = new TestMail();
 
@@ -502,7 +525,10 @@ final class MailerTest extends WPTestCase
                 new WP_Error(
                     'wp_mail_failed',
                     'Something went wrong here.',
-                    ['to' => 'foo', 'subject' => 'bar']
+                    [
+                        'to' => 'foo',
+                        'subject' => 'bar',
+                    ]
                 )
             );
         });
@@ -540,7 +566,10 @@ final class MailerTest extends WPTestCase
                 new WP_Error(
                     'wp_mail_failed',
                     'Something went wrong here.',
-                    ['to' => 'foo', 'subject' => 'bar']
+                    [
+                        'to' => 'foo',
+                        'subject' => 'bar',
+                    ]
                 )
             );
         });
@@ -1025,7 +1054,9 @@ final class MailerTest extends WPTestCase
     private function createAdmin(array $data): WP_User
     {
         return $this->factory()->user->create_and_get(
-            array_merge($data, ['role' => 'administrator'])
+            array_merge($data, [
+                'role' => 'administrator',
+            ])
         );
     }
 

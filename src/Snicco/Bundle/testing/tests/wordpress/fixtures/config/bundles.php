@@ -11,6 +11,6 @@ return [
     Environment::ALL => [
         BetterWPHooksBundle::class,
         BetterWPMailBundle::class,
-        HttpRoutingBundle::class
-    ]
+        HttpRoutingBundle::class,
+    ],
 ];

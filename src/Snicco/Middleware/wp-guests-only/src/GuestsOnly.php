@@ -34,7 +34,9 @@ final class GuestsOnly extends Middleware
         }
 
         if ($request->isExpectingJson()) {
-            return $this->respondWith()->json(['message' => $this->json_message], 403);
+            return $this->respondWith()->json([
+                'message' => $this->json_message,
+            ], 403);
         }
 
         if ($this->redirect_to) {

@@ -115,7 +115,7 @@ final class BrowserTest extends WPTestCase
         $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'foo' => 'bar',
-            'baz' => 'biz'
+            'baz' => 'biz',
         ], $body);
     }
 
@@ -141,7 +141,7 @@ final class BrowserTest extends WPTestCase
         $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'cookie1' => 'foo',
-            'cookie2' => 'bar'
+            'cookie2' => 'bar',
         ], $body);
     }
 
@@ -152,7 +152,10 @@ final class BrowserTest extends WPTestCase
     {
         $browser = $this->getBrowser();
 
-        $browser->request('POST', '/body-as-json', ['foo' => 'bar', 'baz' => 'biz']);
+        $browser->request('POST', '/body-as-json', [
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ]);
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
@@ -161,7 +164,7 @@ final class BrowserTest extends WPTestCase
         $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'foo' => 'bar',
-            'baz' => 'biz'
+            'baz' => 'biz',
         ], $body);
     }
 
@@ -173,7 +176,7 @@ final class BrowserTest extends WPTestCase
         $browser = $this->getBrowser();
 
         $browser->request('POST', '/files-as-json', [], [
-            'php-image-custom-name' => dirname(__DIR__) . '/fixtures/php-image.png'
+            'php-image-custom-name' => dirname(__DIR__) . '/fixtures/php-image.png',
         ]);
 
         $response = $browser->getResponse();
@@ -184,8 +187,8 @@ final class BrowserTest extends WPTestCase
         $this->assertEquals([
             [
                 'size' => filesize(dirname(__DIR__) . '/fixtures/php-image.png'),
-                'name' => 'php-image-custom-name'
-            ]
+                'name' => 'php-image-custom-name',
+            ],
         ], $body);
     }
 

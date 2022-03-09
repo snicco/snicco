@@ -315,7 +315,7 @@ class TestableEventDispatcherTestSubscriber implements EventSubscriber
     public static function subscribedEvents(): array
     {
         return [
-            stdClass::class => 'foo'
+            stdClass::class => 'foo',
         ];
     }
 

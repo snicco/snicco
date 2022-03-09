@@ -19,10 +19,16 @@ final class JsonSerializerTest extends TestCase
     public function test_serialize_deserialize(): void
     {
         $s = new JsonSerializer();
-        $data = $s->serialize(['foo' => 'bar']);
-        $this->assertSame(json_encode(['foo' => 'bar']), $data);
+        $data = $s->serialize([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame(json_encode([
+            'foo' => 'bar',
+        ]), $data);
 
-        $this->assertSame(['foo' => 'bar'], $s->deserialize($data));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $s->deserialize($data));
     }
 
     /**
@@ -32,7 +38,9 @@ final class JsonSerializerTest extends TestCase
     {
         $this->expectException(JsonException::class);
         $s = new JsonSerializer();
-        $s->serialize(["\xB1\x31" => 'bar']);
+        $s->serialize([
+            "\xB1\x31" => 'bar',
+        ]);
     }
 
     /**

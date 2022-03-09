@@ -41,7 +41,7 @@ final class ConfigExceptionsTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
-                RoutingOption::HOST => ''
+                RoutingOption::HOST => '',
             ]);
         });
 
@@ -108,7 +108,9 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, ['foo' => 'bar']);
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, [
+                'foo' => 'bar',
+            ]);
         });
 
         $kernel->boot();
@@ -174,7 +176,7 @@ final class ConfigExceptionsTest extends TestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
                 RoutingOption::HOST => 'snicco.com',
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus']
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus'],
             ]);
         });
 
@@ -217,7 +219,9 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => 'bar']);
+            $config->set('middleware.' . MiddlewareOption::GROUPS, [
+                'foo' => 'bar',
+            ]);
         });
 
         $kernel->boot();
@@ -240,7 +244,9 @@ final class ConfigExceptionsTest extends TestCase
         );
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => ['bar', 1]]);
+            $config->set('middleware.' . MiddlewareOption::GROUPS, [
+                'foo' => ['bar', 1],
+            ]);
         });
 
         $kernel->boot();
@@ -265,7 +271,10 @@ final class ConfigExceptionsTest extends TestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::ALIASES,
-                ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
+                [
+                    'foo' => MiddlewareOne::class,
+                    MiddlewareTwo::class,
+                ]
             );
         });
 
@@ -291,7 +300,9 @@ final class ConfigExceptionsTest extends TestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::ALIASES,
-                ['foo' => stdClass::class]
+                [
+                    'foo' => stdClass::class,
+                ]
             );
         });
 
@@ -351,7 +362,7 @@ final class ConfigExceptionsTest extends TestCase
                     'frontend',
                     'admin',
                     'api',
-                    'foo'
+                    'foo',
                 ]
             );
         });
@@ -495,8 +506,8 @@ final class ConfigExceptionsTest extends TestCase
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => LogLevel::ERROR,
-                    stdClass::class => LogLevel::CRITICAL
-                ]
+                    stdClass::class => LogLevel::CRITICAL,
+                ],
             ]);
         });
         $kernel->boot();
@@ -522,7 +533,7 @@ final class ConfigExceptionsTest extends TestCase
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => 'bogus',
-                ]
+                ],
             ]);
         });
         $kernel->boot();

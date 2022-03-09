@@ -58,12 +58,12 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         // test_string is varchar(30)
 
         $result = $this->wpdb->insert('test_table', [
-            'test_string' => str_repeat('X', 30)
+            'test_string' => str_repeat('X', 30),
         ]);
         $this->assertSame(1, $result);
 
         $result = $this->wpdb->insert('test_table', [
-            'test_string' => str_repeat('X', 31)
+            'test_string' => str_repeat('X', 31),
         ]);
         // wpdb reports boolean false.
         $this->assertFalse($result);
@@ -85,7 +85,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
 
         // wpdb is still not reporting
         $result = $this->wpdb->insert('test_table', [
-            'test_string' => str_repeat('X', 31)
+            'test_string' => str_repeat('X', 31),
         ]);
         $this->assertFalse($result);
     }
@@ -105,7 +105,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
 
         $result = $this->wpdb->insert('test_table', [
             'test_string' => 'foo',
-            'test_int' => -10
+            'test_int' => -10,
         ]);
         // invalid data, wpdb no exception, money is clamped to 0.
         // The insert went through with invalid data.
@@ -132,7 +132,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         // wpdb is still wrong.
         $result = $this->wpdb->insert('test_table', [
             'test_string' => 'baz',
-            'test_int' => -10
+            'test_int' => -10,
         ]);
         // invalid data, wpdb no exception, money is clamped to 0.
         // The insert went through with invalid data.

@@ -10,7 +10,6 @@ use Snicco\Component\Kernel\Tests\fixtures\bundles\BundleProduction;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-
     Environment::ALL => [
         AllEnvBundle::class,
         Bundle1::class,
@@ -20,6 +19,5 @@ return [
 
     Environment::PROD => [
         BundleProduction::class,
-    ]
-
+    ],
 ];

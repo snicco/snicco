@@ -77,7 +77,7 @@ final class InMemoryDriver implements UserSessionsDriver
             'data' => $session->data(),
             'last_activity' => $session->lastActivity(),
             'hashed_validator' => $session->hashedValidator(),
-            'user_id' => $session->userId()
+            'user_id' => $session->userId(),
         ];
     }
 

@@ -105,14 +105,18 @@ class RequestTest extends TestCase
     {
         $this->assertSame(null, $this->request->cookie('foo'));
 
-        $request = $this->request->withCookieParams(['foo' => 'bar']);
+        $request = $this->request->withCookieParams([
+            'foo' => 'bar',
+        ]);
 
         $this->assertSame(null, $this->request->cookie('foo'));
         $this->assertSame('bar', $request->cookie('foo'));
 
         $this->assertSame('default', $request->cookie('baz', 'default'));
 
-        $request = $this->request->withCookieParams(['foo' => ['bar', 'baz']]);
+        $request = $this->request->withCookieParams([
+            'foo' => ['bar', 'baz'],
+        ]);
         $this->assertSame('bar', $request->cookie('foo'));
     }
 
@@ -242,7 +246,9 @@ class RequestTest extends TestCase
     {
         $request = new Request(
             $this->psrServerRequestFactory()
-                ->createServerRequest('GET', '/foo', ['REMOTE_ADDR' => '12345567'])
+                ->createServerRequest('GET', '/foo', [
+                    'REMOTE_ADDR' => '12345567',
+                ])
         );
 
         $this->assertSame('12345567', $request->ip());
@@ -364,15 +370,15 @@ class RequestTest extends TestCase
         $this->assertSame([
             // default headers, header case is preserved
             'Host' => [
-                '127.0.0.1'
+                '127.0.0.1',
             ],
             'foo' => [
                 'bar1',
-                'bar2'
+                'bar2',
             ],
             'baz' => [
-                'biz'
-            ]
+                'biz',
+            ],
         ], $request->getHeaders());
     }
 
@@ -410,11 +416,11 @@ class RequestTest extends TestCase
 
         $stream = $this->psrStreamFactory()->createStream('foo');
         $request = $this->request->withUploadedFiles([
-            $file = $this->psrUploadedFileFactory()->createUploadedFile($stream)
+            $file = $this->psrUploadedFileFactory()->createUploadedFile($stream),
         ]);
 
         $this->assertSame([
-            $file
+            $file,
         ], $request->getUploadedFiles());
     }
 
@@ -430,13 +436,13 @@ class RequestTest extends TestCase
 
         $this->assertSame([
             'foo' => 'bar',
-            'baz' => 'biz'
+            'baz' => 'biz',
         ], $request->getAttributes());
 
         $request = $request->withoutAttribute('foo');
 
         $this->assertSame([
-            'baz' => 'biz'
+            'baz' => 'biz',
         ], $request->getAttributes());
     }
 

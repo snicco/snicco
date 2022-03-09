@@ -200,7 +200,9 @@ class AdminRoutesTest extends HttpRunnerTestCase
             );
         });
 
-        $url = $routing->urlGenerator()->toRoute('r1', ['bar' => 'baz']);
+        $url = $routing->urlGenerator()->toRoute('r1', [
+            'bar' => 'baz',
+        ]);
         $this->assertSame('/wp-admin/admin.php?bar=baz&page=foo', $url);
     }
 

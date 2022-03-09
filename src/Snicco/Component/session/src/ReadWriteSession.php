@@ -86,7 +86,9 @@ final class ReadWriteSession implements Session
         $this->checkIfLocked();
 
         if (!is_array($key)) {
-            $key = [$key => $value];
+            $key = [
+                $key => $value,
+            ];
         }
 
         foreach ($key as $array_key => $array_value) {

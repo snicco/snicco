@@ -62,7 +62,7 @@ final class Psr17FactoryDiscovery
                 'uploaded_file' => '\GuzzleHttp\Psr7\HttpFactory',
                 'stream' => '\GuzzleHttp\Psr7\HttpFactory',
                 'response' => '\GuzzleHttp\Psr7\HttpFactory',
-            ]
+            ],
         ];
     }
 

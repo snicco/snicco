@@ -8,6 +8,6 @@ return [
     MiddlewareOption::GROUPS => [
         Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator::GLOBAL_MIDDLEWARE => [
             // empty
-        ]
-    ]
+        ],
+    ],
 ];

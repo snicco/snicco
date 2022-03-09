@@ -42,7 +42,9 @@ final class RFC3986EncoderTest extends TestCase
 
         $arg = 'münchen=&' . implode('', $allowed) . '+';
 
-        $res = (new RFC3986Encoder())->encodeQuery(['foo' => $arg]);
+        $res = (new RFC3986Encoder())->encodeQuery([
+            'foo' => $arg,
+        ]);
 
         $expected = rawurlencode('münchen=&') . implode('', $allowed) . '+';
         $this->assertSame('foo=' . $expected, $res);
@@ -79,7 +81,9 @@ final class RFC3986EncoderTest extends TestCase
     {
         $encoder = new RFC3986Encoder();
 
-        $this->assertSame('foo=bar+', $encoder->encodeQuery(['foo' => 'bar+']));
+        $this->assertSame('foo=bar+', $encoder->encodeQuery([
+            'foo' => 'bar+',
+        ]));
         $this->assertSame('section1+', $encoder->encodeFragment('section1+'));
     }
 
@@ -90,7 +94,9 @@ final class RFC3986EncoderTest extends TestCase
     {
         $encoder = new RFC3986Encoder();
 
-        $this->assertSame('foo=bar?', $encoder->encodeQuery(['foo' => 'bar?']));
+        $this->assertSame('foo=bar?', $encoder->encodeQuery([
+            'foo' => 'bar?',
+        ]));
         $this->assertSame('section1?', $encoder->encodeFragment('section1?'));
     }
 
@@ -101,7 +107,9 @@ final class RFC3986EncoderTest extends TestCase
     {
         $encoder = new RFC3986Encoder();
 
-        $this->assertSame('foo=bar/', $encoder->encodeQuery(['foo' => 'bar/']));
+        $this->assertSame('foo=bar/', $encoder->encodeQuery([
+            'foo' => 'bar/',
+        ]));
         $this->assertSame('section1/', $encoder->encodeFragment('section1/'));
     }
 
@@ -111,7 +119,10 @@ final class RFC3986EncoderTest extends TestCase
     public function by_default_question_marks_and_equals_signs_are_not_allowed_in_the_query(): void
     {
         $encoder = new RFC3986Encoder();
-        $this->assertSame('foo=%26&bar=%3D', $encoder->encodeQuery(['foo' => '&', 'bar' => '=']));
+        $this->assertSame('foo=%26&bar=%3D', $encoder->encodeQuery([
+            'foo' => '&',
+            'bar' => '=',
+        ]));
     }
 
     /**
@@ -120,6 +131,9 @@ final class RFC3986EncoderTest extends TestCase
     public function question_marks_and_equals_signs_can_be_allowed_in_the_query(): void
     {
         $encoder = new RFC3986Encoder([]);
-        $this->assertSame('foo=&&bar==', $encoder->encodeQuery(['foo' => '&', 'bar' => '=']));
+        $this->assertSame('foo=&&bar==', $encoder->encodeQuery([
+            'foo' => '&',
+            'bar' => '=',
+        ]));
     }
 }

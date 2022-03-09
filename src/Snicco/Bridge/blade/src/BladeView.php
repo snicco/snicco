@@ -61,7 +61,9 @@ final class BladeView implements View
     public function with($key, $value = null): View
     {
         $new = clone $this;
-        $context = is_array($key) ? $key : [$key => $value];
+        $context = is_array($key) ? $key : [
+            $key => $value,
+        ];
         /**
          * @var mixed $value
          */

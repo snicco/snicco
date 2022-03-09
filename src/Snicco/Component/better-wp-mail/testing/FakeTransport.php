@@ -180,7 +180,7 @@ final class FakeTransport implements Transport
     {
         $class = get_class($email);
 
-        $this->sent_mails[$class][] = [$email, $envelope, ];
+        $this->sent_mails[$class][] = [$email, $envelope];
     }
 
     /**

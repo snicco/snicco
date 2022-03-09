@@ -67,7 +67,7 @@ final class SingleSessionManagerTest extends TestCase
             'cookie_name' => 'test',
             'idle_timeout_in_sec' => 10,
             'rotation_interval_in_sec' => 20,
-            'garbage_collection_percentage' => 0
+            'garbage_collection_percentage' => 0,
         ]);
 
         $manager = new SingleSessionSessionManager($this->getSessionManager($config));
@@ -92,7 +92,7 @@ final class SingleSessionManagerTest extends TestCase
             'cookie_name' => 'test',
             'idle_timeout_in_sec' => 10,
             'rotation_interval_in_sec' => 20,
-            'garbage_collection_percentage' => 100
+            'garbage_collection_percentage' => 100,
         ]);
 
         $manager = new SingleSessionSessionManager($this->getSessionManager($config, $driver));

@@ -16,7 +16,13 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_get(): void
     {
-        $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => ['biz' => 'boo']]);
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => [
+                'biz' => 'boo',
+                
+            ],
+        ]);
 
         $this->assertSame('bar', $config->get('foo'));
         $this->assertSame('boo', $config->get('baz.biz'));
@@ -27,7 +33,13 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_get_on_missing_key_throws_exception(): void
     {
-        $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => ['biz' => 'boo']]);
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => [
+                'biz' => 'boo',
+                
+            ],
+        ]);
 
         $this->assertSame('bar', $config->get('foo'));
 
@@ -42,7 +54,10 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_get_string(): void
     {
-        $config = ReadOnlyConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => 1,
+        ]);
 
         $this->assertSame('bar', $config->getString('foo'));
 
@@ -56,7 +71,10 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_get_int(): void
     {
-        $config = ReadOnlyConfig::fromArray(['foo' => 1, 'baz' => 'biz']);
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => 1,
+            'baz' => 'biz',
+        ]);
 
         $this->assertSame(1, $config->getInteger('foo'));
 
@@ -70,7 +88,10 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_get_array(): void
     {
-        $config = ReadOnlyConfig::fromArray(['foo' => ['bar'], 'baz' => 'biz']);
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => ['bar'],
+            'baz' => 'biz',
+        ]);
 
         $this->assertSame(['bar'], $config->getArray('foo'));
 
@@ -85,7 +106,13 @@ final class ReadOnlyConfigTest extends TestCase
      */
     public function test_boolean(): void
     {
-        $config = ReadOnlyConfig::fromArray(['foo' => ['bar' => true], 'baz' => false, 'biz' => 'boo']);
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => [
+                'bar' => true,
+            ],
+            'baz' => false,
+            'biz' =>
+             'boo', ]);
 
         $this->assertSame(false, $config->getBoolean('baz'));
         $this->assertSame(true, $config->getBoolean('foo.bar'));

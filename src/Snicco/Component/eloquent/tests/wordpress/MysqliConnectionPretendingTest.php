@@ -32,7 +32,11 @@ final class MysqliConnectionPretendingTest extends WPTestCase
 
         $sql = $connection->pretend(function (MysqliConnection $connection) {
             $result = $connection->table('cities')->insert(
-                ['name' => 'düsseldorf', 'country_id' => 1, 'population' => 1]
+                [
+                    'name' => 'düsseldorf',
+                    'country_id' => 1,
+                    'population' => 1,
+                ]
             );
             $this->assertTrue($result);
         });
@@ -66,7 +70,9 @@ final class MysqliConnectionPretendingTest extends WPTestCase
 
         $sql = $connection->pretend(function (MysqliConnection $connection) {
             $result = $connection->table('cities')->where('country_id', 1)->update(
-                ['country_id' => 3]
+                [
+                    'country_id' => 3,
+                ]
             );
             $this->assertSame(0, $result);
         });

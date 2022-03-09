@@ -46,8 +46,12 @@ final class MysqliConnectionQueriesTest extends WPTestCase
             ->toArray();
 
         $this->assertCount(2, $records);
-        $this->assertEquals((object)['name' => 'berlin'], $records[0]);
-        $this->assertEquals((object)['name' => 'munich'], $records[1]);
+        $this->assertEquals((object)[
+            'name' => 'berlin',
+        ], $records[0]);
+        $this->assertEquals((object)[
+            'name' => 'munich',
+        ], $records[1]);
     }
 
     /**
@@ -60,7 +64,9 @@ final class MysqliConnectionQueriesTest extends WPTestCase
             [2]
         );
 
-        $this->assertEquals((object)['name' => 'madrid'], $records[0]);
+        $this->assertEquals((object)[
+            'name' => 'madrid',
+        ], $records[0]);
     }
 
     private function getMysqliConnection(): MysqliConnection
@@ -78,7 +84,11 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame(2, DB::table('cities')->where('country_id', 2)->count());
 
         $success = DB::table('cities')->insert([
-            ['name' => 'seville', 'country_id' => 2, 'population' => 1],
+            [
+                'name' => 'seville',
+                'country_id' => 2,
+                'population' => 1,
+            ],
         ]);
 
         $this->assertTrue($success);
@@ -107,7 +117,9 @@ final class MysqliConnectionQueriesTest extends WPTestCase
     {
         $rows = DB::table('cities')
             ->where('country_id', 2)
-            ->update(['population' => 5]);
+            ->update([
+                'population' => 5,
+            ]);
 
         $this->assertSame(2, $rows);
 
@@ -123,7 +135,9 @@ final class MysqliConnectionQueriesTest extends WPTestCase
     {
         $rows = DB::table('cities')
             ->where('country_id', 10)
-            ->update(['population' => 5]);
+            ->update([
+                'population' => 5,
+            ]);
 
         $this->assertSame(0, $rows);
     }
@@ -176,7 +190,10 @@ final class MysqliConnectionQueriesTest extends WPTestCase
 
         $this->assertSame(
             2,
-            $connection->table('cities')->where(['country_id' => 1, 'population' => 3])->count()
+            $connection->table('cities')->where([
+                'country_id' => 1,
+                'population' => 3,
+            ])->count()
         );
     }
 

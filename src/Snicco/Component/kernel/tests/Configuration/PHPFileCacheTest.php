@@ -44,18 +44,18 @@ final class PHPFileCacheTest extends TestCase
 
         $res = $cache->get($this->cache_file, function () {
             return [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ];
         });
 
         $this->assertSame([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ], $res);
 
         $this->assertTrue(is_file($this->cache_file));
 
         $this->assertSame([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ], require $this->cache_file);
     }
 
@@ -70,7 +70,7 @@ final class PHPFileCacheTest extends TestCase
 
         $cache->get($this->cache_file, function () {
             return [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ];
         });
 
@@ -80,7 +80,7 @@ final class PHPFileCacheTest extends TestCase
         });
 
         $this->assertSame([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ], $res);
     }
 }

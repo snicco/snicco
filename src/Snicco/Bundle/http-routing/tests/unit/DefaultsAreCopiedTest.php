@@ -62,7 +62,9 @@ final class DefaultsAreCopiedTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/routing.php',
-            '<?php return ' . var_export([RoutingOption::HOST => 'foo.com'], true) . ';'
+            '<?php return ' . var_export([
+                RoutingOption::HOST => 'foo.com',
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/routing.php'));
@@ -73,7 +75,9 @@ final class DefaultsAreCopiedTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [RoutingOption::HOST => 'foo.com'],
+            [
+                RoutingOption::HOST => 'foo.com',
+            ],
             require $this->directories->configDir() . '/routing.php'
         );
         $this->assertSame(
@@ -136,7 +140,9 @@ final class DefaultsAreCopiedTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/middleware.php',
-            '<?php return ' . var_export([MiddlewareOption::ALWAYS_RUN => ['frontend']], true) . ';'
+            '<?php return ' . var_export([
+                MiddlewareOption::ALWAYS_RUN => ['frontend'],
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/middleware.php'));
@@ -147,7 +153,9 @@ final class DefaultsAreCopiedTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [MiddlewareOption::ALWAYS_RUN => ['frontend']],
+            [
+                MiddlewareOption::ALWAYS_RUN => ['frontend'],
+            ],
             require $this->directories->configDir() . '/middleware.php'
         );
         $this->assertSame(
@@ -210,7 +218,9 @@ final class DefaultsAreCopiedTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/http_error_handling.php',
-            '<?php return ' . var_export([HttpErrorHandlingOption::LOG_PREFIX => 'custom.request'], true) . ';'
+            '<?php return ' . var_export([
+                HttpErrorHandlingOption::LOG_PREFIX => 'custom.request',
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/http_error_handling.php'));
@@ -221,7 +231,9 @@ final class DefaultsAreCopiedTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [HttpErrorHandlingOption::LOG_PREFIX => 'custom.request'],
+            [
+                HttpErrorHandlingOption::LOG_PREFIX => 'custom.request',
+            ],
             require $this->directories->configDir() . '/http_error_handling.php'
         );
         $this->assertSame(

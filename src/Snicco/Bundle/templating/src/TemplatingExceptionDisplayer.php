@@ -36,7 +36,7 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
             'safe_title' => $exception_information->safeTitle(),
             'safe_details' => $exception_information->safeDetails(),
             'identifier' => $exception_information->identifier(),
-            'status_code' => $exception_information->statusCode()
+            'status_code' => $exception_information->statusCode(),
         ]);
 
         return $view->render();
@@ -78,7 +78,7 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
                 $is_admin ? "exceptions.$status-admin" : null,
                 $status,
                 "errors.$status",
-                "exceptions.$status"
+                "exceptions.$status",
             ]);
             $this->views[$information->identifier()] = $this->engine->make($possible_views);
         }

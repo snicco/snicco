@@ -111,7 +111,9 @@ final class Psr16StorageTest extends TestCase
         $storage->store($url);
         $storage->consume('id1');
 
-        $cache->set('signed_url_id1', ['left_usages' => 1]);
+        $cache->set('signed_url_id1', [
+            'left_usages' => 1,
+        ]);
 
 
         try {
@@ -124,7 +126,9 @@ final class Psr16StorageTest extends TestCase
             );
         }
 
-        $cache->set('signed_url_id1', ['expires_at' => 1]);
+        $cache->set('signed_url_id1', [
+            'expires_at' => 1,
+        ]);
 
         try {
             $storage->consume('id1');

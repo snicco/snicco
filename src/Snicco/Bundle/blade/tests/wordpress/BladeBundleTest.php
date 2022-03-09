@@ -97,8 +97,8 @@ final class BladeBundleTest extends WPTestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [
-                    BladeBundle::class
-                ]
+                    BladeBundle::class,
+                ],
             ]);
         });
 

@@ -754,7 +754,10 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $array = ['a' => 'foo', 2 => 'bar'];
+        $array = [
+            'a' => 'foo',
+            2 => 'bar',
+        ];
         $item = $this->cache->getItem('key');
         $item->set($array);
         $this->cache->save($item);

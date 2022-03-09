@@ -18,7 +18,7 @@ return [
      * Typically you'll want to set this to include all directories in your project directory expect your vendor folder.
      * This will be set automatically as the default if you leave this option commented out.
      */
-//    DebugOption::APPLICATION_PATHS => [
-//        dirname(__DIR__).'/src'
-//    ]
+    //    DebugOption::APPLICATION_PATHS => [
+    //        dirname(__DIR__).'/src'
+    //    ]
 ];

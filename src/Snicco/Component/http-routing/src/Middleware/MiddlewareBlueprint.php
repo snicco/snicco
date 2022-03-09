@@ -52,7 +52,7 @@ final class MiddlewareBlueprint
     {
         return [
             'class' => $this->class,
-            'args' => $this->arguments
+            'args' => $this->arguments,
         ];
     }
 }

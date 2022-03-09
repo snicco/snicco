@@ -31,7 +31,9 @@ final class CollectGarbage implements MiddlewareInterface
         try {
             GarbageCollector::clean($this->storage, $this->percentage);
         } catch (UnavailableStorage $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
+            $this->logger->error($e->getMessage(), [
+                'exception' => $e,
+            ]);
         }
 
         return $handler->handle($request);

@@ -24,7 +24,7 @@ final class CachedAdminMenuTest extends TestCase
 
         $menu = new CachedAdminMenu([
             serialize($item1),
-            serialize($item2)
+            serialize($item2),
         ]);
 
         $this->assertCount(2, $menu->items());
@@ -55,7 +55,7 @@ final class CachedAdminMenuTest extends TestCase
         $menu = new CachedAdminMenu([
             serialize($item1),
             serialize($item2),
-            serialize('foo')
+            serialize('foo'),
         ]);
 
         $menu->items();

@@ -118,21 +118,27 @@ class CustomDirectivesTest extends WPTestCase
     {
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
-        $admin = $this->factory()->user->create_and_get(['role' => 'administrator']);
+        $admin = $this->factory()->user->create_and_get([
+            'role' => 'administrator',
+        ]);
         wp_set_current_user($admin->ID);
 
         $view = $this->view('role');
         $content = $view->render();
         $this->assertViewContent('ADMIN', $content);
 
-        $editor = $this->factory()->user->create_and_get(['role' => 'editor']);
+        $editor = $this->factory()->user->create_and_get([
+            'role' => 'editor',
+        ]);
         wp_set_current_user($editor->ID);
 
         $view = $this->view('role');
         $content = $view->render();
         $this->assertViewContent('EDITOR', $content);
 
-        $author = $this->factory()->user->create_and_get(['role' => 'author']);
+        $author = $this->factory()->user->create_and_get([
+            'role' => 'author',
+        ]);
         wp_set_current_user($author->ID);
 
         $view = $this->view('role');

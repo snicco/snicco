@@ -26,7 +26,9 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
         $this->better_wpdb->bulkInsert('', [
-            ['test_string' => 'foo']
+            [
+                'test_string' => 'foo',
+            ],
         ]);
     }
 
@@ -41,7 +43,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->better_wpdb->bulkInsert('test_table', [
             [
 
-            ]
+            ],
         ]);
     }
 
@@ -56,8 +58,8 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->expectExceptionMessage('non-empty-string');
         $this->better_wpdb->delete('test_table', [
             [
-                'foo'
-            ]
+                'foo',
+            ],
         ]);
     }
 
@@ -72,8 +74,8 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->expectExceptionMessage('non-empty-string');
         $this->better_wpdb->delete('test_table', [
             [
-                '' => 'foo'
-            ]
+                '' => 'foo',
+            ],
         ]);
     }
 
@@ -88,8 +90,8 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->expectExceptionMessage('scalar');
         $this->better_wpdb->bulkInsert('test_table', [
             [
-                'test_string' => new stdClass()
-            ]
+                'test_string' => new stdClass(),
+            ],
         ]);
     }
 
@@ -102,8 +104,16 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
             $this->better_wpdb->bulkInsert(
                 'test_table',
                 [
-                    ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                    ['test_string' => 'bar', 'test_int' => 2, 'test_float' => 20.00],
+                    [
+                        'test_string' => 'foo',
+                        'test_float' => 10.00,
+                        'test_int' => 1,
+                    ],
+                    [
+                        'test_string' => 'bar',
+                        'test_int' => 2,
+                        'test_float' => 20.00,
+                    ],
                 ]
             );
             $this->fail('Bulk insert should have been rolled back');
@@ -139,8 +149,16 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $res = $this->better_wpdb->bulkInsert(
             'test_table',
             [
-                ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+                [
+                    'test_string' => 'foo',
+                    'test_float' => 10.00,
+                    'test_int' => 1,
+                ],
+                [
+                    'test_string' => 'bar',
+                    'test_float' => 20.00,
+                    'test_int' => 2,
+                ],
             ]
         );
 
@@ -150,13 +168,13 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertRecord(1, [
             'test_string' => 'foo',
             'test_float' => 10.00,
-            'test_int' => 1
+            'test_int' => 1,
         ]);
 
         $this->assertRecord(2, [
             'test_string' => 'bar',
             'test_float' => 20.00,
-            'test_int' => 2
+            'test_int' => 2,
         ]);
     }
 
@@ -168,8 +186,16 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertRecordCount(0);
 
         $generator = function (): Generator {
-            yield ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1];
-            yield ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2];
+            yield [
+                'test_string' => 'foo',
+                'test_float' => 10.00,
+                'test_int' => 1,
+            ];
+            yield [
+                'test_string' => 'bar',
+                'test_float' => 20.00,
+                'test_int' => 2,
+            ];
         };
 
         $res = $this->better_wpdb->bulkInsert('test_table', $generator());
@@ -180,13 +206,13 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertRecord(1, [
             'test_string' => 'foo',
             'test_float' => 10.00,
-            'test_int' => 1
+            'test_int' => 1,
         ]);
 
         $this->assertRecord(2, [
             'test_string' => 'bar',
             'test_float' => 20.00,
-            'test_int' => 2
+            'test_int' => 2,
         ]);
     }
 
@@ -201,10 +227,22 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
             $this->better_wpdb->bulkInsert(
                 'test_table',
                 [
-                    ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                    ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+                    [
+                        'test_string' => 'foo',
+                        'test_float' => 10.00,
+                        'test_int' => 1,
+                    ],
+                    [
+                        'test_string' => 'bar',
+                        'test_float' => 20.00,
+                        'test_int' => 2,
+                    ],
                     // duplicate string.
-                    ['test_string' => 'bar', 'test_float' => 30.00, 'test_int' => 4],
+                    [
+                        'test_string' => 'bar',
+                        'test_float' => 30.00,
+                        'test_int' => 4,
+                    ],
                 ]
             );
             $this->fail('Bulk insert should not have succeeded.');
@@ -226,8 +264,16 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $db->bulkInsert(
             'test_table',
             [
-                ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+                [
+                    'test_string' => 'foo',
+                    'test_float' => 10.00,
+                    'test_int' => 1,
+                ],
+                [
+                    'test_string' => 'bar',
+                    'test_float' => 20.00,
+                    'test_int' => 2,
+                ],
             ]
         );
 

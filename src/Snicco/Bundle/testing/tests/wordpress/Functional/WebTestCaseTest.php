@@ -24,7 +24,7 @@ final class WebTestCaseTest extends WebTestCase
      * @var class-string<TestExtension>[]
      */
     private array $extensions = [
-        DummyTestExtension::class
+        DummyTestExtension::class,
     ];
 
     protected function setUp(): void
@@ -102,8 +102,12 @@ final class WebTestCaseTest extends WebTestCase
      */
     public function default_server_variables_can_be_added(): void
     {
-        $this->withServerVariables(['X-FOO' => 'BAR']);
-        $this->withServerVariables(['X-BAR' => 'BAZ']);
+        $this->withServerVariables([
+            'X-FOO' => 'BAR',
+        ]);
+        $this->withServerVariables([
+            'X-BAR' => 'BAZ',
+        ]);
 
         $browser = $this->getBrowser();
 
@@ -120,8 +124,12 @@ final class WebTestCaseTest extends WebTestCase
      */
     public function default_cookies_can_be_added(): void
     {
-        $this->withCookies(['foo' => 'bar']);
-        $this->withCookies(['bar' => 'baz']);
+        $this->withCookies([
+            'foo' => 'bar',
+        ]);
+        $this->withCookies([
+            'bar' => 'baz',
+        ]);
 
         $browser = $this->getBrowser();
 
@@ -134,7 +142,7 @@ final class WebTestCaseTest extends WebTestCase
 
         $this->assertSame([
             'foo' => 'bar',
-            'bar' => 'baz'
+            'bar' => 'baz',
         ], $body);
     }
 
@@ -158,7 +166,7 @@ final class WebTestCaseTest extends WebTestCase
     {
         $event_dispatcher = $this->getEventDispatcher();
         $event_dispatcher->fake([
-            HandlingRequest::class
+            HandlingRequest::class,
         ]);
 
         $event_dispatcher->assertNotDispatched(HandlingRequest::class);
@@ -185,7 +193,7 @@ final class WebTestCaseTest extends WebTestCase
 
         $browser->request('POST', '/send-mail', [
             'to' => 'c@web.de',
-            'message' => 'Hello Calvin'
+            'message' => 'Hello Calvin',
         ]);
 
         $mail_transport->assertSentTo('c@web.de', Email::class);
@@ -203,7 +211,7 @@ final class WebTestCaseTest extends WebTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('session-bundle');
         $this->withDataInSession([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ]);
     }
 
@@ -221,7 +229,7 @@ final class WebTestCaseTest extends WebTestCase
         });
 
         $id = $this->withDataInSession([
-            'counter' => 0
+            'counter' => 0,
         ]);
 
         $browser = $this->getBrowser();
@@ -235,7 +243,7 @@ final class WebTestCaseTest extends WebTestCase
 
         $this->assertEquals([
             'id' => $id->asString(),
-            'counter' => 1
+            'counter' => 1,
         ], $info);
     }
 
@@ -253,7 +261,7 @@ final class WebTestCaseTest extends WebTestCase
         });
 
         $id = $this->withDataInSession([
-            'counter' => 0
+            'counter' => 0,
         ]);
         $browser = $this->getBrowser();
 
@@ -268,7 +276,7 @@ final class WebTestCaseTest extends WebTestCase
 
         $this->assertEquals([
             'id' => $id->asString(),
-            'counter' => 3
+            'counter' => 3,
         ], $info);
     }
 
@@ -286,7 +294,7 @@ final class WebTestCaseTest extends WebTestCase
     public function test_withoutMiddleware(): void
     {
         $this->withoutMiddleware([
-            MiddlewareThatAlwaysThrowsException::class
+            MiddlewareThatAlwaysThrowsException::class,
         ]);
 
         $browser = $this->getBrowser();
@@ -321,7 +329,7 @@ final class WebTestCaseTest extends WebTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('::withoutMiddleware] can not be used if the kernel was already booted');
         $this->withoutMiddleware([
-            MiddlewareThatAlwaysThrowsException::class
+            MiddlewareThatAlwaysThrowsException::class,
         ]);
     }
 

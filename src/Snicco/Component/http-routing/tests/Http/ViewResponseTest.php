@@ -53,8 +53,12 @@ class ViewResponseTest extends TestCase
         $response = new ViewResponse('foo', $this->base_response);
         $this->assertSame([], $response->viewData());
 
-        $new = $response->withViewData(['foo' => 'bar']);
-        $this->assertSame(['foo' => 'bar'], $new->viewData());
+        $new = $response->withViewData([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $new->viewData());
         $this->assertSame([], $response->viewData());
     }
 

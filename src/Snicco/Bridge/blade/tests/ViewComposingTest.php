@@ -15,7 +15,9 @@ class ViewComposingTest extends BladeTestCase
      */
     public function global_data_can_be_shared_with_all_views(): void
     {
-        $this->global_view_context->add('globals', ['foo' => 'calvin']);
+        $this->global_view_context->add('globals', [
+            'foo' => 'calvin',
+        ]);
 
         $this->assertSame('calvin', $this->renderView('globals'));
     }
@@ -25,11 +27,15 @@ class ViewComposingTest extends BladeTestCase
      */
     public function data_is_shared_with_nested_views(): void
     {
-        $this->global_view_context->add('globals', ['surname' => 'alkan']);
+        $this->global_view_context->add('globals', [
+            'surname' => 'alkan',
+        ]);
         $this->composers->addComposer(
             'components.view-composer-parent',
             function (View $view) {
-                return $view->with(['name' => 'calvin']);
+                return $view->with([
+                    'name' => 'calvin',
+                ]);
             }
         );
 
@@ -42,7 +48,9 @@ class ViewComposingTest extends BladeTestCase
     public function a_view_composer_can_be_added_to_a_view(): void
     {
         $this->composers->addComposer('view-composer', function (View $view) {
-            return $view->with(['name' => 'calvin']);
+            return $view->with([
+                'name' => 'calvin',
+            ]);
         });
 
         $this->assertViewContent('calvin', $this->renderView('view-composer'));

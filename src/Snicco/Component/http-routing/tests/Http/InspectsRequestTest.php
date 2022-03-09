@@ -219,7 +219,9 @@ class InspectsRequestTest extends TestCase
 
     public function testGetRealMethod(): void
     {
-        $request = $this->frontendRequest('/foo', ['REQUEST_METHOD' => 'POST'], 'POST');
+        $request = $this->frontendRequest('/foo', [
+            'REQUEST_METHOD' => 'POST',
+        ], 'POST');
 
         $this->assertSame('POST', $request->realMethod());
 

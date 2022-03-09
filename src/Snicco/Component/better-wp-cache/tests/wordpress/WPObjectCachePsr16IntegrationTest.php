@@ -133,7 +133,9 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             [47.11],
             [true],
             [null],
-            [['key' => 'value']],
+            [[
+                'key' => 'value',
+            ]],
             [new stdClass()],
         ];
     }
@@ -273,7 +275,10 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $result = $this->cache->setMultiple(['key0' => 'value0', 'key1' => 'value1']);
+        $result = $this->cache->setMultiple([
+            'key0' => 'value0',
+            'key1' => 'value1',
+        ]);
         $this->assertTrue($result, 'setMultiple() must return true if success');
         $this->assertEquals('value0', $this->cache->get('key0'));
         $this->assertEquals('value1', $this->cache->get('key1'));
@@ -285,7 +290,9 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $result = $this->cache->setMultiple(['0' => 'value0']);
+        $result = $this->cache->setMultiple([
+            '0' => 'value0',
+        ]);
         $this->assertTrue($result, 'setMultiple() must return true if success');
         $this->assertEquals('value0', $this->cache->get('0'));
     }
@@ -299,11 +306,16 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->cache->setMultiple(['key2' => 'value2', 'key3' => 'value3'], 2);
+        $this->cache->setMultiple([
+            'key2' => 'value2',
+            'key3' => 'value3',
+        ], 2);
         $this->assertEquals('value2', $this->cache->get('key2'));
         $this->assertEquals('value3', $this->cache->get('key3'));
 
-        $this->cache->setMultiple(['key4' => 'value4'], new DateInterval('PT2S'));
+        $this->cache->setMultiple([
+            'key4' => 'value4',
+        ], new DateInterval('PT2S'));
         $this->assertEquals('value4', $this->cache->get('key4'));
 
         $this->advanceTime(3);
@@ -318,7 +330,10 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->cache->setMultiple(['key0' => 'value0', 'key1' => 'value1'], 0);
+        $this->cache->setMultiple([
+            'key0' => 'value0',
+            'key1' => 'value1',
+        ], 0);
         $this->assertNull($this->cache->get('key0'));
         $this->assertNull($this->cache->get('key1'));
     }
@@ -627,7 +642,9 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         }
 
         $this->expectException('Psr\SimpleCache\InvalidArgumentException');
-        $this->cache->setMultiple(['key' => 'value'], $ttl);
+        $this->cache->setMultiple([
+            'key' => 'value',
+        ], $ttl);
     }
 
     public function testNullOverwrite(): void
@@ -722,7 +739,10 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $array = ['a' => 'foo', 2 => 'bar'];
+        $array = [
+            'a' => 'foo',
+            2 => 'bar',
+        ];
         $this->cache->set('key', $array);
         $result = $this->cache->get('key');
         $this->assertTrue(
@@ -787,7 +807,9 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->cache->setMultiple([$key => 'foobar']);
+        $this->cache->setMultiple([
+            $key => 'foobar',
+        ]);
         $result = $this->cache->getMultiple([$key]);
         $keys = [];
         foreach ($result as $i => $r) {
@@ -820,7 +842,9 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->cache->setMultiple(['key' => $data]);
+        $this->cache->setMultiple([
+            'key' => $data,
+        ]);
         $result = $this->cache->getMultiple(['key']);
         $keys = [];
         foreach ($result as $i => $r) {

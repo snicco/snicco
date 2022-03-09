@@ -59,7 +59,9 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
      */
     public function routes_can_be_included_as_a_file(): void
     {
-        $this->withMiddlewareAlias(['partial' => FooMiddleware::class]);
+        $this->withMiddlewareAlias([
+            'partial' => FooMiddleware::class,
+        ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->include($this->routes_dir . '/_partial.php');
@@ -77,7 +79,9 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
      */
     public function routes_can_be_included_as_a_closure(): void
     {
-        $this->withMiddlewareAlias(['partial' => FooMiddleware::class]);
+        $this->withMiddlewareAlias([
+            'partial' => FooMiddleware::class,
+        ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             /** @var Closure(WebRoutingConfigurator):void $closure */

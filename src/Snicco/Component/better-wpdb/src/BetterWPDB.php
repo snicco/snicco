@@ -219,7 +219,9 @@ final class BetterWPDB
             throw new InvalidArgumentException('$primary_key can not be an empty-string.');
         }
 
-        $primary_key = is_array($primary_key) ? $primary_key : ['id' => $primary_key];
+        $primary_key = is_array($primary_key) ? $primary_key : [
+            'id' => $primary_key,
+        ];
 
         return $this->update($table, $primary_key, $changes);
     }
@@ -479,8 +481,16 @@ final class BetterWPDB
                     throw new InvalidArgumentException(
                         sprintf(
                             "Records are not of consistent type.\nExpected: [%s] and got [%s] for record %d.",
-                            rtrim(strtr($expected_types, ['s' => 'string,', 'd' => 'double,', 'i' => 'integer,']), ','),
-                            rtrim(strtr($record_types, ['s' => 'string,', 'd' => 'double,', 'i' => 'integer,']), ','),
+                            rtrim(strtr($expected_types, [
+                                's' => 'string,',
+                                'd' => 'double,',
+                                'i' => 'integer,',
+                            ]), ','),
+                            rtrim(strtr($record_types, [
+                                's' => 'string,',
+                                'd' => 'double,',
+                                'i' => 'integer,',
+                            ]), ','),
                             $inserted + 1
                         )
                     );

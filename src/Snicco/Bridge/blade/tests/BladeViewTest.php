@@ -62,7 +62,9 @@ class BladeViewTest extends BladeTestCase
      */
     public function blade_views_can_be_rendered(): void
     {
-        $html = $this->view_engine->render('variables', ['name' => 'calvin']);
+        $html = $this->view_engine->render('variables', [
+            'name' => 'calvin',
+        ]);
 
         $this->assertViewContent('hello calvin', $html);
     }
@@ -95,7 +97,9 @@ class BladeViewTest extends BladeTestCase
         $html = $view1->render();
         $this->assertViewContent('hello calvin', $html);
 
-        $view2 = $view1->with(['name' => 'marlon']);
+        $view2 = $view1->with([
+            'name' => 'marlon',
+        ]);
         $html = $view2->render();
         $this->assertViewContent('hello marlon', $html);
 

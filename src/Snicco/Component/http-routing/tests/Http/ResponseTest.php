@@ -68,12 +68,16 @@ class ResponseTest extends TestCase
 
     public function testJson(): void
     {
-        $stream = $this->factory->createStream(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
+        $stream = $this->factory->createStream(json_encode([
+            'foo' => 'bar',
+        ], JSON_THROW_ON_ERROR));
 
         $response = $this->factory->createResponse()->withJson($stream);
 
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->__toString(), true));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], json_decode($response->getBody()->__toString(), true));
     }
 
     public function testNoIndex(): void
@@ -230,20 +234,33 @@ class ResponseTest extends TestCase
      */
     public function test_withFlashMessages(): void
     {
-        $response = $this->response->withFlashMessages(['foo' => 'bar']);
+        $response = $this->response->withFlashMessages([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(['foo' => 'bar'], $response->flashMessages());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
 
-        $response = $this->response->withFlashMessages($arr = ['foo' => 'bar', 'bar' => 'baz']);
+        $response = $this->response->withFlashMessages($arr = [
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ]);
 
         $this->assertSame($arr, $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
 
-        $response_new = $response->withFlashMessages(['biz' => 'boom']);
+        $response_new = $response->withFlashMessages([
+            'biz' => 'boom',
+        ]);
 
         $this->assertSame(
-            ['foo' => 'bar', 'bar' => 'baz', 'biz' => 'boom'],
+            [
+                'foo' => 'bar',
+                'bar' => 'baz',
+                'biz' => 'boom',
+            ],
             $response_new->flashMessages()
         );
         $this->assertSame($arr, $response->flashMessages());
@@ -254,20 +271,33 @@ class ResponseTest extends TestCase
      */
     public function testWithInput(): void
     {
-        $response = $this->response->withOldInput(['foo' => 'bar']);
+        $response = $this->response->withOldInput([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(['foo' => 'bar'], $response->oldInput());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
 
-        $response = $this->response->withOldInput($arr = ['foo' => 'bar', 'bar' => 'baz']);
+        $response = $this->response->withOldInput($arr = [
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ]);
 
         $this->assertSame($arr, $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
 
-        $response_new = $response->withOldInput(['biz' => 'boom']);
+        $response_new = $response->withOldInput([
+            'biz' => 'boom',
+        ]);
 
         $this->assertSame(
-            ['foo' => 'bar', 'bar' => 'baz', 'biz' => 'boom'],
+            [
+                'foo' => 'bar',
+                'bar' => 'baz',
+                'biz' => 'boom',
+            ],
             $response_new->oldInput()
         );
         $this->assertSame($arr, $response->oldInput());
@@ -278,12 +308,21 @@ class ResponseTest extends TestCase
      */
     public function testWithErrors(): void
     {
-        $response = $this->response->withErrors(['foo' => 'bar']);
+        $response = $this->response->withErrors([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(['default' => ['foo' => ['bar']]], $response->errors());
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar'],
+                
+            ], ], $response->errors());
         $this->assertSame([], $this->response->errors());
 
-        $response = $this->response->withErrors(['foo' => ['bar', 'baz'], 'baz' => 'biz']);
+        $response = $this->response->withErrors([
+            'foo' => ['bar', 'baz'],
+            'baz' => 'biz',
+        ]);
 
         $this->assertSame(
             [
@@ -296,17 +335,36 @@ class ResponseTest extends TestCase
         );
         $this->assertSame([], $this->response->errors());
 
-        $response = $this->response->withErrors(['foo' => 'bar']);
+        $response = $this->response->withErrors([
+            'foo' => 'bar',
+        ]);
 
-        $response_new = $response->withErrors(['bar' => 'baz']);
-        $this->assertSame(['default' => ['foo' => ['bar']]], $response->errors());
+        $response_new = $response->withErrors([
+            'bar' => 'baz',
+        ]);
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar'],
+                
+            ], ], $response->errors());
         $this->assertSame(
-            ['default' => ['foo' => ['bar'], 'bar' => ['baz']]],
+            [
+                'default' => [
+                    'foo' => ['bar'],
+                    'bar' => ['baz'],
+                    
+                ], ],
             $response_new->errors()
         );
 
-        $response = $this->response->withErrors(['foo' => 'bar'], 'namespace1');
-        $this->assertSame(['namespace1' => ['foo' => ['bar']]], $response->errors());
+        $response = $this->response->withErrors([
+            'foo' => 'bar',
+        ], 'namespace1');
+        $this->assertSame([
+            'namespace1' => [
+                'foo' => ['bar'],
+                
+            ], ], $response->errors());
         $this->assertSame([], $this->response->errors());
     }
 
@@ -333,11 +391,11 @@ class ResponseTest extends TestCase
         $this->assertSame([
             'foo' => [
                 'bar1',
-                'bar2'
+                'bar2',
             ],
             'baz' => [
-                'biz'
-            ]
+                'biz',
+            ],
         ], $response->getHeaders());
     }
 

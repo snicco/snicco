@@ -47,8 +47,8 @@ final class TransformableInformationProviderTest extends TestCase
         new InformationProviderWithTransformation([
             303 => [
                 'title' => 'foo',
-                'message' => 'bar'
-            ]
+                'message' => 'bar',
+            ],
         ], new SplHashIdentifier());
     }
 
@@ -62,8 +62,8 @@ final class TransformableInformationProviderTest extends TestCase
 
         new InformationProviderWithTransformation([
             403 => [
-                'message' => 'bar'
-            ]
+                'message' => 'bar',
+            ],
         ], new SplHashIdentifier());
     }
 
@@ -77,8 +77,8 @@ final class TransformableInformationProviderTest extends TestCase
 
         new InformationProviderWithTransformation([
             403 => [
-                'title' => 'bar'
-            ]
+                'title' => 'bar',
+            ],
         ], new SplHashIdentifier());
     }
 }

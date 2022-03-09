@@ -12,5 +12,5 @@ return [
         BetterWPHooksBundle::class,
         HttpRoutingBundle::class,
         DebugBundle::class,
-    ]
+    ],
 ];

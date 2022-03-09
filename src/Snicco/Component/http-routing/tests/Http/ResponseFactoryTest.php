@@ -49,12 +49,16 @@ class ResponseFactoryTest extends TestCase
 
     public function test_json(): void
     {
-        $response = $this->factory->json(['foo' => 'bar'], 401);
+        $response = $this->factory->json([
+            'foo' => 'bar',
+        ], 401);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode(['foo' => 'bar']), (string)$response->getBody());
+        $this->assertSame(json_encode([
+            'foo' => 'bar',
+        ]), (string)$response->getBody());
     }
 
     /**
@@ -113,7 +117,10 @@ class ResponseFactoryTest extends TestCase
      */
     public function test_toResponse_for_array(): void
     {
-        $input = ['foo' => 'bar', 'bar' => 'baz'];
+        $input = [
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ];
 
         $response = $this->factory->toResponse($input);
 
@@ -134,7 +141,9 @@ class ResponseFactoryTest extends TestCase
         $response = $this->factory->toResponse($input);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode(['foo' => 'bar']), $response->getBody()->__toString());
+        $this->assertSame(json_encode([
+            'foo' => 'bar',
+        ]), $response->getBody()->__toString());
     }
 
     /**
@@ -244,7 +253,9 @@ class ResponseFactoryTest extends TestCase
      */
     public function test_view_adds_content_type(): void
     {
-        $response = $this->factory->view('foo.php', ['foo' => 'bar']);
+        $response = $this->factory->view('foo.php', [
+            'foo' => 'bar',
+        ]);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
 }

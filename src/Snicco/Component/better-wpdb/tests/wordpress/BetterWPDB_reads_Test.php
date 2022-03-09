@@ -242,11 +242,19 @@ final class BetterWPDB_reads_Test extends WPTestCase
         );
 
         $this->assertTrue(
-            $this->better_wpdb->exists('test_table', ['test_string' => 'foo', 'test_float' => null, 'test_int' => 1])
+            $this->better_wpdb->exists('test_table', [
+                'test_string' => 'foo',
+                'test_float' => null,
+                'test_int' => 1,
+            ])
         );
 
         $this->assertFalse(
-            $this->better_wpdb->exists('test_table', ['test_string' => 'bar', 'test_float' => null, 'test_int' => 2])
+            $this->better_wpdb->exists('test_table', [
+                'test_string' => 'bar',
+                'test_float' => null,
+                'test_int' => 2,
+            ])
         );
     }
 
@@ -260,7 +268,11 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
 
-        $this->better_wpdb->exists('', ['test_string' => 'foo', 'test_float' => null, 'test_int' => 1]);
+        $this->better_wpdb->exists('', [
+            'test_string' => 'foo',
+            'test_float' => null,
+            'test_int' => 1,
+        ]);
     }
 
     /**
@@ -273,7 +285,11 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
 
-        $this->better_wpdb->exists('test_table', ['' => 'foo', 'test_float' => null, 'test_int' => 1]);
+        $this->better_wpdb->exists('test_table', [
+            '' => 'foo',
+            'test_float' => null,
+            'test_int' => 1,
+        ]);
     }
 
     /**
@@ -286,7 +302,11 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
 
-        $this->better_wpdb->exists('test_table', ['foo', 'test_float' => null, 'test_int' => 1]);
+        $this->better_wpdb->exists('test_table', [
+            'foo',
+            'test_float' => null,
+            'test_int' => 1,
+        ]);
     }
 
     /**
@@ -299,7 +319,9 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
 
-        $this->better_wpdb->exists('test_table', ['test_int' => new stdClass()]);
+        $this->better_wpdb->exists('test_table', [
+            'test_int' => new stdClass(),
+        ]);
     }
 
     /**
@@ -346,7 +368,9 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->insert('test_table', ['test_string' => 'foo']);
+        $db->insert('test_table', [
+            'test_string' => 'foo',
+        ]);
 
         $db->selectRow('select * from test_table where test_string = ?', ['foo']);
 
@@ -367,7 +391,9 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->insert('test_table', ['test_string' => 'foo']);
+        $db->insert('test_table', [
+            'test_string' => 'foo',
+        ]);
 
         $db->selectValue('select * from test_table where test_string = ?', ['foo']);
 
@@ -387,7 +413,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
-        $db->exists('test_table', ['test_string' => 'foo', 'test_int' => null]);
+        $db->exists('test_table', [
+            'test_string' => 'foo',
+            'test_int' => null,
+        ]);
 
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);

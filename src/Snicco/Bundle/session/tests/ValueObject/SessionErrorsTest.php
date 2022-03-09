@@ -19,7 +19,7 @@ final class SessionErrorsTest extends TestCase
         try {
             new SessionErrors([
                 'foo',
-                'bar'
+                'bar',
             ]);
             $this->fail('No exception thrown');
         } catch (InvalidArgumentException $e) {
@@ -31,8 +31,8 @@ final class SessionErrorsTest extends TestCase
                 [
                     'namespace1' => [
                         'foo',
-                        'bar'
-                    ]
+                        'bar',
+                    ],
                 ]
             );
             $this->fail('No exception thrown');
@@ -49,9 +49,9 @@ final class SessionErrorsTest extends TestCase
                     'namespace1' => [
                         'key1' => [
                             'foo',
-                            1
-                        ]
-                    ]
+                            1,
+                        ],
+                    ],
                 ]
             );
             $this->fail('No exception thrown');
@@ -72,22 +72,22 @@ final class SessionErrorsTest extends TestCase
             'default' => [
                 'key1' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key2' => [
 
-                ]
+                ],
             ],
             'form2' => [
                 'key3' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key4' => [
                     'baz',
-                    'biz'
-                ]
-            ]
+                    'biz',
+                ],
+            ],
         ]);
         $this->assertTrue($errors->hasKey('key1'));
         $this->assertFalse($errors->hasKey('key2'));
@@ -108,22 +108,22 @@ final class SessionErrorsTest extends TestCase
             'default' => [
                 'key1' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key2' => [
 
-                ]
+                ],
             ],
             'form2' => [
                 'key3' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key4' => [
                     'baz',
-                    'biz'
-                ]
-            ]
+                    'biz',
+                ],
+            ],
         ]);
 
         $this->assertSame(['foo', 'bar'], $errors->get('key1'));
@@ -146,22 +146,22 @@ final class SessionErrorsTest extends TestCase
             'default' => [
                 'key1' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key2' => [
-                    'baz'
-                ]
+                    'baz',
+                ],
             ],
             'form2' => [
                 'key3' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key4' => [
                     'baz',
-                    'biz'
-                ]
-            ]
+                    'biz',
+                ],
+            ],
         ]);
 
         $this->assertSame(['foo', 'bar', 'baz'], $errors->all());
@@ -177,21 +177,21 @@ final class SessionErrorsTest extends TestCase
             'default' => [
                 'key1' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key2' => [
-                ]
+                ],
             ],
             'form2' => [
                 'key3' => [
                     'foo',
-                    'bar'
+                    'bar',
                 ],
                 'key4' => [
                     'baz',
-                    'biz'
-                ]
-            ]
+                    'biz',
+                ],
+            ],
         ]);
 
         $this->assertSame(2, $errors->count());

@@ -88,7 +88,7 @@ final class CollectGarbageTest extends MiddlewareTestCase
 
         $this->assertTrue(
             $logger->hasError([
-                'message' => 'GC fail.'
+                'message' => 'GC fail.',
             ])
         );
     }

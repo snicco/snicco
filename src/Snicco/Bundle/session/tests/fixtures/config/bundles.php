@@ -11,6 +11,6 @@ return [
     Environment::ALL => [
         SessionBundle::class,
         BetterWPDBBundle::class,
-        BetterWPHooksBundle::class
-    ]
+        BetterWPHooksBundle::class,
+    ],
 ];

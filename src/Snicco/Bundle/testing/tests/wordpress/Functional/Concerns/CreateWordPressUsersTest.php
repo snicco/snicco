@@ -20,7 +20,7 @@ final class CreateWordPressUsersTest extends WebTestCase
     public function test_createAdmin(): void
     {
         $admin = $this->createAdmin([
-            'user_email' => 'c@web.de'
+            'user_email' => 'c@web.de',
         ]);
         $this->assertInstanceOf(WP_User::class, $admin);
         $this->assertContains('administrator', $admin->roles);

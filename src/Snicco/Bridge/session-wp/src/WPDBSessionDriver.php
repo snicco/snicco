@@ -65,7 +65,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
             'hashed_validator' => $session->hashedValidator(),
             'last_activity' => $session->lastActivity(),
             'data' => $session->data(),
-            'user_id' => !is_null($user_id) ? strval($user_id) : null
+            'user_id' => !is_null($user_id) ? strval($user_id) : null,
         ];
 
         $this->db->preparedQuery(
@@ -97,8 +97,12 @@ final class WPDBSessionDriver implements UserSessionsDriver
 
         $rows = $this->db->updateByPrimary(
             $this->table_name,
-            ['selector' => $selector],
-            ['last_activity' => $current_timestamp]
+            [
+                'selector' => $selector,
+            ],
+            [
+                'last_activity' => $current_timestamp,
+            ]
         );
 
         if (0 === $rows && !$this->exists($selector)) {
@@ -113,7 +117,9 @@ final class WPDBSessionDriver implements UserSessionsDriver
 
     public function destroyAllForUserId($user_id): void
     {
-        $this->db->delete($this->table_name, ['user_id' => $user_id]);
+        $this->db->delete($this->table_name, [
+            'user_id' => $user_id,
+        ]);
     }
 
     public function destroyAllForUserIdExcept(string $selector, $user_id): void
@@ -162,7 +168,9 @@ final class WPDBSessionDriver implements UserSessionsDriver
 
     private function exists(string $selector): bool
     {
-        return $this->db->exists($this->table_name, ['selector' => $selector]);
+        return $this->db->exists($this->table_name, [
+            'selector' => $selector,
+        ]);
     }
 
     private function instantiate(array $data): SerializedSession

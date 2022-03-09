@@ -125,7 +125,9 @@ final class BetterWPCacheBundleTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/better-wp-cache.php',
-            '<?php return ' . var_export([BetterWPCacheOption::CACHE_GROUP => ['foo']], true) . ';'
+            '<?php return ' . var_export([
+                BetterWPCacheOption::CACHE_GROUP => ['foo'],
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/better-wp-cache.php'));
@@ -136,7 +138,9 @@ final class BetterWPCacheBundleTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [BetterWPCacheOption::CACHE_GROUP => ['foo']],
+            [
+                BetterWPCacheOption::CACHE_GROUP => ['foo'],
+            ],
             require $this->directories->configDir() . '/better-wp-cache.php'
         );
     }

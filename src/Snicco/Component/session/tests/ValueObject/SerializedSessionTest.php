@@ -19,7 +19,9 @@ final class SerializedSessionTest extends TestCase
     public function test_fromString(): void
     {
         $serialized_session = SerializedSession::fromString(
-            $as_string = serialize(['foo' => 'bar']),
+            $as_string = serialize([
+                'foo' => 'bar',
+            ]),
             'foobar',
             time()
         );

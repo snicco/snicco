@@ -102,8 +102,8 @@ final class WPEventDispatcherTest extends WPTestCase
         add_filter(
             stdClass::class,
             function (stdClass $event) {
-            $event->value = $event->value . ':filtered_by_wordpress';
-        }
+                $event->value = $event->value . ':filtered_by_wordpress';
+            }
         );
 
         $dispatcher = $this->getDispatcher();
@@ -236,7 +236,7 @@ class WPDispatcherSubscriber implements EventSubscriber
     public static function subscribedEvents(): array
     {
         return [
-            stdClass::class => 'foo'
+            stdClass::class => 'foo',
         ];
     }
 

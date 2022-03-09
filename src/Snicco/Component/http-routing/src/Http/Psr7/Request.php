@@ -172,7 +172,9 @@ final class Request implements ServerRequestInterface
             '/',
             array_map(function ($part) {
                 // Make sure that %2F stays %2F
-                return rawurldecode(strtr($part, ['%2F' => '%252F']));
+                return rawurldecode(strtr($part, [
+                    '%2F' => '%252F',
+                ]));
             }, explode('/', $path))
         );
     }

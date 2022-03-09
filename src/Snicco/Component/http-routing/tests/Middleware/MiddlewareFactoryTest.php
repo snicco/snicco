@@ -78,7 +78,9 @@ final class MiddlewareFactoryTest extends TestCase
             );
         };
 
-        $m = $this->factory->create(MiddlewareWithDependencies::class, ['foo' => 'bar']);
+        $m = $this->factory->create(MiddlewareWithDependencies::class, [
+            'foo' => 'bar',
+        ]);
         $this->assertInstanceOf(MiddlewareWithDependencies::class, $m);
         $this->assertSame('FOO_CHANGED', $m->foo->value);
         $this->assertSame('BAR_CHANGED', $m->bar->value);

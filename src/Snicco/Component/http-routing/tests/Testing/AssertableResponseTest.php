@@ -673,7 +673,9 @@ final class AssertableResponseTest extends TestCase
     public function test_assertContentType_can_fail(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->json(['foo' => 'bar'])
+            $this->response_factory->json([
+                'foo' => 'bar',
+            ])
         );
 
         $this->expectFailureWithMessageContaining(
@@ -869,9 +871,13 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assertJsonExact_can_pass(): void
     {
-        $response = new AssertableResponse($this->response_factory->json(['foo' => 'bar']));
+        $response = new AssertableResponse($this->response_factory->json([
+            'foo' => 'bar',
+        ]));
 
-        $response->assertExactJson(['foo' => 'bar']);
+        $response->assertExactJson([
+            'foo' => 'bar',
+        ]);
     }
 
     /**
@@ -879,11 +885,17 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assertJsonExact_can_fail(): void
     {
-        $response = new AssertableResponse($this->response_factory->json(['foo' => 'bar']));
+        $response = new AssertableResponse($this->response_factory->json([
+            'foo' => 'bar',
+        ]));
 
         $this->expectFailureWithMessageContaining(
-            'Response json body does not match expected [' . (string)json_encode(['foo' => 'baz']) . '].',
-            fn () => $response->assertExactJson(['foo' => 'baz'])
+            'Response json body does not match expected [' . (string)json_encode([
+                'foo' => 'baz',
+            ]) . '].',
+            fn () => $response->assertExactJson([
+                'foo' => 'baz',
+            ])
         );
     }
 
@@ -905,7 +917,7 @@ final class AssertableResponseTest extends TestCase
         $response = new AssertableResponse($this->response_factory->createResponse()->withHeader('foo', 'bar'));
 
         $this->assertSame([
-            'bar'
+            'bar',
         ], $response->getHeader('foo'));
     }
 

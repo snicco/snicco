@@ -16,7 +16,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
     public function a_redirect_route_can_be_created(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->redirect('/foo', '/bar', 307, ['baz' => 'biz']);
+            $configurator->redirect('/foo', '/bar', 307, [
+                'baz' => 'biz',
+            ]);
         });
 
         $request = $this->frontendRequest('/foo');
@@ -33,7 +35,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
     public function a_permanent_redirect_can_be_created(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->permanentRedirect('/foo', '/bar', ['baz' => 'biz']);
+            $configurator->permanentRedirect('/foo', '/bar', [
+                'baz' => 'biz',
+            ]);
         });
 
         $request = $this->frontendRequest('/foo');
@@ -49,7 +53,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
     public function a_temporary_redirect_can_be_created(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->temporaryRedirect('/foo', '/bar', ['baz' => 'biz']);
+            $configurator->temporaryRedirect('/foo', '/bar', [
+                'baz' => 'biz',
+            ]);
         });
 
         $request = $this->frontendRequest('/foo');
@@ -83,7 +89,9 @@ class RedirectRoutesTest extends HttpRunnerTestCase
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('route1', '/base/{param}');
-            $configurator->redirectToRoute('/foo', 'route1', ['param' => 'baz'], 303);
+            $configurator->redirectToRoute('/foo', 'route1', [
+                'param' => 'baz',
+            ], 303);
         });
 
         $request = $this->frontendRequest('/foo');

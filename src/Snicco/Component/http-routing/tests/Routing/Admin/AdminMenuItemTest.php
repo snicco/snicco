@@ -62,7 +62,9 @@ final class AdminMenuItemTest extends TestCase
         // Only page  title
         $item = AdminMenuItem::fromRoute(
             $route,
-            [AdminMenuItem::PAGE_TITLE => 'My explicit page title']
+            [
+                AdminMenuItem::PAGE_TITLE => 'My explicit page title',
+            ]
         );
 
         $this->assertSame('My explicit page title', $item->menuTitle());
@@ -141,7 +143,9 @@ final class AdminMenuItemTest extends TestCase
     public function test_a_capability_can_be_set(): void
     {
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => 'read.whatever']);
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::CAPABILITY => 'read.whatever',
+        ]);
 
         $this->assertSame('read.whatever', $item->requiredCapability());
     }
@@ -153,7 +157,9 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$capability has to be null or non empty string.');
         $route = $this->getRoute();
-        AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => '']);
+        AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::CAPABILITY => '',
+        ]);
     }
 
     /**
@@ -162,7 +168,9 @@ final class AdminMenuItemTest extends TestCase
     public function test_a_icon_can_be_set(): void
     {
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => 'admin-site-icon']);
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::ICON => 'admin-site-icon',
+        ]);
 
         $this->assertSame('admin-site-icon', $item->icon());
     }
@@ -174,7 +182,9 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$icon has to be null or non empty string.');
         $route = $this->getRoute();
-        AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => '']);
+        AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::ICON => '',
+        ]);
     }
 
     /**
@@ -183,7 +193,9 @@ final class AdminMenuItemTest extends TestCase
     public function test_a_position_can_be_set(): void
     {
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::POSITION => 12]);
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::POSITION => 12,
+        ]);
 
         $this->assertSame(12, $item->position());
     }

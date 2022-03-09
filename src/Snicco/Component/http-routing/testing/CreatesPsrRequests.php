@@ -64,7 +64,9 @@ trait CreatesPsrRequests
             $this->psrServerRequestFactory()->createServerRequest(
                 $method,
                 $uri,
-                array_merge(['REQUEST_METHOD' => $method], $server),
+                array_merge([
+                    'REQUEST_METHOD' => $method,
+                ], $server),
             ),
             $type
         );

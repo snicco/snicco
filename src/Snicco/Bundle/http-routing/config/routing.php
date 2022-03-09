@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 
 return [
-
     /*
      * This configuration value is used for generation URLs among other things.
      * There are 2 recommended options to set this value depending on your use case:
@@ -33,7 +32,7 @@ return [
      * This option should be a list of valid (absolute) directories
      */
     RoutingOption::ROUTE_DIRECTORIES => [
-//        dirname(__DIR__) . '/routes'
+        //        dirname(__DIR__) . '/routes'
     ],
 
     /*
@@ -41,8 +40,8 @@ return [
      * Feel free to delete it if your project does not need the API routing functionality
      */
     RoutingOption::API_ROUTE_DIRECTORIES => [
-//                dirname(__DIR__).'/routes/api',
-//                dirname(__DIR__).'/api-routes'
+        //                dirname(__DIR__).'/routes/api',
+        //                dirname(__DIR__).'/api-routes'
     ],
 
     /*
@@ -58,7 +57,5 @@ return [
      */
     RoutingOption::HTTP_PORT => 80,
     RoutingOption::HTTPS_PORT => 443,
-    RoutingOption::USE_HTTPS => true
-
-
+    RoutingOption::USE_HTTPS => true,
 ];

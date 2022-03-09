@@ -83,7 +83,9 @@ final class RouteTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected controller array to have a class and a method.');
-        Route::create('/foo', ['class' => RoutingTestController::class]);
+        Route::create('/foo', [
+            'class' => RoutingTestController::class,
+        ]);
     }
 
     /**
@@ -243,12 +245,16 @@ final class RouteTest extends TestCase
     {
         $route = $this->newRoute('/foo/{bar}');
 
-        $route->requirements(['bar' => '\d+']);
+        $route->requirements([
+            'bar' => '\d+',
+        ]);
 
         $this->expectExceptionMessage(
             'Expected one of the valid segment names: ["bar"]. Got: ["bogus"].'
         );
-        $route->requirements(['bogus' => '\d+']);
+        $route->requirements([
+            'bogus' => '\d+',
+        ]);
     }
 
     /**
@@ -258,11 +264,15 @@ final class RouteTest extends TestCase
     {
         $route = $this->newRoute('/foo/{bar}');
 
-        $route->requirements(['bar' => '\d+']);
+        $route->requirements([
+            'bar' => '\d+',
+        ]);
         $this->expectExceptionMessage(
             'Requirement for segment [bar] can not be overwritten.'
         );
-        $route->requirements(['bar' => '\w+']);
+        $route->requirements([
+            'bar' => '\w+',
+        ]);
     }
 
     /**
@@ -272,11 +282,15 @@ final class RouteTest extends TestCase
     public function test_defaults_throws_exception_for_non_primitives(): void
     {
         $route = $this->newRoute();
-        $route->defaults(['foo' => 'bar']);
+        $route->defaults([
+            'foo' => 'bar',
+        ]);
 
         $this->expectExceptionMessage('A route default value has to be a scalar or an array of scalars.');
 
-        $route->defaults(['foo' => new stdClass()]);
+        $route->defaults([
+            'foo' => new stdClass(),
+        ]);
     }
 
     /**

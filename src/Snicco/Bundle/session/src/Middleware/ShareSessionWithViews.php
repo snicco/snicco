@@ -34,7 +34,7 @@ final class ShareSessionWithViews extends Middleware
 
         return $response->withViewData([
             'session' => $session,
-            'errors' => new SessionErrors($errors)
+            'errors' => new SessionErrors($errors),
         ]);
     }
 }

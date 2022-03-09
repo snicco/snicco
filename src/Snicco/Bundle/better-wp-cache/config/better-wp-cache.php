@@ -9,6 +9,6 @@ return [
     /*
      * You must set a unique value here so that your cache values don't clash in the shared wp object cache.
      */
-    BetterWPCacheOption::CACHE_GROUP => 'my_plugin_cache_prefix_12312432'
+    BetterWPCacheOption::CACHE_GROUP => 'my_plugin_cache_prefix_12312432',
 
 ];

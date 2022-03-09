@@ -46,10 +46,12 @@ final class MiddlewareCacheTest extends TestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware', [
                 MiddlewareOption::ALWAYS_RUN => [
-                    RoutingConfigurator::FRONTEND_MIDDLEWARE
+                    RoutingConfigurator::FRONTEND_MIDDLEWARE,
                 ],
                 MiddlewareOption::ALIASES => [],
-                MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
+                MiddlewareOption::GROUPS => [
+                    'frontend' => [MiddlewareThree::class],
+                ],
                 MiddlewareOption::PRIORITY_LIST => [],
             ]);
         });
@@ -77,10 +79,12 @@ final class MiddlewareCacheTest extends TestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware', [
                 MiddlewareOption::ALWAYS_RUN => [
-                    RoutingConfigurator::FRONTEND_MIDDLEWARE
+                    RoutingConfigurator::FRONTEND_MIDDLEWARE,
                 ],
                 MiddlewareOption::ALIASES => [],
-                MiddlewareOption::GROUPS => ['frontend' => [MiddlewareThree::class]],
+                MiddlewareOption::GROUPS => [
+                    'frontend' => [MiddlewareThree::class],
+                ],
                 MiddlewareOption::PRIORITY_LIST => [],
             ]);
         });
@@ -110,7 +114,7 @@ final class MiddlewareCacheTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('pipeline exhausted');
             });
@@ -126,7 +130,7 @@ final class MiddlewareCacheTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('pipeline exhausted');
             });
@@ -143,7 +147,7 @@ final class MiddlewareCacheTest extends TestCase
             ->send(Request::fromPsr($request))
             ->through([
                 RoutingMiddleware::class,
-                RouteRunner::class
+                RouteRunner::class,
             ])->then(function () {
                 throw new RuntimeException('pipeline exhausted');
             });

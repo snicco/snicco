@@ -209,7 +209,7 @@ final class MiddlewareResolver
             'api' => [],
             'frontend' => [],
             'admin' => [],
-            'global' => []
+            'global' => [],
         ];
 
         foreach (array_keys($request_map) as $type) {
@@ -220,7 +220,7 @@ final class MiddlewareResolver
 
         return [
             'route_map' => $route_map,
-            'request_map' => $request_map
+            'request_map' => $request_map,
         ];
     }
 

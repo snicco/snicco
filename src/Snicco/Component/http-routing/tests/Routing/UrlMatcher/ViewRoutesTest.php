@@ -62,9 +62,13 @@ class ViewRoutesTest extends HttpRunnerTestCase
             $configurator->view(
                 '/foo',
                 $this->view,
-                ['greet' => 'Calvin'],
+                [
+                    'greet' => 'Calvin',
+                ],
                 200,
-                ['X-FOO' => 'BAR']
+                [
+                    'X-FOO' => 'BAR',
+                ]
             );
         });
 

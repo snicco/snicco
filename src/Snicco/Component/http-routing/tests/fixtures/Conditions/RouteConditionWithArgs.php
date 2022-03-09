@@ -25,6 +25,8 @@ class RouteConditionWithArgs extends RouteCondition
 
     public function getArguments(Request $request): array
     {
-        return ['condition_arg' => $this->val];
+        return [
+            'condition_arg' => $this->val,
+        ];
     }
 }

@@ -21,8 +21,8 @@ final class FallbackJsonDisplayer implements ExceptionDisplayer
                     'identifier' => $exception_information->identifier(),
                     'title' => $exception_information->safeTitle(),
                     'details' => $exception_information->safeDetails(),
-                ]
-            ]
+                ],
+            ],
         ], JSON_THROW_ON_ERROR);
     }
 

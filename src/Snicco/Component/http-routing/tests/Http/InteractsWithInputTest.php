@@ -29,7 +29,9 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_server(): void
     {
-        $request = $this->frontendRequest('/foo', ['foo' => 'bar']);
+        $request = $this->frontendRequest('/foo', [
+            'foo' => 'bar',
+        ]);
 
         $this->assertSame('bar', $request->server('foo'));
 
@@ -41,14 +43,29 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_all(): void
     {
-        $request = $this->request->withQueryParams(['foo' => 'bar']);
-        $this->assertSame(['foo' => 'bar'], $request->all());
+        $request = $this->request->withQueryParams([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $request->all());
 
-        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody(['foo' => 'bar']);
-        $this->assertSame(['foo' => 'bar'], $request->all());
+        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $request->all());
 
-        $request = $this->request->withQueryParams(['foo' => 'bar'])->withParsedBody(['baz' => 'biz']);
-        $this->assertSame(['foo' => 'bar', 'baz' => 'biz'], $request->all());
+        $request = $this->request->withQueryParams([
+            'foo' => 'bar',
+        ])->withParsedBody([
+            'baz' => 'biz',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ], $request->all());
     }
 
     /**
@@ -57,13 +74,27 @@ class InteractsWithInputTest extends TestCase
     public function the_http_verb_is_taken_into_account_for_all(): void
     {
         $request = $this->request->withMethod('POST')
-            ->withQueryParams(['foo' => 'bar', 'baz' => 'biz'])
-            ->withParsedBody(['boo' => 'bam', 'foo' => 'foobar']);
+            ->withQueryParams([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ])
+            ->withParsedBody([
+                'boo' => 'bam',
+                'foo' => 'foobar',
+            ]);
 
-        $this->assertSame(['boo' => 'bam', 'foo' => 'foobar', 'baz' => 'biz'], $request->all());
+        $this->assertSame([
+            'boo' => 'bam',
+            'foo' => 'foobar',
+            'baz' => 'biz',
+        ], $request->all());
 
         $request = $request->withMethod('GET');
-        $this->assertSame(['foo' => 'bar', 'baz' => 'biz', 'boo' => 'bam'], $request->all());
+        $this->assertSame([
+            'foo' => 'bar',
+            'baz' => 'biz',
+            'boo' => 'bam',
+        ], $request->all());
     }
 
     /**
@@ -95,12 +126,18 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_query(): void
     {
-        $request = $this->request->withQueryParams(['foo' => 'bar']);
-        $this->assertSame(['foo' => 'bar'], $request->query());
+        $request = $this->request->withQueryParams([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $request->query());
         $this->assertSame('bar', $request->query('foo'));
         $this->assertSame('default', $request->query('bogus', 'default'));
 
-        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody(['foo' => 'bar']);
+        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
+            'foo' => 'bar',
+        ]);
         $this->assertSame(null, $request->query('foo'));
 
         $request = $this->request->withQueryParams(
@@ -141,12 +178,18 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_post(): void
     {
-        $request = $this->request->withParsedBody(['foo' => 'bar']);
-        $this->assertSame(['foo' => 'bar'], $request->post());
+        $request = $this->request->withParsedBody([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $request->post());
         $this->assertSame('bar', $request->post('foo'));
         $this->assertSame('default', $request->post('bogus', 'default'));
 
-        $request = $this->frontendRequest('/foo', [], 'POST')->withQueryParams(['foo' => 'bar']);
+        $request = $this->frontendRequest('/foo', [], 'POST')->withQueryParams([
+            'foo' => 'bar',
+        ]);
         $this->assertSame(null, $request->post('foo'));
 
         $request = $this->request->withParsedBody(
@@ -187,7 +230,9 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_post_throws_exception_if_parsed_body_is_not_an_array(): void
     {
-        $arr = ['foo' => 'bar'];
+        $arr = [
+            'foo' => 'bar',
+        ];
         $stdClass = (object)$arr;
         $request = $this->request->withParsedBody($stdClass);
 
@@ -230,7 +275,9 @@ class InteractsWithInputTest extends TestCase
             'boo' => true,
             'bam' => 'true',
             'bogus' => 'bogus',
-        ])->withParsedBody(['post' => true]);
+        ])->withParsedBody([
+            'post' => true,
+        ]);
 
         $this->assertTrue($request->boolean('foo'));
         $this->assertTrue($request->boolean('bar'));
@@ -256,7 +303,9 @@ class InteractsWithInputTest extends TestCase
             'boo' => true,
             'bam' => 'true',
             'bogus' => 'bogus',
-        ])->withQueryParams(['get' => true]);
+        ])->withQueryParams([
+            'get' => true,
+        ]);
 
         $this->assertTrue($request->boolean('foo'));
         $this->assertTrue($request->boolean('bar'));
@@ -281,8 +330,8 @@ class InteractsWithInputTest extends TestCase
             ],
         ])->withParsedBody([
             'foo' => [
-                'bar' => 'baz'
-            ]
+                'bar' => 'baz',
+            ],
         ]);
 
         $only = $request->only('product.name');
@@ -314,13 +363,22 @@ class InteractsWithInputTest extends TestCase
         ])->withParsedBody([
             'foo' => [
                 'bar' => 'baz',
-                'baz' => 'biz'
-            ]
+                'baz' => 'biz',
+            ],
         ]);
 
         $this->assertSame([], $request->only('product.name'));
-        $this->assertSame(['foo' => ['bar' => 'baz', 'baz' => 'biz']], $request->only(['foo']));
-        $this->assertSame(['foo' => ['bar' => 'baz']], $request->only('foo.bar'));
+        $this->assertSame([
+            'foo' => [
+                'bar' => 'baz',
+                'baz' => 'biz',
+                
+            ], ], $request->only(['foo']));
+        $this->assertSame([
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ], $request->only('foo.bar'));
     }
 
     /**
@@ -337,7 +395,10 @@ class InteractsWithInputTest extends TestCase
                 'name' => 'calvin',
                 'age' => '23',
             ],
-        ])->withParsedBody(['foo' => 'bar', 'baz' => 'biz']);
+        ])->withParsedBody([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ]);
 
         $input = $request->except(['product.name', 'merchant']);
 
@@ -365,15 +426,23 @@ class InteractsWithInputTest extends TestCase
                 'name' => 'calvin',
                 'age' => '23',
             ],
-        ])->withParsedBody(['foo' => 'bar', 'baz' => 'biz']);
+        ])->withParsedBody([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ]);
 
         $input = $request->except(['product.name', 'merchant']);
 
         // Post data is not taken into account
-        $expected = ['foo' => 'bar', 'baz' => 'biz'];
+        $expected = [
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ];
         $this->assertSame($expected, $input);
 
-        $expected = ['foo' => 'bar'];
+        $expected = [
+            'foo' => 'bar',
+        ];
         $this->assertSame($expected, $request->except(['baz']));
     }
 
@@ -396,7 +465,9 @@ class InteractsWithInputTest extends TestCase
             'dev' => 'calvin',
             'null' => null,
             'empty_string' => '',
-        ])->withParsedBody(['foo' => 'bar']);
+        ])->withParsedBody([
+            'foo' => 'bar',
+        ]);
 
         $this->assertTrue($request->has('products'));
         $this->assertTrue($request->has('products.0.name'));
@@ -413,25 +484,42 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_hasAny(): void
     {
-        $request = $this->request->withQueryParams(['name' => 'calvin', 'age' => '', 'city' => null]);
+        $request = $this->request->withQueryParams([
+            'name' => 'calvin',
+            'age' => '',
+            'city' => null,
+        ]);
         $this->assertTrue($request->hasAny('name'));
         $this->assertTrue($request->hasAny('age'));
         $this->assertTrue($request->hasAny('city'));
         $this->assertTrue($request->hasAny(['name', 'email']));
         $this->assertFalse($request->hasAny('foo'));
 
-        $request = $this->request->withQueryParams(['name' => 'calvin', 'email' => 'foo']);
+        $request = $this->request->withQueryParams([
+            'name' => 'calvin',
+            'email' => 'foo',
+        ]);
         $this->assertTrue($request->hasAny(['name', 'email']));
         $this->assertFalse($request->hasAny(['surname', 'password']));
 
-        $request = $this->request->withQueryParams(['foo' => ['bar' => null, 'baz' => '']]);
+        $request = $this->request->withQueryParams([
+            'foo' => [
+                'bar' => null,
+                'baz' => '',
+                
+            ], ]);
         $this->assertTrue($request->hasAny('foo.bar'));
         $this->assertTrue($request->hasAny('foo.baz'));
         $this->assertFalse($request->hasAny('foo.bax'));
         $this->assertTrue($request->hasAny(['foo.bax', 'foo.baz']));
 
 
-        $request = $this->request->withQueryParams(['foo' => 'bar', 'baz' => 'biz'])->withParsedBody(['boom' => 'bam']);
+        $request = $this->request->withQueryParams([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ])->withParsedBody([
+            'boom' => 'bam',
+        ]);
         $this->assertTrue($request->hasAny('foo'));
         $this->assertTrue($request->hasAny('baz'));
         $this->assertFalse($request->hasAny('boom'));
@@ -448,8 +536,10 @@ class InteractsWithInputTest extends TestCase
             'foo' => '',
             'null' => null,
             'array' => [],
-            'empty-string' => '                '
-        ])->withParsedBody(['boom' => 'bam']);
+            'empty-string' => '                ',
+        ])->withParsedBody([
+            'boom' => 'bam',
+        ]);
 
         $this->assertTrue($request->filled('dev'));
         $this->assertFalse($request->filled('foo'));
@@ -466,21 +556,35 @@ class InteractsWithInputTest extends TestCase
      */
     public function test_missing(): void
     {
-        $request = $this->request->withQueryParams(['name' => 'calvin', 'age' => '', 'city' => null]);
+        $request = $this->request->withQueryParams([
+            'name' => 'calvin',
+            'age' => '',
+            'city' => null,
+        ]);
         $this->assertFalse($request->missing('name'));
         $this->assertFalse($request->missing('age'));
         $this->assertFalse($request->missing('city'));
         $this->assertTrue($request->missing(['name', 'email']));
         $this->assertTrue($request->missing('foo'));
 
-        $request = $this->request->withQueryParams(['name' => 'calvin', 'email' => 'foo']);
+        $request = $this->request->withQueryParams([
+            'name' => 'calvin',
+            'email' => 'foo',
+        ]);
         $this->assertFalse($request->missing(['name', 'email']));
         $this->assertTrue($request->missing('surname', 'password'));
         $this->assertTrue($request->missing(['surname', 'password']));
 
-        $request = $this->request->withQueryParams(['foo' => ['bar' => null, 'baz' => '']])->withParsedBody(
-            ['boom' => 'bam']
-        );
+        $request = $this->request->withQueryParams([
+            'foo' => [
+                'bar' => null,
+                'baz' => '',
+                
+            ], ])->withParsedBody(
+    [
+        'boom' => 'bam',
+    ]
+);
         $this->assertFalse($request->missing('foo.bar'));
         $this->assertFalse($request->missing('foo.baz'));
         $this->assertTrue($request->missing('foo.bax'));

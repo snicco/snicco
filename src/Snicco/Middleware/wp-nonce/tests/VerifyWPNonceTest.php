@@ -24,7 +24,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $middleware = new VerifyWPNonce($wp = new VerifyNonceTestWPApi());
 
         $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
-            VerifyWPNonce::inputKey() => $wp->createNonce('/foo')
+            VerifyWPNonce::inputKey() => $wp->createNonce('/foo'),
         ]);
 
         $response = $this->runMiddleware($middleware, $request);
@@ -40,7 +40,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $middleware = new VerifyWPNonce($wp = new VerifyNonceTestWPApi());
 
         $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
-            VerifyWPNonce::inputKey() => $wp->createNonce('/bar')
+            VerifyWPNonce::inputKey() => $wp->createNonce('/bar'),
         ]);
 
         $this->expectException(HttpException::class);
@@ -109,7 +109,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response = $this->runMiddleware(
             $middleware,
             $request->withMethod('POST')->withParsedBody([
-                VerifyWPNonce::inputKey() => 'nonce./foo'
+                VerifyWPNonce::inputKey() => 'nonce./foo',
             ])
         );
 
@@ -122,7 +122,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     public function test_wp_nonce_with_route_name(): void
     {
         $this->withRoutes([
-            Route::create('/foo/{param}', Route::DELEGATE, 'foo_route')
+            Route::create('/foo/{param}', Route::DELEGATE, 'foo_route'),
         ]);
 
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
@@ -142,7 +142,9 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $wp_nonce = $data['wp_nonce'];
         $this->assertInstanceOf(WPNonce::class, $wp_nonce);
 
-        $nonce = $wp_nonce('foo_route', ['param' => 'bar']);
+        $nonce = $wp_nonce('foo_route', [
+            'param' => 'bar',
+        ]);
 
         $key = VerifyWPNonce::inputKey();
 
@@ -155,7 +157,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response = $this->runMiddleware(
             $middleware,
             $request->withMethod('POST')->withParsedBody([
-                VerifyWPNonce::inputKey() => 'nonce./foo/bar'
+                VerifyWPNonce::inputKey() => 'nonce./foo/bar',
             ])
         );
 
@@ -197,7 +199,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response = $this->runMiddleware(
             $middleware,
             $request->withMethod('POST')->withParsedBody([
-                VerifyWPNonce::inputKey() => 'nonce./foo_route'
+                VerifyWPNonce::inputKey() => 'nonce./foo_route',
             ])
         );
 

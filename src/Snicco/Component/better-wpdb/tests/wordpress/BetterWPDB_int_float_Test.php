@@ -27,7 +27,7 @@ final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
             'test_string' => 'foo',
             'test_int' => 10,
             'test_float' => 20.20,
-            'test_bool' => 1
+            'test_bool' => 1,
         ]);
 
         /** @var array{test_int: int, test_float:float, test_bool:int, test_string:string} $row */

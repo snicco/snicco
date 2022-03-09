@@ -128,7 +128,9 @@ class RouteSegmentsTest extends HttpRunnerTestCase
                 'users/{user}',
                 [RoutingTestController::class, 'dynamic']
             )
-                ->requirements(['user' => '[a]+']);
+                ->requirements([
+                    'user' => '[a]+',
+                ]);
         });
 
         $request = $this->frontendRequest('/users/a');
@@ -148,7 +150,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
                 'r1',
                 '/user/{id}/{name}',
                 [RoutingTestController::class, 'twoParams']
-            )->requirements(['id' => '[a]+', 'name' => '[a-z]+']);
+            )->requirements([
+                'id' => '[a]+',
+                'name' => '[a-z]+',
+            ]);
         });
 
         $request = $this->frontendRequest('/user/a/calvin');
@@ -241,7 +246,10 @@ class RouteSegmentsTest extends HttpRunnerTestCase
                 'r1',
                 '/team/{id?}/{name?}',
                 [RoutingTestController::class, 'twoOptional']
-            )->requirements(['name' => '[a-z]+', 'id' => '\d+']);
+            )->requirements([
+                'name' => '[a-z]+',
+                'id' => '\d+',
+            ]);
         });
 
         $response = $this->frontendRequest('/team', [], 'POST');
@@ -273,8 +281,12 @@ class RouteSegmentsTest extends HttpRunnerTestCase
                 'users/{user_id}/{name}',
                 [RoutingTestController::class, 'twoParams']
             )
-                ->requirements(['user_id' => '[a]+'])
-                ->requirements(['name' => 'calvin']);
+                ->requirements([
+                    'user_id' => '[a]+',
+                ])
+                ->requirements([
+                    'name' => 'calvin',
+                ]);
 
             $configurator->get(
                 'r2',

@@ -425,18 +425,29 @@ final class EmailTest extends WPTestCase
 
         $email = $email->addContext('foo', 'bar');
 
-        $this->assertSame(['foo' => 'bar'], $email->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $email->context());
 
         $email = $email->addContext('foo', 'baz');
 
-        $this->assertSame(['foo' => 'baz'], $email->context());
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $email->context());
 
         $email = $email->addContext('bar', 'biz');
 
-        $this->assertSame(['foo' => 'baz', 'bar' => 'biz'], $email->context());
+        $this->assertSame([
+            'foo' => 'baz',
+            'bar' => 'biz',
+        ], $email->context());
 
-        $email = $email->withContext(['new' => 'foo']);
-        $this->assertSame(['new' => 'foo'], $email->context());
+        $email = $email->withContext([
+            'new' => 'foo',
+        ]);
+        $this->assertSame([
+            'new' => 'foo',
+        ], $email->context());
     }
 
     /**
@@ -448,16 +459,29 @@ final class EmailTest extends WPTestCase
 
         $this->assertSame([], $email->customHeaders());
 
-        $email = $email->addCustomHeaders(['X-FOO' => 'BAR']);
+        $email = $email->addCustomHeaders([
+            'X-FOO' => 'BAR',
+        ]);
 
-        $this->assertSame(['X-FOO' => 'BAR'], $email->customHeaders());
+        $this->assertSame([
+            'X-FOO' => 'BAR',
+        ], $email->customHeaders());
 
-        $email = $email->addCustomHeaders(['X-BAZ' => 'BIZ']);
+        $email = $email->addCustomHeaders([
+            'X-BAZ' => 'BIZ',
+        ]);
 
-        $this->assertSame(['X-FOO' => 'BAR', 'X-BAZ' => 'BIZ'], $email->customHeaders());
+        $this->assertSame([
+            'X-FOO' => 'BAR',
+            'X-BAZ' => 'BIZ',
+        ], $email->customHeaders());
 
-        $email = $email->withCustomHeaders(['X-NEW' => 'FOO']);
-        $this->assertSame(['X-NEW' => 'FOO'], $email->customHeaders());
+        $email = $email->withCustomHeaders([
+            'X-NEW' => 'FOO',
+        ]);
+        $this->assertSame([
+            'X-NEW' => 'FOO',
+        ], $email->customHeaders());
     }
 
     /**

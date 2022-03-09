@@ -8,6 +8,6 @@ return [
     MiddlewareOption::GROUPS => [
         'global' => [
 
-        ]
-    ]
+        ],
+    ],
 ];

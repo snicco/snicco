@@ -31,7 +31,9 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
     {
         parent::setUp();
         $session_manager = new FactorySessionManager(
-            SessionConfig::mergeDefaults('test_cookie', ['garbage_collection_percentage' => 0]),
+            SessionConfig::mergeDefaults('test_cookie', [
+                'garbage_collection_percentage' => 0,
+            ]),
             new InMemoryDriver(),
             new JsonSerializer()
         );
@@ -48,11 +50,17 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
     {
         $middleware = new ShareSessionWithViews();
 
-        $this->session->flash(SessionErrors::class, ['default' => ['key1' => ['error1', 'error2']]]);
+        $this->session->flash(SessionErrors::class, [
+            'default' => [
+                'key1' => ['error1', 'error2'],
+                
+            ], ]);
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return (new ViewResponse('foo_view', $response))
-                ->withViewData(['foo' => 'bar']);
+                ->withViewData([
+                    'foo' => 'bar',
+                ]);
         });
 
         $response = $this->runMiddleware($middleware, $this->request_with_session);
@@ -68,10 +76,10 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
                 'default' => [
                     'key1' => [
                         'error1',
-                        'error2'
-                    ]
-                ]
-            ])
+                        'error2',
+                    ],
+                ],
+            ]),
         ], $view_response->viewData());
     }
 
@@ -94,7 +102,9 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return (new ViewResponse('foo_view', $response))
-                ->withViewData(['foo' => 'bar']);
+                ->withViewData([
+                    'foo' => 'bar',
+                ]);
         });
 
         $this->expectException(LogicException::class);

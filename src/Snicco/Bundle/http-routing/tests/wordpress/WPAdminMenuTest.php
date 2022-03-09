@@ -50,7 +50,7 @@ final class WPAdminMenuTest extends WPTestCase
          * @var WP_User $user
          */
         $user = $user_factory->create_and_get([
-            'role' => 'administrator'
+            'role' => 'administrator',
         ]);
         wp_set_current_user($user->ID);
     }

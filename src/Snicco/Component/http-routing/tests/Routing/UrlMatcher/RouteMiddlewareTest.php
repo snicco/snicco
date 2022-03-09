@@ -28,8 +28,12 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function an_exception_is_thrown_if_alias_and_middleware_group_have_the_same_name(): void
     {
-        $this->withMiddlewareAlias(['alias' => FooMiddleware::class]);
-        $this->withMiddlewareGroups(['alias' => [BarMiddleware::class]]);
+        $this->withMiddlewareAlias([
+            'alias' => FooMiddleware::class,
+        ]);
+        $this->withMiddlewareGroups([
+            'alias' => [BarMiddleware::class],
+        ]);
 
         $this->expectException(InvalidMiddleware::class);
         $this->expectExceptionMessage('Middleware group and alias have the same name [alias].');
@@ -42,7 +46,9 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function an_exception_is_thrown_if_a_middleware_alias_does_not_resolve_to_a_valid_middleware_class(): void
     {
-        $this->withMiddlewareAlias(['alias1' => stdClass::class]);
+        $this->withMiddlewareAlias([
+            'alias1' => stdClass::class,
+        ]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -632,7 +638,9 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             RoutingConfigurator::ADMIN_MIDDLEWARE,
         ]);
         $this->withMiddlewareGroups(
-            [RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
+            [
+                RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
+            ]
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
@@ -660,7 +668,9 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             RoutingConfigurator::ADMIN_MIDDLEWARE,
         ]);
         $this->withMiddlewareGroups(
-            [RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
+            [
+                RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
+            ]
         );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -684,7 +694,9 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             RoutingConfigurator::API_MIDDLEWARE,
         ]);
         $this->withMiddlewareGroups(
-            [RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class]]
+            [
+                RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
+            ]
         );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -718,7 +730,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->expectExceptionMessage('can not be used as middleware that is always');
 
         $this->alwaysRun([
-            FooMiddleware::class
+            FooMiddleware::class,
         ]);
 
         $this->runNewPipeline($this->frontendRequest());
@@ -731,7 +743,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
     {
         $this->withMiddlewareGroups([
             'group1' => ['group2'],
-            'group2' => ['group1']
+            'group2' => ['group1'],
         ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -753,7 +765,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->withMiddlewareGroups([
             'group1' => ['group2'],
             'group2' => ['group3'],
-            'group3' => ['group1']
+            'group3' => ['group1'],
         ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -777,7 +789,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             'correct_2' => [BarMiddleware::class],
             'group1' => ['correct_1', 'group2'],
             'group2' => ['correct_2', 'group3'],
-            'group3' => [BazMiddleware::class, 'group1']
+            'group3' => [BazMiddleware::class, 'group1'],
         ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -801,7 +813,7 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
             'correct_2' => [BarMiddleware::class],
             RoutingConfigurator::GLOBAL_MIDDLEWARE => ['correct_1', 'group2'],
             'group2' => ['correct_2', 'group3'],
-            'group3' => [BazMiddleware::class, 'group2']
+            'group3' => [BazMiddleware::class, 'group2'],
         ]);
 
         $this->expectException(MiddlewareRecursion::class);
