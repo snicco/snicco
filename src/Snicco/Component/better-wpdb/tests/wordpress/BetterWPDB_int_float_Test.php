@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;

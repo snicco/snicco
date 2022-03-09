@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;

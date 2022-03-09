@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPDB;
 
 use Snicco\Component\BetterWPDB\BetterWPDB;

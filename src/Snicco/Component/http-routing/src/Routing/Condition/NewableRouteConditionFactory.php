@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Routing\Condition;
 
 use function array_values;

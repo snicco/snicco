@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;

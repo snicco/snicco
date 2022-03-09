@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Functional\Concerns;
 
 use PHPUnit\Framework\Assert as PHPUnit;

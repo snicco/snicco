@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Templating;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;

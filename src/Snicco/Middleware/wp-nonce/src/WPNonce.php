@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Middleware\WPNonce;
 
 use Snicco\Component\BetterWPAPI\BetterWPAPI;

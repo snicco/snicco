@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\EventDispatcher\Tests\ListenerFactory;
 
 use PHPUnit\Framework\TestCase;

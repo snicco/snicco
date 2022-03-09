@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPMail;
 
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting;
 
 use Nyholm\Psr7Server\ServerRequestCreator;

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPHooks\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;

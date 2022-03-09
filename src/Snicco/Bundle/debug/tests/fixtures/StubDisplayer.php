@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Debug\Tests\fixtures;
 
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
