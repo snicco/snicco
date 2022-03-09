@@ -45,7 +45,7 @@ final class FakeTransport implements Transport
     {
         $this->wp->addFilter('pre_wp_mail', /** @psalm-suppress MixedArgumentTypeCoercion */ function (): bool {
             $args = func_get_args();
-            if (!isset($args[1]) || !is_array($args[1])) {
+            if (! isset($args[1]) || ! is_array($args[1])) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('pre_wp_mail did not receive correct arguments');
                 // @codeCoverageIgnoreEnd
@@ -189,11 +189,11 @@ final class FakeTransport implements Transport
     private function recordWPMail(array $attributes): void
     {
         $to = [];
-        foreach ((array)$attributes['to'] as $recipient) {
+        foreach ((array) $attributes['to'] as $recipient) {
             $to[] = Mailbox::create($recipient);
         }
 
-        $headers = (array)$attributes['headers'];
+        $headers = (array) $attributes['headers'];
         $carbon_copies = [];
         $blind_carbon_copies = [];
 
@@ -201,7 +201,7 @@ final class FakeTransport implements Transport
         $attachments = $attributes['attachments'] ?? [];
         $site_url = $this->wp->siteUrl();
         $site_name = parse_url($site_url, PHP_URL_HOST);
-        if (!is_string($site_name)) {
+        if (! is_string($site_name)) {
             throw new RuntimeException("Cant parse site url [$site_url].");
         }
         if ('www.' === substr($site_name, 0, 4)) {
@@ -253,7 +253,7 @@ final class FakeTransport implements Transport
             $wp_mail = $wp_mail->withReplyTo($reply_to);
         }
 
-        foreach ((array)$attachments as $attachment) {
+        foreach ((array) $attachments as $attachment) {
             $wp_mail = $wp_mail->addAttachment(
                 $attachment
             );
@@ -269,7 +269,7 @@ final class FakeTransport implements Transport
     {
         $matching = [];
 
-        if (!isset($this->sent_mails[$email_class])) {
+        if (! isset($this->sent_mails[$email_class])) {
             return [];
         }
 

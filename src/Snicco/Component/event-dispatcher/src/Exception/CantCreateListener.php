@@ -20,7 +20,7 @@ final class CantCreateListener extends RuntimeException
         $message =
             "The listener class [$listener] could not be instantiated while dispatching [$event_name].";
 
-        return new self($message, (int)$previous->getCode(), $previous);
+        return new self($message, (int) $previous->getCode(), $previous);
     }
 
     public static function fromPrevious(
@@ -35,7 +35,7 @@ final class CantCreateListener extends RuntimeException
                 $event_name,
                 $e->getMessage()
             ),
-            (int)$e->getCode(),
+            (int) $e->getCode(),
             $e
         );
     }

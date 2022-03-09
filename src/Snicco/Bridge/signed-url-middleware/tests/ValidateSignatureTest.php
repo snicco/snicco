@@ -21,6 +21,7 @@ use function str_replace;
 final class ValidateSignatureTest extends MiddlewareTestCase
 {
     private SignedUrlValidator $validator;
+
     private UrlSigner $signer;
 
     protected function setUp(): void

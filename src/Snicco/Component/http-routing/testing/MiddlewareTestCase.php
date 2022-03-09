@@ -38,14 +38,18 @@ abstract class MiddlewareTestCase extends TestCase
     use CreatesPsrRequests;
 
     private Routes $routes;
+
     private ResponseFactory $response_factory;
 
     /**
      * @var Closure(Response,Request):Response
      */
     private Closure $next_middleware_response;
+
     private bool $next_called = false;
+
     private ?Request $received_request_by_next_middleware = null;
+
     private ?ResponseUtils $response_utils = null;
 
     protected function setUp(): void
@@ -105,10 +109,10 @@ abstract class MiddlewareTestCase extends TestCase
         );
 
         if ($middleware instanceof Middleware) {
-            if (!$pimple->offsetExists(ResponseFactory::class)) {
+            if (! $pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $this->response_factory;
             }
-            if (!$pimple->offsetExists(UrlGenerator::class)) {
+            if (! $pimple->offsetExists(UrlGenerator::class)) {
                 $pimple[UrlGenerator::class] = $url;
             }
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
@@ -131,7 +135,7 @@ abstract class MiddlewareTestCase extends TestCase
 
     final protected function receivedRequest(): Request
     {
-        if (!isset($this->received_request_by_next_middleware)) {
+        if (! isset($this->received_request_by_next_middleware)) {
             throw new RuntimeException('The next middleware was not called.');
         }
 
@@ -145,7 +149,7 @@ abstract class MiddlewareTestCase extends TestCase
 
     final protected function responseUtils(): ResponseUtils
     {
-        if (!isset($this->response_utils)) {
+        if (! isset($this->response_utils)) {
             throw new LogicException('response utils can only be accessed during the next middleware response.');
         }
         return $this->response_utils;

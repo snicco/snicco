@@ -164,7 +164,7 @@ final class BetterWPMailBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
         $destination = $kernel->directories()->configDir() . '/mail.php';

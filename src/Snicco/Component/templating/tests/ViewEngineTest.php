@@ -29,8 +29,11 @@ use const DIRECTORY_SEPARATOR;
 class ViewEngineTest extends TestCase
 {
     private ViewEngine $view_engine;
+
     private GlobalViewContext $global_view_context;
+
     private ViewComposerCollection $composers;
+
     private PHPViewFactory $php_view_factory;
 
     private string $view_dir;
@@ -164,13 +167,15 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ]);
+
+            ],
+        ]);
         $this->global_view_context->add('global2', [
             'foo' => [
                 'bar' => 'biz',
-                
-            ], ]);
+
+            ],
+        ]);
 
         $view = $this->view_engine->make('multiple-globals');
 
@@ -185,8 +190,9 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ]);
+
+            ],
+        ]);
         $view = $this->view_engine->make('array-access-isset');
 
         $this->assertSame('Isset works', $view->render());
@@ -203,8 +209,9 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ]);
+
+            ],
+        ]);
         $view = $this->view_engine->make('array-access-set');
 
         $view->render();
@@ -221,8 +228,9 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('global1', [
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ]);
+
+            ],
+        ]);
         $view = $this->view_engine->make('array-access-unset');
 
         $view->render();
@@ -236,8 +244,9 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', [
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ]);
+
+            ],
+        ]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             return $view->with([
@@ -262,8 +271,9 @@ class ViewEngineTest extends TestCase
         $this->global_view_context->add('test_context', [
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ]);
+
+            ],
+        ]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             return $view->with([
@@ -271,7 +281,7 @@ class ViewEngineTest extends TestCase
                     'foo' => [
                         'bar' => 'biz',
                     ],
-                    
+
                 ],
             ]);
         });
@@ -463,7 +473,7 @@ class TestTwigViewFactory implements ViewFactory
 {
     public function make(string $view): View
     {
-        if (!strpos($view, 'twig')) {
+        if (! strpos($view, 'twig')) {
             throw new ViewNotFound();
         }
         return new TestView($view);

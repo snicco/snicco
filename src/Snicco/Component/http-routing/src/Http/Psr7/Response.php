@@ -15,6 +15,7 @@ use function sprintf;
 class Response implements ResponseInterface
 {
     private ResponseInterface $psr7_response;
+
     private Cookies $cookies;
 
     /**
@@ -249,7 +250,7 @@ class Response implements ResponseInterface
     {
         $_errors = $this->errors;
         foreach ($errors as $key => $messages) {
-            $messages = (array)$messages;
+            $messages = (array) $messages;
             foreach ($messages as $message) {
                 $_errors[$namespace][$key][] = $message;
             }

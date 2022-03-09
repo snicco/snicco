@@ -14,6 +14,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 class MiddlewareWithDependencies extends Middleware
 {
     public Foo $foo;
+
     public Bar $bar;
 
     public function __construct(Foo $foo, Bar $bar)

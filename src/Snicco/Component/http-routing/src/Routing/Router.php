@@ -41,16 +41,25 @@ use function serialize;
 final class Router
 {
     private UrlGenerationContext $context;
+
     private AdminArea $admin_area;
+
     private UrlEncoder $url_encoder;
+
     private RouteCache $route_cache;
+
     private RouteLoader $route_loader;
+
     private RouteConditionFactory $condition_factory;
 
     private ?Configurator $routing_configurator = null;
+
     private ?UrlMatcher $url_matcher = null;
+
     private ?UrlGenerator $url_generator = null;
+
     private ?Routes $routes = null;
+
     private ?AdminMenu $admin_menu = null;
 
     /**
@@ -76,7 +85,7 @@ final class Router
 
     public function urlMatcher(): UrlMatcher
     {
-        if (!isset($this->url_matcher)) {
+        if (! isset($this->url_matcher)) {
             $this->url_matcher = new AdminRouteMatcher(
                 new FastRouteDispatcher(
                     $this->routes(),
@@ -91,7 +100,7 @@ final class Router
 
     public function urlGenerator(): UrlGenerator
     {
-        if (!isset($this->url_generator)) {
+        if (! isset($this->url_generator)) {
             $this->url_generator = new LazyGenerator(function () {
                 return new Generator(
                     $this->routes(),
@@ -106,7 +115,7 @@ final class Router
 
     public function routes(): Routes
     {
-        if (!isset($this->routes)) {
+        if (! isset($this->routes)) {
             $this->routes = new SerializedRouteCollection($this->routeData()['route_collection']);
         }
         return $this->routes;
@@ -114,7 +123,7 @@ final class Router
 
     public function adminMenu(): AdminMenu
     {
-        if (!isset($this->admin_menu)) {
+        if (! isset($this->admin_menu)) {
             $this->admin_menu = new CachedAdminMenu($this->routeData()['admin_menu']);
         }
 
@@ -123,7 +132,7 @@ final class Router
 
     private function routingConfigurator(): Configurator
     {
-        if (!isset($this->routing_configurator)) {
+        if (! isset($this->routing_configurator)) {
             $this->routing_configurator = new Configurator(
                 $this->admin_area->urlPrefix(),
             );
@@ -136,7 +145,7 @@ final class Router
      */
     private function routeData(): array
     {
-        if (!isset($this->route_data)) {
+        if (! isset($this->route_data)) {
             $data = $this->route_cache->get(function () {
                 return $this->loadRoutes();
             });

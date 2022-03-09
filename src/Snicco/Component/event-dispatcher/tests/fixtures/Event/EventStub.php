@@ -14,6 +14,7 @@ class EventStub implements Event
     use ClassAsPayload;
 
     public string $val1;
+
     public string $val2;
 
     public function __construct(string $foo, string $bar)

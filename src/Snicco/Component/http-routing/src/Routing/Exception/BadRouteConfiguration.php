@@ -12,7 +12,7 @@ final class BadRouteConfiguration extends LogicException
 {
     public static function fromPrevious(Throwable $previous): BadRouteConfiguration
     {
-        return new self($previous->getMessage(), (int)$previous->getCode(), $previous);
+        return new self($previous->getMessage(), (int) $previous->getCode(), $previous);
     }
 
     public static function becauseAdminRouteWasAddedWithHardcodedPrefix(

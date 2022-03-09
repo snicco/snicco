@@ -247,7 +247,7 @@ class ReadWriteSessionTest extends TestCase
         $this->assertSame([
             'bar', 'bar', [
                 'baz' => 'biz',
-                
+
             ], ], $session->get('foo'));
 
         $session->push('int', 'foo');
@@ -352,7 +352,6 @@ class ReadWriteSessionTest extends TestCase
         $this->assertEquals(0, $session->get('bar'));
 
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
-
 
         $this->assertFalse($session->has('foo'));
         $this->assertNull($session->get('foo'));
@@ -1117,6 +1116,7 @@ class ReadWriteSessionTest extends TestCase
 class SpyDriver implements SessionDriver
 {
     public array $written = [];
+
     public array $touched = [];
 
     public function read(string $selector): SerializedSession

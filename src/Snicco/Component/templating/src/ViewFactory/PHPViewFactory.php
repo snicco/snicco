@@ -16,6 +16,7 @@ use function array_filter;
 final class PHPViewFactory implements ViewFactory
 {
     private PHPViewFinder $finder;
+
     private ViewComposerCollection $composer_collection;
 
     public function __construct(PHPViewFinder $finder, ViewComposerCollection $composers)
@@ -63,7 +64,7 @@ final class PHPViewFactory implements ViewFactory
             $parent = $parent
                 ->with(
                     array_filter($view->context(), function ($value) {
-                        return !$value instanceof ChildContent;
+                        return ! $value instanceof ChildContent;
                     })
                 )
                 ->with(

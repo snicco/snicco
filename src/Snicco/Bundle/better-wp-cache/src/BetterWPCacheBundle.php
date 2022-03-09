@@ -71,7 +71,7 @@ final class BetterWPCacheBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
         $destination = $kernel->directories()->configDir() . '/better-wp-cache.php';

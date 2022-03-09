@@ -25,6 +25,7 @@ use Snicco\Component\Session\ValueObject\SessionConfig;
 final class ShareSessionWithViewsTest extends MiddlewareTestCase
 {
     private Session $session;
+
     private Request $request_with_session;
 
     protected function setUp(): void
@@ -53,8 +54,9 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
         $this->session->flash(SessionErrors::class, [
             'default' => [
                 'key1' => ['error1', 'error2'],
-                
-            ], ]);
+
+            ],
+        ]);
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return (new ViewResponse('foo_view', $response))

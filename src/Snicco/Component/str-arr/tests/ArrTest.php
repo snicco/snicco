@@ -41,8 +41,9 @@ final class ArrTest extends TestCase
         $array = [
             'products.desk' => [
                 'price' => 100,
-                
-            ], ];
+
+            ],
+        ];
         $this->assertEquals([
             'price' => 100,
         ], Arr::get($array, 'products.desk'));
@@ -51,9 +52,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         $value = Arr::get($array, 'products.desk');
         $this->assertEquals([
             'price' => 100,
@@ -64,8 +66,9 @@ final class ArrTest extends TestCase
             'foo' => null,
             'bar' => [
                 'baz' => null,
-                
-            ], ];
+
+            ],
+        ];
         $this->assertNull(Arr::get($array, 'foo', 'default'));
         $this->assertNull(Arr::get($array, 'bar.baz', 'default'));
 
@@ -74,9 +77,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         $arrayAccessObject = new ArrayObject($array);
         $value = Arr::get($arrayAccessObject, 'products.desk');
         $this->assertEquals([
@@ -88,9 +92,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ]);
+
+                ],
+            ],
+        ]);
         $array = [
             'child' => $arrayAccessChild,
         ];
@@ -104,9 +109,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ]);
+
+                ],
+            ],
+        ]);
         $arrayAccessParent = new ArrayObject([
             'child' => $arrayAccessChild,
         ]);
@@ -123,9 +129,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ]);
+
+                ],
+            ],
+        ]);
         $arrayAccessParent = new ArrayObject([
             'child' => $arrayAccessChild,
         ]);
@@ -140,8 +147,9 @@ final class ArrTest extends TestCase
         $arrayAccessObject = new ArrayObject([
             'products' => [
                 'desk' => null,
-                
-            ], ]);
+
+            ],
+        ]);
         $array = [
             'parent' => $arrayAccessObject,
         ];
@@ -153,7 +161,8 @@ final class ArrTest extends TestCase
             'foo' => null,
             'bar' => new ArrayObject([
                 'baz' => null,
-            ]), ]);
+            ]),
+        ]);
         $this->assertNull(Arr::get($array, 'foo', 'default'));
         $this->assertNull(Arr::get($array, 'bar.baz', 'default'));
 
@@ -189,7 +198,7 @@ final class ArrTest extends TestCase
                 [
                     'name' => 'chair',
                 ],
-                
+
             ],
         ];
         $this->assertSame('desk', Arr::get($array, 'products.0.name'));
@@ -199,8 +208,9 @@ final class ArrTest extends TestCase
         $array = [
             'names' => [
                 'developer' => 'taylor',
-                
-            ], ];
+
+            ],
+        ];
         $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', 'dayle'));
         $this->assertSame(
             'dayle',
@@ -213,8 +223,9 @@ final class ArrTest extends TestCase
         $array = [
             'foo.bar' => [
                 'bar' => 'baz',
-                
-            ], ];
+
+            ],
+        ];
         $this->assertSame([
             'bar' => 'baz',
         ], Arr::get($array, 'foo.bar'));
@@ -323,7 +334,7 @@ final class ArrTest extends TestCase
         $this->assertFalse(Arr::accessible(null));
         $this->assertFalse(Arr::accessible('abc'));
         $this->assertFalse(Arr::accessible(new stdClass()));
-        $this->assertFalse(Arr::accessible((object)[
+        $this->assertFalse(Arr::accessible((object) [
             'a' => 1,
             'b' => 2,
         ]));
@@ -426,25 +437,28 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::forget($array, []);
         $this->assertEquals([
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         $array = [
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::forget($array, 'products.desk');
         $this->assertEquals([
             'products' => [],
@@ -454,47 +468,53 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::forget($array, 'products.desk.price');
         $this->assertEquals([
             'products' => [
                 'desk' => [],
-                
-            ], ], $array);
+
+            ],
+        ], $array);
 
         $array = [
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::forget($array, 'products.final.price');
         $this->assertEquals([
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         $array = [
             'shop' => [
                 'cart' => [
                     150 => 0,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::forget($array, 'shop.final.cart');
         $this->assertEquals([
             'shop' => [
                 'cart' => [
                     150 => 0,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         $array = [
             'products' => [
@@ -502,20 +522,22 @@ final class ArrTest extends TestCase
                     'price' => [
                         'original' => 50,
                         'taxes' => 60,
-                        
-                        
-                        
-                    ], ], ], ];
+
+                    ],
+                ],
+            ],
+        ];
         Arr::forget($array, 'products.desk.price.taxes');
         $this->assertEquals([
             'products' => [
                 'desk' => [
                     'price' => [
                         'original' => 50,
-                        
-                        
-                        
-                    ], ], ], ], $array);
+
+                    ],
+                ],
+            ],
+        ], $array);
 
         $array = [
             'products' => [
@@ -523,10 +545,11 @@ final class ArrTest extends TestCase
                     'price' => [
                         'original' => 50,
                         'taxes' => 60,
-                        
-                        
-                        
-                    ], ], ], ];
+
+                    ],
+                ],
+            ],
+        ];
         Arr::forget($array, 'products.desk.final.taxes');
         $this->assertEquals(
             [
@@ -535,10 +558,11 @@ final class ArrTest extends TestCase
                         'price' => [
                             'original' => 50,
                             'taxes' => 60,
-                            
-                            
-                            
-                        ], ], ], ],
+
+                        ],
+                    ],
+                ],
+            ],
             $array
         );
 
@@ -548,15 +572,18 @@ final class ArrTest extends TestCase
                     'price' => 50,
                 ],
                 null =>
-                
-                 'something', ], ];
+
+                 'something',
+            ],
+        ];
         Arr::forget($array, ['products.amount.all', 'products.desk.price']);
         $this->assertEquals([
             'products' => [
                 'desk' => [],
                 null => 'something',
-                
-            ], ], $array);
+
+            ],
+        ], $array);
 
         // Only works on first level keys
         $array = [
@@ -576,7 +603,7 @@ final class ArrTest extends TestCase
                 ],
                 'jane@localhost' => [
                     'name' => 'Jane',
-                    
+
                 ],
             ],
         ];
@@ -585,9 +612,10 @@ final class ArrTest extends TestCase
             'emails' => [
                 'joe@example.com' => [
                     'name' => 'Joe',
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
     }
 
     /**
@@ -634,8 +662,9 @@ final class ArrTest extends TestCase
             'baz' => [
                 'biz' => 'boo',
                 'bang' => 'boom',
-                
-            ], ];
+
+            ],
+        ];
 
         $this->assertEquals([
             'foo' => 'bar',
@@ -646,8 +675,9 @@ final class ArrTest extends TestCase
                 'foo' => 'bar',
                 'baz' => [
                     'bang' => 'boom',
-                    
-                ], ],
+
+                ],
+            ],
             Arr::except($array, 'baz.biz')
         );
 
@@ -656,8 +686,9 @@ final class ArrTest extends TestCase
                 'foo' => 'bar',
                 'baz' => [
                     'biz' => 'boo',
-                    
-                ], ],
+
+                ],
+            ],
             Arr::except($array, ['name', 'baz.bang'])
         );
 
@@ -667,8 +698,9 @@ final class ArrTest extends TestCase
             'baz' => [
                 'biz' => 'boo',
                 'bang' => 'boom',
-                
-            ], ]);
+
+            ],
+        ]);
     }
 
     /**
@@ -682,7 +714,6 @@ final class ArrTest extends TestCase
 
         $array = ['#foo', '#bar', '#baz'];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arr::flatten($array, 5000));
-
 
         // Nested arrays are flattened with existing flat items
         $array = [['#foo', '#bar'], '#baz'];
@@ -717,7 +748,7 @@ final class ArrTest extends TestCase
             '#foo', new ArrayObject([
                 '#bar', [
                     'foo' => '#zap',
-                    
+
                 ], ]), ], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arr::flatten($array));
     }
@@ -731,17 +762,19 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::set($array, 'products.desk.price', 200);
         $this->assertEquals([
             'products' => [
                 'desk' => [
                     'price' => 200,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         // The key doesn't exist at the depth
         $array = [
@@ -752,9 +785,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         // No corresponding key exists
         $array = ['products'];
@@ -764,46 +798,53 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         $array = [
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::set($array, 'table', 500);
         $this->assertSame([
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                ], ],
+
+                ],
+            ],
             'table'
-             => 500, ], $array);
+             => 500,
+        ], $array);
 
         $array = [
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         Arr::set($array, 'table.price', 350);
         $this->assertSame(
             [
                 'products' => [
                     'desk' => [
                         'price' => 100,
-                        
-                    ], ],
+
+                    ],
+                ],
                 'table' => [
                     'price'
                      => 350,
-                ], ],
+                ],
+            ],
             $array
         );
 
@@ -813,9 +854,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
 
         // Override
         $array = [
@@ -826,9 +868,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 300,
-                    
-                    
-                ], ], ], $array);
+
+                ],
+            ],
+        ], $array);
     }
 
     /**
@@ -862,8 +905,9 @@ final class ArrTest extends TestCase
             'emails' => [
                 'joe@example.com' => 'Joe',
                 'jane@localhost' => 'Jane',
-                
-            ], ];
+
+            ],
+        ];
         $name = Arr::pull($array, 'emails.joe@example.com');
         $this->assertNull($name);
         $this->assertEquals(
@@ -871,8 +915,9 @@ final class ArrTest extends TestCase
                 'emails' => [
                     'joe@example.com' => 'Joe',
                     'jane@localhost' => 'Jane',
-                    
-                ], ],
+
+                ],
+            ],
             $array
         );
     }
@@ -885,17 +930,19 @@ final class ArrTest extends TestCase
         $array = [
             'products.desk' => [
                 'price' => 100,
-                
-            ], ];
+
+            ],
+        ];
         $this->assertTrue(Arr::has($array, 'products.desk'));
 
         $array = [
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         $this->assertTrue(Arr::has($array, 'products.desk'));
         $this->assertTrue(Arr::has($array, 'products.desk.price'));
         $this->assertFalse(Arr::has($array, 'products.foo'));
@@ -905,8 +952,9 @@ final class ArrTest extends TestCase
             'foo' => null,
             'bar' => [
                 'baz' => null,
-                
-            ], ];
+
+            ],
+        ];
         $this->assertTrue(Arr::has($array, 'foo'));
         $this->assertTrue(Arr::has($array, 'bar.baz'));
 
@@ -914,7 +962,8 @@ final class ArrTest extends TestCase
             'foo' => 10,
             'bar' => new ArrayObject([
                 'baz' => 10,
-            ]), ]);
+            ]),
+        ]);
         $this->assertTrue(Arr::has($array, 'foo'));
         $this->assertTrue(Arr::has($array, 'bar'));
         $this->assertTrue(Arr::has($array, 'bar.baz'));
@@ -927,7 +976,8 @@ final class ArrTest extends TestCase
             'foo' => null,
             'bar' => new ArrayObject([
                 'baz' => null,
-            ]), ]);
+            ]),
+        ]);
         $this->assertTrue(Arr::has($array, 'foo'));
         $this->assertTrue(Arr::has($array, 'bar.baz'));
 
@@ -935,9 +985,10 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-                    
-                    
-                ], ], ];
+
+                ],
+            ],
+        ];
         $this->assertTrue(Arr::has($array, ['products.desk']));
         $this->assertTrue(Arr::has($array, ['products.desk', 'products.desk.price']));
         $this->assertTrue(Arr::has($array, ['products', 'products']));
@@ -995,8 +1046,9 @@ final class ArrTest extends TestCase
             'foo' => [
                 'bar' => null,
                 'baz' => '',
-                
-            ], ];
+
+            ],
+        ];
         $this->assertTrue(Arr::hasAny($array, 'foo.bar'));
         $this->assertTrue(Arr::hasAny($array, 'foo.baz'));
         $this->assertFalse(Arr::hasAny($array, 'foo.bax'));
@@ -1042,7 +1094,7 @@ final class ArrTest extends TestCase
                 'bar' => [
                     'bar' => 'baz',
                     'boo' => 'biz',
-                    
+
                 ],
             ],
             Arr::mergeRecursive(
@@ -1050,14 +1102,16 @@ final class ArrTest extends TestCase
                     'foo' => [
                         'bar' => 'baz',
                         'boo' => 'biz',
-                        
-                    ], ],
+
+                    ],
+                ],
                 [
                     'bar' => [
                         'bar' => 'baz',
                         'boo' => 'biz',
-                        
-                    ], ]
+
+                    ],
+                ]
             )
         );
 
@@ -1076,15 +1130,17 @@ final class ArrTest extends TestCase
                         'bar' => 'baz',
                         'boo' => 'biz',
                         'bang' => 'boom',
-                        
-                    ], ],
+
+                    ],
+                ],
                 [
                     'foo' => [
                         'bar' => ['biz'],
                         'boo' => 'baz',
                         'foo' => 'bar',
-                        
-                    ], ]
+
+                    ],
+                ]
             )
         );
     }
@@ -1095,26 +1151,27 @@ final class ArrTest extends TestCase
      */
     public function testDataGet(): void
     {
-        $object = (object)[
+        $object = (object) [
             'users' => [
                 'name' => ['Taylor', 'Otwell'],
-                
-            ], ];
+
+            ],
+        ];
         $array = [
-            (object)[
+            (object) [
                 'users' => [
-                    (object)[
+                    (object) [
                         'name' => 'Taylor',
-                        
-                        
-                        
-                    ], ], ], ];
+
+                    ], ],
+            ], ];
         $dottedArray = [
             'users' => [
                 'first.name' => 'Taylor',
                 'middle.name' => null,
-                
-            ], ];
+
+            ],
+        ];
         $arrayAccess = new SupportTestArrayAccess(
             [
                 'price' => 56,
@@ -1226,7 +1283,7 @@ final class ArrTest extends TestCase
                             'author' => 'abigail',
                             'likes' => 3,
                         ],
-                        
+
                     ],
                 ],
                 [
@@ -1238,7 +1295,7 @@ final class ArrTest extends TestCase
                         [
                             'author' => 'dayle',
                         ],
-                        
+
                     ],
                 ],
                 [
@@ -1251,7 +1308,7 @@ final class ArrTest extends TestCase
                             'likes' =>
                             1,
                         ],
-                        
+
                     ],
                 ],
             ],

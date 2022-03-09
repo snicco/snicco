@@ -14,7 +14,9 @@ use function var_export;
 final class FileRouteCache implements RouteCache
 {
     private Closure $empty_error_handler;
+
     private string $path;
+
     private int $file_permission;
 
     public function __construct(string $cache_path, int $file_permission = 0644)
@@ -49,7 +51,7 @@ final class FileRouteCache implements RouteCache
         $value = include $path;
         restore_error_handler();
 
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return null;
         }
 

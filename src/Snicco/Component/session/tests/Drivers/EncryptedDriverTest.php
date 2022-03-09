@@ -110,7 +110,6 @@ final class EncryptedDriverTest extends TestCase
         $driver->destroyAllForUserIdExcept('s', 1);
     }
 
-
     protected function createDriver(Clock $clock): SessionDriver
     {
         return new EncryptedDriver(

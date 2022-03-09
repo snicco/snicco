@@ -22,15 +22,15 @@ final class ShareSessionWithViews extends Middleware
 
         $session = $request->getAttribute(ImmutableSession::class);
 
-        if (!$session instanceof ImmutableSession) {
+        if (! $session instanceof ImmutableSession) {
             throw new LogicException('No session has been set on the request.');
         }
 
-        if (!$response instanceof ViewResponse) {
+        if (! $response instanceof ViewResponse) {
             return $response;
         }
-        
-        $errors = (array)$session->get(SessionErrors::class, []);
+
+        $errors = (array) $session->get(SessionErrors::class, []);
 
         return $response->withViewData([
             'session' => $session,

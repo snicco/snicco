@@ -11,6 +11,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 final class MiddlewareTestResult
 {
     private bool $next_middleware_called;
+
     private AssertableResponse $response;
 
     public function __construct(ResponseInterface $response, bool $next_called = false)

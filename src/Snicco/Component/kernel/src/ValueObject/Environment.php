@@ -18,9 +18,13 @@ use const PHP_SAPI;
 final class Environment
 {
     public const TESTING = 'testing';
+
     public const PROD = 'prod';
+
     public const DEV = 'dev';
+
     public const STAGING = 'staging';
+
     public const ALL = 'all';
 
     private string $environment;
@@ -37,7 +41,7 @@ final class Environment
             'App environment can not be constructed with an empty string.'
         );
 
-        if (!in_array($environment, $this->validEnvironments(), true)) {
+        if (! in_array($environment, $this->validEnvironments(), true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'App environment has to be one of [%s]. Got: [%s].',

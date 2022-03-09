@@ -65,7 +65,7 @@ final class Secret
      */
     public function asBytes(): string
     {
-        if (!isset($this->as_bytes)) {
+        if (! isset($this->as_bytes)) {
             $parts = explode('|', $this->hex_encoded);
             $this->as_bytes = Hex::decode($parts[1]);
         }

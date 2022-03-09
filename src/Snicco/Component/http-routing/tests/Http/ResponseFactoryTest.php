@@ -28,6 +28,7 @@ class ResponseFactoryTest extends TestCase
     use CreateUrlGenerator;
 
     private ResponseFactory $factory;
+
     private string $app_domain;
 
     protected function setUp(): void
@@ -58,7 +59,7 @@ class ResponseFactoryTest extends TestCase
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode([
             'foo' => 'bar',
-        ]), (string)$response->getBody());
+        ]), (string) $response->getBody());
     }
 
     /**
@@ -109,7 +110,7 @@ class ResponseFactoryTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**
@@ -127,7 +128,7 @@ class ResponseFactoryTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
 
-        $this->assertSame(json_encode($input), (string)$response->getBody());
+        $this->assertSame(json_encode($input), (string) $response->getBody());
     }
 
     /**
@@ -162,7 +163,7 @@ class ResponseFactoryTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**

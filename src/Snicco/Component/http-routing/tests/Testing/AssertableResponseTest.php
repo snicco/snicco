@@ -890,7 +890,7 @@ final class AssertableResponseTest extends TestCase
         ]));
 
         $this->expectFailureWithMessageContaining(
-            'Response json body does not match expected [' . (string)json_encode([
+            'Response json body does not match expected [' . (string) json_encode([
                 'foo' => 'baz',
             ]) . '].',
             fn () => $response->assertExactJson([

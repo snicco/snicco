@@ -24,7 +24,9 @@ use function strval;
 final class SignedUrlValidatorTest extends TestCase
 {
     private UrlSigner $url_signer;
+
     private InMemoryStorage $storage;
+
     private HMAC $hmac;
 
     protected function setUp(): void
@@ -94,7 +96,7 @@ final class SignedUrlValidatorTest extends TestCase
 
         $this->expectException(InvalidSignature::class);
 
-        $string = preg_replace('/expires=\d+/', 'expires=' . (string)(time() + 100), $signed_url->asString());
+        $string = preg_replace('/expires=\d+/', 'expires=' . (string) (time() + 100), $signed_url->asString());
 
         if (false == $string) {
             throw new RuntimeException('preg_replace failed in test');
@@ -204,7 +206,7 @@ final class SignedUrlValidatorTest extends TestCase
         $string = $signed_url->asString();
         preg_match_all('/signature=([^|]+)/', $string, $matches);
 
-        if (!isset($matches[1][0])) {
+        if (! isset($matches[1][0])) {
             throw new RuntimeException('Cant extract correct signature in test.');
         }
         $correct_identifier = $matches[1][0];

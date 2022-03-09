@@ -9,8 +9,11 @@ use Webmozart\Assert\Assert;
 final class UrlGenerationContext
 {
     private string $host;
+
     private int $https_port;
+
     private int $http_port;
+
     private bool $https_by_default;
 
     public function __construct(

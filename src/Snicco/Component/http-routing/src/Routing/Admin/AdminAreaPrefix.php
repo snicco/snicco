@@ -35,6 +35,6 @@ final class AdminAreaPrefix
 
     public function appendPath(string $path): string
     {
-        return (string)UrlPath::fromString($this->prefix)->append($path);
+        return (string) UrlPath::fromString($this->prefix)->append($path);
     }
 }

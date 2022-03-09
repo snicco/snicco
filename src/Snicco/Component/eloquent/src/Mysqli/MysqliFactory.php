@@ -36,7 +36,7 @@ final class MysqliFactory
     {
         return function () use ($wp) {
             $success = $wp->wpdb()->check_connection(false);
-            if (!$success) {
+            if (! $success) {
                 throw new RuntimeException('Cant reconnect to wpdb.');
             }
             return $wp->mysqli();

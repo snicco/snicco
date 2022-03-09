@@ -42,7 +42,7 @@ final class ConditionBlueprint
             $this->is_negated = true;
         }
 
-        if (!is_subclass_of($condition_class, RouteCondition::class)) {
+        if (! is_subclass_of($condition_class, RouteCondition::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "A condition has to be an instance of [%s].\nGot [%s].",

@@ -21,13 +21,17 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 {
     public const WEB_PATH = '/web';
+
     public const PARTIAL_PATH = '/partial';
+
     public const ADMIN_PATH = '/admin.php/foo';
 
     public static bool $web_include_partial = false;
 
     private string $base_prefix = '/sniccowp';
+
     private string $bad_routes;
+
     private string $api_routes;
 
     protected function setUp(): void
@@ -688,6 +692,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 class TestLoadingOptions implements RouteLoadingOptions
 {
     private bool $fail_because_of_array;
+
     private bool $fail_because_of_wrong_type;
 
     public function __construct(bool $fail_because_of_array = false, bool $fail_because_of_wrong_type = false)
@@ -726,6 +731,7 @@ class TestLoadingOptions implements RouteLoadingOptions
 class ConfigurableLoadingOptions implements RouteLoadingOptions
 {
     private array $return_api;
+
     private array $return_normal;
 
     public function __construct(array $return_api, array $return_normal = [])

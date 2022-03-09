@@ -366,7 +366,7 @@ final class BetterWPAPITest extends WPTestCase
         $valid_nonce = $wp->createNonce('foo_action');
 
         $this->assertTrue($wp->verifyNonce($valid_nonce, 'foo_action'));
-        
+
         $this->assertFalse($wp->verifyNonce($valid_nonce, 'bar_action'));
     }
 }

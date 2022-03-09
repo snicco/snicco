@@ -68,7 +68,7 @@ class Str
     public static function containsAll(string $subject, array $needles): bool
     {
         foreach ($needles as $needle) {
-            if (!self::contains($subject, $needle)) {
+            if (! self::contains($subject, $needle)) {
                 return false;
             }
         }
@@ -83,7 +83,7 @@ class Str
      */
     public static function contains(string $subject, $needles): bool
     {
-        foreach ((array)$needles as $needle) {
+        foreach ((array) $needles as $needle) {
             if ($needle !== '' && mb_strpos($subject, $needle) !== false) {
                 return true;
             }
@@ -140,7 +140,7 @@ class Str
     {
         if ($encoding === null) {
             $encoding = mb_internal_encoding();
-            if (!is_string($encoding)) {
+            if (! is_string($encoding)) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Internal multi-byte encoding not set.');
                 // @codeCoverageIgnoreEnd
@@ -156,7 +156,7 @@ class Str
 
     public static function doesNotEndWith(string $subject, string $string): bool
     {
-        return !self::endsWith($subject, $string);
+        return ! self::endsWith($subject, $string);
     }
 
     /**

@@ -144,7 +144,7 @@ final class HttpInformationProviderTest extends TestCase
             403 => [
                 'title' => 'Forbidden',
                 'message' => 'You cant do this.',
-                
+
             ],
         ], new StubIdentifier('foo'), new RuntimeToAuthTransformer(), new LastTransformer());
 
@@ -172,7 +172,7 @@ final class HttpInformationProviderTest extends TestCase
             403 => [
                 'title' => 'Forbidden',
                 'message' => 'You cant do this.',
-                
+
             ],
         ]);
 
@@ -228,7 +228,6 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertSame('transformed_user_facing_message', $information->safeDetails());
     }
 
-
     /**
      * @param array<positive-int, array{message: string, title: string}> $data
      */
@@ -237,7 +236,7 @@ final class HttpInformationProviderTest extends TestCase
         ExceptionIdentifier $identifier = null,
         ExceptionTransformer ...$transformer
     ): InformationProviderWithTransformation {
-        if (!isset($data[500])) {
+        if (! isset($data[500])) {
             $data[500] = [
                 'title' => 'Internal Server Error',
                 'message' => 'An error has occurred and this resource cannot be displayed.',

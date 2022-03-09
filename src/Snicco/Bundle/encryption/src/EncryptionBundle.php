@@ -34,7 +34,7 @@ final class EncryptionBundle implements Bundle
     {
         $this->copyConfiguration($kernel);
 
-        if (!$config->has($config_key = 'encryption.' . EncryptionOption::KEY_ASCII)) {
+        if (! $config->has($config_key = 'encryption.' . EncryptionOption::KEY_ASCII)) {
             throw new InvalidArgumentException(
                 $config_key . " is not set.\nGenerate a new config_key by running 'vendor/bin/generate-defuse-key'"
             );
@@ -77,7 +77,7 @@ final class EncryptionBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
         $destination = $kernel->directories()->configDir() . '/encryption.php';

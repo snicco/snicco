@@ -32,11 +32,15 @@ final class StatefulRequest extends Middleware
     public const ALLOW_WRITE_SESSION_FOR_READ_VERBS = '_stateful_request.allow_write';
 
     private SessionManager $session_manager;
+
     private LoggerInterface $logger;
+
     private string $cookie_path;
 
     private bool $is_handling_request = false;
+
     private bool $invalidate_next_session = false;
+
     private bool $rotate_next_session = false;
 
     public function __construct(
@@ -141,7 +145,7 @@ final class StatefulRequest extends Middleware
     {
         $request = $request->withAttribute(ImmutableSession::class, ReadOnlySession::fromSession($session));
 
-        if ($request->isReadVerb() && !$request->getAttribute(self::ALLOW_WRITE_SESSION_FOR_READ_VERBS)) {
+        if ($request->isReadVerb() && ! $request->getAttribute(self::ALLOW_WRITE_SESSION_FOR_READ_VERBS)) {
             return $request;
         }
         return $request->withAttribute(MutableSession::class, $session);
@@ -182,7 +186,7 @@ final class StatefulRequest extends Middleware
 
     private function validateCookiePath(Request $request): void
     {
-        if (!$request->pathIs($this->cookie_path)) {
+        if (! $request->pathIs($this->cookie_path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The request path [%s] is not compatible with your session cookie path [%s].',
@@ -197,10 +201,10 @@ final class StatefulRequest extends Middleware
     {
         $http_cookie = (new Cookie($session_cookie->name(), $session_cookie->value()));
 
-        if (!$session_cookie->httpOnly()) {
+        if (! $session_cookie->httpOnly()) {
             $http_cookie = $http_cookie->withJsAccess();
         }
-        if (!$session_cookie->secureOnly()) {
+        if (! $session_cookie->secureOnly()) {
             $http_cookie = $http_cookie->withUnsecureHttp();
         }
         $http_cookie = $http_cookie->withSameSite($session_cookie->sameSite());

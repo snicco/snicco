@@ -29,7 +29,7 @@ final class DefaultHeaders implements MiddlewareInterface
         $response = $handler->handle($request);
 
         foreach ($this->default_headers as $name => $value) {
-            if (!$response->hasHeader($name)) {
+            if (! $response->hasHeader($name)) {
                 $response = $response->withHeader($name, $value);
             }
         }

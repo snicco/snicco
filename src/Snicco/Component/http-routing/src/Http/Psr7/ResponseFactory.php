@@ -27,6 +27,7 @@ use const JSON_THROW_ON_ERROR;
 final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
 {
     private Psr17ResponseFactory $psr_response;
+
     private Psr17StreamFactory $psr_stream;
 
     public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream)
@@ -38,7 +39,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     public function delegate(bool $should_headers_be_sent = true): DelegatedResponse
     {
         $response = new DelegatedResponse($this->createResponse());
-        if (!$should_headers_be_sent) {
+        if (! $should_headers_be_sent) {
             $response = $response->withoutSendingHeaders();
         }
         return $response;

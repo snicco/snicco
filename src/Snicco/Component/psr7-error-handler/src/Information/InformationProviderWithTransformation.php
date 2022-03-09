@@ -42,7 +42,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         foreach ($data as $status_code => $title_and_details) {
             $this->addMessage($status_code, $title_and_details);
         }
-        if (!isset($this->default_messages[500])) {
+        if (! isset($this->default_messages[500])) {
             throw new InvalidArgumentException(
                 'Data for the 500 status code must be provided.'
             );
@@ -103,10 +103,10 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         }
         /** @var positive-int $status_code */
 
-        if (!isset($info['title']) || !is_string($info['title'])) {
+        if (! isset($info['title']) || ! is_string($info['title'])) {
             throw new InvalidArgumentException("\$title must be string for status code [$status_code].");
         }
-        if (!isset($info['message']) || !is_string($info['message'])) {
+        if (! isset($info['message']) || ! is_string($info['message'])) {
             throw new InvalidArgumentException(
                 "\$message must be string for status code [$status_code]."
             );

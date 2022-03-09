@@ -126,7 +126,7 @@ final class Psr17FactoryDiscovery
         }
 
         foreach ($this->check_for_classes as $marker_class => $factory_classes) {
-            if (!class_exists($marker_class)) {
+            if (! class_exists($marker_class)) {
                 continue;
             }
 

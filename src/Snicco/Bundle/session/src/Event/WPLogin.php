@@ -15,6 +15,7 @@ use WP_User;
 final class WPLogin implements MappedHook
 {
     public string $user_login;
+
     public WP_User $user;
 
     public function __construct(string $user_login, WP_User $user)

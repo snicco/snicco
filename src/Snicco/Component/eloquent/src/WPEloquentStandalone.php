@@ -33,7 +33,9 @@ final class WPEloquentStandalone
      * @var Container|Application
      */
     private $illuminate_container;
+
     private array $connection_configuration;
+
     private bool $enable_global_facades;
 
     /**
@@ -50,7 +52,7 @@ final class WPEloquentStandalone
             );
         }
 
-        if ($enable_global_facades && !Facade::getFacadeApplication() instanceof IlluminateContainer) {
+        if ($enable_global_facades && ! Facade::getFacadeApplication() instanceof IlluminateContainer) {
             Facade::setFacadeApplication($this->illuminate_container);
         }
 
@@ -64,7 +66,7 @@ final class WPEloquentStandalone
         string $factory_namespace,
         string $faker_locale = 'en_US'
     ): void {
-        if (!class_exists(FakerGenerator::class)) {
+        if (! class_exists(FakerGenerator::class)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException(
                 'Faker is not installed. Please try running composer require fakerphp/faker --dev'

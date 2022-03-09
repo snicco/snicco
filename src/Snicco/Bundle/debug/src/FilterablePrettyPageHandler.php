@@ -22,7 +22,7 @@ final class FilterablePrettyPageHandler extends PrettyPageHandler
         $frames = parent::getExceptionFrames();
 
         $frames->filter(function (Frame $frame) {
-            $class = (string)$frame->getClass();
+            $class = (string) $frame->getClass();
 
             if ($class === NextMiddleware::class) {
                 return false;

@@ -26,8 +26,11 @@ use function sprintf;
 final class Kernel
 {
     private DIContainer $container;
+
     private Environment $env;
+
     private Directories $dirs;
+
     private ConfigCache $config_cache;
 
     /**
@@ -122,7 +125,7 @@ final class Kernel
 
     public function config(): ReadOnlyConfig
     {
-        if (!isset($this->read_only_config)) {
+        if (! isset($this->read_only_config)) {
             throw new LogicException(
                 'The applications config can only be accessed after bootstrapping.'
             );
@@ -170,15 +173,15 @@ final class Kernel
         $loaded_config = (new ConfigLoader())($this->dirs->configDir());
         $writable_config = WritableConfig::fromArray($loaded_config);
 
-        if (!$writable_config->has('app')) {
+        if (! $writable_config->has('app')) {
             throw new InvalidArgumentException(
                 "The [app.php] config file was not found in the config dir [$config_dir]."
             );
         }
-        if (!$writable_config->has('app.bootstrappers')) {
+        if (! $writable_config->has('app.bootstrappers')) {
             $writable_config->set('app.bootstrappers', []);
         }
-        if (!$writable_config->has('bundles')) {
+        if (! $writable_config->has('bundles')) {
             $writable_config->set('bundles', []);
         }
 
@@ -249,7 +252,7 @@ final class Kernel
 
     private function addBundle(Bundle $bundle): void
     {
-        if (!$bundle->shouldRun($this->env)) {
+        if (! $bundle->shouldRun($this->env)) {
             return;
         }
 

@@ -30,7 +30,7 @@ final class PHPSerializer implements Serializer
         });
 
         $res = unserialize($data);
-        if (!is_array($res)) {
+        if (! is_array($res)) {
             throw new RuntimeException('Invalid session content. Unserialized session data is not an array.');
         }
 

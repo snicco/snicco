@@ -39,6 +39,7 @@ final class LogoutTest extends WPTestCase
     use BundleTestHelpers;
 
     private Kernel $kernel;
+
     private InMemoryDriver $driver;
 
     protected function setUp(): void
@@ -107,7 +108,7 @@ final class LogoutTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertArrayNotHasKey('foo', $data);
     }
 
@@ -155,7 +156,7 @@ final class LogoutTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertArrayNotHasKey('foo', $data);
     }
 
@@ -208,7 +209,7 @@ final class LogoutTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertArrayNotHasKey('foo', $data);
     }
 

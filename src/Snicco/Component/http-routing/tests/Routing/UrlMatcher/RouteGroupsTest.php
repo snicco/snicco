@@ -42,7 +42,6 @@ class RouteGroupsTest extends HttpRunnerTestCase
                 });
         });
 
-
         $get_request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static . ':BAR:FOO', $get_request);
 
@@ -129,7 +128,6 @@ class RouteGroupsTest extends HttpRunnerTestCase
                 });
         });
 
-
         $get_request = $this->frontendRequest('/foo');
         $this->assertResponseBody(RoutingTestController::static, $get_request);
     }
@@ -182,7 +180,6 @@ class RouteGroupsTest extends HttpRunnerTestCase
                     $router->get('jon', '/jon', RoutingTestController::class);
                 });
         });
-
 
         $this->assertSame('/bar', $routing->urlGenerator()->toRoute('users.admins.calvin'));
         $this->assertSame('/baz', $routing->urlGenerator()->toRoute('users.admins.marlon'));

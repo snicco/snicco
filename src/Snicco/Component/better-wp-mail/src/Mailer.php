@@ -28,8 +28,11 @@ use function sprintf;
 final class Mailer
 {
     private MailDefaults $default_config;
+
     private Transport $transport;
+
     private MailRenderer $mail_renderer;
+
     private MailEvents $event_dispatcher;
 
     public function __construct(
@@ -73,7 +76,7 @@ final class Mailer
     {
         $html_template = $mail->htmlTemplate();
         if ($html_template) {
-            if (!$this->mail_renderer->supports($html_template)) {
+            if (! $this->mail_renderer->supports($html_template)) {
                 throw new LogicException(
                     sprintf('The mail template renderer does not support html template [%s]', $html_template)
                 );
@@ -85,7 +88,7 @@ final class Mailer
 
         $text_template = $mail->textTemplate();
         if ($text_template) {
-            if (!$this->mail_renderer->supports($text_template)) {
+            if (! $this->mail_renderer->supports($text_template)) {
                 throw new LogicException(
                     sprintf('The mail template renderer does not support text template [%s]', $text_template)
                 );
@@ -94,24 +97,23 @@ final class Mailer
             $mail = $mail->withTextBody($text);
         }
 
-        if (!count($mail->from())) {
+        if (! count($mail->from())) {
             $from = $this->default_config->getFrom();
             $mail = $mail->withFrom($from);
         }
 
-        if (!count($mail->replyTo())) {
+        if (! count($mail->replyTo())) {
             $reply_to = $this->default_config->getReplyTo();
             $mail = $mail->withReplyTo($reply_to);
         }
 
-        if (null === $mail->textBody() && null === $mail->htmlBody() && !count($mail->attachments())) {
+        if (null === $mail->textBody() && null === $mail->htmlBody() && ! count($mail->attachments())) {
             throw new LogicException('An email must have a text or an HTML body or attachments.');
         }
 
-        if (!count($mail->cc()) && !count($mail->to()) && !count($mail->bcc())) {
+        if (! count($mail->cc()) && ! count($mail->to()) && ! count($mail->bcc())) {
             throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
         }
-
 
         return $mail;
     }

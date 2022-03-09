@@ -51,7 +51,7 @@ final class SessionLotteryTest extends TestCase
     {
         for ($i = 0; $i < 50; $i++) {
             $lottery = new SessionLottery(100);
-            if (!$lottery->wins()) {
+            if (! $lottery->wins()) {
                 $this->fail('100% lottery failed');
             }
         }

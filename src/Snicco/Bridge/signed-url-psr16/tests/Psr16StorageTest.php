@@ -115,7 +115,6 @@ final class Psr16StorageTest extends TestCase
             'left_usages' => 1,
         ]);
 
-
         try {
             $storage->consume('id1');
             $this->fail('No exception thrown for bad cache content.');

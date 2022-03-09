@@ -18,12 +18,13 @@ use InvalidArgumentException;
 final class Envelope
 {
     private Mailbox $sender;
+
     private MailboxList $recipients;
 
     public function __construct(Mailbox $sender, MailboxList $recipients)
     {
         // to ensure deliverability of bounce emails independent of UTF-8 capabilities of SMTP servers
-        if (!preg_match('/^[^@\x80-\xFF]++@/', $sender->address())) {
+        if (! preg_match('/^[^@\x80-\xFF]++@/', $sender->address())) {
             // @codeCoverageIgnoreStart
             throw new InvalidArgumentException(
                 sprintf(
@@ -34,7 +35,7 @@ final class Envelope
             // @codeCoverageIgnoreEnd
         }
 
-        if (!count($recipients)) {
+        if (! count($recipients)) {
             throw new InvalidArgumentException('An envelope must have at least one recipient.');
         }
 

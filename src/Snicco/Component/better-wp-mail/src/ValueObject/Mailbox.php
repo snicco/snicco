@@ -29,7 +29,9 @@ final class Mailbox
      * @var callable(string):bool|null
      */
     public static $email_validator;
+
     private string $address;
+
     private string $name;
 
     private function __construct(string $address, string $name = '')
@@ -42,7 +44,7 @@ final class Mailbox
             };
         }
 
-        if (!$this->isEmailValid($address, self::$email_validator)) {
+        if (! $this->isEmailValid($address, self::$email_validator)) {
             throw new InvalidArgumentException("[$address] is not a valid email.");
         }
 
@@ -64,7 +66,7 @@ final class Mailbox
                 return new self($address);
             }
 
-            if (!preg_match(self::PATTERN, $address, $matches)) {
+            if (! preg_match(self::PATTERN, $address, $matches)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         '[%s] is not a valid address',
@@ -83,7 +85,7 @@ final class Mailbox
             return new self(...array_values($address));
         }
 
-        if (!$address instanceof WP_User) {
+        if (! $address instanceof WP_User) {
             throw new InvalidArgumentException(
                 sprintf(
                     '$address has to be string,array or an instance of WP_User. Got [%s].',
@@ -126,7 +128,7 @@ final class Mailbox
     private function isEmailValid(string $address, callable $validator): bool
     {
         $res = call_user_func($validator, $address);
-        if (!is_bool($res)) {
+        if (! is_bool($res)) {
             throw new LogicException("MailBox::email_validator did not return a boolean for address [$address].");
         }
         return $res;

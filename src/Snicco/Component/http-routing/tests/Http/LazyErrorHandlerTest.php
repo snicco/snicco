@@ -21,6 +21,7 @@ final class LazyErrorHandlerTest extends TestCase
     use CreateTestPsr17Factories;
 
     private Container $pimple;
+
     private \Pimple\Psr11\Container $psr_container;
 
     protected function setUp(): void
@@ -89,7 +90,7 @@ final class LazyErrorHandlerTest extends TestCase
         );
 
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertSame('foo error', (string)$response->getBody());
+        $this->assertSame('foo error', (string) $response->getBody());
     }
 }
 

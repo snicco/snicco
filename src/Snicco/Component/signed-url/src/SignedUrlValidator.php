@@ -25,7 +25,9 @@ use function strval;
 final class SignedUrlValidator
 {
     private SignedUrlStorage $storage;
+
     private Clock $clock;
+
     private HMAC $hmac;
 
     public function __construct(SignedUrlStorage $storage, HMAC $hmac, Clock $clock = null)
@@ -51,11 +53,11 @@ final class SignedUrlValidator
             $request_target
         );
 
-        if (!isset($query_as_array[SignedUrl::SIGNATURE_KEY])) {
+        if (! isset($query_as_array[SignedUrl::SIGNATURE_KEY])) {
             throw new InvalidSignature("Missing signature parameter for path [$path].");
         }
 
-        if (!isset($query_as_array[SignedUrl::EXPIRE_KEY])) {
+        if (! isset($query_as_array[SignedUrl::EXPIRE_KEY])) {
             throw new InvalidSignature("Missing expires parameter for path [$path].");
         }
 
@@ -87,7 +89,7 @@ final class SignedUrlValidator
      */
     private function parse(string $path_with_query_string): array
     {
-        $parts = (array)parse_url($path_with_query_string);
+        $parts = (array) parse_url($path_with_query_string);
 
         $path = $parts['path'] ?? '';
         $query_string = $parts['query'] ?? '';
@@ -128,7 +130,7 @@ final class SignedUrlValidator
 
     private function validateSignature(string $expected_signature, string $provided_signature, string $path): void
     {
-        if (!hash_equals($expected_signature, $provided_signature)) {
+        if (! hash_equals($expected_signature, $provided_signature)) {
             throw new InvalidSignature("Invalid signature for path [$path].");
         }
     }

@@ -65,7 +65,7 @@ final class TemplatingMiddlewareTest extends TestCase
                 throw new RuntimeException('pipeline exhausted');
             });
 
-        $this->assertSame('bar', (string)$response->getBody());
+        $this->assertSame('bar', (string) $response->getBody());
         $this->assertNotInstanceOf(ViewResponse::class, $response);
     }
 
@@ -108,7 +108,7 @@ final class TemplatingMiddlewareTest extends TestCase
                 ]);
             });
 
-        $this->assertSame('', (string)$response->getBody());
+        $this->assertSame('', (string) $response->getBody());
         $this->assertSame('/foo', $response->getHeaderLine('location'));
         $this->assertNotInstanceOf(ViewResponse::class, $response);
     }

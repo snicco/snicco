@@ -38,11 +38,11 @@ final class TaggingIntegrationTest extends WPTestCase
         parent::setUp();
         global $wp_object_cache;
 
-        if (!$wp_object_cache instanceof WP_Object_Cache) {
+        if (! $wp_object_cache instanceof WP_Object_Cache) {
             throw new RuntimeException('wp object cache not setup.');
         }
 
-        if (!method_exists($wp_object_cache, 'redis_status')) {
+        if (! method_exists($wp_object_cache, 'redis_status')) {
             throw new RuntimeException('wp object cache does not have method redis_status');
         }
 

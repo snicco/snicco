@@ -9,8 +9,11 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 final class MailDefaults
 {
     private string $from_name;
+
     private string $from_email;
+
     private string $reply_to_name;
+
     private string $reply_to_email;
 
     public function __construct(

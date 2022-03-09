@@ -34,7 +34,7 @@ final class MethodOverride extends Middleware
             return $next($request);
         }
 
-        if (!$this->validMethod($method)) {
+        if (! $this->validMethod($method)) {
             return $next($request);
         }
 

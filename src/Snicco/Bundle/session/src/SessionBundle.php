@@ -68,7 +68,7 @@ final class SessionBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        if (!$kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
+        if (! $kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if you are using the SessionBundle',
@@ -144,7 +144,7 @@ final class SessionBundle implements Bundle
 
         $serializer = $config->getString('session.' . SessionOption::SERIALIZER);
 
-        if (!class_exists($serializer) || !in_array(Serializer::class, (array)class_implements($serializer))) {
+        if (! class_exists($serializer) || ! in_array(Serializer::class, (array) class_implements($serializer))) {
             throw new InvalidArgumentException(
                 sprintf(
                     'session.' . SessionOption::SERIALIZER . " has to be a class-name that implements [%s].\nGot [%s].",
@@ -155,7 +155,7 @@ final class SessionBundle implements Bundle
         }
 
         $driver = $config->getString('session.' . SessionOption::DRIVER);
-        if (!class_exists($driver) || !in_array(SessionDriver::class, (array)class_implements($driver))) {
+        if (! class_exists($driver) || ! in_array(SessionDriver::class, (array) class_implements($driver))) {
             throw new InvalidArgumentException(
                 sprintf(
                     'session.' . SessionOption::DRIVER . " has to be a class-name that implements [%s].\nGot [%s].",
@@ -170,7 +170,7 @@ final class SessionBundle implements Bundle
         }
 
         if ($config->getBoolean('session.' . SessionOption::ENCRYPT_DATA)
-            && !$kernel->usesBundle(EncryptionBundle::ALIAS)) {
+            && ! $kernel->usesBundle(EncryptionBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if [%s] is set to true.',
@@ -180,7 +180,7 @@ final class SessionBundle implements Bundle
             );
         }
 
-        if (WPDBSessionDriver::class === $driver && !$kernel->usesBundle(BetterWPDBBundle::ALIAS)) {
+        if (WPDBSessionDriver::class === $driver && ! $kernel->usesBundle(BetterWPDBBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if you are using the database session driver',
@@ -188,7 +188,7 @@ final class SessionBundle implements Bundle
                 )
             );
         }
-        if (WPObjectCacheDriver::class === $driver && !$kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
+        if (WPObjectCacheDriver::class === $driver && ! $kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if you are using the object-cache session driver',
@@ -256,7 +256,7 @@ final class SessionBundle implements Bundle
 
     private function copyConfig(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
         $destination = $kernel->directories()->configDir() . '/session.php';

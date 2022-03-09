@@ -44,7 +44,7 @@ final class ViewEngine
      */
     public function make($view): View
     {
-        return $this->createFirstMatchingView((array)$view);
+        return $this->createFirstMatchingView((array) $view);
     }
 
     /**

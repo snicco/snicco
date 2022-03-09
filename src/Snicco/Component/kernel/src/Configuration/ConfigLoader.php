@@ -31,7 +31,7 @@ final class ConfigLoader
         foreach ($config_files as $name => $path) {
             /** @psalm-suppress UnresolvableInclude */
             $items = require $path;
-            if (!is_array($items)) {
+            if (! is_array($items)) {
                 throw new InvalidArgumentException("Reading the [$name] config did not return an array.");
             }
             $config[$name] = $items;

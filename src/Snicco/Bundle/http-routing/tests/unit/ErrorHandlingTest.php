@@ -72,7 +72,7 @@ final class ErrorHandlingTest extends TestCase
             });
 
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertStringNotContainsString('secret error in routing', (string)$response->getBody());
+        $this->assertStringNotContainsString('secret error in routing', (string) $response->getBody());
     }
 
     /**
@@ -254,7 +254,7 @@ final class ErrorHandlingTest extends TestCase
                 throw new TypeError('secret error in routing.');
             });
 
-        $this->assertSame('foobar', (string)$response->getBody());
+        $this->assertSame('foobar', (string) $response->getBody());
     }
 
     /**
@@ -363,7 +363,7 @@ final class ErrorHandlingTest extends TestCase
             throw new RuntimeException('error');
         });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringContainsString('foo_id', $body);
         $this->assertStringContainsString('foo_title', $body);
@@ -399,7 +399,7 @@ final class ErrorHandlingTest extends TestCase
 
             $response = $http_kernel->handle(Request::fromPsr($request));
 
-            $body = (string)$response->getBody();
+            $body = (string) $response->getBody();
 
             $this->assertSame(500, $response->getStatusCode());
             $this->assertStringNotContainsString(RoutingBundleTestController::class, $body);

@@ -13,7 +13,9 @@ use function is_string;
 final class SerializedSession
 {
     private string $data;
+
     private int $last_activity;
+
     private string $hashed_validator;
 
     /**
@@ -27,7 +29,7 @@ final class SerializedSession
     private function __construct(string $data, string $hashed_validator, int $last_activity, $user_id = null)
     {
         /** @psalm-suppress DocblockTypeContradiction */
-        if (!is_string($user_id) && !is_int($user_id) && !is_null($user_id)) {
+        if (! is_string($user_id) && ! is_int($user_id) && ! is_null($user_id)) {
             throw new InvalidArgumentException('$user_id must be null, string or integer.');
         }
 

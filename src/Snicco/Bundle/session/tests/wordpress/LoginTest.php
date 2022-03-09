@@ -39,6 +39,7 @@ final class LoginTest extends WPTestCase
     use BundleTestHelpers;
 
     private Kernel $kernel;
+
     private InMemoryDriver $driver;
 
     protected function setUp(): void
@@ -115,7 +116,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -177,7 +178,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -242,7 +243,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 

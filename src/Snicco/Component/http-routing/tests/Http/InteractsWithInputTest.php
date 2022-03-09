@@ -233,7 +233,7 @@ class InteractsWithInputTest extends TestCase
         $arr = [
             'foo' => 'bar',
         ];
-        $stdClass = (object)$arr;
+        $stdClass = (object) $arr;
         $request = $this->request->withParsedBody($stdClass);
 
         $this->assertSame($stdClass, $request->getParsedBody());
@@ -250,7 +250,6 @@ class InteractsWithInputTest extends TestCase
         $request = $this->request->withParsedBody(null);
         $this->assertSame('default', $request->post('foo', 'default'));
     }
-
 
     /**
      * @test
@@ -372,13 +371,15 @@ class InteractsWithInputTest extends TestCase
             'foo' => [
                 'bar' => 'baz',
                 'baz' => 'biz',
-                
-            ], ], $request->only(['foo']));
+
+            ],
+        ], $request->only(['foo']));
         $this->assertSame([
             'foo' => [
                 'bar' => 'baz',
-                
-            ], ], $request->only('foo.bar'));
+
+            ],
+        ], $request->only('foo.bar'));
     }
 
     /**
@@ -506,13 +507,13 @@ class InteractsWithInputTest extends TestCase
             'foo' => [
                 'bar' => null,
                 'baz' => '',
-                
-            ], ]);
+
+            ],
+        ]);
         $this->assertTrue($request->hasAny('foo.bar'));
         $this->assertTrue($request->hasAny('foo.baz'));
         $this->assertFalse($request->hasAny('foo.bax'));
         $this->assertTrue($request->hasAny(['foo.bax', 'foo.baz']));
-
 
         $request = $this->request->withQueryParams([
             'foo' => 'bar',
@@ -579,8 +580,9 @@ class InteractsWithInputTest extends TestCase
             'foo' => [
                 'bar' => null,
                 'baz' => '',
-                
-            ], ])->withParsedBody(
+
+            ],
+        ])->withParsedBody(
     [
         'boom' => 'bam',
     ]

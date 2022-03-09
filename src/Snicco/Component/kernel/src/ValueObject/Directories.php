@@ -18,8 +18,11 @@ use function sprintf;
 final class Directories
 {
     private string $config_dir;
+
     private string $cache_dir;
+
     private string $log_dir;
+
     private string $base_directory;
 
     public function __construct(

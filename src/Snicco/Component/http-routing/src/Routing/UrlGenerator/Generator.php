@@ -31,8 +31,11 @@ use function trim;
 final class Generator implements UrlGenerator
 {
     private Routes $routes;
+
     private UrlGenerationContext $context;
+
     private AdminArea $admin_area;
+
     private UrlEncoder $encoder;
 
     public function __construct(
@@ -46,7 +49,6 @@ final class Generator implements UrlGenerator
         $this->encoder = $encoder ?? new RFC3986Encoder();
         $this->admin_area = $admin_area;
     }
-
 
     public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string
     {
@@ -90,7 +92,7 @@ final class Generator implements UrlGenerator
 
         $route_path = $route->getPattern();
 
-        if (Str::startsWith($route_path, (string)$this->admin_area->urlPrefix())) {
+        if (Str::startsWith($route_path, (string) $this->admin_area->urlPrefix())) {
             [$route_path, $q] = $this->admin_area->rewriteForUrlGeneration($route_path);
             $arguments = array_merge($arguments, $q);
         }
@@ -236,11 +238,11 @@ final class Generator implements UrlGenerator
 
     private function buildFragment(string $existing_fragment, string $extra_fragment): string
     {
-        if (!empty($extra_fragment)) {
+        if (! empty($extra_fragment)) {
             return '#' . $this->encoder->encodeFragment($extra_fragment);
         }
 
-        if (!empty($existing_fragment)) {
+        if (! empty($existing_fragment)) {
             return '#' . $this->encoder->encodeFragment($existing_fragment);
         }
 
@@ -262,11 +264,11 @@ final class Generator implements UrlGenerator
 
         if ($scheme === 'https') {
             if ($this->context->httpsPort() !== 443) {
-                $port = ':' . (string)$this->context->httpsPort();
+                $port = ':' . (string) $this->context->httpsPort();
             }
         } elseif ($scheme === 'http') {
             if ($this->context->httpPort() !== 80) {
-                $port = ':' . (string)$this->context->httpPort();
+                $port = ':' . (string) $this->context->httpPort();
             }
         }
 
@@ -289,7 +291,7 @@ final class Generator implements UrlGenerator
         foreach ($segments as $segment) {
             $has_value = array_key_exists($segment, $provided_arguments);
 
-            if (!$has_value && !$optional) {
+            if (! $has_value && ! $optional) {
                 throw BadRouteParameter::becauseRequiredParameterIsMissing(
                     $segment,
                     $name
@@ -301,7 +303,7 @@ final class Generator implements UrlGenerator
             if ($has_value && array_key_exists($segment, $requirements)) {
                 $pattern = $requirements[$segment];
 
-                if (!preg_match('/^' . $pattern . '$/', $replacement)) {
+                if (! preg_match('/^' . $pattern . '$/', $replacement)) {
                     throw BadRouteParameter::becauseRegexDoesntMatch(
                         $replacement,
                         $segment,
@@ -327,7 +329,7 @@ final class Generator implements UrlGenerator
     private function toStringValues(array $extra): array
     {
         return array_map(function ($value) {
-            if (!is_string($value) && !is_int($value)) {
+            if (! is_string($value) && ! is_int($value)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Replacements must be string or integer. Got [%s].',
@@ -335,7 +337,7 @@ final class Generator implements UrlGenerator
                     )
                 );
             }
-            return (string)$value;
+            return (string) $value;
         }, $extra);
     }
 }

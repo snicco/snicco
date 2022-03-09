@@ -30,7 +30,7 @@ final class ClosureTypeHint
 
         $parameters = $reflection->getParameters();
 
-        if (!count($parameters) || !$parameters[0] instanceof ReflectionParameter) {
+        if (! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
             throw InvalidListener::becauseTheClosureDoesntHaveATypeHintedObject();
         }
 
@@ -38,7 +38,7 @@ final class ClosureTypeHint
 
         $type = $param->getType();
 
-        if (!$type instanceof ReflectionNamedType) {
+        if (! $type instanceof ReflectionNamedType) {
             throw InvalidListener::becauseTheClosureDoesntHaveATypeHintedObject();
         }
 

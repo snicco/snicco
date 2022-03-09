@@ -71,7 +71,6 @@ trait UserSessionDriverTests
             }
         }
 
-
         PHPUnit::assertCount(0, $user_sessions->getAllForUserId(1));
         PHPUnit::assertCount(0, $user_sessions->getAllForUserId(2));
         PHPUnit::assertCount(0, $user_sessions->getAllForUserId(3));

@@ -101,7 +101,7 @@ final class HttpRoutingBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        if (!class_exists(BetterWPHooksBundle::class) || !$kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
+        if (! class_exists(BetterWPHooksBundle::class) || ! $kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
             throw new RuntimeException('The http-routing-bundle needs the sniccowp-better-wp-hooks-bundle to run.');
         }
 
@@ -358,7 +358,7 @@ final class HttpRoutingBundle implements Bundle
             return;
         }
 
-        if (!$kernel->container()->has(LoggerInterface::class)) {
+        if (! $kernel->container()->has(LoggerInterface::class)) {
             $kernel->container()->shared(LoggerInterface::class, fn () => new StdErrLogger(
                 $kernel->config()->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
             ));
@@ -416,7 +416,7 @@ final class HttpRoutingBundle implements Bundle
         }
 
         foreach ($config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)) as $dir) {
-            if (!is_readable($dir)) {
+            if (! is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)
@@ -441,7 +441,7 @@ final class HttpRoutingBundle implements Bundle
         }
 
         foreach ($api_dirs as $dir) {
-            if (!is_readable($dir)) {
+            if (! is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)
@@ -464,14 +464,14 @@ final class HttpRoutingBundle implements Bundle
         );
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
-            if (!is_string($key)) {
+            if (! is_string($key)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::GROUPS
                     ) . " has to an associative array of string => array pairs.\nGot key [$key]."
                 );
             }
-            if (!is_array($middleware)) {
+            if (! is_array($middleware)) {
                 $type = gettype($middleware);
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
@@ -484,7 +484,7 @@ final class HttpRoutingBundle implements Bundle
              * @psalm-suppress MixedAssignment
              */
             foreach ($middleware as $index => $m) {
-                if (!is_string($m)) {
+                if (! is_string($m)) {
                     $type = gettype($m);
                     throw new InvalidArgumentException(
                         "Middleware group [$key] has to contain only strings.\nGot [$type] at index [$index]."
@@ -494,18 +494,18 @@ final class HttpRoutingBundle implements Bundle
         }
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::ALIASES)) as $alias => $class) {
-            if (!is_string($alias)) {
+            if (! is_string($alias)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::ALIASES
                     ) . ' has to be an array of string => middleware-class pairs.'
                 );
             }
-            if (!is_string($class)
-                || !class_exists($class)
-                || !in_array(
+            if (! is_string($class)
+                || ! class_exists($class)
+                || ! in_array(
                     MiddlewareInterface::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
                     "Middleware alias [$alias] has to resolve to a middleware class."
@@ -515,10 +515,10 @@ final class HttpRoutingBundle implements Bundle
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST)) as $class) {
             if (
-                !class_exists($class)
-                || !in_array(
+                ! class_exists($class)
+                || ! in_array(
                     MiddlewareInterface::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
@@ -530,10 +530,10 @@ final class HttpRoutingBundle implements Bundle
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE)) as $class) {
             if (
-                !class_exists($class)
-                || !in_array(
+                ! class_exists($class)
+                || ! in_array(
                     MiddlewareInterface::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
@@ -551,7 +551,7 @@ final class HttpRoutingBundle implements Bundle
         ];
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN)) as $group_name) {
-            if (!in_array($group_name, $valid, true)) {
+            if (! in_array($group_name, $valid, true)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::ALWAYS_RUN
@@ -578,10 +578,10 @@ final class HttpRoutingBundle implements Bundle
             ) as $class
         ) {
             if (
-                !class_exists($class)
-                || !in_array(
+                ! class_exists($class)
+                || ! in_array(
                     ExceptionDisplayer::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
@@ -597,10 +597,10 @@ final class HttpRoutingBundle implements Bundle
             ) as $class
         ) {
             if (
-                !class_exists($class)
-                || !in_array(
+                ! class_exists($class)
+                || ! in_array(
                     ExceptionTransformer::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
@@ -616,10 +616,10 @@ final class HttpRoutingBundle implements Bundle
             ) as $class
         ) {
             if (
-                !class_exists($class)
-                || !in_array(
+                ! class_exists($class)
+                || ! in_array(
                     RequestLogContext::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
@@ -645,13 +645,13 @@ final class HttpRoutingBundle implements Bundle
                 HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS)
             ) as $class => $level
         ) {
-            if (!is_string($class)
-                || !class_exists($class)
-                || !in_array(
+            if (! is_string($class)
+                || ! class_exists($class)
+                || ! in_array(
                     Throwable::class,
-                    (array)class_implements($class)
+                    (array) class_implements($class)
                 )) {
-                $class = (string)$class;
+                $class = (string) $class;
                 throw new InvalidArgumentException(
                     "[$class] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::LOG_LEVELS
@@ -659,8 +659,8 @@ final class HttpRoutingBundle implements Bundle
                 );
             }
 
-            if (!is_string($level) || !in_array($level, $valid_levels, true)) {
-                $level = (string)$level;
+            if (! is_string($level) || ! in_array($level, $valid_levels, true)) {
+                $level = (string) $level;
 
                 throw new InvalidArgumentException(
                     sprintf(
@@ -699,7 +699,6 @@ final class HttpRoutingBundle implements Bundle
             $dispatcher = $container->make(EventDispatcher::class);
 
             $emitter = $this->getResponseEmitter($kernel, $dispatcher);
-
 
             $api_prefix = $kernel->config()->getString(RoutingOption::key(RoutingOption::API_PREFIX));
 
@@ -741,7 +740,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function copyConfig(Kernel $kernel, string $namespace): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
 

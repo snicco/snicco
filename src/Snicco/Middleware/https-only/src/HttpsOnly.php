@@ -31,7 +31,7 @@ final class HttpsOnly extends Middleware
             return $next($request);
         }
 
-        if (!$request->isSecure()) {
+        if (! $request->isSecure()) {
             $uri = $request->getUri();
 
             // transport security header is ignored for http access, so we don't set it here.

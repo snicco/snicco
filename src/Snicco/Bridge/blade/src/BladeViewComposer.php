@@ -20,7 +20,7 @@ final class BladeViewComposer
 
     public function handleEvent(string $view_name, array $payload): void
     {
-        if (!isset($payload[0]) || !$payload[0] instanceof View) {
+        if (! isset($payload[0]) || ! $payload[0] instanceof View) {
             throw new RuntimeException(
                 sprintf(
                     'Expected payload[0] to be instance of [%s].',

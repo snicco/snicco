@@ -25,7 +25,7 @@ final class JsonToArray extends Payload
      */
     protected function parse(StreamInterface $stream): array
     {
-        $json = trim((string)$stream);
+        $json = trim((string) $stream);
 
         if ($json === '') {
             return [];
@@ -33,12 +33,12 @@ final class JsonToArray extends Payload
         try {
             $res = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
-            if (!is_array($res)) {
+            if (! is_array($res)) {
                 throw new InvalidArgumentException('json_decoding the request body did not return an array.');
             }
 
             foreach (array_keys($res) as $key) {
-                if (!is_string($key)) {
+                if (! is_string($key)) {
                     throw new InvalidArgumentException(
                         'json_decoding the request body must return an array keyed by strings.'
                     );

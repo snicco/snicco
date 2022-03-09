@@ -315,8 +315,9 @@ class ResponseTest extends TestCase
         $this->assertSame([
             'default' => [
                 'foo' => ['bar'],
-                
-            ], ], $response->errors());
+
+            ],
+        ], $response->errors());
         $this->assertSame([], $this->response->errors());
 
         $response = $this->response->withErrors([
@@ -345,15 +346,17 @@ class ResponseTest extends TestCase
         $this->assertSame([
             'default' => [
                 'foo' => ['bar'],
-                
-            ], ], $response->errors());
+
+            ],
+        ], $response->errors());
         $this->assertSame(
             [
                 'default' => [
                     'foo' => ['bar'],
                     'bar' => ['baz'],
-                    
-                ], ],
+
+                ],
+            ],
             $response_new->errors()
         );
 
@@ -363,8 +366,9 @@ class ResponseTest extends TestCase
         $this->assertSame([
             'namespace1' => [
                 'foo' => ['bar'],
-                
-            ], ], $response->errors());
+
+            ],
+        ], $response->errors());
         $this->assertSame([], $this->response->errors());
     }
 

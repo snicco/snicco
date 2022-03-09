@@ -9,6 +9,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 class RoutingTestController
 {
     public const static = 'static';
+
     public const dynamic = 'dynamic';
 
     public function __invoke()
@@ -89,6 +90,6 @@ class RoutingTestController
 
     public function returnFullRequest(Request $request): string
     {
-        return (string)$request->getUri();
+        return (string) $request->getUri();
     }
 }

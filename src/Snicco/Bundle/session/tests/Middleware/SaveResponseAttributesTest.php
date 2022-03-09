@@ -22,6 +22,7 @@ use Snicco\Component\Session\ValueObject\SessionConfig;
 final class SaveResponseAttributesTest extends MiddlewareTestCase
 {
     private Request $request;
+
     private Session $session;
 
     protected function setUp(): void

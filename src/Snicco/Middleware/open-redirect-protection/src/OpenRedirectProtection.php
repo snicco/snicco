@@ -34,7 +34,7 @@ final class OpenRedirectProtection extends Middleware
     public function __construct(string $host, string $exit_path, array $whitelist = [])
     {
         $parsed = parse_url($host, PHP_URL_HOST);
-        if (!is_string($parsed) || '' === $parsed) {
+        if (! is_string($parsed) || '' === $parsed) {
             throw new InvalidArgumentException("Invalid host [$host].");
         }
         $this->host = $parsed;
@@ -47,7 +47,7 @@ final class OpenRedirectProtection extends Middleware
     {
         $response = $next($request);
 
-        if (!$response->isRedirect()) {
+        if (! $response->isRedirect()) {
             return $response;
         }
 
@@ -103,7 +103,7 @@ final class OpenRedirectProtection extends Middleware
         $parsed = parse_url($location);
         $target = $parsed['host'] ?? null;
 
-        if (!$target && isset($parsed['path'])) {
+        if (! $target && isset($parsed['path'])) {
             return true;
         }
 

@@ -24,7 +24,7 @@ final class SimpleTemplating extends Middleware
     {
         $response = $next($request);
 
-        if (!$response instanceof ViewResponse) {
+        if (! $response instanceof ViewResponse) {
             return $response;
         }
 
@@ -39,7 +39,7 @@ final class SimpleTemplating extends Middleware
             /** @psalm-suppress UnresolvableInclude */
             require $view;
 
-            return (string)ob_get_clean();
+            return (string) ob_get_clean();
         })();
 
         // Wrap the response inside a normal response so that other middleware does not render it again.

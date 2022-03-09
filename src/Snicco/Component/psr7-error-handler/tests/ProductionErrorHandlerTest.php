@@ -47,7 +47,9 @@ use const JSON_THROW_ON_ERROR;
 final class ProductionErrorHandlerTest extends TestCase
 {
     private ProductionErrorHandler $error_handler;
+
     private ServerRequestInterface $base_request;
+
     private ResponseFactoryInterface $response_factory;
 
     /**
@@ -64,7 +66,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         /** @psalm-suppress MixedAssignment */
         $this->error_data = json_decode(
-            (string)file_get_contents(
+            (string) file_get_contents(
                 dirname(__DIR__) . '/resources/en_US.error.json'
             ),
             true,
@@ -98,7 +100,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $this->assertEquals(500, $response->getStatusCode());
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', $body);
         $this->assertStringContainsString(spl_object_hash($e), $body);
@@ -121,7 +123,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
         $this->assertStringNotContainsString('Secret message here', $body);
 
         $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
@@ -150,7 +152,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $this->assertEquals(404, $response->getStatusCode());
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringContainsString('<h1>404 - Not Found</h1>', $body);
         $this->assertStringContainsString(
@@ -176,7 +178,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertEquals('text/plain', $response->getHeaderLine('content-type'));
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
         $title = $this->error_data[500]['title'];
         $details = $this->error_data[500]['message'];
 
@@ -203,7 +205,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertStringContainsString(
             '<h1>500 - Internal Server Error</h1>',
-            (string)$response->getBody()
+            (string) $response->getBody()
         );
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
     }
@@ -226,7 +228,7 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withHeader('Accept', 'text/plain'),
         );
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         // First displayer matched.
         $this->assertStringContainsString('plain_text1', $body);
@@ -243,7 +245,7 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withHeader('Accept', 'text/plain'),
         );
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         // First displayer did not match, using second displayer.
         $this->assertStringNotContainsString('plain_text1', $body);
@@ -262,7 +264,7 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withHeader('Accept', 'application/json'),
         );
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         /** @var array $response_data */
         $response_data = json_decode($body, true, JSON_THROW_ON_ERROR);
@@ -368,7 +370,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
         $this->assertStringContainsString(
             '<h1>500 - Internal Server Error</h1>',
-            (string)$response->getBody()
+            (string) $response->getBody()
         );
     }
 
@@ -397,7 +399,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertSame('text/plain', $response->getHeaderLine('content-type'));
         $this->assertSame(
             'Internal Server Error',
-            (string)$response->getBody()
+            (string) $response->getBody()
         );
 
         $this->assertTrue(

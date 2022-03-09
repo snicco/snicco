@@ -21,7 +21,9 @@ final class BladeView implements View
      * @var array<string,mixed>
      */
     private array $context;
+
     private string $name;
+
     private string $path;
 
     public function __construct(\Illuminate\View\View $illuminate_view)
@@ -49,7 +51,7 @@ final class BladeView implements View
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
                 "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e,
             );
         }

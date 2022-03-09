@@ -39,7 +39,7 @@ abstract class Payload extends Middleware
 
     final public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        if (!$this->shouldParseRequest($request)) {
+        if (! $this->shouldParseRequest($request)) {
             return $next($request);
         }
 
@@ -56,7 +56,7 @@ abstract class Payload extends Middleware
 
     private function shouldParseRequest(Request $request): bool
     {
-        if (!in_array($request->getMethod(), $this->methods, true)) {
+        if (! in_array($request->getMethod(), $this->methods, true)) {
             return false;
         }
 

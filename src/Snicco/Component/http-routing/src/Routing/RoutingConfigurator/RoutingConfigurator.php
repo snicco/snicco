@@ -10,12 +10,19 @@ use Snicco\Component\HttpRouting\Routing\Route\Routes;
 interface RoutingConfigurator
 {
     public const MIDDLEWARE_KEY = 'middleware';
+
     public const PREFIX_KEY = 'prefix';
+
     public const NAMESPACE_KEY = 'namespace';
+
     public const NAME_KEY = 'name';
+
     public const FRONTEND_MIDDLEWARE = 'frontend';
+
     public const API_MIDDLEWARE = 'api';
+
     public const ADMIN_MIDDLEWARE = 'admin';
+
     public const GLOBAL_MIDDLEWARE = 'global';
 
     /**

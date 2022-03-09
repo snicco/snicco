@@ -15,17 +15,27 @@ use function mb_convert_case;
 final class AdminMenuItem
 {
     public const PAGE_TITLE = 'page_title';
+
     public const MENU_TITLE = 'menu_title';
+
     public const ICON = 'icon';
+
     public const CAPABILITY = 'capability';
+
     public const POSITION = 'position';
 
     private string $page_title;
+
     private string $menu_title;
+
     private string $menu_slug;
+
     private ?string $capability;
+
     private ?string $icon;
+
     private ?int $position;
+
     private ?string $parent_slug;
 
     public function __construct(
@@ -149,7 +159,7 @@ final class AdminMenuItem
 
     public function parentSlug(): UrlPath
     {
-        if (!$this->parent_slug) {
+        if (! $this->parent_slug) {
             throw new LogicException("Menu item [$this->menu_slug] does not have a parent item.");
         }
         return UrlPath::fromString($this->parent_slug);

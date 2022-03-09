@@ -24,7 +24,7 @@ trait WithTestTables
 
     protected function withNewTables(): void
     {
-        if (!static::$tables_created) {
+        if (! static::$tables_created) {
             $this->dropTables();
             $this->createTables();
             $this->insertInitialRecords();

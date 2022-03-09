@@ -117,7 +117,7 @@ final class PHPView implements View
             return null;
         }
 
-        if (!isset($matches[1])) {
+        if (! isset($matches[1])) {
             // @codeCoverageIgnoreStart
             return null;
             // @codeCoverageIgnoreEnd

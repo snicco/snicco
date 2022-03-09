@@ -27,6 +27,7 @@ final class ResponseUtilsTest extends TestCase
     use CreatesPsrRequests;
 
     private ResponseUtils $response_utils;
+
     private Request $request;
 
     protected function setUp(): void
@@ -235,10 +236,9 @@ final class ResponseUtilsTest extends TestCase
     {
         $response = $this->response_utils->html('foo');
 
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderline('content-type'));
     }
-
 
     /**
      * @test
@@ -251,7 +251,7 @@ final class ResponseUtilsTest extends TestCase
 
         $this->assertSame(json_encode([
             'foo' => 'bar',
-        ], JSON_THROW_ON_ERROR), (string)$response->getBody());
+        ], JSON_THROW_ON_ERROR), (string) $response->getBody());
         $this->assertSame('application/json', $response->getHeaderline('content-type'));
     }
 }

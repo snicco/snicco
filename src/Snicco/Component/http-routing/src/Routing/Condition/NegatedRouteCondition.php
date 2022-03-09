@@ -21,7 +21,7 @@ final class NegatedRouteCondition extends RouteCondition
 
     public function isSatisfied(Request $request): bool
     {
-        return !$this->condition->isSatisfied($request);
+        return ! $this->condition->isSatisfied($request);
     }
 
     public function getArguments(Request $request): array

@@ -40,7 +40,7 @@ final class RouteCollection implements Routes
 
     public function getByName(string $name): Route
     {
-        if (!isset($this->routes[$name])) {
+        if (! isset($this->routes[$name])) {
             throw RouteNotFound::name($name);
         }
         return $this->routes[$name];

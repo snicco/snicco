@@ -14,7 +14,7 @@ class FoobarMiddleware extends Middleware
 
     public function __construct(string $foo = null, string $bar = null)
     {
-        if (!$foo && !$bar) {
+        if (! $foo && ! $bar) {
             $this->val = 'foobar_middleware';
         } else {
             $this->val = $foo . '_' . ($bar ?: 'foobar_middleware');

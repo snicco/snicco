@@ -35,6 +35,7 @@ final class RoutingFunctionalityTest extends TestCase
     use BundleTestHelpers;
 
     private string $expected_route_cache_file;
+
     private string $cache_dir;
 
     protected function setUp(): void
@@ -80,7 +81,7 @@ final class RoutingFunctionalityTest extends TestCase
                 throw new RuntimeException('no routing performed');
             });
 
-        $this->assertSame(RoutingBundleTestController::class, (string)$response->getBody());
+        $this->assertSame(RoutingBundleTestController::class, (string) $response->getBody());
         $this->assertFalse(is_file($this->expected_route_cache_file));
     }
 
@@ -111,7 +112,7 @@ final class RoutingFunctionalityTest extends TestCase
                 throw new RuntimeException('no routing performed');
             });
 
-        $this->assertSame(RoutingBundleTestController::class, (string)$response->getBody());
+        $this->assertSame(RoutingBundleTestController::class, (string) $response->getBody());
         $this->assertTrue(is_file($this->expected_route_cache_file));
         $this->assertTrue(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
     }
@@ -206,7 +207,7 @@ final class RoutingFunctionalityTest extends TestCase
             });
 
         $this->assertNotInstanceOf(ViewResponse::class, $response);
-        $this->assertSame('Hello Calvin', (string)$response->getBody());
+        $this->assertSame('Hello Calvin', (string) $response->getBody());
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
 
@@ -239,6 +240,6 @@ final class RoutingFunctionalityTest extends TestCase
             });
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('', (string)$response->getBody());
+        $this->assertSame('', (string) $response->getBody());
     }
 }

@@ -47,7 +47,7 @@ final class StdErrLogger extends AbstractLogger
 
     public function log($level, $message, array $context = [])
     {
-        $level = (string)$level;
+        $level = (string) $level;
 
         /**
          * @var array<string> $additional
@@ -121,12 +121,12 @@ final class StdErrLogger extends AbstractLogger
     private function valueToString($value): string
     {
         if (is_scalar($value)) {
-            return (string)$value;
+            return (string) $value;
         } elseif ($value instanceof DateTimeInterface) {
             return $value->format('d-M-Y H:i:s e');
         } elseif (is_object($value)) {
             if (method_exists($value, '__toString')) {
-                return (string)$value;
+                return (string) $value;
             }
             return 'object ' . get_class($value);
         }

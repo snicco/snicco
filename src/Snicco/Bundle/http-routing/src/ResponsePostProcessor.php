@@ -17,6 +17,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 final class ResponsePostProcessor implements Unremovable
 {
     public bool $did_shutdown;
+
     private Environment $environment;
 
     public function __construct(Environment $environment)

@@ -20,7 +20,9 @@ use stdClass;
 class RequestTest extends TestCase
 {
     private Request $request;
+
     private ServerRequestInterface $psr_request;
+
     use CreatesPsrRequests;
     use CreateTestPsr17Factories;
 
@@ -399,12 +401,12 @@ class RequestTest extends TestCase
      */
     public function test_getBody(): void
     {
-        $this->assertSame('', (string)$this->request->getBody());
+        $this->assertSame('', (string) $this->request->getBody());
 
         $body = $this->psrStreamFactory()->createStream('foo');
         $request = $this->request->withBody($body);
 
-        $this->assertSame('foo', (string)$request->getBody());
+        $this->assertSame('foo', (string) $request->getBody());
     }
 
     /**

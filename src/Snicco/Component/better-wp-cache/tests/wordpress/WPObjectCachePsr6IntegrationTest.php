@@ -32,11 +32,11 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         parent::setUp();
         global $wp_object_cache;
 
-        if (!$wp_object_cache instanceof WP_Object_Cache) {
+        if (! $wp_object_cache instanceof WP_Object_Cache) {
             throw new RuntimeException('wp object cache not setup.');
         }
 
-        if (!method_exists($wp_object_cache, 'redis_status')) {
+        if (! method_exists($wp_object_cache, 'redis_status')) {
             throw new RuntimeException('wp object cache does not have method redis_status');
         }
 
@@ -736,7 +736,6 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $this->assertTrue(is_bool($item->get()), 'Wrong data type. If we store boolean we must get an boolean back.');
         $this->assertTrue($item->get());
         $this->assertTrue($item->isHit(), 'isHit() should return true when true are stored. ');
-
 
         $item = $this->cache->getItem('key2');
         $item->set(false);

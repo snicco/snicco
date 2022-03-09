@@ -202,7 +202,7 @@ class CookieTest extends TestCase
             'domain' => null,
             'host_only' => true,
             'path' => '/',
-            'expires' => (int)$date->getTimestamp(),
+            'expires' => (int) $date->getTimestamp(),
             'secure' => true,
             'http_only' => true,
             'same_site' => 'Lax',

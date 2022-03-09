@@ -11,6 +11,7 @@ use function hash_hmac;
 final class HMAC
 {
     protected Secret $secret;
+
     private string $hash_algo;
 
     public function __construct(Secret $secret, string $hash_algo = 'sha256')

@@ -22,7 +22,7 @@ final class FallbackHtmlDisplayerTest extends TestCase
         $info = InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier());
 
         $request = new ServerRequest('GET', '/');
-        
+
         $this->assertTrue((new FallbackHtmlDisplayer())->canDisplay($info->createFor(new Exception(), $request)));
     }
 

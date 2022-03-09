@@ -63,7 +63,7 @@ final class FastRouteSyntaxConverter
         array $optional_segment_names,
         bool $match_only_trailing
     ): string {
-        if (!count($optional_segment_names)) {
+        if (! count($optional_segment_names)) {
             return $url_pattern;
         }
 
@@ -82,7 +82,7 @@ final class FastRouteSyntaxConverter
     {
         preg_match('/(\[(.*?)])/', $url_pattern, $matches);
 
-        if (!isset($matches[0])) {
+        if (! isset($matches[0])) {
             // @codeCoverageIgnoreStart
             return $url_pattern;
             // @codeCoverageIgnoreEnd
@@ -103,7 +103,7 @@ final class FastRouteSyntaxConverter
         $pattern = sprintf("/(%s(?=\\}))/", preg_quote($param_name, '/'));
 
         $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
-            if (!isset($match[0])) {
+            if (! isset($match[0])) {
                 // @codeCoverageIgnoreStart
                 return $regex;
                 // @codeCoverageIgnoreEnd

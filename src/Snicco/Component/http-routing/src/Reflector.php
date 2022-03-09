@@ -48,7 +48,7 @@ final class Reflector
             throw new InvalidArgumentException("Interface [$expected_interface] does not exist.");
         }
 
-        if (!$class_exists) {
+        if (! $class_exists) {
             throw new InvalidArgumentException(
                 sprintf(
                     $message ?: "Expected class-string<%s>\nGot: [%s].",
@@ -58,7 +58,7 @@ final class Reflector
             );
         }
 
-        $implements = (array)class_implements($class_string);
+        $implements = (array) class_implements($class_string);
 
         if (in_array($expected_interface, $implements, true)) {
             return;
@@ -84,7 +84,7 @@ final class Reflector
 
         $parameters = $reflection->getParameters();
 
-        if (!count($parameters) || !$parameters[0] instanceof ReflectionParameter) {
+        if (! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
             return null;
         }
 

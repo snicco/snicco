@@ -62,7 +62,7 @@ final class RoutingResult
      */
     public function decodedSegments(): array
     {
-        if (!isset($this->decoded_segments)) {
+        if (! isset($this->decoded_segments)) {
             $this->decoded_segments = array_map(function (string $value) {
                 if (is_numeric($value)) {
                     return intval($value);

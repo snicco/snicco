@@ -29,7 +29,6 @@ final class SerializedSessionTest extends TestCase
         $this->assertSame($as_string, $serialized_session->data());
     }
 
-
     /**
      * @test
      */

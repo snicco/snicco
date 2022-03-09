@@ -12,6 +12,7 @@ use Snicco\Component\Session\ValueObject\SessionCookie;
 final class SingleSessionSessionManager implements SessionManager
 {
     private SessionManager $session_manager;
+
     private ?Session $session = null;
 
     public function __construct(SessionManager $session_manager)
@@ -21,7 +22,7 @@ final class SingleSessionSessionManager implements SessionManager
 
     public function start(CookiePool $cookie_pool): Session
     {
-        if (!isset($this->session)) {
+        if (! isset($this->session)) {
             $this->session = $this->session_manager->start($cookie_pool);
         }
 

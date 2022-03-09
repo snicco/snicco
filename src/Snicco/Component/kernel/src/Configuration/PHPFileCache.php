@@ -50,7 +50,7 @@ final class PHPFileCache implements ConfigCache
         $value = include $file;
         restore_error_handler();
 
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return null;
         }
         return $value;

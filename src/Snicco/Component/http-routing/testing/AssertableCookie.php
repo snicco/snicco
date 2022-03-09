@@ -15,6 +15,7 @@ use function trim;
 final class AssertableCookie
 {
     public string $value;
+
     public string $name;
 
     public string $path = '';

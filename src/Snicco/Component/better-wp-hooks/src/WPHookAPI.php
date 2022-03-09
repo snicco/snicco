@@ -44,7 +44,7 @@ final class WPHookAPI extends BetterWPAPI
         if (null === $hook) {
             return null;
         }
-        if (!$hook instanceof WP_Hook) {
+        if (! $hook instanceof WP_Hook) {
             throw new RuntimeException(
                 sprintf(
                     "The registered hook [$hook_name] has to be an instance of WP_Hook.\nGot: [%s].",

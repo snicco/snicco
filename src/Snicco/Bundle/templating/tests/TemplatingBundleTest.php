@@ -171,7 +171,6 @@ final class TemplatingBundleTest extends TestCase
          */
         $engine = $kernel->container()->make(ViewEngine::class);
 
-
         /**
          * @var GlobalViewContext $global_context
          * @psalm-suppress UnnecessaryVarAnnotation

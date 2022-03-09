@@ -51,7 +51,7 @@ final class BladeViewFactory implements ViewFactory
 
     private function normalizeNames(string $name): string
     {
-        if (!is_file($name)) {
+        if (! is_file($name)) {
             return $name;
         }
 
@@ -65,7 +65,7 @@ final class BladeViewFactory implements ViewFactory
     {
         foreach ($this->view_directories as $view_directory) {
             if (Str::startsWith($path, $view_directory)) {
-                return (string)Str::of($path)
+                return (string) Str::of($path)
                     ->after($view_directory)
                     ->replace('/', '.')
                     ->ltrim('.')

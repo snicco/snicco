@@ -19,8 +19,11 @@ use function trim;
 final class RouteGroup
 {
     public string $namespace;
+
     public UrlPath $prefix;
+
     public string $name;
+
     /**
      * @var string[]
      */

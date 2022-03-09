@@ -19,6 +19,7 @@ use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 final class RequestAwareLoggerTest extends TestCase
 {
     private ServerRequestInterface $request;
+
     private TestLogger $test_logger;
 
     protected function setUp(): void

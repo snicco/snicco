@@ -25,7 +25,9 @@ abstract class Controller
      * @var ControllerMiddleware[]
      */
     private array $middleware = [];
+
     private ContainerInterface $container;
+
     private ?Request $current_request = null;
 
     /**
@@ -83,7 +85,7 @@ abstract class Controller
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The UrlGenerator is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }
@@ -98,7 +100,7 @@ abstract class Controller
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The ResponseFactory is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }
@@ -125,7 +127,7 @@ abstract class Controller
 
     private function currentRequest(): Request
     {
-        if (!isset($this->current_request)) {
+        if (! isset($this->current_request)) {
             throw new RuntimeException(sprintf('Current request not set on controller [%s]', static::class));
         }
         return $this->current_request;
