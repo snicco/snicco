@@ -679,7 +679,7 @@ final class Request implements ServerRequestInterface
     /**
      * @return static
      */
-    protected function new(ServerRequestInterface $new_psr_request)
+    private function new(ServerRequestInterface $new_psr_request)
     {
         return new self($new_psr_request, $this->type);
     }

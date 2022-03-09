@@ -61,9 +61,7 @@ final class LogoutTest extends WPTestCase
         });
         $this->bundle_test->withoutHttpErrorHandling($this->kernel);
         $this->kernel->boot();
-        /**
-         * @var InMemoryDriver $driver
-         */
+        /** @var InMemoryDriver $driver */
         $driver = $this->kernel->container()->make(SessionDriver::class);
         $this->driver = $driver;
     }
@@ -85,9 +83,7 @@ final class LogoutTest extends WPTestCase
      */
     public function a_valid_session_is_invalidated_on_wp_logout(): void
     {
-        /**
-         * @var SessionManager $m
-         */
+        /** @var SessionManager $m */
         $m = $this->kernel->container()->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
@@ -117,17 +113,13 @@ final class LogoutTest extends WPTestCase
      */
     public function calling_wp_logout_during_the_routing_flow_works(): void
     {
-        /**
-         * @var SessionManager $m
-         */
+        /** @var SessionManager $m */
         $m = $this->kernel->container()->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
         $m->save($session);
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $this->kernel->container()->get(MiddlewarePipeline::class);
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
@@ -165,17 +157,13 @@ final class LogoutTest extends WPTestCase
      */
     public function manually_invalidating_a_session_works_in_the_routing_flow(): void
     {
-        /**
-         * @var SessionManager $m
-         */
+        /** @var SessionManager $m */
         $m = $this->kernel->container()->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
         $m->save($session);
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
+        /** @var MiddlewarePipeline $pipeline */
         $pipeline = $this->kernel->container()->get(MiddlewarePipeline::class);
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
@@ -190,9 +178,7 @@ final class LogoutTest extends WPTestCase
                 StatefulRequest::class,
             ])
             ->then(function (Request $request) {
-                /**
-                 * @var MutableSession $session
-                 */
+                /** @var MutableSession $session */
                 $session = $request->getAttribute(MutableSession::class);
                 $session->invalidate();
                 wp_logout();

@@ -21,9 +21,7 @@ final class MysqliFactory
         $dbh = new ReflectionProperty($wpdb, 'dbh');
         $dbh->setAccessible(true);
 
-        /**
-         * @var mysqli $mysqli
-         */
+        /** @var mysqli $mysqli */
         $mysqli = $dbh->getValue($wpdb);
 
         $dbh->setAccessible(false);

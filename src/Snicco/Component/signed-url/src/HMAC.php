@@ -10,7 +10,7 @@ use function hash_hmac;
 
 final class HMAC
 {
-    protected Secret $secret;
+    private Secret $secret;
 
     private string $hash_algo;
 

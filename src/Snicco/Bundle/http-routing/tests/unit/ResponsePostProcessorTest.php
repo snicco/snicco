@@ -34,14 +34,10 @@ final class ResponsePostProcessorTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var EventDispatcher $dispatcher
-         */
+        /** @var EventDispatcher $dispatcher */
         $dispatcher = $kernel->container()->make(EventDispatcher::class);
 
-        /**
-         * @var ResponsePostProcessor $response_post_processor
-         */
+        /** @var ResponsePostProcessor $response_post_processor */
         $response_post_processor = $kernel->container()->make(ResponsePostProcessor::class);
 
         $this->assertFalse($response_post_processor->did_shutdown);

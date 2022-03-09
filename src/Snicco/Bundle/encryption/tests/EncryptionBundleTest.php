@@ -81,9 +81,7 @@ final class EncryptionBundleTest extends TestCase
         });
         $kernel->boot();
 
-        /**
-         * @var DefuseEncryptor $encryptor
-         */
+        /** @var DefuseEncryptor $encryptor */
         $encryptor = $kernel->container()->get(DefuseEncryptor::class);
 
         $cipher_text = $encryptor->encrypt('foo');

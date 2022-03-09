@@ -239,9 +239,7 @@ final class MysqliDriver implements MysqliDriverInterface
 
     private function lastException(): mysqli_sql_exception
     {
-        /**
-         * @var array<array{error: string, errno: string, sqlstate: string}> $errors
-         */
+        /** @var array<array{error: string, errno: string, sqlstate: string}> $errors */
         $errors = $this->mysqli->error_list;
         $msg = '';
 

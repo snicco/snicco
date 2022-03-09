@@ -48,14 +48,10 @@ final class MailEventsTest extends WPTestCase
 
         $kernel->boot();
 
-        /**
-         * @var Mailer $mailer
-         */
+        /** @var Mailer $mailer */
         $mailer = $kernel->container()->get(Mailer::class);
 
-        /**
-         * @var FakeTransport $transport
-         */
+        /** @var FakeTransport $transport */
         $transport = $kernel->container()->get(Transport::class);
 
         $called = false;
@@ -93,14 +89,10 @@ final class MailEventsTest extends WPTestCase
         );
         $kernel->boot();
 
-        /**
-         * @var Mailer $mailer
-         */
+        /** @var Mailer $mailer */
         $mailer = $kernel->container()->get(Mailer::class);
 
-        /**
-         * @var FakeTransport $transport
-         */
+        /** @var FakeTransport $transport */
         $transport = $kernel->container()->get(Transport::class);
 
         add_action(TestEmail::class, function () {
@@ -143,19 +135,13 @@ final class MailEventsTest extends WPTestCase
 
         $kernel->boot();
 
-        /**
-         * @var Mailer $mailer
-         */
+        /** @var Mailer $mailer */
         $mailer = $kernel->container()->get(Mailer::class);
 
-        /**
-         * @var TestableEventDispatcher $testable_dispatcher
-         */
+        /** @var TestableEventDispatcher $testable_dispatcher */
         $testable_dispatcher = $kernel->container()->get(TestableEventDispatcher::class);
 
-        /**
-         * @var FakeTransport $fake_transport
-         */
+        /** @var FakeTransport $fake_transport */
         $fake_transport = $kernel->container()->get(Transport::class);
 
         $called = false;
@@ -211,19 +197,13 @@ final class MailEventsTest extends WPTestCase
 
         $kernel->boot();
 
-        /**
-         * @var Mailer $mailer
-         */
+        /** @var Mailer $mailer */
         $mailer = $kernel->container()->get(Mailer::class);
 
-        /**
-         * @var TestableEventDispatcher $testable_dispatcher
-         */
+        /** @var TestableEventDispatcher $testable_dispatcher */
         $testable_dispatcher = $kernel->container()->get(TestableEventDispatcher::class);
 
-        /**
-         * @var FakeTransport $fake_transport
-         */
+        /** @var FakeTransport $fake_transport */
         $fake_transport = $kernel->container()->get(Transport::class);
 
         $testable_dispatcher->listen(TestEmail::class, function (SendingEmail $event) {
