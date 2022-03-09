@@ -154,8 +154,8 @@ final class HttpRoutingBundle implements Bundle
                 $config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)),
                 $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)),
                 $container[RouteLoadingOptions::class] ?? new DefaultRouteLoadingOptions(
-                        $config->getString(RoutingOption::key(RoutingOption::API_PREFIX))
-                    ),
+                    $config->getString(RoutingOption::key(RoutingOption::API_PREFIX))
+                ),
             );
 
             $cache = ($env->isStaging() || $env->isProduction())
@@ -547,7 +547,7 @@ final class HttpRoutingBundle implements Bundle
             RoutingConfigurator::FRONTEND_MIDDLEWARE,
             RoutingConfigurator::ADMIN_MIDDLEWARE,
             RoutingConfigurator::API_MIDDLEWARE,
-            RoutingConfigurator::GLOBAL_MIDDLEWARE
+            RoutingConfigurator::GLOBAL_MIDDLEWARE,
         ];
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN)) as $group_name) {
@@ -637,7 +637,7 @@ final class HttpRoutingBundle implements Bundle
             LogLevel::ALERT,
             LogLevel::NOTICE,
             LogLevel::EMERGENCY,
-            LogLevel::DEBUG
+            LogLevel::DEBUG,
         ];
 
         foreach (

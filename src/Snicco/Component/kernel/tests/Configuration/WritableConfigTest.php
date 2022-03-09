@@ -113,23 +113,23 @@ class WritableConfigTest extends TestCase
                 ],
                 'features' => [
                     'feature1' => true,
-                    'feature2' => false
-                ]
-            ]
+                    'feature2' => false,
+                ],
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
 
         $config->extend('routing.definitions', [
             'routes3',
-            'routes4'
+            'routes4',
         ]);
 
         $config->extend('routing.features', [
             'feature1' => false,
             'feature2' => true,
             'feature3' => true,
-            'feature4' => 'yes'
+            'feature4' => 'yes',
         ]);
 
         $this->assertSame([
@@ -143,7 +143,7 @@ class WritableConfigTest extends TestCase
             'feature1' => true,
             'feature2' => false,
             'feature3' => true,
-            'feature4' => 'yes'
+            'feature4' => 'yes',
         ], $config->get('routing.features'));
     }
 
@@ -168,8 +168,13 @@ class WritableConfigTest extends TestCase
         $config->extend('foo.boo', 'bam');
         $this->assertEquals('bam', $config->get('foo.boo'));
 
-        $config->extend('foo.baz', ['bam' => 'boom']);
-        $this->assertEquals(['biz' => 'boo', 'bam' => 'boom'], $config->get('foo.baz'));
+        $config->extend('foo.baz', [
+            'bam' => 'boom',
+        ]);
+        $this->assertEquals([
+            'biz' => 'boo',
+            'bam' => 'boom',
+        ], $config->get('foo.baz'));
 
         $config->extend('foo.baz.biz', 'bogus');
         $this->assertEquals('boo', $config->get('foo.baz.biz'));
@@ -198,7 +203,7 @@ class WritableConfigTest extends TestCase
     public function scalar_values_can_be_pushed_onto_an_array(): void
     {
         $config = WritableConfig::fromArray([
-            'foo' => ['bar']
+            'foo' => ['bar'],
         ]);
 
         $config->extend('foo', 'baz');
@@ -219,9 +224,9 @@ class WritableConfigTest extends TestCase
                 ],
                 'features' => [
                     'feature1' => true,
-                    'feature2' => false
-                ]
-            ]
+                    'feature2' => false,
+                ],
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -274,9 +279,9 @@ class WritableConfigTest extends TestCase
                 ],
                 'features' => [
                     'feature1' => true,
-                    'feature2' => false
-                ]
-            ]
+                    'feature2' => false,
+                ],
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -294,7 +299,7 @@ class WritableConfigTest extends TestCase
         $config = [
             'routing' => [
                 'definitions' => [],
-            ]
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -315,7 +320,7 @@ class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-            ]
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -338,9 +343,9 @@ class WritableConfigTest extends TestCase
                 ],
                 'features' => [
                     'feature1' => true,
-                    'feature2' => false
-                ]
-            ]
+                    'feature2' => false,
+                ],
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -393,9 +398,9 @@ class WritableConfigTest extends TestCase
                 ],
                 'features' => [
                     'feature1' => true,
-                    'feature2' => false
-                ]
-            ]
+                    'feature2' => false,
+                ],
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -413,7 +418,7 @@ class WritableConfigTest extends TestCase
         $config = [
             'routing' => [
                 'definitions' => [],
-            ]
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -434,7 +439,7 @@ class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-            ]
+            ],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -451,7 +456,7 @@ class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [],
-            'foo' => []
+            'foo' => [],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -467,7 +472,10 @@ class WritableConfigTest extends TestCase
      */
     public function test_getString(): void
     {
-        $config = WritableConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
+        $config = WritableConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => 1,
+        ]);
 
         $this->assertSame('bar', $config->getString('foo'));
         $this->assertSame('default', $config->getString('bogus', 'default'));
@@ -483,7 +491,10 @@ class WritableConfigTest extends TestCase
      */
     public function test_getInteger(): void
     {
-        $config = WritableConfig::fromArray(['foo' => 'bar', 'baz' => 1]);
+        $config = WritableConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => 1,
+        ]);
 
         $this->assertSame(1, $config->getInteger('baz'));
         $this->assertSame(2, $config->getInteger('bogus', 2));
@@ -499,7 +510,10 @@ class WritableConfigTest extends TestCase
      */
     public function test_getBoolean(): void
     {
-        $config = WritableConfig::fromArray(['foo' => true, 'baz' => 1]);
+        $config = WritableConfig::fromArray([
+            'foo' => true,
+            'baz' => 1,
+        ]);
 
         $this->assertSame(true, $config->getBoolean('foo'));
         $this->assertSame(false, $config->getBoolean('bogus', false));
@@ -519,20 +533,20 @@ class WritableConfigTest extends TestCase
             'routes' => [
                 'route1',
                 'route2',
-                'route3'
+                'route3',
             ],
             'bad_routes' => [
                 'route1',
                 'route2',
-                1
+                1,
             ],
             'associative_routes' => [
                 'routes' => [
                     'foo' => 'route1',
                     'route2',
-                    'route3'
+                    'route3',
                 ],
-            ]
+            ],
         ]);
 
         $res = $config->getListOfStrings('routes');
@@ -540,7 +554,7 @@ class WritableConfigTest extends TestCase
         $this->assertSame([
             'route1',
             'route2',
-            'route3'
+            'route3',
         ], $res);
 
         try {
@@ -573,19 +587,19 @@ class WritableConfigTest extends TestCase
             'routes' => [
                 'route1',
                 'route2',
-                'route3'
+                'route3',
             ],
             'bad_routes' => [
                 'route1',
                 'route2',
-                1
+                1,
             ],
             'associative_routes' => [
                 'foo' => 'route1',
                 'route2',
-                'route3'
+                'route3',
             ],
-            'foo' => 'string'
+            'foo' => 'string',
         ]);
 
         $res = $config->getArray('routes');
@@ -593,19 +607,19 @@ class WritableConfigTest extends TestCase
         $this->assertSame([
             'route1',
             'route2',
-            'route3'
+            'route3',
         ], $res);
 
         $this->assertSame([
             'route1',
             'route2',
-            1
+            1,
         ], $config->getArray('bad_routes'));
 
         $this->assertSame([
             'foo' => 'route1',
             'route2',
-            'route3'
+            'route3',
         ], $config->getArray('associative_routes'));
 
         $this->expectException(InvalidArgumentException::class);

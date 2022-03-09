@@ -28,7 +28,7 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
 
         $stmt = $this->better_wpdb->insert('test_table', [
             'test_string' => 'foo',
-            'test_int' => 10
+            'test_int' => 10,
         ]);
 
         $this->assertSame(1, $stmt->affected_rows);
@@ -38,14 +38,14 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
             'test_string' => 'foo',
             'test_int' => 10,
             'test_float' => null,
-            'test_bool' => 0
+            'test_bool' => 0,
         ]);
 
         $stmt = $this->better_wpdb->insert('test_table', [
             'test_string' => 'bar',
             'test_int' => 20,
             'test_float' => 10.00,
-            'test_bool' => true
+            'test_bool' => true,
         ]);
 
         $this->assertSame(1, $stmt->affected_rows);
@@ -55,7 +55,7 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
             'test_string' => 'bar',
             'test_int' => 20,
             'test_float' => 10.00,
-            'test_bool' => 1
+            'test_bool' => 1,
         ]);
     }
 
@@ -73,7 +73,10 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
             []
         );
 
-        $stmt = $this->better_wpdb->insert('no_auto_incr', ['id' => 10, 'test_string' => 'foo']);
+        $stmt = $this->better_wpdb->insert('no_auto_incr', [
+            'id' => 10,
+            'test_string' => 'foo',
+        ]);
         $this->assertSame(1, $stmt->affected_rows);
         $this->assertSame(0, $stmt->insert_id);
     }
@@ -88,7 +91,9 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
 
-        $this->better_wpdb->insert('', ['test_string' => 'foo']);
+        $this->better_wpdb->insert('', [
+            'test_string' => 'foo',
+        ]);
     }
 
     /**
@@ -127,7 +132,9 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
 
-        $this->better_wpdb->insert('test_table', ['' => 'foo']);
+        $this->better_wpdb->insert('test_table', [
+            '' => 'foo',
+        ]);
     }
 
     /**
@@ -140,7 +147,9 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
 
-        $this->better_wpdb->insert('test_table', ['test_string' => new stdClass()]);
+        $this->better_wpdb->insert('test_table', [
+            'test_string' => new stdClass(),
+        ]);
     }
 
     /**
@@ -152,7 +161,9 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
 
-        $this->better_wpdb->insert('test_table', [['test_string' => 'foo']]);
+        $this->better_wpdb->insert('test_table', [[
+            'test_string' => 'foo',
+        ]]);
     }
 
     /**
@@ -163,7 +174,9 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->insert('test_table', ['test_string' => 'foo']);
+        $db->insert('test_table', [
+            'test_string' => 'foo',
+        ]);
 
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);

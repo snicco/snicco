@@ -40,7 +40,10 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $mailer = $this->getMailer($kernel);
 
         $email = (new Email())->withTo('c@web.de')->withHtmlTemplate('html-template');
-        $email = $email->withContext(['mail_content' => 'FOO', 'extra' => 'extra-bar']);
+        $email = $email->withContext([
+            'mail_content' => 'FOO',
+            'extra' => 'extra-bar',
+        ]);
 
         $mailer->send($email);
 
@@ -139,18 +142,18 @@ final class ViewEngineMailRendererTest extends WPTestCase
             $config->set('bundles', [
                 Environment::ALL => [
                     BetterWPMailBundle::class,
-                    TemplatingBundle::class
-                ]
+                    TemplatingBundle::class,
+                ],
             ]);
             $config->set('mail', [
                 MailOption::RENDERER => [
-                    ViewEngineMailRenderer::class
-                ]
+                    ViewEngineMailRenderer::class,
+                ],
             ]);
             $config->set('templating', [
                 TemplatingOption::DIRECTORIES => [
-                    $this->fixturesDir() . '/templates'
-                ]
+                    $this->fixturesDir() . '/templates',
+                ],
             ]);
         });
         return $kernel;

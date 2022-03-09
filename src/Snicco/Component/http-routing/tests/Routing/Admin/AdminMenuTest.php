@@ -304,7 +304,9 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function it_works_with_nested_grouping_and_supPages(): void
     {
-        $this->withMiddlewareGroups(['admin' => [FoobarMiddleware::class]]);
+        $this->withMiddlewareGroups([
+            'admin' => [FoobarMiddleware::class],
+        ]);
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
             $configurator->group(function (AdminRoutingConfigurator $router) {
@@ -319,7 +321,9 @@ final class AdminMenuTest extends HttpRunnerTestCase
                     $router->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class)
                         ->middleware(BarMiddleware::class);
                 });
-            }, [RoutingConfigurator::MIDDLEWARE_KEY => [RoutingConfigurator::ADMIN_MIDDLEWARE]]);
+            }, [
+                RoutingConfigurator::MIDDLEWARE_KEY => [RoutingConfigurator::ADMIN_MIDDLEWARE],
+            ]);
         });
 
 

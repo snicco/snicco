@@ -142,8 +142,8 @@ final class SessionBundleTest extends WPTestCase
             $config->set('session', [
                 SessionOption::COOKIE_NAME => 'foo',
                 SessionOption::CONFIG => [
-                    'same_site' => 'bogus'
-                ]
+                    'same_site' => 'bogus',
+                ],
             ]);
         });
 
@@ -222,7 +222,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
             $config->extend('bundles.all', EncryptionBundle::class);
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey()
+                EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey(),
             ]);
         });
         $kernel->boot();
@@ -246,7 +246,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
             $config->extend('bundles.all', EncryptionBundle::class);
             $config->set('encryption', [
-                EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey()
+                EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey(),
             ]);
         });
         $kernel->boot();
@@ -271,7 +271,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::SERIALIZER => JsonSerializer::class
+                SessionOption::SERIALIZER => JsonSerializer::class,
             ]);
         });
         $kernel->boot();
@@ -286,7 +286,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::SERIALIZER => PHPSerializer::class
+                SessionOption::SERIALIZER => PHPSerializer::class,
             ]);
         });
         $kernel->boot();
@@ -299,7 +299,7 @@ final class SessionBundleTest extends WPTestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::SERIALIZER => TestSerializer::class
+                SessionOption::SERIALIZER => TestSerializer::class,
             ]);
         });
         $kernel->afterRegister(function (Kernel $kernel) {
@@ -325,7 +325,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::SERIALIZER => stdClass::class
+                SessionOption::SERIALIZER => stdClass::class,
             ]);
         });
         $kernel->boot();
@@ -347,7 +347,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::DRIVER => stdClass::class
+                SessionOption::DRIVER => stdClass::class,
             ]);
         });
         $kernel->boot();
@@ -369,7 +369,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::PREFIX => ''
+                SessionOption::PREFIX => '',
             ]);
         });
         $kernel->boot();
@@ -460,7 +460,9 @@ final class SessionBundleTest extends WPTestCase
 
         file_put_contents(
             $this->directories->configDir() . '/session.php',
-            '<?php return ' . var_export(['editor' => 'sublime'], true) . ';'
+            '<?php return ' . var_export([
+                'editor' => 'sublime',
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/session.php'));
@@ -470,7 +472,9 @@ final class SessionBundleTest extends WPTestCase
         /**
          * @psalm-suppress UnresolvableInclude
          */
-        $this->assertSame(['editor' => 'sublime'], require $this->directories->configDir() . '/session.php');
+        $this->assertSame([
+            'editor' => 'sublime',
+        ], require $this->directories->configDir() . '/session.php');
     }
 
     /**
@@ -506,7 +510,7 @@ final class SessionBundleTest extends WPTestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles.all', [
-                SessionBundle::class
+                SessionBundle::class,
             ]);
         });
         $kernel->boot();
@@ -527,10 +531,10 @@ final class SessionBundleTest extends WPTestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::DRIVER => WPObjectCacheDriver::class
+                SessionOption::DRIVER => WPObjectCacheDriver::class,
             ]);
             $config->set('bundles.all', [
-                SessionBundle::class
+                SessionBundle::class,
             ]);
         });
         $kernel->boot();

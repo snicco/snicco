@@ -124,7 +124,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::PROD => [stdClass::class]
+                    Environment::PROD => [stdClass::class],
                 ],
             ])
         );
@@ -191,7 +191,7 @@ final class KernelBundlesTest extends TestCase
                 'bundles' => [
                     Environment::ALL => [
                         BundleWithCustomEnv::class,
-                    ]
+                    ],
                 ],
             ])
         );
@@ -211,8 +211,8 @@ final class KernelBundlesTest extends TestCase
                 'bundles' => [
                     Environment::ALL => [
                         BundleWithCustomEnv::class,
-                    ]
-                ]
+                    ],
+                ],
             ])
         );
 
@@ -252,8 +252,8 @@ final class KernelBundlesTest extends TestCase
                 'bundles' => [
                     Environment::ALL => [
                         BundleDuplicate1::class,
-                        BundleDuplicate2::class
-                    ]
+                        BundleDuplicate2::class,
+                    ],
                 ],
             ])
         );
@@ -273,8 +273,8 @@ final class KernelBundlesTest extends TestCase
             new FixedConfigCache([
                 'bundles' => [
                     Environment::ALL => [
-                        BundleThatConfigures::class
-                    ]
+                        BundleThatConfigures::class,
+                    ],
                 ],
             ])
         );

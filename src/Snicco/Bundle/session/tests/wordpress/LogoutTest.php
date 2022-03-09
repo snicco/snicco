@@ -54,7 +54,7 @@ final class LogoutTest extends WPTestCase
         );
         $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::COOKIE_NAME => 'test_cookie'
+                SessionOption::COOKIE_NAME => 'test_cookie',
             ]);
             $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
@@ -131,14 +131,14 @@ final class LogoutTest extends WPTestCase
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
         $request = Request::fromPsr(new ServerRequest('GET', '/'))->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()->asString(),
         ]);
 
         $this->assertTrue(isset($this->driver->all()[$session->id()->selector()]));
 
         $response = $pipeline->send($request)
             ->through([
-                StatefulRequest::class
+                StatefulRequest::class,
             ])
             ->then(function () {
                 wp_logout();
@@ -179,14 +179,14 @@ final class LogoutTest extends WPTestCase
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
         $request = Request::fromPsr(new ServerRequest('POST', '/'))->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()->asString(),
         ]);
 
         $this->assertTrue(isset($this->driver->all()[$session->id()->selector()]));
 
         $response = $pipeline->send($request)
             ->through([
-                StatefulRequest::class
+                StatefulRequest::class,
             ])
             ->then(function (Request $request) {
                 /**

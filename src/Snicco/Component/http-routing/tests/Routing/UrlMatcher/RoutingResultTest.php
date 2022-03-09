@@ -17,7 +17,10 @@ class RoutingResultTest extends TestCase
     {
         $result = RoutingResult::match(
             $route = $this->route(),
-            $arr = ['foo' => 'foo%20bar', 'bar' => '1']
+            $arr = [
+                'foo' => 'foo%20bar',
+                'bar' => '1',
+            ]
         );
 
         $this->assertSame($route, $result->route());
@@ -30,9 +33,15 @@ class RoutingResultTest extends TestCase
     public function decoded_segments_convert_integerish_strings_to_numbers(): void
     {
         $routing_result =
-            RoutingResult::match($this->route(), ['foo' => 'foo%20bar', 'bar' => '1']);
+            RoutingResult::match($this->route(), [
+                'foo' => 'foo%20bar',
+                'bar' => '1',
+            ]);
 
-        $this->assertSame(['foo' => 'foo bar', 'bar' => 1], $routing_result->decodedSegments());
+        $this->assertSame([
+            'foo' => 'foo bar',
+            'bar' => 1,
+        ], $routing_result->decodedSegments());
     }
 
     /**
@@ -40,11 +49,17 @@ class RoutingResultTest extends TestCase
      */
     public function with_captured_segments_is_immutable(): void
     {
-        $res1 = RoutingResult::match($this->route(), ['foo' => 'foo%20bar', 'bar' => '1']);
+        $res1 = RoutingResult::match($this->route(), [
+            'foo' => 'foo%20bar',
+            'bar' => '1',
+        ]);
 
         $res2 = $res1->withCapturedSegments($res1->capturedSegments());
 
-        $this->assertSame(['foo' => 'foo bar', 'bar' => 1], $res2->decodedSegments());
+        $this->assertSame([
+            'foo' => 'foo bar',
+            'bar' => 1,
+        ], $res2->decodedSegments());
         $this->assertSame($res1->route(), $res2->route());
 
         $this->assertNotSame($res1, $res2);

@@ -19,7 +19,7 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
     public function test_delete(): void
     {
         $this->better_wpdb->insert('test_table', [
-            'test_string' => 'foo'
+            'test_string' => 'foo',
         ]);
 
         $this->better_wpdb->insert('test_table', [
@@ -36,27 +36,39 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
 
         $this->assertRecordCount(3);
 
-        $res = $this->better_wpdb->delete('test_table', ['test_string' => 'foo']);
+        $res = $this->better_wpdb->delete('test_table', [
+            'test_string' => 'foo',
+        ]);
         $this->assertSame(1, $res);
 
         $this->assertRecordCount(2);
 
-        $res = $this->better_wpdb->delete('test_table', ['test_string' => 'bogus']);
+        $res = $this->better_wpdb->delete('test_table', [
+            'test_string' => 'bogus',
+        ]);
         $this->assertSame(0, $res);
 
         $this->assertRecordCount(2);
 
-        $res = $this->better_wpdb->delete('test_table', ['test_string' => 'baz', 'test_float' => null]);
+        $res = $this->better_wpdb->delete('test_table', [
+            'test_string' => 'baz',
+            'test_float' => null,
+        ]);
         $this->assertSame(0, $res);
 
         $this->assertRecordCount(2);
 
-        $res = $this->better_wpdb->delete('test_table', ['test_string' => 'baz', 'test_float' => 10.00]);
+        $res = $this->better_wpdb->delete('test_table', [
+            'test_string' => 'baz',
+            'test_float' => 10.00,
+        ]);
         $this->assertSame(1, $res);
 
         $this->assertRecordCount(1);
 
-        $res = $this->better_wpdb->delete('test_table', ['test_float' => null]);
+        $res = $this->better_wpdb->delete('test_table', [
+            'test_float' => null,
+        ]);
         $this->assertSame(1, $res);
 
         $this->assertRecordCount(0);
@@ -71,7 +83,9 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
-        $this->better_wpdb->delete('', ['test_string' => 'foo']);
+        $this->better_wpdb->delete('', [
+            'test_string' => 'foo',
+        ]);
     }
 
     /**
@@ -119,7 +133,9 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
-        $this->better_wpdb->delete('test_table', ['test_string' => new stdClass()]);
+        $this->better_wpdb->delete('test_table', [
+            'test_string' => new stdClass(),
+        ]);
     }
 
     /**
@@ -130,7 +146,9 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->delete('test_table', ['test_string' => 'foo']);
+        $db->delete('test_table', [
+            'test_string' => 'foo',
+        ]);
 
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);

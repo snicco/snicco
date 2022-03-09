@@ -44,7 +44,9 @@ final class ResponseUtilsTest extends TestCase
      */
     public function test_redirectTo(): void
     {
-        $response = $this->response_utils->redirectTo('/foo', 303, ['baz' => 'biz']);
+        $response = $this->response_utils->redirectTo('/foo', 303, [
+            'baz' => 'biz',
+        ]);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/foo?baz=biz', $response->getHeaderLine('location'));
@@ -96,12 +98,16 @@ final class ResponseUtilsTest extends TestCase
             $this->frontendRequest()
         );
 
-        $response = $response_utils->redirectToRoute('route1', ['param' => 'bar'], 303);
+        $response = $response_utils->redirectToRoute('route1', [
+            'param' => 'bar',
+        ], 303);
         $this->assertSame('/foo/bar', $response->getHeaderLine('location'));
         $this->assertSame(303, $response->getStatusCode());
 
         $this->expectException(RouteNotFound::class);
-        $response_utils->redirectToRoute('route2', ['param' => 'bar'], 303);
+        $response_utils->redirectToRoute('route2', [
+            'param' => 'bar',
+        ], 303);
     }
 
     /**
@@ -118,7 +124,10 @@ final class ResponseUtilsTest extends TestCase
             $this->frontendRequest()
         );
 
-        $response = $response_utils->redirectHome(['user_id' => 1, 'foo' => 'bar'], 307);
+        $response = $response_utils->redirectHome([
+            'user_id' => 1,
+            'foo' => 'bar',
+        ], 307);
 
         $this->assertSame('/home/1?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
@@ -129,7 +138,9 @@ final class ResponseUtilsTest extends TestCase
      */
     public function test_redirectHome_with_no_home_route_defaults_to_the_base_path(): void
     {
-        $response = $this->response_utils->redirectHome(['foo' => 'bar'], 307);
+        $response = $this->response_utils->redirectHome([
+            'foo' => 'bar',
+        ], 307);
 
         $this->assertSame('/?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
@@ -140,7 +151,9 @@ final class ResponseUtilsTest extends TestCase
      */
     public function test_redirectToLogin(): void
     {
-        $response = $this->response_utils->redirectToLogin(['foo' => 'bar'], 307);
+        $response = $this->response_utils->redirectToLogin([
+            'foo' => 'bar',
+        ], 307);
 
         $this->assertSame('/wp-login.php?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
@@ -160,7 +173,9 @@ final class ResponseUtilsTest extends TestCase
             $this->frontendRequest()
         );
 
-        $response = $response_utils->redirectToLogin(['foo' => 'bar'], 307);
+        $response = $response_utils->redirectToLogin([
+            'foo' => 'bar',
+        ], 307);
 
         $this->assertSame('/login?foo=bar', $response->getHeaderLine('location'));
         $this->assertSame(307, $response->getStatusCode());
@@ -202,10 +217,15 @@ final class ResponseUtilsTest extends TestCase
      */
     public function test_view(): void
     {
-        $response = $this->response_utils->view('view.php', ['foo' => 'bar']);
+        $response = $this->response_utils->view('view.php', [
+            'foo' => 'bar',
+        ]);
 
         $this->assertSame('view.php', $response->view());
-        $this->assertEquals(['foo' => 'bar', 'request' => $this->request], $response->viewData());
+        $this->assertEquals([
+            'foo' => 'bar',
+            'request' => $this->request,
+        ], $response->viewData());
     }
 
     /**
@@ -225,9 +245,13 @@ final class ResponseUtilsTest extends TestCase
      */
     public function test_json(): void
     {
-        $response = $this->response_utils->json(['foo' => 'bar']);
+        $response = $this->response_utils->json([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR), (string)$response->getBody());
+        $this->assertSame(json_encode([
+            'foo' => 'bar',
+        ], JSON_THROW_ON_ERROR), (string)$response->getBody());
         $this->assertSame('application/json', $response->getHeaderline('content-type'));
     }
 }

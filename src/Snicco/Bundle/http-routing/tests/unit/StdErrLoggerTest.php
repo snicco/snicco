@@ -77,7 +77,9 @@ final class StdErrLoggerTest extends TestCase
         $logger->log(
             LogLevel::ERROR,
             'user {user_name} did something that {user_name} should not do.',
-            ['user_name' => 'calvin']
+            [
+                'user_name' => 'calvin',
+            ]
         );
 
         $this->assertStringContainsString(
@@ -98,7 +100,9 @@ final class StdErrLoggerTest extends TestCase
         $logger->log(
             LogLevel::ERROR,
             'calvin did something at {date}',
-            ['date' => $date]
+            [
+                'date' => $date,
+            ]
         );
 
         $this->assertStringContainsString(
@@ -123,7 +127,7 @@ final class StdErrLoggerTest extends TestCase
                     {
                         return 'object_to_string';
                     }
-                }
+                },
             ]
         );
 
@@ -144,7 +148,7 @@ final class StdErrLoggerTest extends TestCase
             LogLevel::ERROR,
             '{object_here}',
             [
-                'object_here' => new stdClass()
+                'object_here' => new stdClass(),
             ]
         );
 
@@ -165,7 +169,7 @@ final class StdErrLoggerTest extends TestCase
             LogLevel::ERROR,
             '{arr}',
             [
-                'arr' => []
+                'arr' => [],
             ]
         );
 
@@ -200,7 +204,11 @@ final class StdErrLoggerTest extends TestCase
         $logger->log(
             LogLevel::ERROR,
             'user {user_name} did something that {user_name} should not do.',
-            ['user_name' => 'calvin', 'foo', 'user_id' => 1]
+            [
+                'user_name' => 'calvin',
+                'foo',
+                'user_id' => 1,
+            ]
         );
 
         $log_content = $this->getLogContent();
@@ -225,7 +233,12 @@ final class StdErrLoggerTest extends TestCase
         $logger->log(
             LogLevel::CRITICAL,
             'user {user_name} did something that {user_name} should not do.',
-            ['user_name' => 'calvin', 'foo', 'user_id' => 1, 'exception' => $e]
+            [
+                'user_name' => 'calvin',
+                'foo',
+                'user_id' => 1,
+                'exception' => $e,
+            ]
         );
 
         $content = $this->getLogContent();
@@ -252,7 +265,12 @@ final class StdErrLoggerTest extends TestCase
         $logger->log(
             LogLevel::CRITICAL,
             'user {user_name} did something that {user_name} should not do.',
-            ['user_name' => 'calvin', 'foo', 'user_id' => 1, 'exception' => $e]
+            [
+                'user_name' => 'calvin',
+                'foo',
+                'user_id' => 1,
+                'exception' => $e,
+            ]
         );
 
         $content = $this->getLogContent();
@@ -283,7 +301,9 @@ final class StdErrLoggerTest extends TestCase
         $logger->log(
             LogLevel::CRITICAL,
             'here {exception}',
-            ['exception' => $exception]
+            [
+                'exception' => $exception,
+            ]
         );
 
         $this->assertStringContainsString('request.CRITICAL here LogicException: message', $this->getLogContent());

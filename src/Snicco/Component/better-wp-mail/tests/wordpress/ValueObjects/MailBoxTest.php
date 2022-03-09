@@ -68,12 +68,18 @@ final class MailBoxTest extends WPTestCase
      */
     public function test_from_array_with_names_keys(): void
     {
-        $address = Mailbox::create(['name' => 'Calvin Alkan', 'email' => 'c@web.de']);
+        $address = Mailbox::create([
+            'name' => 'Calvin Alkan',
+            'email' => 'c@web.de',
+        ]);
         $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
         $this->assertSame('Calvin Alkan', $address->name());
 
-        $address = Mailbox::create(['email' => 'c@web.de', 'name' => 'Calvin Alkan', ]);
+        $address = Mailbox::create([
+            'email' => 'c@web.de',
+            'name' => 'Calvin Alkan',
+        ]);
         $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
         $this->assertSame('Calvin Alkan', $address->name());
@@ -199,7 +205,9 @@ final class MailBoxTest extends WPTestCase
     private function createAdmin(array $data): WP_User
     {
         return $this->factory()->user->create_and_get(
-            array_merge($data, ['role' => 'administrator'])
+            array_merge($data, [
+                'role' => 'administrator',
+            ])
         );
     }
 }

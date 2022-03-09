@@ -103,7 +103,7 @@ final class BetterWPMailBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('mail', [
-                MailOption::TRANSPORT => CustomTransport::class
+                MailOption::TRANSPORT => CustomTransport::class,
             ]);
         });
 
@@ -136,8 +136,8 @@ final class BetterWPMailBundleTest extends WPTestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('mail', [
                 MailOption::RENDERER => [
-                    ViewEngineMailRenderer::class
-                ]
+                    ViewEngineMailRenderer::class,
+                ],
             ]);
         });
 
@@ -166,13 +166,13 @@ final class BetterWPMailBundleTest extends WPTestCase
             $config->set('bundles', [
                 Environment::ALL => [
                     BetterWPMailBundle::class,
-                    TemplatingBundle::class
-                ]
+                    TemplatingBundle::class,
+                ],
             ]);
             $config->set('mail', [
                 MailOption::RENDERER => [
-                    ViewEngineMailRenderer::class
-                ]
+                    ViewEngineMailRenderer::class,
+                ],
             ]);
         });
 
@@ -222,7 +222,9 @@ final class BetterWPMailBundleTest extends WPTestCase
 
         file_put_contents(
             $this->directories->configDir() . '/mail.php',
-            '<?php return ' . var_export([MailOption::REPLY_TO_NAME => 'calvin'], true) . ';'
+            '<?php return ' . var_export([
+                MailOption::REPLY_TO_NAME => 'calvin',
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/mail.php'));
@@ -233,7 +235,9 @@ final class BetterWPMailBundleTest extends WPTestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [MailOption::REPLY_TO_NAME => 'calvin'],
+            [
+                MailOption::REPLY_TO_NAME => 'calvin',
+            ],
             require $this->directories->configDir() . '/mail.php'
         );
     }

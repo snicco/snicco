@@ -80,7 +80,10 @@ final class Redirect extends Middleware
                     ? $to
                     : '/' . ltrim($to, '/');
 
-                $_r[$from] = ['to' => $to, 'status' => $status, ];
+                $_r[$from] = [
+                    'to' => $to,
+                    'status' => $status,
+                ];
             }
         }
         return $_r;

@@ -1160,12 +1160,16 @@ class SchemaBuilderTest extends WPTestCase
             $table->string('email');
         });
 
-        $this->wpdbInsert('wp_books', ['email' => 'calvin@gmail.com']);
+        $this->wpdbInsert('wp_books', [
+            'email' => 'calvin@gmail.com',
+        ]);
         $this->wpdbInsert('wp_books', [
             'user_id' => 10,
             'email' => 'calvin@gmx.com',
         ]);
-        $this->wpdbInsert('wp_books', ['email' => 'calvin@web.com']);
+        $this->wpdbInsert('wp_books', [
+            'email' => 'calvin@web.com',
+        ]);
 
         $assert = new AssertableWpDB('wp_books');
         $assert->assertRecordExists(
@@ -1264,7 +1268,9 @@ class SchemaBuilderTest extends WPTestCase
             $table->json('movies')->default(new Expression('(JSON_ARRAY())'));
         });
 
-        $this->wpdbInsert('wp_books', ['id' => 1]);
+        $this->wpdbInsert('wp_books', [
+            'id' => 1,
+        ]);
 
         $expected = [
             'id' => '1',
@@ -1273,7 +1279,9 @@ class SchemaBuilderTest extends WPTestCase
             'movies' => '[]',
         ];
 
-        $this->assertDbTable()->assertRecordEquals(['id' => 1], $expected);
+        $this->assertDbTable()->assertRecordEquals([
+            'id' => 1,
+        ], $expected);
     }
 
     /**
@@ -1328,7 +1336,9 @@ class SchemaBuilderTest extends WPTestCase
 
         $this->withDatabaseExceptions(function () {
             try {
-                $this->wpdbInsert('wp_books', ['id' => 1]);
+                $this->wpdbInsert('wp_books', [
+                    'id' => 1,
+                ]);
                 $this->fail('Non-nullable column was created without default value');
             } catch (mysqli_sql_exception $e) {
                 $this->assertSame(
@@ -1345,7 +1355,9 @@ class SchemaBuilderTest extends WPTestCase
         });
 
         $this->withDatabaseExceptions(function () {
-            $this->wpdbInsert('wp_books', ['id' => 1]);
+            $this->wpdbInsert('wp_books', [
+                'id' => 1,
+            ]);
         });
 
         $this->assertTrue(true);
@@ -1450,11 +1462,20 @@ class SchemaBuilderTest extends WPTestCase
             $table->integer('price')->unsigned();
         });
 
-        $this->wpdbInsert('wp_books', ['id' => 1, 'price' => 10]);
+        $this->wpdbInsert('wp_books', [
+            'id' => 1,
+            'price' => 10,
+        ]);
 
-        $expected = ['id' => '1', 'price' => '10'];
+        $expected = [
+            'id' => '1',
+            'price' => '10',
+        ];
 
-        $this->assertDbTable()->assertRecordEquals(['id' => 1, 'price' => 10], $expected);
+        $this->assertDbTable()->assertRecordEquals([
+            'id' => 1,
+            'price' => 10,
+        ], $expected);
 
         $this->withDatabaseExceptions(function () {
             try {
@@ -1485,7 +1506,9 @@ class SchemaBuilderTest extends WPTestCase
             $table->timestamp('time_non_nullable')->useCurrent();
         });
 
-        $this->wpdbInsert('wp_books', ['id' => 1]);
+        $this->wpdbInsert('wp_books', [
+            'id' => 1,
+        ]);
 
         global $wpdb;
 
@@ -1836,12 +1859,24 @@ class SchemaBuilderTest extends WPTestCase
                 ->onUpdate('cascade');
         });
 
-        $this->wpdbInsert('wp_authors', ['author_name' => 'calvin alkan']);
-        $this->wpdbInsert('wp_books', ['id' => 1, 'author_id' => 1]);
+        $this->wpdbInsert('wp_authors', [
+            'author_name' => 'calvin alkan',
+        ]);
+        $this->wpdbInsert('wp_books', [
+            'id' => 1,
+            'author_id' => 1,
+        ]);
 
-        $this->wpdbUpdate('wp_authors', ['id' => 2], ['author_name' => 'calvin alkan']);
+        $this->wpdbUpdate('wp_authors', [
+            'id' => 2,
+        ], [
+            'author_name' => 'calvin alkan',
+        ]);
 
-        $this->assertDbTable()->assertRecordExists(['id' => 1, 'author_id' => 2]);
+        $this->assertDbTable()->assertRecordExists([
+            'id' => 1,
+            'author_id' => 2,
+        ]);
     }
 
     /**
@@ -1866,14 +1901,27 @@ class SchemaBuilderTest extends WPTestCase
                 ->onDelete('cascade');
         });
 
-        $this->wpdbInsert('wp_authors', ['author_name' => 'calvin alkan']);
-        $this->wpdbInsert('wp_books', ['id' => 1, 'author_id' => 1]);
+        $this->wpdbInsert('wp_authors', [
+            'author_name' => 'calvin alkan',
+        ]);
+        $this->wpdbInsert('wp_books', [
+            'id' => 1,
+            'author_id' => 1,
+        ]);
 
-        $this->assertDbTable('wp_books')->assertRecordExists(['id' => 1, 'author_id' => 1]);
+        $this->assertDbTable('wp_books')->assertRecordExists([
+            'id' => 1,
+            'author_id' => 1,
+        ]);
 
-        $this->wpdbDelete('wp_authors', ['id' => 1]);
+        $this->wpdbDelete('wp_authors', [
+            'id' => 1,
+        ]);
 
-        $this->assertDbTable('wp_books')->assertRecordNotExists(['id' => 1, 'author_id' => 1]);
+        $this->assertDbTable('wp_books')->assertRecordNotExists([
+            'id' => 1,
+            'author_id' => 1,
+        ]);
     }
 
     /**
@@ -1897,17 +1945,27 @@ class SchemaBuilderTest extends WPTestCase
                 ->constrained();
         });
 
-        $this->wpdbInsert('wp_authors', ['author_name' => 'calvin alkan']);
-        $this->wpdbInsert('wp_books', ['id' => 1, 'author_id' => 1]);
+        $this->wpdbInsert('wp_authors', [
+            'author_name' => 'calvin alkan',
+        ]);
+        $this->wpdbInsert('wp_books', [
+            'id' => 1,
+            'author_id' => 1,
+        ]);
 
         $builder2->table('books', function (Blueprint $table) {
             $table->dropForeign(['author_id']);
         });
 
-        $this->wpdbDelete('wp_authors', ['id' => 1]);
+        $this->wpdbDelete('wp_authors', [
+            'id' => 1,
+        ]);
 
         // Our record is still here because we dropped the foreign key. Otherwise this would blow up
-        $this->assertDbTable('wp_books')->assertRecordExists(['id' => 1, 'author_id' => 1]);
+        $this->assertDbTable('wp_books')->assertRecordExists([
+            'id' => 1,
+            'author_id' => 1,
+        ]);
     }
 
     protected function setUp(): void

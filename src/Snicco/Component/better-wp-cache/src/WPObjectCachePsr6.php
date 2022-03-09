@@ -130,7 +130,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $this->validateCacheItem($item);
         $this->deferred_items[$item->getKey()] = [
             'item' => $item,
-            'expiration' => $item->expirationTimestamp()
+            'expiration' => $item->expirationTimestamp(),
         ];
         return true;
     }

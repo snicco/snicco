@@ -8,5 +8,5 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 return [
     Environment::ALL => [
         BetterWPMailBundle::class,
-    ]
+    ],
 ];

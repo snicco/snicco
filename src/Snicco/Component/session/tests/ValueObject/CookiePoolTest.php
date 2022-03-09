@@ -14,7 +14,9 @@ final class CookiePoolTest extends TestCase
      */
     public function testFromArray(): void
     {
-        $pool = new CookiePool(['foo' => 'bar']);
+        $pool = new CookiePool([
+            'foo' => 'bar',
+        ]);
 
         $this->assertTrue($pool->has('foo'));
         $this->assertSame('bar', $pool->get('foo'));

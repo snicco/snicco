@@ -324,7 +324,9 @@ final class Route
             return $value;
         }, $values);
 
-        $arr = [$segment_name => implode('|', $values)];
+        $arr = [
+            $segment_name => implode('|', $values),
+        ];
 
         $this->addRequirements($arr);
 

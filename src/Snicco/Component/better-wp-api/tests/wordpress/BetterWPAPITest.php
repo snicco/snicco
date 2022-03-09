@@ -318,14 +318,18 @@ final class BetterWPAPITest extends WPTestCase
         $factory = $this->factory();
 
         /** @var WP_User $user1 */
-        $user1 = $factory->user->create_and_get(['role' => 'author']);
+        $user1 = $factory->user->create_and_get([
+            'role' => 'author',
+        ]);
         /** @var WP_Post $post1 */
         $post1 = $factory->post->create_and_get([
             'post_author' => $user1->ID,
         ]);
 
         /** @var WP_User $user2 */
-        $user2 = $factory->user->create_and_get(['role' => 'author']);
+        $user2 = $factory->user->create_and_get([
+            'role' => 'author',
+        ]);
 
         /** @var WP_Post $post2 */
         $post2 = $factory->post->create_and_get([

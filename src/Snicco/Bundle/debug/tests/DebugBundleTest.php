@@ -93,7 +93,7 @@ final class DebugBundleTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [
-                StubDisplayer::class
+                StubDisplayer::class,
             ]);
         });
 
@@ -106,7 +106,7 @@ final class DebugBundleTest extends TestCase
         $this->assertSame([
             WhoopsHtmlDisplayer::class,
             WhoopsJsonDisplayer::class,
-            StubDisplayer::class
+            StubDisplayer::class,
         ], $displayers);
     }
 
@@ -123,7 +123,7 @@ final class DebugBundleTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                DebugBundle::class
+                DebugBundle::class,
             ]);
         });
 
@@ -421,7 +421,9 @@ final class DebugBundleTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/debug.php',
-            '<?php return ' . var_export(['editor' => 'sublime'], true) . ';'
+            '<?php return ' . var_export([
+                'editor' => 'sublime',
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/debug.php'));
@@ -431,7 +433,9 @@ final class DebugBundleTest extends TestCase
         /**
          * @psalm-suppress UnresolvableInclude
          */
-        $this->assertSame(['editor' => 'sublime'], require $this->directories->configDir() . '/debug.php');
+        $this->assertSame([
+            'editor' => 'sublime',
+        ], require $this->directories->configDir() . '/debug.php');
     }
 
     /**

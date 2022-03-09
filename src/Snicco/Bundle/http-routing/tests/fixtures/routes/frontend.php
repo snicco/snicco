@@ -13,7 +13,9 @@ return function (WebRoutingConfigurator $router) {
 
     $router->get('delegate', '/delegate');
 
-    $router->view('/view', dirname(__DIR__) . '/templates/greeting.php', ['greet' => 'Calvin']);
+    $router->view('/view', dirname(__DIR__) . '/templates/greeting.php', [
+        'greet' => 'Calvin',
+    ]);
 
     $router->redirect('/foo', '/bar');
 

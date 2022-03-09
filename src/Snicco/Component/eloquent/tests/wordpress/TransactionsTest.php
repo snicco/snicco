@@ -38,14 +38,21 @@ class TransactionsTest extends WPTestCase
         DB::beginTransaction();
 
         $db = $this->assertDbTable('wp_football_teams');
-        $db->assertRecordNotExists(['name' => 'FC Barcelona']);
+        $db->assertRecordNotExists([
+            'name' => 'FC Barcelona',
+        ]);
 
         DB::connection()->table('football_teams')->insert([
-            ['name' => 'FC Barcelona', 'country' => 'spain'],
+            [
+                'name' => 'FC Barcelona',
+                'country' => 'spain',
+            ],
         ]);
 
         // This runs with the same mysqli connection as the DB facade so the transaction data is already present.
-        $db->assertRecordExists(['name' => 'FC Barcelona']);
+        $db->assertRecordExists([
+            'name' => 'FC Barcelona',
+        ]);
 
         // This runs with our verification mysqli instance which does not yet have the transaction data.
         $this->assertTeamNotExists('FC Barcelona');
@@ -84,13 +91,19 @@ class TransactionsTest extends WPTestCase
 
         try {
             DB::table('football_teams')->insert([
-                ['name' => 'Liverpool', 'country' => 'england'],
+                [
+                    'name' => 'Liverpool',
+                    'country' => 'england',
+                ],
             ]);
 
             $this->withDatabaseExceptions(function () {
                 // will throw non-unique error
                 DB::table('football_teams')->insert([
-                    ['name' => 'Real Madrid', 'country' => 'spain'],
+                    [
+                        'name' => 'Real Madrid',
+                        'country' => 'spain',
+                    ],
                 ]);
             });
 
@@ -98,7 +111,9 @@ class TransactionsTest extends WPTestCase
         } catch (QueryException $e) {
             DB::rollback();
             $db = $this->assertDbTable('wp_football_teams');
-            $db->assertRecordNotExists(['name' => 'Liverpool']);
+            $db->assertRecordNotExists([
+                'name' => 'Liverpool',
+            ]);
         }
     }
 
@@ -130,9 +145,18 @@ class TransactionsTest extends WPTestCase
     {
         DB::transaction(function (MysqliConnection $connection) {
             $connection->table('football_teams')->insert([
-                ['name' => 'Liverpool', 'country' => 'england'],
-                ['name' => 'Chelsea', 'country' => 'england'],
-                ['name' => 'Arsenal', 'country' => 'england'],
+                [
+                    'name' => 'Liverpool',
+                    'country' => 'england',
+                ],
+                [
+                    'name' => 'Chelsea',
+                    'country' => 'england',
+                ],
+                [
+                    'name' => 'Arsenal',
+                    'country' => 'england',
+                ],
             ]);
         });
 
@@ -149,10 +173,22 @@ class TransactionsTest extends WPTestCase
         try {
             DB::transaction(function (MysqliConnection $connection) {
                 $connection->table('football_teams')->insert([
-                    ['name' => 'Liverpool', 'country' => 'england'],
-                    ['name' => 'Chelsea', 'country' => 'england'],
-                    ['name' => 'Arsenal', 'country' => 'england'],
-                    ['name' => 'Real Madrid', 'country' => 'spain'],
+                    [
+                        'name' => 'Liverpool',
+                        'country' => 'england',
+                    ],
+                    [
+                        'name' => 'Chelsea',
+                        'country' => 'england',
+                    ],
+                    [
+                        'name' => 'Arsenal',
+                        'country' => 'england',
+                    ],
+                    [
+                        'name' => 'Real Madrid',
+                        'country' => 'spain',
+                    ],
                     // Will force duplicate key error.
                 ]);
             });
@@ -181,9 +217,18 @@ class TransactionsTest extends WPTestCase
         try {
             DB::transaction(function (MysqliConnection $connection) {
                 $connection->table('football_teams')->insert([
-                    ['name' => 'Liverpool', 'country' => 'england'],
-                    ['name' => 'Chelsea', 'country' => 'england'],
-                    ['name' => 'Arsenal', 'country' => 'england'],
+                    [
+                        'name' => 'Liverpool',
+                        'country' => 'england',
+                    ],
+                    [
+                        'name' => 'Chelsea',
+                        'country' => 'england',
+                    ],
+                    [
+                        'name' => 'Arsenal',
+                        'country' => 'england',
+                    ],
                 ]);
 
                 throw new Exception('Validation failed | TEST');
@@ -230,9 +275,18 @@ class TransactionsTest extends WPTestCase
             });
 
             DB::table('football_teams')->insert([
-                ['name' => 'Real Madrid', 'country' => 'spain'],
-                ['name' => 'Borussia Dortmund', 'country' => 'germany'],
-                ['name' => 'Bayern Munich', 'country' => 'germany'],
+                [
+                    'name' => 'Real Madrid',
+                    'country' => 'spain',
+                ],
+                [
+                    'name' => 'Borussia Dortmund',
+                    'country' => 'germany',
+                ],
+                [
+                    'name' => 'Bayern Munich',
+                    'country' => 'germany',
+                ],
             ]);
         }
     }

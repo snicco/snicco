@@ -54,7 +54,7 @@ final class LoginTest extends WPTestCase
         );
         $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::COOKIE_NAME => 'test_cookie'
+                SessionOption::COOKIE_NAME => 'test_cookie',
             ]);
             $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
@@ -100,7 +100,7 @@ final class LoginTest extends WPTestCase
         ob_start();
         wp_signon([
             'user_login' => (new WP_User(1))->user_login,
-            'user_password' => 'password'
+            'user_password' => 'password',
         ]);
         ob_end_clean();
 
@@ -148,20 +148,20 @@ final class LoginTest extends WPTestCase
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
         $request = Request::fromPsr(new ServerRequest('GET', '/'))->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()->asString(),
         ]);
 
         $this->assertTrue(isset($this->driver->all()[$session->id()->selector()]));
 
         $response = $pipeline->send($request)
             ->through([
-                StatefulRequest::class
+                StatefulRequest::class,
             ])
             ->then(function () {
                 ob_start();
                 wp_signon([
                     'user_login' => (new WP_User(1))->user_login,
-                    'user_password' => 'password'
+                    'user_password' => 'password',
                 ]);
                 ob_end_clean();
                 return new Response();
@@ -206,20 +206,20 @@ final class LoginTest extends WPTestCase
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
         $request = Request::fromPsr(new ServerRequest('POST', '/'))->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()->asString(),
         ]);
 
         $this->assertTrue(isset($this->driver->all()[$session->id()->selector()]));
 
         $response = $pipeline->send($request)
             ->through([
-                StatefulRequest::class
+                StatefulRequest::class,
             ])
             ->then(function (Request $request) {
                 ob_start();
                 wp_signon([
                     'user_login' => (new WP_User(1))->user_login,
-                    'user_password' => 'password'
+                    'user_password' => 'password',
                 ]);
                 ob_end_clean();
 
@@ -260,7 +260,7 @@ final class LoginTest extends WPTestCase
         ob_start();
         wp_signon([
             'user_login' => (new WP_User(1))->user_login,
-            'user_password' => 'password'
+            'user_password' => 'password',
         ]);
         ob_end_clean();
         $this->assertCount(0, $this->driver->all());

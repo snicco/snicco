@@ -50,13 +50,17 @@ final class LazyGeneratorTest extends TestCase
 
         $this->assertSame(0, $this->constructed);
 
-        $this->assertSame('/foo?bar=baz', $lazy_generator->to('/foo', ['bar' => 'baz']));
+        $this->assertSame('/foo?bar=baz', $lazy_generator->to('/foo', [
+            'bar' => 'baz',
+        ]));
 
         $this->assertSame(1, $this->constructed);
 
         $this->assertSame(
             'https://127.0.0.1/foo?bar=baz',
-            $lazy_generator->to('/foo', ['bar' => 'baz'], UrlGenerator::ABSOLUTE_URL)
+            $lazy_generator->to('/foo', [
+                'bar' => 'baz',
+            ], UrlGenerator::ABSOLUTE_URL)
         );
 
         $this->assertSame(1, $this->constructed);
@@ -106,7 +110,9 @@ final class LazyGeneratorTest extends TestCase
 
         $this->assertSame(0, $this->constructed);
 
-        $this->assertSame('/wp-login.php?bar=baz', $lazy_generator->toLogin(['bar' => 'baz']));
+        $this->assertSame('/wp-login.php?bar=baz', $lazy_generator->toLogin([
+            'bar' => 'baz',
+        ]));
 
         $this->assertSame(1, $this->constructed);
     }

@@ -177,7 +177,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => true, 'data' => 'string', 'user_id' => null, 'hashed_validator' => 'val'],
+            [
+                'last_activity' => true,
+                'data' => 'string',
+                'user_id' => null,
+                'hashed_validator' => 'val',
+            ],
             10
         );
 
@@ -196,7 +201,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => 10, 'data' => true, 'user_id' => null, 'hashed_validator' => 'val'],
+            [
+                'last_activity' => 10,
+                'data' => true,
+                'user_id' => null,
+                'hashed_validator' => 'val',
+            ],
             10
         );
 
@@ -215,7 +225,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => 10, 'data' => 'string', 'user_id' => null, 'hashed_validator' => true],
+            [
+                'last_activity' => 10,
+                'data' => 'string',
+                'user_id' => null,
+                'hashed_validator' => true,
+            ],
             10
         );
 
@@ -234,7 +249,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => 10, 'data' => 'string', 'user_id' => true, 'hashed_validator' => 'val'],
+            [
+                'last_activity' => 10,
+                'data' => 'string',
+                'user_id' => true,
+                'hashed_validator' => 'val',
+            ],
             10
         );
 

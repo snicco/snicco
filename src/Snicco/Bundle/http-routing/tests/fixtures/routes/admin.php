@@ -10,11 +10,10 @@ return function (AdminRoutingConfigurator $router) {
     $router->page('foo', 'admin.php/foo', HttpRunnerTestController::class, [
         AdminMenuItem::MENU_TITLE => 'FOO_TITLE',
         AdminMenuItem::CAPABILITY => 'read',
-
     ]);
 
     $router->page('admin_redirect', 'admin.php/admin_redirect', [HttpRunnerTestController::class, 'adminRedirect'], [
-        AdminMenuItem::POSITION => -10
+        AdminMenuItem::POSITION => -10,
     ]);
 
     $router->page('client_error', 'admin.php/client_error', [HttpRunnerTestController::class, 'clientError']);

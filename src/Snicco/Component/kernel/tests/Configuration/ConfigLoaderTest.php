@@ -34,8 +34,12 @@ final class ConfigLoaderTest extends TestCase
         $load_config = new ConfigLoader();
         $config = $load_config(Directories::fromDefaults($this->fixtures_dir)->configDir());
 
-        $this->assertSame(['foo' => 'bar'], $config['app']);
-        $this->assertSame(['foo' => 'baz'], $config['custom-config']);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $config['app']);
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $config['custom-config']);
     }
 
     /**

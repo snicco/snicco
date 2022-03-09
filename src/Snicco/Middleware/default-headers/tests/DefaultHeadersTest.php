@@ -16,7 +16,10 @@ class DefaultHeadersTest extends MiddlewareTestCase
     public function all_headers_are_added_to_the_response(): void
     {
         $response = $this->runMiddleware(
-            new DefaultHeaders(['foo' => 'bar', 'baz' => 'biz']),
+            new DefaultHeaders([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ]),
             $this->frontendRequest()
         );
 
@@ -36,7 +39,9 @@ class DefaultHeadersTest extends MiddlewareTestCase
         });
 
         $response = $this->runMiddleware(
-            new DefaultHeaders(['foo' => 'baz']),
+            new DefaultHeaders([
+                'foo' => 'baz',
+            ]),
             $this->frontendRequest()
         );
         $response->assertNextMiddlewareCalled();

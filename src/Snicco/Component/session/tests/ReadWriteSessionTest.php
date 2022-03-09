@@ -67,7 +67,9 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $this->assertEquals(['baz' => 'biz'], $session->only(['baz']));
+        $this->assertEquals([
+            'baz' => 'biz',
+        ], $session->only(['baz']));
     }
 
     /**
@@ -81,7 +83,9 @@ class ReadWriteSessionTest extends TestCase
         $this->assertTrue($session->exists('foo'));
 
         $session->put('baz', null);
-        $session->put('hulk', ['one' => true]);
+        $session->put('hulk', [
+            'one' => true,
+        ]);
 
         $this->assertTrue($session->exists('baz'));
         $this->assertTrue($session->exists(['foo', 'baz']));
@@ -100,7 +104,9 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', null);
-        $session->put('hulk', ['one' => true]);
+        $session->put('hulk', [
+            'one' => true,
+        ]);
 
         $this->assertTrue($session->missing('bogus'));
         $this->assertTrue($session->missing(['foo', 'baz', 'bogus']));
@@ -148,7 +154,11 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertFalse($session->hasOldInput());
 
-        $session->put('_old_input', ['foo' => 'bar', 'bar' => 'baz', 'boo' => null]);
+        $session->put('_old_input', [
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'boo' => null,
+        ]);
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertTrue($session->hasOldInput('bar'));
@@ -165,7 +175,11 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertSame([], $session->oldInput());
 
-        $session->put('_old_input', ['foo' => 'bar', 'bar' => 'baz', 'boo' => null]);
+        $session->put('_old_input', [
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'boo' => null,
+        ]);
 
         $this->assertSame([
             'foo' => 'bar',
@@ -189,7 +203,9 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->replace(['foo' => 'baz']);
+        $session->replace([
+            'foo' => 'baz',
+        ]);
         $this->assertSame('baz', $session->get('foo'));
         $this->assertSame('biz', $session->get('baz'));
     }
@@ -224,9 +240,15 @@ class ReadWriteSessionTest extends TestCase
 
         $session->put('foo', ['bar']);
         $session->push('foo', 'bar');
-        $session->push('foo', ['baz' => 'biz']);
+        $session->push('foo', [
+            'baz' => 'biz',
+        ]);
 
-        $this->assertSame(['bar', 'bar', ['baz' => 'biz']], $session->get('foo'));
+        $this->assertSame([
+            'bar', 'bar', [
+                'baz' => 'biz',
+                
+            ], ], $session->get('foo'));
 
         $session->push('int', 'foo');
         $this->assertSame(['foo'], $session->get('int'));
@@ -372,7 +394,10 @@ class ReadWriteSessionTest extends TestCase
     {
         $session = $this->newSession();
         $session->put('boom', 'baz');
-        $session->flashInput(['foo' => 'bar', 'bar' => 0]);
+        $session->flashInput([
+            'foo' => 'bar',
+            'bar' => 0,
+        ]);
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertSame('bar', $session->oldInput('foo'));
@@ -430,11 +455,17 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->put('boo', ['boom', 'bang' => 'bam']);
+        $session->put('boo', [
+            'boom',
+            'bang' => 'bam',
+        ]);
 
         $this->assertSame('bar', $session->get('foo'));
         $this->assertSame('biz', $session->get('baz'));
-        $this->assertSame(['boom', 'bang' => 'bam'], $session->get('boo'));
+        $this->assertSame([
+            'boom',
+            'bang' => 'bam',
+        ], $session->get('boo'));
         $this->assertSame('bam', $session->get('boo.bang'));
 
         $session->forget('foo');
@@ -455,7 +486,10 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->put('boo', ['boom', 'bang' => 'bam']);
+        $session->put('boo', [
+            'boom',
+            'bang' => 'bam',
+        ]);
 
         $session->flush();
 
@@ -774,7 +808,9 @@ class ReadWriteSessionTest extends TestCase
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->replace(['foo' => 'bar']);
+        $session->replace([
+            'foo' => 'bar',
+        ]);
     }
 
     /**
@@ -865,7 +901,9 @@ class ReadWriteSessionTest extends TestCase
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->flashInput(['foo' => 'bar']);
+        $session->flashInput([
+            'foo' => 'bar',
+        ]);
     }
 
     /**

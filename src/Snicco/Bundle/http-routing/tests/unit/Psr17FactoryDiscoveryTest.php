@@ -33,7 +33,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => Psr17Factory::class,
                 'stream' => Psr17Factory::class,
                 'response' => Psr17Factory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(Psr17Factory::class, $discovery->createServerRequestFactory());
@@ -73,7 +73,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => HttpFactory::class,
                 'stream' => HttpFactory::class,
                 'response' => HttpFactory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(HttpFactory::class, $discovery->createServerRequestFactory());
@@ -104,7 +104,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => Psr17Factory::class,
                 'stream' => Psr17Factory::class,
                 'response' => Psr17Factory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(HttpFactory::class, $discovery->createServerRequestFactory());
@@ -128,7 +128,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => UploadedFileFactory::class,
                 'stream' => StreamFactory::class,
                 'response' => ResponseFactory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(ServerRequestFactory::class, $discovery->createServerRequestFactory());
@@ -155,7 +155,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                     'uploaded_file' => UploadedFileFactory::class,
                     'stream' => StreamFactory::class,
                     'response' => ResponseFactory::class,
-                ]
+                ],
             ]
         );
 

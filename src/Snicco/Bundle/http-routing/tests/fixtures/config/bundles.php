@@ -7,10 +7,8 @@ use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-
     Environment::ALL => [
         BetterWPHooksBundle::class,
-        HttpRoutingBundle::class
-    ]
-
+        HttpRoutingBundle::class,
+    ],
 ];

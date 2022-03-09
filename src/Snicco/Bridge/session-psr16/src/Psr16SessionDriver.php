@@ -159,7 +159,7 @@ final class Psr16SessionDriver implements SessionDriver
             'hashed_validator' => $hashed_validator,
             'data' => $data,
             'last_activity' => $last_activity,
-            'user_id' => $user_id
+            'user_id' => $user_id,
         ];
 
         try {

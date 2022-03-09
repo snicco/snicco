@@ -488,7 +488,9 @@ class Email
      */
     final protected function _addContext($key, $value = null): void
     {
-        $context = is_array($key) ? $key : [$key => $value];
+        $context = is_array($key) ? $key : [
+            $key => $value,
+        ];
 
         foreach ($context as $key => $value) {
             if (isset($this->reserved_context[$key])) {
@@ -509,7 +511,9 @@ class Email
      */
     final protected function _addCustomHeader(string $name, string $value): void
     {
-        $this->custom_headers = array_merge($this->custom_headers, [$name => $value]);
+        $this->custom_headers = array_merge($this->custom_headers, [
+            $name => $value,
+        ]);
     }
 
     /**

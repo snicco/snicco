@@ -54,7 +54,7 @@ final class HttpRoutingBundleTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [HttpRoutingBundle::class]
+                Environment::ALL => [HttpRoutingBundle::class],
             ]);
         });
 
@@ -188,7 +188,7 @@ final class HttpRoutingBundleTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
-                RoutingOption::HOST => 'sniccowp.test'
+                RoutingOption::HOST => 'sniccowp.test',
             ]);
         });
 
@@ -204,10 +204,10 @@ final class HttpRoutingBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.route_directories', [
-                dirname(__DIR__) . '/fixtures/routes'
+                dirname(__DIR__) . '/fixtures/routes',
             ]);
             $config->set('routing.api_route_directories', [
-                dirname(__DIR__) . '/fixtures/routes/api'
+                dirname(__DIR__) . '/fixtures/routes/api',
             ]);
             $config->set('routing.api_prefix', 'snicco');
         });
@@ -240,8 +240,8 @@ final class HttpRoutingBundleTest extends TestCase
             'admin' => [],
             'api' => [],
             'global' => [
-                SetUserId::class
-            ]
+                SetUserId::class,
+            ],
         ], $kernel->config()->getArray('middleware.middleware_groups'));
         $this->assertSame([], $kernel->config()->getArray('middleware.always_run_middleware_groups'));
         $this->assertSame([], $kernel->config()->getArray('middleware.middleware_priority'));
@@ -509,7 +509,7 @@ final class HttpRoutingBundleTest extends TestCase
                         'uploaded_file' => HttpFactory::class,
                         'stream' => HttpFactory::class,
                         'response' => HttpFactory::class,
-                    ]
+                    ],
                 ])
             );
         });

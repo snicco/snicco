@@ -123,6 +123,8 @@ final class OpenRedirectProtection extends Middleware
 
     private function forbiddenRedirect(string $location): RedirectResponse
     {
-        return $this->respondWith()->redirectTo($this->exit_path, 302, ['intended_redirect' => $location]);
+        return $this->respondWith()->redirectTo($this->exit_path, 302, [
+            'intended_redirect' => $location,
+        ]);
     }
 }

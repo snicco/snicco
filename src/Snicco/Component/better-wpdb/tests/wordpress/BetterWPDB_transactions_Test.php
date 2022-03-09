@@ -25,10 +25,14 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 
         try {
             $this->better_wpdb->transactional(function (BetterWPDB $db) {
-                $res = $db->insert('test_table', ['test_string' => 'foo']);
+                $res = $db->insert('test_table', [
+                    'test_string' => 'foo',
+                ]);
                 $this->assertSame(1, $res->affected_rows);
 
-                $db->insert('test_table', ['test_string' => 'foo']);
+                $db->insert('test_table', [
+                    'test_string' => 'foo',
+                ]);
             });
             $this->fail('No exception thrown for transaction.');
         } catch (QueryException $e) {
@@ -46,8 +50,12 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $this->assertRecordCount(0);
 
         $return = $this->better_wpdb->transactional(function (BetterWPDB $db) {
-            $db->insert('test_table', ['test_string' => 'foo']);
-            $db->insert('test_table', ['test_string' => 'bar']);
+            $db->insert('test_table', [
+                'test_string' => 'foo',
+            ]);
+            $db->insert('test_table', [
+                'test_string' => 'bar',
+            ]);
 
             return 'foobar';
         });
@@ -82,8 +90,12 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $db = BetterWPDB::fromWpdb($logger);
 
         $db->transactional(function (BetterWPDB $db) {
-            $db->insert('test_table', ['test_string' => 'foo']);
-            $db->insert('test_table', ['test_string' => 'bar']);
+            $db->insert('test_table', [
+                'test_string' => 'foo',
+            ]);
+            $db->insert('test_table', [
+                'test_string' => 'bar',
+            ]);
         });
 
         $this->assertTrue(isset($logger->queries[0]));
@@ -135,7 +147,9 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 
         try {
             $db->transactional(function (BetterWPDB $db) {
-                $db->insert('test_table', ['test_string' => 'foo']);
+                $db->insert('test_table', [
+                    'test_string' => 'foo',
+                ]);
             });
             $this->fail('no exception thrown');
         } catch (RuntimeException $e) {

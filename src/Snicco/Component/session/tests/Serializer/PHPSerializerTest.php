@@ -19,10 +19,16 @@ final class PHPSerializerTest extends TestCase
     public function test_serialize_deserialize(): void
     {
         $s = new PHPSerializer();
-        $data = $s->serialize(['foo' => 'bar']);
-        $this->assertSame(serialize(['foo' => 'bar']), $data);
+        $data = $s->serialize([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame(serialize([
+            'foo' => 'bar',
+        ]), $data);
 
-        $this->assertSame(['foo' => 'bar'], $s->deserialize($data));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $s->deserialize($data));
     }
 
     /**

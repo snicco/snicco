@@ -107,7 +107,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function data_can_be_read_from_the_session_driver(): void
     {
-        $id = $this->writeSessionWithData(['foo' => 'bar']);
+        $id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $manager = $this->getSessionManager();
         $session = $manager->start(CookiePool::fromSuperGlobals());
@@ -121,7 +123,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function updated_session_data_is_saved_to_the_driver(): void
     {
-        $id = $this->writeSessionWithData(['foo' => 'bar']);
+        $id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $manager = $this->getSessionManager();
         $session = $manager->start(CookiePool::fromSuperGlobals());
@@ -146,7 +150,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function the_session_cookie_has_the_same_id_as_the_active_session(): void
     {
-        $id = $this->writeSessionWithData(['foo' => 'bar']);
+        $id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $manager = $this->getSessionManager();
         $session = $manager->start(CookiePool::fromSuperGlobals());
@@ -163,7 +169,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function invalidating_deletes_the_old_session_and_clears_the_current_session(): void
     {
-        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $manager = $this->getSessionManager();
         $session = $manager->start(CookiePool::fromSuperGlobals());
@@ -171,7 +179,9 @@ final class FactorySessionManagerTest extends TestCase
         $session->invalidate();
         $manager->save($session);
 
-        $new_session = $manager->start(new CookiePool([$this->cookie_name => $session->id()->asString()]));
+        $new_session = $manager->start(new CookiePool([
+            $this->cookie_name => $session->id()->asString(),
+        ]));
         // id stays the same
         $this->assertTrue($new_session->id()->sameAs($session->id()));
         // data was flashed
@@ -187,7 +197,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function the_old_session_is_deleted_after_rotating_a_session(): void
     {
-        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $manager = $this->getSessionManager();
         $session = $manager->start(CookiePool::fromSuperGlobals());
@@ -206,7 +218,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function invalidating_an_expired_session_does_not_throw_an_exception(): void
     {
-        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $test_clock = new TestClock();
         $test_clock->travelIntoFuture($this->idle_timeout + 1);
@@ -217,7 +231,9 @@ final class FactorySessionManagerTest extends TestCase
         $session->invalidate();
         $manager->save($session);
 
-        $new_session = $manager->start(new CookiePool([$this->cookie_name => $session->id()->asString()]));
+        $new_session = $manager->start(new CookiePool([
+            $this->cookie_name => $session->id()->asString(),
+        ]));
         // id stays the same
         $this->assertTrue($new_session->id()->sameAs($session->id()));
         // data was flashed
@@ -233,7 +249,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function an_idle_session_is_not_started(): void
     {
-        $this->writeSessionWithData(['foo' => 'bar']);
+        $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         $test_clock = new TestClock();
         $test_clock->travelIntoFuture($this->idle_timeout);
@@ -261,7 +279,9 @@ final class FactorySessionManagerTest extends TestCase
         $this->rotation_interval = 1000;
 
         // Session creation time equals system time.
-        $this->writeSessionWithData(['foo' => 'bar']);
+        $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         // The session is about to expire because it's idle.
         $clock = new TestClock();
@@ -299,7 +319,9 @@ final class FactorySessionManagerTest extends TestCase
         // Irrelevant here
         $this->idle_timeout = 1000;
 
-        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
         $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
 
         $test_clock = new TestClock();
@@ -333,14 +355,18 @@ final class FactorySessionManagerTest extends TestCase
         $this->idle_timeout = 2;
         $this->rotation_interval = 1;
 
-        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
         $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
 
         $test_clock = new TestClock();
         $test_clock->travelIntoFuture(4);
 
         $manager = $this->getSessionManager($test_clock);
-        $new_session = $manager->start(new CookiePool([$this->cookie_name => $old_session->id()->asString()]));
+        $new_session = $manager->start(new CookiePool([
+            $this->cookie_name => $old_session->id()->asString(),
+        ]));
         $manager->save($new_session);
         $new_id = $new_session->id();
 
@@ -422,9 +448,13 @@ final class FactorySessionManagerTest extends TestCase
             $this->assertSame('bar', $event->session->get('foo'));
         };
 
-        $event_dispatcher = new TestEventDispatcher([SessionRotated::class => $listener]);
+        $event_dispatcher = new TestEventDispatcher([
+            SessionRotated::class => $listener,
+        ]);
 
-        $old_id = $this->writeSessionWithData(['foo' => 'bar']);
+        $old_id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
         $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
 
         $clock = new TestClock();
@@ -448,7 +478,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function test_exception_if_provided_and_stored_validator_dont_match(): void
     {
-        $id = $this->writeSessionWithData(['foo' => 'bar']);
+        $id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         /** @var array{0:string, 1:string } $parts */
         $parts = explode('|', $id->asString());
@@ -472,7 +504,9 @@ final class FactorySessionManagerTest extends TestCase
      */
     public function the_selector_is_deleted_if_the_hashed_validator_does_not_match(): void
     {
-        $id = $this->writeSessionWithData(['foo' => 'bar']);
+        $id = $this->writeSessionWithData([
+            'foo' => 'bar',
+        ]);
 
         /** @var array{0:string, 1:string } $parts */
         $parts = explode('|', $id->asString());

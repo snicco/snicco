@@ -37,9 +37,13 @@ class BladeFeaturesTest extends BladeTestCase
     public function json_works(): void
     {
         $view = $this->view('json');
-        $view = $view->with('json', ['foo' => 'bar']);
+        $view = $view->with('json', [
+            'foo' => 'bar',
+        ]);
         $content = $view->render();
-        $this->assertSame(['foo' => 'bar'], json_decode($content, true));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], json_decode($content, true));
     }
 
     /**
@@ -129,12 +133,18 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_when_works(): void
     {
         $view = $this->view('include-when');
-        $view = $view->with(['greeting' => 'Hello', 'foo' => 'foo']);
+        $view = $view->with([
+            'greeting' => 'Hello',
+            'foo' => 'foo',
+        ]);
         $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
 
         $view = $this->view('include-when');
-        $view = $view->with(['greeting' => 'Hello', 'foo' => 'bogus']);
+        $view = $view->with([
+            'greeting' => 'Hello',
+            'foo' => 'bogus',
+        ]);
         $content = $view->render();
         $this->assertViewContent('', $content);
     }
@@ -145,12 +155,18 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_unless_works(): void
     {
         $view = $this->view('include-unless');
-        $view = $view->with(['greeting' => 'Hello', 'foo' => 'foo']);
+        $view = $view->with([
+            'greeting' => 'Hello',
+            'foo' => 'foo',
+        ]);
         $content = $view->render();
         $this->assertViewContent('', $content);
 
         $view = $this->view('include-unless');
-        $view = $view->with(['greeting' => 'Hello', 'foo' => 'bar']);
+        $view = $view->with([
+            'greeting' => 'Hello',
+            'foo' => 'bar',
+        ]);
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
@@ -161,7 +177,10 @@ class BladeFeaturesTest extends BladeTestCase
     public function include_first_works(): void
     {
         $view = $this->view('include-first');
-        $view = $view->with(['greeting' => 'Hello', 'foo' => 'foo']);
+        $view = $view->with([
+            'greeting' => 'Hello',
+            'foo' => 'foo',
+        ]);
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
@@ -183,12 +202,16 @@ class BladeFeaturesTest extends BladeTestCase
         $collection = [$user1, $user2, $user3];
 
         $view = $this->view('each');
-        $view = $view->with(['users' => $collection]);
+        $view = $view->with([
+            'users' => $collection,
+        ]);
         $content = $view->render();
         $this->assertViewContent('Calvin.John.Jane.', $content);
 
         $view = $this->view('each');
-        $view = $view->with(['users' => []]);
+        $view = $view->with([
+            'users' => [],
+        ]);
         $content = $view->render();
         $this->assertViewContent('NO USERS', $content);
     }

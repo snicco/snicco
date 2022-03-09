@@ -30,11 +30,13 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $blueprint1 = MiddlewareBlueprint::from(FooMiddleware::class, ['bar', 'baz']);
         $blueprint2 = MiddlewareBlueprint::from(BarMiddleware::class, ['biz']);
 
-        $route_cache = ['r1' => [$blueprint1->asArray(), $blueprint2->asArray()]];
+        $route_cache = [
+            'r1' => [$blueprint1->asArray(), $blueprint2->asArray()],
+        ];
 
         $resolver = MiddlewareResolver::fromCache($route_cache, [
             RoutingConfigurator::GLOBAL_MIDDLEWARE => [$blueprint1->asArray()],
-            RoutingConfigurator::FRONTEND_MIDDLEWARE => [$blueprint2->asArray()]
+            RoutingConfigurator::FRONTEND_MIDDLEWARE => [$blueprint2->asArray()],
         ]);
 
         $route = Route::create('/', Route::DELEGATE, 'r1');
@@ -75,7 +77,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 
         $resolver = MiddlewareResolver::fromCache([], [
             RoutingConfigurator::GLOBAL_MIDDLEWARE => [$blueprint1->asArray()],
-            RoutingConfigurator::API_MIDDLEWARE => [$blueprint2->asArray()]
+            RoutingConfigurator::API_MIDDLEWARE => [$blueprint2->asArray()],
         ]);
 
         $this->assertEquals(
@@ -104,11 +106,13 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $blueprint1 = MiddlewareBlueprint::from(FooMiddleware::class, ['bar', 'baz']);
         $blueprint2 = MiddlewareBlueprint::from(BarMiddleware::class, ['biz']);
 
-        $route_cache = ['r2' => [$blueprint1->asArray(), $blueprint2->asArray()]];
+        $route_cache = [
+            'r2' => [$blueprint1->asArray(), $blueprint2->asArray()],
+        ];
 
         $resolver = MiddlewareResolver::fromCache($route_cache, [
             RoutingConfigurator::GLOBAL_MIDDLEWARE => [$blueprint1->asArray()],
-            RoutingConfigurator::FRONTEND_MIDDLEWARE => [$blueprint2->asArray()]
+            RoutingConfigurator::FRONTEND_MIDDLEWARE => [$blueprint2->asArray()],
         ]);
 
         $route = Route::create('/', Route::DELEGATE, 'r1');
@@ -131,8 +135,15 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 
         $resolver = new MiddlewareResolver(
             [RoutingConfigurator::FRONTEND_MIDDLEWARE],
-            ['foo' => FooMiddleware::class, 'bar' => BarMiddleware::class, 'baz' => BazMiddleware::class],
-            ['group1' => ['foo', 'bar'], 'frontend' => ['baz', 'bar']],
+            [
+                'foo' => FooMiddleware::class,
+                'bar' => BarMiddleware::class,
+                'baz' => BazMiddleware::class,
+            ],
+            [
+                'group1' => ['foo', 'bar'],
+                'frontend' => ['baz', 'bar'],
+            ],
             [BarMiddleware::class]
         );
 
@@ -156,30 +167,30 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $this->assertSame([
             [
                 'class' => BarMiddleware::class,
-                'args' => []
+                'args' => [],
             ],
             [
                 'class' => FooMiddleware::class,
-                'args' => []
-            ]
+                'args' => [],
+            ],
         ], $cache['route_map']['r1']);
 
         $this->assertSame([
             [
                 'class' => FooMiddleware::class,
-                'args' => ['FOO']
-            ]
+                'args' => ['FOO'],
+            ],
         ], $cache['route_map']['r2']);
 
         $this->assertSame([
             [
                 'class' => BarMiddleware::class,
-                'args' => []
+                'args' => [],
             ],
             [
                 'class' => FooMiddleware::class,
-                'args' => ['FOO']
-            ]
+                'args' => ['FOO'],
+            ],
         ], $cache['route_map']['r3']);
 
 
@@ -191,12 +202,12 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $this->assertSame([
             [
                 'class' => BarMiddleware::class,
-                'args' => []
+                'args' => [],
             ],
             [
                 'class' => BazMiddleware::class,
-                'args' => []
-            ]
+                'args' => [],
+            ],
         ], $cache['request_map']['frontend']);
     }
 
@@ -216,7 +227,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
                 'correct_2' => [BarMiddleware::class],
                 RoutingConfigurator::GLOBAL_MIDDLEWARE => ['correct_1', 'group2'],
                 'group2' => ['correct_2', 'group3'],
-                'group3' => [BazMiddleware::class, 'group2']
+                'group3' => [BazMiddleware::class, 'group2'],
             ],
             []
         );

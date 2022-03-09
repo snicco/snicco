@@ -28,7 +28,9 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         parent::setUp();
         $session_manager = new FactorySessionManager(
-            SessionConfig::mergeDefaults('test_cookie', ['garbage_collection_percentage' => 0]),
+            SessionConfig::mergeDefaults('test_cookie', [
+                'garbage_collection_percentage' => 0,
+            ]),
             new InMemoryDriver(),
             new JsonSerializer()
         );
@@ -65,7 +67,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
                     'bar',
                     'baz',
                 ],
-            ]
+            ],
         ], $errors);
     }
 
@@ -77,7 +79,10 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         $middleware = new SaveResponseAttributes();
 
         $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withFlashMessages(['foo' => 'bar', 'baz' => 'biz']);
+            return $response->withFlashMessages([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ]);
         });
 
         $response = $this->runMiddleware($middleware, $this->request);
@@ -95,7 +100,10 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         $middleware = new SaveResponseAttributes();
 
         $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withOldInput(['foo' => 'bar', 'baz' => 'biz']);
+            return $response->withOldInput([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ]);
         });
 
         $response = $this->runMiddleware($middleware, $this->request);

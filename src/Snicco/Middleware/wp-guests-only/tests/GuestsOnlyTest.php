@@ -101,7 +101,9 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
         $psr_response->assertBodyExact(
-            json_encode(['message' => 'You are already authenticated'], JSON_THROW_ON_ERROR)
+            json_encode([
+                'message' => 'You are already authenticated',
+            ], JSON_THROW_ON_ERROR)
         );
         $psr_response->assertForbidden();
     }
@@ -120,7 +122,9 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
         $psr_response->assertBodyExact(
-            json_encode(['message' => 'Guests only'], JSON_THROW_ON_ERROR)
+            json_encode([
+                'message' => 'Guests only',
+            ], JSON_THROW_ON_ERROR)
         );
         $psr_response->assertForbidden();
     }

@@ -140,8 +140,8 @@ final class ErrorHandlingTest extends TestCase
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
-                    QueryStringLogContext::class
-                ]
+                    QueryStringLogContext::class,
+                ],
             ]);
         });
 
@@ -186,7 +186,7 @@ final class ErrorHandlingTest extends TestCase
                 HttpErrorHandlingOption::TRANSFORMERS => [
                     Transformer2::class,
                     Transformer1::class,
-                ]
+                ],
             ]);
         });
 
@@ -233,7 +233,7 @@ final class ErrorHandlingTest extends TestCase
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::DISPLAYERS => [
                     CustomHtmlDisplayer::class,
-                ]
+                ],
             ]);
         });
         $kernel->boot();
@@ -270,8 +270,8 @@ final class ErrorHandlingTest extends TestCase
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
-                    TypeError::class => LogLevel::WARNING
-                ]
+                    TypeError::class => LogLevel::WARNING,
+                ],
             ]);
         });
         $kernel->boot();
@@ -414,7 +414,7 @@ final class ErrorHandlingTest extends TestCase
             $logger = $kernel->container()->make(TestLogger::class);
             $this->assertTrue(
                 $logger->hasCritical([
-                    'message' => RoutingBundleTestController::class
+                    'message' => RoutingBundleTestController::class,
                 ])
             );
         } finally {

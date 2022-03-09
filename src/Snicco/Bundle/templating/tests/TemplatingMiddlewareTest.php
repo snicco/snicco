@@ -43,8 +43,8 @@ final class TemplatingMiddlewareTest extends TestCase
                 Environment::ALL => [
                     HttpRoutingBundle::class,
                     BetterWPHooksBundle::class,
-                    TemplatingBundle::class
-                ]
+                    TemplatingBundle::class,
+                ],
             ]);
             $config->set('templating.directories', [__DIR__ . '/fixtures/templates']);
         });
@@ -84,8 +84,8 @@ final class TemplatingMiddlewareTest extends TestCase
                 Environment::ALL => [
                     HttpRoutingBundle::class,
                     BetterWPHooksBundle::class,
-                    TemplatingBundle::class
-                ]
+                    TemplatingBundle::class,
+                ],
             ]);
             $config->set('templating.directories', [__DIR__ . '/fixtures/templates']);
         });
@@ -103,7 +103,9 @@ final class TemplatingMiddlewareTest extends TestCase
             ->send($request)
             ->through([TemplatingMiddleware::class])
             ->then(function () {
-                return new Response(200, ['location' => '/foo']);
+                return new Response(200, [
+                    'location' => '/foo',
+                ]);
             });
 
         $this->assertSame('', (string)$response->getBody());
@@ -121,6 +123,8 @@ class CreateViewResponseMiddleware extends Middleware
 {
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        return $this->respondWith()->view('foo', ['foo' => 'bar']);
+        return $this->respondWith()->view('foo', [
+            'foo' => 'bar',
+        ]);
     }
 }

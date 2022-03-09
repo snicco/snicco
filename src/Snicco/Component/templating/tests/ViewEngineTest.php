@@ -133,7 +133,9 @@ class ViewEngineTest extends TestCase
      */
     public function a_view_can_be_rendered_to_a_string(): void
     {
-        $view_content = $this->view_engine->render('greeting', ['name' => 'Calvin']);
+        $view_content = $this->view_engine->render('greeting', [
+            'name' => 'Calvin',
+        ]);
 
         $this->assertSame('Hello Calvin', $view_content);
     }
@@ -159,8 +161,16 @@ class ViewEngineTest extends TestCase
      */
     public function multiple_global_variables_can_be_shared(): void
     {
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
-        $this->global_view_context->add('global2', ['foo' => ['bar' => 'biz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ]);
+        $this->global_view_context->add('global2', [
+            'foo' => [
+                'bar' => 'biz',
+                
+            ], ]);
 
         $view = $this->view_engine->make('multiple-globals');
 
@@ -172,7 +182,11 @@ class ViewEngineTest extends TestCase
      */
     public function test_global_view_context_array_access(): void
     {
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ]);
         $view = $this->view_engine->make('array-access-isset');
 
         $this->assertSame('Isset works', $view->render());
@@ -186,7 +200,11 @@ class ViewEngineTest extends TestCase
         $this->expectException(ViewCantBeRendered::class);
         $this->expectExceptionMessage('offsetSet');
 
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ]);
         $view = $this->view_engine->make('array-access-set');
 
         $view->render();
@@ -200,7 +218,11 @@ class ViewEngineTest extends TestCase
         $this->expectException(ViewCantBeRendered::class);
         $this->expectExceptionMessage('offsetUnset');
 
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ]);
         $view = $this->view_engine->make('array-access-unset');
 
         $view->render();
@@ -211,12 +233,18 @@ class ViewEngineTest extends TestCase
      */
     public function view_composers_have_precedence_over_globals(): void
     {
-        $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('test_context', [
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             return $view->with([
                 'test_context' => [
-                    'foo' => ['bar' => 'biz'],
+                    'foo' => [
+                        'bar' => 'biz',
+                    ],
                 ],
             ]);
         });
@@ -231,20 +259,29 @@ class ViewEngineTest extends TestCase
      */
     public function local_context_has_precedence_over_composers_and_globals(): void
     {
-        $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('test_context', [
+            'foo' => [
+                'bar' => 'baz',
+                
+            ], ]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             return $view->with([
                 'test_context' => [
-                    'foo' => ['bar' => 'biz'],
-                ]
+                    'foo' => [
+                        'bar' => 'biz',
+                    ],
+                    
+                ],
             ]);
         });
 
         $view = $this->view_engine->make('context-priority');
         $view = $view->with([
             'test_context' => [
-                'foo' => ['bar' => 'boom'],
+                'foo' => [
+                    'bar' => 'boom',
+                ],
             ],
         ]);
 

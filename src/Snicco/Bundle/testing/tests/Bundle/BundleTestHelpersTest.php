@@ -104,7 +104,9 @@ final class BundleTestHelpersTest extends TestCase
 
         $kernel->boot();
 
-        $this->assertSame(['bootstrappers' => []], $kernel->config()->getArray('app'));
+        $this->assertSame([
+            'bootstrappers' => [],
+        ], $kernel->config()->getArray('app'));
     }
 
     /**
@@ -121,7 +123,7 @@ final class BundleTestHelpersTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle1::class]
+                Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
 
@@ -144,7 +146,7 @@ final class BundleTestHelpersTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle1::class]
+                Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
 
@@ -171,7 +173,7 @@ final class BundleTestHelpersTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle2::class]
+                Environment::ALL => [TestingBundleBundle2::class],
             ]);
         });
         $kernel->boot();
@@ -214,7 +216,7 @@ final class BundleTestHelpersTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle1::class]
+                Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
         $kernel->boot();

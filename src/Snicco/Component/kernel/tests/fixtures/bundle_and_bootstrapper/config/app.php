@@ -7,5 +7,5 @@ use Snicco\Component\Kernel\Tests\Bootstrap2;
 return [
     'bootstrappers' => [
         Bootstrap2::class,
-    ]
+    ],
 ];

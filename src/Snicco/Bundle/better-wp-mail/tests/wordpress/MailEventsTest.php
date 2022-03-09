@@ -42,7 +42,7 @@ final class MailEventsTest extends WPTestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('mail', [
-                MailOption::EXPOSE_MAIL_EVENTS => true
+                MailOption::EXPOSE_MAIL_EVENTS => true,
             ]);
         });
 
@@ -134,10 +134,10 @@ final class MailEventsTest extends WPTestCase
                 Environment::ALL => [
                     BetterWPHooksBundle::class,
                     BetterWPMailBundle::class,
-                ]
+                ],
             ]);
             $config->set('mail', [
-                MailOption::EXPOSE_MAIL_EVENTS => true
+                MailOption::EXPOSE_MAIL_EVENTS => true,
             ]);
         });
 
@@ -205,7 +205,7 @@ final class MailEventsTest extends WPTestCase
                 Environment::ALL => [
                     BetterWPHooksBundle::class,
                     BetterWPMailBundle::class,
-                ]
+                ],
             ]);
         });
 

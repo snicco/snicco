@@ -42,7 +42,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
     public function errors_get_handles_for_updates(): void
     {
         try {
-            $this->connection->update('foobar', ['foo' => 'bar']);
+            $this->connection->update('foobar', [
+                'foo' => 'bar',
+            ]);
             $this->fail('No query exception thrown');
         } catch (QueryException $e) {
             $this->assertStringStartsWith(
@@ -50,7 +52,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
                 $e->getMessage()
             );
             $this->assertSame('foobar', $e->getSql());
-            $this->assertSame(['foo' => 'bar'], $e->getBindings());
+            $this->assertSame([
+                'foo' => 'bar',
+            ], $e->getBindings());
         }
     }
 
@@ -60,7 +64,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
     public function errors_get_handled_for_deletes(): void
     {
         try {
-            $this->connection->delete('foobar', ['foo' => 'bar']);
+            $this->connection->delete('foobar', [
+                'foo' => 'bar',
+            ]);
             $this->fail('No query exception thrown');
         } catch (QueryException $e) {
             $this->assertStringStartsWith(
@@ -68,7 +74,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
                 $e->getMessage()
             );
             $this->assertSame('foobar', $e->getSql());
-            $this->assertSame(['foo' => 'bar'], $e->getBindings());
+            $this->assertSame([
+                'foo' => 'bar',
+            ], $e->getBindings());
         }
     }
 
@@ -96,7 +104,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
     public function errors_get_handled_for_cursor_selects(): void
     {
         try {
-            $generator = $this->connection->cursor('foobar', ['foo' => 'bar']);
+            $generator = $this->connection->cursor('foobar', [
+                'foo' => 'bar',
+            ]);
 
             foreach ($generator as $foo) {
                 $this->fail('No Exception thrown');
@@ -104,7 +114,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
         } catch (QueryException $e) {
             $this->assertInstanceOf(mysqli_sql_exception::class, $e->getPrevious());
             $this->assertSame('foobar', $e->getSql());
-            $this->assertSame(['foo' => 'bar'], $e->getBindings());
+            $this->assertSame([
+                'foo' => 'bar',
+            ], $e->getBindings());
         }
     }
 
@@ -114,7 +126,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
     public function errors_get_handled_for_selects(): void
     {
         try {
-            $this->connection->select('foobar', ['foo' => 'bar']);
+            $this->connection->select('foobar', [
+                'foo' => 'bar',
+            ]);
             $this->fail('no exception thrown');
         } catch (QueryException $e) {
             $this->assertStringStartsWith(
@@ -122,7 +136,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
                 $e->getMessage()
             );
             $this->assertSame('foobar', $e->getSql());
-            $this->assertSame(['foo' => 'bar'], $e->getBindings());
+            $this->assertSame([
+                'foo' => 'bar',
+            ], $e->getBindings());
         }
     }
 

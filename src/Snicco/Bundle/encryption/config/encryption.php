@@ -23,6 +23,6 @@ return [
      *
      * This value SHOULD NEVER EVER EVER EVER be committed into version control.
      */
-    EncryptionOption::KEY_ASCII => 'this-key-will-throw-an-exception'
+    EncryptionOption::KEY_ASCII => 'this-key-will-throw-an-exception',
 
 ];

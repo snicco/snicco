@@ -62,9 +62,9 @@ final class BetterWPHooksBundle implements Bundle
         $container->shared(
             EventMapper::class,
             fn () => new EventMapper(
-            $container->make(EventDispatcher::class),
-            $hook_api
-        )
+                $container->make(EventDispatcher::class),
+                $hook_api
+            )
         );
     }
 

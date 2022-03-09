@@ -65,7 +65,7 @@ final class DebugBundle implements Bundle
     {
         $config->prepend(HttpErrorHandlingOption::KEY . '.' . HttpErrorHandlingOption::DISPLAYERS, [
             WhoopsJsonDisplayer::class,
-            WhoopsHtmlDisplayer::class
+            WhoopsHtmlDisplayer::class,
         ]);
 
         $defaults = require dirname(__DIR__) . '/config/debug.php';
@@ -83,7 +83,7 @@ final class DebugBundle implements Bundle
         }
 
         $defaults = array_merge($defaults, [
-            DebugOption::APPLICATION_PATHS => $this->allDirectoriesExpectVendor($kernel->directories())
+            DebugOption::APPLICATION_PATHS => $this->allDirectoriesExpectVendor($kernel->directories()),
         ]);
 
         $config->set('debug', array_replace($defaults, $config->getArray('debug', [])));

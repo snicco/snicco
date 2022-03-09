@@ -127,7 +127,9 @@ abstract class WebTestCase extends WPTestCase
         $session->put($data);
         $session_manager->save($session);
 
-        $this->withCookies([$cookie_name => $session->id()->asString()]);
+        $this->withCookies([
+            $cookie_name => $session->id()->asString(),
+        ]);
 
         return $session->id();
     }
@@ -236,7 +238,7 @@ abstract class WebTestCase extends WPTestCase
 
         $this->withServerVariables([
             'HTTP_HOST' => $kernel->config()->getString('routing.' . RoutingOption::HOST),
-            'HTTPS' => $kernel->config()->getBoolean('routing.' . RoutingOption::USE_HTTPS)
+            'HTTPS' => $kernel->config()->getBoolean('routing.' . RoutingOption::USE_HTTPS),
         ]);
 
         return new Browser(

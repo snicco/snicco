@@ -55,7 +55,7 @@ final class WebTestCaseController extends Controller
         foreach ($request->getUploadedFiles() as $file) {
             $info[] = [
                 'size' => $file->getSize(),
-                'name' => $file->getClientFilename()
+                'name' => $file->getClientFilename(),
             ];
         }
         return $this->respondWith()->json($info);
@@ -115,7 +115,7 @@ final class WebTestCaseController extends Controller
 
         $info = [
             'id' => $immutable_session->id()->asString(),
-            'counter' => $immutable_session->get('counter')
+            'counter' => $immutable_session->get('counter'),
         ];
 
         return $this->respondWith()->json($info);

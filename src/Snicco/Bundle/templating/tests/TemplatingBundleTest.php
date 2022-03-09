@@ -145,7 +145,7 @@ final class TemplatingBundleTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('templating.directories', [
-                __DIR__ . '/fixtures/templates'
+                __DIR__ . '/fixtures/templates',
             ]);
         });
 
@@ -206,8 +206,8 @@ final class TemplatingBundleTest extends TestCase
             $config->set('templating', [
                 TemplatingOption::DIRECTORIES => [__DIR__ . '/fixtures/templates'],
                 TemplatingOption::VIEW_COMPOSERS => [
-                    CustomBundleComposer::class => ['foo']
-                ]
+                    CustomBundleComposer::class => ['foo'],
+                ],
             ]);
         });
 
@@ -239,8 +239,8 @@ final class TemplatingBundleTest extends TestCase
                 Environment::ALL => [
                     HttpRoutingBundle::class,
                     BetterWPHooksBundle::class,
-                    TemplatingBundle::class
-                ]
+                    TemplatingBundle::class,
+                ],
             ]);
         });
         $kernel->boot();
@@ -286,8 +286,8 @@ final class TemplatingBundleTest extends TestCase
                 Environment::ALL => [
                     HttpRoutingBundle::class,
                     BetterWPHooksBundle::class,
-                    TemplatingBundle::class
-                ]
+                    TemplatingBundle::class,
+                ],
             ]);
         });
         $kernel->boot();
@@ -312,7 +312,7 @@ final class TemplatingBundleTest extends TestCase
         $kernel->boot();
 
         $this->assertSame([
-            PHPViewFactory::class
+            PHPViewFactory::class,
         ], $kernel->config()->getListOfStrings('templating.factories'));
 
         $this->assertSame([
@@ -380,7 +380,9 @@ final class TemplatingBundleTest extends TestCase
 
         file_put_contents(
             $this->directories->configDir() . '/templating.php',
-            '<?php return ' . var_export([TemplatingOption::DIRECTORIES => [__DIR__]], true) . ';'
+            '<?php return ' . var_export([
+                TemplatingOption::DIRECTORIES => [__DIR__],
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/templating.php'));
@@ -391,7 +393,9 @@ final class TemplatingBundleTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [TemplatingOption::DIRECTORIES => [__DIR__]],
+            [
+                TemplatingOption::DIRECTORIES => [__DIR__],
+            ],
             require $this->directories->configDir() . '/templating.php'
         );
     }

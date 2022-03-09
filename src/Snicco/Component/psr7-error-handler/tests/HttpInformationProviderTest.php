@@ -82,7 +82,10 @@ final class HttpInformationProviderTest extends TestCase
     public function exceptions_can_be_transformed(): void
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
+            401 => [
+                'title' => 'Unauthorized',
+                'message' => 'You need to log-in first.',
+            ],
         ], new StubIdentifier('foobar_e'), new RuntimeToAuthTransformer());
 
         $e = new RuntimeException('transform_me');
@@ -112,7 +115,10 @@ final class HttpInformationProviderTest extends TestCase
     public function exceptions_will_only_be_transformed_if_a_transformer_decides_so(): void
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
+            401 => [
+                'title' => 'Unauthorized',
+                'message' => 'You need to log-in first.',
+            ],
         ], new StubIdentifier('foo_id'), new RuntimeToAuthTransformer());
 
         $e = new RuntimeException('dont_transform_me');
@@ -131,8 +137,15 @@ final class HttpInformationProviderTest extends TestCase
     public function multiple_transformers_can_be_used_in_the_same_order_they_were_run(): void
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
-            403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
+            401 => [
+                'title' => 'Unauthorized',
+                'message' => 'You need to log-in first.',
+            ],
+            403 => [
+                'title' => 'Forbidden',
+                'message' => 'You cant do this.',
+                
+            ],
         ], new StubIdentifier('foo'), new RuntimeToAuthTransformer(), new LastTransformer());
 
         $e = new RuntimeException('transform_me');
@@ -152,8 +165,15 @@ final class HttpInformationProviderTest extends TestCase
     public function exceptions_that_implement_user_facing_will_be_used_to_get_the_title_and_message(): void
     {
         $provider = $this->newProvider([
-            401 => ['title' => 'Unauthorized', 'message' => 'You need to log-in first.'],
-            403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
+            401 => [
+                'title' => 'Unauthorized',
+                'message' => 'You need to log-in first.',
+            ],
+            403 => [
+                'title' => 'Forbidden',
+                'message' => 'You cant do this.',
+                
+            ],
         ]);
 
         $e = new UserFacingException('Secret stuff here');
@@ -172,7 +192,10 @@ final class HttpInformationProviderTest extends TestCase
     public function user_facing_exceptions_will_be_used_even_if_a_transformer_transforms_them(): void
     {
         $provider = $this->newProvider([
-            403 => ['title' => 'Forbidden', 'message' => 'You cant do this.'],
+            403 => [
+                'title' => 'Forbidden',
+                'message' => 'You cant do this.',
+            ],
         ], new StubIdentifier('foobar_id'), new TransformEverythingTo403());
 
         $e = new UserFacingException('Secret stuff here');

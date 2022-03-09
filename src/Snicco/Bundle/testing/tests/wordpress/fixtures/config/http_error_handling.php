@@ -6,7 +6,6 @@ declare(strict_types=1);
 use Snicco\Bundle\HttpRouting\Option\HttpErrorHandlingOption;
 
 return [
-
     /*
      * The log prefix is prepended to all log entries if the default logger is used.
      * This is a great way to make your log files more meaningful and easier to understand.
@@ -50,7 +49,6 @@ return [
      * Feel free to remove this option if you don't need it.
      */
     HttpErrorHandlingOption::LOG_LEVELS => [
-//        Throwable::class => \Psr\Log\LogLevel::EMERGENCY
+        //        Throwable::class => \Psr\Log\LogLevel::EMERGENCY
     ],
-
 ];
