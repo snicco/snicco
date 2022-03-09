@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\Bundle;
 
 use PHPUnit\Framework\TestCase;

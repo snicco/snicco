@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPMail\Option;
 
 final class MailOption

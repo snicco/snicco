@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPCache;
 
 use Psr\Cache\CacheItemInterface;

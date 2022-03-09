@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\wordpress\fixtures;
 
 use Psr\Http\Message\ResponseInterface;

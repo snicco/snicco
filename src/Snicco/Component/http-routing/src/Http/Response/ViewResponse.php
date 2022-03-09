@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Http\Response;
 
 use Psr\Http\Message\ResponseInterface;

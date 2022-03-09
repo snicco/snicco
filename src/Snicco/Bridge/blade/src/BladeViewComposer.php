@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bridge\Blade;
 
 use Illuminate\View\View;

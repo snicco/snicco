@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Templating\Tests\ViewComposer;
 
 use PHPUnit\Framework\TestCase;

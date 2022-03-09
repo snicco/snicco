@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\EventDispatcher\Tests\fixtures\Listener;
 
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB;
 
 use Closure;
@@ -477,10 +476,10 @@ final class BetterWPDB
 
                 // Retrieve the expected types from the first record.
                 if (is_null($expected_types)) {
-                    $expected_types = (string)$this->paramTypes($bindings);
+                    $expected_types = (string) $this->paramTypes($bindings);
                 }
 
-                $record_types = (string)$this->paramTypes($bindings);
+                $record_types = (string) $this->paramTypes($bindings);
                 if ($expected_types !== $record_types) {
                     throw new InvalidArgumentException(
                         sprintf(
@@ -534,7 +533,7 @@ final class BetterWPDB
             return $run_query();
         }
 
-        if (!isset($this->original_sql_mode)) {
+        if (! isset($this->original_sql_mode)) {
             $this->queryOriginalSqlMode();
         }
 
@@ -564,13 +563,13 @@ final class BetterWPDB
     private function queryOriginalSqlMode(): void
     {
         $stmt = $this->mysqli->query('SELECT @@SESSION.sql_mode');
-        if (!$stmt instanceof mysqli_result) {
+        if (! $stmt instanceof mysqli_result) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not determine current mysqli mode.');
             // @codeCoverageIgnoreEnd
         }
         $res = $stmt->fetch_row();
-        if (!is_array($res) || !isset($res[0]) || !is_string($res[0])) {
+        if (! is_array($res) || ! isset($res[0]) || ! is_string($res[0])) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not determine current mysqli mode.');
             // @codeCoverageIgnoreEnd
@@ -586,7 +585,7 @@ final class BetterWPDB
     private function buildInsertSql(string $table, array $column_names): string
     {
         $column_names = array_map(
-            fn($column_name) => $this->escIdentifier($column_name),
+            fn ($column_name) => $this->escIdentifier($column_name),
             $column_names
         );
         $columns = implode(',', $column_names);
@@ -651,7 +650,7 @@ final class BetterWPDB
         $b = [];
 
         foreach ($bindings as $binding) {
-            if (!is_scalar($binding) && !is_null($binding)) {
+            if (! is_scalar($binding) && ! is_null($binding)) {
                 throw new InvalidArgumentException('All bindings have to be of type scalar or null.');
             }
             if (is_bool($binding)) {
@@ -675,7 +674,7 @@ final class BetterWPDB
             throw new InvalidArgumentException('Column names can not be an empty array.');
         }
         foreach ($data as $name) {
-            if (!is_string($name) || '' === $name) {
+            if (! is_string($name) || '' === $name) {
                 throw new InvalidArgumentException('All column names must be a non-empty-strings.');
             }
         }
@@ -694,7 +693,7 @@ final class BetterWPDB
         $wheres = [];
         $bindings = [];
         foreach ($conditions as $col_name => $value) {
-            if (!is_string($col_name) || '' === $col_name) {
+            if (! is_string($col_name) || '' === $col_name) {
                 throw new InvalidArgumentException('A column name must be a non-empty-string.');
             }
 

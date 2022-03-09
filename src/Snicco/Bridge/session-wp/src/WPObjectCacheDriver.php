@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bridge\SessionWP;
 
 use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;

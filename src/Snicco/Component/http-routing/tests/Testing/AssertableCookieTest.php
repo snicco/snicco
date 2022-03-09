@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Testing;
 
 use PHPUnit\Framework\TestCase;

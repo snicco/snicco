@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\Functional;
 
 use PHPUnit\Framework\AssertionFailedError;

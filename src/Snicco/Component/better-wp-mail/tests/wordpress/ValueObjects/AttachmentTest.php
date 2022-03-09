@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;

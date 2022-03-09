@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\fixtures\Controller;
 
 use Snicco\Component\HttpRouting\Controller\Controller;

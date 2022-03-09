@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Psr7ErrorHandler\Displayer;
 
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
