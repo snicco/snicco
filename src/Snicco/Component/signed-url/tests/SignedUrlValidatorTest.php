@@ -18,7 +18,6 @@ use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
 use function str_replace;
-use function strval;
 
 final class SignedUrlValidatorTest extends TestCase
 {
@@ -128,7 +127,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_if_no_signature(): void
     {
         $e = time() + 10;
-        $url = '/foo?expires=' . strval($e);
+        $url = '/foo?expires=' . (string) $e;
 
         $this->expectException(InvalidSignature::class);
 

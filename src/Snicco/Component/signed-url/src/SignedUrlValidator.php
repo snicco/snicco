@@ -20,7 +20,6 @@ use function parse_str;
 use function parse_url;
 use function preg_replace;
 use function rtrim;
-use function strval;
 
 final class SignedUrlValidator
 {
@@ -62,8 +61,8 @@ final class SignedUrlValidator
         }
 
         $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
-        $identifier = strval($arr[0] ?? '');
-        $provided_signature = strval($arr[1] ?? '');
+        $identifier = (string) ($arr[0] ?? '');
+        $provided_signature = (string) ($arr[1] ?? '');
 
         // Rebuild the parts from the provided url
         // if anything has been changed at all the resulting signature will not match the
@@ -80,7 +79,7 @@ final class SignedUrlValidator
         );
 
         $this->validateSignature($expected_signature, $provided_signature, $path);
-        $this->validateExpiration(intval($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
+        $this->validateExpiration((int) ($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
         $this->validateUsage($identifier, $path);
     }
 

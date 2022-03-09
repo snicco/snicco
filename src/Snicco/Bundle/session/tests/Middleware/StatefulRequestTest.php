@@ -358,7 +358,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $session);
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
     }
 
     private function getMiddleware(string $cookie_path = '/', Clock $clock = null): StatefulRequest

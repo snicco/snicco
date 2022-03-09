@@ -46,7 +46,7 @@ final class TemplatingExceptionDisplayerTest extends TestCase
      */
     public function test_isVerbose(): void
     {
-        $this->assertSame(false, $this->displayer->isVerbose());
+        $this->assertFalse($this->displayer->isVerbose());
     }
 
     /**

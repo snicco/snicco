@@ -54,7 +54,7 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
     public function test_unprepared_with_writes_returns_bool_true(): void
     {
         $res = $this->better_wpdb->unprepared("insert into test_table (test_string) values ('foo')");
-        $this->assertSame(true, $res);
+        $this->assertTrue($res);
     }
 
     /**

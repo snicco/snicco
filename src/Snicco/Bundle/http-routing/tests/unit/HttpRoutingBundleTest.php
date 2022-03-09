@@ -75,7 +75,7 @@ final class HttpRoutingBundleTest extends TestCase
         );
         $kernel->boot();
 
-        $this->assertSame(true, $kernel->usesBundle('sniccowp/http-routing-bundle'));
+        $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
     }
 
     /**

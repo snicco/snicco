@@ -13,7 +13,7 @@ class WritableConfigTest extends TestCase
 {
     private WritableConfig $config;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -24,7 +24,7 @@ class WritableConfigTest extends TestCase
     {
         parent::tearDown();
 
-        unset($this->config);
+        $this->config = null;
     }
 
     /**
@@ -47,7 +47,7 @@ class WritableConfigTest extends TestCase
     {
         $this->config->extend('foo', false);
 
-        $this->assertSame(false, $this->config->get('foo'));
+        $this->assertFalse($this->config->get('foo'));
     }
 
     /**
@@ -57,7 +57,7 @@ class WritableConfigTest extends TestCase
     {
         $this->config->extend('foo', null);
 
-        $this->assertSame(null, $this->config->get('foo'));
+        $this->assertNull($this->config->get('foo'));
     }
 
     /**
@@ -77,7 +77,7 @@ class WritableConfigTest extends TestCase
      */
     public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config(): void
     {
-        $this->assertSame(null, $this->config->get('foo'));
+        $this->assertNull($this->config->get('foo'));
 
         $this->config->extend('foo', 'bar');
 
@@ -89,7 +89,7 @@ class WritableConfigTest extends TestCase
      */
     public function user_config_has_precedence_over_default_config(): void
     {
-        $this->assertSame(null, $this->config->get('foo'));
+        $this->assertNull($this->config->get('foo'));
 
         $this->config->set('foo', 'bar');
 
@@ -515,8 +515,8 @@ class WritableConfigTest extends TestCase
             'baz' => 1,
         ]);
 
-        $this->assertSame(true, $config->getBoolean('foo'));
-        $this->assertSame(false, $config->getBoolean('bogus', false));
+        $this->assertTrue($config->getBoolean('foo'));
+        $this->assertFalse($config->getBoolean('bogus', false));
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected a boolean for config key [baz]');

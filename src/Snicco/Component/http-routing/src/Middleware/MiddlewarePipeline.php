@@ -96,7 +96,7 @@ final class MiddlewarePipeline
 
         $response = $stack($this->current_request);
 
-        unset($this->current_request);
+        $this->current_request = null;
 
         return $response;
     }
@@ -159,7 +159,7 @@ final class MiddlewarePipeline
             }
 
             if (is_numeric($value)) {
-                return intval($value);
+                return (int) $value;
             }
 
             return $value;

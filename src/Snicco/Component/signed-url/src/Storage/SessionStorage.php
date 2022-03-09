@@ -11,7 +11,6 @@ use Snicco\Component\SignedUrl\SignedUrl;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
 
-use function intval;
 use function is_array;
 
 final class SessionStorage implements SignedUrlStorage
@@ -102,7 +101,7 @@ final class SessionStorage implements SignedUrlStorage
             return 0;
         }
 
-        return intval($stored[$identifier]['left_usages'] ?? 0);
+        return (int) ($stored[$identifier]['left_usages'] ?? 0);
     }
 
     /**

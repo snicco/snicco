@@ -22,7 +22,9 @@ use const FILTER_VALIDATE_EMAIL;
  */
 final class Mailbox
 {
-    // @see https://regexr.com/69uh5
+    /**
+     * @see https://regexr.com/69uh5
+     */
     private const PATTERN = '/^(?<name>\w+\s?\w+)?\s*<(?<address>[^>]+)>$/';
 
     /**

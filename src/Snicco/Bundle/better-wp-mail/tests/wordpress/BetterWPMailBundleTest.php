@@ -42,7 +42,7 @@ final class BetterWPMailBundleTest extends WPTestCase
         );
         $kernel->boot();
 
-        $this->assertSame(true, $kernel->usesBundle('sniccowp/better-wp-mail-bundle'));
+        $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-mail-bundle'));
     }
 
     /**

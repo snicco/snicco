@@ -23,7 +23,6 @@ use function sprintf;
 use function strpos;
 use function strtoupper;
 use function strtr;
-use function strval;
 
 use const PHP_EOL;
 
@@ -143,7 +142,7 @@ final class StdErrLogger extends AbstractLogger
         $message = get_class($e) .
             ' "' . $e->getMessage() . '"' .
             ' in ' . $e->getFile() .
-            ':' . strval($e->getLine());
+            ':' . (string) ($e->getLine());
 
         if ($include_trace) {
             $exploded = explode('#', $e->getTraceAsString());

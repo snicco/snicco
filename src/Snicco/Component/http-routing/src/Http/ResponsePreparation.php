@@ -16,10 +16,8 @@ use function ini_set;
 use function ob_get_length;
 use function str_replace;
 use function strtolower;
-use function strval;
 
-/*
- *
+/**
  * This class represents Symfony's Response::prepare() method ported to psr7.
  *
  * @link https://github.com/symfony/http-foundation/blob/5.3/ResponseHeaderBag.php
@@ -137,7 +135,7 @@ final class ResponsePreparation
             && ! $response->hasEmptyBody()
             && ! ob_get_length()
         ) {
-            $size = strval($response->getBody()->getSize());
+            $size = (string) ($response->getBody()->getSize());
             $response = $response->withHeader('content-length', $size);
         }
 

@@ -9,7 +9,6 @@ use function array_shift;
 use function is_float;
 use function is_int;
 use function preg_replace_callback;
-use function strval;
 
 /**
  * This class stores information about one executed sql query.
@@ -63,7 +62,7 @@ final class QueryInfo
     {
         $bindings = array_map(function ($binding) {
             if (is_int($binding) || is_float($binding)) {
-                return strval($binding);
+                return (string) $binding;
             }
             if (null === $binding) {
                 return 'null';
@@ -75,7 +74,7 @@ final class QueryInfo
         /** @var non-empty-string $sql */
         $sql = (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
             /** @var string[] $bindings */
-            return strval(array_shift($bindings));
+            return (string) (array_shift($bindings));
         }, $sql_with_placeholders);
 
         return $sql;

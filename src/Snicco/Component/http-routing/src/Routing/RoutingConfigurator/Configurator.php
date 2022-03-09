@@ -120,7 +120,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $this->middleware($parent_route->getMiddleware())
             ->group($routes);
 
-        unset($this->current_parent_route);
+        $this->current_parent_route = null;
     }
 
     /**

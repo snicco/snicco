@@ -69,7 +69,7 @@ final class SerializedSessionTest extends TestCase
             time(),
         );
 
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
 
         $session = SerializedSession::fromString(
             'foo',
