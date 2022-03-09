@@ -270,7 +270,6 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param StreamInterface $json
      * @return static
      */
     final public function withJson(StreamInterface $json)

@@ -78,7 +78,6 @@ final class AdminMenuItem
      *     capability?: string,
      *     position?: int
      * } $attributes
-     *
      */
     final public static function fromRoute(
         Route $route,

@@ -220,8 +220,6 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
 
     /**
      * @psalm-assert WPCacheItem $item
-     *
-     * @param CacheItemInterface $item
      */
     private function validateCacheItem(CacheItemInterface $item): void
     {

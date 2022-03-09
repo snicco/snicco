@@ -28,7 +28,6 @@ final class SessionStorage implements SignedUrlStorage
 
     /**
      * @param array|ArrayAccess $storage
-     * @param Clock|null $clock
      *
      * @codeCoverageIgnore
      */

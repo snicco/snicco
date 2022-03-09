@@ -331,7 +331,6 @@ final class AdminMenuTest extends HttpRunnerTestCase
 
     /**
      * @test
-     *
      */
     public function parent_pages_can_be_added_by_slug_only(): void
     {

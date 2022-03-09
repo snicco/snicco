@@ -26,7 +26,6 @@ interface UrlGenerator
      * @param string $path The path MUST NOT be urlencoded.
      * @param array<string,string|int> $extra The query arguments to append.
      * A "_fragment" key can be passed to include a fragment after the query string.
-     * @param int $type
      * @param bool|null $https If null is passed the scheme of the current request will be used.
      *
      * @return string an rfc-compliant url
@@ -34,7 +33,6 @@ interface UrlGenerator
     public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string;
 
     /**
-     *
      * @param array<string,string|int> $arguments
      *
      * @throws RouteNotFound
@@ -56,7 +54,6 @@ interface UrlGenerator
      * choose.
      *
      * @param array<string,string|int> $arguments
-     *
      */
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string;
 

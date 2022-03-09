@@ -71,7 +71,6 @@ final class ViewComposerCollection
     }
 
     /**
-     *
      * Composes the context the passed view in the following order.
      * => global context
      * => view composer context

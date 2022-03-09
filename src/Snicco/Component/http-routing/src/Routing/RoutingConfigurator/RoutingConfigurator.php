@@ -26,13 +26,11 @@ interface RoutingConfigurator
     public function middleware($middleware);
 
     /**
-     * @param string $name
      * @return static
      */
     public function name(string $name);
 
     /**
-     * @param string $namespace
      * @return static
      */
     public function namespace(string $namespace);
@@ -46,7 +44,6 @@ interface RoutingConfigurator
      *     name?:string,
      *     middleware?: string[]
      * } $extra_attributes
-     *
      */
     public function group(Closure $create_routes, array $extra_attributes = []): void;
 

@@ -14,7 +14,9 @@ use Snicco\Component\Session\ImmutableSession;
 final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 {
 
-    /** @test */
+    /**
+     * @test
+     */
     public function the_request_is_marked_as_being_allowed_a_write_session_for_read_requests(): void
     {
         $middleware = new AllowMutableSessionForReadVerbs();

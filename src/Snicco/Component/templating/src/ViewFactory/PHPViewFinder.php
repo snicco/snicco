@@ -15,7 +15,7 @@ final class PHPViewFinder
 {
 
     /**
-     * @var list<string> $directories
+     * @var list<string>
      */
     private array $directories;
 

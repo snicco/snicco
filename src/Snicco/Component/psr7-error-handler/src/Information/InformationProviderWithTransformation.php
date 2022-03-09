@@ -93,7 +93,6 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
     }
 
     /**
-     * @param int $status_code
      * @param array{title: string, message:string} $info
      *
      * @psalm-suppress DocblockTypeContradiction

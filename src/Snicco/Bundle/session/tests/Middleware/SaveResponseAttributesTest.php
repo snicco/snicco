@@ -39,7 +39,9 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function errors_are_added_to_the_session(): void
     {
         $middleware = new SaveResponseAttributes();
@@ -68,7 +70,9 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         ], $errors);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function flash_messages_are_added(): void
     {
         $middleware = new SaveResponseAttributes();

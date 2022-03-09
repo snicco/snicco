@@ -112,7 +112,7 @@ class AuthorizeTestBetterWPAPI extends BetterWPAPI
 {
 
     /**
-     * @var Closure(string, mixed...):bool $user_can
+     * @var Closure(string, mixed...):bool
      */
     private Closure $user_can;
 

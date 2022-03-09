@@ -28,13 +28,19 @@ use function sprintf;
 final class Route
 {
 
-    /** @interal */
+    /**
+     * @interal
+     */
     public const DELEGATE = [DelegateResponseController::class, '__invoke'];
 
-    /** @interal */
+    /**
+     * @interal
+     */
     public const FALLBACK_NAME = 'sniccowp_fallback_route';
 
-    /** @interal */
+    /**
+     * @interal
+     */
     public const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
 
     /**
@@ -327,7 +333,9 @@ final class Route
         return get_object_vars($this);
     }
 
-    /** @psalm-suppress MixedAssignment */
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     public function __unserialize(array $data): void
     {
         foreach ($data as $property_name => $value) {
@@ -439,7 +447,6 @@ final class Route
     }
 
     /**
-     * @param string $key
      * @param scalar|array<scalar> $value
      * @psalm-suppress DocblockTypeContradiction
      */

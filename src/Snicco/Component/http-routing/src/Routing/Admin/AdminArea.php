@@ -17,8 +17,6 @@ interface AdminArea
 
     /**
      * The path relative to the root domain where users can log in into the admin dashboard.
-     *
-     * @return string
      */
     public function loginPath(): string;
 
@@ -26,8 +24,6 @@ interface AdminArea
      * Has to return an array where the first key is the new url path and the second
      * key is an array of key value pairs where the key is a query argument name
      * and the value is the query argument value (not urlencoded).
-     *
-     * @param string $route_pattern
      *
      * @return array{0:string, 1: array<string,string>}
      */

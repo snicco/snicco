@@ -72,7 +72,6 @@ final class EventMapper
      * other callbacks are run for the hook.
      *
      * @param class-string<MappedHook> $map_to
-     *
      */
     public function mapLast(string $wordpress_hook_name, string $map_to): void
     {

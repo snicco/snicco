@@ -54,7 +54,6 @@ final class Cookie
      *    http_only?: bool,
      *    same_site: 'Lax'|'Strict'|'None'
      * } $properties
-     *
      */
     public function __construct(string $name, string $value, ?array $properties = null)
     {

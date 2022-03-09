@@ -318,7 +318,6 @@ class Email
 
     /**
      * @param array<string,string> $headers
-     * @return Email
      */
     final public function addCustomHeaders(array $headers): Email
     {
@@ -331,7 +330,6 @@ class Email
 
     /**
      * @param array<string,string> $headers
-     * @return Email
      */
     final public function withCustomHeaders(array $headers): Email
     {

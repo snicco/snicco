@@ -478,7 +478,6 @@ final class Request implements ServerRequestInterface
      * Will return falls if any of the provided keys is missing.
      *
      * @param string|string[] $keys
-     *
      */
     public function missing($keys): bool
     {

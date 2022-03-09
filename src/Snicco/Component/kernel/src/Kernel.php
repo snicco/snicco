@@ -32,7 +32,9 @@ final class Kernel
     private Directories $dirs;
     private ConfigCache $config_cache;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private ReadOnlyConfig $read_only_config;
 
     private bool $booted = false;

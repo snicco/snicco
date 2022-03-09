@@ -11,7 +11,6 @@ interface Event
      * The name that will be used to search for matching listeners.
      * Its recommend using the fully qualified class name.
      *
-     * @return string
      * @see ClassAsName
      */
     public function name(): string;

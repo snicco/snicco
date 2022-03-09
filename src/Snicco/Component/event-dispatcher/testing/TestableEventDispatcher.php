@@ -150,9 +150,7 @@ final class TestableEventDispatcher implements EventDispatcher
      * @param string|Closure(mixed):bool $event_name
      * @param null|Closure(mixed...):bool $condition
      *
-     * @return void
      * @throws ReflectionException
-     *
      */
     public function assertNotDispatched($event_name, ?Closure $condition = null)
     {

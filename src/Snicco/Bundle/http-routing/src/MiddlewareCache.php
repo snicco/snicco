@@ -43,7 +43,6 @@ final class MiddlewareCache
         });
 
         /**
-         *
          * @var mixed $cached_value
          *
          * @psalm-suppress UnresolvableInclude

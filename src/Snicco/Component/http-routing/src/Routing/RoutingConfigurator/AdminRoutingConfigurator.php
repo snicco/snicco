@@ -40,7 +40,6 @@ interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
     ): Route;
 
     /**
-     *
      * @param Closure(AdminRoutingConfigurator):void $routes
      *
      * @throws BadRouteConfiguration

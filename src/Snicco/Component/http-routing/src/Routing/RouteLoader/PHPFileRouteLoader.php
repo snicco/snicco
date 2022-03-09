@@ -52,7 +52,6 @@ final class PHPFileRouteLoader implements RouteLoader
     /**
      * @param string[] $route_directories
      * @param string[] $api_route_directories
-     * @param RouteLoadingOptions $options
      */
     public function __construct(array $route_directories, array $api_route_directories, RouteLoadingOptions $options)
     {
@@ -156,7 +155,6 @@ final class PHPFileRouteLoader implements RouteLoader
      *
      * @throws ReflectionException
      * @psalm-suppress UnresolvableInclude
-     *
      */
     private function requireFile(string $file, array $attributes = [], bool $is_admin_file = false): Closure
     {

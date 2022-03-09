@@ -141,7 +141,9 @@ final class Browser extends AbstractBrowser
         return Request::fromPsr($psr_server_request->withQueryParams($query), $type);
     }
 
-    /** @return never */
+    /**
+     * @return never
+     */
     public function getRequest()
     {
         throw new BadMethodCallException(__METHOD__ . ' is not implemented since psr7 requests are immutable.');

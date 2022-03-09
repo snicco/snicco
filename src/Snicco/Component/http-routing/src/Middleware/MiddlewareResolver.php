@@ -80,7 +80,7 @@ final class MiddlewareResolver
     private array $route_map = [];
 
     /**
-     * @var array<'admin'|'frontend'|'api'|'global', array<array{class: class-string<MiddlewareInterface>, args: array<string>}>> $request_type_map
+     * @var array<'admin'|'frontend'|'api'|'global', array<array{class: class-string<MiddlewareInterface>, args: array<string>}>>
      */
     private array $request_map = [];
 
@@ -349,7 +349,6 @@ final class MiddlewareResolver
     }
 
     /**
-     * @param string $middleware
      * @return class-string<MiddlewareInterface>|null
      */
     private function resolveAlias(string $middleware): ?string

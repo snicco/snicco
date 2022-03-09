@@ -139,7 +139,6 @@ final class BetterWPDB
      *
      * @throws QueryException
      * @throws InvalidArgumentException
-     *
      */
     public function transactional(Closure $callback)
     {
@@ -602,7 +601,6 @@ final class BetterWPDB
 
     /**
      * @param array<string|int|float|null> $bindings
-     * @return string|null
      */
     private function paramTypes(array $bindings): ?string
     {
@@ -643,9 +641,7 @@ final class BetterWPDB
         return $b;
     }
 
-    /**
-     * @param string $table
-     */
+    
     private function validateTableName(string $table): void
     {
         if ('' === $table) {

@@ -88,8 +88,6 @@ final class ResponseUtils
 
     /**
      * Redirect to the current url.
-     *
-     * @return RedirectResponse
      */
     public function refresh(): RedirectResponse
     {

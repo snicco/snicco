@@ -149,7 +149,6 @@ final class FakeTransport implements Transport
     }
 
     /**
-     * @param string $recipient
      * @param class-string<Email> $email_class
      * @psalm-suppress UnusedClosureParam
      */
@@ -187,7 +186,6 @@ final class FakeTransport implements Transport
 
     /**
      * @param array{to: string|string[], headers:string|string[], subject:string, message:string, attachments: string|string[]} $attributes
-     * @return void
      */
     private function recordWPMail(array $attributes): void
     {
@@ -266,9 +264,6 @@ final class FakeTransport implements Transport
     }
 
     /**
-     * @param string $email_class
-     * @param Closure $condition
-     *
      * @return Email[]
      */
     private function sentEmailsThatMatchCondition(string $email_class, Closure $condition): array

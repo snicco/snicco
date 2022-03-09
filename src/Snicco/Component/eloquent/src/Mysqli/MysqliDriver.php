@@ -20,7 +20,6 @@ use function sprintf;
  * @psalm-internal Snicco\Component\Eloquent
  *
  * @interal
- *
  */
 final class MysqliDriver implements MysqliDriverInterface
 {

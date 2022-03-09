@@ -184,8 +184,6 @@ trait UserSessionDriverTests
 
     /**
      * @param array<string,SerializedSession> $user_sessions
-     *
-     * @return UserSessionsDriver
      */
     abstract protected function createUserSessionDriver(array $user_sessions): UserSessionsDriver;
 
