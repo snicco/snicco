@@ -26,6 +26,9 @@ class TestView implements View
 
     /**
      * @psalm-mutation-free
+     *
+     * @param mixed      $key
+     * @param mixed|null $value
      */
     public function with($key, $value = null): View
     {
@@ -35,6 +38,7 @@ class TestView implements View
         } else {
             $new->context[$key] = $value;
         }
+
         return $new;
     }
 

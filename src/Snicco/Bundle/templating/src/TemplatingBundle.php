@@ -46,7 +46,7 @@ final class TemplatingBundle implements Bundle
 
         foreach ($config->getListOfStrings('templating.directories') as $directory) {
             if (! is_readable($directory)) {
-                throw new InvalidArgumentException("templating.directories: Directory [$directory] is not readable.");
+                throw new InvalidArgumentException("templating.directories: Directory [{$directory}] is not readable.");
             }
         }
 
@@ -68,7 +68,6 @@ final class TemplatingBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -90,7 +89,7 @@ final class TemplatingBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }
@@ -165,6 +164,7 @@ final class TemplatingBundle implements Bundle
             if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
                 $context->add('url', fn () => $kernel->container()->make(UrlGenerator::class));
             }
+
             return $context;
         });
     }

@@ -59,13 +59,15 @@ final class StdErrLogger extends AbstractLogger
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
-            if (strpos($message, "{{$key}}") !== false) {
+            if (false !== strpos($message, "{{$key}}")) {
                 $replacements["{{$key}}"] = $this->valueToString($value);
+
                 continue;
             }
 
             if ('exception' === $key && $value instanceof Throwable) {
                 $exception = $value;
+
                 continue;
             }
 
@@ -85,7 +87,7 @@ final class StdErrLogger extends AbstractLogger
 
             foreach ($additional as $key => $value) {
                 if (is_string($key)) {
-                    $message .= "'$key' => " . $value;
+                    $message .= "'{$key}' => " . $value;
                 } else {
                     $message .= $value;
                 }
@@ -113,14 +115,18 @@ final class StdErrLogger extends AbstractLogger
     {
         if (is_scalar($value)) {
             return (string) $value;
-        } elseif ($value instanceof DateTimeInterface) {
+        }
+        if ($value instanceof DateTimeInterface) {
             return $value->format('d-M-Y H:i:s e');
-        } elseif (is_object($value)) {
+        }
+        if (is_object($value)) {
             if (method_exists($value, '__toString')) {
                 return (string) $value;
             }
+
             return 'object ' . get_class($value);
         }
+
         return gettype($value);
     }
 
@@ -151,6 +157,7 @@ final class StdErrLogger extends AbstractLogger
 
             $message .= "\n\tStack trace: \n" . $trace;
         }
+
         return $message;
     }
 }

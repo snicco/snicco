@@ -40,9 +40,18 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $this->wp_object_cache = $wp_object_cache ?: new WPCacheAPI();
     }
 
+    /**
+     * Make sure to commit before we destruct.
+     */
+    public function __destruct()
+    {
+        $this->commit();
+    }
+
     public function getItem($key): CacheItemInterface
     {
         $this->validateKey($key);
+
         return $this->internalGet($key);
     }
 
@@ -55,7 +64,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             $this->validateKey($key);
         }
 
-        /** @var array<non-empty-string,string|false> $fetched */
+        /** @var array<non-empty-string,false|string> $fetched */
         $fetched = $this->wp_object_cache->cacheGetMultiple($keys, $this->wp_cache_group);
 
         $items = [];
@@ -69,24 +78,28 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             $key = (string) $key;
             $items[$key] = $this->instantiateItem($key, $value);
         }
+
         return $items;
     }
 
     public function hasItem($key): bool
     {
         $this->validateKey($key);
+
         return $this->internalHas($key);
     }
 
     public function clear(): bool
     {
         $this->deferred_items = [];
+
         return $this->wp_object_cache->cacheFlush();
     }
 
     public function deleteItem($key): bool
     {
         $this->validateKey($key);
+
         return $this->internalDelete($key);
     }
 
@@ -99,6 +112,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
                 $deleted = false;
             }
         }
+
         return $deleted;
     }
 
@@ -129,6 +143,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             'item' => $item,
             'expiration' => $item->expirationTimestamp(),
         ];
+
         return true;
     }
 
@@ -147,15 +162,8 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             }
         }
         $this->deferred_items = [];
-        return $saved;
-    }
 
-    /**
-     * Make sure to commit before we destruct.
-     */
-    public function __destruct()
-    {
-        $this->commit();
+        return $saved;
     }
 
     /**
@@ -202,6 +210,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
                 $deleted = true;
             }
         }
+
         return $deleted;
     }
 
@@ -249,12 +258,13 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         if (! $found) {
             return WPCacheItem::miss($key);
         }
+
         return $this->instantiateItem($key, $serialized_value);
     }
 
     /**
      * @param non-empty-string $key
-     * @param mixed $serialized_value
+     * @param mixed            $serialized_value
      */
     private function instantiateItem(string $key, $serialized_value): WPCacheItem
     {
@@ -290,8 +300,10 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         }
         if ($expiration <= time()) {
             unset($this->deferred_items[$key]);
+
             return null;
         }
+
         return $item;
     }
 }

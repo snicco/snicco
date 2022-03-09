@@ -23,6 +23,9 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+/**
+ * @internal
+ */
 final class TemplatingMiddlewareTest extends TestCase
 {
     use BundleTestHelpers;

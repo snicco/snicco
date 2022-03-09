@@ -11,6 +11,9 @@ use Psr\Http\Message\UriFactoryInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 
+/**
+ * @internal
+ */
 final class CreatesPsrRequestsTests extends TestCase
 {
     use CreatesPsrRequests;

@@ -8,12 +8,15 @@ use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\Redirect\Redirect;
 
-class RedirectTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class RedirectTest extends MiddlewareTestCase
 {
     /**
      * @test
      */
-    public function testRedirectForConfiguredUrls(): void
+    public function test_redirect_for_configured_urls(): void
     {
         $middleware = $this->getMiddleware([
             301 => [

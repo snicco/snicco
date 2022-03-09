@@ -54,9 +54,9 @@ class Arr
      * @template TKey
      * @template TVal
      *
-     * @param Closure(TVal,TKey):bool | null $condition
-     * @param iterable<TKey,TVal> $array
-     * @param TVal | null $default
+     * @param Closure(TVal,TKey):bool|null $condition
+     * @param iterable<TKey,TVal>          $array
+     * @param TVal|null                    $default
      *
      * @return TVal|null
      * @psalm-return (
@@ -88,12 +88,12 @@ class Arr
      * @template T
      *
      * @param positive-int $number
-     * @param array<T> $array
-     *
-     * @return T|non-empty-list<T>
-     * @psalm-return ($number is 1 ? T : list<T>)
+     * @param array<T>     $array
      *
      * @throws InvalidArgumentException If the requested count is greater than the number of array elements
+     *
+     * @return non-empty-list<T>|T
+     * @psalm-return ($number is 1 ? T : list<T>)
      */
     public static function random(array $array, int $number = 1)
     {
@@ -109,7 +109,7 @@ class Arr
 
         if ($number > $count) {
             throw new InvalidArgumentException(
-                "You requested [$number] items, but there are only [$count] items available."
+                "You requested [{$number}] items, but there are only [{$count}] items available."
             );
         }
 
@@ -118,7 +118,7 @@ class Arr
         $results = [];
 
         foreach ((array) $keys as $key) {
-            if ($number === 1) {
+            if (1 === $number) {
                 return $array[$key];
             }
             $results[] = $array[$key];
@@ -135,6 +135,7 @@ class Arr
     public static function except(array $array, $keys): array
     {
         self::forget($array, $keys);
+
         return $array;
     }
 
@@ -142,9 +143,9 @@ class Arr
      * Remove one or many array items from a given array using "dot" notation.
      * Do not use this function if you $array is multidimensional and has keys that contain "."
      * themselves.
-     * {@see https://github.com/laravel/framework/blob/v8.35.1/tests/Support/SupportArrTest.php#L877}
+     * {@see https://github.com/laravel/framework/blob/v8.35.1/tests/Support/SupportArrTest.php#L877}.
      *
-     * @param array $array Passed by reference
+     * @param array           $array Passed by reference
      * @param string|string[] $keys
      *
      * @see
@@ -155,7 +156,7 @@ class Arr
         $keys = (array) $keys;
         self::checkAllStringKeys($keys, 'forget');
 
-        if (count($keys) === 0) {
+        if (0 === count($keys)) {
             return;
         }
 
@@ -191,8 +192,8 @@ class Arr
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param ArrayAccess|array $array
-     * @param string|int $key
+     * @param array|ArrayAccess $array
+     * @param int|string        $key
      */
     public static function exists($array, $key): bool
     {
@@ -228,7 +229,7 @@ class Arr
         foreach ($array as $item) {
             $item = is_iterable($item) ? self::arrayItems($item) : $item;
 
-            $values = ($depth === 1)
+            $values = (1 === $depth)
                 ? $item
                 : (is_iterable($item) ? self::flatten($item, $depth - 1) : $item);
 
@@ -242,6 +243,7 @@ class Arr
 
     /**
      * @template T
+     *
      * @param T $value
      * @psalm-return (T is array ? T : array{0: T})
      */
@@ -261,7 +263,7 @@ class Arr
         $keys = explode('.', $key);
 
         foreach ($keys as $i => $key) {
-            if (count($keys) === 1) {
+            if (1 === count($keys)) {
                 break;
             }
 
@@ -287,8 +289,8 @@ class Arr
     /**
      * Determine if any of the keys exist in an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
-     * @param string|non-empty-array<string> $keys
+     * @param array|ArrayAccess              $array
+     * @param non-empty-array<string>|string $keys
      */
     public static function hasAny($array, $keys): bool
     {
@@ -312,8 +314,8 @@ class Arr
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
-     * @param string|string[] $keys
+     * @param array|ArrayAccess $array
+     * @param string|string[]   $keys
      */
     public static function has($array, $keys): bool
     {
@@ -321,7 +323,7 @@ class Arr
         $keys = self::toArray($keys);
         self::checkAllStringKeys($keys, 'has');
 
-        if ($keys === [] || $array === []) {
+        if ([] === $keys || [] === $array) {
             return false;
         }
 
@@ -334,7 +336,7 @@ class Arr
 
             foreach (explode('.', $key) as $segment) {
                 if (self::accessible($sub_key_array) && self::exists($sub_key_array, $segment)) {
-                    /** @var ArrayAccess|array $sub_key_array */
+                    /** @var array|ArrayAccess $sub_key_array */
                     $sub_key_array = $sub_key_array[$segment];
                 } else {
                     return false;
@@ -348,9 +350,10 @@ class Arr
     /**
      * Get a value from the array, and remove it.
      * This function has the same limitation as Arr::forget().
-     * Check the corresponding docblock in {@see Arr::forget}
+     * Check the corresponding docblock in {@see Arr::forget}.
      *
      * @param mixed $default
+     *
      * @return mixed
      *
      * @psalm-suppress MixedAssignment
@@ -367,9 +370,9 @@ class Arr
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
-     * @param string|int $key
-     * @param mixed $default
+     * @param array|ArrayAccess $array
+     * @param int|string        $key
+     * @param mixed             $default
      *
      * @return mixed
      */
@@ -390,7 +393,7 @@ class Arr
 
         foreach (explode('.', $key) as $segment) {
             if (self::accessible($array) && self::exists($array, $segment)) {
-                /** @var ArrayAccess|array $array */
+                /** @var array|ArrayAccess $array */
                 $array = $array[$segment];
             } else {
                 return self::returnDefault($default);
@@ -419,9 +422,9 @@ class Arr
     }
 
     /**
-     * @param array|ArrayAccess|object|mixed $target
-     * @param string|string[] $key
-     * @param mixed $default
+     * @param array|ArrayAccess|mixed|object $target
+     * @param string|string[]                $key
+     * @param mixed                          $default
      *
      * @return array|mixed
      *
@@ -436,7 +439,7 @@ class Arr
         foreach ($keys as $i => $segment) {
             unset($keys[$i]);
 
-            if ($segment === '*') {
+            if ('*' === $segment) {
                 if (! is_array($target)) {
                     return self::returnDefault($default);
                 }
@@ -446,11 +449,12 @@ class Arr
                 foreach ($target as $item) {
                     $result[] = self::dataGet($item, $keys);
                 }
+
                 return in_array('*', $keys, true) ? self::collapse($result) : $result;
             }
 
             if (self::accessible($target) && self::exists($target, $segment)) {
-                /** @var ArrayAccess|array $target */
+                /** @var array|ArrayAccess $target */
                 $target = $target[$segment];
             } elseif (is_object($target) && isset($target->{$segment})) {
                 $target = $target->{$segment};
@@ -483,6 +487,7 @@ class Arr
                 $results[] = $value;
             }
         }
+
         return $results;
     }
 
@@ -502,7 +507,7 @@ class Arr
     }
 
     /**
-     * @param ArrayAccess|array $array
+     * @param array|ArrayAccess $array
      */
     private static function checkIsArray($array, string $called_method): void
     {
@@ -527,6 +532,7 @@ class Arr
         foreach ($array as $item) {
             $res[] = $item;
         }
+
         return $res;
     }
 
@@ -551,7 +557,9 @@ class Arr
     /**
      * @template TVal
      * @template Default as Closure():TVal|TVal
+     *
      * @param Default $default
+     *
      * @return TVal
      */
     private static function returnDefault($default)
@@ -559,6 +567,7 @@ class Arr
         if ($default instanceof Closure) {
             $default = $default();
         }
+
         return $default;
     }
 }

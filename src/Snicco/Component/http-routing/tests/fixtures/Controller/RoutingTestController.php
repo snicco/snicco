@@ -53,7 +53,7 @@ class RoutingTestController
 
     public function twoOptional($param1 = 'default1', string $param2 = 'default2'): string
     {
-        return "$param1:$param2";
+        return "{$param1}:{$param2}";
     }
 
     public function requiredAndOptional(
@@ -61,7 +61,7 @@ class RoutingTestController
         string $param2 = 'default1',
         string $param3 = 'default2'
     ): string {
-        return "$param1:$param2:$param3";
+        return "{$param1}:{$param2}:{$param3}";
     }
 
     public function users(int $id, string $name = 'default_user'): string
@@ -72,10 +72,10 @@ class RoutingTestController
     public function bandSong(string $band, string $song = null): string
     {
         if ($song) {
-            return "Show song [$song] of band [$band].";
+            return "Show song [{$song}] of band [{$band}].";
         }
 
-        return "Show all songs of band [$band].";
+        return "Show all songs of band [{$band}].";
     }
 
     public function onlyRequest(Request $request): string

@@ -27,7 +27,7 @@ final class MiddlewareBlueprint
 
     /**
      * @param class-string<MiddlewareInterface> $class
-     * @param array<string> $arguments
+     * @param array<string>                     $arguments
      */
     public function __construct(string $class, array $arguments = [])
     {
@@ -38,7 +38,7 @@ final class MiddlewareBlueprint
 
     /**
      * @param class-string<MiddlewareInterface> $class
-     * @param array<string> $arguments
+     * @param array<string>                     $arguments
      */
     public static function from(string $class, array $arguments = []): MiddlewareBlueprint
     {

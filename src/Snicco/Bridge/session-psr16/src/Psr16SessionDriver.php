@@ -77,7 +77,6 @@ final class Psr16SessionDriver implements SessionDriver
 
     public function gc(int $seconds_without_activity): void
     {
-        //
     }
 
     public function touch(string $selector, int $current_timestamp): void
@@ -110,24 +109,24 @@ final class Psr16SessionDriver implements SessionDriver
         }
 
         if (! is_array($payload)) {
-            throw new CouldNotReadSessionContent("Session content for id [$session_id] is not an array.");
+            throw new CouldNotReadSessionContent("Session content for id [{$session_id}] is not an array.");
         }
 
         if (! isset($payload['last_activity']) || ! is_int($payload['last_activity'])) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [last_activity] is not an integer for selector [$session_id]."
+                "Cache corrupted. [last_activity] is not an integer for selector [{$session_id}]."
             );
         }
 
         if (! isset($payload['data']) || ! is_string($payload['data'])) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [data] is not a string for selector [$session_id]."
+                "Cache corrupted. [data] is not a string for selector [{$session_id}]."
             );
         }
 
         if (! isset($payload['hashed_validator']) || ! is_string($payload['hashed_validator'])) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [hashed_validator] is not a string for selector [$session_id]."
+                "Cache corrupted. [hashed_validator] is not a string for selector [{$session_id}]."
             );
         }
 
@@ -137,7 +136,7 @@ final class Psr16SessionDriver implements SessionDriver
             (! is_string($payload['user_id']) && ! is_int($payload['user_id']) && null !== $payload['user_id'])
         ) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [user_id] is not a null,string or integer for selector [$session_id]."
+                "Cache corrupted. [user_id] is not a null,string or integer for selector [{$session_id}]."
             );
         }
 

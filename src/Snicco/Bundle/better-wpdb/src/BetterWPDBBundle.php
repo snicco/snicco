@@ -22,7 +22,6 @@ final class BetterWPDBBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -34,7 +33,6 @@ final class BetterWPDBBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string

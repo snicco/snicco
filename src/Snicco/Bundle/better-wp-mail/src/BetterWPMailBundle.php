@@ -60,7 +60,6 @@ final class BetterWPMailBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -86,9 +85,10 @@ final class BetterWPMailBundle implements Bundle
             /** @var class-string<MailRenderer>[] $renderer_names */
             $renderer_names = $kernel->config()->getListOfStrings('mail.' . MailOption::RENDERER);
             $renderers = array_map(function ($class) use ($kernel) {
-                if ($class === FilesystemRenderer::class) {
+                if (FilesystemRenderer::class === $class) {
                     return new FilesystemRenderer();
                 }
+
                 return $kernel->container()->make($class);
             }, $renderer_names);
 
@@ -155,6 +155,7 @@ final class BetterWPMailBundle implements Bundle
             } else {
                 $mail_events = $expose ? new MailEventsUsingWPHooks() : new NullEvents();
             }
+
             return $mail_events;
         });
     }
@@ -173,7 +174,7 @@ final class BetterWPMailBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }

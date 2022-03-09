@@ -10,6 +10,9 @@ use Snicco\Bundle\Session\Middleware\StatefulRequest;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Session\ImmutableSession;
 
+/**
+ * @internal
+ */
 final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 {
     /**

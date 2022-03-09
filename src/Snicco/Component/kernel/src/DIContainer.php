@@ -22,7 +22,7 @@ use Webmozart\Assert\Assert;
 abstract class DIContainer implements ArrayAccess, PsrContainer
 {
     /**
-     * After the lock method is called and method call that would change the container must throw {@see FrozenService}
+     * After the lock method is called and method call that would change the container must throw {@see FrozenService}.
      *
      * @throws FrozenService
      *
@@ -37,9 +37,9 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param callable():T $callable
+     * @param callable():T    $callable
      *
-     * @throws FrozenService When trying to overwrite an already resolved shared service.
+     * @throws FrozenService when trying to overwrite an already resolved shared service
      */
     abstract public function factory(string $id, callable $callable): void;
 
@@ -50,9 +50,9 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param callable():T $callable
+     * @param callable():T    $callable
      *
-     * @throws FrozenService When trying to overwrite an already resolved shared service.
+     * @throws FrozenService when trying to overwrite an already resolved shared service
      */
     abstract public function shared(string $id, callable $callable): void;
 
@@ -62,9 +62,9 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param T $service
+     * @param T               $service
      *
-     * @throws FrozenService When trying to overwrite an already resolved singleton.
+     * @throws FrozenService when trying to overwrite an already resolved singleton
      */
     final public function instance(string $id, object $service): void
     {
@@ -76,15 +76,16 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $offset
      *
-     * @return T
-     *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     *
+     * @return T
      */
     #[ReturnTypeWillChange]
     final public function offsetGet($offset)
     {
         Assert::stringNotEmpty($offset);
+
         return $this->make($offset);
     }
 
@@ -92,7 +93,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @template T of object
      *
      * @param class-string<T> $offset
-     * @param T|callable():T $value
+     * @param callable():T|T  $value
      */
     final public function offsetSet($offset, $value): void
     {
@@ -104,6 +105,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
              * @var Closure():object $value
              */
             $this->shared($offset, $value);
+
             return;
         }
         $this->instance($offset, $value);
@@ -114,10 +116,10 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $id
      *
-     * @return T
-     *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     *
+     * @return T
      */
     final public function make(string $id)
     {

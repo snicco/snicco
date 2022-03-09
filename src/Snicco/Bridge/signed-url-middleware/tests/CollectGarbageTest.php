@@ -16,6 +16,9 @@ use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
+/**
+ * @internal
+ */
 final class CollectGarbageTest extends MiddlewareTestCase
 {
     /**
@@ -68,12 +71,10 @@ final class CollectGarbageTest extends MiddlewareTestCase
         $storage = new class() implements SignedUrlStorage {
             public function consume(string $identifier): void
             {
-                //
             }
 
             public function store(SignedUrl $signed_url): void
             {
-                //
             }
 
             public function gc(): void

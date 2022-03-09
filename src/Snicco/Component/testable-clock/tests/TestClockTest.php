@@ -11,6 +11,9 @@ use Snicco\Component\TestableClock\TestClock;
 use function time;
 use function usleep;
 
+/**
+ * @internal
+ */
 final class TestClockTest extends TestCase
 {
     /**

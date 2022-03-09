@@ -52,7 +52,6 @@ final class DebugBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -95,6 +94,7 @@ final class DebugBundle implements Bundle
             $whoops = new Run();
             $whoops->allowQuit(false);
             $whoops->writeToOutput(false);
+
             return $whoops;
         });
 
@@ -109,12 +109,14 @@ final class DebugBundle implements Bundle
             $handler->setApplicationPaths(
                 $kernel->config()->getListOfStrings('debug.' . DebugOption::APPLICATION_PATHS)
             );
+
             return $handler;
         });
 
         $kernel->container()->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
             $whoops = $kernel->container()->make(Run::class);
             $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
+
             return new WhoopsHtmlDisplayer($whoops);
         });
 
@@ -126,6 +128,7 @@ final class DebugBundle implements Bundle
             $handler->setJsonApi(true);
 
             $whoops->pushHandler($handler);
+
             return new WhoopsJsonDisplayer($whoops);
         });
     }
@@ -139,11 +142,11 @@ final class DebugBundle implements Bundle
         $dirs = [];
 
         /**
-         * @var string $name
+         * @var string      $name
          * @var SplFileInfo $file_info
          */
         foreach ($iterator as $name => $file_info) {
-            if ($file_info->isDir() && $file_info->getBasename() !== 'vendor') {
+            if ($file_info->isDir() && 'vendor' !== $file_info->getBasename()) {
                 $dirs[] = $name;
             }
         }

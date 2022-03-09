@@ -25,6 +25,9 @@ use function rmdir;
 use function unlink;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class BundleTest
 {
     private string $fixtures_dir;
@@ -119,10 +122,10 @@ final class BundleTest
 
         /**
          * @var SplFileInfo $file_info
-         * @var string $path
+         * @var string      $path
          */
         foreach ($iterator as $path => $file_info) {
-            if ($file_info->isFile() && $file_info->getExtension() === 'php') {
+            if ($file_info->isFile() && 'php' === $file_info->getExtension()) {
                 $this->fixture_config_files[] = $path;
             }
         }
@@ -144,13 +147,14 @@ final class BundleTest
         $files = [];
 
         /**
-         * @var string $name
+         * @var string      $name
          * @var SplFileInfo $file_info
          */
         foreach ($objects as $name => $file_info) {
             if ($file_info->isDir()) {
                 continue;
-            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && ! in_array($name, $expect, true)) {
+            }
+            if ($file_info->isFile() && 'php' === $file_info->getExtension() && ! in_array($name, $expect, true)) {
                 $files[] = $name;
             }
         }
@@ -159,7 +163,7 @@ final class BundleTest
             $res = unlink($file);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [$file].");
+                throw new RuntimeException("Could not remove test fixture file [{$file}].");
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -175,7 +179,7 @@ final class BundleTest
         $files = [];
         $dirs = [];
         /**
-         * @var string $name
+         * @var string      $name
          * @var SplFileInfo $file_info
          */
         foreach ($objects as $name => $file_info) {
@@ -190,7 +194,7 @@ final class BundleTest
             $res = unlink($file);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [$file].");
+                throw new RuntimeException("Could not remove test fixture file [{$file}].");
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -201,7 +205,7 @@ final class BundleTest
             $res = rmdir($dir);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test directory [$dir].");
+                throw new RuntimeException("Could not remove test directory [{$dir}].");
                 // @codeCoverageIgnoreEnd
             }
         }

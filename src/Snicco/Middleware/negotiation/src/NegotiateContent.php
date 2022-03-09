@@ -27,7 +27,7 @@ final class NegotiateContent extends Middleware
     private array $charsets;
 
     /**
-     * @param string[] $languages
+     * @param string[]      $languages
      * @param string[]|null $charsets
      * @param null|array<
      *     string,
@@ -58,6 +58,7 @@ final class NegotiateContent extends Middleware
                 "Failed content negotiation for path [{$request->path()}]."
             );
         }
+
         return $response;
     }
 

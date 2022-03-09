@@ -17,6 +17,9 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 use function json_encode;
 
+/**
+ * @internal
+ */
 final class AssertableResponseTest extends TestCase
 {
     use CreateTestPsr17Factories;
@@ -110,7 +113,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSuccessful_can_pass(): void
+    public function test_assert_successful_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 204));
 
@@ -120,7 +123,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSuccessful_can_fail(): void
+    public function test_assert_successful_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 400));
 
@@ -133,7 +136,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSuccessful_fails_for_delegated_responses(): void
+    public function test_assert_successful_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(204));
 
@@ -146,7 +149,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertOk_can_pass(): void
+    public function test_assert_ok_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 200));
 
@@ -156,7 +159,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertOk_can_fail(): void
+    public function test_assert_ok_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 201));
 
@@ -169,7 +172,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertOK_fails_for_delegated_responses(): void
+    public function test_assert_o_k_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(200));
 
@@ -182,7 +185,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCreated_can_pass(): void
+    public function test_assert_created_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 201));
 
@@ -192,7 +195,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCreated_can_fail(): void
+    public function test_assert_created_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 204));
 
@@ -205,7 +208,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCreated_fails_for_delegated_responses(): void
+    public function test_assert_created_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(201));
 
@@ -218,7 +221,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotContent_can_pass(): void
+    public function test_assert_not_content_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->noContent());
 
@@ -228,7 +231,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNoContent_can_fail(): void
+    public function test_assert_no_content_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->noContent()->withStatus(200));
 
@@ -241,7 +244,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNoContent_fails_for_delegated_responses(): void
+    public function test_assert_no_content_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(204));
 
@@ -254,7 +257,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNoContent_fails_204_status_but_non_empty_body(): void
+    public function test_assert_no_content_fails_204_status_but_non_empty_body(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo')->withStatus(204));
 
@@ -267,7 +270,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertStatus_can_pass(): void
+    public function test_assert_status_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->createResponse(201));
 
@@ -277,7 +280,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertStatus_can_fail(): void
+    public function test_assert_status_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->createResponse(201));
 
@@ -290,7 +293,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertStatus_fails_for_delegated_responses(): void
+    public function test_assert_status_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(301));
 
@@ -303,7 +306,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotFound_can_pass(): void
+    public function test_assert_not_found_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 404));
 
@@ -313,7 +316,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotFound_can_fail(): void
+    public function test_assert_not_found_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 401));
 
@@ -326,7 +329,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotFound_fails_for_delegated_responses(): void
+    public function test_assert_not_found_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(404));
 
@@ -339,7 +342,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertForbidden_can_pass(): void
+    public function test_assert_forbidden_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 403));
 
@@ -349,7 +352,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertForbidden_can_fail(): void
+    public function test_assert_forbidden_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 401));
 
@@ -362,7 +365,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertForbidden_fails_for_delegated_responses(): void
+    public function test_assert_forbidden_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(403));
 
@@ -375,7 +378,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertUnauthorized_can_pass(): void
+    public function test_assert_unauthorized_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 401));
 
@@ -385,7 +388,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertUnauthorized_can_fail(): void
+    public function test_assert_unauthorized_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo', 403));
 
@@ -398,7 +401,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertUnauthorized_fails_for_delegated_responses(): void
+    public function test_assert_unauthorized_fails_for_delegated_responses(): void
     {
         $response = new AssertableResponse($this->response_factory->delegate()->withStatus(401));
 
@@ -411,7 +414,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertHeader_can_pass(): void
+    public function test_assert_header_can_pass(): void
     {
         $response =
             new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
@@ -450,7 +453,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertHeaderMissing_can_pass(): void
+    public function test_assert_header_missing_can_pass(): void
     {
         $response =
             new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
@@ -461,7 +464,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertHeaderMissing_can_fail(): void
+    public function test_assert_header_missing_can_fail(): void
     {
         $response =
             new AssertableResponse($this->response_factory->createResponse()->withHeader('X-FOO', 'BAR'));
@@ -480,7 +483,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertLocation_can_pass(): void
+    public function test_assert_location_can_pass(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->createResponse()->withHeader('location', '/foo/bar?baz=biz')
@@ -492,7 +495,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertLocation_can_fail(): void
+    public function test_assert_location_can_fail(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->createResponse()->withHeader('location', '/foo/bar?baz=biz')
@@ -507,7 +510,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getAssertableCookie_fails_if_set_cookie_header_is_not_present(): void
+    public function test_get_assertable_cookie_fails_if_set_cookie_header_is_not_present(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->createResponse()
@@ -522,7 +525,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getAssertableCookie_fails_if_the_cookie_is_not_present(): void
+    public function test_get_assertable_cookie_fails_if_the_cookie_is_not_present(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->createResponse()->withAddedHeader('set-cookie', 'foo=bar')
@@ -537,7 +540,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getAssertableCookie_fails_if_the_cookie_present_multiple_times(): void
+    public function test_get_assertable_cookie_fails_if_the_cookie_present_multiple_times(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->createResponse()
@@ -554,7 +557,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getAssertableCookie_can_pass_and_returns_assertable_cookie(): void
+    public function test_get_assertable_cookie_can_pass_and_returns_assertable_cookie(): void
     {
         $cookie = (new Cookie('foo', 'bar'));
         $cookies = new Cookies();
@@ -581,7 +584,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertRedirect_can_pass(): void
+    public function test_assert_redirect_can_pass(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar', 301)
@@ -595,7 +598,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertRedirect_can_fail(): void
+    public function test_assert_redirect_can_fail(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->html('foo')
@@ -624,7 +627,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertRedirectPath_can_pass(): void
+    public function test_assert_redirect_path_can_pass(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar?baz=biz', 301)
@@ -637,7 +640,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertRedirectPath_can_fail(): void
+    public function test_assert_redirect_path_can_fail(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->redirect('/foo/bar?baz=biz', 301)
@@ -657,7 +660,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertContentType_can_pass(): void
+    public function test_assert_content_type_can_pass(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->html('foo')
@@ -670,7 +673,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertContentType_can_fail(): void
+    public function test_assert_content_type_can_fail(): void
     {
         $response = new AssertableResponse(
             $this->response_factory->json([
@@ -696,7 +699,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSeeHtml_can_pass(): void
+    public function test_assert_see_html_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
 
@@ -707,7 +710,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSeeHtml_can_fail(): void
+    public function test_assert_see_html_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
 
@@ -725,7 +728,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertDontSeeHtml_can_pass(): void
+    public function test_assert_dont_see_html_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
 
@@ -736,7 +739,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertDontSeeHtml_can_fail(): void
+    public function test_assert_dont_see_html_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo</h1>'));
 
@@ -754,7 +757,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSeeText_can_pass(): void
+    public function test_assert_see_text_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
 
@@ -764,7 +767,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSeeText_can_fail(): void
+    public function test_assert_see_text_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
 
@@ -777,7 +780,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertDontSeeText_can_pass(): void
+    public function test_assert_dont_see_text_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
 
@@ -787,7 +790,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertDontSeeText_can_fail(): void
+    public function test_assert_dont_see_text_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('<h1>foo<b>bar</b></h1>'));
 
@@ -800,7 +803,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertIsHtml_can_pass(): void
+    public function test_assert_is_html_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo'));
 
@@ -810,7 +813,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertIsHtml_can_fail(): void
+    public function test_assert_is_html_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->json('foo'));
 
@@ -823,7 +826,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertIsJson_can_pass(): void
+    public function test_assert_is_json_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->json('foo'));
 
@@ -833,7 +836,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertIsJson_can_fail(): void
+    public function test_assert_is_json_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo'));
 
@@ -846,7 +849,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertBodyExact_can_pass(): void
+    public function test_assert_body_exact_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo'));
 
@@ -856,7 +859,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertBodyExact_can_fail(): void
+    public function test_assert_body_exact_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->html('foo'));
 
@@ -869,7 +872,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertJsonExact_can_pass(): void
+    public function test_assert_json_exact_can_pass(): void
     {
         $response = new AssertableResponse($this->response_factory->json([
             'foo' => 'bar',
@@ -883,7 +886,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_assertJsonExact_can_fail(): void
+    public function test_assert_json_exact_can_fail(): void
     {
         $response = new AssertableResponse($this->response_factory->json([
             'foo' => 'bar',
@@ -902,7 +905,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getPsrResponse(): void
+    public function test_get_psr_response(): void
     {
         $response = new AssertableResponse($real = $this->response_factory->html('foo'));
 
@@ -912,7 +915,7 @@ final class AssertableResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getHeader(): void
+    public function test_get_header(): void
     {
         $response = new AssertableResponse($this->response_factory->createResponse()->withHeader('foo', 'bar'));
 

@@ -7,6 +7,9 @@ namespace Snicco\Middleware\HttpsOnly\Tests;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\HttpsOnly\HttpsOnly;
 
+/**
+ * @internal
+ */
 final class HttpsOnlyTest extends MiddlewareTestCase
 {
     /**

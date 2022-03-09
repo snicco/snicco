@@ -7,12 +7,15 @@ namespace Snicco\Component\Session\Tests\ValueObject;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\ValueObject\CookiePool;
 
+/**
+ * @internal
+ */
 final class CookiePoolTest extends TestCase
 {
     /**
      * @test
      */
-    public function testFromArray(): void
+    public function test_from_array(): void
     {
         $pool = new CookiePool([
             'foo' => 'bar',
@@ -25,7 +28,7 @@ final class CookiePoolTest extends TestCase
     /**
      * @test
      */
-    public function testFromSuperGlobals(): void
+    public function test_from_super_globals(): void
     {
         $cookie = $_COOKIE;
         $_COOKIE['foo'] = 'bar';

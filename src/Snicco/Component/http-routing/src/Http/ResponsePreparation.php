@@ -20,8 +20,8 @@ use function strtolower;
 /**
  * This class represents Symfony's Response::prepare() method ported to psr7.
  *
- * @link https://github.com/symfony/http-foundation/blob/5.3/ResponseHeaderBag.php
- * @link https://github.com/symfony/http-foundation/blob/5.3/Response.php
+ * @see https://github.com/symfony/http-foundation/blob/5.3/ResponseHeaderBag.php
+ * @see https://github.com/symfony/http-foundation/blob/5.3/Response.php
  *
  * This file is part of the Symfony package.
  *
@@ -29,7 +29,6 @@ use function strtolower;
  *
  * @license https://github.com/symfony/http-foundation/blob/5.3/LICENSE
  */
-
 final class ResponsePreparation
 {
     private StreamFactoryInterface $stream_factory;
@@ -51,6 +50,7 @@ final class ResponsePreparation
         $response = $this->fixDate($response);
         $response = $this->fixCacheControl($response, $sent_headers_with_php);
         $response = $this->fixContent($response, $request);
+
         return $this->fixProtocol($response, $request);
     }
 
@@ -70,7 +70,7 @@ final class ResponsePreparation
     {
         $header = $this->getCacheControlHeader($response, $headers_sent_with_php);
 
-        if ($header === '') {
+        if ('' === $header) {
             if ($response->hasHeader('Last-Modified') || $response->hasHeader('Expires')) {
                 // allows for heuristic expiration (RFC 7234 Section 4.2.2) in the case of "Last-Modified"
                 return $response->withHeader('Cache-Control', 'private, must-revalidate');
@@ -122,12 +122,12 @@ final class ResponsePreparation
         // Fix content type
         $content_type = $response->getHeaderLine('content-type');
 
-        if ($content_type === '') {
-            $response = $response->withContentType("text/html; charset=$this->charset");
+        if ('' === $content_type) {
+            $response = $response->withContentType("text/html; charset={$this->charset}");
         } elseif (Str::startsWith($content_type, 'text/')
             && ! Str::contains($content_type, 'charset')) {
             $content_type = trim($content_type, ';');
-            $response = $response->withContentType("$content_type; charset=$this->charset");
+            $response = $response->withContentType("{$content_type}; charset={$this->charset}");
         }
 
         // Fix Content-Length, don't add if anything is buffered since we will mess up plugins that use it.

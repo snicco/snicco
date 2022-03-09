@@ -38,6 +38,11 @@ final class SignedUrl
         $this->protects = $protects;
     }
 
+    public function __toString(): string
+    {
+        return $this->link_target;
+    }
+
     public static function create(
         string $link_target,
         string $protects,
@@ -55,11 +60,6 @@ final class SignedUrl
     }
 
     public function asString(): string
-    {
-        return $this->link_target;
-    }
-
-    public function __toString(): string
     {
         return $this->link_target;
     }

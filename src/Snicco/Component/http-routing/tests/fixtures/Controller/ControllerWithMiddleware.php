@@ -22,7 +22,7 @@ class ControllerWithMiddleware extends Controller
         $this->baz = $baz;
 
         $count = $GLOBALS['test'][self::CONSTRUCTED_KEY] ?? 0;
-        $count++;
+        ++$count;
         $GLOBALS['test'][self::CONSTRUCTED_KEY] = $count;
     }
 

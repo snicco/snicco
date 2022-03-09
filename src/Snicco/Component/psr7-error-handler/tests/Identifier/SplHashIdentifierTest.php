@@ -11,6 +11,9 @@ use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use function sleep;
 use function spl_object_hash;
 
+/**
+ * @internal
+ */
 final class SplHashIdentifierTest extends TestCase
 {
     /**

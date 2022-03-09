@@ -18,8 +18,25 @@ use Illuminate\Support\Facades\Facade;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
+/**
+ * @internal
+ */
 final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+
+        $wp_eloquent = new WPEloquentStandalone();
+        $wp_eloquent->bootstrap();
+    }
+
     /**
      * @test
      */
@@ -44,13 +61,6 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $this->assertSame(MysqliConnection::CONNECTION_NAME, $connection->getName());
 
         $wpdb->prefix = 'wp_';
-    }
-
-    private function getMysqliConnection(): MysqliConnection
-    {
-        /** @var MysqliConnection $connection */
-        $connection = DB::connection();
-        return $connection;
     }
 
     /**
@@ -141,17 +151,9 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $wpdb->prefix = 'wp_';
     }
 
-    protected function setUp(): void
+    private function getMysqliConnection(): MysqliConnection
     {
-        parent::setUp();
-
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
-
-        $wp_eloquent = new WPEloquentStandalone();
-        $wp_eloquent->bootstrap();
+        /** @var MysqliConnection $connection */
+        return DB::connection();
     }
 }

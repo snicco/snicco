@@ -31,7 +31,7 @@ final class Reflector
      *
      * @psalm-assert class-string<Interface> $class_string
      *
-     * @param string|class-string $class_string
+     * @param class-string|string     $class_string
      * @param class-string<Interface> $expected_interface
      *
      * @throws InvalidArgumentException
@@ -45,7 +45,7 @@ final class Reflector
         $interface_exists = interface_exists($expected_interface);
 
         if (false === $interface_exists) {
-            throw new InvalidArgumentException("Interface [$expected_interface] does not exist.");
+            throw new InvalidArgumentException("Interface [{$expected_interface}] does not exist.");
         }
 
         if (! $class_exists) {
@@ -74,7 +74,7 @@ final class Reflector
     }
 
     /**
-     * @param Closure|class-string|array{0: class-string|object, 1: string} $callable
+     * @param array{0: class-string|object, 1: string}|class-string|Closure $callable
      *
      * @throws ReflectionException
      */
@@ -96,7 +96,8 @@ final class Reflector
     }
 
     /**
-     * @param Closure|class-string|array{0: class-string|object, 1: string} $callable
+     * @param array{0: class-string|object, 1: string}|class-string|Closure $callable
+     *
      * @throws ReflectionException
      */
     private static function reflectionFunction($callable): ReflectionFunctionAbstract

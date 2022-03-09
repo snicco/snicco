@@ -29,7 +29,7 @@ final class MiddlewarePipeline
     private ContainerInterface $container;
 
     /**
-     * @var array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>>
+     * @var array<class-string<MiddlewareInterface>|MiddlewareBlueprint|MiddlewareInterface>
      */
     private array $middleware = [];
 
@@ -53,11 +53,12 @@ final class MiddlewarePipeline
     {
         $new = clone $this;
         $new->current_request = $request;
+
         return $new;
     }
 
     /**
-     * @param array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>> $middleware
+     * @param array<class-string<MiddlewareInterface>|MiddlewareBlueprint|MiddlewareInterface> $middleware
      */
     public function through(array $middleware): MiddlewarePipeline
     {
@@ -70,6 +71,7 @@ final class MiddlewarePipeline
 
         $new = clone $this;
         $new->middleware = $middleware;
+
         return $new;
     }
 
@@ -81,6 +83,7 @@ final class MiddlewarePipeline
     {
         $new = clone $this;
         $new->request_handler = $request_handler;
+
         return $new->run();
     }
 
@@ -151,10 +154,10 @@ final class MiddlewarePipeline
     private function convertStrings(array $constructor_args): array
     {
         return array_map(function ($value) {
-            if (strtolower($value) === 'true') {
+            if ('true' === strtolower($value)) {
                 return true;
             }
-            if (strtolower($value) === 'false') {
+            if ('false' === strtolower($value)) {
                 return false;
             }
 

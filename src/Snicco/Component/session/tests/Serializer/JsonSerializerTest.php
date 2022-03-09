@@ -10,6 +10,9 @@ use Snicco\Component\Session\Serializer\JsonSerializer;
 
 use function json_encode;
 
+/**
+ * @internal
+ */
 final class JsonSerializerTest extends TestCase
 {
     /**

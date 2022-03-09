@@ -16,6 +16,9 @@ use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
+/**
+ * @internal
+ */
 final class TemplatingExceptionDisplayerTest extends TestCase
 {
     private TemplatingExceptionDisplayer $displayer;
@@ -36,7 +39,7 @@ final class TemplatingExceptionDisplayerTest extends TestCase
     /**
      * @test
      */
-    public function test_supportedContentType(): void
+    public function test_supported_content_type(): void
     {
         $this->assertSame('text/html', $this->displayer->supportedContentType());
     }
@@ -44,7 +47,7 @@ final class TemplatingExceptionDisplayerTest extends TestCase
     /**
      * @test
      */
-    public function test_isVerbose(): void
+    public function test_is_verbose(): void
     {
         $this->assertFalse($this->displayer->isVerbose());
     }
@@ -52,7 +55,7 @@ final class TemplatingExceptionDisplayerTest extends TestCase
     /**
      * @test
      */
-    public function test_canDisplay(): void
+    public function test_can_display(): void
     {
         $this->assertTrue(
             $this->displayer->canDisplay(

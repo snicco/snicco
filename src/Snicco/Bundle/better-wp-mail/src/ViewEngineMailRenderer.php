@@ -29,6 +29,7 @@ final class ViewEngineMailRenderer implements MailRenderer
     {
         try {
             $view = $this->getView($template_name);
+
             return $view->with($context)->render();
         } catch (ViewCantBeRendered $e) {
             throw new CouldNotRenderMailContent(
@@ -43,6 +44,7 @@ final class ViewEngineMailRenderer implements MailRenderer
     {
         try {
             $this->getView($template_name);
+
             return true;
         } catch (ViewNotFound $e) {
             return false;
@@ -59,6 +61,7 @@ final class ViewEngineMailRenderer implements MailRenderer
         }
         $view = $this->view_engine->make($template_name);
         $this->views[$template_name] = $view;
+
         return $view;
     }
 }

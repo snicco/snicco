@@ -9,9 +9,24 @@ use Psr\EventDispatcher\StoppableEventInterface;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 
+/**
+ * @internal
+ */
 final class PsrEventDispatcherTest extends TestCase
 {
     use AssertListenerResponse;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->resetListenersResponses();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->resetListenersResponses();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -66,18 +81,6 @@ final class PsrEventDispatcherTest extends TestCase
         $this->assertSame(3, $returned->count);
         $this->assertSame($event, $returned);
     }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->resetListenersResponses();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetListenersResponses();
-        parent::tearDown();
-    }
 }
 
 class Object1
@@ -100,6 +103,6 @@ class StoppableEvent implements StoppableEventInterface
 
     public function incrementCount(): void
     {
-        $this->count++;
+        ++$this->count;
     }
 }

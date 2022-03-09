@@ -25,7 +25,10 @@ use function unlink;
 use function wp_logout;
 use function wp_set_current_user;
 
-class CustomDirectivesTest extends WPTestCase
+/**
+ * @internal
+ */
+final class CustomDirectivesTest extends WPTestCase
 {
     protected string $blade_cache;
 
@@ -153,7 +156,7 @@ class CustomDirectivesTest extends WPTestCase
 
     protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+        $actual = preg_replace("/\r|\n|\t|\\s{2,}/", '', $actual);
 
         if (null === $actual) {
             throw new RuntimeException('preg_replcae failed in test case.');

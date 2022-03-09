@@ -94,8 +94,8 @@ final class Route
     private array $conditions = [];
 
     /**
-     * @param string|class-string|array{0: class-string, 1: string} $controller
-     * @param string[] $methods
+     * @param array{0: class-string, 1: string}|class-string|string $controller
+     * @param string[]                                              $methods
      */
     private function __construct(
         string $pattern,
@@ -111,11 +111,26 @@ final class Route
         $this->setName($name);
     }
 
+    public function __serialize(): array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * @psalm-suppress MixedAssignment
+     */
+    public function __unserialize(array $data): void
+    {
+        foreach ($data as $property_name => $value) {
+            $this->{$property_name} = $value;
+        }
+    }
+
     /**
      * @interal
      *
-     * @param string|class-string|array{0: class-string, 1: string} $controller
-     * @param string[] $methods
+     * @param array{0: class-string, 1: string}|class-string|string $controller
+     * @param string[]                                              $methods
      */
     public static function create(
         string $pattern,
@@ -208,19 +223,20 @@ final class Route
     }
 
     /**
-     * @param array<string,scalar|array<scalar>> $defaults
+     * @param array<string,array<scalar>|scalar> $defaults
      */
     public function defaults(array $defaults): Route
     {
         foreach ($defaults as $key => $value) {
             $this->addDefaultValue($key, $value);
         }
+
         return $this;
     }
 
     /**
-     * @param class-string<RouteCondition>|'!' $condition
-     * @param scalar $args
+     * @param '!'|class-string<RouteCondition> $condition
+     * @param scalar                           $args
      */
     public function condition(string $condition, ...$args): Route
     {
@@ -237,6 +253,7 @@ final class Route
         );
 
         $this->conditions[$b->class] = $b;
+
         return $this;
     }
 
@@ -246,7 +263,7 @@ final class Route
     }
 
     /**
-     * @param string|array<string> $middleware
+     * @param array<string>|string $middleware
      */
     public function middleware($middleware): Route
     {
@@ -263,7 +280,7 @@ final class Route
     }
 
     /**
-     * @param string|array<string> $segment_names
+     * @param array<string>|string $segment_names
      */
     public function requireAlpha($segment_names, bool $allow_uppercase = false): Route
     {
@@ -274,17 +291,19 @@ final class Route
         }
 
         $this->requirements($s);
+
         return $this;
     }
 
     public function requirements(array $requirements): Route
     {
         $this->addRequirements($requirements);
+
         return $this;
     }
 
     /**
-     * @param string|array<string> $segment_names
+     * @param array<string>|string $segment_names
      */
     public function requireAlphaNum($segment_names, bool $allow_uppercase = false): Route
     {
@@ -295,11 +314,12 @@ final class Route
         }
 
         $this->requirements($s);
+
         return $this;
     }
 
     /**
-     * @param string|array<string> $segment_names
+     * @param array<string>|string $segment_names
      */
     public function requireNum($segment_names): Route
     {
@@ -310,17 +330,19 @@ final class Route
         }
 
         $this->requirements($s);
+
         return $this;
     }
 
     /**
-     * @param array<string|int> $values
+     * @param array<int|string> $values
      */
     public function requireOneOf(string $segment_name, array $values): Route
     {
         $values = array_map(function ($value) {
             $value = is_int($value) ? (string) $value : $value;
             Assert::string($value);
+
             return $value;
         }, $values);
 
@@ -331,21 +353,6 @@ final class Route
         $this->addRequirements($arr);
 
         return $this;
-    }
-
-    public function __serialize(): array
-    {
-        return get_object_vars($this);
-    }
-
-    /**
-     * @psalm-suppress MixedAssignment
-     */
-    public function __unserialize(array $data): void
-    {
-        foreach ($data as $property_name => $value) {
-            $this->{$property_name} = $value;
-        }
     }
 
     private function setPattern(string $pattern): void
@@ -384,7 +391,7 @@ final class Route
     }
 
     /**
-     * @param string|class-string|array{0: class-string, 1: string} $controller
+     * @param array{0: class-string, 1: string}|class-string|string $controller
      */
     private function setController($controller): void
     {
@@ -442,7 +449,7 @@ final class Route
             Assert::notContains(
                 $name,
                 ' ',
-                "Route name for route [$name] should not contain whitespaces."
+                "Route name for route [{$name}] should not contain whitespaces."
             );
         } else {
             $name = $this->pattern . ':' . implode('@', $this->controller);
@@ -451,7 +458,7 @@ final class Route
     }
 
     /**
-     * @param scalar|array<scalar> $value
+     * @param array<scalar>|scalar $value
      * @psalm-suppress DocblockTypeContradiction
      */
     private function addDefaultValue(string $key, $value): void
@@ -469,7 +476,7 @@ final class Route
         Assert::keyNotExists(
             $this->middleware,
             $middleware_id,
-            "Middleware [$middleware_id] added twice to route [$this->name]."
+            "Middleware [{$middleware_id}] added twice to route [{$this->name}]."
         );
         $this->middleware[$middleware_id] = $m;
     }
@@ -487,7 +494,7 @@ final class Route
             Assert::keyNotExists(
                 $this->requirements,
                 $segment,
-                "Requirement for segment [$segment] can not be overwritten."
+                "Requirement for segment [{$segment}] can not be overwritten."
             );
             $this->requirements[$segment] = $regex;
         }

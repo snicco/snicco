@@ -7,6 +7,9 @@ namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use wpdb;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
 {
     private wpdb $wpdb;

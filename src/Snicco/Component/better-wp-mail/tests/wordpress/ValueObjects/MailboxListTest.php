@@ -8,6 +8,9 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 
+/**
+ * @internal
+ */
 final class MailboxListTest extends WPTestCase
 {
     /**
@@ -24,7 +27,7 @@ final class MailboxListTest extends WPTestCase
 
         $count = 0;
         foreach ($list as $key => $address) {
-            $count++;
+            ++$count;
             $this->assertIsInt($key);
             $this->assertSame($address1, $address);
         }
@@ -45,7 +48,7 @@ final class MailboxListTest extends WPTestCase
 
         $count = 0;
         foreach ($list as $key => $address) {
-            $count++;
+            ++$count;
             $this->assertIsInt($key);
             $this->assertSame($address1, $address);
         }

@@ -24,6 +24,9 @@ use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class ArrTest extends TestCase
 {
     /**
@@ -41,7 +44,6 @@ final class ArrTest extends TestCase
         $array = [
             'products.desk' => [
                 'price' => 100,
-
             ],
         ];
         $this->assertEquals([
@@ -52,7 +54,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -66,7 +67,6 @@ final class ArrTest extends TestCase
             'foo' => null,
             'bar' => [
                 'baz' => null,
-
             ],
         ];
         $this->assertNull(Arr::get($array, 'foo', 'default'));
@@ -77,7 +77,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -92,7 +91,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ]);
@@ -109,7 +107,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ]);
@@ -129,7 +126,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ]);
@@ -147,7 +143,6 @@ final class ArrTest extends TestCase
         $arrayAccessObject = new ArrayObject([
             'products' => [
                 'desk' => null,
-
             ],
         ]);
         $array = [
@@ -168,6 +163,7 @@ final class ArrTest extends TestCase
 
         // Test null key throws exception
         $array = ['foo', 'bar'];
+
         try {
             Arr::get($array, null);
             $this->fail('Expected exception to be thrown.');
@@ -198,7 +194,6 @@ final class ArrTest extends TestCase
                 [
                     'name' => 'chair',
                 ],
-
             ],
         ];
         $this->assertSame('desk', Arr::get($array, 'products.0.name'));
@@ -208,7 +203,6 @@ final class ArrTest extends TestCase
         $array = [
             'names' => [
                 'developer' => 'taylor',
-
             ],
         ];
         $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', 'dayle'));
@@ -223,7 +217,6 @@ final class ArrTest extends TestCase
         $array = [
             'foo.bar' => [
                 'bar' => 'baz',
-
             ],
         ];
         $this->assertSame([
@@ -271,7 +264,7 @@ final class ArrTest extends TestCase
     /**
      * @test
      */
-    public function test_toArray(): void
+    public function test_to_array(): void
     {
         $string = 'a';
         $array = ['a'];
@@ -437,7 +430,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -446,7 +438,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ], $array);
@@ -455,7 +446,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -468,7 +458,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -476,7 +465,6 @@ final class ArrTest extends TestCase
         $this->assertEquals([
             'products' => [
                 'desk' => [],
-
             ],
         ], $array);
 
@@ -484,7 +472,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -493,7 +480,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ], $array);
@@ -502,7 +488,6 @@ final class ArrTest extends TestCase
             'shop' => [
                 'cart' => [
                     150 => 0,
-
                 ],
             ],
         ];
@@ -511,7 +496,6 @@ final class ArrTest extends TestCase
             'shop' => [
                 'cart' => [
                     150 => 0,
-
                 ],
             ],
         ], $array);
@@ -522,7 +506,6 @@ final class ArrTest extends TestCase
                     'price' => [
                         'original' => 50,
                         'taxes' => 60,
-
                     ],
                 ],
             ],
@@ -533,7 +516,6 @@ final class ArrTest extends TestCase
                 'desk' => [
                     'price' => [
                         'original' => 50,
-
                     ],
                 ],
             ],
@@ -545,7 +527,6 @@ final class ArrTest extends TestCase
                     'price' => [
                         'original' => 50,
                         'taxes' => 60,
-
                     ],
                 ],
             ],
@@ -558,7 +539,6 @@ final class ArrTest extends TestCase
                         'price' => [
                             'original' => 50,
                             'taxes' => 60,
-
                         ],
                     ],
                 ],
@@ -571,9 +551,7 @@ final class ArrTest extends TestCase
                 'desk' => [
                     'price' => 50,
                 ],
-                null =>
-
-                 'something',
+                null => 'something',
             ],
         ];
         Arr::forget($array, ['products.amount.all', 'products.desk.price']);
@@ -581,7 +559,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [],
                 null => 'something',
-
             ],
         ], $array);
 
@@ -603,7 +580,6 @@ final class ArrTest extends TestCase
                 ],
                 'jane@localhost' => [
                     'name' => 'Jane',
-
                 ],
             ],
         ];
@@ -612,7 +588,6 @@ final class ArrTest extends TestCase
             'emails' => [
                 'joe@example.com' => [
                     'name' => 'Joe',
-
                 ],
             ],
         ], $array);
@@ -662,7 +637,6 @@ final class ArrTest extends TestCase
             'baz' => [
                 'biz' => 'boo',
                 'bang' => 'boom',
-
             ],
         ];
 
@@ -675,7 +649,6 @@ final class ArrTest extends TestCase
                 'foo' => 'bar',
                 'baz' => [
                     'bang' => 'boom',
-
                 ],
             ],
             Arr::except($array, 'baz.biz')
@@ -686,7 +659,6 @@ final class ArrTest extends TestCase
                 'foo' => 'bar',
                 'baz' => [
                     'biz' => 'boo',
-
                 ],
             ],
             Arr::except($array, ['name', 'baz.bang'])
@@ -698,7 +670,6 @@ final class ArrTest extends TestCase
             'baz' => [
                 'biz' => 'boo',
                 'bang' => 'boom',
-
             ],
         ]);
     }
@@ -748,7 +719,6 @@ final class ArrTest extends TestCase
             '#foo', new ArrayObject([
                 '#bar', [
                     'foo' => '#zap',
-
                 ], ]), ], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arr::flatten($array));
     }
@@ -762,7 +732,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -771,7 +740,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-
                 ],
             ],
         ], $array);
@@ -785,7 +753,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-
                 ],
             ],
         ], $array);
@@ -798,7 +765,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-
                 ],
             ],
         ], $array);
@@ -807,7 +773,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -816,18 +781,15 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
-            'table'
-             => 500,
+            'table' => 500,
         ], $array);
 
         $array = [
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -837,12 +799,10 @@ final class ArrTest extends TestCase
                 'products' => [
                     'desk' => [
                         'price' => 100,
-
                     ],
                 ],
                 'table' => [
-                    'price'
-                     => 350,
+                    'price' => 350,
                 ],
             ],
             $array
@@ -854,7 +814,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 200,
-
                 ],
             ],
         ], $array);
@@ -868,7 +827,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 300,
-
                 ],
             ],
         ], $array);
@@ -905,7 +863,6 @@ final class ArrTest extends TestCase
             'emails' => [
                 'joe@example.com' => 'Joe',
                 'jane@localhost' => 'Jane',
-
             ],
         ];
         $name = Arr::pull($array, 'emails.joe@example.com');
@@ -915,7 +872,6 @@ final class ArrTest extends TestCase
                 'emails' => [
                     'joe@example.com' => 'Joe',
                     'jane@localhost' => 'Jane',
-
                 ],
             ],
             $array
@@ -930,7 +886,6 @@ final class ArrTest extends TestCase
         $array = [
             'products.desk' => [
                 'price' => 100,
-
             ],
         ];
         $this->assertTrue(Arr::has($array, 'products.desk'));
@@ -939,7 +894,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -952,7 +906,6 @@ final class ArrTest extends TestCase
             'foo' => null,
             'bar' => [
                 'baz' => null,
-
             ],
         ];
         $this->assertTrue(Arr::has($array, 'foo'));
@@ -985,7 +938,6 @@ final class ArrTest extends TestCase
             'products' => [
                 'desk' => [
                     'price' => 100,
-
                 ],
             ],
         ];
@@ -1046,7 +998,6 @@ final class ArrTest extends TestCase
             'foo' => [
                 'bar' => null,
                 'baz' => '',
-
             ],
         ];
         $this->assertTrue(Arr::hasAny($array, 'foo.bar'));
@@ -1094,7 +1045,6 @@ final class ArrTest extends TestCase
                 'bar' => [
                     'bar' => 'baz',
                     'boo' => 'biz',
-
                 ],
             ],
             Arr::mergeRecursive(
@@ -1102,14 +1052,12 @@ final class ArrTest extends TestCase
                     'foo' => [
                         'bar' => 'baz',
                         'boo' => 'biz',
-
                     ],
                 ],
                 [
                     'bar' => [
                         'bar' => 'baz',
                         'boo' => 'biz',
-
                     ],
                 ]
             )
@@ -1130,7 +1078,6 @@ final class ArrTest extends TestCase
                         'bar' => 'baz',
                         'boo' => 'biz',
                         'bang' => 'boom',
-
                     ],
                 ],
                 [
@@ -1138,7 +1085,6 @@ final class ArrTest extends TestCase
                         'bar' => ['biz'],
                         'boo' => 'baz',
                         'foo' => 'bar',
-
                     ],
                 ]
             )
@@ -1149,12 +1095,11 @@ final class ArrTest extends TestCase
      * @test
      * @psalm-suppress InvalidScalarArgument
      */
-    public function testDataGet(): void
+    public function test_data_get(): void
     {
         $object = (object) [
             'users' => [
                 'name' => ['Taylor', 'Otwell'],
-
             ],
         ];
         $array = [
@@ -1162,14 +1107,12 @@ final class ArrTest extends TestCase
                 'users' => [
                     (object) [
                         'name' => 'Taylor',
-
                     ], ],
             ], ];
         $dottedArray = [
             'users' => [
                 'first.name' => 'Taylor',
                 'middle.name' => null,
-
             ],
         ];
         $arrayAccess = new SupportTestArrayAccess(
@@ -1216,7 +1159,7 @@ final class ArrTest extends TestCase
     /**
      * @test
      */
-    public function test_dataGet_with_nested_array(): void
+    public function test_data_get_with_nested_array(): void
     {
         $array = [
             [
@@ -1253,8 +1196,7 @@ final class ArrTest extends TestCase
                     'last' => 'rees',
                 ],
             ],
-            'posts'
- => null,
+            'posts' => null,
         ];
 
         $this->assertEquals(['taylor', 'abigail', 'dayle'], Arr::dataGet($array, 'users.*.first'));
@@ -1269,7 +1211,7 @@ final class ArrTest extends TestCase
     /**
      * @test
      */
-    public function test_dataGet_with_nested_array_collapses_result(): void
+    public function test_data_get_with_nested_array_collapses_result(): void
     {
         $array = [
             'posts' => [
@@ -1283,7 +1225,6 @@ final class ArrTest extends TestCase
                             'author' => 'abigail',
                             'likes' => 3,
                         ],
-
                     ],
                 ],
                 [
@@ -1295,7 +1236,6 @@ final class ArrTest extends TestCase
                         [
                             'author' => 'dayle',
                         ],
-
                     ],
                 ],
                 [
@@ -1305,10 +1245,8 @@ final class ArrTest extends TestCase
                         ],
                         [
                             'author' => 'taylor',
-                            'likes' =>
-                            1,
+                            'likes' => 1,
                         ],
-
                     ],
                 ],
             ],
@@ -1330,8 +1268,8 @@ final class ArrTest extends TestCase
      * @template TKey
      * @template TVal
      *
-     * @param TKey $key
-     * @param TVal $val
+     * @param TKey                    $key
+     * @param TVal                    $val
      * @param Closure(TVal,TKey):bool $closure
      */
     private function test_psalm($key, $val, Closure $closure): bool
@@ -1350,7 +1288,8 @@ class SupportTestArrayAccess implements ArrayAccess
     }
 
     /**
-     * @param string|int $offset
+     * @param int|string $offset
+     *
      * @return bool
      */
     #[ReturnTypeWillChange]
@@ -1360,7 +1299,8 @@ class SupportTestArrayAccess implements ArrayAccess
     }
 
     /**
-     * @param string|int $offset
+     * @param int|string $offset
+     *
      * @return mixed
      */
     #[ReturnTypeWillChange]
@@ -1370,8 +1310,8 @@ class SupportTestArrayAccess implements ArrayAccess
     }
 
     /**
-     * @param string|int $offset
-     * @param mixed $value
+     * @param int|string $offset
+     * @param mixed      $value
      */
     #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
@@ -1380,7 +1320,7 @@ class SupportTestArrayAccess implements ArrayAccess
     }
 
     /**
-     * @param string|int $offset
+     * @param int|string $offset
      */
     #[ReturnTypeWillChange]
     public function offsetUnset($offset)

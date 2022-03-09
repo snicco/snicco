@@ -58,6 +58,9 @@ final class PHPView implements View
 
     /**
      * @psalm-mutation-free
+     *
+     * @param mixed      $key
+     * @param mixed|null $value
      */
     public function with($key, $value = null): View
     {
@@ -67,6 +70,7 @@ final class PHPView implements View
         } else {
             $new->context[$key] = $value;
         }
+
         return $new;
     }
 
@@ -100,7 +104,7 @@ final class PHPView implements View
 
         if (false === $data) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Cant read file contents of view [$this->filepath].");
+            throw new RuntimeException("Cant read file contents of view [{$this->filepath}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -110,7 +114,7 @@ final class PHPView implements View
 
         if (false === $match) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_match failed on string [$scope]");
+            throw new RuntimeException("preg_match failed on string [{$scope}]");
             // @codeCoverageIgnoreEnd
         }
         if (0 === $match) {

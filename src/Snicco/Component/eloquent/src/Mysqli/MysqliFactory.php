@@ -39,6 +39,7 @@ final class MysqliFactory
             if (! $success) {
                 throw new RuntimeException('Cant reconnect to wpdb.');
             }
+
             return $wp->mysqli();
         };
     }

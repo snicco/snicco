@@ -18,9 +18,7 @@ return [
         //        dirname(__DIR__).'/templates'
     ],
 
-    /*
-     * A list of different factories that will be used in the given order to load templates.
-     */
+    // A list of different factories that will be used in the given order to load templates.
     TemplatingOption::VIEW_FACTORIES => [
         PHPViewFactory::class,
     ],

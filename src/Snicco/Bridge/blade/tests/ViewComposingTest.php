@@ -8,7 +8,10 @@ use Snicco\Component\Templating\View\View;
 
 use function trim;
 
-class ViewComposingTest extends BladeTestCase
+/**
+ * @internal
+ */
+final class ViewComposingTest extends BladeTestCase
 {
     /**
      * @test
@@ -59,6 +62,7 @@ class ViewComposingTest extends BladeTestCase
     private function renderView(string $view): string
     {
         $view = $this->view_engine->make($view);
+
         return $view->render();
     }
 }

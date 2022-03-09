@@ -14,6 +14,7 @@ final class SessionNoCache implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
+
         return $response->withHeader('cache-control', 'max-age=0, must-revalidate, private');
     }
 }

@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
+/**
+ * @internal
+ */
 final class UrlGenerationContextTest extends TestCase
 {
     /**

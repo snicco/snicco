@@ -20,6 +20,9 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
+/**
+ * @internal
+ */
 final class MiddlewareTest extends TestCase
 {
     use CreateTestPsr17Factories;
@@ -53,6 +56,7 @@ final class MiddlewareTest extends TestCase
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 $url = $this->url()->to('/foo');
+
                 return $this->responseFactory()->html($url);
             }
         };
@@ -202,6 +206,7 @@ final class MiddlewareTest extends TestCase
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 $url = $this->url()->to('/foo');
+
                 return $this->responseFactory()->html($url);
             }
         };
@@ -224,6 +229,7 @@ final class MiddlewareTest extends TestCase
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 $url = $this->url()->to('/foo');
+
                 return $this->responseFactory()->html($url);
             }
         };

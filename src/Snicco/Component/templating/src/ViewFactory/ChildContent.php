@@ -23,6 +23,7 @@ final class ChildContent
     {
         OutputBuffer::start();
         ($this->content)();
+
         return OutputBuffer::get();
     }
 }

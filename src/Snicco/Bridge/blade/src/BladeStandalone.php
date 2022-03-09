@@ -29,7 +29,7 @@ final class BladeStandalone
     private array $view_directories;
 
     /**
-     * @var Container|Application
+     * @var Application|Container
      */
     private $illuminate_container;
 
@@ -83,7 +83,7 @@ final class BladeStandalone
         Blade::if('guest', fn () => ! $wp->isUserLoggedIn());
 
         Blade::if('role', function (string $expression) use ($wp) {
-            if ($expression === 'admin') {
+            if ('admin' === $expression) {
                 $expression = 'administrator';
             }
             $user = $wp->currentUser();
@@ -95,6 +95,7 @@ final class BladeStandalone
                 )) {
                 return true;
             }
+
             return false;
         });
     }
@@ -112,6 +113,7 @@ final class BladeStandalone
                 $config = new Fluent();
                 $config['view.compiled'] = $this->view_cache_directory;
                 $config['view.paths'] = $this->view_directories;
+
                 return $config;
             });
         }
@@ -129,8 +131,7 @@ final class BladeStandalone
         );
         $this->illuminate_container->bindIf(Factory::class, function (): Factory {
             /** @var Factory $view */
-            $view = $this->illuminate_container->make('view');
-            return $view;
+            return $this->illuminate_container->make('view');
         });
         $this->illuminate_container->bindIf(Application::class, function (): DummyApplication {
             return new DummyApplication();

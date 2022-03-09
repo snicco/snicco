@@ -8,7 +8,10 @@ use InvalidArgumentException;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
 
-class OpenRedirectProtectionTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class OpenRedirectProtectionTest extends MiddlewareTestCase
 {
     /**
      * @test

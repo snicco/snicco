@@ -10,6 +10,9 @@ use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_delete_Test extends BetterWPDBTestCase
 {
     /**

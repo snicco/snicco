@@ -19,6 +19,7 @@ final class NewableRouteConditionFactory implements RouteConditionFactory
         if ($blueprint->is_negated) {
             return new NegatedRouteCondition($instance);
         }
+
         return $instance;
     }
 }

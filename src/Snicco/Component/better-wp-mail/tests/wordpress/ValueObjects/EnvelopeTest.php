@@ -10,6 +10,9 @@ use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 
+/**
+ * @internal
+ */
 final class EnvelopeTest extends WPTestCase
 {
     /**

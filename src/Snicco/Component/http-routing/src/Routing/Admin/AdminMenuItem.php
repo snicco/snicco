@@ -160,8 +160,9 @@ final class AdminMenuItem
     public function parentSlug(): UrlPath
     {
         if (! $this->parent_slug) {
-            throw new LogicException("Menu item [$this->menu_slug] does not have a parent item.");
+            throw new LogicException("Menu item [{$this->menu_slug}] does not have a parent item.");
         }
+
         return UrlPath::fromString($this->parent_slug);
     }
 

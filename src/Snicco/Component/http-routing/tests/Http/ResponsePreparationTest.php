@@ -10,7 +10,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
-class ResponsePreparationTest extends TestCase
+/**
+ * @internal
+ */
+final class ResponsePreparationTest extends TestCase
 {
     use CreateTestPsr17Factories;
 

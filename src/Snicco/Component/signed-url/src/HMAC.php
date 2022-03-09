@@ -33,6 +33,7 @@ final class HMAC
             throw new RuntimeException('Could not generate a hash.');
             // @codeCoverageIgnoreEnd
         }
+
         return $hashed;
     }
 }

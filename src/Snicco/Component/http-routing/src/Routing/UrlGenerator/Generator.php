@@ -63,17 +63,16 @@ final class Generator implements UrlGenerator
         try {
             return $this->toRoute('login', $arguments, $type, true);
         } catch (RouteNotFound $e) {
-            //
         }
+
         try {
             return $this->toRoute('auth.login', $arguments, $type, true);
         } catch (RouteNotFound $e) {
-            //
         }
+
         try {
             return $this->toRoute('framework.auth.login', $arguments, $type, true);
         } catch (RouteNotFound $e) {
-            //
         }
 
         return $this->to($this->admin_area->loginPath(), $arguments, $type, true);
@@ -138,11 +137,12 @@ final class Generator implements UrlGenerator
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * @param array<string,string|int> $extra
+     * @param array<string,int|string> $extra
      */
     private function generate(
         string $path,
@@ -172,7 +172,7 @@ final class Generator implements UrlGenerator
 
         $target = $path . $query_string . $fragment;
 
-        if ($type === self::ABSOLUTE_PATH) {
+        if (self::ABSOLUTE_PATH === $type) {
             return $target;
         }
 
@@ -193,12 +193,12 @@ final class Generator implements UrlGenerator
         $query_string = '';
         $fragment = '';
 
-        if ($query_pos !== false) {
+        if (false !== $query_pos) {
             $path = Str::substr($path_with_query_and_fragment, 0, $query_pos);
             $query_string = Str::substr($path_with_query_and_fragment, $query_pos + 1);
         }
 
-        if ($fragment_pos !== false) {
+        if (false !== $fragment_pos) {
             $path = Str::substr($path_with_query_and_fragment, 0, $fragment_pos);
             $fragment = Str::substr($path_with_query_and_fragment, $fragment_pos + 1);
         }
@@ -225,10 +225,9 @@ final class Generator implements UrlGenerator
         parse_str($existing_query_string, $existing_query);
 
         /** @var array<string,string> $existing_query */
-
         $query = array_merge($existing_query, $extra_query_args);
 
-        if ($query === []) {
+        if ([] === $query) {
             return '';
         }
 
@@ -261,12 +260,12 @@ final class Generator implements UrlGenerator
     {
         $port = '';
 
-        if ($scheme === 'https') {
-            if ($this->context->httpsPort() !== 443) {
+        if ('https' === $scheme) {
+            if (443 !== $this->context->httpsPort()) {
                 $port = ':' . (string) $this->context->httpsPort();
             }
-        } elseif ($scheme === 'http') {
-            if ($this->context->httpPort() !== 80) {
+        } elseif ('http' === $scheme) {
+            if (80 !== $this->context->httpPort()) {
                 $port = ':' . (string) $this->context->httpPort();
             }
         }
@@ -275,7 +274,7 @@ final class Generator implements UrlGenerator
     }
 
     /**
-     * @param string[] $segments
+     * @param string[]             $segments
      * @param array<string,string> $requirements
      * @param array<string,string> $provided_arguments
      */
@@ -323,6 +322,7 @@ final class Generator implements UrlGenerator
 
     /**
      * @param array<string,mixed> $extra
+     *
      * @return array<string,string>
      */
     private function toStringValues(array $extra): array
@@ -336,6 +336,7 @@ final class Generator implements UrlGenerator
                     )
                 );
             }
+
             return (string) $value;
         }, $extra);
     }

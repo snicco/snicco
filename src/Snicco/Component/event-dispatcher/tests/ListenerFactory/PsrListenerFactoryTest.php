@@ -10,6 +10,9 @@ use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class PsrListenerFactoryTest extends TestCase
 {
     /**

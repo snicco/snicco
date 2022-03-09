@@ -13,6 +13,9 @@ use stdClass;
 
 use function sprintf;
 
+/**
+ * @internal
+ */
 final class NewableInstanceViewComposerFactoryTest extends TestCase
 {
     /**

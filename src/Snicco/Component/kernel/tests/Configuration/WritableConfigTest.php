@@ -9,7 +9,10 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 
-class WritableConfigTest extends TestCase
+/**
+ * @internal
+ */
+final class WritableConfigTest extends TestCase
 {
     private WritableConfig $config;
 
@@ -30,7 +33,7 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function test_setIfMissing(): void
+    public function test_set_if_missing(): void
     {
         $this->config->set('foo', null);
         $this->config->setIfMissing('foo', 'bar');
@@ -470,7 +473,7 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function test_getString(): void
+    public function test_get_string(): void
     {
         $config = WritableConfig::fromArray([
             'foo' => 'bar',
@@ -489,7 +492,7 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function test_getInteger(): void
+    public function test_get_integer(): void
     {
         $config = WritableConfig::fromArray([
             'foo' => 'bar',
@@ -508,7 +511,7 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function test_getBoolean(): void
+    public function test_get_boolean(): void
     {
         $config = WritableConfig::fromArray([
             'foo' => true,
@@ -527,7 +530,7 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function test_getListOfString(): void
+    public function test_get_list_of_string(): void
     {
         $config = WritableConfig::fromArray([
             'routes' => [
@@ -581,7 +584,7 @@ class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function test_getArray(): void
+    public function test_get_array(): void
     {
         $config = WritableConfig::fromArray([
             'routes' => [

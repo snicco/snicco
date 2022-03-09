@@ -17,6 +17,8 @@ use function dirname;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class ResponsePostProcessorTest extends TestCase
 {

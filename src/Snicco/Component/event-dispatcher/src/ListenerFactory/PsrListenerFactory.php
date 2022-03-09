@@ -21,8 +21,7 @@ final class PsrListenerFactory implements ListenerFactory
     {
         try {
             /** @var object $class */
-            $class = $this->psr_container->get($listener_class);
-            return $class;
+            return $this->psr_container->get($listener_class);
         } catch (ContainerExceptionInterface $e) {
             throw CantCreateListener::fromPrevious($listener_class, $event_name, $e);
         }

@@ -17,12 +17,10 @@ final class AllEnvBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        //
     }
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string

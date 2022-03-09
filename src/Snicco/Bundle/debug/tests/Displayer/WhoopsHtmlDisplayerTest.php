@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Debug\Displayer\WhoopsHtmlDisplayer;
 use Whoops\Run;
 
+/**
+ * @internal
+ */
 final class WhoopsHtmlDisplayerTest extends TestCase
 {
     /**

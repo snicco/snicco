@@ -50,6 +50,7 @@ final class FakeTransport implements Transport
                 // @codeCoverageIgnoreEnd
             }
             $this->recordWPMail($args[1]);
+
             return false;
         }, PHP_INT_MAX, 1000);
     }
@@ -112,7 +113,7 @@ final class FakeTransport implements Transport
     /**
      * @template T
      *
-     * @param class-string<T> $email_class
+     * @param class-string<T>               $email_class
      * @param Closure(T,Envelope):bool|null $closure
      */
     public function assertSent(string $email_class, ?Closure $closure = null): void
@@ -201,7 +202,7 @@ final class FakeTransport implements Transport
         $site_url = $this->wp->siteUrl();
         $site_name = parse_url($site_url, PHP_URL_HOST);
         if (! is_string($site_name)) {
-            throw new RuntimeException("Cant parse site url [$site_url].");
+            throw new RuntimeException("Cant parse site url [{$site_url}].");
         }
         if ('www.' === substr($site_name, 0, 4)) {
             $site_name = substr($site_name, 4);
@@ -209,20 +210,20 @@ final class FakeTransport implements Transport
         $from = 'wordpress@' . ((string) $site_name);
 
         foreach (($headers) as $header) {
-            if (strpos($header, 'Cc:') !== false) {
+            if (false !== strpos($header, 'Cc:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $carbon_copies[] = Mailbox::create($matches['value']);
             }
-            if (strpos($header, 'Bcc:') !== false) {
+            if (false !== strpos($header, 'Bcc:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $blind_carbon_copies[] = Mailbox::create($matches['value']);
             }
 
-            if (strpos($header, 'From:') !== false) {
+            if (false !== strpos($header, 'From:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $from = $matches['value'];
             }
-            if (strpos($header, 'Reply-To:') !== false) {
+            if (false !== strpos($header, 'Reply-To:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $reply_to[] = Mailbox::create($matches['value']);
             }
@@ -273,7 +274,7 @@ final class FakeTransport implements Transport
         }
 
         foreach ($this->sent_mails[$email_class] as $mail_data) {
-            if ($condition($mail_data[0], $mail_data[1]) === true) {
+            if (true === $condition($mail_data[0], $mail_data[1])) {
                 $matching[] = $mail_data[0];
             }
         }

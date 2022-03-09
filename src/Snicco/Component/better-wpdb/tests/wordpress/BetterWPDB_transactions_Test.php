@@ -13,6 +13,9 @@ use Snicco\Component\BetterWPDB\QueryLogger;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 {
     /**

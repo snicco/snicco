@@ -12,6 +12,9 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @internal
+ */
 final class ConfigLoaderTest extends TestCase
 {
     use CreateTestContainer;

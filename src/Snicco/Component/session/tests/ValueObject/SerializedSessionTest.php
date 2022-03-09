@@ -11,12 +11,15 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 use function serialize;
 use function time;
 
+/**
+ * @internal
+ */
 final class SerializedSessionTest extends TestCase
 {
     /**
      * @test
      */
-    public function test_fromString(): void
+    public function test_from_string(): void
     {
         $serialized_session = SerializedSession::fromString(
             $as_string = serialize([
@@ -32,7 +35,7 @@ final class SerializedSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_lastActivity(): void
+    public function test_last_activity(): void
     {
         $data = SerializedSession::fromString(
             'foo',
@@ -61,7 +64,7 @@ final class SerializedSessionTest extends TestCase
      * @test
      * @psalm-suppress InvalidScalarArgument
      */
-    public function test_userId(): void
+    public function test_user_id(): void
     {
         $session = SerializedSession::fromString(
             'foo',

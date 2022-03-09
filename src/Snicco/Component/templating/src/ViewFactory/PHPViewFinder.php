@@ -48,7 +48,8 @@ final class PHPViewFinder
                 return $path;
             }
         }
-        throw new ViewNotFound("No file can be found for view name [$view_name].");
+
+        throw new ViewNotFound("No file can be found for view name [{$view_name}].");
     }
 
     /**
@@ -66,6 +67,7 @@ final class PHPViewFinder
 
     /**
      * @param list<string> $directories
+     *
      * @return list<string>
      */
     private function normalize(array $directories): array
@@ -76,9 +78,10 @@ final class PHPViewFinder
     private function normalizeViewName(string $view_name): string
     {
         $name = strstr($view_name, '.php', true);
-        $name = ($name === false) ? $view_name : $name;
+        $name = (false === $name) ? $view_name : $name;
 
         $name = trim($name, '/');
+
         return str_replace('.', '/', $name);
     }
 }

@@ -19,6 +19,9 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class BetterWPCacheBundleTest extends TestCase
 {
     use BundleTestHelpers;

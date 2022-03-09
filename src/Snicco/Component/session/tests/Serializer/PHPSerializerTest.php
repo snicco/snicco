@@ -10,6 +10,9 @@ use Snicco\Component\Session\Serializer\PHPSerializer;
 
 use function serialize;
 
+/**
+ * @internal
+ */
 final class PHPSerializerTest extends TestCase
 {
     /**

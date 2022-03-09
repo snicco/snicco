@@ -72,7 +72,7 @@ abstract class BladeTestCase extends TestCase
 
     protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+        $actual = preg_replace("/\r|\n|\t|\\s{2,}/", '', $actual);
 
         if (null === $actual) {
             throw new RuntimeException('preg_replace failed in test case assertion.');

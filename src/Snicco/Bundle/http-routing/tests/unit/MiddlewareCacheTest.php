@@ -26,6 +26,8 @@ use function is_file;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class MiddlewareCacheTest extends TestCase
 {

@@ -11,6 +11,9 @@ use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class EventDispatcherWithContainerTest extends TestCase
 {
     /**

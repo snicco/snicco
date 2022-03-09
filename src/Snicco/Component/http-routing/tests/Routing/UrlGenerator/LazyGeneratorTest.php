@@ -18,6 +18,8 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 /**
  * @psalm-suppress DocblockTypeContradiction
+ *
+ * @internal
  */
 final class LazyGeneratorTest extends TestCase
 {
@@ -38,7 +40,7 @@ final class LazyGeneratorTest extends TestCase
     public function test_to_works(): void
     {
         $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
+            ++$this->constructed;
 
             return new Generator(
                 new RouteCollection([]),
@@ -71,7 +73,7 @@ final class LazyGeneratorTest extends TestCase
     public function test_to_route_works(): void
     {
         $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
+            ++$this->constructed;
 
             $route = Route::create('/foo', Route::DELEGATE, 'foo');
 
@@ -95,10 +97,10 @@ final class LazyGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function test_toLogin_works(): void
+    public function test_to_login_works(): void
     {
         $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
+            ++$this->constructed;
 
             return new Generator(
                 new RouteCollection(),

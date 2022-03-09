@@ -42,7 +42,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
     {
         try {
             $session = $this->db->selectRow(
-                "select data, user_id, last_activity, hashed_validator from `$this->table_name` where `selector` = ?",
+                "select data, user_id, last_activity, hashed_validator from `{$this->table_name}` where `selector` = ?",
                 [$selector]
             );
         } catch (NoMatchingRowFound $e) {
@@ -65,7 +65,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
         ];
 
         $this->db->preparedQuery(
-            "insert into `$this->table_name` 
+            "insert into `{$this->table_name}` 
                  (selector, hashed_validator, last_activity,data, user_id) 
                  values (?,?,?,?,?) ON DUPLICATE KEY UPDATE data = VALUES(data) , last_activity = VALUES(last_activity), user_id = VALUES(user_id)",
             $data
@@ -77,20 +77,19 @@ final class WPDBSessionDriver implements UserSessionsDriver
         $count = count($selectors);
         $placeholders = rtrim(str_repeat('?,', $count), ',');
 
-        $this->db->preparedQuery("delete from `$this->table_name`where selector in ($placeholders)", $selectors);
+        $this->db->preparedQuery("delete from `{$this->table_name}`where selector in ({$placeholders})", $selectors);
     }
 
     public function gc(int $seconds_without_activity): void
     {
         $must_be_newer_than = $this->clock->currentTimestamp() - $seconds_without_activity;
 
-        $this->db->preparedQuery("delete from `$this->table_name` where last_activity <= ?", [$must_be_newer_than]);
+        $this->db->preparedQuery("delete from `{$this->table_name}` where last_activity <= ?", [$must_be_newer_than]);
     }
 
     public function touch(string $selector, int $current_timestamp): void
     {
         /** @var non-empty-string $selector */
-
         $rows = $this->db->updateByPrimary(
             $this->table_name,
             [
@@ -108,7 +107,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
 
     public function destroyAll(): void
     {
-        $this->db->unprepared("delete from `$this->table_name`");
+        $this->db->unprepared("delete from `{$this->table_name}`");
     }
 
     public function destroyAllForUserId($user_id): void
@@ -121,14 +120,14 @@ final class WPDBSessionDriver implements UserSessionsDriver
     public function destroyAllForUserIdExcept(string $selector, $user_id): void
     {
         $this->db->preparedQuery(
-            "delete from `$this->table_name` where user_id = ? and selector != ? ",
+            "delete from `{$this->table_name}` where user_id = ? and selector != ? ",
             [$user_id, $selector]
         );
     }
 
     public function getAllForUserId($user_id): iterable
     {
-        $sessions = $this->db->selectAll("select * from $this->table_name where user_id = ?", [$user_id]);
+        $sessions = $this->db->selectAll("select * from {$this->table_name} where user_id = ?", [$user_id]);
         $sorted = [];
 
         /**
@@ -143,6 +142,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
         foreach ($sessions as $session) {
             $sorted[$session['selector']] = $this->instantiate($session);
         }
+
         return $sorted;
     }
 
@@ -150,7 +150,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
     {
         // make user_id a varchar(16) to allow the binary form of a UUID
         $this->db->unprepared(
-            "create table if not exists `$this->table_name` (
+            "create table if not exists `{$this->table_name}` (
             `selector` char(24) not null,
             `hashed_validator` char(64) not null,
             `data` text not null,
@@ -179,7 +179,6 @@ final class WPDBSessionDriver implements UserSessionsDriver
          *     hashed_validator: string
          * } $data
          */
-
         $user_id = $data['user_id'];
 
         $user_id = is_numeric($user_id) ? (int) $user_id : $user_id;

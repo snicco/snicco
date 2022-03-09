@@ -55,6 +55,7 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
     {
         try {
             $this->getView($exception_information);
+
             return true;
         } catch (ViewNotFound $e) {
             return false;
@@ -72,12 +73,12 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
         if (! isset($this->views[$information->identifier()])) {
             $status = (string) $information->statusCode();
             $possible_views = array_filter([
-                $is_admin ? "$status-admin" : null,
-                $is_admin ? "errors.$status-admin" : null,
-                $is_admin ? "exceptions.$status-admin" : null,
+                $is_admin ? "{$status}-admin" : null,
+                $is_admin ? "errors.{$status}-admin" : null,
+                $is_admin ? "exceptions.{$status}-admin" : null,
                 $status,
-                "errors.$status",
-                "exceptions.$status",
+                "errors.{$status}",
+                "exceptions.{$status}",
             ]);
             $this->views[$information->identifier()] = $this->engine->make($possible_views);
         }

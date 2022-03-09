@@ -24,8 +24,7 @@ class WPCacheAPI extends BetterWPAPI
     public function cacheGetMultiple(array $keys, string $group = '', bool $force_reload = false): array
     {
         /** @var array<string,mixed> $res */
-        $res = wp_cache_get_multiple($keys, $group, $force_reload);
-        return $res;
+        return wp_cache_get_multiple($keys, $group, $force_reload);
     }
 
     public function cacheFlush(): bool

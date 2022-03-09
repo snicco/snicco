@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Snicco\Bundle\Encryption\Option\EncryptionOption;
 
 return [
-
     /*
      * The value of this option is HIGHLY SENSITIVE. Please read the following instructions carefully.
      *
@@ -24,5 +23,4 @@ return [
      * This value SHOULD NEVER EVER EVER EVER be committed into version control.
      */
     EncryptionOption::KEY_ASCII => 'this-key-will-throw-an-exception',
-
 ];

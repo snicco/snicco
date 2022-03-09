@@ -14,6 +14,9 @@ use function dirname;
 use function file_get_contents;
 use function fopen;
 
+/**
+ * @internal
+ */
 final class EmailTest extends WPTestCase
 {
     protected function setUp(): void
@@ -127,7 +130,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_returnPath(): void
+    public function test_return_path(): void
     {
         $email = new Email();
 
@@ -141,7 +144,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_replyTo(): void
+    public function test_reply_to(): void
     {
         $email = new Email();
 
@@ -214,7 +217,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_attachBinary(): void
+    public function test_attach_binary(): void
     {
         $email = new Email();
 
@@ -284,7 +287,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_embedBinary(): void
+    public function test_embed_binary(): void
     {
         $email = new Email();
 
@@ -377,7 +380,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_htmlBody(): void
+    public function test_html_body(): void
     {
         $email = new Email();
         $this->assertNull($email->htmlBody());
@@ -390,7 +393,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_textBody(): void
+    public function test_text_body(): void
     {
         $email = new Email();
         $this->assertNull($email->textBody());

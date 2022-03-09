@@ -78,6 +78,7 @@ final class PHPFileRouteLoader implements RouteLoader
             // because users are expected to register the fallback route there.
             if (self::FRONTEND_ROUTE_FILENAME === $name) {
                 $frontend_routes = $path;
+
                 continue;
             }
 
@@ -165,7 +166,7 @@ final class PHPFileRouteLoader implements RouteLoader
         Assert::isInstanceOf(
             $closure,
             Closure::class,
-            "Route file [$file] did not return a closure."
+            "Route file [{$file}] did not return a closure."
         );
 
         $this->validateClosureTypeHint(
@@ -179,6 +180,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
     /**
      * @param string[] $route_directories
+     *
      * @return array<string,string>
      */
     private function getFiles(array $route_directories): array
@@ -228,6 +230,7 @@ final class PHPFileRouteLoader implements RouteLoader
                         $value,
                         'Middleware for route-loading options has to be an array of strings.'
                     );
+
                     break;
                 case RoutingConfigurator::PREFIX_KEY:
                     Assert::string($value);
@@ -239,6 +242,7 @@ final class PHPFileRouteLoader implements RouteLoader
                             RoutingConfigurator::PREFIX_KEY
                         )
                     );
+
                     break;
                 case RoutingConfigurator::NAMESPACE_KEY:
                     Assert::stringNotEmpty(
@@ -248,6 +252,7 @@ final class PHPFileRouteLoader implements RouteLoader
                             RoutingConfigurator::NAMESPACE_KEY
                         )
                     );
+
                     break;
                 case RoutingConfigurator::NAME_KEY:
                     Assert::stringNotEmpty(
@@ -257,9 +262,10 @@ final class PHPFileRouteLoader implements RouteLoader
                             RoutingConfigurator::NAME_KEY
                         )
                     );
+
                     break;
                 default:
-                    throw new InvalidArgumentException("The option [$key] is not supported.");
+                    throw new InvalidArgumentException("The option [{$key}] is not supported.");
             }
         }
     }
@@ -289,11 +295,11 @@ final class PHPFileRouteLoader implements RouteLoader
         );
 
         if ($is_admin_file) {
-            if ($name === WebRoutingConfigurator::class) {
+            if (WebRoutingConfigurator::class === $name) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
         } else {
-            if ($name === AdminRoutingConfigurator::class) {
+            if (AdminRoutingConfigurator::class === $name) {
                 throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
             }
         }
@@ -312,8 +318,10 @@ final class PHPFileRouteLoader implements RouteLoader
 
         if (1 === $res) {
             Assert::keyExists($match, 1);
+
             return [Str::beforeFirst($filename, self::VERSION_FLAG), $match[1]];
         }
+
         return [$filename, null];
     }
 }

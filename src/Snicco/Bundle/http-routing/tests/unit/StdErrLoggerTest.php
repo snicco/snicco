@@ -20,6 +20,9 @@ use function is_file;
 use function touch;
 use function unlink;
 
+/**
+ * @internal
+ */
 final class StdErrLoggerTest extends TestCase
 {
     private string $prev_error_log;
@@ -315,6 +318,7 @@ final class StdErrLoggerTest extends TestCase
         if (false === $content) {
             throw new RuntimeException('Could not get log content.');
         }
+
         return $content;
     }
 }

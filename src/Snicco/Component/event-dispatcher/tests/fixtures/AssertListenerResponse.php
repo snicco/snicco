@@ -24,19 +24,19 @@ trait AssertListenerResponse
         Assert::assertArrayHasKey(
             $event,
             $GLOBALS['test']['sniccowp_listeners'],
-            "No listeners were called for the event [$event]."
+            "No listeners were called for the event [{$event}]."
         );
 
         Assert::assertArrayHasKey(
             $key,
             $GLOBALS['test']['sniccowp_listeners'][$event],
-            "No listeners with key [$key] were called for the event [$event]."
+            "No listeners with key [{$key}] were called for the event [{$event}]."
         );
 
         Assert::assertSame(
             $expected,
             $actual = $GLOBALS['test']['sniccowp_listeners'][$event][$key],
-            "The response from the listener with key [$key] was [$actual]. Expected: [$expected]."
+            "The response from the listener with key [{$key}] was [{$actual}]. Expected: [{$expected}]."
         );
     }
 
@@ -46,7 +46,7 @@ trait AssertListenerResponse
             Assert::assertArrayNotHasKey(
                 $key,
                 $GLOBALS['test']['sniccowp_listeners'][$event],
-                "The listener with key [$key] was run."
+                "The listener with key [{$key}] was run."
             );
         } else {
             $this->assertTrue(true);

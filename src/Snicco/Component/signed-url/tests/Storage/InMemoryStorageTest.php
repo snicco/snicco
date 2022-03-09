@@ -10,6 +10,9 @@ use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 use Snicco\Component\SignedUrl\Testing\SignedUrlStorageTests;
 use Snicco\Component\TestableClock\Clock;
 
+/**
+ * @internal
+ */
 final class InMemoryStorageTest extends TestCase
 {
     use SignedUrlStorageTests;

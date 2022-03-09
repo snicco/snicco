@@ -23,6 +23,7 @@ final class Cookies
     {
         $new = clone $this;
         $new->response_cookies[$cookie->name] = $cookie;
+
         return $new;
     }
 

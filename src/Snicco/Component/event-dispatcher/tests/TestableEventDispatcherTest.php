@@ -16,6 +16,9 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class TestableEventDispatcherTest extends TestCase
 {
     use AssertListenerResponse;

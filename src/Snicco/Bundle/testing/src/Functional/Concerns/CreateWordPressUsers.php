@@ -48,24 +48,25 @@ trait CreateWordPressUsers
             ], $args)
         );
         Assert::isInstanceOf($user, WP_User::class);
+
         return $user;
     }
 
     /**
-     * @param WP_User|int $user
+     * @param int|WP_User $user
      */
     final protected function assertUserExists($user): void
     {
         $id = $user instanceof WP_User ? $user->ID : $user;
-        PHPUnit::assertInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [$id] does not exist.");
+        PHPUnit::assertInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [{$id}] does not exist.");
     }
 
     /**
-     * @param WP_User|int $user
+     * @param int|WP_User $user
      */
     final protected function assertUserDoesntExists($user): void
     {
         $id = $user instanceof WP_User ? $user->ID : $user;
-        PHPUnit::assertNotInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [$id] does exist.");
+        PHPUnit::assertNotInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [{$id}] does exist.");
     }
 }

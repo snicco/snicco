@@ -19,6 +19,8 @@ use function var_export;
 
 /**
  * @psalm-suppress UnresolvableInclude
+ *
+ * @internal
  */
 final class DefaultsAreCopiedTest extends TestCase
 {

@@ -32,10 +32,11 @@ final class ConfigLoader
             /** @psalm-suppress UnresolvableInclude */
             $items = require $path;
             if (! is_array($items)) {
-                throw new InvalidArgumentException("Reading the [$name] config did not return an array.");
+                throw new InvalidArgumentException("Reading the [{$name}] config did not return an array.");
             }
             $config[$name] = $items;
         }
+
         return $config;
     }
 
@@ -53,7 +54,7 @@ final class ConfigLoader
             if (
                 $file_info->isFile()
                 && $file_info->isReadable()
-                && $file_info->getExtension() === 'php'
+                && 'php' === $file_info->getExtension()
             ) {
                 $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
             }

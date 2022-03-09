@@ -27,8 +27,8 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
                 $file_basename,
                 PHPFileRouteLoader::VERSION_FLAG
             );
-            $file_basename = $_name . ".v$parsed_version";
-            $prefix = (string) $this->api_base_prefix->append($_name)->append("v$parsed_version");
+            $file_basename = $_name . ".v{$parsed_version}";
+            $prefix = (string) $this->api_base_prefix->append($_name)->append("v{$parsed_version}");
         } else {
             $prefix = $this->api_base_prefix->append($file_basename)->asString();
         }
@@ -57,6 +57,7 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
         if (PHPFileRouteLoader::FRONTEND_ROUTE_FILENAME === $file_basename) {
             $att[RoutingConfigurator::MIDDLEWARE_KEY] = [RoutingConfigurator::FRONTEND_MIDDLEWARE];
         }
+
         return $att;
     }
 }

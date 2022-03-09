@@ -8,7 +8,10 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class RouteSegmentsTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteSegmentsTest extends HttpRunnerTestCase
 {
     /**
      * @test

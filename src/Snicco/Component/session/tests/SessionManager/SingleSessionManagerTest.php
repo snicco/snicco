@@ -13,6 +13,9 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\TestableClock\TestClock;
 
+/**
+ * @internal
+ */
 final class SingleSessionManagerTest extends TestCase
 {
     use SessionHelpers;
@@ -48,7 +51,7 @@ final class SingleSessionManagerTest extends TestCase
     /**
      * @test
      */
-    public function test_toCookie(): void
+    public function test_to_cookie(): void
     {
         $manager = new SingleSessionSessionManager($this->getSessionManager());
 

@@ -21,6 +21,9 @@ use Snicco\Component\TestableClock\TestClock;
 use function sleep;
 use function time;
 
+/**
+ * @internal
+ */
 final class Psr16SessionDriverTest extends TestCase
 {
     use SessionDriverTests;

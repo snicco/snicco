@@ -12,6 +12,9 @@ use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\Routing\RouteLoader\PHPFileRouteLoaderTest;
 
+/**
+ * @internal
+ */
 final class IncludingRoutesTest extends HttpRunnerTestCase
 {
     /**

@@ -47,6 +47,7 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
             /** @var HttpErrorHandler error_handler */
             $this->error_handler = $this->psr_container->get(HttpErrorHandler::class);
         }
+
         return $this->error_handler->handle($e, $request);
     }
 }

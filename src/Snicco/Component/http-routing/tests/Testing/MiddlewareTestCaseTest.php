@@ -21,12 +21,15 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestResult;
 
-class MiddlewareTestCaseTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class MiddlewareTestCaseTest extends MiddlewareTestCase
 {
     /**
      * @test
      */
-    public function testResponseIsTestResponse(): void
+    public function test_response_is_test_response(): void
     {
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -44,7 +47,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasCalled_can_pass(): void
+    public function assert_next_was_called_can_pass(): void
     {
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -63,7 +66,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasCalled_can_fail(): void
+    public function assert_next_was_called_can_fail(): void
     {
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -87,7 +90,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasNotCalled_can_pass(): void
+    public function assert_next_was_not_called_can_pass(): void
     {
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -106,7 +109,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasNotCalled_can_fail(): void
+    public function assert_next_was_not_called_can_fail(): void
     {
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -173,6 +176,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 $response = $next($request);
+
                 return $response->withHeader('foo', 'bar');
             }
         };
@@ -209,7 +213,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextMiddlewareCalled_still_works_with_custom_responses(): void
+    public function assert_next_middleware_called_still_works_with_custom_responses(): void
     {
         $this->withNextMiddlewareResponse(function () {
             return $this->responseFactory()->html('foo');
@@ -231,7 +235,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextMiddlewareCalled_works_if_the_middleware_under_test_generated_a_custom_responses(): void
+    public function assert_next_middleware_called_works_if_the_middleware_under_test_generated_a_custom_responses(): void
     {
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -259,6 +263,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
                 if ($request->isGet()) {
                     $next($request);
                 }
+
                 return $this->responseFactory()->html('foo');
             }
         };
@@ -297,7 +302,7 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function test_withRoutes(): void
+    public function test_with_routes(): void
     {
         $this->withRoutes([Route::create('/foo', Route::DELEGATE, 'r1')]);
 

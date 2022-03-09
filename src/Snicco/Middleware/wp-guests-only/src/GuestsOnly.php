@@ -43,12 +43,12 @@ final class GuestsOnly extends Middleware
 
         if ($this->redirect_to) {
             return $this->respondWith()->redirectTo($this->redirect_to);
-        } else {
-            try {
-                return $this->respondWith()->redirectToRoute('dashboard');
-            } catch (RouteNotFound $e) {
-                return $this->respondWith()->redirectHome();
-            }
+        }
+
+        try {
+            return $this->respondWith()->redirectToRoute('dashboard');
+        } catch (RouteNotFound $e) {
+            return $this->respondWith()->redirectHome();
         }
     }
 }

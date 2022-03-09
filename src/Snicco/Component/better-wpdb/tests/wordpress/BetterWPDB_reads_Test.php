@@ -14,6 +14,9 @@ use stdClass;
 
 use function array_keys;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_reads_Test extends WPTestCase
 {
     private BetterWPDB $better_wpdb;
@@ -80,7 +83,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
      * @test
      * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
-    public function test_selectAll(): void
+    public function test_select_all(): void
     {
         $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int) values('foo', 1)",
@@ -113,7 +116,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectLazy(): void
+    public function test_select_lazy(): void
     {
         $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
@@ -136,7 +139,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
             $this->assertIsString($row['test_string']);
             $this->assertIsFloat($row['test_float']);
             $this->assertSame(1, $row['test_bool']);
-            $count++;
+            ++$count;
         }
 
         $this->assertSame(2, $count);
@@ -145,7 +148,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectRow(): void
+    public function test_select_row(): void
     {
         $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
@@ -179,7 +182,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectRow_returns_first_row_for_multiple_matches(): void
+    public function test_select_row_returns_first_row_for_multiple_matches(): void
     {
         $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
@@ -202,7 +205,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectValue(): void
+    public function test_select_value(): void
     {
         $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_int, test_float, test_bool) values('foo', 1, 10.00, true )",
@@ -343,7 +346,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectAll_is_logged(): void
+    public function test_select_all_is_logged(): void
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
@@ -361,7 +364,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectRow_is_logged(): void
+    public function test_select_row_is_logged(): void
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
@@ -384,7 +387,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectValue_is_logged(): void
+    public function test_select_value_is_logged(): void
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
@@ -407,7 +410,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_selectExists_is_logged(): void
+    public function test_select_exists_is_logged(): void
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);

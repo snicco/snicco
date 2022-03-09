@@ -26,6 +26,9 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class BetterWPMailBundleTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -269,6 +272,5 @@ class CustomTransport implements Transport
 {
     public function send(Email $email, Envelope $envelope): void
     {
-        //
     }
 }

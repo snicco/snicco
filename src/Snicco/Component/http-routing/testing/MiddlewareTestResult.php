@@ -24,12 +24,14 @@ final class MiddlewareTestResult
     public function assertNextMiddlewareCalled(): MiddlewareTestResult
     {
         PHPUnit::assertTrue($this->next_middleware_called, 'The next middleware was not called.');
+
         return $this;
     }
 
     public function assertNextMiddlewareNotCalled(): MiddlewareTestResult
     {
         PHPUnit::assertFalse($this->next_middleware_called, 'The next middleware was called.');
+
         return $this;
     }
 

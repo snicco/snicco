@@ -25,20 +25,21 @@ final class SessionId
         $this->validator = $verifier;
     }
 
+    public function __toString()
+    {
+        return $this->asString();
+    }
+
     public static function fromCookieId(string $session_id_from_cookie): SessionId
     {
         $parts = explode('|', $session_id_from_cookie, 2);
+
         return new SessionId($parts[0] ?? '', $parts[1] ?? '');
     }
 
     public static function new(): SessionId
     {
         return new SessionId('', '');
-    }
-
-    public function __toString()
-    {
-        return $this->asString();
     }
 
     public function asString(): string
@@ -68,6 +69,7 @@ final class SessionId
     {
         $selector = Base64UrlSafe::encode(random_bytes(16));
         $validator = Base64UrlSafe::encode(random_bytes(16));
+
         return [
             $selector,
             $validator,

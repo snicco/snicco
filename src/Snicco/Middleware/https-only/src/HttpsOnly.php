@@ -36,7 +36,8 @@ final class HttpsOnly extends Middleware
 
             /**
              * transport security header is ignored for http access, so we don't set it here.
-             * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
+             *
+             * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
              */
             $location = $uri->withScheme('https')->__toString();
 

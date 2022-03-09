@@ -22,7 +22,10 @@ use function json_encode;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
-class ResponseFactoryTest extends TestCase
+/**
+ * @internal
+ */
+final class ResponseFactoryTest extends TestCase
 {
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
@@ -83,7 +86,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_response(): void
+    public function test_to_response_for_response(): void
     {
         $response = $this->factory->createResponse();
         $result = $this->factory->toResponse($response);
@@ -93,7 +96,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_psr7_response(): void
+    public function test_to_response_for_psr7_response(): void
     {
         $response = $this->psrResponseFactory()->createResponse();
         $result = $this->factory->toResponse($response);
@@ -104,7 +107,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_string(): void
+    public function test_to_response_for_string(): void
     {
         $response = $this->factory->toResponse('foo');
         $this->assertInstanceOf(Response::class, $response);
@@ -116,7 +119,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_array(): void
+    public function test_to_response_for_array(): void
     {
         $input = [
             'foo' => 'bar',
@@ -134,7 +137,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_stdclass(): void
+    public function test_to_response_for_stdclass(): void
     {
         $input = new stdClass();
         $input->foo = 'bar';
@@ -150,7 +153,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_responseable(): void
+    public function test_to_response_for_responseable(): void
     {
         $class = new class() implements Responsable {
             public function toResponsable()
@@ -170,7 +173,7 @@ class ResponseFactoryTest extends TestCase
      * @test
      * @psalm-suppress InvalidScalarArgument
      */
-    public function toResponse_throws_an_exception_if_no_response_can_be_created(): void
+    public function to_response_throws_an_exception_if_no_response_can_be_created(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->toResponse(1);
@@ -179,7 +182,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_noContent(): void
+    public function test_no_content(): void
     {
         $response = $this->factory->noContent();
 
@@ -230,7 +233,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_createStreamFromFile(): void
+    public function test_create_stream_from_file(): void
     {
         $stream = $this->factory->createStreamFromFile(dirname(__DIR__) . '/fixtures/stream/foo.txt');
         $this->assertSame(3, $stream->getSize());
@@ -240,7 +243,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_createStreamFromResource(): void
+    public function test_create_stream_from_resource(): void
     {
         $file = dirname(__DIR__) . '/fixtures/stream/foo.txt';
         /** @psalm-suppress PossiblyFalseArgument */

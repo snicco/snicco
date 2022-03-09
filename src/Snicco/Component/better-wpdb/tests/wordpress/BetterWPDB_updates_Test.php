@@ -11,6 +11,9 @@ use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_updates_Test extends BetterWPDBTestCase
 {
     /**
@@ -18,7 +21,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_updateByPrimary_with_empty_table_name_throws_exception(): void
+    public function test_update_by_primary_with_empty_table_name_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
@@ -33,7 +36,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidScalarArgument
      */
-    public function test_updateByPrimary_empty_string_primary_key_throws_exception(): void
+    public function test_update_by_primary_empty_string_primary_key_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('empty-string');
@@ -48,7 +51,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidScalarArgument
      */
-    public function test_updateByPrimary_throws_exception_for_non_string_array_key(): void
+    public function test_update_by_primary_throws_exception_for_non_string_array_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('empty-string');
@@ -63,7 +66,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_updateByPrimary_throws_exception_for_empty_string_array_key(): void
+    public function test_update_by_primary_throws_exception_for_empty_string_array_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('empty-string');
@@ -80,7 +83,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidScalarArgument
      */
-    public function test_updateByPrimary_throws_exception_non_string_key_change(): void
+    public function test_update_by_primary_throws_exception_non_string_key_change(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('empty-string');
@@ -93,7 +96,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_updateByPrimary_throws_exception_for_empty_string_key_change(): void
+    public function test_update_by_primary_throws_exception_for_empty_string_key_change(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('empty-string');
@@ -108,7 +111,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_updateByPrimary_throws_exception_for_non_scalar_changes_value(): void
+    public function test_update_by_primary_throws_exception_for_non_scalar_changes_value(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
@@ -123,7 +126,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_updateByPrimary_throws_exception_for_empty_changes(): void
+    public function test_update_by_primary_throws_exception_for_empty_changes(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('empty array');
@@ -134,7 +137,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_updateByPrimary_with_scalar_primary_key(): void
+    public function test_update_by_primary_with_scalar_primary_key(): void
     {
         $this->better_wpdb->insert('test_table', [
             'test_string' => 'foo',
@@ -163,7 +166,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_updateByPrimary_with_array_primary_key(): void
+    public function test_update_by_primary_with_array_primary_key(): void
     {
         $this->better_wpdb->insert('test_table', [
             'test_string' => 'foo',
@@ -452,7 +455,7 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_updateByPrimary_is_logged(): void
+    public function test_update_by_primary_is_logged(): void
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);

@@ -105,6 +105,7 @@ final class FactorySessionManager implements SessionManager
     private function parseSessionId(CookiePool $cookie_pool): SessionId
     {
         $id = $cookie_pool->get($this->config->cookieName()) ?? '';
+
         return SessionId::fromCookieId($id);
     }
 
@@ -137,6 +138,7 @@ final class FactorySessionManager implements SessionManager
         } catch (BadSessionID $e) {
             $session = ReadWriteSession::createEmpty($this->clock->currentTimestamp());
         }
+
         return $session;
     }
 
@@ -174,6 +176,7 @@ final class FactorySessionManager implements SessionManager
             throw new RuntimeException('Could not hash session id.');
             // @codeCoverageIgnoreEnd
         }
+
         return $hash;
     }
 }

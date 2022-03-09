@@ -10,6 +10,9 @@ use Snicco\Component\HttpRouting\Http\Cookies;
 
 use function urlencode;
 
+/**
+ * @internal
+ */
 final class CookiesTest extends TestCase
 {
     /**

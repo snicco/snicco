@@ -18,6 +18,9 @@ use Snicco\Component\TestableClock\TestClock;
 use function sleep;
 use function time;
 
+/**
+ * @internal
+ */
 final class Psr16StorageTest extends TestCase
 {
     use SignedUrlStorageTests;
@@ -83,6 +86,7 @@ final class Psr16StorageTest extends TestCase
                 if ($this->should_fail) {
                     return false;
                 }
+
                 return parent::set($key, $value, $ttl);
             }
         };

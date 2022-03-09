@@ -95,30 +95,33 @@ final class Psr17FactoryDiscovery
      *
      * @param class-string<T> $class
      *
-     * @return T
-     *
      * @throws ReflectionException
+     *
+     * @return T
      */
     private function getFactory(string $class): object
     {
         if (isset($this->factories[$class])) {
             /** @var T $factory */
-            $factory = $this->factories[$class];
-            return $factory;
+            return $this->factories[$class];
         }
 
         switch ($class) {
             case ServerRequestFactoryInterface::class :
                 $index = 'server_request';
+
                 break;
             case UploadedFileFactoryInterface::class:
                 $index = 'uploaded_file';
+
                 break;
             case StreamFactoryInterface::class:
                 $index = 'stream';
+
                 break;
             case UriFactoryInterface::class:
                 $index = 'uri';
+
                 break;
             default:
                 $index = 'response';

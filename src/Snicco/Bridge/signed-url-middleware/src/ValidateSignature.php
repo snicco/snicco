@@ -20,14 +20,14 @@ final class ValidateSignature implements MiddlewareInterface
     private SignedUrlValidator $validator;
 
     /**
-     * @var Closure(ServerRequestInterface):string | null
+     * @var Closure(ServerRequestInterface):string|null
      */
     private ?Closure $request_context;
 
     private bool $check_only_unsafe_methods;
 
     /**
-     * @param Closure(ServerRequestInterface):string | null $request_context
+     * @param Closure(ServerRequestInterface):string|null $request_context
      */
     public function __construct(
         SignedUrlValidator $validator,

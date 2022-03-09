@@ -94,6 +94,7 @@ final class Router
                 $this->admin_area
             );
         }
+
         return $this->url_matcher;
     }
 
@@ -109,6 +110,7 @@ final class Router
                 );
             });
         }
+
         return $this->url_generator;
     }
 
@@ -117,6 +119,7 @@ final class Router
         if (! isset($this->routes)) {
             $this->routes = new SerializedRouteCollection($this->routeData()['route_collection']);
         }
+
         return $this->routes;
     }
 
@@ -136,6 +139,7 @@ final class Router
                 $this->admin_area->urlPrefix(),
             );
         }
+
         return $this->routing_configurator;
     }
 
@@ -174,6 +178,7 @@ final class Router
         foreach ($routes as $route) {
             $serialized_routes[$route->getName()] = serialize($route);
             $path = $syntax->convert($route);
+
             try {
                 $collector->addRoute($route->getMethods(), $path, $route->getName());
             } catch (BadRouteException $e) {

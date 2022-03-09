@@ -35,7 +35,7 @@ final class OpenRedirectProtection extends Middleware
     {
         $parsed = parse_url($host, PHP_URL_HOST);
         if (! is_string($parsed) || '' === $parsed) {
-            throw new InvalidArgumentException("Invalid host [$host].");
+            throw new InvalidArgumentException("Invalid host [{$host}].");
         }
         $this->host = $parsed;
         $this->exit_path = $exit_path;

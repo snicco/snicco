@@ -88,7 +88,7 @@ trait SignedUrlStorageTests
             PHPUnit::fail('Decrementing a used signed url below 0 should throw an exception');
         } catch (BadIdentifier $e) {
             PHPUnit::assertStringStartsWith(
-                "The identifier [$id] does not exist",
+                "The identifier [{$id}] does not exist",
                 $e->getMessage()
             );
         }
@@ -112,7 +112,7 @@ trait SignedUrlStorageTests
             PHPUnit::fail('Expected exception to be thrown');
         } catch (BadIdentifier $e) {
             PHPUnit::assertStringStartsWith(
-                "The identifier [$signature] does not exist",
+                "The identifier [{$signature}] does not exist",
                 $e->getMessage()
             );
         }

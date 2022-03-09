@@ -91,8 +91,9 @@ final class PHPViewFactory implements ViewFactory
     }
 
     /**
-     * @return never
      * @throws ViewCantBeRendered
+     *
+     * @return never
      */
     private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
     {

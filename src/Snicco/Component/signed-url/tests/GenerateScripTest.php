@@ -10,6 +10,9 @@ use function dirname;
 use function ob_get_clean;
 use function ob_start;
 
+/**
+ * @internal
+ */
 final class GenerateScripTest extends TestCase
 {
     /**

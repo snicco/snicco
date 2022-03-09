@@ -11,6 +11,9 @@ use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackHtmlDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 
+/**
+ * @internal
+ */
 final class FallbackHtmlDisplayerTest extends TestCase
 {
     /**

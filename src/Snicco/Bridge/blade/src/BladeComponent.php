@@ -17,6 +17,6 @@ abstract class BladeComponent extends IlluminateComponent
     {
         $view = str_replace('components.', '', $view);
 
-        return "components.$view";
+        return "components.{$view}";
     }
 }

@@ -12,7 +12,10 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class GeneratorTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class GeneratorTest extends HttpRunnerTestCase
 {
     protected string $app_domain = 'foobar.com';
 
@@ -220,7 +223,7 @@ class GeneratorTest extends HttpRunnerTestCase
         $m = rawurlencode('münchen');
         $d = rawurlencode('düsseldorf');
 
-        $this->assertSame("/$m/$d", $this->generator()->to('münchen/düsseldorf'));
+        $this->assertSame("/{$m}/{$d}", $this->generator()->to('münchen/düsseldorf'));
     }
 
     /**
@@ -254,7 +257,7 @@ class GeneratorTest extends HttpRunnerTestCase
     }
 
     /**
-     * REVERSE ROUTING
+     * REVERSE ROUTING.
      */
 
     /**
@@ -718,7 +721,7 @@ class GeneratorTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function test_toLogin_with_named_login_route(): void
+    public function test_to_login_with_named_login_route(): void
     {
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('login', '/login1');
@@ -740,7 +743,7 @@ class GeneratorTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function test_toLogin_with_named_auth_login_route(): void
+    public function test_to_login_with_named_auth_login_route(): void
     {
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('auth.login', '/login2');

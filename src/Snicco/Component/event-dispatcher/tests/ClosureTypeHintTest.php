@@ -12,6 +12,8 @@ use stdClass;
 /**
  * @psalm-suppress UnusedClosureParam
  * @psalm-suppress MissingClosureParamType
+ *
+ * @internal
  */
 final class ClosureTypeHintTest extends TestCase
 {

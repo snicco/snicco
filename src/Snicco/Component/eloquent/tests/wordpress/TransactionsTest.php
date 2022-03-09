@@ -19,7 +19,10 @@ use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
-class TransactionsTest extends WPTestCase
+/**
+ * @internal
+ */
+final class TransactionsTest extends WPTestCase
 {
     use WPDBTestHelpers;
 
@@ -29,6 +32,27 @@ class TransactionsTest extends WPTestCase
      * transaction.
      */
     private mysqli $verification_connection;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+
+        $this->removeWpBrowserTransaction();
+        $this->verification_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        (new WPEloquentStandalone())->bootstrap();
+        $this->createInitialTable();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->dropInitialTable();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -60,26 +84,6 @@ class TransactionsTest extends WPTestCase
         DB::commit();
 
         $this->assertTeamExists('FC Barcelona');
-    }
-
-    private function assertTeamNotExists(string $team_name): void
-    {
-        $result = $this->verification_connection->query(
-            "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
-        );
-        $count = $result->fetch_object()->count;
-
-        $this->assertSame('0', $count, 'The team: ' . $team_name . ' was found.');
-    }
-
-    private function assertTeamExists(string $team_name): void
-    {
-        $result = $this->verification_connection->query(
-            "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
-        );
-        $count = $result->fetch_object()->count;
-
-        $this->assertSame('1', $count, "The team [$team_name] was not found.");
     }
 
     /**
@@ -128,6 +132,7 @@ class TransactionsTest extends WPTestCase
                     DB::table('football_teams')
                         ->where('name', 'Real Madrid')->delete();
                 });
+
                 throw new RuntimeException('test exception');
             });
             $this->fail('no exception thrown');
@@ -250,19 +255,24 @@ class TransactionsTest extends WPTestCase
         }
     }
 
-    protected function setUp(): void
+    private function assertTeamNotExists(string $team_name): void
     {
-        parent::setUp();
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
+        $result = $this->verification_connection->query(
+            "select count(*) as `count` from `wp_football_teams` where `name` = '{$team_name}'"
+        );
+        $count = $result->fetch_object()->count;
 
-        $this->removeWpBrowserTransaction();
-        $this->verification_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        (new WPEloquentStandalone())->bootstrap();
-        $this->createInitialTable();
+        $this->assertSame('0', $count, 'The team: ' . $team_name . ' was found.');
+    }
+
+    private function assertTeamExists(string $team_name): void
+    {
+        $result = $this->verification_connection->query(
+            "select count(*) as `count` from `wp_football_teams` where `name` = '{$team_name}'"
+        );
+        $count = $result->fetch_object()->count;
+
+        $this->assertSame('1', $count, "The team [{$team_name}] was not found.");
     }
 
     private function createInitialTable(): void
@@ -289,12 +299,6 @@ class TransactionsTest extends WPTestCase
                 ],
             ]);
         }
-    }
-
-    protected function tearDown(): void
-    {
-        $this->dropInitialTable();
-        parent::tearDown();
     }
 
     private function dropInitialTable(): void

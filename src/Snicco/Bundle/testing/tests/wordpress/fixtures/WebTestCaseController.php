@@ -57,6 +57,7 @@ final class WebTestCaseController extends Controller
                 'name' => $file->getClientFilename(),
             ];
         }
+
         return $this->respondWith()->json($info);
     }
 
@@ -78,10 +79,11 @@ final class WebTestCaseController extends Controller
          * @var string $value
          */
         foreach ($request->getServerParams() as $name => $value) {
-            if (strpos((string) $name, 'X-') === 0) {
-                $string .= "$name=$value";
+            if (0 === strpos((string) $name, 'X-')) {
+                $string .= "{$name}={$value}";
             }
         }
+
         return $this->respondWith()->html($string);
     }
 

@@ -19,10 +19,38 @@ use Snicco\Component\Eloquent\Tests\fixtures\Model\City;
 use Snicco\Component\Eloquent\Tests\fixtures\Model\Country;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
-class DatabaseFactoriesTest extends WPTestCase
+/**
+ * @internal
+ */
+final class DatabaseFactoriesTest extends WPTestCase
 {
     use WPDBTestHelpers;
     use WithTestTables;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+
+        ($eloquent = new WPEloquentStandalone())->bootstrap();
+        $eloquent->withDatabaseFactories(
+            'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Model',
+            'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Factory',
+        );
+        $this->withNewTables();
+        DB::table('countries')->delete();
+        DB::beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        DB::rollBack();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -47,7 +75,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testFactoryStates(): void
+    public function test_factory_states(): void
     {
         $country = Country::factory()->narnia()->make();
 
@@ -58,7 +86,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testFactoryMultiple(): void
+    public function test_factory_multiple(): void
     {
         $country = Country::factory()->count(3)->make();
 
@@ -72,7 +100,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testWithAttributeOverride(): void
+    public function test_with_attribute_override(): void
     {
         $country = Country::factory()->make([
             'name' => 'My country',
@@ -85,7 +113,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testMakeDoesNotPersistModel(): void
+    public function test_make_does_not_persist_model(): void
     {
         $country = Country::factory()->make();
 
@@ -99,7 +127,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testCreatePersistsModel(): void
+    public function test_create_persists_model(): void
     {
         $country = Country::factory()->create();
 
@@ -112,7 +140,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testCreateManyPersistsMany(): void
+    public function test_create_many_persists_many(): void
     {
         $countries = Country::factory()->count(3)->create();
 
@@ -130,7 +158,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testCreateWithAttributeOverride(): void
+    public function test_create_with_attribute_override(): void
     {
         $country = Country::factory()->create([
             'continent' => 'Narnia',
@@ -146,7 +174,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testWithSequence(): void
+    public function test_with_sequence(): void
     {
         $countries = Country::factory()
             ->count(6)
@@ -166,11 +194,11 @@ class DatabaseFactoriesTest extends WPTestCase
         $table->assertTotalCount(6);
 
         $countries_in_narnia = $countries->filter(function ($country) {
-            return $country->continent === 'Narnia';
+            return 'Narnia' === $country->continent;
         });
 
         $countries_in_westeros = $countries->filter(function ($country) {
-            return $country->continent === 'Westeros';
+            return 'Westeros' === $country->continent;
         });
 
         $this->assertCount(3, $countries_in_narnia);
@@ -180,7 +208,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testHasMany(): void
+    public function test_has_many(): void
     {
         $country = Country::factory()
             ->has(City::factory()->count(3))
@@ -203,7 +231,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testHasManyWithMagicMethod(): void
+    public function test_has_many_with_magic_method(): void
     {
         $country = Country::factory()
             ->hasCities(3)
@@ -226,7 +254,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testHasManyWithCustomAttributes(): void
+    public function test_has_many_with_custom_attributes(): void
     {
         $country = Country::factory()
             ->hasCities(3, function (array $attributes, Country $country) {
@@ -254,7 +282,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testBelongsTo(): void
+    public function test_belongs_to(): void
     {
         $cities = City::factory()
             ->count(3)
@@ -280,7 +308,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testBelongsToWithMagicMethod(): void
+    public function test_belongs_to_with_magic_method(): void
     {
         $cities = City::factory()
             ->count(3)
@@ -304,7 +332,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testManyToMany(): void
+    public function test_many_to_many(): void
     {
         $city = City::factory()
             ->has(Activity::factory()->count(3))
@@ -333,7 +361,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testManyToManyWithAttached(): void
+    public function test_many_to_many_with_attached(): void
     {
         $city = City::factory()
             ->hasAttached(
@@ -357,7 +385,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testHasAttachedWithExisting(): void
+    public function test_has_attached_with_existing(): void
     {
         $countries = Activity::factory()
             ->count(4)
@@ -379,7 +407,7 @@ class DatabaseFactoriesTest extends WPTestCase
     /**
      * @test
      */
-    public function testManyToManyWithMagicMethod(): void
+    public function test_many_to_many_with_magic_method(): void
     {
         $city = City::factory()
             ->hasActivities(3)
@@ -403,30 +431,5 @@ class DatabaseFactoriesTest extends WPTestCase
         $table->assertCountWhere([
             'city_id' => $city->id,
         ], 3);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
-
-        ($eloquent = new WPEloquentStandalone())->bootstrap();
-        $eloquent->withDatabaseFactories(
-            'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Model',
-            'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Factory',
-        );
-        $this->withNewTables();
-        DB::table('countries')->delete();
-        DB::beginTransaction();
-    }
-
-    protected function tearDown(): void
-    {
-        DB::rollBack();
-        parent::tearDown();
     }
 }

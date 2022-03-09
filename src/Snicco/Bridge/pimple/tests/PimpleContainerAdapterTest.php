@@ -9,6 +9,9 @@ use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
+/**
+ * @internal
+ */
 final class PimpleContainerAdapterTest extends TestCase
 {
     use DIContainerContractTest;

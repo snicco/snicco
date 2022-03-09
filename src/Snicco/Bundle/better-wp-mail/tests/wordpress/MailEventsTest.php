@@ -25,6 +25,9 @@ use function add_action;
 use function dirname;
 use function get_class;
 
+/**
+ * @internal
+ */
 final class MailEventsTest extends WPTestCase
 {
     use BundleTestHelpers;

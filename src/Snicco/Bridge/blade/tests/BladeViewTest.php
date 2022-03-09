@@ -9,7 +9,10 @@ use Snicco\Bridge\Blade\BladeView;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
 
-class BladeViewTest extends BladeTestCase
+/**
+ * @internal
+ */
+final class BladeViewTest extends BladeTestCase
 {
     /**
      * @test
@@ -77,7 +80,7 @@ class BladeViewTest extends BladeTestCase
         $path = realpath($this->blade_views . '/foo.blade.php');
 
         if (false === $path) {
-            throw new RuntimeException("path [$path] does not exist.");
+            throw new RuntimeException("path [{$path}] does not exist.");
         }
 
         $view = $this->view_engine->make($path);

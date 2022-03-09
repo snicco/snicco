@@ -9,7 +9,10 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
-class ViewResponseTest extends TestCase
+/**
+ * @internal
+ */
+final class ViewResponseTest extends TestCase
 {
     use CreateTestPsr17Factories;
 
@@ -47,7 +50,7 @@ class ViewResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_viewData(): void
+    public function test_view_data(): void
     {
         $response = new ViewResponse('foo', $this->base_response);
         $this->assertSame([], $response->viewData());

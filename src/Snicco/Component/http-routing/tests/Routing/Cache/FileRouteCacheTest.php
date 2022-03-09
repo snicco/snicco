@@ -11,6 +11,9 @@ use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;
 use function is_file;
 use function unlink;
 
+/**
+ * @internal
+ */
 final class FileRouteCacheTest extends TestCase
 {
     private string $test_cache_file;

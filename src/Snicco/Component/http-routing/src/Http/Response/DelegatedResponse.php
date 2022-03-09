@@ -19,6 +19,7 @@ final class DelegatedResponse extends Response
     {
         $new = clone $this;
         $new->should_sent_headers = false;
+
         return $new;
     }
 }

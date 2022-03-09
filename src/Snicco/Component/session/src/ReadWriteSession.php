@@ -80,11 +80,14 @@ final class ReadWriteSession implements Session
 
     public function has(string $key): bool
     {
-        return Arr::get($this->attributes, $key) !== null;
+        return null !== Arr::get($this->attributes, $key);
     }
 
     /**
      * @psalm-suppress MixedAssignment
+     *
+     * @param mixed      $key
+     * @param mixed|null $value
      */
     public function put($key, $value = null): void
     {
@@ -124,6 +127,7 @@ final class ReadWriteSession implements Session
                 'The session storage seems corrupted as the value for key [_sniccowp.timestamps.created_at] is not an integer.'
             );
         }
+
         return $ts;
     }
 
@@ -139,7 +143,7 @@ final class ReadWriteSession implements Session
         }
         $current = $this->get($key, 0);
         if (! is_int($current)) {
-            throw new LogicException("Current value for key [$key] is not an integer.");
+            throw new LogicException("Current value for key [{$key}] is not an integer.");
         }
 
         $this->put($key, $current + $amount);
@@ -163,13 +167,15 @@ final class ReadWriteSession implements Session
 
     /**
      * @psalm-suppress MixedAssignment
+     *
+     * @param mixed $value
      */
     public function push(string $key, $value): void
     {
         $array = $this->get($key, []);
 
         if (! is_array($array)) {
-            throw new LogicException("Value for key [$key] is not an array.");
+            throw new LogicException("Value for key [{$key}] is not an array.");
         }
 
         $array[] = $value;
@@ -191,6 +197,8 @@ final class ReadWriteSession implements Session
 
     /**
      * @psalm-suppress MixedAssignment
+     *
+     * @param mixed|null $default
      */
     public function oldInput(string $key = null, $default = null)
     {
@@ -270,6 +278,7 @@ final class ReadWriteSession implements Session
                 'The session storage seems corrupted as the value for key [_sniccowp.timestamps.last_rotated] is not an integer.'
             );
         }
+
         return $ts;
     }
 
@@ -322,6 +331,7 @@ final class ReadWriteSession implements Session
     {
         $events = $this->stored_events;
         $this->stored_events = [];
+
         return $events;
     }
 
@@ -447,6 +457,7 @@ final class ReadWriteSession implements Session
             throw new RuntimeException('_flash.old must be an array of strings.');
             // @codeCoverageIgnoreEnd
         }
+
         return $old;
     }
 

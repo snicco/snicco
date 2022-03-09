@@ -18,6 +18,9 @@ use Snicco\Component\Session\SessionManager\FactorySessionManager;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
+/**
+ * @internal
+ */
 final class SaveResponseAttributesTest extends MiddlewareTestCase
 {
     private Request $request;

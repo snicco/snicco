@@ -9,6 +9,9 @@ use Snicco\Component\BetterWPDB\QueryInfo;
 
 use function microtime;
 
+/**
+ * @internal
+ */
 final class QueryInfoTest extends WPTestCase
 {
     /**

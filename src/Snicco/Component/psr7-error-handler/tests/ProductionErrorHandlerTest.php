@@ -43,6 +43,8 @@ use const JSON_THROW_ON_ERROR;
 
 /**
  * @psalm-suppress PossiblyUndefinedIntArrayOffset
+ *
+ * @internal
  */
 final class ProductionErrorHandlerTest extends TestCase
 {
@@ -408,7 +410,7 @@ final class ProductionErrorHandlerTest extends TestCase
     }
 
     /**
-     * @param ExceptionDisplayer[] $displayers
+     * @param ExceptionDisplayer[]   $displayers
      * @param ExceptionTransformer[] $transformers
      */
     private function createErrorHandler(
@@ -446,11 +448,13 @@ class RequestLogContextWithException implements RequestLogContext
 
     public function add(array $context, ExceptionInformation $information): array
     {
-        if ($this->count === 0) {
+        if (0 === $this->count) {
             $e = new TypeError('bad bad type error.');
-            $this->count++;
+            ++$this->count;
+
             throw $e;
         }
+
         return $context;
     }
 }

@@ -18,6 +18,9 @@ use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 
 use function sprintf;
 
+/**
+ * @internal
+ */
 final class Psr17FactoryDiscoveryTest extends TestCase
 {
     /**

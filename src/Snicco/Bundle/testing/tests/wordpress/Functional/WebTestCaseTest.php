@@ -18,6 +18,9 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class WebTestCaseTest extends WebTestCase
 {
     /**
@@ -37,16 +40,6 @@ final class WebTestCaseTest extends WebTestCase
     {
         unset($_SERVER[DummyTestExtension::class]);
         parent::tearDown();
-    }
-
-    protected function extensions(): array
-    {
-        return $this->extensions;
-    }
-
-    protected function createKernel(): Closure
-    {
-        return require dirname(__DIR__) . '/fixtures/test-kernel.php';
     }
 
     /**
@@ -73,7 +66,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_swapInstance(): void
+    public function test_swap_instance(): void
     {
         $this->swapInstance(stdClass::class, $std = new stdClass());
         $kernel = $this->getKernel();
@@ -162,7 +155,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_fakeEvents(): void
+    public function test_fake_events(): void
     {
         $event_dispatcher = $this->getEventDispatcher();
         $event_dispatcher->fake([
@@ -206,7 +199,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_withSessionData_throws_exception_if_bundle_not_used(): void
+    public function test_with_session_data_throws_exception_if_bundle_not_used(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('session-bundle');
@@ -218,7 +211,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_withSessionData_works(): void
+    public function test_with_session_data_works(): void
     {
         $kernel = $this->getKernel();
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
@@ -283,7 +276,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_extensions_are_setUp_and_tearedDown(): void
+    public function test_extensions_are_set_up_and_teared_down(): void
     {
         $this->assertTrue($_SERVER[DummyTestExtension::class]['setUp'] ?? false);
     }
@@ -291,7 +284,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_withoutMiddleware(): void
+    public function test_without_middleware(): void
     {
         $this->withoutMiddleware([
             MiddlewareThatAlwaysThrowsException::class,
@@ -308,7 +301,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_withoutExceptionHandling(): void
+    public function test_without_exception_handling(): void
     {
         $this->withoutExceptionHandling();
 
@@ -323,7 +316,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_exception_if_withoutMiddleware_is_called_after_boot(): void
+    public function test_exception_if_without_middleware_is_called_after_boot(): void
     {
         $this->getBootedKernel();
         $this->expectException(LogicException::class);
@@ -336,7 +329,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_exception_if_withoutErrorHandling_is_called_after_boot(): void
+    public function test_exception_if_without_error_handling_is_called_after_boot(): void
     {
         $this->getBootedKernel();
         $this->expectException(LogicException::class);
@@ -347,7 +340,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_exception_if_withCookies_is_called_after_browser_creation(): void
+    public function test_exception_if_with_cookies_is_called_after_browser_creation(): void
     {
         $this->getBrowser();
         $this->expectException(LogicException::class);
@@ -358,7 +351,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_exception_if_withServerVariables_is_called_after_browser_creation(): void
+    public function test_exception_if_with_server_variables_is_called_after_browser_creation(): void
     {
         $this->getBrowser();
         $this->expectException(LogicException::class);
@@ -369,7 +362,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_exception_if_withDataInSession_is_called_after_browser_creation(): void
+    public function test_exception_if_with_data_in_session_is_called_after_browser_creation(): void
     {
         $this->getBrowser();
         $this->expectException(LogicException::class);
@@ -380,7 +373,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertableDOM_is_available_after_request(): void
+    public function test_assertable_do_m_is_available_after_request(): void
     {
         $browser = $this->getBrowser();
 
@@ -397,7 +390,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertableDOM_throws_exception_if_response_was_delegated(): void
+    public function test_assertable_do_m_throws_exception_if_response_was_delegated(): void
     {
         $browser = $this->getBrowser();
 
@@ -411,11 +404,21 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertableDOM_throws_exception_before_request(): void
+    public function test_assertable_do_m_throws_exception_before_request(): void
     {
         $browser = $this->getBrowser();
         $this->expectException(LogicException::class);
         $browser->lastDOM();
+    }
+
+    protected function extensions(): array
+    {
+        return $this->extensions;
+    }
+
+    protected function createKernel(): Closure
+    {
+        return require dirname(__DIR__) . '/fixtures/test-kernel.php';
     }
 }
 

@@ -17,6 +17,9 @@ use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransfo
 use Snicco\Component\Psr7ErrorHandler\UserFacing;
 use Throwable;
 
+/**
+ * @internal
+ */
 final class HttpInformationProviderTest extends TestCase
 {
     private ServerRequest $server_request;
@@ -144,7 +147,6 @@ final class HttpInformationProviderTest extends TestCase
             403 => [
                 'title' => 'Forbidden',
                 'message' => 'You cant do this.',
-
             ],
         ], new StubIdentifier('foo'), new RuntimeToAuthTransformer(), new LastTransformer());
 
@@ -172,7 +174,6 @@ final class HttpInformationProviderTest extends TestCase
             403 => [
                 'title' => 'Forbidden',
                 'message' => 'You cant do this.',
-
             ],
         ]);
 
@@ -242,6 +243,7 @@ final class HttpInformationProviderTest extends TestCase
                 'message' => 'An error has occurred and this resource cannot be displayed.',
             ];
         }
+
         return new InformationProviderWithTransformation(
             $data,
             $identifier ?: new SplHashIdentifier(),
@@ -309,6 +311,7 @@ class RuntimeToAuthTransformer implements ExceptionTransformer
         if ($e instanceof RuntimeException && 'transform_me' === $e->getMessage()) {
             return HttpException::fromPrevious(401, $e);
         }
+
         return $e;
     }
 }

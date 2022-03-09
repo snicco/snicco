@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Reflector;
 use Traversable;
 
+/**
+ * @internal
+ */
 final class ReflectorTest extends TestCase
 {
     /**
@@ -67,12 +70,11 @@ final class ReflectorTest extends TestCase
      * @test
      * @psalm-suppress UnusedClosureParam
      */
-    public function test_firstParameterType_with_closure(): void
+    public function test_first_parameter_type_with_closure(): void
     {
         $this->assertSame(
             'string',
             Reflector::firstParameterType(function (string $foo): void {
-                //
             })
         );
     }
@@ -80,7 +82,7 @@ final class ReflectorTest extends TestCase
     /**
      * @test
      */
-    public function test_firstParameterType_with_class_string_uses_constructor(): void
+    public function test_first_parameter_type_with_class_string_uses_constructor(): void
     {
         $this->assertSame('string', Reflector::firstParameterType(ClassWithConstructor::class));
     }
@@ -134,6 +136,5 @@ class TestTraversable implements Iterator
 
     public function rewind(): void
     {
-        //
     }
 }

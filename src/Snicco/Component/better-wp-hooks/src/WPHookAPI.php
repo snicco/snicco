@@ -25,11 +25,12 @@ final class WPHookAPI extends BetterWPAPI
      */
     public function currentFilter(): ?string
     {
-        /** @var string|false $filter */
+        /** @var false|string $filter */
         $filter = current_filter();
         if (is_string($filter)) {
             return $filter;
         }
+
         return null;
     }
 
@@ -47,11 +48,12 @@ final class WPHookAPI extends BetterWPAPI
         if (! $hook instanceof WP_Hook) {
             throw new RuntimeException(
                 sprintf(
-                    "The registered hook [$hook_name] has to be an instance of WP_Hook.\nGot: [%s].",
+                    "The registered hook [{$hook_name}] has to be an instance of WP_Hook.\nGot: [%s].",
                     gettype($hook)
                 )
             );
         }
+
         return $hook;
     }
 }

@@ -112,11 +112,11 @@ final class TestableEventDispatcher implements EventDispatcher
     public function assertNotingDispatched(): void
     {
         $count = count($this->dispatched_events);
-        PHPUnit::assertSame(0, $count, "$count event[s] dispatched.");
+        PHPUnit::assertSame(0, $count, "{$count} event[s] dispatched.");
     }
 
     /**
-     * @param string|Closure(mixed):bool $event_name
+     * @param Closure(mixed):bool|string $event_name
      * @param null|Closure(mixed...):bool $condition
      *
      * @throws ReflectionException
@@ -131,7 +131,7 @@ final class TestableEventDispatcher implements EventDispatcher
         PHPUnit::assertArrayHasKey(
             $event_name,
             $this->dispatched_events,
-            "The event [$event_name] was not dispatched."
+            "The event [{$event_name}] was not dispatched."
         );
 
         if ($condition instanceof Closure) {
@@ -140,13 +140,13 @@ final class TestableEventDispatcher implements EventDispatcher
                     $event_name,
                     $condition
                 ),
-                "The event [$event_name] was dispatched but the provided condition did not pass."
+                "The event [{$event_name}] was dispatched but the provided condition did not pass."
             );
         }
     }
 
     /**
-     * @param string|Closure(mixed):bool $event_name
+     * @param Closure(mixed):bool|string $event_name
      * @param null|Closure(mixed...):bool $condition
      *
      * @throws ReflectionException
@@ -155,6 +155,7 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         if ($event_name instanceof Closure) {
             $this->assertNotDispatched(ClosureTypeHint::first($event_name), $event_name);
+
             return;
         }
 
@@ -164,7 +165,7 @@ final class TestableEventDispatcher implements EventDispatcher
             PHPUnit::assertCount(
                 0,
                 $this->getDispatched($event_name, $condition),
-                "The event [$event_name] was dispatched and the condition passed."
+                "The event [{$event_name}] was dispatched and the condition passed."
             );
         }
     }
@@ -176,7 +177,7 @@ final class TestableEventDispatcher implements EventDispatcher
         PHPUnit::assertSame(
             $times,
             $count,
-            "The event [$event_name] was dispatched [$count] time[s]."
+            "The event [{$event_name}] was dispatched [{$count}] time[s]."
         );
     }
 
@@ -215,6 +216,7 @@ final class TestableEventDispatcher implements EventDispatcher
         foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
             if (! $callback_condition) {
                 $passed[] = $event;
+
                 continue;
             }
 

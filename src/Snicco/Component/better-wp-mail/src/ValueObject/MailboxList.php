@@ -39,6 +39,7 @@ final class MailboxList implements Countable, IteratorAggregate
         foreach ($list as $address) {
             $new->addAddress($address);
         }
+
         return $new;
     }
 
@@ -64,7 +65,7 @@ final class MailboxList implements Countable, IteratorAggregate
     }
 
     /**
-     * @param string|Mailbox $address
+     * @param Mailbox|string $address
      */
     public function has($address): bool
     {

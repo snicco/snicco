@@ -7,7 +7,10 @@ namespace Snicco\Middleware\MethodOverride\Tests;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\MethodOverride\MethodOverride;
 
-class MethodOverrideTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class MethodOverrideTest extends MiddlewareTestCase
 {
     private MethodOverride $middleware;
 

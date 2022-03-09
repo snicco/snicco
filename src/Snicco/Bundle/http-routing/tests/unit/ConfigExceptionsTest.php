@@ -26,6 +26,9 @@ use stdClass;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class ConfigExceptionsTest extends TestCase
 {
     use BundleTestHelpers;

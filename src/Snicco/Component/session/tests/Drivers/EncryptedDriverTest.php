@@ -18,6 +18,9 @@ use Snicco\Component\TestableClock\Clock;
 
 use function time;
 
+/**
+ * @internal
+ */
 final class EncryptedDriverTest extends TestCase
 {
     use SessionDriverTests;
@@ -53,7 +56,7 @@ final class EncryptedDriverTest extends TestCase
     /**
      * @test
      */
-    public function test_destroyAll_throws_exception(): void
+    public function test_destroy_all_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAll');
@@ -68,7 +71,7 @@ final class EncryptedDriverTest extends TestCase
     /**
      * @test
      */
-    public function test_destroyAllForUserId_throws_exception(): void
+    public function test_destroy_all_for_user_id_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAllForUserId');
@@ -83,7 +86,7 @@ final class EncryptedDriverTest extends TestCase
     /**
      * @test
      */
-    public function test_getAllForUserId_throws_exception(): void
+    public function test_get_all_for_user_id_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('getAllForUserId');
@@ -98,7 +101,7 @@ final class EncryptedDriverTest extends TestCase
     /**
      * @test
      */
-    public function test_destroyAllForUserIdExcept_throws_exception(): void
+    public function test_destroy_all_for_user_id_except_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAllForUserIdExcept');
@@ -130,6 +133,7 @@ final class EncryptedDriverTest extends TestCase
         foreach ($user_sessions as $selector => $user_session) {
             $array_driver->write($selector, $user_session);
         }
+
         return $driver;
     }
 

@@ -18,7 +18,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
 {
     protected function setUp(): void
     {
@@ -66,6 +69,7 @@ class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->pimple[ControllerWithMiddleware::class] = function (): ControllerWithMiddleware {
             $baz = new Baz();
             $baz->value = 'BAZ';
+
             return new ControllerWithMiddleware($baz);
         };
 
@@ -160,6 +164,7 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
         $response = $next($request);
 
         $response->getBody()->write(':' . $this->foo->value . $this->bar->value . $this->baz . $this->biz);
+
         return $response;
     }
 }

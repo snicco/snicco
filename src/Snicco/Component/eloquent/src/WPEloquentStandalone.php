@@ -30,7 +30,7 @@ use function rtrim;
 final class WPEloquentStandalone
 {
     /**
-     * @var Container|Application
+     * @var Application|Container
      */
     private $illuminate_container;
 
@@ -79,17 +79,20 @@ final class WPEloquentStandalone
             function () use ($faker_locale) {
                 $faker = Factory::create($faker_locale);
                 $faker->unique(true);
+
                 return $faker;
             }
         );
 
         EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace) {
             $model = class_basename($model);
+
             return rtrim($factory_namespace, '\\') . '\\' . $model . 'Factory';
         });
 
         EloquentFactory::guessModelNamesUsing(function (EloquentFactory $factory) use ($model_namespace): string {
             $model = class_basename($factory);
+
             return str_replace('Factory', '', rtrim($model_namespace, '\\') . '\\' . $model);
         });
 
@@ -112,6 +115,7 @@ final class WPEloquentStandalone
         if ($this->enable_global_facades) {
             $this->bindDBFacade($connection_resolver);
         }
+
         return $connection_resolver;
     }
 
@@ -134,6 +138,7 @@ final class WPEloquentStandalone
             $this->illuminate_container->singleton('config', function () {
                 $config = new Fluent();
                 $config['database.connections'] = $this->connection_configuration;
+
                 return $config;
             });
         }

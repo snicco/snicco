@@ -52,6 +52,7 @@ final class PHPFileCache implements ConfigCache
         if (! is_array($value)) {
             return null;
         }
+
         return $value;
     }
 }

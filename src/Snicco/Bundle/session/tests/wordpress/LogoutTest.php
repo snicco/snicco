@@ -33,6 +33,9 @@ use function wp_logout;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class LogoutTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -70,11 +73,6 @@ final class LogoutTest extends WPTestCase
         $this->bundle_test->tearDownDirectories();
         unset($_COOKIE['test_cookie']);
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -134,6 +132,7 @@ final class LogoutTest extends WPTestCase
             ])
             ->then(function () {
                 wp_logout();
+
                 return new Response();
             });
 
@@ -181,6 +180,7 @@ final class LogoutTest extends WPTestCase
                 $session = $request->getAttribute(MutableSession::class);
                 $session->invalidate();
                 wp_logout();
+
                 return new Response();
             });
 
@@ -206,5 +206,10 @@ final class LogoutTest extends WPTestCase
         $this->assertCount(0, $this->driver->all());
         wp_logout();
         $this->assertCount(0, $this->driver->all());
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 }

@@ -19,6 +19,9 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\ControllerWithBarMidd
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+/**
+ * @internal
+ */
 final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 {
     /**
@@ -124,7 +127,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function test_createMiddlewareCache(): void
+    public function test_create_middleware_cache(): void
     {
         $route1 = Route::create('/foo', Route::DELEGATE, 'r1')->middleware('group1');
         $route2 = Route::create('/bar', Route::DELEGATE, 'r2')->middleware('foo:FOO');

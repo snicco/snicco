@@ -14,7 +14,10 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
-class JsonToArrayTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class JsonToArrayTest extends MiddlewareTestCase
 {
     /**
      * @test

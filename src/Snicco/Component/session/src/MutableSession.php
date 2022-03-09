@@ -10,9 +10,9 @@ use Snicco\Component\Session\Exception\SessionIsLocked;
 interface MutableSession
 {
     /**
-     * Store a user id in the session. The user id will be flushed when calling invalidate()
+     * Store a user id in the session. The user id will be flushed when calling invalidate().
      *
-     * @param string|int $user_id
+     * @param int|string $user_id
      */
     public function setUserId($user_id): void;
 
@@ -39,7 +39,7 @@ interface MutableSession
 
     /**
      * @param array<string,mixed>|string $key
-     * @param mixed $value Only used if key is string
+     * @param mixed                      $value Only used if key is string
      *
      * @throws SessionIsLocked
      */

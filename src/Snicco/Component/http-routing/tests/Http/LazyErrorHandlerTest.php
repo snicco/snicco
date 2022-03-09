@@ -16,6 +16,9 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
+/**
+ * @internal
+ */
 final class LazyErrorHandlerTest extends TestCase
 {
     use CreateTestPsr17Factories;
@@ -71,6 +74,7 @@ final class LazyErrorHandlerTest extends TestCase
         $real_handler = new TestableErrorHandler(function () {
             $response = $this->psrResponseFactory()->createResponse(500);
             $response->getBody()->write('foo error');
+
             return $response;
         });
 
@@ -78,7 +82,8 @@ final class LazyErrorHandlerTest extends TestCase
             &$count,
             $real_handler
         ): TestableErrorHandler {
-            $count++;
+            ++$count;
+
             return $real_handler;
         };
 

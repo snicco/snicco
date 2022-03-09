@@ -12,7 +12,10 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
 {
     /**
      * @test

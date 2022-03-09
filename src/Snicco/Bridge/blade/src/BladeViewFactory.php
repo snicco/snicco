@@ -34,6 +34,7 @@ final class BladeViewFactory implements ViewFactory
 
     /**
      * @interal
+     *
      * @throws ViewNotFound
      */
     public function make(string $view): BladeView

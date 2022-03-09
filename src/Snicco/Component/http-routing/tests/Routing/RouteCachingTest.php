@@ -13,7 +13,10 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 use function is_file;
 
-class RouteCachingTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteCachingTest extends HttpRunnerTestCase
 {
     private string $route_cache_file;
 
@@ -92,7 +95,6 @@ class RouteCachingTest extends HttpRunnerTestCase
 
         // Simulate a new request with empty routes.
         $this->webRouting(function () {
-            //
         }, new FileRouteCache($this->route_cache_file));
 
         $request = $this->frontendRequest('foo');

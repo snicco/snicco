@@ -8,7 +8,10 @@ use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
 use stdClass;
 
-class BladeFeaturesTest extends BladeTestCase
+/**
+ * @internal
+ */
+final class BladeFeaturesTest extends BladeTestCase
 {
     /**
      * @test
@@ -232,6 +235,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function service_injection_is_forbidden(): void
     {
         $view = $this->view('service-injection');
+
         try {
             $view->render();
             $this->fail('@service was allowed.');
@@ -249,6 +253,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function csrf_directive_throws_expection(): void
     {
         $view = $this->view('csrf');
+
         try {
             $view->render();
             $this->fail('@csrf was allowed.');
@@ -266,6 +271,7 @@ class BladeFeaturesTest extends BladeTestCase
     public function the_method_directive_throws(): void
     {
         $view = $this->view('method');
+
         try {
             $view->render();
             $this->fail('@method was allowed.');

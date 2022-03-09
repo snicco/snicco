@@ -54,7 +54,7 @@ trait UserSessionDriverTests
         foreach (['session_no_user1', 'session_no_user2'] as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -63,7 +63,7 @@ trait UserSessionDriverTests
         foreach (array_keys($sessions) as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -96,7 +96,7 @@ trait UserSessionDriverTests
         foreach (array_keys($user_two_sessions) as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -166,12 +166,13 @@ trait UserSessionDriverTests
         foreach (array_keys($user_two_sessions) as $selector) {
             if ($selector === array_key_first($user_two_sessions)) {
                 $user_session_driver->read($selector);
+
                 continue;
             }
 
             try {
                 $user_session_driver->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -186,9 +187,9 @@ trait UserSessionDriverTests
     /**
      * @param array<int|string> $ids
      *
-     * @return array<string,SerializedSession>
-     *
      * @throws JsonException
+     *
+     * @return array<string,SerializedSession>
      */
     private function createSessions(int $count, array $ids): array
     {
@@ -199,7 +200,7 @@ trait UserSessionDriverTests
         $serializer = new JsonSerializer();
 
         $_serialized = [];
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $session = ReadWriteSession::createEmpty(time());
             $id = array_shift($ids);
 
@@ -219,6 +220,7 @@ trait UserSessionDriverTests
                 $id
             );
         }
+
         return $_serialized;
     }
 }

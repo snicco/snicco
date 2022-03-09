@@ -11,6 +11,9 @@ use Snicco\Component\HttpRouting\Routing\Admin\CachedAdminMenu;
 
 use function serialize;
 
+/**
+ * @internal
+ */
 final class CachedAdminMenuTest extends TestCase
 {
     /**

@@ -7,6 +7,9 @@ namespace Snicco\Component\HttpRouting\Tests\Testing;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 
+/**
+ * @internal
+ */
 final class AssertableCookieTest extends TestCase
 {
     /**

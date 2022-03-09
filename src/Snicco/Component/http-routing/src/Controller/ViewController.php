@@ -31,7 +31,6 @@ final class ViewController extends Controller
         Assert::allString(array_keys($data));
 
         /** @var array<string,mixed> $data */
-
         $response = $this->respondWith()->view($view, $data);
 
         /**

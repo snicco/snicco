@@ -19,7 +19,6 @@ final class JsonSerializer implements Serializer
     public function deserialize(string $data): array
     {
         /** @var array $val */
-        $val = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
-        return $val;
+        return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
     }
 }

@@ -16,6 +16,9 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use function dirname;
 use function is_dir;
 
+/**
+ * @internal
+ */
 final class BladeBundleTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -25,11 +28,6 @@ final class BladeBundleTest extends WPTestCase
         $this->bundle_test->tearDownDirectories();
         $this->bundle_test->removeDirectoryRecursive($this->fixturesDir() . '/var');
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -105,5 +103,10 @@ final class BladeBundleTest extends WPTestCase
         $this->expectExceptionMessage('needs sniccowp/templating-bundle');
 
         $kernel->boot();
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 }

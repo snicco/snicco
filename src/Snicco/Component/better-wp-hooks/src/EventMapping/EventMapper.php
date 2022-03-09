@@ -48,6 +48,7 @@ final class EventMapper
 
     /**
      * Map a WordPress hook to a dedicated event class with the provided priority.
+     *
      * @param class-string<MappedHook> $map_to_event_class
      */
     public function map(string $wordpress_hook_name, string $map_to_event_class, int $priority = 10): void
@@ -83,40 +84,42 @@ final class EventMapper
     /**
      * @param class-string<MappedHook> $map_to
      *
-     * @throws LogicException If the hook is already mapped to the same event class
+     * @throws LogicException           If the hook is already mapped to the same event class
      * @throws InvalidArgumentException If $map_to is not either a MappedAction or MappedFilter
      */
     private function validate(string $wordpress_hook_name, string $map_to): void
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
-                "Tried to map the event class [$map_to] twice to the [$wordpress_hook_name] hook."
+                "Tried to map the event class [{$map_to}] twice to the [{$wordpress_hook_name}] hook."
             );
         }
 
         if (isset($this->mapped_filters[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
-                "Tried to map the event class [$map_to] twice to the [$wordpress_hook_name] filter."
+                "Tried to map the event class [{$map_to}] twice to the [{$wordpress_hook_name}] filter."
             );
         }
 
         if (! class_exists($map_to)) {
-            throw new InvalidArgumentException("The event class [$map_to] does not exist.");
+            throw new InvalidArgumentException("The event class [{$map_to}] does not exist.");
         }
 
         $interfaces = (array) class_implements($map_to);
 
         if (in_array(MappedFilter::class, $interfaces, true)) {
             $this->mapped_filters[$wordpress_hook_name][$map_to] = true;
+
             return;
         }
         if (in_array(MappedHook::class, $interfaces, true)) {
             $this->mapped_actions[$wordpress_hook_name][$map_to] = true;
+
             return;
         }
 
         throw new InvalidArgumentException(
-            "The event [$map_to] has to implement either the [MappedHook] or the [MappedFilter] interface."
+            "The event [{$map_to}] has to implement either the [MappedHook] or the [MappedFilter] interface."
         );
     }
 
@@ -153,7 +156,7 @@ final class EventMapper
             // Remove the empty "" that WordPress will pass for actions without any passed arguments.
             if (is_string($args_from_wordpress_hooks[0] ?? null)
                 && empty($args_from_wordpress_hooks[0])
-                && count($args_from_wordpress_hooks) === 1) {
+                && 1 === count($args_from_wordpress_hooks)) {
                 array_shift($args_from_wordpress_hooks);
             }
 
@@ -188,7 +191,7 @@ final class EventMapper
             if (! isset($args_from_wordpress_hooks[0])) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
-                    "Event mapper received invalid arguments from WP for mapped hook [$event_class]."
+                    "Event mapper received invalid arguments from WP for mapped hook [{$event_class}]."
                 );
                 // @codeCoverageIgnoreEnd
             }
@@ -212,7 +215,7 @@ final class EventMapper
         $filter = $this->wp->currentFilter();
         if ($filter && $filter === $wordpress_hook_name) {
             throw new LogicException(
-                "You can can't map the event [$map_to] to the hook [$wordpress_hook_name] after it was fired."
+                "You can can't map the event [{$map_to}] to the hook [{$wordpress_hook_name}] after it was fired."
             );
         }
 
@@ -223,6 +226,7 @@ final class EventMapper
         // Even if other callback were to be added later with the same priority they would still be run after ours.
         if (! $wp_hook || empty($wp_hook->callbacks)) {
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
+
             return;
         }
 
@@ -233,6 +237,7 @@ final class EventMapper
 
         if ($lowest_priority > PHP_INT_MIN) {
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
+
             return;
         }
 
@@ -265,6 +270,7 @@ final class EventMapper
             }
 
             $this->mapValidated($current, $map_to, PHP_INT_MAX);
+
             return $args[0] ?? [];
         }, PHP_INT_MAX - 1, 999);
     }

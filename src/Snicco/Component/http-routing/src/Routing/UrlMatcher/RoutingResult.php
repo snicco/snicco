@@ -20,7 +20,7 @@ final class RoutingResult
     private array $captured_segments;
 
     /**
-     * @var array<string,string|int>
+     * @var array<string,int|string>
      */
     private ?array $decoded_segments = null;
 
@@ -57,7 +57,7 @@ final class RoutingResult
     }
 
     /**
-     * @return array<string,string|int>
+     * @return array<string,int|string>
      */
     public function decodedSegments(): array
     {
@@ -66,6 +66,7 @@ final class RoutingResult
                 if (is_numeric($value)) {
                     return (int) $value;
                 }
+
                 return rawurldecode($value);
             }, $this->captured_segments);
         }

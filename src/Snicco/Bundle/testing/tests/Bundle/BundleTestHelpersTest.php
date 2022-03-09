@@ -16,6 +16,9 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
+/**
+ * @internal
+ */
 final class BundleTestHelpersTest extends TestCase
 {
     use BundleTestHelpers;
@@ -33,11 +36,6 @@ final class BundleTestHelpersTest extends TestCase
     {
         $this->bundle_test->removeDirectoryRecursive(__DIR__ . '/tmp');
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return $this->fixtures_dir;
     }
 
     /**
@@ -112,7 +110,7 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCanBeResolved_can_pass(): void
+    public function test_assert_can_be_resolved_can_pass(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
 
@@ -135,7 +133,7 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCanBeResolved_can_fail(): void
+    public function test_assert_can_be_resolved_can_fail(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
 
@@ -163,7 +161,7 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCanBeResolved_fails_for_other_instance(): void
+    public function test_assert_can_be_resolved_fails_for_other_instance(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel(
@@ -180,6 +178,7 @@ final class BundleTestHelpersTest extends TestCase
 
         try {
             $this->assertCanBeResolved(ServiceA::class, $kernel);
+
             throw new RuntimeException('Assertion should have failed.');
         } catch (AssertionFailedError $e) {
             $this->assertStringContainsString('instance ', $e->getMessage());
@@ -189,7 +188,7 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotBound_can_pass(): void
+    public function test_assert_not_bound_can_pass(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel(
@@ -206,7 +205,7 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotBound_can_fail(): void
+    public function test_assert_not_bound_can_fail(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel(
@@ -251,6 +250,11 @@ final class BundleTestHelpersTest extends TestCase
         $this->expectExceptionMessage('foo');
 
         $handler->handle(new RuntimeException('foo'), new ServerRequest('GET', '/'));
+    }
+
+    protected function fixturesDir(): string
+    {
+        return $this->fixtures_dir;
     }
 }
 

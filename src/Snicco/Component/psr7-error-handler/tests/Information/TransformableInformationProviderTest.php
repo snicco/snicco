@@ -13,6 +13,8 @@ use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransfo
 
 /**
  * @psalm-suppress InvalidArgument
+ *
+ * @internal
  */
 final class TransformableInformationProviderTest extends TestCase
 {

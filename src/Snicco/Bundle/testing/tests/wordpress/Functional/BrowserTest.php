@@ -28,6 +28,9 @@ use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class BrowserTest extends WPTestCase
 {
     /**
@@ -56,7 +59,7 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
-    public function test_getRequest_throws_exception(): void
+    public function test_get_request_throws_exception(): void
     {
         $browser = $this->getBrowser();
 
@@ -70,7 +73,7 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
-    public function test_getResponse_returns_assertable_response(): void
+    public function test_get_response_returns_assertable_response(): void
     {
         $browser = $this->getBrowser();
 
@@ -194,7 +197,7 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
-    public function test_adminRequests_are_created_if_the_prefix_is_correct(): void
+    public function test_admin_requests_are_created_if_the_prefix_is_correct(): void
     {
         $browser = $this->getBrowser();
         $browser->request('GET', '/wp-admin/admin.php?page=foo');
@@ -250,6 +253,7 @@ final class BrowserTest extends WPTestCase
             $kernel->container()->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
         $kernel->boot();
+
         return new Browser(
             $kernel->container()->make(HttpKernel::class),
             $kernel->container()->make(Psr17FactoryDiscovery::class),

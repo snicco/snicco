@@ -15,10 +15,35 @@ use Snicco\Component\Eloquent\Tests\fixtures\Helper\WithTestTables;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
+/**
+ * @internal
+ */
 final class MysqliConnectionQueriesTest extends WPTestCase
 {
     use WPDBTestHelpers;
     use WithTestTables;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+
+        $wp_eloquent = new WPEloquentStandalone();
+        $wp_eloquent->bootstrap();
+        $this->withNewTables();
+        DB::beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        DB::rollBack();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -67,13 +92,6 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertEquals((object) [
             'name' => 'madrid',
         ], $records[0]);
-    }
-
-    private function getMysqliConnection(): MysqliConnection
-    {
-        /** @var MysqliConnection $connection */
-        $connection = DB::connection();
-        return $connection;
     }
 
     /**
@@ -278,25 +296,9 @@ final class MysqliConnectionQueriesTest extends WPTestCase
         $this->assertSame([1, 2], $sql[0]['bindings']);
     }
 
-    protected function setUp(): void
+    private function getMysqliConnection(): MysqliConnection
     {
-        parent::setUp();
-
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
-
-        $wp_eloquent = new WPEloquentStandalone();
-        $wp_eloquent->bootstrap();
-        $this->withNewTables();
-        DB::beginTransaction();
-    }
-
-    protected function tearDown(): void
-    {
-        DB::rollBack();
-        parent::tearDown();
+        /** @var MysqliConnection $connection */
+        return DB::connection();
     }
 }

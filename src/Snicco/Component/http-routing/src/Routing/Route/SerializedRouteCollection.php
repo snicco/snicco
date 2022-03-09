@@ -97,10 +97,11 @@ final class SerializedRouteCollection implements Routes
         foreach ($this->serialized_routes as $name => $route) {
             if (isset($this->hydrated_routes[$name])) {
                 $_routes[$name] = $this->hydrated_routes[$name];
+
                 continue;
             }
 
-            /** @var Route|false|mixed $route */
+            /** @var false|mixed|Route $route */
             $route = unserialize($route);
 
             $this->checkIsValidRoute($route);
@@ -108,11 +109,13 @@ final class SerializedRouteCollection implements Routes
 
             $_routes[$name] = $route;
         }
+
         return $_routes;
     }
 
     /**
      * @psalm-assert Route $route
+     *
      * @param mixed $route
      */
     private function checkIsValidRoute($route): void

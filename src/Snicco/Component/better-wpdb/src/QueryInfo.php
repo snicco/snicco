@@ -39,7 +39,7 @@ final class QueryInfo
     public array $bindings;
 
     /**
-     * @param non-empty-string $sql_with_placeholders
+     * @param non-empty-string   $sql_with_placeholders
      * @param array<scalar|null> $bindings
      */
     public function __construct(float $start, float $end, string $sql_with_placeholders, array $bindings)
@@ -56,6 +56,7 @@ final class QueryInfo
 
     /**
      * @param non-empty-string $sql_with_placeholders
+     *
      * @return non-empty-string
      */
     private function replacePlaceholders(string $sql_with_placeholders, array $bindings): string
@@ -68,15 +69,14 @@ final class QueryInfo
                 return 'null';
             }
             $binding = (string) $binding;
-            return "'$binding'";
+
+            return "'{$binding}'";
         }, $bindings);
 
         /** @var non-empty-string $sql */
-        $sql = (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
+        return (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
             /** @var string[] $bindings */
             return (string) (array_shift($bindings));
         }, $sql_with_placeholders);
-
-        return $sql;
     }
 }

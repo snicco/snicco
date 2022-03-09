@@ -13,6 +13,9 @@ use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
 {
     /**
@@ -20,7 +23,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_for_empty_table_name(): void
+    public function test_bulk_insert_throws_exception_for_empty_table_name(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
@@ -34,14 +37,13 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_bulkInsert_throws_exception_for_empty_record(): void
+    public function test_bulk_insert_throws_exception_for_empty_record(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-array');
 
         $this->better_wpdb->bulkInsert('test_table', [
             [
-
             ],
         ]);
     }
@@ -51,7 +53,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_for_non_string_record_key(): void
+    public function test_bulk_insert_throws_exception_for_non_string_record_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
@@ -67,7 +69,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_for_empty_string_record_key(): void
+    public function test_bulk_insert_throws_exception_for_empty_string_record_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
@@ -83,7 +85,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_non_scalar_record_value(): void
+    public function test_bulk_insert_throws_exception_non_scalar_record_value(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
@@ -97,7 +99,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_bulkInsert_throws_exception_for_inconsistent_record_types(): void
+    public function test_bulk_insert_throws_exception_for_inconsistent_record_types(): void
     {
         try {
             $this->better_wpdb->bulkInsert(
@@ -141,7 +143,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_bulkInsert_with_array(): void
+    public function test_bulk_insert_with_array(): void
     {
         $this->assertRecordCount(0);
 
@@ -180,7 +182,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_bulkInsert_with_iterator(): void
+    public function test_bulk_insert_with_iterator(): void
     {
         $this->assertRecordCount(0);
 
@@ -218,7 +220,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_bulkInsert_rolls_back_everything_if_not_all_records_can_be_inserted(): void
+    public function test_bulk_insert_rolls_back_everything_if_not_all_records_can_be_inserted(): void
     {
         $this->assertRecordCount(0);
 

@@ -13,6 +13,9 @@ use Snicco\Component\Session\Testing\SessionDriverTests;
 use Snicco\Component\Session\Testing\UserSessionDriverTests;
 use Snicco\Component\TestableClock\Clock;
 
+/**
+ * @internal
+ */
 final class InMemoryDriverTest extends TestCase
 {
     use SessionDriverTests;
@@ -41,6 +44,7 @@ final class InMemoryDriverTest extends TestCase
         foreach ($user_sessions as $selector => $user_session) {
             $driver->write($selector, $user_session);
         }
+
         return $driver;
     }
 }

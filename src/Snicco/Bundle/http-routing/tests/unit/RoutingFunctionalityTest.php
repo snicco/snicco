@@ -28,6 +28,8 @@ use function unlink;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class RoutingFunctionalityTest extends TestCase
 {
@@ -46,11 +48,6 @@ final class RoutingFunctionalityTest extends TestCase
         if (is_file($this->expected_route_cache_file)) {
             unlink($this->expected_route_cache_file);
         }
-    }
-
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
     }
 
     /**
@@ -240,5 +237,10 @@ final class RoutingFunctionalityTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('', (string) $response->getBody());
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 }

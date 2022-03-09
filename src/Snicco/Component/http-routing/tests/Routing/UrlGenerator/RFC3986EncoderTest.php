@@ -11,6 +11,9 @@ use function array_keys;
 use function implode;
 use function rawurlencode;
 
+/**
+ * @internal
+ */
 final class RFC3986EncoderTest extends TestCase
 {
     private const QUERY_FRAGMENT_EXTRA = [
@@ -21,7 +24,7 @@ final class RFC3986EncoderTest extends TestCase
     /**
      * @test
      */
-    public function test_encodePath(): void
+    public function test_encode_path(): void
     {
         $allowed = array_keys(RFC3986Encoder::RFC3986_PCHARS);
         $path = '/foo/bar/münchen/' . implode('', $allowed);
@@ -34,7 +37,7 @@ final class RFC3986EncoderTest extends TestCase
     /**
      * @test
      */
-    public function test_encodeQueryString(): void
+    public function test_encode_query_string(): void
     {
         $allowed = RFC3986Encoder::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA;
         unset($allowed['+'], $allowed['&'], $allowed['=']);
@@ -62,7 +65,7 @@ final class RFC3986EncoderTest extends TestCase
     /**
      * @test
      */
-    public function test_encodeFragment(): void
+    public function test_encode_fragment(): void
     {
         $allowed = array_keys(RFC3986Encoder::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA);
 

@@ -14,6 +14,9 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class BetterWPDBBundleTest extends WPTestCase
 {
     use BundleTestHelpers;

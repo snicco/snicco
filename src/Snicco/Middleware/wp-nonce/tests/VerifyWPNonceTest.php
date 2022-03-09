@@ -13,6 +13,9 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\WPNonce\VerifyWPNonce;
 use Snicco\Middleware\WPNonce\WPNonce;
 
+/**
+ * @internal
+ */
 final class VerifyWPNonceTest extends MiddlewareTestCase
 {
     /**
@@ -230,6 +233,6 @@ class VerifyNonceTestWPApi extends BetterWPAPI
 
     public function createNonce(string $form_action): string
     {
-        return "nonce.$form_action";
+        return "nonce.{$form_action}";
     }
 }

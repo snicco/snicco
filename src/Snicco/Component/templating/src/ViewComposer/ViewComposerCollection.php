@@ -30,7 +30,7 @@ final class ViewComposerCollection
     }
 
     /**
-     * @param string|list<string> $views
+     * @param list<string>|string                           $views
      * @param class-string<ViewComposer>|Closure(View):View $composer
      */
     public function addComposer($views, $composer): void
@@ -42,6 +42,7 @@ final class ViewComposerCollection
                 'views' => $views,
                 'handler' => $composer,
             ];
+
             return;
         }
 
@@ -54,7 +55,7 @@ final class ViewComposerCollection
 
         if (! class_exists($composer)) {
             throw new InvalidArgumentException(
-                "[$composer] is not a valid class."
+                "[{$composer}] is not a valid class."
             );
         }
 
@@ -74,7 +75,7 @@ final class ViewComposerCollection
      * Composes the context the passed view in the following order.
      * => global context
      * => view composer context
-     * => local context
+     * => local context.
      *
      * @template T of View
      *
@@ -118,6 +119,7 @@ final class ViewComposerCollection
                 }
             }
         }
+
         return $matching;
     }
 }

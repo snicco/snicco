@@ -29,7 +29,7 @@ final class WPNonce
     }
 
     /**
-     * @param array<string,string|int> $args
+     * @param array<string,int|string> $args
      */
     public function __invoke(string $route_name = null, array $args = []): string
     {

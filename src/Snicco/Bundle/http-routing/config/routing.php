@@ -28,9 +28,7 @@ return [
      */
     RoutingOption::WP_LOGIN_PATH => '/wp-login.php',
 
-    /*
-     * This option should be a list of valid (absolute) directories
-     */
+    // This option should be a list of valid (absolute) directories
     RoutingOption::ROUTE_DIRECTORIES => [
         //        dirname(__DIR__) . '/routes'
     ],

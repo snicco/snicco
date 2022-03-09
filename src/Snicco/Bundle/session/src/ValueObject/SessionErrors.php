@@ -52,6 +52,7 @@ final class SessionErrors
     public function hasKey(string $key, string $namespace = 'default'): bool
     {
         $messages = $this->errors[$namespace][$key] ?? [];
+
         return count($messages) > 0;
     }
 
@@ -73,6 +74,7 @@ final class SessionErrors
         foreach ($this->errors[$namespace] ?? [] as $messages) {
             $all_messages = array_merge($all_messages, $messages);
         }
+
         return $all_messages;
     }
 

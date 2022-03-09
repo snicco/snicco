@@ -23,8 +23,10 @@ use Snicco\Component\StrArr\Str;
 
 /**
  * NOTE: This TestClass is expecting a mysql version "^8.0.0".
+ *
+ * @internal
  */
-class SchemaBuilderTest extends WPTestCase
+final class SchemaBuilderTest extends WPTestCase
 {
     use WPDBTestHelpers;
 
@@ -37,6 +39,40 @@ class SchemaBuilderTest extends WPTestCase
      * @var MysqliConnection
      */
     private $mysqli_connection;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+
+        (new WPEloquentStandalone())->bootstrap();
+
+        $this->builder = Schema::connection('wp_mysqli_connection');
+        $this->mysqli_connection = DB::connection();
+
+        if ($this->builder->hasTable('books')) {
+            $this->builder->drop('books');
+        }
+        if ($this->builder->hasTable('authors')) {
+            $this->builder->drop('authors');
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if ($this->builder->hasTable('books')) {
+            $this->builder->drop('books');
+        }
+
+        if ($this->builder->hasTable('authors')) {
+            $this->builder->drop('authors');
+        }
+    }
 
     /**
      * @test
@@ -131,7 +167,7 @@ class SchemaBuilderTest extends WPTestCase
     }
 
     /**
-     * General methods
+     * General methods.
      */
 
     /**
@@ -173,23 +209,6 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertSame([
             0 => 'book_id',
         ], $this->getColumnsByOrdinalPosition('books'));
-    }
-
-    private function getColumnsByOrdinalPosition(string $table_name): array
-    {
-        global $wpdb;
-        $table_name = "$wpdb->prefix" . trim($table_name, $wpdb->prefix);
-
-        $columns = collect($this->getFullColumnInfo($table_name));
-
-        return $columns->pluck('Field')->toArray();
-    }
-
-    private function getFullColumnInfo(string $table_with_prefix)
-    {
-        global $wpdb;
-
-        return $wpdb->get_results("show full columns from $table_with_prefix", ARRAY_A);
     }
 
     /**
@@ -245,11 +264,6 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seePrimaryKey('id');
     }
 
-    private function newTestBuilder(string $table): TestSchemaBuilder
-    {
-        return new TestSchemaBuilder($this->mysqli_connection, $table);
-    }
-
     /**
      * @test
      */
@@ -265,7 +279,7 @@ class SchemaBuilderTest extends WPTestCase
     }
 
     /**
-     * Creating column types
+     * Creating column types.
      */
 
     /**
@@ -1195,7 +1209,7 @@ class SchemaBuilderTest extends WPTestCase
     }
 
     /**
-     * TEST FOR MODIFYING COLUMNS
+     * TEST FOR MODIFYING COLUMNS.
      */
 
     /**
@@ -1284,14 +1298,6 @@ class SchemaBuilderTest extends WPTestCase
         $this->assertDbTable()->assertRecordEquals([
             'id' => 1,
         ], $expected);
-    }
-
-    /**
-     * Foreign Key Constraints
-     */
-    protected function assertDbTable(string $table_name = 'wp_books'): AssertableWpDB
-    {
-        return new AssertableWpDB($table_name);
     }
 
     /**
@@ -1545,7 +1551,7 @@ class SchemaBuilderTest extends WPTestCase
     }
 
     /**
-     * TESTS FOR DROPPING COLUMNS WITH ALIASES
+     * TESTS FOR DROPPING COLUMNS WITH ALIASES.
      */
 
     /**
@@ -1685,9 +1691,8 @@ class SchemaBuilderTest extends WPTestCase
         $builder->seeUniqueColumn('name');
     }
 
-
     /**
-     * Creating indexes
+     * Creating indexes.
      */
 
     /**
@@ -1969,43 +1974,39 @@ class SchemaBuilderTest extends WPTestCase
         ]);
     }
 
-    protected function setUp(): void
+    /**
+     * Foreign Key Constraints.
+     */
+    protected function assertDbTable(string $table_name = 'wp_books'): AssertableWpDB
     {
-        parent::setUp();
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
-
-        (new WPEloquentStandalone())->bootstrap();
-
-        $this->builder = Schema::connection('wp_mysqli_connection');
-        $this->mysqli_connection = DB::connection();
-
-        if ($this->builder->hasTable('books')) {
-            $this->builder->drop('books');
-        }
-        if ($this->builder->hasTable('authors')) {
-            $this->builder->drop('authors');
-        }
+        return new AssertableWpDB($table_name);
     }
 
-    protected function tearDown(): void
+    private function getColumnsByOrdinalPosition(string $table_name): array
     {
-        parent::tearDown();
-        if ($this->builder->hasTable('books')) {
-            $this->builder->drop('books');
-        }
+        global $wpdb;
+        $table_name = "{$wpdb->prefix}" . trim($table_name, $wpdb->prefix);
 
-        if ($this->builder->hasTable('authors')) {
-            $this->builder->drop('authors');
-        }
+        $columns = collect($this->getFullColumnInfo($table_name));
+
+        return $columns->pluck('Field')->toArray();
+    }
+
+    private function getFullColumnInfo(string $table_with_prefix)
+    {
+        global $wpdb;
+
+        return $wpdb->get_results("show full columns from {$table_with_prefix}", ARRAY_A);
+    }
+
+    private function newTestBuilder(string $table): TestSchemaBuilder
+    {
+        return new TestSchemaBuilder($this->mysqli_connection, $table);
     }
 }
 
 /**
- * Class TestSchemaBuilder
+ * Class TestSchemaBuilder.
  *
  * @see MySqlBuilder
  */
@@ -2069,26 +2070,26 @@ class TestSchemaBuilder extends MySqlBuilder
     public function seePrimaryKey(string $column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
-        PHPUnit::assertTrue($col->Key === 'PRI');
+        PHPUnit::assertTrue('PRI' === $col->Key);
     }
 
     public function seeNullableColumn(string $column): bool
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
 
-        return $col->Null === 'YES';
+        return 'YES' === $col->Null;
     }
 
     public function seeUniqueColumn(string $column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
-        PHPUnit::assertTrue($col->Key === 'UNI');
+        PHPUnit::assertTrue('UNI' === $col->Key);
     }
 
     public function seeIndexColumn(string $column): void
     {
         $col = $this->getFullColumnInfo($this->table)[$column];
-        PHPUnit::assertTrue($col->Key === 'MUL');
+        PHPUnit::assertTrue('MUL' === $col->Key);
     }
 
     public function getAllTables(): array
@@ -2131,6 +2132,7 @@ class TestSchemaBuilder extends MySqlBuilder
 
         $bindings = [$this->connection->getTablePrefix() . $table];
         $results = $this->connection->select($query, $bindings);
+
         return $results[0]->Collation;
     }
 }

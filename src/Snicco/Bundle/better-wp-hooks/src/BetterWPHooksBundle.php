@@ -30,7 +30,6 @@ final class BetterWPHooksBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -48,6 +47,7 @@ final class BetterWPHooksBundle implements Bundle
             if ($kernel->env()->isTesting() && class_exists(TestableEventDispatcher::class)) {
                 $dispatcher = new TestableEventDispatcher($dispatcher);
             }
+
             return $dispatcher;
         });
         $container->shared(EventDispatcherInterface::class, fn () => $container->make(EventDispatcher::class));
@@ -69,7 +69,6 @@ final class BetterWPHooksBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string

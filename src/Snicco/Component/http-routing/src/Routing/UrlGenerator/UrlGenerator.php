@@ -22,17 +22,17 @@ interface UrlGenerator
     public const ABSOLUTE_PATH = 1;
 
     /**
-     * @param string $path The path MUST NOT be urlencoded.
-     * @param array<string,string|int> $extra The query arguments to append.
-     * A "_fragment" key can be passed to include a fragment after the query string.
-     * @param bool|null $https If null is passed the scheme of the current request will be used.
+     * @param string                   $path  the path MUST NOT be urlencoded
+     * @param array<string,int|string> $extra The query arguments to append.
+     *                                        A "_fragment" key can be passed to include a fragment after the query string.
+     * @param bool|null                $https if null is passed the scheme of the current request will be used
      *
      * @return string an rfc-compliant url
      */
     public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string;
 
     /**
-     * @param array<string,string|int> $arguments
+     * @param array<string,int|string> $arguments
      *
      * @throws RouteNotFound
      * @throws BadRouteParameter
@@ -52,7 +52,7 @@ interface UrlGenerator
      * If no named route exists the url is generated to a static page that the implementation may
      * choose.
      *
-     * @param array<string,string|int> $arguments
+     * @param array<string,int|string> $arguments
      */
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string;
 }

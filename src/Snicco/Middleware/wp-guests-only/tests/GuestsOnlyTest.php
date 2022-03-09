@@ -13,7 +13,10 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
-class GuestsOnlyTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class GuestsOnlyTest extends MiddlewareTestCase
 {
     /**
      * @test

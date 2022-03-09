@@ -13,9 +13,9 @@ interface ViewComposerFactory
      *
      * @param class-string<T> $composer
      *
-     * @return T
-     *
      * @throws BadViewComposer
+     *
+     * @return T
      */
     public function create(string $composer): ViewComposer;
 }

@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Debug\Displayer\WhoopsJsonDisplayer;
 use Whoops\Run;
 
+/**
+ * @internal
+ */
 final class WhoopsJsonDisplayerTest extends TestCase
 {
     /**

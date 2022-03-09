@@ -12,6 +12,9 @@ use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class PsrViewComposerFactoryTest extends TestCase
 {
     /**

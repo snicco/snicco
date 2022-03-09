@@ -18,6 +18,9 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController
 use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+/**
+ * @internal
+ */
 final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 {
     public const WEB_PATH = '/web';

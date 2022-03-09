@@ -28,6 +28,7 @@ interface SessionDriver
 
     /**
      * @param string[] $selectors
+     *
      * @throws CouldNotDestroySessions
      */
     public function destroy(array $selectors): void;
@@ -38,7 +39,7 @@ interface SessionDriver
     public function gc(int $seconds_without_activity): void;
 
     /**
-     * Update the last activity of the session
+     * Update the last activity of the session.
      *
      * @throws BadSessionID
      * @throws CouldNotWriteSessionContent

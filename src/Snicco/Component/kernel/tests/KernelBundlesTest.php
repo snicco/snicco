@@ -21,6 +21,9 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 use Throwable;
 
+/**
+ * @internal
+ */
 final class KernelBundlesTest extends TestCase
 {
     use CreateTestContainer;
@@ -134,7 +137,7 @@ final class KernelBundlesTest extends TestCase
             $app->boot();
             $this->fail('no exception thrown when expected.');
         } catch (Throwable $e) {
-            $this->assertStringContainsString("Snicco\\Component\\Kernel\\Bundle", $e->getMessage());
+            $this->assertStringContainsString('Snicco\\Component\\Kernel\\Bundle', $e->getMessage());
             $this->assertStringContainsString('stdClass', $e->getMessage());
         }
     }
@@ -342,7 +345,6 @@ class BundleWithCustomEnv implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -365,7 +367,7 @@ class BundleWithCustomEnv implements Bundle
     public function shouldRun(Environment $env): bool
     {
         return isset($_SERVER['_test']['custom_env_bundle_should_run'])
-            && $_SERVER['_test']['custom_env_bundle_should_run'] === true;
+            && true === $_SERVER['_test']['custom_env_bundle_should_run'];
     }
 }
 

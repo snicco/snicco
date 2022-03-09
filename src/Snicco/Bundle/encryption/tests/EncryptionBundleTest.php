@@ -20,6 +20,9 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class EncryptionBundleTest extends TestCase
 {
     use BundleTestHelpers;
@@ -102,7 +105,6 @@ final class EncryptionBundleTest extends TestCase
         );
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('encryption', [
-
             ]);
         });
 
@@ -149,7 +151,6 @@ final class EncryptionBundleTest extends TestCase
         try {
             $kernel->boot();
         } catch (InvalidArgumentException $e) {
-            //
         }
 
         $this->assertTrue(is_file($this->directories->configDir() . '/encryption.php'));

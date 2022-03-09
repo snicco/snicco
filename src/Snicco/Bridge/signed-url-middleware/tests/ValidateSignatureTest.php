@@ -18,6 +18,9 @@ use Snicco\Component\SignedUrl\UrlSigner;
 
 use function str_replace;
 
+/**
+ * @internal
+ */
 final class ValidateSignatureTest extends MiddlewareTestCase
 {
     private SignedUrlValidator $validator;

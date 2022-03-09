@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Snicco\Bundle\Debug\Option\DebugOption;
 
 return [
-
     /*
      * Set this value to the name of your editor to automatically open files.
      * A valid list of values can be found here:

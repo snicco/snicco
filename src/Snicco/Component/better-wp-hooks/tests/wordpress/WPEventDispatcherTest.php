@@ -17,6 +17,9 @@ use Symfony\Component\EventDispatcher\Event;
 
 use function add_filter;
 
+/**
+ * @internal
+ */
 final class WPEventDispatcherTest extends WPTestCase
 {
     /**

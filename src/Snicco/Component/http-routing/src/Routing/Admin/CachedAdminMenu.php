@@ -50,13 +50,14 @@ final class CachedAdminMenu implements AdminMenu
             $res = unserialize($item);
             if (! $res instanceof AdminMenuItem) {
                 throw new RuntimeException(
-                    "Cached admin menu is corrupted.\nOne item could not be unserialized: [$item]"
+                    "Cached admin menu is corrupted.\nOne item could not be unserialized: [{$item}]"
                 );
             }
             $items[] = $res;
         }
 
         $this->hydrated_items = $items;
+
         return $this->hydrated_items;
     }
 }

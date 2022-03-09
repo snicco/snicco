@@ -23,7 +23,7 @@ final class ContentType implements DisplayerFilter
 
         return array_filter(
             $displayers,
-            fn ($displayer) => $displayer->supportedContentType() === $accept_header
+            fn($displayer) => $displayer->supportedContentType() === $accept_header
         );
     }
 
@@ -31,10 +31,10 @@ final class ContentType implements DisplayerFilter
     {
         $result = strstr($accept, ',', true);
 
-        $first = $result === false ? $accept : $result;
+        $first = (false === $result ? $accept : $result);
 
         $result = strstr($first, ';', true);
 
-        return $result === false ? $first : $result;
+        return false === $result ? $first : $result;
     }
 }

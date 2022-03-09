@@ -41,13 +41,14 @@ final class AggregateRenderer implements MailRenderer
             if ($r->supports($template_name, $extension)) {
                 $renderer = $r;
                 $this->renderer_cache[$template_name] = $r;
+
                 break;
             }
         }
 
         if (! $renderer) {
             throw new CouldNotRenderMailContent(
-                "None of the given renderers supports the current the template [$template_name]."
+                "None of the given renderers supports the current the template [{$template_name}]."
             );
         }
 
