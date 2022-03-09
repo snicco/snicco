@@ -19,14 +19,14 @@ use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 
 final class HttpKernelTest extends TestCase
 {
-
     /**
      * @test
      */
     public function test_exception_if_no_response_is_returned_in_middleware_pipeline(): void
     {
         $pipeline = new MiddlewarePipeline(
-            new PimpleContainerAdapter(), new TestErrorHandler()
+            new PimpleContainerAdapter(),
+            new TestErrorHandler()
         );
 
         $http_kernel = new HttpKernel(
@@ -41,5 +41,4 @@ final class HttpKernelTest extends TestCase
 
         $http_kernel->handle(Request::fromPsr(new ServerRequest('GET', '/')));
     }
-
 }

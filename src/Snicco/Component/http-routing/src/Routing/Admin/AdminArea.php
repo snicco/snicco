@@ -9,7 +9,6 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
 interface AdminArea
 {
-
     /**
      * Returns the url prefix that all admin routes share.
      */
@@ -35,5 +34,4 @@ interface AdminArea
      * The path returned from this method will not be used anywhere but for matching the request.
      */
     public function rewriteForRouting(Request $request): string;
-
 }

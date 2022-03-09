@@ -26,7 +26,6 @@ use stdClass;
 
 final class ArrTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -167,7 +166,7 @@ final class ArrTest extends TestCase
     {
         $string = 'a';
         $array = ['a'];
-        $object = new stdClass;
+        $object = new stdClass();
         $object->value = 'a';
         $this->assertEquals(['a'], Arr::toArray($string));
         $this->assertEquals($array, Arr::toArray($array));
@@ -184,7 +183,7 @@ final class ArrTest extends TestCase
         $this->assertEquals([false], Arr::toArray([false]));
         $this->assertEquals([0], Arr::toArray(0));
 
-        $obj = new stdClass;
+        $obj = new stdClass();
         $obj->value = 'a';
         /** @var stdClass $obj */
         $obj = unserialize(serialize($obj));
@@ -215,7 +214,7 @@ final class ArrTest extends TestCase
 
         $this->assertFalse(Arr::accessible(null));
         $this->assertFalse(Arr::accessible('abc'));
-        $this->assertFalse(Arr::accessible(new stdClass));
+        $this->assertFalse(Arr::accessible(new stdClass()));
         $this->assertFalse(Arr::accessible((object)['a' => 1, 'b' => 2]));
     }
 
@@ -775,12 +774,10 @@ final class ArrTest extends TestCase
     {
         return $closure($val, $key);
     }
-
 }
 
 class SupportTestArrayAccess implements ArrayAccess
 {
-
     private array $attributes;
 
     public function __construct(array $attributes = [])
@@ -826,5 +823,4 @@ class SupportTestArrayAccess implements ArrayAccess
     {
         unset($this->attributes[$offset]);
     }
-
 }

@@ -14,7 +14,6 @@ use function dirname;
 
 final class CreateWordPressUsersTest extends WebTestCase
 {
-
     /**
      * @test
      */
@@ -113,5 +112,4 @@ final class CreateWordPressUsersTest extends WebTestCase
     {
         return [];
     }
-
 }

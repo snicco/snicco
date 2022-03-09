@@ -20,7 +20,6 @@ use function strval;
  */
 final class QueryInfo
 {
-
     public float $start;
 
     public float $end;
@@ -83,5 +82,4 @@ final class QueryInfo
 
         return $sql;
     }
-
 }

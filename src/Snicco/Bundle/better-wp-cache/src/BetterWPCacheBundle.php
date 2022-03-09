@@ -87,5 +87,4 @@ final class BetterWPCacheBundle implements Bundle
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

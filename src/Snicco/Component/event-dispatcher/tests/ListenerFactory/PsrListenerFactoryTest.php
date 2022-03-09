@@ -43,5 +43,4 @@ final class PsrListenerFactoryTest extends TestCase
         $this->expectExceptionMessage('Cant create listener class [stdClass] for event [foo_event]');
         $factory->create(stdClass::class, 'foo_event');
     }
-
 }

@@ -19,7 +19,6 @@ namespace Snicco\Component\Eloquent\Mysqli;
  */
 interface PDOAdapter
 {
-
     /**
      * @see \PDO::commit()
      */
@@ -42,5 +41,4 @@ interface PDOAdapter
     public function rollback(): bool;
 
     public function lastInsertId(): int;
-
 }

@@ -24,7 +24,6 @@ use function call_user_func_array;
  */
 final class ControllerAction
 {
-
     private object $controller_instance;
     private string $controller_method;
 
@@ -94,5 +93,4 @@ final class ControllerAction
         }
         return $instance;
     }
-
 }

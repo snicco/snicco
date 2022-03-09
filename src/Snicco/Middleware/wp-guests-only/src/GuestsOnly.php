@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 final class GuestsOnly extends Middleware
 {
-
     private BetterWPAPI $wp;
     private ?string $redirect_to;
     private string $json_message;
@@ -48,5 +47,4 @@ final class GuestsOnly extends Middleware
             }
         }
     }
-
 }

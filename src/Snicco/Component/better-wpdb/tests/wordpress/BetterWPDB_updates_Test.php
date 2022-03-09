@@ -14,7 +14,6 @@ use stdClass;
 
 final class BetterWPDB_updates_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      *
@@ -308,13 +307,15 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             'test_int' => 10
         ]);
 
-        $res = $this->better_wpdb->update('test_table',
+        $res = $this->better_wpdb->update(
+            'test_table',
             ['test_int' => 20],
             ['test_bool' => true]
         );
         $this->assertSame(0, $res);
 
-        $res = $this->better_wpdb->update('test_table',
+        $res = $this->better_wpdb->update(
+            'test_table',
             ['test_int' => 10],
             ['test_bool' => true]
         );
@@ -333,7 +334,8 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             'test_bool' => 1
         ]);
 
-        $res = $this->better_wpdb->update('test_table',
+        $res = $this->better_wpdb->update(
+            'test_table',
             ['test_float' => null],
             ['test_float' => 20.00]
         );
@@ -352,7 +354,8 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             'test_bool' => 1
         ]);
 
-        $res = $this->better_wpdb->update('test_table',
+        $res = $this->better_wpdb->update(
+            'test_table',
             ['test_float' => null],
             ['test_float' => 20.00]
         );
@@ -402,5 +405,4 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
         $this->assertSame(['bar', 1], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
-
 }

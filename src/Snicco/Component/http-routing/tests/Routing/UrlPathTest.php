@@ -12,7 +12,6 @@ use Snicco\Component\StrArr\Str;
 
 class UrlPathTest extends TestCase
 {
-
     /**
      * @dataProvider providePath
      *
@@ -158,5 +157,4 @@ class UrlPathTest extends TestCase
         yield ['/foo/'];
         yield ['/foo//'];
     }
-
 }

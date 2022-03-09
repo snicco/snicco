@@ -10,7 +10,6 @@ use Defuse\Crypto\Key;
 
 final class DefuseEncryptor
 {
-
     private Key $key;
 
     public function __construct(Key $key)
@@ -32,5 +31,4 @@ final class DefuseEncryptor
     {
         return Key::createNewRandomKey()->saveToAsciiSafeString();
     }
-
 }

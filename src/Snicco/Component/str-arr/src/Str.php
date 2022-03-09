@@ -57,7 +57,6 @@ use const PREG_RECURSION_LIMIT_ERROR;
 
 class Str
 {
-
     /**
      * @var array<string,string>
      */
@@ -132,7 +131,7 @@ class Str
 
         $parts = explode(' ', str_replace(['-', '_'], ' ', $value));
 
-        $parts = array_map(fn($string) => self::ucfirst($string), $parts);
+        $parts = array_map(fn ($string) => self::ucfirst($string), $parts);
 
         return self::$studly_cache[$key] = implode('', $parts);
     }
@@ -148,11 +147,11 @@ class Str
             }
         }
         return mb_strtoupper(mb_substr($subject, 0, 1, $encoding), $encoding) . mb_substr(
-                $subject,
-                1,
-                null,
-                $encoding
-            );
+            $subject,
+            1,
+            null,
+            $encoding
+        );
     }
 
     public static function doesNotEndWith(string $subject, string $string): bool
@@ -350,5 +349,4 @@ class Str
         }
         return $res;
     }
-
 }

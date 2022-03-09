@@ -42,7 +42,6 @@ use function strpos;
 
 class Arr
 {
-
     /**
      * @param string|string[] $keys
      */
@@ -562,5 +561,4 @@ class Arr
         }
         return $default;
     }
-
 }

@@ -27,7 +27,6 @@ use function wp_set_current_user;
  */
 final class WPAdminMenuTest extends WPTestCase
 {
-
     private Kernel $kernel;
 
     protected function setUp(): void
@@ -137,5 +136,4 @@ final class WPAdminMenuTest extends WPTestCase
 
         do_action('admin_menu');
     }
-
 }

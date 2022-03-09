@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController
 
 final class AdminMenuItemTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -53,8 +52,7 @@ final class AdminMenuItemTest extends TestCase
      * @test
      */
     public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route(
-    ): void
-    {
+    ): void {
         $route = Route::create(
             '/wp-admin/admin.php/foo',
             RoutingTestController::class,
@@ -231,7 +229,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [],);
+        $item = AdminMenuItem::fromRoute($route, [], );
         $item->parentSlug();
     }
 
@@ -243,5 +241,4 @@ final class AdminMenuItemTest extends TestCase
             'admin.my_page'
         );
     }
-
 }

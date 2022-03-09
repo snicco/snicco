@@ -8,7 +8,6 @@ use InvalidArgumentException;
 
 final class InvalidMiddleware extends InvalidArgumentException
 {
-
     public static function becauseItsNotAnAliasOrGroup(string $alias): InvalidMiddleware
     {
         return new self(
@@ -18,5 +17,4 @@ final class InvalidMiddleware extends InvalidArgumentException
             )
         );
     }
-
 }

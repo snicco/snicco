@@ -409,12 +409,10 @@ final class WebTestCaseTest extends WebTestCase
         $this->expectException(LogicException::class);
         $browser->lastDOM();
     }
-
 }
 
 class DummyTestExtension implements TestExtension
 {
-
     public bool $setUp = false;
     public bool $tearDown = false;
 

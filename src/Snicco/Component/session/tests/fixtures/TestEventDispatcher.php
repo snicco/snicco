@@ -11,7 +11,6 @@ use function get_class;
 
 final class TestEventDispatcher implements SessionEventDispatcher
 {
-
     /**
      * @var array<string,Closure>
      */
@@ -30,5 +29,4 @@ final class TestEventDispatcher implements SessionEventDispatcher
             $listener($event);
         }
     }
-
 }

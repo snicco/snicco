@@ -12,7 +12,6 @@ use const E_USER_NOTICE;
 
 final class RoutingBundleTestController
 {
-
     public function __invoke(): string
     {
         return self::class;
@@ -29,5 +28,4 @@ final class RoutingBundleTestController
         trigger_error(self::class, E_USER_DEPRECATED);
         return self::class;
     }
-
 }

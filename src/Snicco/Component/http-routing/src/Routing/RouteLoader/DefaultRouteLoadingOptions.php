@@ -10,7 +10,6 @@ use Snicco\Component\StrArr\Str;
 
 final class DefaultRouteLoadingOptions implements RouteLoadingOptions
 {
-
     private UrlPath $api_base_prefix;
     private bool $add_middleware_for_api_files;
 
@@ -59,5 +58,4 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
         }
         return $att;
     }
-
 }

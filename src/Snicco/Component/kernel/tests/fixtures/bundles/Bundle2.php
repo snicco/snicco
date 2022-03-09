@@ -12,7 +12,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 class Bundle2 implements Bundle
 {
-
     public bool $registered = false;
     public bool $booted = false;
 
@@ -63,5 +62,4 @@ class Bundle2 implements Bundle
     {
         return true;
     }
-
 }

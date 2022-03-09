@@ -11,7 +11,6 @@ use Whoops\Run;
 
 final class WhoopsJsonDisplayer implements ExceptionDisplayer
 {
-
     private Run $whoops;
 
     public function __construct(Run $whoops)
@@ -38,5 +37,4 @@ final class WhoopsJsonDisplayer implements ExceptionDisplayer
     {
         return true;
     }
-
 }

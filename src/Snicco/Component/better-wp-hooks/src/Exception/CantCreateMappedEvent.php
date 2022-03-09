@@ -14,13 +14,12 @@ use function sprintf;
 
 final class CantCreateMappedEvent extends RuntimeException
 {
-
     public static function becauseTheEventCouldNotBeConstructorWithArgs(
         array $wordpress_hook_arguments,
         string $event_class,
         Throwable $previous
     ): self {
-        $args = array_map(fn($arg) => gettype($arg), $wordpress_hook_arguments);
+        $args = array_map(fn ($arg) => gettype($arg), $wordpress_hook_arguments);
 
         $message = "The mapped event [%s] could not be instantiated with the passed received arguments from WordPress.\nReceived [%s].";
 
@@ -28,5 +27,4 @@ final class CantCreateMappedEvent extends RuntimeException
 
         return new CantCreateMappedEvent($message, (int)$previous->getCode(), $previous);
     }
-
 }

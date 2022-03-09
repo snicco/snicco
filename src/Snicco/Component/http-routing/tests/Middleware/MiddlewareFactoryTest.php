@@ -20,7 +20,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
 final class MiddlewareFactoryTest extends TestCase
 {
-
     private MiddlewareFactory $factory;
     private Container $pimple;
 
@@ -74,7 +73,8 @@ final class MiddlewareFactoryTest extends TestCase
 
         $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
             return new MiddlewareWithDependencies(
-                $foo, $bar
+                $foo,
+                $bar
             );
         };
 
@@ -103,8 +103,7 @@ final class MiddlewareFactoryTest extends TestCase
      * @test
      */
     public function a_middleware_that_needs_both_constructor_args_and_runtime_args_can_be_returned_as_closure_from_the_container(
-    ): void
-    {
+    ): void {
         $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(
             function (string $bar, string $baz) {
                 return new MiddlewareWithContextualAndRuntimeArgs(new Foo(), $bar, $baz);
@@ -147,12 +146,10 @@ final class MiddlewareFactoryTest extends TestCase
             ['BAR_PASSED', 'BAZ_PASSED']
         );
     }
-
 }
 
 class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 {
-
     public string $bar;
     public string $baz;
     private Foo $foo;
@@ -168,5 +165,4 @@ class MiddlewareWithContextualAndRuntimeArgs extends Middleware
     {
         return $next($request);
     }
-
 }

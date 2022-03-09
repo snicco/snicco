@@ -27,7 +27,6 @@ use function wp_set_current_user;
 
 class CustomDirectivesTest extends WPTestCase
 {
-
     protected string $blade_cache;
     protected string $blade_views;
     protected ViewEngine $view_engine;
@@ -164,5 +163,4 @@ class CustomDirectivesTest extends WPTestCase
             unlink($file->getRealPath());
         }
     }
-
 }

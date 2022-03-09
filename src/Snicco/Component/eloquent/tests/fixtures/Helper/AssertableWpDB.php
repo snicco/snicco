@@ -11,7 +11,6 @@ use const ARRAY_A;
 
 class AssertableWpDB
 {
-
     /**
      * @var string
      */
@@ -176,5 +175,4 @@ class AssertableWpDB
             "The expected count [$count] does not match the actual count [$actual_count]."
         );
     }
-
 }

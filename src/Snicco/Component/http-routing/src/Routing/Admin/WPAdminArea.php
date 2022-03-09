@@ -15,7 +15,6 @@ use function trim;
 
 final class WPAdminArea implements AdminArea
 {
-
     private string $prefix;
     private string $login_path;
 
@@ -71,5 +70,4 @@ final class WPAdminArea implements AdminArea
     {
         return $this->login_path;
     }
-
 }

@@ -11,7 +11,6 @@ use function time;
 
 final class SessionCookie
 {
-
     private string $cookie_name;
     private string $session_id;
 
@@ -111,5 +110,4 @@ final class SessionCookie
     {
         return $this->life_time;
     }
-
 }

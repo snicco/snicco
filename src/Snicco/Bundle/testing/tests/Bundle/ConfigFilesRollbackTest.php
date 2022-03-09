@@ -15,7 +15,6 @@ use function unlink;
 
 final class ConfigFilesRollbackTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     protected function setUp(): void

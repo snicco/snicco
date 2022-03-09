@@ -19,7 +19,6 @@ use function time;
  */
 trait SessionDriverTests
 {
-
     /**
      * @test
      */
@@ -274,5 +273,4 @@ trait SessionDriverTests
     }
 
     abstract protected function createDriver(Clock $clock): SessionDriver;
-
 }

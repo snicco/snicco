@@ -15,7 +15,6 @@ use function add_submenu_page;
 
 final class WPAdminMenu
 {
-
     private AdminMenu $admin_menu;
 
     public function __construct(AdminMenu $admin_menu)
@@ -81,5 +80,4 @@ final class WPAdminMenu
 
         return Str::afterLast($slug, '/');
     }
-
 }

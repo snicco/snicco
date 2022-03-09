@@ -22,7 +22,6 @@ use function var_export;
 
 final class KernelConfigCachingTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
@@ -172,7 +171,6 @@ final class KernelConfigCachingTest extends TestCase
         $this->assertEquals(new stdClass(), $cached_kernel->container()->get(stdClass::class));
         $this->assertSame('bar', $cached_kernel->config()->get('foo_config'));
     }
-
 }
 
 
@@ -195,4 +193,3 @@ class TestConfigCache implements ConfigCache
         return $data;
     }
 }
-

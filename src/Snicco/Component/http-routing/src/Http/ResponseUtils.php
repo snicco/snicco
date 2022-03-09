@@ -18,7 +18,6 @@ use function array_replace;
 
 final class ResponseUtils
 {
-
     private UrlGenerator $url_generator;
     private ResponseFactory $response_factory;
     private Request $current_request;
@@ -143,6 +142,4 @@ final class ResponseUtils
     {
         return $this->response_factory->json($data, $status_code, $options, $depth);
     }
-
-
 }

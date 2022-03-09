@@ -23,7 +23,6 @@ use function strval;
 
 final class WPDBSessionDriver implements UserSessionsDriver
 {
-
     /**
      * @var non-empty-string
      */

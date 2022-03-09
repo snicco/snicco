@@ -11,7 +11,6 @@ use Whoops\Run;
 
 final class WhoopsHtmlDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -20,6 +19,4 @@ final class WhoopsHtmlDisplayerTest extends TestCase
         $displayer = new WhoopsHtmlDisplayer(new Run());
         $this->assertTrue($displayer->isVerbose());
     }
-
-
 }

@@ -9,7 +9,6 @@ use Throwable;
 
 final class ExceptionInformation
 {
-
     private int $status_code;
     private string $identifier;
     private string $title;
@@ -70,5 +69,4 @@ final class ExceptionInformation
     {
         return $this->server_request;
     }
-
 }

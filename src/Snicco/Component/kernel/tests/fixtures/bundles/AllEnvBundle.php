@@ -11,7 +11,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class AllEnvBundle implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
@@ -35,5 +34,4 @@ final class AllEnvBundle implements Bundle
     {
         return true;
     }
-
 }

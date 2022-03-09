@@ -12,7 +12,6 @@ use Snicco\Component\BetterWPMail\ValueObject\Attachment;
 
 final class AttachmentTest extends WPTestCase
 {
-
     /**
      * @test
      * @psalm-suppress InvalidScalarArgument
@@ -47,5 +46,4 @@ final class AttachmentTest extends WPTestCase
 
         Attachment::fromPath(__DIR__ . '/bogus.php');
     }
-
 }

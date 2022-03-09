@@ -9,7 +9,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 
 class ControllerWithBarMiddleware extends Controller
 {
-
     public function __construct()
     {
         $this->addMiddleware(BarMiddleware::class);

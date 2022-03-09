@@ -23,6 +23,4 @@ final class EnvelopeTest extends WPTestCase
 
         new Envelope(Mailbox::create('calvin@web.de'), new MailboxList([]));
     }
-
-
 }

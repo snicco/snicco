@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RedirectRoutesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -119,5 +118,4 @@ class RedirectRoutesTest extends HttpRunnerTestCase
         $response = $this->runNewPipeline($request);
         $response->assertOk()->assertSeeText(RoutingTestController::static);
     }
-
 }

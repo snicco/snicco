@@ -23,7 +23,6 @@ use function sprintf;
  */
 final class MysqliDriver implements MysqliDriverInterface
 {
-
     private mysqli $mysqli;
     private MysqliReconnect $reconnect;
 
@@ -220,13 +219,17 @@ final class MysqliDriver implements MysqliDriverInterface
             $success = $stmt->bind_param($types, ...$bindings);
         } catch (mysqli_sql_exception $e) {
             throw new QueryException(
-                $sql, $copy, $this->lastException()
+                $sql,
+                $copy,
+                $this->lastException()
             );
         }
 
         if (!$success) {
             throw new QueryException(
-                $sql, $copy, $this->lastException()
+                $sql,
+                $copy,
+                $this->lastException()
             );
         }
 
@@ -266,7 +269,9 @@ final class MysqliDriver implements MysqliDriverInterface
             }
         } catch (mysqli_sql_exception $e) {
             throw new QueryException(
-                $sql, $bindings, $e
+                $sql,
+                $bindings,
+                $e
             );
         }
 
@@ -289,5 +294,4 @@ final class MysqliDriver implements MysqliDriverInterface
 
         return $result;
     }
-
 }

@@ -10,12 +10,10 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 interface DisplayerFilter
 {
-
     /**
      * @param ExceptionDisplayer[] $displayers
      *
      * @return ExceptionDisplayer[]
      */
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array;
-
 }

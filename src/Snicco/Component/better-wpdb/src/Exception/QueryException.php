@@ -16,7 +16,6 @@ use function is_string;
 
 class QueryException extends RuntimeException
 {
-
     /**
      * @param array<scalar|null> $bindings
      */

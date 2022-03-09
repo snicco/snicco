@@ -11,7 +11,6 @@ use Snicco\Bundle\Session\ValueObject\SessionErrors;
 
 final class SessionErrorsTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -28,7 +27,8 @@ final class SessionErrorsTest extends TestCase
         }
 
         try {
-            new SessionErrors([
+            new SessionErrors(
+                [
                     'namespace1' => [
                         'foo',
                         'bar'
@@ -44,7 +44,8 @@ final class SessionErrorsTest extends TestCase
         }
 
         try {
-            new SessionErrors([
+            new SessionErrors(
+                [
                     'namespace1' => [
                         'key1' => [
                             'foo',
@@ -196,5 +197,4 @@ final class SessionErrorsTest extends TestCase
         $this->assertSame(2, $errors->count());
         $this->assertSame(4, $errors->count('form2'));
     }
-
 }

@@ -26,7 +26,6 @@ use const JSON_THROW_ON_ERROR;
  */
 final class AssertableResponse
 {
-
     private Response $psr_response;
     private string $streamed_content;
     private int $status_code;
@@ -370,5 +369,4 @@ final class AssertableResponse
 
         return $this;
     }
-
 }

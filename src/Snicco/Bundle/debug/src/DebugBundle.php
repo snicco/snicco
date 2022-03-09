@@ -30,7 +30,6 @@ use function is_file;
 
 final class DebugBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/debug-bundle';
 
     public function shouldRun(Environment $env): bool

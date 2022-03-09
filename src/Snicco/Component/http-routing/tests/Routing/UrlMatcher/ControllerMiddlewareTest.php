@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 final class ControllerMiddlewareTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -74,7 +73,6 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
 
 class ArrayMiddlewareController extends Controller
 {
-
     public function __construct()
     {
         $this->addMiddleware([FooMiddleware::class, BarMiddleware::class]);
@@ -84,12 +82,10 @@ class ArrayMiddlewareController extends Controller
     {
         return 'handle';
     }
-
 }
 
 class MiddlewareController extends Controller
 {
-
     public function __construct()
     {
         $this->addMiddleware(FoobarMiddleware::class);
@@ -116,5 +112,4 @@ class MiddlewareController extends Controller
     {
         return 'all';
     }
-
 }

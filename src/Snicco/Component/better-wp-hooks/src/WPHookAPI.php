@@ -18,7 +18,6 @@ use function sprintf;
  */
 final class WPHookAPI extends BetterWPAPI
 {
-
     /**
      * @psalm-internal Snicco\Component\BetterWPHooks
      *
@@ -55,5 +54,4 @@ final class WPHookAPI extends BetterWPAPI
         }
         return $hook;
     }
-
 }

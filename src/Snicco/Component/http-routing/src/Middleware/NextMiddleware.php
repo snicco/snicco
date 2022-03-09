@@ -15,7 +15,6 @@ use function call_user_func;
 
 final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterface
 {
-
     /**
      * @var callable(Request):PsrResponse
      */
@@ -54,5 +53,4 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
 
         return $psr_response instanceof Response ? $psr_response : new Response($psr_response);
     }
-
 }

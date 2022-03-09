@@ -29,7 +29,6 @@ use const E_NOTICE;
  */
 final class WPObjectCachePsr6Test extends WPTestCase
 {
-
     private WPObjectCachePsr6 $cache;
 
     protected function setUp(): void
@@ -45,7 +44,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
     {
         $keys = ['key1', 'key2'];
 
-        $cache_api = new class extends WPCacheAPI {
+        $cache_api = new class() extends WPCacheAPI {
             public function cacheDelete(string $key, string $group = ''): bool
             {
                 if ('key2' === $key) {
@@ -72,7 +71,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
      */
     public function test_commit_returns_false_if_one_item_cant_be_saved(): void
     {
-        $cache_api = new class extends WPCacheAPI {
+        $cache_api = new class() extends WPCacheAPI {
             public function cacheSet(string $key, $data, string $group = '', int $expire = 0): bool
             {
                 if ('key2' === $key) {
@@ -123,8 +122,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
      */
     public function test_exception_for_different_cache_item(): void
     {
-        $item = new class implements CacheItemInterface {
-
+        $item = new class() implements CacheItemInterface {
             public function getKey()
             {
                 return '';
@@ -167,7 +165,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
      */
     public function test_is_always_miss_for_non_string_cache_data(): void
     {
-        $cache_api = new class extends WPCacheAPI {
+        $cache_api = new class() extends WPCacheAPI {
             public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
             {
                 return new stdClass();
@@ -196,7 +194,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
         }, E_NOTICE);
 
         try {
-            $cache_api = new class extends WPCacheAPI {
+            $cache_api = new class() extends WPCacheAPI {
                 public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
                 {
                     $found = true;
@@ -227,5 +225,4 @@ final class WPObjectCachePsr6Test extends WPTestCase
 
         $this->assertFalse($cache_two->hasItem('key1'));
     }
-
 }

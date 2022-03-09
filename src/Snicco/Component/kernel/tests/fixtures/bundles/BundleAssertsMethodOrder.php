@@ -12,7 +12,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class BundleAssertsMethodOrder implements Bundle
 {
-
     public bool $registered = false;
     public bool $booted = false;
 
@@ -60,5 +59,4 @@ final class BundleAssertsMethodOrder implements Bundle
     {
         return true;
     }
-
 }

@@ -23,7 +23,6 @@ use function random_int;
 
 final class StrTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -378,7 +377,7 @@ final class StrTest extends TestCase
         $this->assertSame('foo', Str::pregReplace($str, '/^\.+|\.+$/', ''));
 
         $this->assertSame('Malmo', Str::pregReplace('Malmööö', '/[ö].+/', 'o'));
-        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o',));
+        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o', ));
     }
 
     /**
@@ -395,6 +394,4 @@ final class StrTest extends TestCase
             $this->assertStringContainsString("Subject: [0123456789\xFF]", $e->getMessage());
         }
     }
-
-
 }

@@ -35,7 +35,6 @@ use function is_string;
  */
 final class ReadWriteSession implements Session
 {
-
     private SessionId $id;
     private int $last_activity;
     private array $attributes;

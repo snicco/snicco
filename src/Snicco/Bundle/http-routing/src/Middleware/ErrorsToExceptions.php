@@ -23,7 +23,6 @@ use const E_USER_DEPRECATED;
  */
 final class ErrorsToExceptions implements MiddlewareInterface
 {
-
     private LoggerInterface $logger;
 
     private int $throw_at = E_ALL - E_DEPRECATED - E_USER_DEPRECATED;

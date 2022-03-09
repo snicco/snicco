@@ -30,7 +30,6 @@ use function is_readable;
 
 final class TemplatingBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/templating-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -123,8 +122,8 @@ final class TemplatingBundle implements Bundle
 
     private function bindTemplatingMiddleware(Kernel $kernel): void
     {
-        $kernel->container()->shared(TemplatingMiddleware::class, fn() => new TemplatingMiddleware(
-            fn() => $kernel->container()->make(ViewEngine::class)
+        $kernel->container()->shared(TemplatingMiddleware::class, fn () => new TemplatingMiddleware(
+            fn () => $kernel->container()->make(ViewEngine::class)
         ));
     }
 
@@ -132,7 +131,7 @@ final class TemplatingBundle implements Bundle
     {
         $kernel->container()->shared(
             TemplatingExceptionDisplayer::class,
-            fn() => new TemplatingExceptionDisplayer($kernel->container()->make(ViewEngine::class))
+            fn () => new TemplatingExceptionDisplayer($kernel->container()->make(ViewEngine::class))
         );
     }
 
@@ -168,7 +167,7 @@ final class TemplatingBundle implements Bundle
             });
 
             if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
-                $context->add('url', fn() => $kernel->container()->make(UrlGenerator::class));
+                $context->add('url', fn () => $kernel->container()->make(UrlGenerator::class));
             }
             return $context;
         });

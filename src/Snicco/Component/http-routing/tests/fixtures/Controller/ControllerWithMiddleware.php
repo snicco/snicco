@@ -11,8 +11,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 
 class ControllerWithMiddleware extends Controller
 {
-
-    const CONSTRUCTED_KEY = 'controller_with_middleware';
+    public const CONSTRUCTED_KEY = 'controller_with_middleware';
     private Baz $baz;
 
     public function __construct(Baz $baz)
@@ -30,6 +29,4 @@ class ControllerWithMiddleware extends Controller
     {
         return $this->baz->value . ':controller_with_middleware';
     }
-
 }
-

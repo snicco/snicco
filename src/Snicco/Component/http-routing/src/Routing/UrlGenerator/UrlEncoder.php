@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
 interface UrlEncoder
 {
-
     /**
      * @param array<string,string|int> $query
      */
@@ -18,5 +17,4 @@ interface UrlEncoder
      * @param string $fragment the "#" does not have to be passed.
      */
     public function encodeFragment(string $fragment): string;
-
 }

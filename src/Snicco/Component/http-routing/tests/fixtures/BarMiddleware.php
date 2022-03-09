@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 
 class BarMiddleware extends Middleware
 {
-
     private string $bar;
 
     public function __construct($bar = 'bar_middleware')
@@ -25,5 +24,4 @@ class BarMiddleware extends Middleware
         $response->getBody()->write(':' . $this->bar);
         return $response;
     }
-
 }

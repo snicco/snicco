@@ -8,7 +8,6 @@ use InvalidArgumentException;
 
 final class InvalidListener extends InvalidArgumentException
 {
-
     public static function becauseListenerClassDoesntExist(string $listener): InvalidListener
     {
         return new InvalidListener("The listener [$listener] is not a valid class.");
@@ -37,5 +36,4 @@ final class InvalidListener extends InvalidArgumentException
             "The listener class [$listener[0]] does not have a [$listener[1]] method."
         );
     }
-
 }

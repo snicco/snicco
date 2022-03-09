@@ -15,7 +15,6 @@ use Throwable;
 
 final class PsrViewComposerFactory implements ViewComposerFactory
 {
-
     private ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)

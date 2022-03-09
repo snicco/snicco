@@ -32,7 +32,6 @@ use stdClass;
 
 class EventDispatcherTest extends TestCase
 {
-
     use AssertListenerResponse;
 
     protected function setUp(): void
@@ -555,5 +554,4 @@ class EventDispatcherTest extends TestCase
             new NewableListenerFactory()
         );
     }
-
 }

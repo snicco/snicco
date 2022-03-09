@@ -16,7 +16,6 @@ use stdClass;
 
 final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      *
@@ -100,7 +99,9 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     public function test_bulkInsert_throws_exception_for_inconsistent_record_types(): void
     {
         try {
-            $this->better_wpdb->bulkInsert('test_table', [
+            $this->better_wpdb->bulkInsert(
+                'test_table',
+                [
                     ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
                     ['test_string' => 'bar', 'test_int' => 2, 'test_float' => 20.00],
                 ]
@@ -135,7 +136,9 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     {
         $this->assertRecordCount(0);
 
-        $res = $this->better_wpdb->bulkInsert('test_table', [
+        $res = $this->better_wpdb->bulkInsert(
+            'test_table',
+            [
                 ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
                 ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
             ]
@@ -195,7 +198,9 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertRecordCount(0);
 
         try {
-            $this->better_wpdb->bulkInsert('test_table', [
+            $this->better_wpdb->bulkInsert(
+                'test_table',
+                [
                     ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
                     ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
                     // duplicate string.
@@ -218,7 +223,9 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->bulkInsert('test_table', [
+        $db->bulkInsert(
+            'test_table',
+            [
                 ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
                 ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
             ]
@@ -244,5 +251,4 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertSame(['bar', 20.00, 2], $logger->queries[2]->bindings);
         $this->assertTrue($logger->queries[2]->end > $logger->queries[2]->start);
     }
-
 }

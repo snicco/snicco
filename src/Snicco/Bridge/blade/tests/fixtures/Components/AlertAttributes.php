@@ -8,8 +8,6 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class AlertAttributes extends BladeComponent
 {
-
-
     public string $type;
 
     public string $message;
@@ -24,5 +22,4 @@ class AlertAttributes extends BladeComponent
     {
         return $this->view('components.alert-attributes');
     }
-
 }

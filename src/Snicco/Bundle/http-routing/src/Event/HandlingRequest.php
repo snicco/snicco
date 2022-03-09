@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\HttpRouting\Event;
 
-
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 /**

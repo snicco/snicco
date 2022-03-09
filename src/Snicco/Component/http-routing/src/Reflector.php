@@ -26,7 +26,6 @@ use function sprintf;
  */
 final class Reflector
 {
-
     /**
      * @template Interface
      *
@@ -111,5 +110,4 @@ final class Reflector
 
         return new ReflectionMethod($callable[0], $callable[1]);
     }
-
 }

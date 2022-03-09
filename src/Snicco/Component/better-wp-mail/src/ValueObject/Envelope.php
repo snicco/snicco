@@ -17,7 +17,6 @@ use InvalidArgumentException;
 
 final class Envelope
 {
-
     private Mailbox $sender;
     private MailboxList $recipients;
 
@@ -52,5 +51,4 @@ final class Envelope
     {
         return $this->recipients;
     }
-
 }

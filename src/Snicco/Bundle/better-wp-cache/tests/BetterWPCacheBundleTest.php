@@ -22,7 +22,6 @@ use function var_export;
 
 final class BetterWPCacheBundleTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -164,6 +163,4 @@ final class BetterWPCacheBundleTest extends TestCase
     {
         return __DIR__ . '/fixtures';
     }
-
-
 }

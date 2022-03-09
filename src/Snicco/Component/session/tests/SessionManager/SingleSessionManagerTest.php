@@ -15,7 +15,6 @@ use Snicco\Component\TestableClock\TestClock;
 
 final class SingleSessionManagerTest extends TestCase
 {
-
     use SessionHelpers;
 
     /**
@@ -115,5 +114,4 @@ final class SingleSessionManagerTest extends TestCase
         $this->expectException(BadSessionID::class);
         $driver->read($old_id->selector());
     }
-
 }

@@ -19,7 +19,6 @@ use TypeError;
 
 final class RouteTest extends TestCase
 {
-
     /**
      * @test
      * @psalm-suppress InvalidArgument
@@ -447,5 +446,4 @@ final class RouteTest extends TestCase
     {
         return Route::create($path, Route::DELEGATE);
     }
-
 }

@@ -20,7 +20,6 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 
 final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -155,5 +154,4 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $wp_eloquent = new WPEloquentStandalone();
         $wp_eloquent->bootstrap();
     }
-
 }

@@ -9,7 +9,6 @@ use Snicco\Component\StrArr\Arr;
 
 class ActivityFactory extends Factory
 {
-
     public function definition()
     {
         return [
@@ -30,5 +29,4 @@ class ActivityFactory extends Factory
 
         return Arr::random($activities)[0];
     }
-
 }

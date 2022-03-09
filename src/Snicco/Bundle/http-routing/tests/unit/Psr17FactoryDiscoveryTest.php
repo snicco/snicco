@@ -147,7 +147,8 @@ final class Psr17FactoryDiscoveryTest extends TestCase
      */
     public function test_exception_if_auto_discovery_does_not_work(): void
     {
-        $discovery = new Psr17FactoryDiscovery([
+        $discovery = new Psr17FactoryDiscovery(
+            [
                 '\Slim\Psr7\Factory\RequestFactory' => [
                     'server_request' => ServerRequestFactory::class,
                     'uri' => UriFactory::class,
@@ -165,5 +166,4 @@ final class Psr17FactoryDiscoveryTest extends TestCase
 
         $discovery->createServerRequestFactory();
     }
-
 }

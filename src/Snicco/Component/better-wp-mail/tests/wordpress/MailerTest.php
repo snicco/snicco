@@ -32,7 +32,6 @@ use function wp_mail;
  */
 final class MailerTest extends WPTestCase
 {
-
     private string $fixtures_dir;
     private MockPHPMailer $php_mailer;
 
@@ -640,7 +639,11 @@ final class MailerTest extends WPTestCase
             );
         $mailer->send($email);
 
-        wp_mail('marlon@web.de', 'foo', '<h1>bar</h1>', ['Content-Type: text/plain; charset=utf-8']
+        wp_mail(
+            'marlon@web.de',
+            'foo',
+            '<h1>bar</h1>',
+            ['Content-Type: text/plain; charset=utf-8']
         );
 
         $mails = $this->getSentMails();
@@ -1035,6 +1038,4 @@ final class MailerTest extends WPTestCase
         $mails = $this->php_mailer->mock_sent;
         return $mails;
     }
-
 }
-

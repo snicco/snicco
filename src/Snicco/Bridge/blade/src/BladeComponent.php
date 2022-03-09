@@ -8,7 +8,6 @@ use Illuminate\View\Component as IlluminateComponent;
 
 abstract class BladeComponent extends IlluminateComponent
 {
-
     /**
      * This method must either return a view name or a view contents as a string.
      */
@@ -20,5 +19,4 @@ abstract class BladeComponent extends IlluminateComponent
 
         return "components.$view";
     }
-
 }

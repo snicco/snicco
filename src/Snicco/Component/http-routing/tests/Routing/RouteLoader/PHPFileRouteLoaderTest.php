@@ -20,10 +20,9 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 {
-
-    const WEB_PATH = '/web';
-    const PARTIAL_PATH = '/partial';
-    const ADMIN_PATH = '/admin.php/foo';
+    public const WEB_PATH = '/web';
+    public const PARTIAL_PATH = '/partial';
+    public const ADMIN_PATH = '/admin.php/foo';
 
     public static bool $web_include_partial = false;
 
@@ -578,8 +577,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
      * @test
      */
     public function the_first_argument_of_the_returned_closure_is_enforced_to_be_an_admin_configurator_for_the_admin_routes(
-    ): void
-    {
+    ): void {
         $this->expectExceptionMessage(
             sprintf(
                 'but required [%s]',
@@ -674,12 +672,10 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 
         $this->newRoutingFacade($loader);
     }
-
 }
 
 class TestLoadingOptions implements RouteLoadingOptions
 {
-
     private bool $fail_because_of_array;
     private bool $fail_because_of_wrong_type;
 
@@ -714,12 +710,10 @@ class TestLoadingOptions implements RouteLoadingOptions
     {
         return [];
     }
-
 }
 
 class ConfigurableLoadingOptions implements RouteLoadingOptions
 {
-
     private array $return_api;
     private array $return_normal;
 
@@ -744,5 +738,4 @@ class ConfigurableLoadingOptions implements RouteLoadingOptions
     {
         return $this->return_normal;
     }
-
 }

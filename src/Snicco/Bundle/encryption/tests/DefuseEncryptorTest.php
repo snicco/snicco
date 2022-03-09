@@ -11,7 +11,6 @@ use Snicco\Bundle\Encryption\DefuseEncryptor;
 
 final class DefuseEncryptorTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -42,5 +41,4 @@ final class DefuseEncryptorTest extends TestCase
         $plaintext = $encryptor->decrypt($ciphertext, true);
         $this->assertSame('foo', $plaintext);
     }
-
 }

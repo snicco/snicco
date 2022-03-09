@@ -14,7 +14,6 @@ use const MYSQLI_REPORT_OFF;
 
 trait WPDBTestHelpers
 {
-
     protected function withDatabaseExceptions(Closure $test): void
     {
         global $wpdb;
@@ -117,5 +116,4 @@ trait WPDBTestHelpers
 
         $wpdb->delete($table, $wheres, $this->format($wheres));
     }
-
 }

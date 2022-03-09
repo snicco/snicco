@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\RouteLoader;
 
 interface RouteLoadingOptions
 {
-
     /**
      * @return  array{
      *     namespace?:string,
@@ -26,5 +25,4 @@ interface RouteLoadingOptions
      * }
      */
     public function getRouteAttributes(string $file_basename): array;
-
 }

@@ -16,7 +16,6 @@ use const JSON_THROW_ON_ERROR;
 
 class JsonToArrayTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -151,5 +150,4 @@ class JsonToArrayTest extends MiddlewareTestCase
         return $this->frontendRequest('/foo', [], $method)
             ->withAddedHeader('Content-Type', 'application/json');
     }
-
 }

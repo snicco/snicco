@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
 final class SessionNoCacheTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -23,5 +22,4 @@ final class SessionNoCacheTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->assertableResponse()->assertHeader('cache-control', 'max-age=0, must-revalidate, private');
     }
-
 }

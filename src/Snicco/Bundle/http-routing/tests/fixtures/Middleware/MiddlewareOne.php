@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class MiddlewareOne extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);

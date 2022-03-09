@@ -115,12 +115,10 @@ final class TemplatingMiddlewareTest extends TestCase
     {
         return __DIR__ . '/fixtures';
     }
-
 }
 
 class CreateViewResponseMiddleware extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         return $this->respondWith()->view('foo', ['foo' => 'bar']);

@@ -13,7 +13,6 @@ use function var_export;
 
 final class FileRouteCache implements RouteCache
 {
-
     private Closure $empty_error_handler;
     private string $path;
     private int $file_permission;
@@ -65,5 +64,4 @@ final class FileRouteCache implements RouteCache
     {
         FileWriter::writeFile($path, $content, $this->file_permission);
     }
-
 }

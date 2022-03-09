@@ -20,7 +20,6 @@ use function count;
 
 final class Psr17FactoryDiscovery
 {
-
     private array $factories = [];
 
     /**

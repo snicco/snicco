@@ -8,7 +8,5 @@ use Throwable;
 
 interface CantSendEmail extends Throwable
 {
-
     public function getDebugData(): string;
-
 }

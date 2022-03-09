@@ -10,7 +10,6 @@ use function trim;
 
 class ViewComposingTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -54,5 +53,4 @@ class ViewComposingTest extends BladeTestCase
         $view = $this->view_engine->make($view);
         return $view->render();
     }
-
 }

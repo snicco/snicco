@@ -9,11 +9,10 @@ use Throwable;
 
 final class NewableInstanceViewComposerFactory implements ViewComposerFactory
 {
-
     public function create(string $composer): ViewComposer
     {
         try {
-            return new $composer;
+            return new $composer();
         } catch (Throwable $e) {
             throw new BadViewComposer(
                 "The view composer class [$composer] is not a newable.",
@@ -22,5 +21,4 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
             );
         }
     }
-
 }

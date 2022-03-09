@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
  */
 final class NegatedRouteCondition extends RouteCondition
 {
-
     private RouteCondition $condition;
 
     public function __construct(RouteCondition $condition)
@@ -29,5 +28,4 @@ final class NegatedRouteCondition extends RouteCondition
     {
         return $this->condition->getArguments($request);
     }
-
 }

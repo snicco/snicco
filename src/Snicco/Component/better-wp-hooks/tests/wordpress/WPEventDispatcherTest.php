@@ -19,13 +19,11 @@ use function add_filter;
 
 final class WPEventDispatcherTest extends WPTestCase
 {
-
     /**
      * @test
      */
     public function if_event_objects_implement_expose_to_wp_they_are_passed_to_the_wp_hook_system_after_the_internal_dispatcher(
-    ): void
-    {
+    ): void {
         add_filter(
             FilterEvent::class,
             function (FilterEvent $event) {
@@ -101,7 +99,9 @@ final class WPEventDispatcherTest extends WPTestCase
      */
     public function events_that_dont_implement_expose_to_wp_are_not_shared(): void
     {
-        add_filter(stdClass::class, function (stdClass $event) {
+        add_filter(
+            stdClass::class,
+            function (stdClass $event) {
             $event->value = $event->value . ':filtered_by_wordpress';
         }
         );
@@ -229,12 +229,10 @@ final class WPEventDispatcherTest extends WPTestCase
             new BaseEventDispatcher()
         );
     }
-
 }
 
 class WPDispatcherSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
@@ -246,5 +244,4 @@ class WPDispatcherSubscriber implements EventSubscriber
     {
         $stdClass->value = 'bar';
     }
-
 }

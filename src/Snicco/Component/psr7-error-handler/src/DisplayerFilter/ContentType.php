@@ -17,13 +17,13 @@ use function strstr;
  */
 final class ContentType implements DisplayerFilter
 {
-
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array
     {
         $accept_header = $this->parse($request->getHeaderLine('accept'));
 
-        return array_filter($displayers,
-            fn($displayer) => $displayer->supportedContentType() === $accept_header
+        return array_filter(
+            $displayers,
+            fn ($displayer) => $displayer->supportedContentType() === $accept_header
         );
     }
 
@@ -37,5 +37,4 @@ final class ContentType implements DisplayerFilter
 
         return $result === false ? $first : $result;
     }
-
 }

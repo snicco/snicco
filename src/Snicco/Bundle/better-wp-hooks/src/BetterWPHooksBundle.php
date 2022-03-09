@@ -22,7 +22,6 @@ use function class_exists;
 
 final class BetterWPHooksBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/better-wp-hooks-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -52,7 +51,7 @@ final class BetterWPHooksBundle implements Bundle
             }
             return $dispatcher;
         });
-        $container->shared(EventDispatcherInterface::class, fn() => $container->make(EventDispatcher::class));
+        $container->shared(EventDispatcherInterface::class, fn () => $container->make(EventDispatcher::class));
 
         if ($kernel->env()->isTesting()) {
             $container->shared(TestableEventDispatcher::class, function () use ($container) {
@@ -60,7 +59,9 @@ final class BetterWPHooksBundle implements Bundle
             });
         }
 
-        $container->shared(EventMapper::class, fn() => new EventMapper(
+        $container->shared(
+            EventMapper::class,
+            fn () => new EventMapper(
             $container->make(EventDispatcher::class),
             $hook_api
         )

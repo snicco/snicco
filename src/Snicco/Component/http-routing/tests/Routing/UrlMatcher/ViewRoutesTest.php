@@ -14,7 +14,6 @@ use function dirname;
 
 class ViewRoutesTest extends HttpRunnerTestCase
 {
-
     private string $view;
 
     protected function setUp(): void
@@ -90,4 +89,3 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $this->assertInstanceOf(Route::class, $view_data['request']->routingResult()->route());
     }
 }
-

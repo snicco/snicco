@@ -14,7 +14,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransfo
 
 final class FallbackJsonDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -41,5 +40,4 @@ final class FallbackJsonDisplayerTest extends TestCase
     {
         $this->assertSame('application/json', (new FallbackJsonDisplayer())->supportedContentType());
     }
-
 }

@@ -15,7 +15,6 @@ use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 
 final class CollectGarbage implements MiddlewareInterface
 {
-
     private int $percentage;
     private LoggerInterface $logger;
     private SignedUrlStorage $storage;
@@ -37,5 +36,4 @@ final class CollectGarbage implements MiddlewareInterface
 
         return $handler->handle($request);
     }
-
 }

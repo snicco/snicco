@@ -18,7 +18,6 @@ use function array_key_first;
 
 final class SessionStorageUsingArrayTest extends TestCase
 {
-
     use SignedUrlStorageTests;
 
     /**
@@ -61,5 +60,4 @@ final class SessionStorageUsingArrayTest extends TestCase
         $arr = [];
         return new SessionStorage($arr, $clock);
     }
-
 }

@@ -12,7 +12,6 @@ use Snicco\Component\StrArr\Arr;
 
 final class GlobalViewContext
 {
-
     /**
      * @var array<string,mixed>
      */
@@ -49,7 +48,6 @@ final class GlobalViewContext
     private function getArrayAccess(array $context): ArrayAccess
     {
         return new class($context) implements ArrayAccess {
-
             private array $context;
 
             public function __construct(array $context)
@@ -97,5 +95,4 @@ final class GlobalViewContext
             }
         };
     }
-
 }

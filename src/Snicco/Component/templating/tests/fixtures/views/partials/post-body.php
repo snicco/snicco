@@ -7,4 +7,3 @@ declare(strict_types=1);
  */
 
 echo $post_body;
-

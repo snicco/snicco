@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 
 final class CreatesPsrRequestsTests extends TestCase
 {
-
     use CreatesPsrRequests;
 
     protected string $host = 'foo.com';
@@ -147,5 +146,4 @@ final class CreatesPsrRequestsTests extends TestCase
     {
         return 'foo.com';
     }
-
 }

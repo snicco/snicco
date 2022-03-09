@@ -185,5 +185,4 @@ final class AssertableDOMTest extends TestCase
     {
         return new AssertableDOM($crawler);
     }
-
 }

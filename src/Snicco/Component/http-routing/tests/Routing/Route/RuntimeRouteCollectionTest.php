@@ -74,5 +74,4 @@ final class RuntimeRouteCollectionTest extends TestCase
 
         new RouteCollection([$r1, $r2]);
     }
-
 }

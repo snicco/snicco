@@ -30,7 +30,6 @@ use function urlencode;
 
 final class StatefulRequestTest extends MiddlewareTestCase
 {
-
     private InMemoryDriver $session_driver;
     private TestLogger $logger;
 
@@ -376,5 +375,4 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         return new StatefulRequest($manager, $this->logger, $cookie_path);
     }
-
 }

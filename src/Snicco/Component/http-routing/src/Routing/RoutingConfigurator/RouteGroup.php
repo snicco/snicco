@@ -18,7 +18,6 @@ use function trim;
  */
 final class RouteGroup
 {
-
     public string $namespace;
     public UrlPath $prefix;
     public string $name;
@@ -78,5 +77,4 @@ final class RouteGroup
     {
         return $old_group->prefix->append($this->prefix);
     }
-
 }

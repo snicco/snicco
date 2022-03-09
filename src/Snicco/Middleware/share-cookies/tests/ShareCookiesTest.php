@@ -11,7 +11,6 @@ use Snicco\Middleware\ShareCookies\ShareCookies;
 
 class ShareCookiesTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -97,8 +96,4 @@ class ShareCookiesTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->assertableResponse()->assertHeaderMissing('set-cookie');
     }
-
 }
-
-
-

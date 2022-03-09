@@ -17,7 +17,6 @@ use function strtoupper;
 
 trait CreatesPsrRequests
 {
-
     final protected function adminRequest(string $path, array $server = []): Request
     {
         return $this->newRequest($path, $server, 'GET', Request::TYPE_ADMIN_AREA);
@@ -79,5 +78,4 @@ trait CreatesPsrRequests
     {
         return $this->psrUriFactory()->createUri($uri);
     }
-
 }

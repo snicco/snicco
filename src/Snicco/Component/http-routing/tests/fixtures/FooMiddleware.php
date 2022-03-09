@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 
 class FooMiddleware extends Middleware
 {
-
     public string $foo;
 
     public function __construct(string $foo = 'foo_middleware')
@@ -25,5 +24,4 @@ class FooMiddleware extends Middleware
         $response->getBody()->write(':' . $this->foo);
         return $response;
     }
-
 }

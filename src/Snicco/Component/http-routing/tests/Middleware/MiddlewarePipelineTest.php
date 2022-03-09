@@ -29,7 +29,6 @@ use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
 class MiddlewarePipelineTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreateHttpErrorHandler;
 
@@ -350,35 +349,29 @@ class MiddlewarePipelineTest extends TestCase
 
         $this->assertSame('foo:bar_middleware', $response->getBody()->__toString());
     }
-
 }
 
 class ThrowExceptionMiddleware extends Middleware
 {
-
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         throw new RuntimeException('Error in middleware');
     }
-
 }
 
 class StopMiddleware extends Middleware
 {
-
-    const ATTR = 'stop_middleware';
+    public const ATTR = 'stop_middleware';
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         return $this->responseFactory()->html('stopped');
     }
-
 }
 
 class PipelineTestMiddleware1 extends Middleware
 {
-
-    const ATTRIBUTE = 'pipeline1';
+    public const ATTRIBUTE = 'pipeline1';
     private string $value_to_add;
 
     public function __construct(string $value_to_add = 'foo')
@@ -392,13 +385,11 @@ class PipelineTestMiddleware1 extends Middleware
         $response->getBody()->write(':pm1');
         return $response;
     }
-
 }
 
 class PipelineTestMiddleware2 extends Middleware
 {
-
-    const ATTRIBUTE = 'pipeline2';
+    public const ATTRIBUTE = 'pipeline2';
     private string $value_to_add;
 
     public function __construct(string $value_to_add = 'bar')
@@ -412,5 +403,4 @@ class PipelineTestMiddleware2 extends Middleware
         $response->getBody()->write(':pm2');
         return $response;
     }
-
 }

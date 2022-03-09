@@ -9,7 +9,6 @@ use Snicco\Component\Kernel\Configuration\ConfigCache;
 
 final class FixedConfigCache implements ConfigCache
 {
-
     private array $config;
 
     public function __construct(array $config)

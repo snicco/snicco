@@ -13,7 +13,6 @@ use function rawurlencode;
 
 final class RFC3986EncoderTest extends TestCase
 {
-
     private const QUERY_FRAGMENT_EXTRA = [
         '/' => '%2F',
         '?' => '%3F',
@@ -123,5 +122,4 @@ final class RFC3986EncoderTest extends TestCase
         $encoder = new RFC3986Encoder([]);
         $this->assertSame('foo=&&bar==', $encoder->encodeQuery(['foo' => '&', 'bar' => '=']));
     }
-
 }

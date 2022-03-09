@@ -13,12 +13,10 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
  */
 final class SendingEmail
 {
-
     public Email $email;
 
     public function __construct(Email $email)
     {
         $this->email = $email;
     }
-
 }

@@ -10,7 +10,6 @@ use Snicco\Component\SignedUrl\Secret;
 
 final class SecretTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -69,5 +68,4 @@ final class SecretTest extends TestCase
         $this->assertSame($secret->asString(), $secret_new->asString());
         $this->assertSame($bytes, $secret_new->asBytes());
     }
-
 }

@@ -8,7 +8,6 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 
 final class MailDefaults
 {
-
     private string $from_name;
     private string $from_email;
     private string $reply_to_name;
@@ -52,5 +51,4 @@ final class MailDefaults
     {
         return Mailbox::create([$this->reply_to_email, $this->reply_to_name]);
     }
-
 }

@@ -45,7 +45,6 @@ use const MYSQLI_OPT_INT_AND_FLOAT_NATIVE;
 
 final class BetterWPDB
 {
-
     private mysqli $mysqli;
     private ?string $original_sql_mode = null;
     private bool $in_transaction = false;
@@ -55,8 +54,7 @@ final class BetterWPDB
     public function __construct(mysqli $mysqli, ?QueryLogger $logger = null)
     {
         $this->mysqli = $mysqli;
-        $this->logger = $logger ?: new class implements QueryLogger {
-
+        $this->logger = $logger ?: new class() implements QueryLogger {
             public function log(QueryInfo $info): void
             {
                 // do nothing
@@ -163,9 +161,11 @@ final class BetterWPDB
                 $end = microtime(true);
 
                 $this->log(
-                    new QueryInfo($start,
+                    new QueryInfo(
+                        $start,
                         $end,
-                        'START TRANSACTION', []
+                        'START TRANSACTION',
+                        []
                     )
                 );
 
@@ -184,7 +184,8 @@ final class BetterWPDB
                 $end = microtime(true);
 
                 $this->log(
-                    new QueryInfo($start,
+                    new QueryInfo(
+                        $start,
                         $end,
                         'COMMIT',
                         []
@@ -565,7 +566,7 @@ final class BetterWPDB
     private function buildInsertSql(string $table, array $column_names): string
     {
         $column_names = array_map(
-            fn($column_name) => $this->escIdentifier($column_name),
+            fn ($column_name) => $this->escIdentifier($column_name),
             $column_names
         );
         $columns = implode(',', $column_names);
@@ -688,5 +689,4 @@ final class BetterWPDB
         }
         return [$wheres, $bindings];
     }
-
 }

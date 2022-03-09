@@ -22,7 +22,6 @@ use function strtolower;
 
 final class MiddlewarePipeline
 {
-
     private HttpErrorHandler $error_handler;
     private MiddlewareFactory $middleware_factory;
     private ContainerInterface $container;
@@ -164,5 +163,4 @@ final class MiddlewarePipeline
             return $value;
         }, $constructor_args);
     }
-
 }

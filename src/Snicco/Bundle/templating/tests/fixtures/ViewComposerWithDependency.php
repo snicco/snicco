@@ -13,7 +13,6 @@ use function spl_object_hash;
 
 final class ViewComposerWithDependency implements ViewComposer
 {
-
     private stdClass $stdClass;
 
     public function __construct(stdClass $stdClass)

@@ -24,7 +24,6 @@ use Snicco\Component\Session\ValueObject\SessionConfig;
 
 final class ShareSessionWithViewsTest extends MiddlewareTestCase
 {
-
     private Session $session;
     private Request $request_with_session;
 
@@ -102,6 +101,4 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
         $this->expectExceptionMessage('No session has been set on the request.');
         $this->runMiddleware($middleware, $this->frontendRequest());
     }
-
-
 }

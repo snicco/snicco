@@ -23,7 +23,6 @@ use stdClass;
 
 class RouteMiddlewareTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -828,6 +827,4 @@ class RouteMiddlewareTest extends HttpRunnerTestCase
         $response = $this->runNewPipeline($this->frontendRequest('/foo'));
         $this->assertSame('controller:bar_middleware:foo_middleware', $response->body());
     }
-
 }
-

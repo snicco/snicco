@@ -8,9 +8,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 class RoutingTestController
 {
-
-    const static = 'static';
-    const dynamic = 'dynamic';
+    public const static = 'static';
+    public const dynamic = 'dynamic';
 
     public function __invoke()
     {
@@ -92,5 +91,4 @@ class RoutingTestController
     {
         return (string)$request->getUri();
     }
-
 }

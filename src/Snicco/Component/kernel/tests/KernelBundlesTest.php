@@ -23,7 +23,6 @@ use Throwable;
 
 final class KernelBundlesTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
@@ -297,7 +296,6 @@ final class KernelBundlesTest extends TestCase
         // plugin is used
         $this->assertTrue($app->usesBundle('bundle_that_configures'));
     }
-
 }
 
 class BundleThatConfigures implements Bundle
@@ -333,12 +331,10 @@ class BundleThatConfigures implements Bundle
     {
         return true;
     }
-
 }
 
 class BundleWithCustomEnv implements Bundle
 {
-
     public bool $registered = false;
     public bool $booted = false;
 
@@ -369,12 +365,10 @@ class BundleWithCustomEnv implements Bundle
         return isset($_SERVER['_test']['custom_env_bundle_should_run'])
             && $_SERVER['_test']['custom_env_bundle_should_run'] === true;
     }
-
 }
 
 class BundleDuplicate1 implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
@@ -396,12 +390,10 @@ class BundleDuplicate1 implements Bundle
     {
         return true;
     }
-
 }
 
 class BundleDuplicate2 implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
@@ -423,5 +415,4 @@ class BundleDuplicate2 implements Bundle
     {
         return true;
     }
-
 }

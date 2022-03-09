@@ -24,7 +24,6 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 
 final class WPEloquentStandaloneTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
 
     protected function setUp(): void
@@ -196,5 +195,4 @@ final class WPEloquentStandaloneTest extends WPTestCase
         $schema->getConnection()->getConfig('driver') === 'mysql';
         $schema->getConnection()->getConfig('database') === 'sniccowp_testing_secondary';
     }
-
 }

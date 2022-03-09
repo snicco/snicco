@@ -33,7 +33,6 @@ use function remove_all_filters;
  */
 final class HttpKernelRunnerTest extends WPTestCase
 {
-
     use BundleTestHelpers;
 
     private Kernel $kernel;

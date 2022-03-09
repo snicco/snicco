@@ -16,7 +16,6 @@ use Snicco\Middleware\WPNonce\WPNonce;
 
 final class VerifyWPNonceTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -219,12 +218,10 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
     }
-
 }
 
 class VerifyNonceTestWPApi extends BetterWPAPI
 {
-
     public function verifyNonce(string $nonce, string $action): bool
     {
         return $nonce === $this->createNonce($action);
@@ -234,5 +231,4 @@ class VerifyNonceTestWPApi extends BetterWPAPI
     {
         return "nonce.$form_action";
     }
-
 }

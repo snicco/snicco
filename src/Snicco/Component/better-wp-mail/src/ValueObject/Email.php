@@ -23,7 +23,6 @@ use function strip_tags;
  */
 class Email
 {
-
     protected string $subject = '';
     protected ?string $html = null;
     protected ?string $html_template = null;
@@ -542,5 +541,4 @@ class Email
 
         return $a;
     }
-
 }

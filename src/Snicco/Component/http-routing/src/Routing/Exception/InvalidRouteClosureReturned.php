@@ -13,7 +13,6 @@ use function sprintf;
 
 final class InvalidRouteClosureReturned extends InvalidArgumentException
 {
-
     public static function adminRoutesAreUsingWebRouting(string $filepath): InvalidRouteClosureReturned
     {
         return new self(
@@ -62,5 +61,4 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-
 }

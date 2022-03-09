@@ -15,7 +15,6 @@ use function time;
 
 final class ReadOnlySessionTest extends TestCase
 {
-
     use SessionHelpers;
 
     /**
@@ -183,5 +182,4 @@ final class ReadOnlySessionTest extends TestCase
         $session = $this->newSession();
         $this->assertTrue(ReadOnlySession::fromSession($session)->isNew());
     }
-
 }

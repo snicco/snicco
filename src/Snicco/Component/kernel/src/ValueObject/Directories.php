@@ -17,7 +17,6 @@ use function sprintf;
  */
 final class Directories
 {
-
     private string $config_dir;
     private string $cache_dir;
     private string $log_dir;
@@ -97,5 +96,4 @@ final class Directories
     {
         return $this->log_dir;
     }
-
 }

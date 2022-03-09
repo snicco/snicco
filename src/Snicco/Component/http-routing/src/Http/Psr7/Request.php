@@ -33,7 +33,6 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 final class Request implements ServerRequestInterface
 {
-
     public const TYPE_FRONTEND = 'frontend';
     public const TYPE_ADMIN_AREA = 'admin';
     public const TYPE_API = 'api';
@@ -135,7 +134,7 @@ final class Request implements ServerRequestInterface
     /**
      * @note The full url is not urldecoded here.
      */
-    function fullUrlIs(string ...$patterns): bool
+    public function fullUrlIs(string ...$patterns): bool
     {
         $url = $this->fullUrl();
 
@@ -417,7 +416,7 @@ final class Request implements ServerRequestInterface
 
         $input = $this->inputSource();
 
-        $placeholder = new stdClass;
+        $placeholder = new stdClass();
         $keys = Arr::toArray($keys);
 
         foreach ($keys as $key) {
@@ -739,5 +738,4 @@ final class Request implements ServerRequestInterface
 
         return false;
     }
-
 }

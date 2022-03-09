@@ -27,7 +27,6 @@ use function sprintf;
 
 final class Route
 {
-
     /**
      * @interal
      */
@@ -126,7 +125,11 @@ final class Route
         string $namespace = ''
     ): Route {
         return new self(
-            $pattern, $controller, $name, $methods, $namespace
+            $pattern,
+            $controller,
+            $name,
+            $methods,
+            $namespace
         );
     }
 
@@ -488,5 +491,4 @@ final class Route
             $this->requirements[$segment] = $regex;
         }
     }
-
 }

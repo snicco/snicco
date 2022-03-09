@@ -21,7 +21,6 @@ use Webmozart\Assert\Assert;
  */
 abstract class DIContainer implements ArrayAccess, PsrContainer
 {
-
     /**
      * After the lock method is called and method call that would change the container must throw {@see FrozenService}
      *
@@ -69,7 +68,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      */
     final public function instance(string $id, object $service): void
     {
-        $this->shared($id, fn() => $service);
+        $this->shared($id, fn () => $service);
     }
 
     /**
@@ -131,7 +130,4 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
         return $res;
     }
-
 }
-
-

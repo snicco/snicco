@@ -11,7 +11,6 @@ use function random_int;
 
 final class GarbageCollector
 {
-
     public static function clean(SignedUrlStorage $storage, int $percentage): void
     {
         Assert::range($percentage, 0, 100);
@@ -19,5 +18,4 @@ final class GarbageCollector
             $storage->gc();
         }
     }
-
 }

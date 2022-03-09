@@ -7,7 +7,6 @@ namespace Snicco\Bundle\Session\Event;
 
 use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
 
-
 /**
  * @psalm-internal Snicco\Bundle\Session
  * @psalm-immutable

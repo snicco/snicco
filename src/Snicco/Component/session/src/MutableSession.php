@@ -9,7 +9,6 @@ use Snicco\Component\Session\Exception\SessionIsLocked;
 
 interface MutableSession
 {
-
     /**
      * Store a user id in the session. The user id will be flushed when calling invalidate()
      *
@@ -129,5 +128,4 @@ interface MutableSession
      * @throws SessionIsLocked
      */
     public function remove(string $key): void;
-
 }

@@ -30,7 +30,6 @@ use function trim;
  */
 final class Generator implements UrlGenerator
 {
-
     private Routes $routes;
     private UrlGenerationContext $context;
     private AdminArea $admin_area;
@@ -339,5 +338,4 @@ final class Generator implements UrlGenerator
             return (string)$value;
         }, $extra);
     }
-
 }

@@ -162,12 +162,10 @@ final class BetterWPHooksBundleTest extends TestCase
 
 class ListenerDependency
 {
-
 }
 
 class Listener
 {
-
     private ListenerDependency $dependency;
 
     public function __construct(ListenerDependency $dependency)
@@ -179,6 +177,4 @@ class Listener
     {
         $std->value = 'foobar';
     }
-
 }
-

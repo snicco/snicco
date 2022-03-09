@@ -23,7 +23,6 @@ use function is_file;
 
 final class EncryptionBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/encryption-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -94,5 +93,4 @@ final class EncryptionBundle implements Bundle
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

@@ -18,7 +18,6 @@ use function sha1;
 
 final class VerifyWPNonce extends Middleware
 {
-
     private BetterWPAPI $wp;
 
     public function __construct(BetterWPAPI $wp = null)
@@ -55,5 +54,4 @@ final class VerifyWPNonce extends Middleware
 
         return $next($request);
     }
-
 }

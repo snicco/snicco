@@ -9,15 +9,14 @@ use Snicco\Component\HttpRouting\Routing\Route\Routes;
 
 interface RoutingConfigurator
 {
-
-    const MIDDLEWARE_KEY = 'middleware';
-    const PREFIX_KEY = 'prefix';
-    const NAMESPACE_KEY = 'namespace';
-    const NAME_KEY = 'name';
-    const FRONTEND_MIDDLEWARE = 'frontend';
-    const API_MIDDLEWARE = 'api';
-    const ADMIN_MIDDLEWARE = 'admin';
-    const GLOBAL_MIDDLEWARE = 'global';
+    public const MIDDLEWARE_KEY = 'middleware';
+    public const PREFIX_KEY = 'prefix';
+    public const NAMESPACE_KEY = 'namespace';
+    public const NAME_KEY = 'name';
+    public const FRONTEND_MIDDLEWARE = 'frontend';
+    public const API_MIDDLEWARE = 'api';
+    public const ADMIN_MIDDLEWARE = 'admin';
+    public const GLOBAL_MIDDLEWARE = 'global';
 
     /**
      * @param string|string[] $middleware
@@ -54,5 +53,4 @@ interface RoutingConfigurator
     public function include($file_or_closure): void;
 
     public function configuredRoutes(): Routes;
-
 }

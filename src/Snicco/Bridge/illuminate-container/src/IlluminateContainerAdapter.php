@@ -15,7 +15,6 @@ use function sprintf;
 
 final class IlluminateContainerAdapter extends DIContainer
 {
-
     private Container $illuminate_container;
     private bool $locked = false;
 
@@ -83,5 +82,4 @@ final class IlluminateContainerAdapter extends DIContainer
             sprintf('Singleton [%s] was already resolved and can not be overwritten.', $id)
         );
     }
-
 }

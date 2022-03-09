@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 trait WithTestTransactions
 {
-
     protected function beginTransaction()
     {
         DB::beginTransaction();
@@ -18,5 +17,4 @@ trait WithTestTransactions
     {
         DB::rollBack();
     }
-
 }

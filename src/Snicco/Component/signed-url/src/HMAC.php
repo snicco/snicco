@@ -10,7 +10,6 @@ use function hash_hmac;
 
 final class HMAC
 {
-
     protected Secret $secret;
     private string $hash_algo;
 
@@ -35,5 +34,4 @@ final class HMAC
         }
         return $hashed;
     }
-
 }

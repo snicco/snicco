@@ -9,7 +9,6 @@ use Snicco\Component\EventDispatcher\Event;
 
 class UserCreated implements Event
 {
-
     use ClassAsPayload;
 
     public $user_name;
@@ -23,5 +22,4 @@ class UserCreated implements Event
     {
         return 'my_plugin_user_created';
     }
-
 }

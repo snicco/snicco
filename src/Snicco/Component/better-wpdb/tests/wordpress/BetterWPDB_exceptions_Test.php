@@ -138,5 +138,4 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         // The insert went through with invalid data.
         $this->assertSame(1, $result);
     }
-
 }

@@ -26,7 +26,6 @@ use function wp_set_current_user;
  */
 final class BetterWPAPITest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -366,5 +365,4 @@ final class BetterWPAPITest extends WPTestCase
         
         $this->assertFalse($wp->verifyNonce($valid_nonce, 'bar_action'));
     }
-
 }

@@ -10,7 +10,6 @@ use Snicco\Component\Session\ValueObject\SessionLottery;
 
 final class SessionLotteryTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -58,5 +57,4 @@ final class SessionLotteryTest extends TestCase
         }
         $this->assertTrue(true);
     }
-
 }

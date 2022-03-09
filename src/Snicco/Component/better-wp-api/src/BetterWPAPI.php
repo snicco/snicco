@@ -30,7 +30,6 @@ use function wp_verify_nonce;
  */
 class BetterWPAPI
 {
-
     /**
      * @return true
      */
@@ -163,5 +162,4 @@ class BetterWPAPI
     {
         return wp_create_nonce($form_action);
     }
-
 }

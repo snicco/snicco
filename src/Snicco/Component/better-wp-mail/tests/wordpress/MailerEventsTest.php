@@ -18,7 +18,6 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 
 final class MailerEventsTest extends WPTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -132,6 +131,4 @@ final class MailerEventsTest extends WPTestCase
         global $phpmailer;
         return $phpmailer->mock_sent;
     }
-
 }
-

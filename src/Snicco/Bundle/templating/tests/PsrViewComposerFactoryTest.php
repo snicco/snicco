@@ -15,7 +15,6 @@ use stdClass;
 
 final class PsrViewComposerFactoryTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -59,7 +58,6 @@ final class PsrViewComposerFactoryTest extends TestCase
         $this->expectExceptionMessage(TestComposerNotNewable::class);
         $factory->create(TestComposerNotNewable::class);
     }
-
 }
 
 class TestComposerNewable implements ViewComposer

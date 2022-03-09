@@ -8,7 +8,6 @@ use InvalidArgumentException;
 
 final class BadRouteParameter extends InvalidArgumentException
 {
-
     public static function becauseRegexDoesntMatch(
         string $provided_value,
         string $param_name,
@@ -28,5 +27,4 @@ final class BadRouteParameter extends InvalidArgumentException
             "Required parameter [$required_segment] is missing for route [$route_name]."
         );
     }
-
 }

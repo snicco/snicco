@@ -11,7 +11,6 @@ use Whoops\Run;
 
 final class WhoopsHtmlDisplayer implements ExceptionDisplayer
 {
-
     private Run $whoops;
 
     public function __construct(Run $whoops)

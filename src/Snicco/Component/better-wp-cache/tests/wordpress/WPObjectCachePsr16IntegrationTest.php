@@ -25,7 +25,6 @@ use function sprintf;
  */
 final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 {
-
     private CacheInterface $cache;
 
     protected function setUp(): void
@@ -860,5 +859,4 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             'Object in cache should not have their values changed.'
         );
     }
-
 }

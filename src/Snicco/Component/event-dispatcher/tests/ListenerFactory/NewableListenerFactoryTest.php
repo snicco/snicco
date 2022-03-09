@@ -11,7 +11,6 @@ use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
 final class NewableListenerFactoryTest extends TestCase
 {
-
     /**
      * @test
      *
@@ -27,5 +26,4 @@ final class NewableListenerFactoryTest extends TestCase
         );
         $factory->create('Bogus', 'foo_event');
     }
-
 }

@@ -16,7 +16,6 @@ use function usleep;
 
 final class SystemClockTest extends TestCase
 {
-
     private string $current_timezone;
 
     protected function setUp(): void
@@ -94,5 +93,4 @@ final class SystemClockTest extends TestCase
         $this->assertNotEquals($clock, new SystemClock(new DateTimeZone('europe/berlin')));
         $this->assertEquals($clock, new SystemClock(new DateTimeZone('UTC')));
     }
-
 }

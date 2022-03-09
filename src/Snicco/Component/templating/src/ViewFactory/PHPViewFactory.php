@@ -15,7 +15,6 @@ use function array_filter;
 
 final class PHPViewFactory implements ViewFactory
 {
-
     private PHPViewFinder $finder;
     private ViewComposerCollection $composer_collection;
 
@@ -102,5 +101,4 @@ final class PHPViewFactory implements ViewFactory
 
         throw ViewCantBeRendered::fromPrevious($view->name(), $e);
     }
-
 }

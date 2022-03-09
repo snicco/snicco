@@ -8,7 +8,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
 final class RedirectResponse extends Response
 {
-
     private bool $bypass_validation = false;
 
     public function to(string $url): self
@@ -27,5 +26,4 @@ final class RedirectResponse extends Response
         $res->bypass_validation = true;
         return $res;
     }
-
 }

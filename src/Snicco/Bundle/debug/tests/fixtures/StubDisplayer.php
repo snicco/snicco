@@ -10,7 +10,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 final class StubDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return 'stub';

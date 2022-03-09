@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 
 class RoutingResultTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -67,5 +66,4 @@ class RoutingResultTest extends TestCase
     {
         return Route::create('/foo', Route::DELEGATE, 'foo');
     }
-
 }

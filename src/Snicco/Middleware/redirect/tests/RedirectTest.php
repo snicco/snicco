@@ -10,7 +10,6 @@ use Snicco\Middleware\Redirect\Redirect;
 
 class RedirectTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -92,8 +91,7 @@ class RedirectTest extends MiddlewareTestCase
      * @test
      */
     public function if_a_redirect_is_defined_with_a_query_string_the_redirect_will_only_happen_for_that_query_string(
-    ): void
-    {
+    ): void {
         $middleware = $this->getMiddleware([
             301 => [
                 '/foo?page=60' => '/bar',
@@ -113,8 +111,7 @@ class RedirectTest extends MiddlewareTestCase
      * @test
      */
     public function redirect_definitions_without_query_strings_will_match_all_requests_for_that_patch_no_matter_the_query_string(
-    ): void
-    {
+    ): void {
         $middleware = $this->getMiddleware([
             301 => [
                 '/foo/bar' => '/baz',
@@ -169,5 +166,4 @@ class RedirectTest extends MiddlewareTestCase
     {
         return new Redirect($redirects);
     }
-
 }

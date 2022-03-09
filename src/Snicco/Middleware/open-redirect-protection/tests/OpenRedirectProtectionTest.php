@@ -10,7 +10,6 @@ use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
 
 class OpenRedirectProtectionTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -226,6 +225,4 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
     {
         return new OpenRedirectProtection('https://foo.com', $exit_path, $whitelist);
     }
-
 }
-

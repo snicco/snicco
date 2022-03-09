@@ -14,7 +14,6 @@ use const DIRECTORY_SEPARATOR;
 
 final class ConfigLoaderTest extends TestCase
 {
-
     use CreateTestContainer;
 
     private string $fixtures_dir;
@@ -50,6 +49,4 @@ final class ConfigLoaderTest extends TestCase
         $load_config = new ConfigLoader();
         $load_config($this->fixtures_dir . '/config_no_array_return/config');
     }
-
-
 }

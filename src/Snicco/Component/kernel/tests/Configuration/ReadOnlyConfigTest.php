@@ -11,7 +11,6 @@ use Snicco\Component\Kernel\Exception\MissingConfigKey;
 
 final class ReadOnlyConfigTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -95,6 +94,4 @@ final class ReadOnlyConfigTest extends TestCase
 
         $config->getBoolean('biz');
     }
-
-
 }

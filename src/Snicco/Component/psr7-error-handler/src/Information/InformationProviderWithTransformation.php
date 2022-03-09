@@ -22,7 +22,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class InformationProviderWithTransformation implements ExceptionInformationProvider
 {
-
     private ExceptionIdentifier $identifier;
 
     /**
@@ -148,5 +147,4 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
 
         return [$title, $safe_message];
     }
-
 }

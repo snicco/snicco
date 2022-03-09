@@ -162,5 +162,4 @@ final class Cookie
 
         return $cookie;
     }
-
 }

@@ -49,7 +49,6 @@ use function call_user_func;
  */
 abstract class HttpRunnerTestCase extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
     use CreateHttpErrorHandler;
@@ -112,7 +111,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
         // TestController
         $controller = new RoutingTestController();
-        $this->pimple[RoutingTestController::class] = fn(): RoutingTestController => $controller;
+        $this->pimple[RoutingTestController::class] = fn (): RoutingTestController => $controller;
 
         $this->routes_dir = __DIR__ . '/fixtures/routes';
     }
@@ -191,7 +190,6 @@ abstract class HttpRunnerTestCase extends TestCase
         ?UrlGenerationContext $context = null
     ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
-
             private Closure $loader;
 
             public function __construct(Closure $loader)
@@ -222,7 +220,6 @@ abstract class HttpRunnerTestCase extends TestCase
         ?UrlGenerationContext $context = null
     ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
-
             private Closure $loader;
 
             public function __construct(Closure $loader)
@@ -318,8 +315,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
     private function nullLoader(): RouteLoader
     {
-        return new class implements RouteLoader {
-
+        return new class() implements RouteLoader {
             public function loadWebRoutes(WebRoutingConfigurator $configurator): void
             {
                 //
@@ -331,5 +327,4 @@ abstract class HttpRunnerTestCase extends TestCase
             }
         };
     }
-
 }

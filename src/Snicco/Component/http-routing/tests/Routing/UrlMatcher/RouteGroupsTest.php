@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 class RouteGroupsTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -215,6 +214,4 @@ class RouteGroupsTest extends HttpRunnerTestCase
             $get_request
         );
     }
-
 }
-

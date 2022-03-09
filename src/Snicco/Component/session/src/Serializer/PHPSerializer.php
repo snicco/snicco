@@ -15,7 +15,6 @@ use function unserialize;
 
 final class PHPSerializer implements Serializer
 {
-
     public function serialize(array $session_data): string
     {
         return serialize($session_data);
@@ -25,7 +24,8 @@ final class PHPSerializer implements Serializer
     {
         set_error_handler(function (int $code, string $message) {
             throw new RuntimeException(
-                'Could not unserialize session content in ' . __CLASS__ . "\nMessage: " . $message, $code
+                'Could not unserialize session content in ' . __CLASS__ . "\nMessage: " . $message,
+                $code
             );
         });
 

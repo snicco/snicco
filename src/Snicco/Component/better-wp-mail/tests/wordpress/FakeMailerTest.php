@@ -21,7 +21,6 @@ use const PHP_INT_MAX;
 
 final class FakeMailerTest extends WPTestCase
 {
-
     use AssertFails;
 
     private array $mail_data = [];
@@ -97,7 +96,7 @@ final class FakeMailerTest extends WPTestCase
                 'No email of type [%s] was sent.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertSent(
+            fn () => $this->fake_transport->assertSent(
                 TestMail::class
             )
         );
@@ -145,7 +144,7 @@ final class FakeMailerTest extends WPTestCase
                 'The email [%s] was sent [1] time[s] but no email matched the provided condition.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertSent(
+            fn () => $this->fake_transport->assertSent(
                 TestMail::class,
                 function (TestMail $email) {
                     return $email->to()->has('c@web.de');
@@ -183,7 +182,7 @@ final class FakeMailerTest extends WPTestCase
                 'Email of type [%s] was sent [2] times.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertNotSent(
+            fn () => $this->fake_transport->assertNotSent(
                 TestMail::class
             )
         );
@@ -221,7 +220,7 @@ final class FakeMailerTest extends WPTestCase
                 'Email of type [%s] was sent [3] times. Expected [2] times.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertSentTimes(
+            fn () => $this->fake_transport->assertSentTimes(
                 TestMail::class,
                 2
             )
@@ -290,7 +289,7 @@ final class FakeMailerTest extends WPTestCase
 
         $this->assertFailsWithMessageStarting(
             '[2] emails were sent that match the provided condition',
-            fn() => $this->fake_transport->assertSentTo(
+            fn () => $this->fake_transport->assertSentTo(
                 'c@web.de',
                 TestMail::class
             )
@@ -313,7 +312,7 @@ final class FakeMailerTest extends WPTestCase
                 'The email [%s] was sent [1] time[s] but no email matched the provided condition.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertSentTo(
+            fn () => $this->fake_transport->assertSentTo(
                 'm@web.de',
                 TestMail::class
             )
@@ -355,7 +354,7 @@ final class FakeMailerTest extends WPTestCase
                 '[1] email of type [%s] was sent to recipient [c@web.de].',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertNotSentTo(
+            fn () => $this->fake_transport->assertNotSentTo(
                 'c@web.de',
                 TestMail::class
             )
@@ -447,7 +446,4 @@ final class FakeMailerTest extends WPTestCase
             'Calvin Alkan <calvin@web.de>'
         );
     }
-
 }
-
-

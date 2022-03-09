@@ -11,7 +11,6 @@ use ReflectionProperty;
 
 final class MysqliFactory
 {
-
     /**
      * @throws ReflectionException
      */

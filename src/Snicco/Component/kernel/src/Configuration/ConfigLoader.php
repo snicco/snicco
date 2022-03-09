@@ -19,8 +19,6 @@ use const PATHINFO_FILENAME;
  */
 final class ConfigLoader
 {
-
-
     /**
      * @return array<string,array>
      */
@@ -65,5 +63,4 @@ final class ConfigLoader
 
         return $files;
     }
-
 }

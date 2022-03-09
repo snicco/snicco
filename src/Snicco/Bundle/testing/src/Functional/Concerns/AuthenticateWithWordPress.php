@@ -48,5 +48,4 @@ trait AuthenticateWithWordPress
             "The current user [$actual] is not the expected one [$expected_id].",
         );
     }
-
 }

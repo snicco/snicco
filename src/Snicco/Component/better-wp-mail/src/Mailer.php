@@ -27,7 +27,6 @@ use function sprintf;
 
 final class Mailer
 {
-
     private MailDefaults $default_config;
     private Transport $transport;
     private MailRenderer $mail_renderer;
@@ -147,6 +146,4 @@ final class Mailer
     {
         $this->event_dispatcher->fireSent(new EmailWasSent($email, $envelope));
     }
-
 }
-

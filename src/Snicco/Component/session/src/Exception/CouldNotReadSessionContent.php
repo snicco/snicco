@@ -11,7 +11,6 @@ use function intval;
 
 final class CouldNotReadSessionContent extends RuntimeException
 {
-
     public static function forID(string $id, string $driver, ?Throwable $previous = null): CouldNotReadSessionContent
     {
         return new CouldNotReadSessionContent(
@@ -20,5 +19,4 @@ final class CouldNotReadSessionContent extends RuntimeException
             $previous
         );
     }
-
 }

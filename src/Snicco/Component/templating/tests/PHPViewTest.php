@@ -13,7 +13,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
 final class PHPViewTest extends TestCase
 {
-
     private PHPViewFactory $php_view_factory;
 
     protected function setUp(): void
@@ -45,6 +44,4 @@ final class PHPViewTest extends TestCase
         $view = $view->with('bar', 'biz');
         $this->assertSame(['foo' => 'baz', 'bar' => 'biz'], $view->context());
     }
-
-
 }

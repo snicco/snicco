@@ -26,7 +26,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
 {
-
     private Psr17ResponseFactory $psr_response;
     private Psr17StreamFactory $psr_stream;
 
@@ -141,5 +140,4 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         $psr = $this->createResponse($status_code);
         return (new RedirectResponse($psr))->to($location);
     }
-
 }

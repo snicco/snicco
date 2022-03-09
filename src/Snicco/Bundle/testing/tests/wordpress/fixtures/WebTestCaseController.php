@@ -120,5 +120,4 @@ final class WebTestCaseController extends Controller
 
         return $this->respondWith()->json($info);
     }
-
 }

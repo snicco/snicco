@@ -15,7 +15,6 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 
 final class EventSubscribingTest extends TestCase
 {
-
     use AssertListenerResponse;
 
     private EventDispatcher $dispatcher;
@@ -74,36 +73,30 @@ final class EventSubscribingTest extends TestCase
         $this->resetListenersResponses();
         parent::tearDown();
     }
-
 }
 
 class BadSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
             EventStub::class => 'handleEvent',
         ];
     }
-
 }
 
 class BadMethodSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
             EventStub::class => 'bogus',
         ];
     }
-
 }
 
 class TestSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
@@ -115,5 +108,4 @@ class TestSubscriber implements EventSubscriber
     {
         $event_stub->val1 = 'SUBSCRIBED';
     }
-
 }

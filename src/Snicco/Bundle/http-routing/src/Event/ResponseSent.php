@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
  */
 final class ResponseSent
 {
-
     public Response $response;
     public bool $body_sent;
 
@@ -21,5 +20,4 @@ final class ResponseSent
         $this->response = $response;
         $this->body_sent = $body_sent;
     }
-
 }

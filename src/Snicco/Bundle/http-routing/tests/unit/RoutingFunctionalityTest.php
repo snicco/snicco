@@ -32,7 +32,6 @@ use function unlink;
  */
 final class RoutingFunctionalityTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     private string $expected_route_cache_file;

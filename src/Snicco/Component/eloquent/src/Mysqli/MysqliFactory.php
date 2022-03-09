@@ -17,7 +17,6 @@ use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
  */
 final class MysqliFactory
 {
-
     public function create(): MysqliConnection
     {
         $wp = new WPDatabaseSettingsAPI();
@@ -43,5 +42,4 @@ final class MysqliFactory
             return $wp->mysqli();
         };
     }
-
 }

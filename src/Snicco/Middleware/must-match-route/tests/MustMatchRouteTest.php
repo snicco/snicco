@@ -10,7 +10,6 @@ use Snicco\Middleware\MustMatchRoute\MustMatchRoute;
 
 final class MustMatchRouteTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -45,5 +44,4 @@ final class MustMatchRouteTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->assertableResponse()->assertOk();
     }
-
 }

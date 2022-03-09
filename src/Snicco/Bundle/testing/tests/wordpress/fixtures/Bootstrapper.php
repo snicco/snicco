@@ -12,7 +12,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class Bootstrapper implements \Snicco\Component\Kernel\Bootstrapper
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;

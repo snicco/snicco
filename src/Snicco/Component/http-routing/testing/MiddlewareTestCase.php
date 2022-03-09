@@ -35,7 +35,6 @@ use function call_user_func;
 
 abstract class MiddlewareTestCase extends TestCase
 {
-
     use CreatesPsrRequests;
 
     private Routes $routes;
@@ -185,5 +184,4 @@ abstract class MiddlewareTestCase extends TestCase
 
         return new NextMiddleware($func);
     }
-
 }

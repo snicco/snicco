@@ -16,10 +16,9 @@ use stdClass;
  */
 trait DIContainerContractTest
 {
-
     private DIContainer $container;
 
-    abstract function createContainer(): DIContainer;
+    abstract public function createContainer(): DIContainer;
 
     /**
      * @test
@@ -168,7 +167,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->shared(Foo::class, fn() => new Foo());
+        $container->shared(Foo::class, fn () => new Foo());
     }
 
     /**
@@ -181,7 +180,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->factory(Foo::class, fn() => new Foo());
+        $container->factory(Foo::class, fn () => new Foo());
     }
 
     /**
@@ -361,7 +360,6 @@ trait DIContainerContractTest
         $foo->value = 'callable_foo';
         return $foo;
     }
-
 }
 
 class Foo
@@ -376,5 +374,4 @@ class Bar
 
 class Baz
 {
-
 }

@@ -63,5 +63,4 @@ final class HttpKernel
 
         return $response;
     }
-
 }

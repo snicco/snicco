@@ -31,7 +31,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class BrowserTest extends WPTestCase
 {
-
     /**
      * @var Closure(Environment):Kernel
      */
@@ -259,5 +258,4 @@ final class BrowserTest extends WPTestCase
             $cookies
         );
     }
-
 }

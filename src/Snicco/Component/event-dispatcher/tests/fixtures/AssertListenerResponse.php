@@ -11,7 +11,6 @@ use PHPUnit\Framework\Assert;
  */
 trait AssertListenerResponse
 {
-
     private function respondedToEvent($event, string $key, $response): void
     {
         if (is_object($event)) {
@@ -58,5 +57,4 @@ trait AssertListenerResponse
     {
         $GLOBALS['test']['sniccowp_listeners'] = [];
     }
-
 }

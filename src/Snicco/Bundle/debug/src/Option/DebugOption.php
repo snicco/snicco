@@ -14,5 +14,4 @@ final class DebugOption
     public const APPLICATION_PATHS = 'application_paths';
 
     public const KEY = 'debug';
-
 }

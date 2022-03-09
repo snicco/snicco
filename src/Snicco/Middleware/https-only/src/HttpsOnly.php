@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class HttpsOnly extends Middleware
 {
-
     private bool $is_local;
 
     public function __construct(bool $is_local = false)
@@ -44,5 +43,4 @@ final class HttpsOnly extends Middleware
 
         return $next($request);
     }
-
 }

@@ -14,7 +14,6 @@ use function is_string;
 
 final class MailboxList implements Countable, IteratorAggregate
 {
-
     /**
      * @var array<string,Mailbox>
      */
@@ -84,5 +83,4 @@ final class MailboxList implements Countable, IteratorAggregate
 
         $this->addresses[$email] = $address;
     }
-
 }

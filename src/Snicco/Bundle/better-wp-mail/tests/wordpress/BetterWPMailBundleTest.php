@@ -29,7 +29,6 @@ use function var_export;
 
 final class BetterWPMailBundleTest extends WPTestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -261,12 +260,10 @@ final class BetterWPMailBundleTest extends WPTestCase
     {
         return dirname(__DIR__) . '/fixtures';
     }
-
 }
 
 class CustomTransport implements Transport
 {
-
     public function send(Email $email, Envelope $envelope): void
     {
         //

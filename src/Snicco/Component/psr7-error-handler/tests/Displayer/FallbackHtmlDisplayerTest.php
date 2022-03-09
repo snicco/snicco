@@ -14,7 +14,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransfo
 
 final class FallbackHtmlDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -42,5 +41,4 @@ final class FallbackHtmlDisplayerTest extends TestCase
     {
         $this->assertSame('text/html', (new FallbackHtmlDisplayer())->supportedContentType());
     }
-
 }

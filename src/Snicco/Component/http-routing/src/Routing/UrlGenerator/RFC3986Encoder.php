@@ -20,15 +20,14 @@ use function trim;
  */
 final class RFC3986Encoder implements UrlEncoder
 {
-
-    const RFC3986_UNRESERVED = [
+    public const RFC3986_UNRESERVED = [
         '-' => '-',
         '.' => '.',
         '_' => '_',
         '~' => '~',
     ];
 
-    const RFC3986_SUB_DELIMITERS = [
+    public const RFC3986_SUB_DELIMITERS = [
         '!' => '%21',
         '$' => '%24',
         '&' => '%26',
@@ -42,7 +41,7 @@ final class RFC3986Encoder implements UrlEncoder
         ')' => '%29',
     ];
 
-    const RFC3986_PCHARS = self::RFC3986_UNRESERVED + self::RFC3986_SUB_DELIMITERS + [
+    public const RFC3986_PCHARS = self::RFC3986_UNRESERVED + self::RFC3986_SUB_DELIMITERS + [
         '@' => '%40',
         ':' => '%3A',
     ];
@@ -110,5 +109,4 @@ final class RFC3986Encoder implements UrlEncoder
 
         return strtr($encoded_fragment, array_flip($allowed_in_fragment));
     }
-
 }

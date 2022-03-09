@@ -18,7 +18,6 @@ use stdClass;
 
 final class TestableEventDispatcherTest extends TestCase
 {
-
     use AssertListenerResponse;
 
     private TestableEventDispatcher $fake_dispatcher;
@@ -309,12 +308,10 @@ final class TestableEventDispatcherTest extends TestCase
 
         $this->assertSame('changed', $res->value);
     }
-
 }
 
 class TestableEventDispatcherTestSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
@@ -326,6 +323,4 @@ class TestableEventDispatcherTestSubscriber implements EventSubscriber
     {
         $stdClass->value = 'changed';
     }
-
 }
-

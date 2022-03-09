@@ -24,7 +24,6 @@ use const JSON_THROW_ON_ERROR;
 
 class ResponseFactoryTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
@@ -143,13 +142,11 @@ class ResponseFactoryTest extends TestCase
      */
     public function test_toResponse_for_responseable(): void
     {
-        $class = new class implements Responsable {
-
+        $class = new class() implements Responsable {
             public function toResponsable()
             {
                 return 'foo';
             }
-
         };
 
         $response = $this->factory->toResponse($class);
@@ -250,5 +247,4 @@ class ResponseFactoryTest extends TestCase
         $response = $this->factory->view('foo.php', ['foo' => 'bar']);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
-
 }

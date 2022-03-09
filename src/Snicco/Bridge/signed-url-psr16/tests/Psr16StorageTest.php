@@ -20,7 +20,6 @@ use function time;
 
 final class Psr16StorageTest extends TestCase
 {
-
     use SignedUrlStorageTests;
 
     /**
@@ -28,13 +27,11 @@ final class Psr16StorageTest extends TestCase
      */
     public function test_exception_if_link_cant_be_deleted_from_cache(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public function delete($key)
             {
                 return false;
             }
-
         };
 
         $storage = new Psr16Storage($cache);
@@ -56,7 +53,7 @@ final class Psr16StorageTest extends TestCase
      */
     public function test_exception_if_link_cant_be_stored_in_cache(): void
     {
-        $cache = new class extends ArrayCachePool {
+        $cache = new class() extends ArrayCachePool {
             public function set($key, $value, $ttl = null)
             {
                 return false;
@@ -78,8 +75,7 @@ final class Psr16StorageTest extends TestCase
      */
     public function test_exception_if_decremented_usage_cant_be_saved(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public bool $should_fail = false;
 
             public function set($key, $value, $ttl = null)
@@ -153,5 +149,4 @@ final class Psr16StorageTest extends TestCase
     {
         return new Psr16Storage(new ArrayCachePool());
     }
-
 }

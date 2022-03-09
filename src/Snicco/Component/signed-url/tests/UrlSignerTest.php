@@ -18,7 +18,6 @@ use Snicco\Component\TestableClock\TestClock;
 
 final class UrlSignerTest extends TestCase
 {
-
     private UrlSigner $url_signer;
     private InMemoryStorage $storage;
 
@@ -208,5 +207,4 @@ final class UrlSignerTest extends TestCase
         $link = $this->url_signer->sign('/foo', 10, 10);
         $this->assertSame(10, $link->maxUsage());
     }
-
 }

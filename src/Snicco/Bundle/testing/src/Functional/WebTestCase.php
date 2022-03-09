@@ -43,7 +43,6 @@ use function array_merge;
 
 abstract class WebTestCase extends WPTestCase
 {
-
     use CreateWordPressUsers;
     use AuthenticateWithWordPress;
 
@@ -69,7 +68,7 @@ abstract class WebTestCase extends WPTestCase
     {
         parent::setUp();
         $this->extensions = array_map(function (string $class) {
-            return new $class;
+            return new $class();
         }, $this->extensions());
         $this->setUpExtensions();
     }
@@ -144,8 +143,7 @@ abstract class WebTestCase extends WPTestCase
             $kernel->afterRegister(function (Kernel $kernel) use ($class) {
                 $kernel->container()->instance(
                     $class,
-                    new class extends Middleware {
-
+                    new class() extends Middleware {
                         protected function handle(Request $request, NextMiddleware $next): ResponseInterface
                         {
                             return $next($request);
@@ -179,7 +177,7 @@ abstract class WebTestCase extends WPTestCase
         return $transport;
     }
 
-    final  protected function getKernel(): Kernel
+    final protected function getKernel(): Kernel
     {
         if (!isset($this->kernel)) {
             $this->kernel = ($this->createKernel())(Environment::testing());
@@ -281,5 +279,4 @@ abstract class WebTestCase extends WPTestCase
             throw new LogicException("Method [$__METHOD__] can not be used if the browser was already created.");
         }
     }
-
 }

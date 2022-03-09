@@ -19,7 +19,6 @@ use function dirname;
 
 final class RouterTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -46,8 +45,7 @@ final class RouterTest extends TestCase
     public function test_url_generator_is_singleton(): void
     {
         $routing = new Router(
-            new UrlGenerationContext('127.0.0.1')
-            ,
+            new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
                 [],
@@ -100,5 +98,4 @@ final class RouterTest extends TestCase
         $this->assertInstanceOf(AdminMenu::class, $admin_menu);
         $this->assertSame($admin_menu, $routing->adminMenu());
     }
-
 }

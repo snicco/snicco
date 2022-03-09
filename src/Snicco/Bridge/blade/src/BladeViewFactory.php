@@ -16,7 +16,6 @@ use function is_file;
 
 final class BladeViewFactory implements ViewFactory
 {
-
     private IlluminateViewFactory $view_factory;
 
     /**
@@ -79,5 +78,4 @@ final class BladeViewFactory implements ViewFactory
         return $path;
         // @codeCoverageIgnoreEnd
     }
-
 }

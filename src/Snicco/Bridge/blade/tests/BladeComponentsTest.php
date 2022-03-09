@@ -15,7 +15,6 @@ use Snicco\Component\Templating\View\View;
 
 class BladeComponentsTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -159,5 +158,4 @@ class BladeComponentsTest extends BladeTestCase
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
-
 }

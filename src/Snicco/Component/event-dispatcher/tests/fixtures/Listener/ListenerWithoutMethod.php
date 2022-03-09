@@ -6,5 +6,4 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Listener;
 
 class ListenerWithoutMethod
 {
-
 }

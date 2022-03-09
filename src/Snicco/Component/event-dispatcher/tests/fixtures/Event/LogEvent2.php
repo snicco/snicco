@@ -10,7 +10,6 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\Event;
 
 class LogEvent2 implements Event\LoggableEvent
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -25,5 +24,4 @@ class LogEvent2 implements Event\LoggableEvent
     {
         return $this->message;
     }
-
 }

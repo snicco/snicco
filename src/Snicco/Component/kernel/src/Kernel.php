@@ -23,10 +23,8 @@ use function get_class;
 use function implode;
 use function sprintf;
 
-
 final class Kernel
 {
-
     private DIContainer $container;
     private Environment $env;
     private Directories $dirs;
@@ -307,5 +305,4 @@ final class Kernel
         }
         return new NullCache();
     }
-
 }

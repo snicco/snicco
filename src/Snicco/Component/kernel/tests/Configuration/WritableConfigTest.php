@@ -11,7 +11,6 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 
 class WritableConfigTest extends TestCase
 {
-
     private WritableConfig $config;
 
     public function setUp(): void
@@ -613,6 +612,4 @@ class WritableConfigTest extends TestCase
         $this->expectExceptionMessage('string');
         $config->getArray('foo');
     }
-
 }
-

@@ -6,7 +6,6 @@ namespace Snicco\Component\BetterWPMail\Renderer;
 
 final class FilesystemRenderer implements MailRenderer
 {
-
     /**
      * @psalm-suppress UnresolvableInclude
      */
@@ -28,5 +27,4 @@ final class FilesystemRenderer implements MailRenderer
         $intersect = array_intersect([$extension], ['txt', 'php', 'html']);
         return count($intersect) > 0;
     }
-
 }

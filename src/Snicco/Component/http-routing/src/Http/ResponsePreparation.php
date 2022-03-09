@@ -32,7 +32,6 @@ use function strval;
 
 final class ResponsePreparation
 {
-
     private StreamFactoryInterface $stream_factory;
     private string $charset;
 
@@ -165,5 +164,4 @@ final class ResponsePreparation
 
         return $response;
     }
-
 }

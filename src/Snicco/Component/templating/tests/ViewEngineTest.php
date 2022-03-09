@@ -28,7 +28,6 @@ use const DIRECTORY_SEPARATOR;
 
 class ViewEngineTest extends TestCase
 {
-
     private ViewEngine $view_engine;
     private GlobalViewContext $global_view_context;
     private ViewComposerCollection $composers;
@@ -332,7 +331,7 @@ class ViewEngineTest extends TestCase
     {
         $this->composers->addComposer(
             'post-layout',
-            fn(View $view) => $view->with('sidebar', 'hi')
+            fn (View $view) => $view->with('sidebar', 'hi')
         );
 
         $view = $this->view_engine->make('partials.post-title');
@@ -421,13 +420,10 @@ class ViewEngineTest extends TestCase
         $this->expectException(ViewNotFound::class);
         $this->view_engine->render(['bogus1', 'bogus2']);
     }
-
-
 }
 
 class TestTwigViewFactory implements ViewFactory
 {
-
     public function make(string $view): View
     {
         if (!strpos($view, 'twig')) {
@@ -435,5 +431,4 @@ class TestTwigViewFactory implements ViewFactory
         }
         return new TestView($view);
     }
-
 }

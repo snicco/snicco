@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 class ViewResponseTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private Response $base_response;
@@ -67,5 +66,4 @@ class ViewResponseTest extends TestCase
         $response = new ViewResponse('foo', $this->base_response);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
-
 }

@@ -303,7 +303,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
         });
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->shared(TestSerializer::class, fn() => new TestSerializer());
+            $kernel->container()->shared(TestSerializer::class, fn () => new TestSerializer());
         });
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);
@@ -535,7 +535,6 @@ final class SessionBundleTest extends WPTestCase
         });
         $kernel->boot();
     }
-
 }
 
 class TestSerializer implements Serializer

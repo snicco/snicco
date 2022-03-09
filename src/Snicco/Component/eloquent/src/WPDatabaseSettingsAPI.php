@@ -23,7 +23,6 @@ use const DB_USER;
  */
 class WPDatabaseSettingsAPI extends BetterWPAPI
 {
-
     public function dbHost(): string
     {
         return DB_HOST;
@@ -82,5 +81,4 @@ class WPDatabaseSettingsAPI extends BetterWPAPI
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

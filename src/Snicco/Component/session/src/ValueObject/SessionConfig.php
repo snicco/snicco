@@ -16,7 +16,6 @@ use function ucfirst;
 
 final class SessionConfig
 {
-
     private string $path;
     private string $cookie_name;
     private ?string $cookie_domain;
@@ -206,5 +205,4 @@ final class SessionConfig
     {
         return new SessionLottery($this->gc_percentage);
     }
-
 }

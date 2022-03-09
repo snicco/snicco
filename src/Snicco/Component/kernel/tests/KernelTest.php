@@ -20,7 +20,6 @@ use stdClass;
 
 final class KernelTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
@@ -326,5 +325,4 @@ final class KernelTest extends TestCase
 
         $this->assertTrue($kernel->booted());
     }
-
 }

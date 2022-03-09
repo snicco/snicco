@@ -11,7 +11,6 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 
 final class PsrEventDispatcherTest extends TestCase
 {
-
     use AssertListenerResponse;
 
     /**
@@ -79,20 +78,16 @@ final class PsrEventDispatcherTest extends TestCase
         $this->resetListenersResponses();
         parent::tearDown();
     }
-
 }
 
 class Object1
 {
-
     public string $foo = 'foo';
     public string $bar = 'foo';
-
 }
 
 class StoppableEvent implements StoppableEventInterface
 {
-
     public bool $should_stop = false;
     public int $count = 1;
 
@@ -105,5 +100,4 @@ class StoppableEvent implements StoppableEventInterface
     {
         $this->count++;
     }
-
 }

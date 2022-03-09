@@ -9,7 +9,6 @@ use Snicco\Component\StrArr\Arr;
 
 final class ControllerMiddleware
 {
-
     /**
      * @var class-string<MiddlewareInterface>[]
      */
@@ -80,5 +79,4 @@ final class ControllerMiddleware
     {
         return $this->middleware_classes;
     }
-
 }

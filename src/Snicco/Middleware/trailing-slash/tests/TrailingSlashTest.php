@@ -10,7 +10,6 @@ use Snicco\Middleware\TrailingSlash\TrailingSlash;
 
 class TrailingSlashTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -97,5 +96,4 @@ class TrailingSlashTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $response->assertableResponse()->assertOk();
     }
-
 }

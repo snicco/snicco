@@ -16,7 +16,6 @@ use Snicco\Component\EventDispatcher\Event;
  */
 interface MappedHookFactory
 {
-
     /**
      * @template  T of MappedHook
      * @psalm-param class-string<T> $event_class
@@ -27,5 +26,4 @@ interface MappedHookFactory
      * @throws CantCreateMappedEvent
      */
     public function make(string $event_class, array $wordpress_hook_arguments): MappedHook;
-
 }

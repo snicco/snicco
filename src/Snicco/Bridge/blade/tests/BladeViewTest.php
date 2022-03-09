@@ -11,7 +11,6 @@ use Snicco\Component\Templating\View\View;
 
 class BladeViewTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -113,5 +112,4 @@ class BladeViewTest extends BladeTestCase
         $this->assertSame('foo', $view->name());
         $this->assertSame(__DIR__ . '/fixtures/views/foo.blade.php', $view->path());
     }
-
 }

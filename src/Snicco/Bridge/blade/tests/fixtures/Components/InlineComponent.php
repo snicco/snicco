@@ -8,7 +8,6 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class InlineComponent extends BladeComponent
 {
-
     public string $content;
 
     public function __construct(string $content)
@@ -22,5 +21,4 @@ class InlineComponent extends BladeComponent
 Content:{{$content}},SLOT:{{ $slot }}
 blade;
     }
-
 }

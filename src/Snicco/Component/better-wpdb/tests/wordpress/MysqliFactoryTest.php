@@ -10,7 +10,6 @@ use Snicco\Component\BetterWPDB\MysqliFactory;
 
 final class MysqliFactoryTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -19,5 +18,4 @@ final class MysqliFactoryTest extends WPTestCase
         $mysqli = MysqliFactory::fromWpdbConnection();
         $this->assertTrue($mysqli->ping());
     }
-
 }

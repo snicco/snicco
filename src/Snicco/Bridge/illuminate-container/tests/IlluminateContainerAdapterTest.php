@@ -11,12 +11,10 @@ use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
 final class IlluminateContainerAdapterTest extends TestCase
 {
-
     use DIContainerContractTest;
 
-    function createContainer(): DIContainer
+    public function createContainer(): DIContainer
     {
         return new IlluminateContainerAdapter();
     }
-
 }

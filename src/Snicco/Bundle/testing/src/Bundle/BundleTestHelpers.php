@@ -66,5 +66,4 @@ trait BundleTestHelpers
             PHPUnit::assertStringContainsString($identifier, $e->getMessage());
         }
     }
-
 }

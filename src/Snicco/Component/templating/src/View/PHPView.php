@@ -13,7 +13,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
  */
 final class PHPView implements View
 {
-
     /**
      * Name of view file header based on which to resolve parent views.
      *

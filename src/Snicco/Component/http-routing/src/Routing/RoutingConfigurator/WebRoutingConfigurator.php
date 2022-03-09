@@ -14,7 +14,6 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
  */
 interface WebRoutingConfigurator extends RoutingConfigurator
 {
-
     /**
      * @return static
      */
@@ -115,5 +114,4 @@ interface WebRoutingConfigurator extends RoutingConfigurator
      * @param array<string,string|int> $arguments
      */
     public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302): Route;
-
 }

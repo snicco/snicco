@@ -12,7 +12,6 @@ use function sprintf;
 
 final class CantCreateListener extends RuntimeException
 {
-
     public static function becauseTheListenerWasNotInstantiatable(
         string $listener,
         string $event_name,
@@ -35,8 +34,9 @@ final class CantCreateListener extends RuntimeException
                 $listener_class,
                 $event_name,
                 $e->getMessage()
-            ), (int)$e->getCode(), $e
+            ),
+            (int)$e->getCode(),
+            $e
         );
     }
-
 }

@@ -9,7 +9,6 @@ use Snicco\Component\Templating\Exception\ViewNotFound;
 
 class BladeEngineTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -27,5 +26,4 @@ class BladeEngineTest extends BladeTestCase
 
         $this->assertInstanceOf(BladeView::class, $this->view_engine->make('bogus'));
     }
-
 }

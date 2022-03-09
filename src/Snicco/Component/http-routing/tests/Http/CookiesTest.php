@@ -12,7 +12,6 @@ use function urlencode;
 
 final class CookiesTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -60,5 +59,4 @@ final class CookiesTest extends TestCase
             $headers[2]
         );
     }
-
 }

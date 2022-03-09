@@ -36,7 +36,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class LogoutTest extends WPTestCase
 {
-
     use BundleTestHelpers;
 
     private Kernel $kernel;
@@ -222,5 +221,4 @@ final class LogoutTest extends WPTestCase
         wp_logout();
         $this->assertCount(0, $this->driver->all());
     }
-
 }

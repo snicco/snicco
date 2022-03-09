@@ -29,7 +29,6 @@ use function setcookie;
 
 final class StatefulRequest extends Middleware
 {
-
     public const ALLOW_WRITE_SESSION_FOR_READ_VERBS = '_stateful_request.allow_write';
 
     private SessionManager $session_manager;

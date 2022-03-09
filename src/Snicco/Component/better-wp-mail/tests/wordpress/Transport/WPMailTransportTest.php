@@ -16,7 +16,6 @@ use function add_action;
 
 final class WPMailTransportTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -38,6 +37,4 @@ final class WPMailTransportTest extends WPTestCase
             $this->assertSame('bad email debug data.', $e->getDebugData());
         }
     }
-
-
 }

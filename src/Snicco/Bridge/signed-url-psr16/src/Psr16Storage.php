@@ -17,7 +17,6 @@ use function time;
 
 final class Psr16Storage implements SignedUrlStorage
 {
-
     private CacheInterface $cache;
 
     public function __construct(CacheInterface $cache)
@@ -116,5 +115,4 @@ final class Psr16Storage implements SignedUrlStorage
         }
         return $data;
     }
-
 }

@@ -26,7 +26,8 @@ class BetterWPDBTestCase extends WPTestCase
   `test_int` INTEGER UNSIGNED DEFAULT NULL,
   `test_bool` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;', []
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;',
+            []
         );
 
         parent::setUp();
@@ -58,5 +59,4 @@ class BetterWPDBTestCase extends WPTestCase
             $this->assertSame($value, $record[$name]);
         }
     }
-
 }

@@ -14,7 +14,6 @@ use function array_merge;
 
 final class MailBoxTest extends WPTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -74,7 +73,7 @@ final class MailBoxTest extends WPTestCase
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
         $this->assertSame('Calvin Alkan', $address->name());
 
-        $address = Mailbox::create(['email' => 'c@web.de', 'name' => 'Calvin Alkan',]);
+        $address = Mailbox::create(['email' => 'c@web.de', 'name' => 'Calvin Alkan', ]);
         $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
         $this->assertSame('Calvin Alkan', $address->name());
@@ -203,5 +202,4 @@ final class MailBoxTest extends WPTestCase
             array_merge($data, ['role' => 'administrator'])
         );
     }
-
 }

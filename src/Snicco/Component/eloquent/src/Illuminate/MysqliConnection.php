@@ -22,7 +22,6 @@ use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {
-
     public const CONNECTION_NAME = 'wp_mysqli_connection';
     private MysqliDriverInterface $mysqli_driver;
 
@@ -261,5 +260,4 @@ final class MysqliConnection extends IlluminateMysqlConnection
             $this->mysqli_driver->reconnect();
         }
     }
-
 }

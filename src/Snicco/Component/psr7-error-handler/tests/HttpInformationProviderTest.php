@@ -19,7 +19,6 @@ use Throwable;
 
 final class HttpInformationProviderTest extends TestCase
 {
-
     private ServerRequest $server_request;
 
     protected function setUp(): void
@@ -224,16 +223,13 @@ final class HttpInformationProviderTest extends TestCase
         return new InformationProviderWithTransformation(
             $data,
             $identifier ?: new SplHashIdentifier(),
-            ...
-            $transformer
+            ...$transformer
         );
     }
-
 }
 
 class StubIdentifier implements ExceptionIdentifier
 {
-
     private string $stub_id;
 
     public function __construct(string $stub_id)
@@ -245,32 +241,26 @@ class StubIdentifier implements ExceptionIdentifier
     {
         return $this->stub_id;
     }
-
 }
 
 class ToUserFacingException implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         return new TransformedUserFacingException();
     }
-
 }
 
 class TransformEverythingTo403 implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         return HttpException::fromPrevious(403, $e);
     }
-
 }
 
 class UserFacingException extends RuntimeException implements UserFacing
 {
-
     public function title(): string
     {
         return 'Foo title';
@@ -280,22 +270,18 @@ class UserFacingException extends RuntimeException implements UserFacing
     {
         return 'Bar message';
     }
-
 }
 
 class LastTransformer implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         return HttpException::fromPrevious(403, $e);
     }
-
 }
 
 class RuntimeToAuthTransformer implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         if ($e instanceof RuntimeException && 'transform_me' === $e->getMessage()) {
@@ -303,12 +289,10 @@ class RuntimeToAuthTransformer implements ExceptionTransformer
         }
         return $e;
     }
-
 }
 
 class TransformedUserFacingException extends RuntimeException implements UserFacing
 {
-
     public function title(): string
     {
         return 'transformed_user_facing_title';
@@ -318,5 +302,4 @@ class TransformedUserFacingException extends RuntimeException implements UserFac
     {
         return 'transformed_user_facing_message';
     }
-
 }

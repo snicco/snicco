@@ -12,7 +12,6 @@ use function array_filter;
 
 final class Verbosity implements DisplayerFilter
 {
-
     private bool $show_verbose_filters;
 
     public function __construct(bool $show_verbose_filters)
@@ -26,5 +25,4 @@ final class Verbosity implements DisplayerFilter
             return $this->show_verbose_filters || !$d->isVerbose();
         });
     }
-
 }

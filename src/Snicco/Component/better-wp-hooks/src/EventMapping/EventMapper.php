@@ -20,7 +20,6 @@ use const PHP_INT_MIN;
 
 final class EventMapper
 {
-
     private EventDispatcher $event_dispatcher;
     private WPHookAPI $wp;
     private MappedHookFactory $event_factory;
@@ -267,5 +266,4 @@ final class EventMapper
             return $args[0] ?? [];
         }, PHP_INT_MAX - 1, 999);
     }
-
 }

@@ -16,7 +16,6 @@ use function is_array;
 
 final class SessionStorage implements SignedUrlStorage
 {
-
     private const namespace = '_signed_urls';
 
     /**
@@ -38,7 +37,7 @@ final class SessionStorage implements SignedUrlStorage
         } elseif (is_array($storage)) {
             // @codeCoverageIgnoreStart Has a weird bug with phpunit. These branches are definitely covered
             $this->storage = &$storage;
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
         } else {
             // @codeCoverageIgnoreStart
             throw new InvalidArgumentException(
@@ -115,5 +114,4 @@ final class SessionStorage implements SignedUrlStorage
     {
         return $this->storage[self::namespace] ?? [];
     }
-
 }

@@ -18,7 +18,6 @@ use Snicco\Component\TestableClock\TestClock;
 
 final class CollectGarbageTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -66,8 +65,7 @@ final class CollectGarbageTest extends MiddlewareTestCase
      */
     public function errors_are_logged_if_garbage_collection_fails(): void
     {
-        $storage = new class implements SignedUrlStorage {
-
+        $storage = new class() implements SignedUrlStorage {
             public function consume(string $identifier): void
             {
                 //
@@ -94,5 +92,4 @@ final class CollectGarbageTest extends MiddlewareTestCase
             ])
         );
     }
-
 }

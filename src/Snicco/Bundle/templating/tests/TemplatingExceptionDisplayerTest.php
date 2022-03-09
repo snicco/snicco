@@ -19,7 +19,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
 final class TemplatingExceptionDisplayerTest extends TestCase
 {
-
     private TemplatingExceptionDisplayer $displayer;
 
     protected function setUp(): void
@@ -146,5 +145,4 @@ final class TemplatingExceptionDisplayerTest extends TestCase
             $request ?: new ServerRequest('GET', '/')
         );
     }
-
 }

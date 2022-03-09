@@ -18,7 +18,6 @@ use Snicco\Component\TestableClock\Clock;
 
 final class SessionStorageUsingArrayAccessTest extends TestCase
 {
-
     use SignedUrlStorageTests;
 
     /**
@@ -53,8 +52,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
 
     private function getArrayAccess(): ArrayAccess
     {
-        return new class implements ArrayAccess {
-
+        return new class() implements ArrayAccess {
             private array $container = [];
 
             /**
@@ -94,8 +92,6 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
             {
                 return $this->container[$offset];
             }
-
         };
     }
-
 }

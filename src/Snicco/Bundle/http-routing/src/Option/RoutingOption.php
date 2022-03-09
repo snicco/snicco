@@ -24,5 +24,4 @@ final class RoutingOption
     {
         return 'routing.' . $constant;
     }
-
 }

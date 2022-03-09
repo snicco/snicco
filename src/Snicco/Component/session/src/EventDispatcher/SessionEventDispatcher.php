@@ -6,10 +6,8 @@ namespace Snicco\Component\Session\EventDispatcher;
 
 interface SessionEventDispatcher
 {
-
     /**
      * @param object[] $events
      */
     public function dispatchAll(array $events): void;
-
 }

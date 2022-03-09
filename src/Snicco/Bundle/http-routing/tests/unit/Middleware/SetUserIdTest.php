@@ -11,7 +11,6 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
 final class SetUserIdTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -23,12 +22,10 @@ final class SetUserIdTest extends MiddlewareTestCase
 
         $this->assertSame(12, $this->receivedRequest()->userId());
     }
-
 }
 
 class SetUserIDTestWPAPI extends BetterWPAPI
 {
-
     private int $user_id;
 
     public function __construct(int $user_id)
@@ -40,5 +37,4 @@ class SetUserIDTestWPAPI extends BetterWPAPI
     {
         return $this->user_id;
     }
-
 }

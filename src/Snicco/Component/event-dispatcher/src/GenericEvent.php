@@ -8,7 +8,6 @@ use function get_class;
 
 final class GenericEvent implements Event
 {
-
     private array $arguments;
     private string $name;
 
@@ -32,5 +31,4 @@ final class GenericEvent implements Event
     {
         return $this->name;
     }
-
 }

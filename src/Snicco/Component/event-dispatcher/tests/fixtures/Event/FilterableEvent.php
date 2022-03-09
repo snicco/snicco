@@ -10,7 +10,6 @@ use Snicco\Component\EventDispatcher\Event;
 
 class FilterableEvent implements Event
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -20,5 +19,4 @@ class FilterableEvent implements Event
     {
         $this->val = $val;
     }
-
 }

@@ -22,7 +22,6 @@ use Illuminate\Contracts\Foundation\Application;
  */
 final class DummyApplication implements Application
 {
-
     public function getNamespace(): string
     {
         return '';
@@ -262,5 +261,4 @@ final class DummyApplication implements Application
     {
         throw new BadMethodCallException('has() is not supported for the DummyApplication');
     }
-
 }

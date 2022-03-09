@@ -13,7 +13,6 @@ use function strval;
 
 final class IntegerMiddleware extends Middleware
 {
-
     private string $val;
 
     public function __construct(int $val)
@@ -28,5 +27,4 @@ final class IntegerMiddleware extends Middleware
         $response->getBody()->write(':' . $this->val);
         return $response;
     }
-
 }

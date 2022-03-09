@@ -13,7 +13,6 @@ use function implode;
 
 final class ViewEngine
 {
-
     /**
      * @var ViewFactory[]
      */
@@ -77,5 +76,4 @@ final class ViewEngine
             )
         );
     }
-
 }

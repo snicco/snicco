@@ -13,7 +13,6 @@ use function spl_object_hash;
 
 final class SplHashIdentifierTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -50,5 +49,4 @@ final class SplHashIdentifierTest extends TestCase
         $this->assertSame($new_id, $identifier->identify($new_e));
         $this->assertSame($id, $identifier->identify($e));
     }
-
 }

@@ -29,7 +29,6 @@ use function is_null;
  */
 final class FactorySessionManager implements SessionManager
 {
-
     private SessionConfig $config;
     private SessionDriver $driver;
     private Clock $clock;

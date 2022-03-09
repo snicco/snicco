@@ -19,7 +19,6 @@ use function is_dir;
 
 final class BladeBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/blade-bundle';
 
     public function shouldRun(Environment $env): bool

@@ -14,7 +14,6 @@ use Snicco\Component\Session\ValueObject\SessionCookie;
 
 interface SessionManager
 {
-
     /**
      * @throws CouldNotReadSessionContent
      */
@@ -34,5 +33,4 @@ interface SessionManager
      * @throws CouldNotDestroySessions
      */
     public function gc(): void;
-
 }

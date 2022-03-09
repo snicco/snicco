@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class SetUserId extends Middleware
 {
-
     private BetterWPAPI $wp;
 
     public function __construct(BetterWPAPI $wp = null)

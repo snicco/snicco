@@ -14,7 +14,6 @@ use RuntimeException;
  */
 interface MysqliDriverInterface extends PDOAdapter
 {
-
     public function doSelect(string $sql, array $bindings): array;
 
     public function doStatement(string $sql, array $bindings): bool;
@@ -31,5 +30,4 @@ interface MysqliDriverInterface extends PDOAdapter
      * @throws RuntimeException
      */
     public function reconnect(): bool;
-
 }

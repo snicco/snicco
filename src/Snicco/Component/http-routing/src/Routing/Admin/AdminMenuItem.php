@@ -14,12 +14,11 @@ use function mb_convert_case;
 
 final class AdminMenuItem
 {
-
-    const PAGE_TITLE = 'page_title';
-    const MENU_TITLE = 'menu_title';
-    const ICON = 'icon';
-    const CAPABILITY = 'capability';
-    const POSITION = 'position';
+    public const PAGE_TITLE = 'page_title';
+    public const MENU_TITLE = 'menu_title';
+    public const ICON = 'icon';
+    public const CAPABILITY = 'capability';
+    public const POSITION = 'position';
 
     private string $page_title;
     private string $menu_title;
@@ -118,32 +117,32 @@ final class AdminMenuItem
         );
     }
 
-    final function pageTitle(): string
+    final public function pageTitle(): string
     {
         return $this->page_title;
     }
 
-    final function menuTitle(): string
+    final public function menuTitle(): string
     {
         return $this->menu_title;
     }
 
-    final function slug(): UrlPath
+    final public function slug(): UrlPath
     {
         return UrlPath::fromString($this->menu_slug);
     }
 
-    final function position(): ?int
+    final public function position(): ?int
     {
         return $this->position;
     }
 
-    final function requiredCapability(): ?string
+    final public function requiredCapability(): ?string
     {
         return $this->capability;
     }
 
-    final function icon(): ?string
+    final public function icon(): ?string
     {
         return $this->icon;
     }
@@ -173,5 +172,4 @@ final class AdminMenuItem
 
         return implode(' ', $parts);
     }
-
 }
