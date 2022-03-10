@@ -7,6 +7,7 @@ namespace Snicco\Component\Kernel\ValueObject;
 use Webmozart\Assert\Assert;
 
 use function sprintf;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * This class represents a simple value object that holds references to all relevant
@@ -53,28 +54,28 @@ final class Directories
         );
         Assert::writable($cache_dir, sprintf('$log_dir [%s] is not writable.', $cache_dir));
 
-        $this->config_dir = rtrim($config_dir, \DIRECTORY_SEPARATOR);
-        $this->cache_dir = rtrim($cache_dir, \DIRECTORY_SEPARATOR);
-        $this->log_dir = rtrim($log_dir, \DIRECTORY_SEPARATOR);
-        $this->base_directory = rtrim($base_directory, \DIRECTORY_SEPARATOR);
+        $this->config_dir = rtrim($config_dir, DIRECTORY_SEPARATOR);
+        $this->cache_dir = rtrim($cache_dir, DIRECTORY_SEPARATOR);
+        $this->log_dir = rtrim($log_dir, DIRECTORY_SEPARATOR);
+        $this->base_directory = rtrim($base_directory, DIRECTORY_SEPARATOR);
     }
 
     public static function fromDefaults(string $base_directory): Directories
     {
-        $config_dir = rtrim($base_directory, \DIRECTORY_SEPARATOR) .
-            \DIRECTORY_SEPARATOR .
+        $config_dir = rtrim($base_directory, DIRECTORY_SEPARATOR) .
+            DIRECTORY_SEPARATOR .
             'config';
 
-        $cache_dir = rtrim($base_directory, \DIRECTORY_SEPARATOR)
-            . \DIRECTORY_SEPARATOR
+        $cache_dir = rtrim($base_directory, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
             . 'var'
-            . \DIRECTORY_SEPARATOR
+            . DIRECTORY_SEPARATOR
             . 'cache';
 
-        $log_dir = rtrim($base_directory, \DIRECTORY_SEPARATOR)
-            . \DIRECTORY_SEPARATOR
+        $log_dir = rtrim($base_directory, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
             . 'var'
-            . \DIRECTORY_SEPARATOR
+            . DIRECTORY_SEPARATOR
             . 'log';
 
         return new self($base_directory, $config_dir, $cache_dir, $log_dir);

@@ -22,7 +22,7 @@ use function method_exists;
 final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 {
     /**
-     * @var array with functionName => reason.
+     * @var array with functionName => reason
      */
     protected $skippedTests = [];
 

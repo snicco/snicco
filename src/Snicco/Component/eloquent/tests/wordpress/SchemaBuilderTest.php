@@ -2050,6 +2050,15 @@ class TestSchemaBuilder extends MySqlBuilder
         return $this->getFullColumnInfo($table)[$column]->Type ?? '';
     }
 
+    public function getAllTables(): array
+    {
+        $parent = collect(parent::getAllTables());
+
+        $key = 'Tables_in_' . $this->connection->getDatabaseName();
+
+        return $parent->pluck($key)->toArray();
+    }
+
     public function getFullColumnInfo(?string $table): array
     {
         $query = 'show full columns from ?';
@@ -2092,17 +2101,8 @@ class TestSchemaBuilder extends MySqlBuilder
         PHPUnit::assertTrue('MUL' === $col->Key);
     }
 
-    public function getAllTables(): array
-    {
-        $parent = collect(parent::getAllTables());
-
-        $key = 'Tables_in_' . $this->connection->getDatabaseName();
-
-        return $parent->pluck($key)->toArray();
-    }
-
     /**
-     * @psalm-param 'books' $table
+     * @param 'books' $table
      */
     public function getColumnsByOrdinalPosition(string $table): array
     {
@@ -2114,7 +2114,7 @@ class TestSchemaBuilder extends MySqlBuilder
     }
 
     /**
-     * @psalm-param 'books' $table
+     * @param 'books' $table
      */
     public function getTableCharset(string $table): string
     {
@@ -2124,7 +2124,7 @@ class TestSchemaBuilder extends MySqlBuilder
     }
 
     /**
-     * @psalm-param 'books' $table
+     * @param 'books' $table
      */
     public function getTableCollation(string $table)
     {

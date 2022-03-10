@@ -27,7 +27,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'vlucas/phpdotenv' => '5.4.1',
             'lucatume/wp-browser' => '~3.1.4',
             'vimeo/psalm' => '^4.10',
-            'php-stubs/wordpress-stubs' => '^5.8.0'
+            'php-stubs/wordpress-stubs' => '^5.8.0',
         ],
         ComposerJsonSection::AUTHORS => [
             [

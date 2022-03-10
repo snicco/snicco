@@ -104,9 +104,8 @@ class AssertableWpDB
     }
 
     /**
-     * @param (int|string)[] $conditions
-     *
-     * @psalm-param array{id: 1, first_name?: 'calvin', last_name?: 'alkan', price?: 10} $conditions
+     * @param (int|string)[] $expected
+     * @param array{id: 1, first_name?: 'calvin', last_name?: 'alkan', price?: 10} $expected
      */
     public function assertRecordEquals(array $conditions, array $expected): void
     {

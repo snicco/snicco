@@ -116,7 +116,7 @@ final class Cookie
     }
 
     /**
-     * @psalm-param  'Lax'|'Strict'|'None'|'None; Secure' $same_site
+     * @param 'Lax'|'None'|'None; Secure'|'Strict' $same_site
      */
     public function withSameSite(string $same_site): Cookie
     {
