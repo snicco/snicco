@@ -32,7 +32,7 @@ final class Environment
     private bool $is_debug;
 
     /**
-     * @psalm-param  self::TESTING | self::PROD | self::DEV | self::STAGING $environment
+     * @param self::DEV|self::PROD|self::STAGING|self::TESTING $environment
      */
     private function __construct(string $environment, bool $is_debug)
     {
@@ -68,7 +68,7 @@ final class Environment
     }
 
     /**
-     * @psalm-param  self::TESTING | self::PROD | self::DEV | self::STAGING $environment
+     * @param self::DEV|self::PROD|self::STAGING|self::TESTING $environment
      */
     public static function fromString(string $environment, bool $debug = false): self
     {

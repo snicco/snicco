@@ -37,6 +37,7 @@ final class MiddlewarePipeline
 
     /**
      * @var Closure(Request):ResponseInterface
+     *
      * @psalm-var Closure(Request=):ResponseInterface $request_handler
      * @psalm-suppress PropertyNotSetInConstructor
      */
@@ -77,7 +78,7 @@ final class MiddlewarePipeline
 
     /**
      * @param Closure(Request):ResponseInterface $request_handler
-     * @psalm-param Closure(Request=):ResponseInterface $request_handler
+     * @param Closure(Request=):ResponseInterface $request_handler
      */
     public function then(Closure $request_handler): Response
     {

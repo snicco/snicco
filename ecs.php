@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Alias\NoMixedEchoPrintFixer;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
 use PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer;
+use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
+use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocNoUselessInheritdocFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocToCommentFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesOrderFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer;
@@ -22,6 +26,9 @@ return static function (ContainerConfigurator $configurator): void {
     $parameters = $configurator->parameters();
     $parameters->set(Option::PATHS, [
         __DIR__ . '/src',
+        __DIR__ . '/monorepo-builder.php',
+        __DIR__ . '/tests',
+        __DIR__ . '/ecs.php',
     ]);
     $parameters->set(Option::PARALLEL, true);
 
@@ -36,26 +43,26 @@ return static function (ContainerConfigurator $configurator): void {
     // @see https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/4446
     $services->set(PhpdocToCommentFixer::class)->call('configure', [
         [
-            'ignored_tags' => ['psalm-suppress', 'var', 'psalm-var']
-        ]
+            'ignored_tags' => ['psalm-suppress', 'var', 'psalm-var'],
+        ],
     ]);
 
     $services->set(MultilineWhitespaceBeforeSemicolonsFixer::class)->call('configure', [
         [
-            'strategy' => 'no_multi_line'
-        ]
+            'strategy' => 'no_multi_line',
+        ],
     ]);
 
     $services->set(PhpUnitMethodCasingFixer::class)->call('configure', [
         [
-            'case' => 'snake_case'
-        ]
+            'case' => 'snake_case',
+        ],
     ]);
 
     $services->set(PhpdocTypesOrderFixer::class)->call('configure', [
         [
-            'null_adjustment' => 'always_last'
-        ]
+            'null_adjustment' => 'always_last',
+        ],
     ]);
 
     $services->set(NoExtraBlankLinesFixer::class)->call('configure', [
@@ -72,10 +79,10 @@ return static function (ContainerConfigurator $configurator): void {
                 'square_brace_block',
                 'switch',
                 'throw',
-//                'use', Allow blank line in use statement for separation between functions/consts/classes
-                'use_trait'
-            ]
-        ]
+                //                'use', Allow blank line in use statement for separation between functions/consts/classes
+                'use_trait',
+            ],
+        ],
     ]);
 
     // Import base rules
@@ -87,10 +94,13 @@ return static function (ContainerConfigurator $configurator): void {
     $services->remove(NativeFunctionInvocationFixer::class);
     // This breaks assertions that compare object equality but not reference.
     $services->remove(PhpUnitStrictFixer::class);
+    // Allow class names inside same class
     $services->remove(SelfAccessorFixer::class);
 
     $services->set(PhpUnitTestCaseStaticMethodCallsFixer::class)->call('configure', [
-        ['call_type' => 'this']
+        [
+            'call_type' => 'this',
+        ],
     ]);
 
     $configurator->import(SetList::PSR_12);
@@ -105,22 +115,27 @@ return static function (ContainerConfigurator $configurator): void {
     $services->set(OrderedImportsFixer::class)->call('configure', [
         [
             'sort_algorithm' => 'alpha',
-            'imports_order' => [
-                'class',
-                'function',
-                'const',
-            ]
-        ]
+            'imports_order' => ['class', 'function', 'const'],
+        ],
+    ]);
+    $services->set(NoMixedEchoPrintFixer::class);
+    $services->set(GlobalNamespaceImportFixer::class)->call('configure', [
+        [
+            'import_classes' => true,
+            'import_constants' => true,
+            'import_functions' => true,
+        ],
     ]);
 
+    // Allow @throws annotation.
+    $services->set(GeneralPhpdocAnnotationRemoveFixer::class)->call(
+        'configure',
+        [
+            [
+                'annotations' => ['author', 'package', 'group', 'covers', 'since'],
+            ],
+        ]
+    );
 
-//    // Allow @throws annotation.
-//    $services->set(GeneralPhpdocAnnotationRemoveFixer::class)->call('configure', [
-//            [
-//                'annotations' => ['author', 'package', 'group', 'covers', 'since']
-//            ]
-//        ]
-//    );
-
-
+    $services->set(PhpdocNoUselessInheritdocFixer::class);
 };

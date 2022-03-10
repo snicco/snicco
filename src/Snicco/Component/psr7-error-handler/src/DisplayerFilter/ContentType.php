@@ -23,7 +23,7 @@ final class ContentType implements DisplayerFilter
 
         return array_filter(
             $displayers,
-            fn($displayer) => $displayer->supportedContentType() === $accept_header
+            fn ($displayer) => $displayer->supportedContentType() === $accept_header
         );
     }
 

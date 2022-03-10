@@ -9,4 +9,3 @@ $dot_env->load();
 $dot_env->required(['WP_ROOT_FOLDER', 'DB_NAME', 'DB_PREFIX', 'DB_USER', 'DB_HOST', 'DB_PASSWORD']);
 
 require_once dirname(__DIR__, 1) . '/vendor/autoload.php';
-

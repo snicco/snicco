@@ -239,7 +239,8 @@ final class Kernel
 
     /**
      * @param array{all?: class-string<Bundle>[], prod?: class-string<Bundle>[], testing?: class-string<Bundle>[], dev?: class-string<Bundle>[]} $bundles
-     * @psalm-return Generator<Bundle>
+     *
+     * @return Generator<Bundle>
      */
     private function bundlesInCurrentEnv(array $bundles): Generator
     {
@@ -272,7 +273,8 @@ final class Kernel
 
     /**
      * @param class-string<Bootstrapper>[] $bootstrappers
-     * @psalm-return Generator<Bootstrapper>
+     *
+     * @return Generator<Bootstrapper>
      */
     private function bootstrappersInCurrentEnv(array $bootstrappers): Generator
     {
