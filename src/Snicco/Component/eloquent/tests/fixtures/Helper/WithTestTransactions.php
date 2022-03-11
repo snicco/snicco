@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 trait WithTestTransactions
 {
-    protected function beginTransaction()
+    protected function beginTransaction(): void
     {
         DB::beginTransaction();
     }
 
-    protected function rollbackTransaction()
+    protected function rollbackTransaction(): void
     {
         DB::rollBack();
     }

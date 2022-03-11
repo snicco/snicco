@@ -19,7 +19,9 @@ final class ShareCookiesTest extends MiddlewareTestCase
      */
     public function response_cookies_can_be_added(): void
     {
-        $this->withNextMiddlewareResponse(fn (Response $response) => $response->withCookie(new Cookie('foo', 'bar')));
+        $this->withNextMiddlewareResponse(
+            fn (Response $response): Response => $response->withCookie(new Cookie('foo', 'bar'))
+        );
 
         $response = $this->runMiddleware(new ShareCookies(), $this->frontendRequest());
 
@@ -55,7 +57,7 @@ final class ShareCookiesTest extends MiddlewareTestCase
      */
     public function a_cookie_can_be_deleted(): void
     {
-        $this->withNextMiddlewareResponse(fn (Response $response) => $response->withoutCookie('foo'));
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withoutCookie('foo'));
 
         $response = $this->runMiddleware(new ShareCookies(), $this->frontendRequest());
 

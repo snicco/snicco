@@ -81,7 +81,7 @@ final class Kernel
             throw new LogicException('The kernel cant be booted twice.');
         }
 
-        $cached_config = $this->config_cache->get($this->configCacheFile(), fn () => $this->loadConfiguration());
+        $cached_config = $this->config_cache->get($this->configCacheFile(), fn (): array => $this->loadConfiguration());
 
         $this->read_only_config = ReadOnlyConfig::fromArray($cached_config);
 

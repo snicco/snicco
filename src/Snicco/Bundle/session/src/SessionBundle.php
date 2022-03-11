@@ -131,7 +131,7 @@ final class SessionBundle implements Bundle
     private function bindSessionManager(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionManager::class, fn () => new FactorySessionManager(
+            ->shared(SessionManager::class, fn (): FactorySessionManager => new FactorySessionManager(
                 $kernel->container()
                     ->make(SessionConfig::class),
                 $kernel->container()
@@ -289,7 +289,7 @@ final class SessionBundle implements Bundle
     private function bindMiddleware(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(StatefulRequest::class, fn () => new StatefulRequest(
+            ->shared(StatefulRequest::class, fn (): StatefulRequest => new StatefulRequest(
                 $kernel->container()
                     ->make(SessionManager::class),
                 $kernel->container()

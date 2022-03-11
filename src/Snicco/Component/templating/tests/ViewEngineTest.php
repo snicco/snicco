@@ -242,7 +242,7 @@ final class ViewEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', fn (View $view) => $view->with([
+        $this->composers->addComposer('context-priority', fn (View $view): View => $view->with([
             'test_context' => [
                 'foo' => [
                     'bar' => 'biz',
@@ -266,7 +266,7 @@ final class ViewEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', fn (View $view) => $view->with([
+        $this->composers->addComposer('context-priority', fn (View $view): View => $view->with([
             'test_context' => [
                 'foo' => [
                     'bar' => 'biz',
@@ -362,7 +362,7 @@ final class ViewEngineTest extends TestCase
      */
     public function extended_parents_view_are_also_passed_through_view_composers(): void
     {
-        $this->composers->addComposer('post-layout', fn (View $view) => $view->with('sidebar', 'hi'));
+        $this->composers->addComposer('post-layout', fn (View $view): View => $view->with('sidebar', 'hi'));
 
         $view = $this->view_engine->make('partials.post-title');
         $view = $view->with('post_title', 'Foobar');

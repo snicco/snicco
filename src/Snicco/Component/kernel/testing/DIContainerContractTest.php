@@ -27,7 +27,7 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $container->factory(Foo::class, fn () => new Foo());
+        $container->factory(Foo::class, fn (): Foo => new Foo());
 
         $foo1 = $container[Foo::class];
         $foo2 = $container->get(Foo::class);
@@ -44,7 +44,7 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $container->shared(Foo::class, fn () => new Foo());
+        $container->shared(Foo::class, fn (): Foo => new Foo());
 
         $foo1 = $container[Foo::class];
         $foo2 = $container->get(Foo::class);
@@ -97,8 +97,8 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $container->factory(Foo::class, fn () => new Foo());
-        $container->shared(Bar::class, fn () => new Bar());
+        $container->factory(Foo::class, fn (): Foo => new Foo());
+        $container->shared(Bar::class, fn (): Bar => new Bar());
         $container->instance(Baz::class, new Baz());
 
         $foo = $container[Foo::class];
@@ -111,19 +111,19 @@ trait DIContainerContractTest
         PHPUnit::assertNotSame($foo, $new_foo);
 
         // Can still be overwritten because it's not resolved yet.
-        $container->shared(Bar::class, fn () => new Bar());
+        $container->shared(Bar::class, fn (): Bar => new Bar());
 
         $bar = $container[Bar::class];
         PHPUnit::assertInstanceOf(Bar::class, $bar);
 
         try {
-            $container->factory(Bar::class, fn () => new Bar());
+            $container->factory(Bar::class, fn (): Bar => new Bar());
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
         }
 
         try {
-            $container->shared(Bar::class, fn () => new Bar());
+            $container->shared(Bar::class, fn (): Bar => new Bar());
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
         }
@@ -132,7 +132,7 @@ trait DIContainerContractTest
         PHPUnit::assertInstanceOf(Baz::class, $baz);
 
         try {
-            $container->factory(Baz::class, fn () => new Baz());
+            $container->factory(Baz::class, fn (): Baz => new Baz());
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
         }
@@ -148,7 +148,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->shared(Foo::class, fn () => new Foo());
+        $container->shared(Foo::class, fn (): Foo => new Foo());
     }
 
     /**
@@ -161,7 +161,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->factory(Foo::class, fn () => new Foo());
+        $container->factory(Foo::class, fn (): Foo => new Foo());
     }
 
     /**
@@ -239,7 +239,7 @@ trait DIContainerContractTest
     {
         $container = $this->createContainer();
 
-        $container->shared(Foo::class, fn () => new Foo());
+        $container->shared(Foo::class, fn (): Foo => new Foo());
 
         $foo1 = $container[Foo::class];
         $foo2 = $container->make(Foo::class);
@@ -249,7 +249,6 @@ trait DIContainerContractTest
 
     /**
      * @test
-     * @psalm-suppress MissingClosureReturnType
      */
     public function test_offsetSet(): void
     {
@@ -260,7 +259,7 @@ trait DIContainerContractTest
         PHPUnit::assertSame($foo, $container[Foo::class]);
 
         $bar = new Bar();
-        $container[Bar::class] = fn () => $bar;
+        $container[Bar::class] = fn (): Bar => $bar;
 
         // instance
         PHPUnit::assertSame($bar, $container[Bar::class]);

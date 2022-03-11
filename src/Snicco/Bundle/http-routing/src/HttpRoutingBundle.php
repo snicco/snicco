@@ -173,18 +173,21 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindUrlGenerator(DIContainer $container): void
     {
-        $container->shared(UrlGenerator::class, fn () => $container->make(Router::class)->urlGenerator());
+        $container->shared(UrlGenerator::class, fn (): UrlGenerator => $container->make(Router::class)->urlGenerator());
     }
 
     private function bindUrlMatcher(DIContainer $container): void
     {
-        $container->shared(UrlMatcher::class, fn () => $container->make(Router::class)->urlMatcher());
+        $container->shared(UrlMatcher::class, fn (): UrlMatcher => $container->make(Router::class)->urlMatcher());
     }
 
     private function bindAdminMenu(DIContainer $container): void
     {
-        $container->shared(AdminMenu::class, fn () => $container->make(Router::class)->adminMenu());
-        $container->shared(WPAdminMenu::class, fn () => new WPAdminMenu($container->make(AdminMenu::class)));
+        $container->shared(AdminMenu::class, fn (): AdminMenu => $container->make(Router::class)->adminMenu());
+        $container->shared(
+            WPAdminMenu::class,
+            fn (): WPAdminMenu => new WPAdminMenu($container->make(AdminMenu::class))
+        );
     }
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
@@ -207,7 +210,7 @@ final class HttpRoutingBundle implements Bundle
                 HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT)
             );
 
-            $log_context = array_map(fn ($class) => new $class(), $log_context_classes);
+            $log_context = array_map(fn ($class): RequestLogContext => new $class(), $log_context_classes);
 
             /** @var array<class-string<Throwable>,string> $log_levels */
             $log_levels = $config->getArray(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS));
@@ -219,7 +222,10 @@ final class HttpRoutingBundle implements Bundle
                 HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)
             );
 
-            $displayers = array_map(fn ($class) => $container[$class] ?? new $class(), $displayer_classes);
+            $displayers = array_map(
+                fn ($class): ExceptionDisplayer => $container[$class] ?? new $class(),
+                $displayer_classes
+            );
 
             return new ProductionErrorHandler(
                 $container->make(ResponseFactoryInterface::class),
@@ -235,7 +241,7 @@ final class HttpRoutingBundle implements Bundle
     {
         $container->factory(
             MiddlewarePipeline::class,
-            fn () => new MiddlewarePipeline($container, new LazyHttpErrorHandler($container))
+            fn (): MiddlewarePipeline => new MiddlewarePipeline($container, new LazyHttpErrorHandler($container))
         );
     }
 
@@ -243,7 +249,7 @@ final class HttpRoutingBundle implements Bundle
     {
         $container->shared(
             RoutingMiddleware::class,
-            fn () => new RoutingMiddleware($container->make(UrlMatcher::class))
+            fn (): RoutingMiddleware => new RoutingMiddleware($container->make(UrlMatcher::class))
         );
     }
 
@@ -265,8 +271,14 @@ final class HttpRoutingBundle implements Bundle
 
             return new ResponseFactory($discovery->createResponseFactory(), $discovery->createStreamFactory(),);
         });
-        $container->shared(ResponseFactoryInterface::class, fn () => $container->make(ResponseFactory::class));
-        $container->shared(StreamFactoryInterface::class, fn () => $container->make(ResponseFactory::class));
+        $container->shared(
+            ResponseFactoryInterface::class,
+            fn (): ResponseFactory => $container->make(ResponseFactory::class)
+        );
+        $container->shared(
+            StreamFactoryInterface::class,
+            fn (): ResponseFactory => $container->make(ResponseFactory::class)
+        );
     }
 
     private function bindPsr17Discovery(DIContainer $container): void
@@ -319,23 +331,23 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRoutes(DIContainer $container): void
     {
-        $container->shared(Routes::class, fn () => $container->make(Router::class)->routes());
+        $container->shared(Routes::class, fn (): Routes => $container->make(Router::class)->routes());
     }
 
     private function bindLogger(Kernel $kernel): void
     {
         if ($kernel->env()->isTesting()) {
             $kernel->container()
-                ->shared(TestLogger::class, fn () => new TestLogger());
+                ->shared(TestLogger::class, fn (): TestLogger => new TestLogger());
             $kernel->container()
-                ->shared(LoggerInterface::class, fn () => $kernel->container()->make(TestLogger::class));
+                ->shared(LoggerInterface::class, fn (): TestLogger => $kernel->container()->make(TestLogger::class));
 
             return;
         }
 
         if (! $kernel->container()->has(LoggerInterface::class)) {
             $kernel->container()
-                ->shared(LoggerInterface::class, fn () => new StdErrLogger(
+                ->shared(LoggerInterface::class, fn (): StdErrLogger => new StdErrLogger(
                     $kernel->config()
                         ->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
                 ));
@@ -354,7 +366,7 @@ final class HttpRoutingBundle implements Bundle
         }
 
         $identifier = new SplHashIdentifier();
-        $transformers = array_map(fn ($class) => /** @var class-string<ExceptionTransformer> $class */
+        $transformers = array_map(fn ($class): object => /** @var class-string<ExceptionTransformer> $class */
 new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)));
 
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
@@ -664,7 +676,10 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
     private function bindResponsePostProcessor(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ResponsePostProcessor::class, fn () => new ResponsePostProcessor($kernel->env()));
+            ->shared(
+                ResponsePostProcessor::class,
+                fn (): ResponsePostProcessor => new ResponsePostProcessor($kernel->env())
+            );
     }
 
     private function getResponseEmitter(Kernel $kernel, EventDispatcher $dispatcher): ResponseEmitter
@@ -680,7 +695,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
     {
         $container->shared(
             ErrorsToExceptions::class,
-            fn () => new ErrorsToExceptions($container->make(LoggerInterface::class))
+            fn (): ErrorsToExceptions => new ErrorsToExceptions($container->make(LoggerInterface::class))
         );
     }
 

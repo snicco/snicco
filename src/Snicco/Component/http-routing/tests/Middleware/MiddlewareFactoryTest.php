@@ -108,7 +108,11 @@ final class MiddlewareFactoryTest extends TestCase
     public function a_middleware_that_needs_both_constructor_args_and_runtime_args_can_be_returned_as_closure_from_the_container(
         ): void {
         $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(
-            fn (string $bar, string $baz) => new MiddlewareWithContextualAndRuntimeArgs(new Foo(), $bar, $baz)
+            fn (string $bar, string $baz): \Snicco\Component\HttpRouting\Tests\Middleware\MiddlewareWithContextualAndRuntimeArgs => new MiddlewareWithContextualAndRuntimeArgs(
+                new Foo(),
+                $bar,
+                $baz
+            )
         );
 
         $middleware = $this->factory->create(
@@ -126,7 +130,7 @@ final class MiddlewareFactoryTest extends TestCase
      */
     public function test_exception_if_container_closure_doesnt_return_instance_of_middleware(): void
     {
-        $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(fn () => new Foo());
+        $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(fn (): Foo => new Foo());
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(

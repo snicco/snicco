@@ -174,7 +174,7 @@ final class AdminMenuItem
         $parts = explode(' ', str_replace(['.', '_', '-'], ' ', $route_name));
 
         if (count($parts) > 1) {
-            $parts = array_map(fn (string $part) => mb_convert_case($part, MB_CASE_TITLE, 'UTF-8'), $parts);
+            $parts = array_map(fn (string $part): string => mb_convert_case($part, MB_CASE_TITLE, 'UTF-8'), $parts);
         }
 
         return implode(' ', $parts);

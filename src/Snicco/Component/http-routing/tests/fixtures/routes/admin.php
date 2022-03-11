@@ -6,6 +6,6 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigu
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\Routing\RouteLoader\PHPFileRouteLoaderTest;
 
-return function (AdminRoutingConfigurator $router) {
+return function (AdminRoutingConfigurator $router): void {
     $router->page('admin_route_1', PHPFileRouteLoaderTest::ADMIN_PATH, RoutingTestController::class, [],);
 };

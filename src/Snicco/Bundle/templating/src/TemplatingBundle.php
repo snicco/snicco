@@ -113,7 +113,7 @@ $kernel->container()
     private function bindPHPViewFactory(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(PHPViewFactory::class, fn () => new PHPViewFactory(
+            ->shared(PHPViewFactory::class, fn (): PHPViewFactory => new PHPViewFactory(
                 new PHPViewFinder($kernel->config()->getListOfStrings(
                     'templating.' . TemplatingOption::DIRECTORIES
                 )),
@@ -125,8 +125,8 @@ $kernel->container()
     private function bindTemplatingMiddleware(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(TemplatingMiddleware::class, fn () => new TemplatingMiddleware(
-                fn () => $kernel->container()
+            ->shared(TemplatingMiddleware::class, fn (): TemplatingMiddleware => new TemplatingMiddleware(
+                fn (): ViewEngine => $kernel->container()
                     ->make(ViewEngine::class)
             ));
     }
@@ -136,7 +136,9 @@ $kernel->container()
         $kernel->container()
             ->shared(
                 TemplatingExceptionDisplayer::class,
-                fn () => new TemplatingExceptionDisplayer($kernel->container()->make(ViewEngine::class))
+                fn (): TemplatingExceptionDisplayer => new TemplatingExceptionDisplayer($kernel->container()->make(
+                    ViewEngine::class
+                ))
             );
     }
 
@@ -168,10 +170,10 @@ $kernel->container()
             ->shared(GlobalViewContext::class, function () use ($kernel): GlobalViewContext {
                 $context = new GlobalViewContext();
                 // This needs to be a closure.
-                $context->add('view', fn () => $kernel->container()->make(ViewEngine::class));
+                $context->add('view', fn (): ViewEngine => $kernel->container()->make(ViewEngine::class));
 
                 if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
-                    $context->add('url', fn () => $kernel->container()->make(UrlGenerator::class));
+                    $context->add('url', fn (): UrlGenerator => $kernel->container()->make(UrlGenerator::class));
                 }
 
                 return $context;

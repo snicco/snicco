@@ -259,7 +259,10 @@ class TestingBundleBundle1 implements Bundle
     public function register(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ServiceA::class, fn () => new ServiceA(new ServiceB()));
+            ->shared(
+                ServiceA::class,
+                fn (): \Snicco\Bundle\Testing\Tests\Bundle\ServiceA => new ServiceA(new ServiceB())
+            );
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -286,7 +289,7 @@ class TestingBundleBundle2 implements Bundle
     public function register(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ServiceA::class, fn () => new ServiceB());
+            ->shared(ServiceA::class, fn (): \Snicco\Bundle\Testing\Tests\Bundle\ServiceB => new ServiceB());
     }
 
     public function bootstrap(Kernel $kernel): void

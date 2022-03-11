@@ -40,7 +40,7 @@ abstract class Middleware implements MiddlewareInterface
         $request = Request::fromPsr($request);
 
         if (! $handler instanceof NextMiddleware) {
-            $handler = new NextMiddleware(fn (Request $request) => $handler->handle($request));
+            $handler = new NextMiddleware(fn (Request $request): ResponseInterface => $handler->handle($request));
         }
 
         $this->current_request = $request;

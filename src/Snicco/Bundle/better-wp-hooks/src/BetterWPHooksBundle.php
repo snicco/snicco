@@ -51,15 +51,21 @@ final class BetterWPHooksBundle implements Bundle
 
             return $dispatcher;
         });
-        $container->shared(EventDispatcherInterface::class, fn () => $container->make(EventDispatcher::class));
+        $container->shared(
+            EventDispatcherInterface::class,
+            fn (): EventDispatcher => $container->make(EventDispatcher::class)
+        );
 
         if ($kernel->env()->isTesting()) {
-            $container->shared(TestableEventDispatcher::class, fn () => $container->make(EventDispatcher::class));
+            $container->shared(
+                TestableEventDispatcher::class,
+                fn (): EventDispatcher => $container->make(EventDispatcher::class)
+            );
         }
 
         $container->shared(
             EventMapper::class,
-            fn () => new EventMapper($container->make(EventDispatcher::class), $hook_api)
+            fn (): EventMapper => new EventMapper($container->make(EventDispatcher::class), $hook_api)
         );
     }
 

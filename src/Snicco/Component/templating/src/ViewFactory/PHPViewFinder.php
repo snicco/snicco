@@ -72,7 +72,7 @@ final class PHPViewFinder
      */
     private function normalize(array $directories): array
     {
-        return array_map(fn (string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
+        return array_map(fn (string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     private function normalizeViewName(string $view_name): string

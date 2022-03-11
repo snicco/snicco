@@ -14,6 +14,7 @@ use Psr\Http\Message\UriFactoryInterface;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
@@ -200,7 +201,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function custom_responses_for_the_next_middleware_can_be_set(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->html('foo'));
+        $this->withNextMiddlewareResponse(fn (): Response => $this->responseFactory()->html('foo'));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -220,7 +221,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function assert_next_middleware_called_still_works_with_custom_responses(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->html('foo'));
+        $this->withNextMiddlewareResponse(fn (): Response => $this->responseFactory()->html('foo'));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -315,7 +316,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
     {
         $this->withRoutes([Route::create('/foo', Route::DELEGATE, 'r1')]);
 
-        $this->withNextMiddlewareResponse(fn () => $this->responseUtils()->redirectToRoute('r1'));
+        $this->withNextMiddlewareResponse(fn (): RedirectResponse => $this->responseUtils()->redirectToRoute('r1'));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -336,7 +337,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function test_response_instance_is_not_changed(): void
     {
-        $this->withNextMiddlewareResponse(fn (Response $response) => new ViewResponse('foo', $response));
+        $this->withNextMiddlewareResponse(fn (Response $response): ViewResponse => new ViewResponse('foo', $response));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface

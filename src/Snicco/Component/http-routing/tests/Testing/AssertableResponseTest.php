@@ -83,7 +83,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to be instance of',
-            fn () => $response->assertDelegated()
+            fn (): AssertableResponse => $response->assertDelegated()
         );
     }
 
@@ -106,7 +106,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated',
-            fn () => $response->assertNotDelegated()
+            fn (): AssertableResponse => $response->assertNotDelegated()
         );
     }
 
@@ -129,7 +129,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response status code [400] is not a success status code.',
-            fn () => $response->assertSuccessful()
+            fn (): AssertableResponse => $response->assertSuccessful()
         );
     }
 
@@ -142,7 +142,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertSuccessful()
+            fn (): AssertableResponse => $response->assertSuccessful()
         );
     }
 
@@ -165,7 +165,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [200].\nGot [201].",
-            fn () => $response->assertOk()
+            fn (): AssertableResponse => $response->assertOk()
         );
     }
 
@@ -178,7 +178,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertOk()
+            fn (): AssertableResponse => $response->assertOk()
         );
     }
 
@@ -201,7 +201,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [201].\nGot [204].",
-            fn () => $response->assertCreated()
+            fn (): AssertableResponse => $response->assertCreated()
         );
     }
 
@@ -214,7 +214,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertCreated()
+            fn (): AssertableResponse => $response->assertCreated()
         );
     }
 
@@ -237,7 +237,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [204].\nGot [200].",
-            fn () => $response->assertNoContent()
+            fn (): AssertableResponse => $response->assertNoContent()
         );
     }
 
@@ -250,7 +250,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertNoContent()
+            fn (): AssertableResponse => $response->assertNoContent()
         );
     }
 
@@ -263,7 +263,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response code matches expected [204] but the response body is not empty.',
-            fn () => $response->assertNoContent()
+            fn (): AssertableResponse => $response->assertNoContent()
         );
     }
 
@@ -286,7 +286,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [301].\nGot [201].",
-            fn () => $response->assertStatus(301)
+            fn (): AssertableResponse => $response->assertStatus(301)
         );
     }
 
@@ -299,7 +299,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertStatus(301)
+            fn (): AssertableResponse => $response->assertStatus(301)
         );
     }
 
@@ -322,7 +322,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [404].\nGot [401].",
-            fn () => $response->assertNotFound()
+            fn (): AssertableResponse => $response->assertNotFound()
         );
     }
 
@@ -335,7 +335,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertNotFound()
+            fn (): AssertableResponse => $response->assertNotFound()
         );
     }
 
@@ -358,7 +358,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [403].\nGot [401].",
-            fn () => $response->assertForbidden()
+            fn (): AssertableResponse => $response->assertForbidden()
         );
     }
 
@@ -371,7 +371,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertForbidden()
+            fn (): AssertableResponse => $response->assertForbidden()
         );
     }
 
@@ -394,7 +394,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [401].\nGot [403].",
-            fn () => $response->assertUnauthorized()
+            fn (): AssertableResponse => $response->assertUnauthorized()
         );
     }
 
@@ -407,7 +407,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected response to not be delegated.',
-            fn () => $response->assertUnauthorized()
+            fn (): AssertableResponse => $response->assertUnauthorized()
         );
     }
 
@@ -441,12 +441,12 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response does not have header [X-BAR].',
-            fn () => $response->assertHeader('X-BAR')
+            fn (): AssertableResponse => $response->assertHeader('X-BAR')
         );
 
         $this->expectFailureWithMessageContaining(
             'Value [BAR] for header [X-FOO] does not match [BAZ].',
-            fn () => $response->assertHeader('X-FOO', 'BAZ')
+            fn (): AssertableResponse => $response->assertHeader('X-FOO', 'BAZ')
         );
     }
 
@@ -471,12 +471,12 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Header [X-FOO] was not expected to be in the response.',
-            fn () => $response->assertHeaderMissing('X-FOO')
+            fn (): AssertableResponse => $response->assertHeaderMissing('X-FOO')
         );
 
         $this->expectFailureWithMessageContaining(
             'Header [x-foo] was not expected to be in the response.',
-            fn () => $response->assertHeaderMissing('x-foo')
+            fn (): AssertableResponse => $response->assertHeaderMissing('x-foo')
         );
     }
 
@@ -505,7 +505,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             "Expected location header to be [/foo/bar].\nGot [/foo/bar?baz=biz].",
-            fn () => $response->assertLocation('/foo/bar')
+            fn (): AssertableResponse => $response->assertLocation('/foo/bar')
         );
     }
 
@@ -518,7 +518,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response does not have header [set-cookie]',
-            fn () => $response->getAssertableCookie('foo')
+            fn (): AssertableCookie => $response->getAssertableCookie('foo')
         );
     }
 
@@ -534,7 +534,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response does not have cookie matching name [bar].',
-            fn () => $response->getAssertableCookie('bar')
+            fn (): AssertableCookie => $response->getAssertableCookie('bar')
         );
     }
 
@@ -551,7 +551,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'The cookie [foo] was sent [2] times.',
-            fn () => $response->getAssertableCookie('foo')
+            fn (): AssertableCookie => $response->getAssertableCookie('foo')
         );
     }
 
@@ -603,19 +603,19 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Status code [200] is not a redirection status code.',
-            fn () => $response->assertRedirect()
+            fn (): AssertableResponse => $response->assertRedirect()
         );
 
         $response = new AssertableResponse($this->response_factory->redirect('/foo/bar', 301));
 
         $this->expectFailureWithMessageContaining(
             "Expected location header to be [/foo/baz].\nGot [/foo/bar]",
-            fn () => $response->assertRedirect('/foo/baz')
+            fn (): AssertableResponse => $response->assertRedirect('/foo/baz')
         );
 
         $this->expectFailureWithMessageContaining(
             "Expected response status code to be [302].\nGot [301].",
-            fn () => $response->assertRedirect('/foo/bar', 302)
+            fn (): AssertableResponse => $response->assertRedirect('/foo/bar', 302)
         );
     }
 
@@ -639,12 +639,12 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Redirect path [/foo/baz] does not match location header [/foo/bar?baz=biz].',
-            fn () => $response->assertRedirectPath('/foo/baz')
+            fn (): AssertableResponse => $response->assertRedirectPath('/foo/baz')
         );
 
         $this->expectFailureWithMessageContaining(
             'Expected response status code to be [302]',
-            fn () => $response->assertRedirectPath('/foo/bar', 302)
+            fn (): AssertableResponse => $response->assertRedirectPath('/foo/bar', 302)
         );
     }
 
@@ -703,12 +703,12 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response body does not contain [bar]',
-            fn () => $response->assertSeeHtml('bar')
+            fn (): AssertableResponse => $response->assertSeeHtml('bar')
         );
 
         $this->expectFailureWithMessageContaining(
             'Response body does not contain [<h1>bar</h1>]',
-            fn () => $response->assertSeeHtml('<h1>bar</h1>')
+            fn (): AssertableResponse => $response->assertSeeHtml('<h1>bar</h1>')
         );
     }
 
@@ -732,12 +732,12 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response body contains [foo]',
-            fn () => $response->assertDontSeeHtml('foo')
+            fn (): AssertableResponse => $response->assertDontSeeHtml('foo')
         );
 
         $this->expectFailureWithMessageContaining(
             'Response body contains [<h1>foo</h1>]',
-            fn () => $response->assertDontSeeHtml('<h1>foo</h1>')
+            fn (): AssertableResponse => $response->assertDontSeeHtml('<h1>foo</h1>')
         );
     }
 
@@ -760,7 +760,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response body does not contain [foobaz].',
-            fn () => $response->assertSeeText('foobaz')
+            fn (): AssertableResponse => $response->assertSeeText('foobaz')
         );
     }
 
@@ -783,7 +783,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response body contains [foobar]',
-            fn () => $response->assertDontSeeText('foobar')
+            fn (): AssertableResponse => $response->assertDontSeeText('foobar')
         );
     }
 
@@ -806,7 +806,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected content-type [text/html; charset=UTF-8]',
-            fn () => $response->assertIsHtml()
+            fn (): AssertableResponse => $response->assertIsHtml()
         );
     }
 
@@ -829,7 +829,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Expected content-type [application/json]',
-            fn () => $response->assertIsJson()
+            fn (): AssertableResponse => $response->assertIsJson()
         );
     }
 
@@ -852,7 +852,7 @@ final class AssertableResponseTest extends TestCase
 
         $this->expectFailureWithMessageContaining(
             'Response body does not match expected [fooo]',
-            fn () => $response->assertBodyExact('fooo')
+            fn (): AssertableResponse => $response->assertBodyExact('fooo')
         );
     }
 
@@ -883,7 +883,7 @@ final class AssertableResponseTest extends TestCase
             'Response json body does not match expected [' . (string) json_encode([
                 'foo' => 'baz',
             ]) . '].',
-            fn () => $response->assertExactJson([
+            fn (): AssertableResponse => $response->assertExactJson([
                 'foo' => 'baz',
             ])
         );

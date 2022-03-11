@@ -34,7 +34,7 @@ final class BladeStandalone
     /**
      * @var Application|Container
      */
-    private $illuminate_container;
+    private Container $illuminate_container;
 
     private BladeViewComposer $blade_view_composer;
 
@@ -81,9 +81,9 @@ final class BladeStandalone
     {
         $wp = $wp ?: new BetterWPAPI();
 
-        Blade::if('auth', fn () => $wp->isUserLoggedIn());
+        Blade::if('auth', fn (): bool => $wp->isUserLoggedIn());
 
-        Blade::if('guest', fn () => ! $wp->isUserLoggedIn());
+        Blade::if('guest', fn (): bool => ! $wp->isUserLoggedIn());
 
         Blade::if('role', function (string $expression) use ($wp): bool {
             if ('admin' === $expression) {
@@ -114,9 +114,9 @@ final class BladeStandalone
             });
         }
 
-        $this->illuminate_container->bindIf('files', fn () => new Filesystem(), true);
+        $this->illuminate_container->bindIf('files', fn (): Filesystem => new Filesystem(), true);
 
-        $this->illuminate_container->bindIf('events', fn () => new Dispatcher(), true);
+        $this->illuminate_container->bindIf('events', fn (): Dispatcher => new Dispatcher(), true);
         /**
          * @psalm-suppress MixedReturnStatement
          * @psalm-suppress MixedInferredReturnType
@@ -170,7 +170,7 @@ final class BladeStandalone
     {
         $this->illuminate_container->bindIf(
             BladeViewFactory::class,
-            fn (IlluminateContainer $container) => new BladeViewFactory($container->make(
+            fn (IlluminateContainer $container): BladeViewFactory => new BladeViewFactory($container->make(
                 'view'
             ), $this->view_directories),
             true

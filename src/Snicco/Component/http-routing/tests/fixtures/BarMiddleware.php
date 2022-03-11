@@ -12,7 +12,7 @@ class BarMiddleware extends Middleware
 {
     private string $bar;
 
-    public function __construct($bar = 'bar_middleware')
+    public function __construct(string $bar = 'bar_middleware')
     {
         $this->bar = $bar;
     }

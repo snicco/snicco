@@ -35,7 +35,7 @@ final class ViewComposingTest extends BladeTestCase
         ]);
         $this->composers->addComposer(
             'components.view-composer-parent',
-            fn (View $view) => $view->with([
+            fn (View $view): View => $view->with([
                 'name' => 'calvin',
             ])
         );
@@ -48,7 +48,7 @@ final class ViewComposingTest extends BladeTestCase
      */
     public function a_view_composer_can_be_added_to_a_view(): void
     {
-        $this->composers->addComposer('view-composer', fn (View $view) => $view->with([
+        $this->composers->addComposer('view-composer', fn (View $view): View => $view->with([
             'name' => 'calvin',
         ]));
 

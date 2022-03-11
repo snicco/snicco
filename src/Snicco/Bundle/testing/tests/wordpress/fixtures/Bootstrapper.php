@@ -25,7 +25,7 @@ final class Bootstrapper implements \Snicco\Component\Kernel\Bootstrapper
         $kernel->container()
             ->shared(
                 WebTestCaseController::class,
-                fn () => new WebTestCaseController($kernel->container()->make(Mailer::class))
+                fn (): WebTestCaseController => new WebTestCaseController($kernel->container()->make(Mailer::class))
             );
     }
 

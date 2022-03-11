@@ -7,4 +7,6 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
-return fn (Environment $env) => new Kernel(new PimpleContainerAdapter(), $env, Directories::fromDefaults(__DIR__));
+return fn (Environment $env): Kernel => new Kernel(new PimpleContainerAdapter(), $env, Directories::fromDefaults(
+    __DIR__
+));

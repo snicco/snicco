@@ -102,7 +102,7 @@ final class Router
     public function urlGenerator(): UrlGenerator
     {
         if (! isset($this->url_generator)) {
-            $this->url_generator = new LazyGenerator(fn () => new Generator(
+            $this->url_generator = new LazyGenerator(fn (): Generator => new Generator(
                 $this->routes(),
                 $this->context,
                 $this->admin_area,
@@ -146,7 +146,7 @@ final class Router
     private function routeData(): array
     {
         if (! isset($this->route_data)) {
-            $data = $this->route_cache->get(fn () => $this->loadRoutes());
+            $data = $this->route_cache->get(fn (): array => $this->loadRoutes());
 
             $this->route_data = $data;
         }

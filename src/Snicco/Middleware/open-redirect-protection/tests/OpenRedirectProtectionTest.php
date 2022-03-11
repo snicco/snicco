@@ -33,7 +33,7 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function a_redirect_response_is_allowed_if_its_relative(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseUtils()->redirectTo('foo'));
+        $this->withNextMiddlewareResponse(fn (): RedirectResponse => $this->responseUtils()->redirectTo('foo'));
 
         $request = $this->frontendRequest('/foo');
 
@@ -49,7 +49,10 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function a_redirect_response_is_allowed_if_its_absolute_and_to_the_same_host(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->redirect('https://foo.com/bar'));
+        $this->withNextMiddlewareResponse(
+            fn (): RedirectResponse => $this->responseFactory()
+                ->redirect('https://foo.com/bar')
+        );
 
         $request = $this->frontendRequest('https://foo.com/foo');
 
@@ -65,7 +68,10 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function absolute_redirects_to_other_hosts_are_not_allowed(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->redirect('https://bar.com/foo'));
+        $this->withNextMiddlewareResponse(
+            fn (): RedirectResponse => $this->responseFactory()
+                ->redirect('https://bar.com/foo')
+        );
 
         $request = $this->frontendRequest('https://foo.com/foo');
         $response = $this->runMiddleware($this->newMiddleware(), $request);
@@ -80,7 +86,10 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function a_network_path_url_is_not_allowed(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->redirect('//bar.com:80/path/info'));
+        $this->withNextMiddlewareResponse(
+            fn (): RedirectResponse => $this->responseFactory()
+                ->redirect('//bar.com:80/path/info')
+        );
 
         $request = $this->frontendRequest('https://foo.com/foo');
         $response = $this->runMiddleware($this->newMiddleware(), $request);
@@ -95,7 +104,10 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function hosts_can_be_whitelisted_if_the_referer_is_the_same_site(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->redirect('https://stripe.com/foo'));
+        $this->withNextMiddlewareResponse(
+            fn (): RedirectResponse => $this->responseFactory()
+                ->redirect('https://stripe.com/foo')
+        );
 
         $request = $this->frontendRequest('https://foo.com/foo');
         $response = $this->runMiddleware($this->newMiddleware(['stripe.com']), $request);
@@ -110,7 +122,10 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function a_redirect_response_is_forbidden_if_its_to_a_non_white_listed_host(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->redirect('https://paypal.com/pay'));
+        $this->withNextMiddlewareResponse(
+            fn (): RedirectResponse => $this->responseFactory()
+                ->redirect('https://paypal.com/pay')
+        );
 
         $request = $this->frontendRequest('https://foo.com/foo');
 
@@ -126,7 +141,7 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function subdomains_can_be_whitelisted_with_regex(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()
+        $this->withNextMiddlewareResponse(fn (): RedirectResponse => $this->responseFactory()
             ->redirect('https://payments.stripe.com/foo'));
 
         $request = $this->frontendRequest('/foo');
@@ -136,7 +151,7 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
         $response->assertableResponse()
             ->assertRedirect('https://payments.stripe.com/foo');
 
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()
+        $this->withNextMiddlewareResponse(fn (): RedirectResponse => $this->responseFactory()
             ->redirect('https://accounts.stripe.com/foo'));
 
         $request = $this->frontendRequest('/foo');
@@ -195,7 +210,10 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
     {
         $this->withRoutes([]);
 
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->redirect('https://paypal.com/pay'));
+        $this->withNextMiddlewareResponse(
+            fn (): RedirectResponse => $this->responseFactory()
+                ->redirect('https://paypal.com/pay')
+        );
 
         $request = $this->frontendRequest('https://foo.com/foo');
 

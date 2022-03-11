@@ -261,7 +261,10 @@ final class SessionBundleTest extends WPTestCase
         });
         $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
-                ->shared(TestSerializer::class, fn () => new TestSerializer());
+                ->shared(
+                    TestSerializer::class,
+                    fn (): \Snicco\Bundle\Session\Tests\wordpress\TestSerializer => new TestSerializer()
+                );
         });
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);

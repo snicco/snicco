@@ -216,7 +216,7 @@ final class AssertableResponse
 
         $header = $this->psr_response->getHeader('Set-Cookie');
 
-        $headers = array_values(array_filter($header, fn ($header) => Str::startsWith($header, $cookie_name)));
+        $headers = array_values(array_filter($header, fn ($header): bool => Str::startsWith($header, $cookie_name)));
 
         $count = count($headers);
 

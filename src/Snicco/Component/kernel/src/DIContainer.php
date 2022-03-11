@@ -72,7 +72,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      */
     final public function instance(string $id, object $service): void
     {
-        $this->shared($id, fn () => $service);
+        $this->shared($id, fn (): object => $service);
     }
 
     /**

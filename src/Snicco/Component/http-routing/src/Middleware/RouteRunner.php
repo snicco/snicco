@@ -11,6 +11,7 @@ use ReflectionException;
 use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 
@@ -79,6 +80,6 @@ final class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(fn () => $this->responseFactory()->delegate());
+            ->then(fn (): DelegatedResponse => $this->responseFactory()->delegate());
     }
 }
