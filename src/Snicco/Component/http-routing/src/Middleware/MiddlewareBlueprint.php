@@ -15,7 +15,6 @@ use Webmozart\Assert\Assert;
  */
 final class MiddlewareBlueprint
 {
-
     /**
      * @var class-string<MiddlewareInterface>
      */
@@ -28,7 +27,7 @@ final class MiddlewareBlueprint
 
     /**
      * @param class-string<MiddlewareInterface> $class
-     * @param array<string> $arguments
+     * @param array<string>                     $arguments
      */
     public function __construct(string $class, array $arguments = [])
     {
@@ -39,7 +38,7 @@ final class MiddlewareBlueprint
 
     /**
      * @param class-string<MiddlewareInterface> $class
-     * @param array<string> $arguments
+     * @param array<string>                     $arguments
      */
     public static function from(string $class, array $arguments = []): MiddlewareBlueprint
     {
@@ -53,8 +52,7 @@ final class MiddlewareBlueprint
     {
         return [
             'class' => $this->class,
-            'args' => $this->arguments
+            'args' => $this->arguments,
         ];
     }
-
 }

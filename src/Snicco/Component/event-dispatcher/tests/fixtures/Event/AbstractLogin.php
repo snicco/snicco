@@ -8,7 +8,5 @@ use Snicco\Component\EventDispatcher\Event;
 
 abstract class AbstractLogin implements Event
 {
-
     abstract public function message();
-
 }

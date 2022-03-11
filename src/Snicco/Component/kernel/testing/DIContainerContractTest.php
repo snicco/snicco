@@ -16,10 +16,9 @@ use stdClass;
  */
 trait DIContainerContractTest
 {
-
     private DIContainer $container;
 
-    abstract function createContainer(): DIContainer;
+    abstract public function createContainer(): DIContainer;
 
     /**
      * @test
@@ -133,7 +132,6 @@ trait DIContainerContractTest
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
-            //
         }
 
         try {
@@ -142,7 +140,6 @@ trait DIContainerContractTest
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
-            //
         }
 
         $baz = $container[Baz::class];
@@ -154,7 +151,6 @@ trait DIContainerContractTest
             });
             PHPUnit::fail('No exception thrown');
         } catch (FrozenService $e) {
-            //
         }
     }
 
@@ -168,7 +164,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->shared(Foo::class, fn() => new Foo());
+        $container->shared(Foo::class, fn () => new Foo());
     }
 
     /**
@@ -181,7 +177,7 @@ trait DIContainerContractTest
 
         $this->expectException(ContainerIsLocked::class);
 
-        $container->factory(Foo::class, fn() => new Foo());
+        $container->factory(Foo::class, fn () => new Foo());
     }
 
     /**
@@ -352,6 +348,7 @@ trait DIContainerContractTest
     {
         $bar = new Bar();
         $bar->value = 'callable_bar';
+
         return $bar;
     }
 
@@ -359,9 +356,9 @@ trait DIContainerContractTest
     {
         $foo = new Foo();
         $foo->value = 'callable_foo';
+
         return $foo;
     }
-
 }
 
 class Foo
@@ -376,5 +373,4 @@ class Bar
 
 class Baz
 {
-
 }

@@ -8,9 +8,11 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerationContext;
 
+/**
+ * @internal
+ */
 final class UrlGenerationContextTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -21,14 +23,14 @@ final class UrlGenerationContextTest extends TestCase
         $this->assertSame('foobar.com', $context->host());
         $this->assertSame(80, $context->httpPort());
         $this->assertSame(443, $context->httpsPort());
-        $this->assertSame(true, $context->httpsByDefault());
+        $this->assertTrue($context->httpsByDefault());
 
         $context = new UrlGenerationContext('foobar.com', 4000, 8080, false);
 
         $this->assertSame('foobar.com', $context->host());
         $this->assertSame(8080, $context->httpPort());
         $this->assertSame(4000, $context->httpsPort());
-        $this->assertSame(false, $context->httpsByDefault());
+        $this->assertFalse($context->httpsByDefault());
     }
 
     /**
@@ -52,6 +54,4 @@ final class UrlGenerationContextTest extends TestCase
 
         new UrlGenerationContext('https://foo.com');
     }
-
-
 }

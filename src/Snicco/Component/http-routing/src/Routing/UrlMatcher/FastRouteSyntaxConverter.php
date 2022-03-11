@@ -26,7 +26,6 @@ use function strlen;
  */
 final class FastRouteSyntaxConverter
 {
-
     public function convert(Route $route): string
     {
         $route_url = $route->getPattern();
@@ -37,11 +36,7 @@ final class FastRouteSyntaxConverter
             $match_only_trailing = true;
         }
 
-        $url = $this->convertOptionalSegments(
-            $route_url,
-            $route->getOptionalSegmentNames(),
-            $match_only_trailing
-        );
+        $url = $this->convertOptionalSegments($route_url, $route->getOptionalSegmentNames(), $match_only_trailing);
 
         foreach ($route->getRequirements() as $param_name => $pattern) {
             $url = $this->addCustomRegexToSegments($param_name, $pattern, $url);
@@ -55,7 +50,8 @@ final class FastRouteSyntaxConverter
     }
 
     /**
-     * This method makes sure that /foo/{bar?}/{baz?} becomes /foo[/{bar}[/{baz}]]
+     * This method makes sure that /foo/{bar?}/{baz?} becomes
+     * /foo[/{bar}[/{baz}]].
      *
      * @param string[] $optional_segment_names
      */
@@ -64,7 +60,7 @@ final class FastRouteSyntaxConverter
         array $optional_segment_names,
         bool $match_only_trailing
     ): string {
-        if (!count($optional_segment_names)) {
+        if (! count($optional_segment_names)) {
             return $url_pattern;
         }
 
@@ -83,7 +79,7 @@ final class FastRouteSyntaxConverter
     {
         preg_match('/(\[(.*?)])/', $url_pattern, $matches);
 
-        if (!isset($matches[0])) {
+        if (! isset($matches[0])) {
             // @codeCoverageIgnoreStart
             return $url_pattern;
             // @codeCoverageIgnoreEnd
@@ -101,20 +97,21 @@ final class FastRouteSyntaxConverter
     {
         $regex = $this->replaceEscapedForwardSlashes($pattern);
 
-        $pattern = sprintf("/(%s(?=\\}))/", preg_quote($param_name, '/'));
+        $pattern = sprintf('/(%s(?=\\}))/', preg_quote($param_name, '/'));
 
         $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
-            if (!isset($match[0])) {
+            if (! isset($match[0])) {
                 // @codeCoverageIgnoreStart
                 return $regex;
                 // @codeCoverageIgnoreEnd
             }
+
             return $match[0] . ':' . $regex;
         }, $url, 1);
 
-        if (null == $url) {
+        if (null === $url) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_replace_callback returned an error for url [$url].");
+            throw new RuntimeException("preg_replace_callback returned an error for url [{$url}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -135,7 +132,7 @@ final class FastRouteSyntaxConverter
         $url = rtrim($url, ']');
         $l2 = strlen($url);
         $url .= '[/]' . str_repeat(']', $l1 - $l2);
+
         return $url;
     }
-
 }

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Extends: post-layout
- */
+// Extends: post-layout
 
 echo 'Special Layout: ' . $__content;

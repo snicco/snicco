@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting;
 
 use InvalidArgumentException;
@@ -85,7 +84,6 @@ use function sprintf;
 
 final class HttpRoutingBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/http-routing-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -102,7 +100,7 @@ final class HttpRoutingBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        if (!class_exists(BetterWPHooksBundle::class) || !$kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
+        if (! class_exists(BetterWPHooksBundle::class) || ! $kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
             throw new RuntimeException('The http-routing-bundle needs the sniccowp-better-wp-hooks-bundle to run.');
         }
 
@@ -128,7 +126,8 @@ final class HttpRoutingBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $dispatcher = $kernel->container()->make(EventDispatcher::class);
+        $dispatcher = $kernel->container()
+            ->make(EventDispatcher::class);
         $dispatcher->listen(TerminatedResponse::class, ResponsePostProcessor::class);
     }
 
@@ -139,19 +138,20 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRouter(Kernel $kernel): void
     {
-        $kernel->container()->shared(Router::class, function () use ($kernel) {
-            $container = $kernel->container();
-            $config = $kernel->config();
-            $env = $kernel->env();
+        $kernel->container()
+            ->shared(Router::class, function () use ($kernel) {
+                $container = $kernel->container();
+                $config = $kernel->config();
+                $env = $kernel->env();
 
-            $context = new UrlGenerationContext(
-                $config->getString(RoutingOption::key(RoutingOption::HOST)),
-                $config->getInteger(RoutingOption::key(RoutingOption::HTTPS_PORT)),
-                $config->getInteger(RoutingOption::key(RoutingOption::HTTP_PORT)),
-                $config->getBoolean(RoutingOption::key(RoutingOption::USE_HTTPS))
-            );
+                $context = new UrlGenerationContext(
+                    $config->getString(RoutingOption::key(RoutingOption::HOST)),
+                    $config->getInteger(RoutingOption::key(RoutingOption::HTTPS_PORT)),
+                    $config->getInteger(RoutingOption::key(RoutingOption::HTTP_PORT)),
+                    $config->getBoolean(RoutingOption::key(RoutingOption::USE_HTTPS))
+                );
 
-            $loader = $container[RouteLoader::class] ?? new PHPFileRouteLoader(
+                $loader = $container[RouteLoader::class] ?? new PHPFileRouteLoader(
                     $config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)),
                     $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)),
                     $container[RouteLoadingOptions::class] ?? new DefaultRouteLoadingOptions(
@@ -159,36 +159,27 @@ final class HttpRoutingBundle implements Bundle
                     ),
                 );
 
-            $cache = ($env->isStaging() || $env->isProduction())
-                ? new FileRouteCache(
-                    $kernel->directories()->cacheDir() . '/prod.routes-generated.php'
-                )
+                $cache = ($env->isStaging() || $env->isProduction())
+                ? new FileRouteCache($kernel->directories()->cacheDir() . '/prod.routes-generated.php')
                 : new NullCache();
 
-            $admin_area = new WPAdminArea(
-                $config->getString(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX)),
-                $config->getString(RoutingOption::key(RoutingOption::WP_LOGIN_PATH))
-            );
+                $admin_area = new WPAdminArea(
+                    $config->getString(RoutingOption::key(RoutingOption::WP_ADMIN_PREFIX)),
+                    $config->getString(RoutingOption::key(RoutingOption::WP_LOGIN_PATH))
+                );
 
-            return new Router(
-                $context,
-                $loader,
-                $cache,
-                $admin_area,
-                null,
-                null,
-            );
-        });
+                return new Router($context, $loader, $cache, $admin_area, null, null,);
+            });
     }
 
     private function bindUrlGenerator(DIContainer $container): void
     {
-        $container->shared(UrlGenerator::class, fn() => $container->make(Router::class)->urlGenerator());
+        $container->shared(UrlGenerator::class, fn () => $container->make(Router::class)->urlGenerator());
     }
 
     private function bindUrlMatcher(DIContainer $container): void
     {
-        $container->shared(UrlMatcher::class, fn() => $container->make(Router::class)->urlMatcher());
+        $container->shared(UrlMatcher::class, fn () => $container->make(Router::class)->urlMatcher());
     }
 
     private function bindAdminMenu(DIContainer $container): void
@@ -209,36 +200,31 @@ final class HttpRoutingBundle implements Bundle
             $information_provider = $this->informationProvider($kernel);
 
             $displayer_filter = $container[DisplayerFilter::class] ?? new Delegating(
-                    new ContentType(),
-                    new Verbosity($kernel->env()->isDebug()),
-                    new CanDisplay(),
-                );
+                new ContentType(),
+                new Verbosity($kernel->env()->isDebug()),
+                new CanDisplay(),
+            );
 
             $log_context = array_map(
                 function ($class) {
                     /** @var class-string<RequestLogContext> $class */
-                    return new $class;
+                    return new $class();
                 },
-                $kernel->config()->getListOfStrings(
-                    HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT)
-                )
+                $kernel->config()
+                    ->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::REQUEST_LOG_CONTEXT))
             );
 
             /** @var array<class-string<Throwable>,string> $log_levels */
-            $log_levels = $kernel->config()->getArray(
-                HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS)
-            );
+            $log_levels = $kernel->config()
+                ->getArray(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS));
 
-            $logger = new RequestAwareLogger(
-                $error_logger,
-                $log_levels,
-                ...$log_context
-            );
+            $logger = new RequestAwareLogger($error_logger, $log_levels, ...$log_context);
 
             $displayers = array_map(function ($class) use ($container) {
                 /** @var class-string<ExceptionDisplayer> $class */
-                return $container[$class] ?? new $class;
-            }, $kernel->config()->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)));
+                return $container[$class] ?? new $class();
+            }, $kernel->config()
+                ->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)));
 
             return new ProductionErrorHandler(
                 $container->make(ResponseFactoryInterface::class),
@@ -253,19 +239,14 @@ final class HttpRoutingBundle implements Bundle
     private function bindMiddlewarePipeline(DIContainer $container): void
     {
         $container->factory(MiddlewarePipeline::class, function () use ($container) {
-            return new MiddlewarePipeline(
-                $container,
-                new LazyHttpErrorHandler($container)
-            );
+            return new MiddlewarePipeline($container, new LazyHttpErrorHandler($container));
         });
     }
 
     private function bindRoutingMiddleware(DIContainer $container): void
     {
         $container->shared(RoutingMiddleware::class, function () use ($container) {
-            return new RoutingMiddleware(
-                $container->make(UrlMatcher::class)
-            );
+            return new RoutingMiddleware($container->make(UrlMatcher::class));
         });
     }
 
@@ -276,11 +257,7 @@ final class HttpRoutingBundle implements Bundle
                 ? $this->getCachedMiddlewareResolver($kernel)
                 : $this->getMiddlewareResolver($kernel);
 
-            return new RouteRunner(
-                $container->make(MiddlewarePipeline::class),
-                $middleware_resolver,
-                $container
-            );
+            return new RouteRunner($container->make(MiddlewarePipeline::class), $middleware_resolver, $container);
         });
     }
 
@@ -288,13 +265,11 @@ final class HttpRoutingBundle implements Bundle
     {
         $container->shared(ResponseFactory::class, function () use ($container) {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
-            return new ResponseFactory(
-                $discovery->createResponseFactory(),
-                $discovery->createStreamFactory(),
-            );
+
+            return new ResponseFactory($discovery->createResponseFactory(), $discovery->createStreamFactory(),);
         });
-        $container->shared(ResponseFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
-        $container->shared(StreamFactoryInterface::class, fn() => $container->make(ResponseFactory::class));
+        $container->shared(ResponseFactoryInterface::class, fn () => $container->make(ResponseFactory::class));
+        $container->shared(StreamFactoryInterface::class, fn () => $container->make(ResponseFactory::class));
     }
 
     private function bindPsr17Discovery(DIContainer $container): void
@@ -308,6 +283,7 @@ final class HttpRoutingBundle implements Bundle
     {
         $container->shared(ServerRequestCreator::class, function () use ($container): ServerRequestCreator {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
+
             return new ServerRequestCreator(
                 $discovery->createServerRequestFactory(),
                 $discovery->createUriFactory(),
@@ -334,35 +310,40 @@ final class HttpRoutingBundle implements Bundle
 
     private function getCachedMiddlewareResolver(Kernel $kernel): MiddlewareResolver
     {
-        $cache_file = $kernel->directories()->cacheDir() . '/prod.middleware-map-generated.php';
+        $cache_file = $kernel->directories()
+            ->cacheDir() . '/prod.middleware-map-generated.php';
 
         return MiddlewareCache::get($cache_file, function () use ($kernel) {
             $resolver = $this->getMiddlewareResolver($kernel);
-            $routes = $kernel->container()->make(Routes::class);
+            $routes = $kernel->container()
+                ->make(Routes::class);
+
             return $resolver->createMiddlewareCache($routes, $kernel->container());
         });
     }
 
     private function bindRoutes(DIContainer $container): void
     {
-        $container->shared(Routes::class, fn() => $container->make(Router::class)->routes());
+        $container->shared(Routes::class, fn () => $container->make(Router::class)->routes());
     }
 
     private function bindLogger(Kernel $kernel): void
     {
         if ($kernel->env()->isTesting()) {
-            $kernel->container()->shared(TestLogger::class, fn() => new TestLogger());
-            $kernel->container()->shared(
-                LoggerInterface::class,
-                fn() => $kernel->container()->make(TestLogger::class)
-            );
+            $kernel->container()
+                ->shared(TestLogger::class, fn () => new TestLogger());
+            $kernel->container()
+                ->shared(LoggerInterface::class, fn () => $kernel->container()->make(TestLogger::class));
+
             return;
         }
 
-        if (!$kernel->container()->has(LoggerInterface::class)) {
-            $kernel->container()->shared(LoggerInterface::class, fn() => new StdErrLogger(
-                $kernel->config()->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
-            ));
+        if (! $kernel->container()->has(LoggerInterface::class)) {
+            $kernel->container()
+                ->shared(LoggerInterface::class, fn () => new StdErrLogger(
+                    $kernel->config()
+                        ->getString(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_PREFIX))
+                ));
         }
     }
 
@@ -380,7 +361,7 @@ final class HttpRoutingBundle implements Bundle
         $identifier = new SplHashIdentifier();
         $transformers = array_map(function ($class) {
             /** @var class-string<ExceptionTransformer> $class */
-            return new $class;
+            return new $class();
         }, $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)));
 
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
@@ -394,9 +375,7 @@ final class HttpRoutingBundle implements Bundle
         $config->set('routing', $merged);
 
         if (empty($config->getString('routing.' . RoutingOption::HOST))) {
-            throw new InvalidArgumentException(
-                'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
-            );
+            throw new InvalidArgumentException('routing.' . RoutingOption::HOST . ' must be a non-empty-string.');
         }
 
         // quick type checks.
@@ -417,7 +396,7 @@ final class HttpRoutingBundle implements Bundle
         }
 
         foreach ($config->getListOfStrings(RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)) as $dir) {
-            if (!is_readable($dir)) {
+            if (! is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         RoutingOption::key(RoutingOption::ROUTE_DIRECTORIES)
@@ -442,7 +421,7 @@ final class HttpRoutingBundle implements Bundle
         }
 
         foreach ($api_dirs as $dir) {
-            if (!is_readable($dir)) {
+            if (! is_readable($dir)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES)
@@ -459,25 +438,23 @@ final class HttpRoutingBundle implements Bundle
     private function configureMiddleware(WritableConfig $config, Kernel $kernel): void
     {
         $defaults = require dirname(__DIR__) . '/config/middleware.php';
-        $config->set(
-            'middleware',
-            array_replace($defaults, $config->getArray('middleware', []))
-        );
+        $config->set('middleware', array_replace($defaults, $config->getArray('middleware', [])));
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::GROUPS)) as $key => $middleware) {
-            if (!is_string($key)) {
+            if (! is_string($key)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::GROUPS
-                    ) . " has to an associative array of string => array pairs.\nGot key [$key]."
+                    ) . " has to an associative array of string => array pairs.\nGot key [{$key}]."
                 );
             }
-            if (!is_array($middleware)) {
+            if (! is_array($middleware)) {
                 $type = gettype($middleware);
+
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::GROUPS
-                    ) . " has to an associative array of string => array pairs.\nGot [$type] for key [$key]."
+                    ) . " has to an associative array of string => array pairs.\nGot [{$type}] for key [{$key}]."
                 );
             }
 
@@ -485,61 +462,53 @@ final class HttpRoutingBundle implements Bundle
              * @psalm-suppress MixedAssignment
              */
             foreach ($middleware as $index => $m) {
-                if (!is_string($m)) {
+                if (! is_string($m)) {
                     $type = gettype($m);
+
                     throw new InvalidArgumentException(
-                        "Middleware group [$key] has to contain only strings.\nGot [$type] at index [$index]."
+                        "Middleware group [{$key}] has to contain only strings.\nGot [{$type}] at index [{$index}]."
                     );
                 }
             }
         }
 
         foreach ($config->getArray(MiddlewareOption::key(MiddlewareOption::ALIASES)) as $alias => $class) {
-            if (!is_string($alias)) {
+            if (! is_string($alias)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::ALIASES
                     ) . ' has to be an array of string => middleware-class pairs.'
                 );
             }
-            if (!is_string($class)
-                || !class_exists($class)
-                || !in_array(
-                    MiddlewareInterface::class,
-                    (array)class_implements($class)
-                )) {
+            if (! is_string($class)
+                || ! class_exists($class)
+                || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
-                    "Middleware alias [$alias] has to resolve to a middleware class."
+                    "Middleware alias [{$alias}] has to resolve to a middleware class."
                 );
             }
         }
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::PRIORITY_LIST)) as $class) {
             if (
-                !class_exists($class)
-                || !in_array(
-                    MiddlewareInterface::class,
-                    (array)class_implements($class)
-                )) {
+                ! class_exists($class)
+                || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::PRIORITY_LIST
-                    ) . " has to be a list of middleware class-strings.\nGot [$class]."
+                    ) . " has to be a list of middleware class-strings.\nGot [{$class}]."
                 );
             }
         }
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE)) as $class) {
             if (
-                !class_exists($class)
-                || !in_array(
-                    MiddlewareInterface::class,
-                    (array)class_implements($class)
-                )) {
+                ! class_exists($class)
+                || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::KERNEL_MIDDLEWARE
-                    ) . " has to be a list of middleware class-strings.\nGot [$class]."
+                    ) . " has to be a list of middleware class-strings.\nGot [{$class}]."
                 );
             }
         }
@@ -548,15 +517,15 @@ final class HttpRoutingBundle implements Bundle
             RoutingConfigurator::FRONTEND_MIDDLEWARE,
             RoutingConfigurator::ADMIN_MIDDLEWARE,
             RoutingConfigurator::API_MIDDLEWARE,
-            RoutingConfigurator::GLOBAL_MIDDLEWARE
+            RoutingConfigurator::GLOBAL_MIDDLEWARE,
         ];
 
         foreach ($config->getListOfStrings(MiddlewareOption::key(MiddlewareOption::ALWAYS_RUN)) as $group_name) {
-            if (!in_array($group_name, $valid, true)) {
+            if (! in_array($group_name, $valid, true)) {
                 throw new InvalidArgumentException(
                     MiddlewareOption::key(
                         MiddlewareOption::ALWAYS_RUN
-                    ) . " can only contain [frontend,api,admin,global].\nGot [$group_name]."
+                    ) . " can only contain [frontend,api,admin,global].\nGot [{$group_name}]."
                 );
             }
         }
@@ -574,39 +543,29 @@ final class HttpRoutingBundle implements Bundle
         );
 
         foreach (
-            $config->getListOfStrings(
-                HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)
-            ) as $class
+            $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)) as $class
         ) {
             if (
-                !class_exists($class)
-                || !in_array(
-                    ExceptionDisplayer::class,
-                    (array)class_implements($class)
-                )) {
+                ! class_exists($class)
+                || ! in_array(ExceptionDisplayer::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::DISPLAYERS
-                    ) . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [$class]."
+                    ) . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [{$class}]."
                 );
             }
         }
 
         foreach (
-            $config->getListOfStrings(
-                HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)
-            ) as $class
+            $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::TRANSFORMERS)) as $class
         ) {
             if (
-                !class_exists($class)
-                || !in_array(
-                    ExceptionTransformer::class,
-                    (array)class_implements($class)
-                )) {
+                ! class_exists($class)
+                || ! in_array(ExceptionTransformer::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::TRANSFORMERS
-                    ) . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [$class]."
+                    ) . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [{$class}]."
                 );
             }
         }
@@ -617,15 +576,12 @@ final class HttpRoutingBundle implements Bundle
             ) as $class
         ) {
             if (
-                !class_exists($class)
-                || !in_array(
-                    RequestLogContext::class,
-                    (array)class_implements($class)
-                )) {
+                ! class_exists($class)
+                || ! in_array(RequestLogContext::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
                     HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
-                    ) . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [$class]."
+                    ) . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [{$class}]."
                 );
             }
         }
@@ -638,34 +594,30 @@ final class HttpRoutingBundle implements Bundle
             LogLevel::ALERT,
             LogLevel::NOTICE,
             LogLevel::EMERGENCY,
-            LogLevel::DEBUG
+            LogLevel::DEBUG,
         ];
 
         foreach (
-            $config->getArray(
-                HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS)
-            ) as $class => $level
+            $config->getArray(HttpErrorHandlingOption::key(HttpErrorHandlingOption::LOG_LEVELS)) as $class => $level
         ) {
-            if (!is_string($class)
-                || !class_exists($class)
-                || !in_array(
-                    Throwable::class,
-                    (array)class_implements($class)
-                )) {
-                $class = (string)$class;
+            if (! is_string($class)
+                || ! class_exists($class)
+                || ! in_array(Throwable::class, (array) class_implements($class), true)) {
+                $class = (string) $class;
+
                 throw new InvalidArgumentException(
-                    "[$class] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
+                    "[{$class}] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::LOG_LEVELS
                     )
                 );
             }
 
-            if (!is_string($level) || !in_array($level, $valid_levels, true)) {
-                $level = (string)$level;
+            if (! is_string($level) || ! in_array($level, $valid_levels, true)) {
+                $level = (string) $level;
 
                 throw new InvalidArgumentException(
                     sprintf(
-                        "[$level] is not a valid PSR-3 log-level for exception class " . $class . "\nValid levels: [%s]",
+                        "[{$level}] is not a valid PSR-3 log-level for exception class " . $class . "\nValid levels: [%s]",
                         implode(',', $valid_levels)
                     )
                 );
@@ -678,48 +630,50 @@ final class HttpRoutingBundle implements Bundle
     private function bindHttpRunner(Kernel $kernel): void
     {
         // The HttpKernel needs to be resolvable on it's on so that we can use it in functional tests.
-        $kernel->container()->shared(HttpKernel::class, function () use ($kernel) {
-            /** @var class-string<MiddlewareInterface>[] $kernel_middleware */
-            $kernel_middleware = $kernel->config()->getListOfStrings(
-                MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE)
-            );
+        $kernel->container()
+            ->shared(HttpKernel::class, function () use ($kernel) {
+                /** @var class-string<MiddlewareInterface>[] $kernel_middleware */
+                $kernel_middleware = $kernel->config()
+                    ->getListOfStrings(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE));
 
-            $container = $kernel->container();
+                $container = $kernel->container();
 
-            return new HttpKernel(
-                $container->make(MiddlewarePipeline::class),
-                new ResponsePreparation($container->make(StreamFactoryInterface::class)),
-                $container->make(EventDispatcherInterface::class),
-                $kernel_middleware
-            );
-        });
+                return new HttpKernel(
+                    $container->make(MiddlewarePipeline::class),
+                    new ResponsePreparation($container->make(StreamFactoryInterface::class)),
+                    $container->make(EventDispatcherInterface::class),
+                    $kernel_middleware
+                );
+            });
 
-        $kernel->container()->shared(HttpKernelRunner::class, function () use ($kernel) {
-            $container = $kernel->container();
+        $kernel->container()
+            ->shared(HttpKernelRunner::class, function () use ($kernel) {
+                $container = $kernel->container();
 
-            $dispatcher = $container->make(EventDispatcher::class);
+                $dispatcher = $container->make(EventDispatcher::class);
 
-            $emitter = $this->getResponseEmitter($kernel, $dispatcher);
+                $emitter = $this->getResponseEmitter($kernel, $dispatcher);
 
+                $api_prefix = $kernel->config()
+                    ->getString(RoutingOption::key(RoutingOption::API_PREFIX));
 
-            $api_prefix = $kernel->config()->getString(RoutingOption::key(RoutingOption::API_PREFIX));
-
-            return new HttpKernelRunner(
-                $container->make(HttpKernel::class),
-                $container->make(ServerRequestCreator::class),
-                $dispatcher,
-                $emitter,
-                $container->make(StreamFactoryInterface::class),
-                '' === $api_prefix ? null : $api_prefix
-            );
-        });
+                return new HttpKernelRunner(
+                    $container->make(HttpKernel::class),
+                    $container->make(ServerRequestCreator::class),
+                    $dispatcher,
+                    $emitter,
+                    $container->make(StreamFactoryInterface::class),
+                    '' === $api_prefix ? null : $api_prefix
+                );
+            });
     }
 
     private function bindResponsePostProcessor(Kernel $kernel): void
     {
-        $kernel->container()->shared(ResponsePostProcessor::class, function () use ($kernel) {
-            return new ResponsePostProcessor($kernel->env());
-        });
+        $kernel->container()
+            ->shared(ResponsePostProcessor::class, function () use ($kernel) {
+                return new ResponsePostProcessor($kernel->env());
+            });
     }
 
     private function getResponseEmitter(Kernel $kernel, EventDispatcher $dispatcher): ResponseEmitter
@@ -734,34 +688,29 @@ final class HttpRoutingBundle implements Bundle
     private function bindErrorHandlingMiddleware(DIContainer $container): void
     {
         $container->shared(ErrorsToExceptions::class, function () use ($container) {
-            return new ErrorsToExceptions(
-                $container->make(LoggerInterface::class)
-            );
+            return new ErrorsToExceptions($container->make(LoggerInterface::class));
         });
     }
 
     private function copyConfig(Kernel $kernel, string $namespace): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
 
-        $destination = $kernel->directories()->configDir() . '/' . $namespace . '.php';
+        $destination = $kernel->directories()
+            ->configDir() . '/' . $namespace . '.php';
 
         if (is_file($destination)) {
             return;
         }
 
-        $copied = copy(
-            dirname(__DIR__) . "/config/$namespace.php",
-            $destination
-        );
+        $copied = copy(dirname(__DIR__) . "/config/{$namespace}.php", $destination);
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy default routing.php config to path $destination");
+            throw new RuntimeException("Could not copy default routing.php config to path {$destination}");
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

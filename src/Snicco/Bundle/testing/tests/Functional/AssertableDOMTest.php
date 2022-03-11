@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\Functional;
 
 use PHPUnit\Framework\AssertionFailedError;
@@ -10,12 +9,15 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Testing\Functional\AssertableDOM;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * @internal
+ */
 final class AssertableDOMTest extends TestCase
 {
     /**
      * @test
      */
-    public function test_assertSelectorExists(): void
+    public function test_assert_selector_exists(): void
     {
         $dom = new AssertableDOM(new Crawler('<html><body><h1>'));
         $dom->assertSelectorExists('body > h1');
@@ -29,57 +31,65 @@ final class AssertableDOMTest extends TestCase
     /**
      * @test
      */
-    public function test_assertSelectorNotExists(): void
+    public function test_assert_selector_not_exists(): void
     {
-        $this->getDOM(new Crawler('<html><head><title>Foo'))->assertSelectorNotExists('body > h1');
+        $this->getDOM(new Crawler('<html><head><title>Foo'))
+            ->assertSelectorNotExists('body > h1');
         $this->expectException(AssertionFailedError::class);
         $this->expectExceptionMessage('does not match selector "body > h1".');
-        $this->getDOM(new Crawler('<html><body><h1>'))->assertSelectorNotExists('body > h1');
+        $this->getDOM(new Crawler('<html><body><h1>'))
+            ->assertSelectorNotExists('body > h1');
     }
 
     /**
      * @test
      */
-    public function test_assertSelectorTextNotContains(): void
+    public function test_assert_selector_text_not_contains(): void
     {
-        $this->getDOM(new Crawler('<html><body><h1>Foo'))->assertSelectorTextNotContains('body > h1', 'Bar');
+        $this->getDOM(new Crawler('<html><body><h1>Foo'))
+            ->assertSelectorTextNotContains('body > h1', 'Bar');
         $this->expectException(AssertionFailedError::class);
         $this->expectExceptionMessage(
             'matches selector "body > h1" and the text "Foo" of the node matching selector "body > h1" does not contain "Foo".'
         );
-        $this->getDOM(new Crawler('<html><body><h1>Foo'))->assertSelectorTextNotContains('body > h1', 'Foo');
+        $this->getDOM(new Crawler('<html><body><h1>Foo'))
+            ->assertSelectorTextNotContains('body > h1', 'Foo');
     }
 
     /**
      * @test
      */
-    public function test_assertPageTitleSame(): void
+    public function test_assert_page_title_same(): void
     {
-        $this->getDOM(new Crawler('<html><head><title>Foo'))->assertPageTitleSame('Foo');
+        $this->getDOM(new Crawler('<html><head><title>Foo'))
+            ->assertPageTitleSame('Foo');
         $this->expectException(AssertionFailedError::class);
         $this->expectExceptionMessage(
             'matches selector "title" and has a node matching selector "title" with content "Bar".'
         );
-        $this->getDOM(new Crawler('<html><head><title>Foo'))->assertPageTitleSame('Bar');
+        $this->getDOM(new Crawler('<html><head><title>Foo'))
+            ->assertPageTitleSame('Bar');
     }
 
     /**
      * @test
      */
-    public function test_assertPageTitleContains(): void
+    public function test_assert_page_title_contains(): void
     {
-        $this->getDOM(new Crawler('<html><head><title>Foobar'))->assertPageTitleContains('Foo');
+        $this->getDOM(new Crawler('<html><head><title>Foobar'))
+            ->assertPageTitleContains('Foo');
         $this->expectException(AssertionFailedError::class);
         $this->expectExceptionMessage(
             'matches selector "title" and the text "Foo" of the node matching selector "title" contains "Bar".'
         );
-        $this->getDOM(new Crawler('<html><head><title>Foo'))->assertPageTitleContains('Bar');
+        $this->getDOM(new Crawler('<html><head><title>Foo'))
+            ->assertPageTitleContains('Bar');
     }
 
     /**
      * @test
      */
-    public function test_assertInputValueSame(): void
+    public function test_assert_input_value_same(): void
     {
         $this->getDOM(
             new Crawler('<html><body><form><input type="text" name="username" value="Fabien">')
@@ -88,13 +98,14 @@ final class AssertableDOMTest extends TestCase
         $this->expectExceptionMessage(
             'matches selector "input[name="password"]" and has a node matching selector "input[name="password"]" with attribute "value" of value "pa$$".'
         );
-        $this->getDOM(new Crawler('<html><head><title>Foo'))->assertInputValueSame('password', 'pa$$');
+        $this->getDOM(new Crawler('<html><head><title>Foo'))
+            ->assertInputValueSame('password', 'pa$$');
     }
 
     /**
      * @test
      */
-    public function test_assertInputValueNotSame(): void
+    public function test_assert_input_value_not_same(): void
     {
         $this->getDOM(
             new Crawler('<html><body><input type="text" name="username" value="Helene">')
@@ -111,7 +122,7 @@ final class AssertableDOMTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCheckboxChecked(): void
+    public function test_assert_checkbox_checked(): void
     {
         $this->getDOM(
             new Crawler('<html><body><form><input type="checkbox" name="rememberMe" checked>')
@@ -128,7 +139,7 @@ final class AssertableDOMTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCheckboxNotChecked(): void
+    public function test_assert_checkbox_not_checked(): void
     {
         $this->getDOM(
             new Crawler('<html><body><form><input type="checkbox" name="rememberMe">')
@@ -145,7 +156,7 @@ final class AssertableDOMTest extends TestCase
     /**
      * @test
      */
-    public function test_assertFormValue(): void
+    public function test_assert_form_value(): void
     {
         $this->getDOM(
             new Crawler(
@@ -166,7 +177,7 @@ final class AssertableDOMTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNoFormValue(): void
+    public function test_assert_no_form_value(): void
     {
         $this->getDOM(
             new Crawler('<html><body><form id="form"><input type="checkbox" name="rememberMe">', 'http://localhost')
@@ -185,5 +196,4 @@ final class AssertableDOMTest extends TestCase
     {
         return new AssertableDOM($crawler);
     }
-
 }

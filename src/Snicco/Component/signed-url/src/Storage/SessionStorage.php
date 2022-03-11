@@ -11,12 +11,10 @@ use Snicco\Component\SignedUrl\SignedUrl;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
 
-use function intval;
 use function is_array;
 
 final class SessionStorage implements SignedUrlStorage
 {
-
     private const namespace = '_signed_urls';
 
     /**
@@ -28,7 +26,6 @@ final class SessionStorage implements SignedUrlStorage
 
     /**
      * @param array|ArrayAccess $storage
-     * @param Clock|null $clock
      *
      * @codeCoverageIgnore
      */
@@ -39,12 +36,10 @@ final class SessionStorage implements SignedUrlStorage
         } elseif (is_array($storage)) {
             // @codeCoverageIgnoreStart Has a weird bug with phpunit. These branches are definitely covered
             $this->storage = &$storage;
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
         } else {
             // @codeCoverageIgnoreStart
-            throw new InvalidArgumentException(
-                '$storage must be an array or instance of ArrayAccess'
-            );
+            throw new InvalidArgumentException('$storage must be an array or instance of ArrayAccess');
             // @codeCoverageIgnoreEnd
         }
         $this->clock = $clock ?? SystemClock::fromUTC();
@@ -100,11 +95,11 @@ final class SessionStorage implements SignedUrlStorage
     {
         $stored = $this->getStored();
 
-        if (!isset($stored[$identifier])) {
+        if (! isset($stored[$identifier])) {
             return 0;
         }
 
-        return intval($stored[$identifier]['left_usages'] ?? 0);
+        return $stored[$identifier]['left_usages'] ?? 0;
     }
 
     /**
@@ -116,5 +111,4 @@ final class SessionStorage implements SignedUrlStorage
     {
         return $this->storage[self::namespace] ?? [];
     }
-
 }

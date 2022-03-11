@@ -22,13 +22,16 @@ use function json_encode;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
-class ResponseFactoryTest extends TestCase
+/**
+ * @internal
+ */
+final class ResponseFactoryTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreateUrlGenerator;
 
     private ResponseFactory $factory;
+
     private string $app_domain;
 
     protected function setUp(): void
@@ -38,7 +41,10 @@ class ResponseFactoryTest extends TestCase
         $this->factory = $this->createResponseFactory();
     }
 
-    public function test_make(): void
+    /**
+     * @test
+     */
+    public function make(): void
     {
         $response = $this->factory->createResponse(204, 'Hello');
 
@@ -48,14 +54,21 @@ class ResponseFactoryTest extends TestCase
         $this->assertSame('Hello', $response->getReasonPhrase());
     }
 
-    public function test_json(): void
+    /**
+     * @test
+     */
+    public function json(): void
     {
-        $response = $this->factory->json(['foo' => 'bar'], 401);
+        $response = $this->factory->json([
+            'foo' => 'bar',
+        ], 401);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode(['foo' => 'bar']), (string)$response->getBody());
+        $this->assertSame(json_encode([
+            'foo' => 'bar',
+        ]), (string) $response->getBody());
     }
 
     /**
@@ -79,7 +92,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_response(): void
+    public function test_to_response_for_response(): void
     {
         $response = $this->factory->createResponse();
         $result = $this->factory->toResponse($response);
@@ -89,9 +102,10 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_psr7_response(): void
+    public function test_to_response_for_psr7_response(): void
     {
-        $response = $this->psrResponseFactory()->createResponse();
+        $response = $this->psrResponseFactory()
+            ->createResponse();
         $result = $this->factory->toResponse($response);
         $this->assertNotSame($result, $response);
         $this->assertInstanceOf(Response::class, $result);
@@ -100,34 +114,37 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_toResponse_for_string(): void
+    public function test_to_response_for_string(): void
     {
         $response = $this->factory->toResponse('foo');
         $this->assertInstanceOf(Response::class, $response);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**
      * @test
      */
-    public function test_toResponse_for_array(): void
+    public function test_to_response_for_array(): void
     {
-        $input = ['foo' => 'bar', 'bar' => 'baz'];
+        $input = [
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ];
 
         $response = $this->factory->toResponse($input);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
 
-        $this->assertSame(json_encode($input), (string)$response->getBody());
+        $this->assertSame(json_encode($input), (string) $response->getBody());
     }
 
     /**
      * @test
      */
-    public function test_toResponse_for_stdclass(): void
+    public function test_to_response_for_stdclass(): void
     {
         $input = new stdClass();
         $input->foo = 'bar';
@@ -135,35 +152,35 @@ class ResponseFactoryTest extends TestCase
         $response = $this->factory->toResponse($input);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode(['foo' => 'bar']), $response->getBody()->__toString());
+        $this->assertSame(json_encode([
+            'foo' => 'bar',
+        ]), $response->getBody()->__toString());
     }
 
     /**
      * @test
      */
-    public function test_toResponse_for_responseable(): void
+    public function test_to_response_for_responseable(): void
     {
-        $class = new class implements Responsable {
-
+        $class = new class() implements Responsable {
             public function toResponsable()
             {
                 return 'foo';
             }
-
         };
 
         $response = $this->factory->toResponse($class);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**
      * @test
      * @psalm-suppress InvalidScalarArgument
      */
-    public function toResponse_throws_an_exception_if_no_response_can_be_created(): void
+    public function to_response_throws_an_exception_if_no_response_can_be_created(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->factory->toResponse(1);
@@ -172,7 +189,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_noContent(): void
+    public function test_no_content(): void
     {
         $response = $this->factory->noContent();
 
@@ -223,7 +240,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_createStreamFromFile(): void
+    public function test_create_stream_from_file(): void
     {
         $stream = $this->factory->createStreamFromFile(dirname(__DIR__) . '/fixtures/stream/foo.txt');
         $this->assertSame(3, $stream->getSize());
@@ -233,7 +250,7 @@ class ResponseFactoryTest extends TestCase
     /**
      * @test
      */
-    public function test_createStreamFromResource(): void
+    public function test_create_stream_from_resource(): void
     {
         $file = dirname(__DIR__) . '/fixtures/stream/foo.txt';
         /** @psalm-suppress PossiblyFalseArgument */
@@ -247,8 +264,9 @@ class ResponseFactoryTest extends TestCase
      */
     public function test_view_adds_content_type(): void
     {
-        $response = $this->factory->view('foo.php', ['foo' => 'bar']);
+        $response = $this->factory->view('foo.php', [
+            'foo' => 'bar',
+        ]);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
-
 }

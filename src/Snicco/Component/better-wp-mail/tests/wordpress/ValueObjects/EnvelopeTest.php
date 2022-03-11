@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
@@ -11,6 +10,9 @@ use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 
+/**
+ * @internal
+ */
 final class EnvelopeTest extends WPTestCase
 {
     /**
@@ -23,6 +25,4 @@ final class EnvelopeTest extends WPTestCase
 
         new Envelope(Mailbox::create('calvin@web.de'), new MailboxList([]));
     }
-
-
 }

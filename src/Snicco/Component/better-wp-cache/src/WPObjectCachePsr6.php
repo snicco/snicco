@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPCache;
 
 use Psr\Cache\CacheItemInterface;
@@ -12,7 +11,6 @@ use Snicco\Component\BetterWPCache\Exception\Psr6InvalidArgumentException;
 use function array_keys;
 use function get_class;
 use function gettype;
-use function is_null;
 use function is_string;
 use function preg_match;
 use function serialize;
@@ -20,11 +18,10 @@ use function sprintf;
 use function time;
 use function unserialize;
 
-
 final class WPObjectCachePsr6 implements CacheItemPoolInterface
 {
-
     private WPCacheAPI $wp_object_cache;
+
     private string $wp_cache_group;
 
     /**
@@ -43,9 +40,18 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $this->wp_object_cache = $wp_object_cache ?: new WPCacheAPI();
     }
 
+    /**
+     * Make sure to commit before we destruct.
+     */
+    public function __destruct()
+    {
+        $this->commit();
+    }
+
     public function getItem($key): CacheItemInterface
     {
         $this->validateKey($key);
+
         return $this->internalGet($key);
     }
 
@@ -58,9 +64,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             $this->validateKey($key);
         }
 
-        /**
-         * @var array<non-empty-string,string|false> $fetched
-         */
+        /** @var array<non-empty-string,false|string> $fetched */
         $fetched = $this->wp_object_cache->cacheGetMultiple($keys, $this->wp_cache_group);
 
         $items = [];
@@ -71,27 +75,31 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
              *
              * PHP will cast (valid) numeric string keys like "0" to (int) 0.
              */
-            $key = (string)$key;
+            $key = (string) $key;
             $items[$key] = $this->instantiateItem($key, $value);
         }
+
         return $items;
     }
 
     public function hasItem($key): bool
     {
         $this->validateKey($key);
+
         return $this->internalHas($key);
     }
 
     public function clear(): bool
     {
         $this->deferred_items = [];
+
         return $this->wp_object_cache->cacheFlush();
     }
 
     public function deleteItem($key): bool
     {
         $this->validateKey($key);
+
         return $this->internalDelete($key);
     }
 
@@ -100,10 +108,11 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $deleted = true;
         foreach ($keys as $key) {
             $this->validateKey($key);
-            if (!$this->internalDelete($key)) {
+            if (! $this->internalDelete($key)) {
                 $deleted = false;
             }
         }
+
         return $deleted;
     }
 
@@ -115,7 +124,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
 
         $expiration = $item->expirationTimestamp();
 
-        if (is_null($expiration)) {
+        if (null === $expiration) {
             // (int) 0 means cache forever for the WPObjectCache
             $wp_cache_ttl = 0;
         } elseif ($expiration <= time()) {
@@ -132,8 +141,9 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $this->validateCacheItem($item);
         $this->deferred_items[$item->getKey()] = [
             'item' => $item,
-            'expiration' => $item->expirationTimestamp()
+            'expiration' => $item->expirationTimestamp(),
         ];
+
         return true;
     }
 
@@ -146,21 +156,14 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
              *
              * PHP will cast (valid) numeric string keys like "0" to (int) 0.
              */
-            $item = $this->internalGetDeferred((string)$key);
-            if ($item && !$this->save($item)) {
+            $item = $this->internalGetDeferred((string) $key);
+            if ($item && ! $this->save($item)) {
                 $saved = false;
             }
         }
         $this->deferred_items = [];
-        return $saved;
-    }
 
-    /**
-     * Make sure to commit before we destruct.
-     */
-    public function __destruct()
-    {
-        $this->commit();
+        return $saved;
     }
 
     /**
@@ -171,13 +174,8 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
      */
     private function validateKey($key): void
     {
-        if (!is_string($key)) {
-            throw new Psr6InvalidArgumentException(
-                sprintf(
-                    'Cache key must be string, "%s" given',
-                    gettype($key)
-                )
-            );
+        if (! is_string($key)) {
+            throw new Psr6InvalidArgumentException(sprintf('Cache key must be string, "%s" given', gettype($key)));
         }
         if ('' === $key) {
             throw new Psr6InvalidArgumentException('Cache key cannot be an empty string');
@@ -203,10 +201,11 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         if (false === $deleted) {
             // Deleting a value that doesn't exist should return true in the psr-interface.
             // The wp object cache will return false for deleting missing keys.
-            if (!$this->internalHas($key)) {
+            if (! $this->internalHas($key)) {
                 $deleted = true;
             }
         }
+
         return $deleted;
     }
 
@@ -215,17 +214,16 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
      */
     private function internalHas(string $key): bool
     {
-        return $this->internalGet($key)->isHit();
+        return $this->internalGet($key)
+            ->isHit();
     }
 
     /**
      * @psalm-assert WPCacheItem $item
-     *
-     * @param CacheItemInterface $item
      */
     private function validateCacheItem(CacheItemInterface $item): void
     {
-        if (!$item instanceof WPCacheItem) {
+        if (! $item instanceof WPCacheItem) {
             throw new Psr6InvalidArgumentException(
                 sprintf(
                     "Cache items are not transferable between pools. Item MUST implement WPCacheItem.\nGot [%s]",
@@ -244,9 +242,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             return $item;
         }
 
-        /**
-         * @var mixed $serialized_value
-         */
+        /** @var mixed $serialized_value */
         $serialized_value = $this->wp_object_cache->cacheGet(
             $key,
             $this->wp_cache_group,
@@ -255,25 +251,24 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
             $found
         );
 
-        if (!$found) {
+        if (! $found) {
             return WPCacheItem::miss($key);
         }
+
         return $this->instantiateItem($key, $serialized_value);
     }
 
     /**
      * @param non-empty-string $key
-     * @param mixed $serialized_value
+     * @param mixed            $serialized_value
      */
     private function instantiateItem(string $key, $serialized_value): WPCacheItem
     {
-        if (!is_string($serialized_value)) {
+        if (! is_string($serialized_value)) {
             return WPCacheItem::miss($key);
         }
 
-        /**
-         * @var mixed $value
-         */
+        /** @var mixed $value */
         $value = unserialize($serialized_value);
         if (false === $value && 'b:0;' !== $serialized_value) {
             return WPCacheItem::miss($key);
@@ -287,7 +282,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
      */
     private function internalGetDeferred(string $key): ?WPCacheItem
     {
-        if (!isset($this->deferred_items[$key])) {
+        if (! isset($this->deferred_items[$key])) {
             return null;
         }
         $deferred = $this->deferred_items[$key];
@@ -296,13 +291,15 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $item = clone $deferred['item'];
         $expiration = $deferred['expiration'];
 
-        if (is_null($expiration)) {
+        if (null === $expiration) {
             return $item;
         }
         if ($expiration <= time()) {
             unset($this->deferred_items[$key]);
+
             return null;
         }
+
         return $item;
     }
 }

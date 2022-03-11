@@ -11,7 +11,6 @@ use Throwable;
 
 final class RequestAwareLogger
 {
-
     private LoggerInterface $psr_logger;
 
     /**
@@ -68,6 +67,7 @@ final class RequestAwareLogger
         foreach ($this->log_levels as $type => $level) {
             if ($e instanceof $type) {
                 $user_defined_level = $level;
+
                 break;
             }
         }
@@ -78,5 +78,4 @@ final class RequestAwareLogger
 
         return $status_code >= 500 ? LogLevel::CRITICAL : LogLevel::ERROR;
     }
-
 }

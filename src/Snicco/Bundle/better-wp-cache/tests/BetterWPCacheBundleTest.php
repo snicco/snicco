@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPCache\Tests;
 
 use Cache\TagInterop\TaggableCacheItemPoolInterface;
@@ -20,9 +19,11 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class BetterWPCacheBundleTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -30,11 +31,7 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function test_alias(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertTrue($kernel->usesBundle(BetterWPCacheBundle::ALIAS));
@@ -45,11 +42,7 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function test_psr6_cache_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertCanBeResolved(CacheItemPoolInterface::class, $kernel);
@@ -60,11 +53,7 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function test_psr16_cache_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertCanBeResolved(CacheInterface::class, $kernel);
@@ -75,11 +64,7 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function test_taggable_cache_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertCanBeResolved(TaggableCacheItemPoolInterface::class, $kernel);
@@ -90,11 +75,7 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function the_default_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/better-wp-cache.php'));
 
@@ -107,10 +88,7 @@ final class BetterWPCacheBundleTest extends TestCase
          */
         $config = require $this->directories->configDir() . '/better-wp-cache.php';
 
-        $this->assertSame(
-            require dirname(__DIR__) . '/config/better-wp-cache.php',
-            $config
-        );
+        $this->assertSame(require dirname(__DIR__) . '/config/better-wp-cache.php', $config);
     }
 
     /**
@@ -118,15 +96,13 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function the_default_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/better-wp-cache.php',
-            '<?php return ' . var_export([BetterWPCacheOption::CACHE_GROUP => ['foo']], true) . ';'
+            '<?php return ' . var_export([
+                BetterWPCacheOption::CACHE_GROUP => ['foo'],
+            ], true) . ';'
         );
 
         $this->assertTrue(is_file($this->directories->configDir() . '/better-wp-cache.php'));
@@ -137,7 +113,9 @@ final class BetterWPCacheBundleTest extends TestCase
          * @psalm-suppress UnresolvableInclude
          */
         $this->assertSame(
-            [BetterWPCacheOption::CACHE_GROUP => ['foo']],
+            [
+                BetterWPCacheOption::CACHE_GROUP => ['foo'],
+            ],
             require $this->directories->configDir() . '/better-wp-cache.php'
         );
     }
@@ -147,11 +125,7 @@ final class BetterWPCacheBundleTest extends TestCase
      */
     public function the_default_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/better-wp-cache.php'));
 
@@ -164,6 +138,4 @@ final class BetterWPCacheBundleTest extends TestCase
     {
         return __DIR__ . '/fixtures';
     }
-
-
 }

@@ -12,8 +12,8 @@ use Snicco\Component\EventDispatcher\GenericEvent;
 
 final class WPEventDispatcher implements EventDispatcher
 {
-
     private EventDispatcher $dispatcher;
+
     private WPHookAPI $wp;
 
     public function __construct(EventDispatcher $dispatcher, WPHookAPI $wp = null)
@@ -34,7 +34,7 @@ final class WPEventDispatcher implements EventDispatcher
         $this->dispatcher->dispatch($event);
 
         // This event should not be shared with wp. Sharing event messages is opt-in not opt-out.
-        if (!$original instanceof ExposeToWP) {
+        if (! $original instanceof ExposeToWP) {
             return $original;
         }
 
@@ -61,15 +61,11 @@ final class WPEventDispatcher implements EventDispatcher
 
     public function listen($event_name, $listener = null): void
     {
-        $this->dispatcher->listen(
-            $event_name,
-            $listener
-        );
+        $this->dispatcher->listen($event_name, $listener);
     }
 
     public function subscribe(string $event_subscriber): void
     {
         $this->dispatcher->subscribe($event_subscriber);
     }
-
 }

@@ -7,28 +7,28 @@ namespace Snicco\Component\Session\ValueObject;
 use InvalidArgumentException;
 
 use function is_int;
-use function is_null;
 use function is_string;
 
 final class SerializedSession
 {
-
     private string $data;
+
     private int $last_activity;
+
     private string $hashed_validator;
 
     /**
-     * @var null|string|int
+     * @var int|string|null
      */
     private $user_id;
 
     /**
-     * @param null|string|int $user_id
+     * @param int|string|null $user_id
      */
     private function __construct(string $data, string $hashed_validator, int $last_activity, $user_id = null)
     {
         /** @psalm-suppress DocblockTypeContradiction */
-        if (!is_string($user_id) && !is_int($user_id) && !is_null($user_id)) {
+        if (! is_string($user_id) && ! is_int($user_id) && null !== $user_id) {
             throw new InvalidArgumentException('$user_id must be null, string or integer.');
         }
 
@@ -39,7 +39,7 @@ final class SerializedSession
     }
 
     /**
-     * @param null|string|int $user_id
+     * @param int|string|null $user_id
      */
     public static function fromString(
         string $string,
@@ -72,5 +72,4 @@ final class SerializedSession
     {
         return $this->user_id;
     }
-
 }

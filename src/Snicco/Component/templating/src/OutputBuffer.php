@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Templating;
 
 use RuntimeException;
@@ -40,6 +39,7 @@ final class OutputBuffer
             throw new RuntimeException('Buffered output could not be retrieved.');
             // @codeCoverageIgnoreEnd
         }
+
         return $output;
     }
 

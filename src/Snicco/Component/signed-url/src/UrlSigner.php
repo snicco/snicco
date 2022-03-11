@@ -18,30 +18,27 @@ use function parse_url;
 use function random_bytes;
 use function rtrim;
 use function strpos;
-use function strval;
 use function time;
 
 final class UrlSigner
 {
-
     private SignedUrlStorage $storage;
+
     private HMAC $hasher;
 
-    public function __construct(
-        SignedUrlStorage $storage,
-        HMAC $hasher
-    ) {
+    public function __construct(SignedUrlStorage $storage, HMAC $hasher)
+    {
         $this->storage = $storage;
         $this->hasher = $hasher;
     }
 
     /**
      * @param non-empty-string $target
-     * @param positive-int $lifetime_in_sec
-     * @param positive-int $max_usage
+     * @param positive-int     $lifetime_in_sec
+     * @param positive-int     $max_usage
      *
      * @throws UnavailableStorage
-     * @throws Exception if random_bytes can't be generated
+     * @throws Exception          if random_bytes can't be generated
      */
     public function sign(
         string $target,
@@ -89,13 +86,7 @@ final class UrlSigner
             ? $domain_and_scheme . $path_with_query
             : $path_with_query;
 
-        $signed_url = SignedUrl::create(
-            $url,
-            $target,
-            $identifier,
-            $expires_at,
-            $max_usage
-        );
+        $signed_url = SignedUrl::create($url, $target, $identifier, $expires_at, $max_usage);
 
         $this->storage->store($signed_url);
 
@@ -115,7 +106,7 @@ final class UrlSigner
     {
         $parts = ($parts = parse_url($protect)) ? $parts : [];
 
-        if (!isset($parts['path']) && isset($parts['host']) && isset($parts['scheme'])) {
+        if (! isset($parts['path']) && isset($parts['host'], $parts['scheme'])) {
             $parts['path'] = '/';
         }
 
@@ -126,10 +117,8 @@ final class UrlSigner
 
     private function validateUrlParts(array $parsed, string $target): void
     {
-        if ($parsed['path'] === '/' && $target !== '/' && strpos($target, 'http') !== 0) {
-            throw new InvalidArgumentException(
-                "$target is not a valid path."
-            );
+        if ('/' === $parsed['path'] && '/' !== $target && 0 !== strpos($target, 'http')) {
+            throw new InvalidArgumentException("{$target} is not a valid path.");
         }
 
         /** @var string $qs */
@@ -162,9 +151,7 @@ final class UrlSigner
 
         // Should not be possible ever.
         // @codeCoverageIgnoreStart
-        throw new InvalidArgumentException(
-            'Invalid path provided.'
-        );
+        throw new InvalidArgumentException('Invalid path provided.');
         // @codeCoverageIgnoreEnd
     }
 
@@ -173,7 +160,7 @@ final class UrlSigner
      */
     private function getQueryString(array $parts): ?string
     {
-        if (!isset($parts['query'])) {
+        if (! isset($parts['query'])) {
             return null;
         }
 
@@ -187,11 +174,11 @@ final class UrlSigner
 
     private function appendExpiryQueryParam(string $path, int $expires_at): string
     {
-        if (!strpos($path, '?')) {
-            return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
+        if (! strpos($path, '?')) {
+            return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
         }
 
-        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . strval($expires_at);
+        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
     }
 
     /**
@@ -199,11 +186,10 @@ final class UrlSigner
      */
     private function getDomainAndSchema(array $parts): ?string
     {
-        if (isset($parts['host']) && isset($parts['scheme'])) {
+        if (isset($parts['host'], $parts['scheme'])) {
             return $parts['scheme'] . '://' . $parts['host'];
         }
 
         return null;
     }
-
 }

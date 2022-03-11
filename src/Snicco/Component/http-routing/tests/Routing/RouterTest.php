@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use PHPUnit\Framework\TestCase;
@@ -17,9 +16,11 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class RouterTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -46,8 +47,7 @@ final class RouterTest extends TestCase
     public function test_url_generator_is_singleton(): void
     {
         $routing = new Router(
-            new UrlGenerationContext('127.0.0.1')
-            ,
+            new UrlGenerationContext('127.0.0.1'),
             new PHPFileRouteLoader(
                 [dirname(__DIR__) . '/fixtures/routes'],
                 [],
@@ -100,5 +100,4 @@ final class RouterTest extends TestCase
         $this->assertInstanceOf(AdminMenu::class, $admin_menu);
         $this->assertSame($admin_menu, $routing->adminMenu());
     }
-
 }

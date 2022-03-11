@@ -10,9 +10,11 @@ use Snicco\Component\HttpRouting\Http\Cookies;
 
 use function urlencode;
 
+/**
+ * @internal
+ */
 final class CookiesTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -24,10 +26,7 @@ final class CookiesTest extends TestCase
         $cookies_new = $cookies->withCookie(new Cookie('foo', 'bar'));
 
         $this->assertSame([], $cookies->toHeaders());
-        $this->assertSame(
-            ['foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly'],
-            $cookies_new->toHeaders()
-        );
+        $this->assertSame(['foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly'], $cookies_new->toHeaders());
     }
 
     /**
@@ -35,7 +34,8 @@ final class CookiesTest extends TestCase
      */
     public function cookies_can_be_converted_to_an_array_of_headers(): void
     {
-        $cookie1 = (new Cookie('foo', 'val1'))->withPath('/foo')->withDomain('foo.com');
+        $cookie1 = (new Cookie('foo', 'val1'))->withPath('/foo')
+            ->withDomain('foo.com');
         $cookie2 = (new Cookie('bar', 'val2'))->withSameSite('strict');
         $cookie3 = (new Cookie('baz', 'münchen'))->withJsAccess();
 
@@ -51,14 +51,7 @@ final class CookiesTest extends TestCase
             'foo=val1; Domain=foo.com; Path=/foo; SameSite=Lax; Secure; HostOnly; HttpOnly',
             $headers[0]
         );
-        $this->assertSame(
-            'bar=val2; Path=/; SameSite=Strict; Secure; HostOnly; HttpOnly',
-            $headers[1]
-        );
-        $this->assertSame(
-            'baz=' . urlencode('münchen') . '; Path=/; SameSite=Lax; Secure; HostOnly',
-            $headers[2]
-        );
+        $this->assertSame('bar=val2; Path=/; SameSite=Strict; Secure; HostOnly; HttpOnly', $headers[1]);
+        $this->assertSame('baz=' . urlencode('münchen') . '; Path=/; SameSite=Lax; Secure; HostOnly', $headers[2]);
     }
-
 }

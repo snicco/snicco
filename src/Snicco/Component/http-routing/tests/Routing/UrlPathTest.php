@@ -10,15 +10,17 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 
-class UrlPathTest extends TestCase
+/**
+ * @internal
+ */
+final class UrlPathTest extends TestCase
 {
-
     /**
      * @dataProvider providePath
      *
      * @test
      */
-    public function test_FromString(string $path, string $expected): void
+    public function test__from_string(string $path, string $expected): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame($expected, $path->asString());
@@ -29,7 +31,7 @@ class UrlPathTest extends TestCase
      *
      * @dataProvider providePath
      */
-    public function test_withTrailingSlash(string $path): void
+    public function test_with_trailing_slash(string $path): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame('/foo/', $path->withTrailingSlash()->asString());
@@ -40,7 +42,7 @@ class UrlPathTest extends TestCase
      *
      * @dataProvider providePath
      */
-    public function test_withoutTrailingSlash(string $path): void
+    public function test_without_trailing_slash(string $path): void
     {
         $path = UrlPath::fromString($path);
         $this->assertSame('/foo', $path->withoutTrailingSlash()->asString());
@@ -49,7 +51,7 @@ class UrlPathTest extends TestCase
     /**
      * @test
      */
-    public function test_withoutTrailingSlashImmutable(): void
+    public function test_without_trailing_slash_immutable(): void
     {
         $path = UrlPath::fromString('foo');
         $path_new = $path->withoutTrailingSlash();
@@ -60,7 +62,7 @@ class UrlPathTest extends TestCase
     /**
      * @test
      */
-    public function test_withTrailingSlashImmutable(): void
+    public function test_with_trailing_slash_immutable(): void
     {
         $path = UrlPath::fromString('foo');
         $path_new = $path->withTrailingSlash();
@@ -88,10 +90,7 @@ class UrlPathTest extends TestCase
     {
         $expected = Str::endsWith($append_path, '/')
             ? trim($append_path, '/') . '/'
-            : trim(
-                $append_path,
-                '/'
-            );
+            : trim($append_path, '/');
 
         $path = UrlPath::fromString('/foo');
         $this->assertSame('/foo/' . $expected, $path->append($append_path)->asString());
@@ -100,7 +99,7 @@ class UrlPathTest extends TestCase
     /**
      * @test
      */
-    public function test_startsWith(): void
+    public function test_starts_with(): void
     {
         $path = UrlPath::fromString('/wp-admin/foo/bar');
 
@@ -141,13 +140,7 @@ class UrlPathTest extends TestCase
 
     public function providePath(): array
     {
-        return [
-            ['foo', '/foo'],
-            ['/foo', '/foo'],
-            ['//foo', '/foo'],
-            ['/foo/', '/foo/'],
-            ['/foo//', '/foo/'],
-        ];
+        return [['foo', '/foo'], ['/foo', '/foo'], ['//foo', '/foo'], ['/foo/', '/foo/'], ['/foo//', '/foo/']];
     }
 
     public function prependProvider(): Generator
@@ -158,5 +151,4 @@ class UrlPathTest extends TestCase
         yield ['/foo/'];
         yield ['/foo//'];
     }
-
 }

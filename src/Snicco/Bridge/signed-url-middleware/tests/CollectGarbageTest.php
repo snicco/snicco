@@ -16,9 +16,11 @@ use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
+/**
+ * @internal
+ */
 final class CollectGarbageTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -26,7 +28,8 @@ final class CollectGarbageTest extends MiddlewareTestCase
     {
         $middleware = new CollectGarbage(0, new InMemoryStorage(), $logger = new TestLogger());
 
-        $this->runMiddleware($middleware, $this->frontendRequest())->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $this->frontendRequest())
+            ->assertNextMiddlewareCalled();
         $this->assertCount(0, $logger->records);
     }
 
@@ -66,16 +69,13 @@ final class CollectGarbageTest extends MiddlewareTestCase
      */
     public function errors_are_logged_if_garbage_collection_fails(): void
     {
-        $storage = new class implements SignedUrlStorage {
-
+        $storage = new class() implements SignedUrlStorage {
             public function consume(string $identifier): void
             {
-                //
             }
 
             public function store(SignedUrl $signed_url): void
             {
-                //
             }
 
             public function gc(): void
@@ -86,13 +86,11 @@ final class CollectGarbageTest extends MiddlewareTestCase
 
         $middleware = new CollectGarbage(100, $storage, $logger = new TestLogger());
 
-        $this->runMiddleware($middleware, $this->frontendRequest())->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $this->frontendRequest())
+            ->assertNextMiddlewareCalled();
 
-        $this->assertTrue(
-            $logger->hasError([
-                'message' => 'GC fail.'
-            ])
-        );
+        $this->assertTrue($logger->hasError([
+            'message' => 'GC fail.',
+        ]));
     }
-
 }

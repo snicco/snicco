@@ -10,25 +10,23 @@ use function array_map;
 use function explode;
 use function http_build_query;
 use function implode;
-use function is_null;
 use function rawurlencode;
 use function strtr;
 use function trim;
 
 /**
- * https://datatracker.ietf.org/doc/html/rfc3986
+ * https://datatracker.ietf.org/doc/html/rfc3986.
  */
 final class RFC3986Encoder implements UrlEncoder
 {
-
-    const RFC3986_UNRESERVED = [
+    public const RFC3986_UNRESERVED = [
         '-' => '-',
         '.' => '.',
         '_' => '_',
         '~' => '~',
     ];
 
-    const RFC3986_SUB_DELIMITERS = [
+    public const RFC3986_SUB_DELIMITERS = [
         '!' => '%21',
         '$' => '%24',
         '&' => '%26',
@@ -42,7 +40,7 @@ final class RFC3986Encoder implements UrlEncoder
         ')' => '%29',
     ];
 
-    const RFC3986_PCHARS = self::RFC3986_UNRESERVED + self::RFC3986_SUB_DELIMITERS + [
+    public const RFC3986_PCHARS = self::RFC3986_UNRESERVED + self::RFC3986_SUB_DELIMITERS + [
         '@' => '%40',
         ':' => '%3A',
     ];
@@ -58,11 +56,11 @@ final class RFC3986Encoder implements UrlEncoder
     private $query_special;
 
     /**
-     * @param null|array<string,string> $query_special
+     * @param array<string,string>|null $query_special
      */
     public function __construct(?array $query_special = null)
     {
-        $this->query_special = is_null($query_special)
+        $this->query_special = null === $query_special
             ? [
                 '=' => '%3D',
                 '&' => '%26',
@@ -72,31 +70,20 @@ final class RFC3986Encoder implements UrlEncoder
 
     public function encodeQuery(array $query): string
     {
-        if ($query === []) {
+        if ([] === $query) {
             return '';
         }
 
-        $encoded_query = http_build_query(
-            $query,
-            '',
-            '&',
-            PHP_QUERY_RFC3986
-        );
+        $encoded_query = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
 
-        $allowed_in_query = array_diff(
-            self::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA,
-            $this->query_special
-        );
+        $allowed_in_query = array_diff(self::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA, $this->query_special);
 
         return strtr($encoded_query, array_flip($allowed_in_query));
     }
 
     public function encodePath(string $path): string
     {
-        $path = implode(
-            '/',
-            array_map('rawurlencode', explode('/', $path))
-        );
+        $path = implode('/', array_map('rawurlencode', explode('/', $path)));
 
         return strtr($path, array_flip(self::RFC3986_PCHARS));
     }
@@ -110,5 +97,4 @@ final class RFC3986Encoder implements UrlEncoder
 
         return strtr($encoded_fragment, array_flip($allowed_in_fragment));
     }
-
 }

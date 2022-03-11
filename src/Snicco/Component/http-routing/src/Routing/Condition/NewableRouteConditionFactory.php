@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Routing\Condition;
 
 use function array_values;
@@ -20,6 +19,7 @@ final class NewableRouteConditionFactory implements RouteConditionFactory
         if ($blueprint->is_negated) {
             return new NegatedRouteCondition($instance);
         }
+
         return $instance;
     }
 }

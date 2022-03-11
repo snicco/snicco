@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Kernel\Configuration;
 
 use Closure;
@@ -33,11 +32,7 @@ final class PHPFileCache implements ConfigCache
 
         $config = $loader();
 
-        FileWriter::writeFile(
-            $key,
-            '<?php return ' . var_export($config, true) . ';',
-            0644
-        );
+        FileWriter::writeFile($key, '<?php return ' . var_export($config, true) . ';', 0644);
 
         return $config;
     }
@@ -50,9 +45,10 @@ final class PHPFileCache implements ConfigCache
         $value = include $file;
         restore_error_handler();
 
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return null;
         }
+
         return $value;
     }
 }

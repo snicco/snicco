@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\ResponseEmitter;
 
 use Laminas\HttpHandlerRunner\Emitter\EmitterStack;

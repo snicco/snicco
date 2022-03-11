@@ -30,11 +30,14 @@ use const SEEK_CUR;
 
 final class Attachment
 {
-
     private string $encoding = 'base64';
+
     private string $content_type;
+
     private string $filename;
+
     private string $disposition;
+
     private ?string $cid = null;
 
     /**
@@ -44,11 +47,12 @@ final class Attachment
 
     /**
      * @param resource|string $body
+     *
      * @throws Exception random bytes can't be generated for the content id
      */
     private function __construct($body, string $filename, string $content_type = null, bool $inline = false)
     {
-        $this->content_type = ($content_type === null) ? 'application/octet-stream' : $content_type;
+        $this->content_type = (null === $content_type) ? 'application/octet-stream' : $content_type;
         $this->filename = $filename;
         $this->disposition = $inline ? 'inline' : 'attachment';
 
@@ -57,6 +61,13 @@ final class Attachment
         }
 
         $this->body = $body;
+    }
+
+    public function __destruct()
+    {
+        if (is_resource($this->body)) {
+            fclose($this->body);
+        }
     }
 
     /**
@@ -68,7 +79,7 @@ final class Attachment
         string $content_type = null,
         bool $inline = false
     ): Attachment {
-        if (!is_readable($path)) {
+        if (! is_readable($path)) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
         }
         $stream = @fopen($path, 'r');
@@ -92,7 +103,7 @@ final class Attachment
         string $content_type = null,
         bool $inline = false
     ): Attachment {
-        if (!is_string($data) && !is_resource($data)) {
+        if (! is_string($data) && ! is_resource($data)) {
             throw new InvalidArgumentException(
                 sprintf("\$data must be string or resource.\nGot [%s].", gettype($data))
             );
@@ -107,7 +118,7 @@ final class Attachment
             return $this->body;
         }
 
-        $seekable = stream_get_meta_data($this->body)['seekable'] && fseek($this->body, 0, SEEK_CUR) === 0;
+        $seekable = stream_get_meta_data($this->body)['seekable'] && 0 === fseek($this->body, 0, SEEK_CUR);
 
         if ($seekable) {
             rewind($this->body);
@@ -143,17 +154,10 @@ final class Attachment
 
     public function cid(): string
     {
-        if ('inline' !== $this->disposition || !isset($this->cid)) {
+        if ('inline' !== $this->disposition || ! isset($this->cid)) {
             throw new LogicException('Attachment is not embedded and has no cid.');
         }
+
         return $this->cid;
     }
-
-    public function __destruct()
-    {
-        if (is_resource($this->body)) {
-            fclose($this->body);
-        }
-    }
-
 }

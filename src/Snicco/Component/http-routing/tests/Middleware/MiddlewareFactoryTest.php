@@ -18,10 +18,13 @@ use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
+/**
+ * @internal
+ */
 final class MiddlewareFactoryTest extends TestCase
 {
-
     private MiddlewareFactory $factory;
+
     private Container $pimple;
 
     protected function setUp(): void
@@ -73,12 +76,12 @@ final class MiddlewareFactoryTest extends TestCase
         $bar->value = 'BAR_CHANGED';
 
         $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies(
-                $foo, $bar
-            );
+            return new MiddlewareWithDependencies($foo, $bar);
         };
 
-        $m = $this->factory->create(MiddlewareWithDependencies::class, ['foo' => 'bar']);
+        $m = $this->factory->create(MiddlewareWithDependencies::class, [
+            'foo' => 'bar',
+        ]);
         $this->assertInstanceOf(MiddlewareWithDependencies::class, $m);
         $this->assertSame('FOO_CHANGED', $m->foo->value);
         $this->assertSame('BAR_CHANGED', $m->bar->value);
@@ -103,8 +106,7 @@ final class MiddlewareFactoryTest extends TestCase
      * @test
      */
     public function a_middleware_that_needs_both_constructor_args_and_runtime_args_can_be_returned_as_closure_from_the_container(
-    ): void
-    {
+        ): void {
         $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(
             function (string $bar, string $baz) {
                 return new MiddlewareWithContextualAndRuntimeArgs(new Foo(), $bar, $baz);
@@ -132,7 +134,6 @@ final class MiddlewareFactoryTest extends TestCase
             }
         );
 
-
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
             sprintf(
@@ -142,19 +143,16 @@ final class MiddlewareFactoryTest extends TestCase
             )
         );
 
-        $this->factory->create(
-            MiddlewareWithContextualAndRuntimeArgs::class,
-            ['BAR_PASSED', 'BAZ_PASSED']
-        );
+        $this->factory->create(MiddlewareWithContextualAndRuntimeArgs::class, ['BAR_PASSED', 'BAZ_PASSED']);
     }
-
 }
 
 class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 {
-
     public string $bar;
+
     public string $baz;
+
     private Foo $foo;
 
     public function __construct(Foo $foo, string $bar, string $baz)
@@ -168,5 +166,4 @@ class MiddlewareWithContextualAndRuntimeArgs extends Middleware
     {
         return $next($request);
     }
-
 }

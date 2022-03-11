@@ -18,9 +18,11 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class KernelTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
@@ -156,9 +158,7 @@ final class KernelTest extends TestCase
 
         $dir = $this->base_dir . '/base_dir_without_app_config/config';
 
-        $this->expectExceptionMessage(
-            "The [app.php] config file was not found in the config dir [$dir]."
-        );
+        $this->expectExceptionMessage("The [app.php] config file was not found in the config dir [{$dir}].");
 
         $app->boot();
     }
@@ -177,10 +177,7 @@ final class KernelTest extends TestCase
         try {
             $app->config();
         } catch (LogicException $e) {
-            $this->assertStringContainsString(
-                'only be accessed after bootstrapping.',
-                $e->getMessage()
-            );
+            $this->assertStringContainsString('only be accessed after bootstrapping.', $e->getMessage());
         }
 
         $app->boot();
@@ -239,7 +236,8 @@ final class KernelTest extends TestCase
         );
 
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(stdClass::class, new stdClass());
+            $kernel->container()
+                ->instance(stdClass::class, new stdClass());
         });
 
         $this->assertFalse($kernel->container()->has(stdClass::class));
@@ -326,5 +324,4 @@ final class KernelTest extends TestCase
 
         $this->assertTrue($kernel->booted());
     }
-
 }

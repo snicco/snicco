@@ -12,9 +12,11 @@ use Snicco\Component\HttpRouting\Tests\fixtures\FooMiddleware;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 use Snicco\Component\HttpRouting\Tests\Routing\RouteLoader\PHPFileRouteLoaderTest;
 
+/**
+ * @internal
+ */
 final class IncludingRoutesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      * @psalm-suppress InvalidScalarArgument
@@ -60,7 +62,9 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
      */
     public function routes_can_be_included_as_a_file(): void
     {
-        $this->withMiddlewareAlias(['partial' => FooMiddleware::class]);
+        $this->withMiddlewareAlias([
+            'partial' => FooMiddleware::class,
+        ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->include($this->routes_dir . '/_partial.php');
@@ -78,7 +82,9 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
      */
     public function routes_can_be_included_as_a_closure(): void
     {
-        $this->withMiddlewareAlias(['partial' => FooMiddleware::class]);
+        $this->withMiddlewareAlias([
+            'partial' => FooMiddleware::class,
+        ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             /** @var Closure(WebRoutingConfigurator):void $closure */
@@ -91,5 +97,4 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
             $this->frontendRequest(PHPFileRouteLoaderTest::PARTIAL_PATH)
         );
     }
-
 }

@@ -10,14 +10,19 @@ use Snicco\Component\Kernel\Configuration\ConfigLoader;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
 use Snicco\Component\Kernel\ValueObject\Directories;
 
+use function dirname;
+
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @internal
+ */
 final class ConfigLoaderTest extends TestCase
 {
-
     use CreateTestContainer;
 
     private string $fixtures_dir;
+
     private string $cache_dir;
 
     protected function setUp(): void
@@ -35,8 +40,12 @@ final class ConfigLoaderTest extends TestCase
         $load_config = new ConfigLoader();
         $config = $load_config(Directories::fromDefaults($this->fixtures_dir)->configDir());
 
-        $this->assertSame(['foo' => 'bar'], $config['app']);
-        $this->assertSame(['foo' => 'baz'], $config['custom-config']);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $config['app']);
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $config['custom-config']);
     }
 
     /**
@@ -50,6 +59,4 @@ final class ConfigLoaderTest extends TestCase
         $load_config = new ConfigLoader();
         $load_config($this->fixtures_dir . '/config_no_array_return/config');
     }
-
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -24,10 +23,11 @@ use function wp_set_current_user;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class WPAdminMenuTest extends WPTestCase
 {
-
     private Kernel $kernel;
 
     protected function setUp(): void
@@ -45,13 +45,12 @@ final class WPAdminMenuTest extends WPTestCase
          * @var WP_UnitTest_Factory_For_User
          * @psalm-suppress MixedPropertyFetch
          */
-        $user_factory = $this->factory()->user;
+        $user_factory = $this->factory()
+            ->user;
 
-        /**
-         * @var WP_User $user
-         */
+        /** @var WP_User $user */
         $user = $user_factory->create_and_get([
-            'role' => 'administrator'
+            'role' => 'administrator',
         ]);
         wp_set_current_user($user->ID);
     }
@@ -66,10 +65,9 @@ final class WPAdminMenuTest extends WPTestCase
         $menu = [];
         $submenu = [];
 
-        /**
-         * @var WPAdminMenu $wp_admin_menu
-         */
-        $wp_admin_menu = $this->kernel->container()->make(WPAdminMenu::class);
+        /** @var WPAdminMenu $wp_admin_menu */
+        $wp_admin_menu = $this->kernel->container()
+            ->make(WPAdminMenu::class);
 
         $wp_admin_menu->setUp();
 
@@ -89,10 +87,9 @@ final class WPAdminMenuTest extends WPTestCase
         $menu = [];
         $submenu = [];
 
-        /**
-         * @var WPAdminMenu $wp_admin_menu
-         */
-        $wp_admin_menu = $this->kernel->container()->make(WPAdminMenu::class);
+        /** @var WPAdminMenu $wp_admin_menu */
+        $wp_admin_menu = $this->kernel->container()
+            ->make(WPAdminMenu::class);
 
         $wp_admin_menu->setUp();
 
@@ -108,9 +105,7 @@ final class WPAdminMenuTest extends WPTestCase
 
         $this->assertTrue(isset($submenu['server_error']));
 
-        /**
-         * @var list<string> $foo
-         */
+        /** @var list<string> $foo */
         $foo = $menu[0];
 
         $this->assertSame('FOO_TITLE', $foo[0] ?? '');
@@ -137,5 +132,4 @@ final class WPAdminMenuTest extends WPTestCase
 
         do_action('admin_menu');
     }
-
 }

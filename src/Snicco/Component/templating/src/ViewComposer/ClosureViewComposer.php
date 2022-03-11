@@ -13,9 +13,8 @@ use Snicco\Component\Templating\View\View;
  */
 final class ClosureViewComposer implements ViewComposer
 {
-
     /**
-     * @var Closure(T):T $composer
+     * @var Closure(T):T
      */
     private Closure $composer;
 
@@ -28,7 +27,7 @@ final class ClosureViewComposer implements ViewComposer
     }
 
     /**
-     * Add context values to the passed view
+     * Add context values to the passed view.
      *
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress InvalidReturnStatement
@@ -38,5 +37,4 @@ final class ClosureViewComposer implements ViewComposer
     {
         return ($this->composer)($view);
     }
-
 }

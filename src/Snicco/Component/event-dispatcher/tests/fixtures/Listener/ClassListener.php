@@ -7,9 +7,10 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Listener;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FooEvent;
 
+use function get_class;
+
 class ClassListener
 {
-
     use AssertListenerResponse;
 
     public function __invoke(FooEvent $event)
@@ -21,5 +22,4 @@ class ClassListener
     {
         $this->respondedToEvent(get_class($event), ClassListener::class, $event->val);
     }
-
 }

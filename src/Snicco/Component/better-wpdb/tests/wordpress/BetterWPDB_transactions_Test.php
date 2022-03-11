@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use LogicException;
@@ -14,9 +13,11 @@ use Snicco\Component\BetterWPDB\QueryLogger;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      */
@@ -26,10 +27,14 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 
         try {
             $this->better_wpdb->transactional(function (BetterWPDB $db) {
-                $res = $db->insert('test_table', ['test_string' => 'foo']);
+                $res = $db->insert('test_table', [
+                    'test_string' => 'foo',
+                ]);
                 $this->assertSame(1, $res->affected_rows);
 
-                $db->insert('test_table', ['test_string' => 'foo']);
+                $db->insert('test_table', [
+                    'test_string' => 'foo',
+                ]);
             });
             $this->fail('No exception thrown for transaction.');
         } catch (QueryException $e) {
@@ -47,8 +52,12 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $this->assertRecordCount(0);
 
         $return = $this->better_wpdb->transactional(function (BetterWPDB $db) {
-            $db->insert('test_table', ['test_string' => 'foo']);
-            $db->insert('test_table', ['test_string' => 'bar']);
+            $db->insert('test_table', [
+                'test_string' => 'foo',
+            ]);
+            $db->insert('test_table', [
+                'test_string' => 'bar',
+            ]);
 
             return 'foobar';
         });
@@ -83,8 +92,12 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $db = BetterWPDB::fromWpdb($logger);
 
         $db->transactional(function (BetterWPDB $db) {
-            $db->insert('test_table', ['test_string' => 'foo']);
-            $db->insert('test_table', ['test_string' => 'bar']);
+            $db->insert('test_table', [
+                'test_string' => 'foo',
+            ]);
+            $db->insert('test_table', [
+                'test_string' => 'bar',
+            ]);
         });
 
         $this->assertTrue(isset($logger->queries[0]));
@@ -118,8 +131,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
      */
     public function an_error_during_logging_the_commit_query_doesnt_rollback_the_already_commit_transaction(): void
     {
-        $logger = new class implements QueryLogger {
-
+        $logger = new class() implements QueryLogger {
             /**
              * @var QueryInfo[]
              */
@@ -137,15 +149,15 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
 
         try {
             $db->transactional(function (BetterWPDB $db) {
-                $db->insert('test_table', ['test_string' => 'foo']);
+                $db->insert('test_table', [
+                    'test_string' => 'foo',
+                ]);
             });
             $this->fail('no exception thrown');
         } catch (RuntimeException $e) {
             $this->assertSame('cant log.', $e->getMessage());
         }
 
-
         $this->assertRecordCount(1);
     }
-
 }

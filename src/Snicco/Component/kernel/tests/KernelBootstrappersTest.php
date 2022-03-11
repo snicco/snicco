@@ -18,9 +18,11 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class KernelBootstrappersTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
@@ -51,9 +53,7 @@ final class KernelBootstrappersTest extends TestCase
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
                 'app' => [
-                    'bootstrappers' => [
-                        Bootstrap1::class,
-                    ],
+                    'bootstrappers' => [Bootstrap1::class],
                 ],
             ])
         );
@@ -95,9 +95,7 @@ final class KernelBootstrappersTest extends TestCase
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
                 'app' => [
-                    'bootstrappers' => [
-                        BootstrapperWithExceptionInBoostrap::class,
-                    ],
+                    'bootstrappers' => [BootstrapperWithExceptionInBoostrap::class],
                 ],
             ])
         );
@@ -106,13 +104,12 @@ final class KernelBootstrappersTest extends TestCase
         $this->expectExceptionMessage('id [stdClass]');
         $app->boot();
     }
-
 }
 
 class BundleInfo implements Bundle
 {
-
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function shouldRun(Environment $env): bool
@@ -122,7 +119,6 @@ class BundleInfo implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -134,20 +130,20 @@ class BundleInfo implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()->make(BundleInfo::class)->booted = true;
+        $kernel->container()
+            ->make(BundleInfo::class)->booted = true;
     }
 
     public function alias(): string
     {
         return 'bundle_info';
     }
-
 }
 
 class Bootstrap1 implements Bootstrapper
 {
-
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
@@ -173,24 +169,22 @@ class Bootstrap1 implements Bootstrapper
     {
         return true;
     }
-
 }
 
 class Bootstrap2 implements Bootstrapper
 {
-
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!$kernel->container()->has(BundleInfo::class)) {
+        if (! $kernel->container()->has(BundleInfo::class)) {
             throw new RuntimeException('Bootstrapper registered before bundle');
         }
 
@@ -203,7 +197,7 @@ class Bootstrap2 implements Bootstrapper
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (!$container->make(BundleInfo::class)->booted === true) {
+        if (true === ! $container->make(BundleInfo::class)->booted) {
             throw new RuntimeException('Bootstrapper bootstrapped before bundle');
         }
         $container->make(self::class)->booted = true;
@@ -213,12 +207,10 @@ class Bootstrap2 implements Bootstrapper
     {
         return true;
     }
-
 }
 
 class BootstrapperWithExceptionInBoostrap implements Bootstrapper
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -226,17 +218,14 @@ class BootstrapperWithExceptionInBoostrap implements Bootstrapper
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
     {
-        //
     }
 
     public function bootstrap(Kernel $kernel): void
     {
         $kernel->container()[stdClass::class] = new stdClass();
     }
-
 }

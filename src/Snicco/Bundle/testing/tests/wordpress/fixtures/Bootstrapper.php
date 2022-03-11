@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\wordpress\fixtures;
 
 use Snicco\Component\BetterWPMail\Mailer;
@@ -12,7 +11,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class Bootstrapper implements \Snicco\Component\Kernel\Bootstrapper
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -24,11 +22,10 @@ final class Bootstrapper implements \Snicco\Component\Kernel\Bootstrapper
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(WebTestCaseController::class, function () use ($kernel) {
-            return new WebTestCaseController(
-                $kernel->container()->make(Mailer::class)
-            );
-        });
+        $kernel->container()
+            ->shared(WebTestCaseController::class, function () use ($kernel) {
+                return new WebTestCaseController($kernel->container()->make(Mailer::class));
+            });
     }
 
     public function bootstrap(Kernel $kernel): void

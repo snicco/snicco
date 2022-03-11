@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests;
 
 use Codeception\TestCase\WPTestCase;
@@ -10,7 +9,10 @@ use Snicco\Component\BetterWPDB\BetterWPDB;
 
 use function array_key_exists;
 
-class BetterWPDBTestCase extends WPTestCase
+/**
+ * @internal
+ */
+abstract class BetterWPDBTestCase extends WPTestCase
 {
     protected BetterWPDB $better_wpdb;
 
@@ -26,7 +28,8 @@ class BetterWPDBTestCase extends WPTestCase
   `test_int` INTEGER UNSIGNED DEFAULT NULL,
   `test_bool` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;', []
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;',
+            []
         );
 
         parent::setUp();
@@ -52,11 +55,10 @@ class BetterWPDBTestCase extends WPTestCase
         $record = $this->better_wpdb->selectRow('select * from test_table where id = ?', [$id]);
 
         foreach ($expected as $name => $value) {
-            if (!array_key_exists($name, $record)) {
-                $this->fail("Record does not have key [$name].");
+            if (! array_key_exists($name, $record)) {
+                $this->fail("Record does not have key [{$name}].");
             }
             $this->assertSame($value, $record[$name]);
         }
     }
-
 }

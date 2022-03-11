@@ -13,7 +13,6 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 final class MustMatchRoute implements MiddlewareInterface
 {
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
@@ -21,7 +20,8 @@ final class MustMatchRoute implements MiddlewareInterface
         if ($response instanceof DelegatedResponse) {
             throw new HttpException(
                 404,
-                "A delegated response was returned for path [{$request->getUri()->getPath()}]."
+                "A delegated response was returned for path [{$request->getUri()
+                    ->getPath()}]."
             );
         }
 

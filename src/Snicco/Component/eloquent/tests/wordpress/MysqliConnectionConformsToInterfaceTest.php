@@ -15,11 +15,28 @@ use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
 use Illuminate\Database\Schema\MySqlBuilder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade;
+use InvalidArgumentException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
+/**
+ * @internal
+ */
 final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+
+        $wp_eloquent = new WPEloquentStandalone();
+        $wp_eloquent->bootstrap();
+    }
 
     /**
      * @test
@@ -45,13 +62,6 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $this->assertSame(MysqliConnection::CONNECTION_NAME, $connection->getName());
 
         $wpdb->prefix = 'wp_';
-    }
-
-    private function getMysqliConnection(): MysqliConnection
-    {
-        /** @var MysqliConnection $connection */
-        $connection = DB::connection();
-        return $connection;
     }
 
     /**
@@ -100,21 +110,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
      */
     public function bindings_get_prepared_correctly(): void
     {
-        $result = $this->getMysqliConnection()->prepareBindings([
-            true,
-            false,
-            'string',
-            10,
-            new DateTime('07.04.2021 15:00'),
-        ]);
+        $result = $this->getMysqliConnection()
+            ->prepareBindings([true, false, 'string', 10, new DateTime('07.04.2021 15:00')]);
 
-        $this->assertSame([
-            1,
-            0,
-            'string',
-            10,
-            '2021-04-07 15:00:00',
-        ], $result);
+        $this->assertSame([1, 0, 'string', 10, '2021-04-07 15:00:00'], $result);
     }
 
     /**
@@ -125,7 +124,8 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         global $wpdb;
         $wpdb->prefix = 'my_prefix';
 
-        $config = $this->getMysqliConnection()->getConfig();
+        $config = $this->getMysqliConnection()
+            ->getConfig();
 
         $this->assertEquals([
             'driver' => 'mysql',
@@ -142,18 +142,13 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         $wpdb->prefix = 'wp_';
     }
 
-    protected function setUp(): void
+    private function getMysqliConnection(): MysqliConnection
     {
-        parent::setUp();
+        $c = DB::connection();
+        if (! $c instanceof MysqliConnection) {
+            throw new InvalidArgumentException('Wrong connection type.');
+        }
 
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
-
-        $wp_eloquent = new WPEloquentStandalone();
-        $wp_eloquent->bootstrap();
+        return $c;
     }
-
 }

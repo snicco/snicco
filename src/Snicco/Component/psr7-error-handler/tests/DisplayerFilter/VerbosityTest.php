@@ -13,9 +13,11 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_values;
 
+/**
+ * @internal
+ */
 final class VerbosityTest extends TestCase
 {
-
     private ServerRequest $request;
 
     protected function setUp(): void
@@ -23,7 +25,6 @@ final class VerbosityTest extends TestCase
         $this->request = new ServerRequest('GET', '/');
         parent::setUp();
     }
-
 
     /**
      * @test
@@ -39,40 +40,22 @@ final class VerbosityTest extends TestCase
         ];
 
         $e = new RuntimeException();
-        $info = new ExceptionInformation(
-            500,
-            'foo_id',
-            'foo_title',
-            'foo_details',
-            $e,
-            $e,
-            $this->request
-        );
+        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
         $request = new ServerRequest('GET', '/foo');
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
 
         $this->assertSame([$d1, $d2, $d3, $d4], array_values($filtered));
 
         $filter = new Verbosity(false);
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
 
         $this->assertSame([$d3, $d4], array_values($filtered));
     }
-
 }
 
 class Verbose1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -92,12 +75,10 @@ class Verbose1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class Verbose2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -117,12 +98,10 @@ class Verbose2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerbose1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -142,12 +121,10 @@ class NonVerbose1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerbose2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -167,5 +144,4 @@ class NonVerbose2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }

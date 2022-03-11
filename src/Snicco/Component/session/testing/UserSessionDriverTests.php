@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Session\Testing;
 
 use InvalidArgumentException;
@@ -18,8 +17,8 @@ use function array_key_first;
 use function array_keys;
 use function array_merge;
 use function array_shift;
+use function count;
 use function hash;
-use function is_null;
 use function time;
 
 /**
@@ -27,7 +26,6 @@ use function time;
  */
 trait UserSessionDriverTests
 {
-
     /**
      * @test
      */
@@ -37,14 +35,8 @@ trait UserSessionDriverTests
 
         $user_sessions = $this->createUserSessionDriver($sessions);
 
-        $user_sessions->write(
-            'session_no_user1',
-            SerializedSession::fromString('foo', 'val1', time())
-        );
-        $user_sessions->write(
-            'session_no_user2',
-            SerializedSession::fromString('foo', 'val1', time())
-        );
+        $user_sessions->write('session_no_user1', SerializedSession::fromString('foo', 'val1', time()));
+        $user_sessions->write('session_no_user2', SerializedSession::fromString('foo', 'val1', time()));
 
         PHPUnit::assertCount(1, $user_sessions->getAllForUserId(1));
         PHPUnit::assertCount(1, $user_sessions->getAllForUserId(2));
@@ -57,7 +49,7 @@ trait UserSessionDriverTests
         foreach (['session_no_user1', 'session_no_user2'] as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -66,12 +58,11 @@ trait UserSessionDriverTests
         foreach (array_keys($sessions) as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
         }
-
 
         PHPUnit::assertCount(0, $user_sessions->getAllForUserId(1));
         PHPUnit::assertCount(0, $user_sessions->getAllForUserId(2));
@@ -100,7 +91,7 @@ trait UserSessionDriverTests
         foreach (array_keys($user_two_sessions) as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -170,12 +161,13 @@ trait UserSessionDriverTests
         foreach (array_keys($user_two_sessions) as $selector) {
             if ($selector === array_key_first($user_two_sessions)) {
                 $user_session_driver->read($selector);
+
                 continue;
             }
 
             try {
                 $user_session_driver->read($selector);
-                PHPUnit::fail("User session [$selector] was not deleted.");
+                PHPUnit::fail("User session [{$selector}] was not deleted.");
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -184,17 +176,15 @@ trait UserSessionDriverTests
 
     /**
      * @param array<string,SerializedSession> $user_sessions
-     *
-     * @return UserSessionsDriver
      */
     abstract protected function createUserSessionDriver(array $user_sessions): UserSessionsDriver;
 
     /**
      * @param array<int|string> $ids
      *
-     * @return array<string,SerializedSession>
-     *
      * @throws JsonException
+     *
+     * @return array<string,SerializedSession>
      */
     private function createSessions(int $count, array $ids): array
     {
@@ -205,11 +195,11 @@ trait UserSessionDriverTests
         $serializer = new JsonSerializer();
 
         $_serialized = [];
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $session = ReadWriteSession::createEmpty(time());
             $id = array_shift($ids);
 
-            if (is_null($id)) {
+            if (null === $id) {
                 throw new InvalidArgumentException('Id cant be null.');
             }
 
@@ -225,7 +215,7 @@ trait UserSessionDriverTests
                 $id
             );
         }
+
         return $_serialized;
     }
-
 }

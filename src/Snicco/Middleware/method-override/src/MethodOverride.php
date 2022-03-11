@@ -15,7 +15,6 @@ use function strtoupper;
 
 final class MethodOverride extends Middleware
 {
-
     public const HEADER = 'X-HTTP-Method-Override';
 
     /**
@@ -35,7 +34,7 @@ final class MethodOverride extends Middleware
             return $next($request);
         }
 
-        if (!$this->validMethod($method)) {
+        if (! $this->validMethod($method)) {
             return $next($request);
         }
 
@@ -52,5 +51,4 @@ final class MethodOverride extends Middleware
 
         return in_array($method, $valid, true);
     }
-
 }

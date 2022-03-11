@@ -14,7 +14,6 @@ use function is_string;
 
 final class MailboxList implements Countable, IteratorAggregate
 {
-
     /**
      * @var array<string,Mailbox>
      */
@@ -32,8 +31,6 @@ final class MailboxList implements Countable, IteratorAggregate
 
     /**
      * @param Mailbox[]|MailboxList $list
-     *
-     * @return MailboxList
      */
     public function merge($list): MailboxList
     {
@@ -42,6 +39,7 @@ final class MailboxList implements Countable, IteratorAggregate
         foreach ($list as $address) {
             $new->addAddress($address);
         }
+
         return $new;
     }
 
@@ -67,9 +65,7 @@ final class MailboxList implements Countable, IteratorAggregate
     }
 
     /**
-     * @param string|Mailbox $address
-     *
-     * @return bool
+     * @param Mailbox|string $address
      */
     public function has($address): bool
     {
@@ -78,10 +74,7 @@ final class MailboxList implements Countable, IteratorAggregate
         return isset($this->addresses[$address->address()]);
     }
 
-    /**
-     * @return void
-     */
-    private function addAddress(Mailbox $address)
+    private function addAddress(Mailbox $address): void
     {
         $email = $address->address();
 
@@ -91,5 +84,4 @@ final class MailboxList implements Countable, IteratorAggregate
 
         $this->addresses[$email] = $address;
     }
-
 }

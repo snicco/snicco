@@ -11,18 +11,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class GlobalMiddleware implements MiddlewareInterface
 {
-
-    const run_times = 'global_middleware';
+    public const run_times = 'global_middleware';
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $count = $GLOBALS['test'][self::run_times] ?? 0;
-        $count++;
+        ++$count;
         $GLOBALS['test'][self::run_times] = $count;
 
         $request->body = 'global_';
 
         return $handler->handle($request);
     }
-
 }

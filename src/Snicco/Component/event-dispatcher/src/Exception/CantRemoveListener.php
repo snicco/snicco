@@ -8,7 +8,6 @@ use LogicException;
 
 final class CantRemoveListener extends LogicException
 {
-
     /**
      * @param array{0:class-string, 1:string } $identifier
      */
@@ -22,5 +21,4 @@ final class CantRemoveListener extends LogicException
             )
         );
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Psr7ErrorHandler\Tests\Information;
 
 use InvalidArgumentException;
@@ -14,10 +13,11 @@ use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransfo
 
 /**
  * @psalm-suppress InvalidArgument
+ *
+ * @internal
  */
 final class TransformableInformationProviderTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -48,8 +48,8 @@ final class TransformableInformationProviderTest extends TestCase
         new InformationProviderWithTransformation([
             303 => [
                 'title' => 'foo',
-                'message' => 'bar'
-            ]
+                'message' => 'bar',
+            ],
         ], new SplHashIdentifier());
     }
 
@@ -63,8 +63,8 @@ final class TransformableInformationProviderTest extends TestCase
 
         new InformationProviderWithTransformation([
             403 => [
-                'message' => 'bar'
-            ]
+                'message' => 'bar',
+            ],
         ], new SplHashIdentifier());
     }
 
@@ -78,9 +78,8 @@ final class TransformableInformationProviderTest extends TestCase
 
         new InformationProviderWithTransformation([
             403 => [
-                'title' => 'bar'
-            ]
+                'title' => 'bar',
+            ],
         ], new SplHashIdentifier());
     }
-
 }

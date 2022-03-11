@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Session\Tests\Serializer;
 
 use PHPUnit\Framework\TestCase;
@@ -11,19 +10,27 @@ use Snicco\Component\Session\Serializer\PHPSerializer;
 
 use function serialize;
 
+/**
+ * @internal
+ */
 final class PHPSerializerTest extends TestCase
 {
-
     /**
      * @test
      */
     public function test_serialize_deserialize(): void
     {
         $s = new PHPSerializer();
-        $data = $s->serialize(['foo' => 'bar']);
-        $this->assertSame(serialize(['foo' => 'bar']), $data);
+        $data = $s->serialize([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame(serialize([
+            'foo' => 'bar',
+        ]), $data);
 
-        $this->assertSame(['foo' => 'bar'], $s->deserialize($data));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $s->deserialize($data));
     }
 
     /**
@@ -46,6 +53,4 @@ final class PHPSerializerTest extends TestCase
         $s = new PHPSerializer();
         $s->deserialize(serialize('foo'));
     }
-
-
 }

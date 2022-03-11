@@ -14,16 +14,18 @@ use Snicco\Component\Kernel\Exception\FrozenService;
 use Webmozart\Assert\Assert;
 
 /**
- * The DependencyInjection(DI) container takes care of lazily constructing and loading services
- * for your application.
- * The sniccowp core itself DOES NOT require your implementation to be capable of auto-wiring.
- * However, you are free to use a container that supports auto-wiring in your application code.
+ * The DependencyInjection(DI) container takes care of lazily constructing and
+ * loading services for your application. The sniccowp core itself DOES NOT
+ * require your implementation to be capable of auto-wiring. However, you are
+ * free to use a container that supports auto-wiring in your application code.
  */
 abstract class DIContainer implements ArrayAccess, PsrContainer
 {
-
     /**
-     * After the lock method is called and method call that would change the container must throw {@see FrozenService}
+     * After the lock method is called and method call that would change the
+     * container must throw.
+     *
+     * {@see FrozenService}.
      *
      * @throws FrozenService
      *
@@ -32,28 +34,29 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
     abstract public function lock(): void;
 
     /**
-     * Register a lazy callable in the container.
-     * This method MUST return a new object every time the id is resolved from the container.
+     * Register a lazy callable in the container. This method MUST return a new
+     * object every time the id is resolved from the container.
      *
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param callable():T $callable
+     * @param callable():T    $callable
      *
-     * @throws FrozenService When trying to overwrite an already resolved shared service.
+     * @throws FrozenService when trying to overwrite an already resolved shared service
      */
     abstract public function factory(string $id, callable $callable): void;
 
     /**
      * Register a lazy callable in the container that will only be called ONCE.
-     * After resolving the service once the same object instance MUST be returned every time its resolved.
+     * After resolving the service once the same object instance MUST be
+     * returned every time its resolved.
      *
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param callable():T $callable
+     * @param callable():T    $callable
      *
-     * @throws FrozenService When trying to overwrite an already resolved shared service.
+     * @throws FrozenService when trying to overwrite an already resolved shared service
      */
     abstract public function shared(string $id, callable $callable): void;
 
@@ -63,13 +66,13 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param T $service
+     * @param T               $service
      *
-     * @throws FrozenService When trying to overwrite an already resolved singleton.
+     * @throws FrozenService when trying to overwrite an already resolved singleton
      */
     final public function instance(string $id, object $service): void
     {
-        $this->shared($id, fn() => $service);
+        $this->shared($id, fn () => $service);
     }
 
     /**
@@ -77,15 +80,16 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $offset
      *
-     * @return T
-     *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     *
+     * @return T
      */
     #[ReturnTypeWillChange]
     final public function offsetGet($offset)
     {
         Assert::stringNotEmpty($offset);
+
         return $this->make($offset);
     }
 
@@ -93,7 +97,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @template T of object
      *
      * @param class-string<T> $offset
-     * @param T|callable():T $value
+     * @param callable():T|T  $value
      */
     final public function offsetSet($offset, $value): void
     {
@@ -105,6 +109,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
              * @var Closure():object $value
              */
             $this->shared($offset, $value);
+
             return;
         }
         $this->instance($offset, $value);
@@ -115,10 +120,10 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $id
      *
-     * @return T
-     *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     *
+     * @return T
      */
     final public function make(string $id)
     {
@@ -131,7 +136,4 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
         return $res;
     }
-
 }
-
-

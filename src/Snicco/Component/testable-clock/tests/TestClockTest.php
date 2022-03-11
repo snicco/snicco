@@ -11,9 +11,11 @@ use Snicco\Component\TestableClock\TestClock;
 use function time;
 use function usleep;
 
+/**
+ * @internal
+ */
 final class TestClockTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -33,11 +35,7 @@ final class TestClockTest extends TestCase
         $clock = new TestClock($time = new DateTimeImmutable('12-12-2020'));
 
         $this->assertNotEqualsWithDelta(time(), $clock->currentTimestamp(), 1);
-        $this->assertNotEqualsWithDelta(
-            new DateTimeImmutable('now'),
-            $clock->currentTime(),
-            1
-        );
+        $this->assertNotEqualsWithDelta(new DateTimeImmutable('now'), $clock->currentTime(), 1);
 
         $this->assertSame($time, $clock->currentTime());
     }
@@ -98,5 +96,4 @@ final class TestClockTest extends TestCase
 
         $this->assertEquals($ts1 - 101, $clock->currentTimestamp());
     }
-
 }

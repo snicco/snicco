@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\TestableClock\Tests;
 
 use DateTimeImmutable;
@@ -14,9 +13,11 @@ use function date_default_timezone_get;
 use function date_default_timezone_set;
 use function usleep;
 
+/**
+ * @internal
+ */
 final class SystemClockTest extends TestCase
 {
-
     private string $current_timezone;
 
     protected function setUp(): void
@@ -94,5 +95,4 @@ final class SystemClockTest extends TestCase
         $this->assertNotEquals($clock, new SystemClock(new DateTimeZone('europe/berlin')));
         $this->assertEquals($clock, new SystemClock(new DateTimeZone('UTC')));
     }
-
 }

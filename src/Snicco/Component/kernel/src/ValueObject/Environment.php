@@ -7,38 +7,40 @@ namespace Snicco\Component\Kernel\ValueObject;
 use InvalidArgumentException;
 use Webmozart\Assert\Assert;
 
+use function in_array;
+
 use const PHP_SAPI;
 
 /**
- * This class is an immutable value object that represent the environment the application is
- * running in.
+ * This class is an immutable value object that represent the environment the
+ * application is running in.
  *
  * @psalm-immutable
  */
 final class Environment
 {
+    public const TESTING = 'testing';
 
-    const TESTING = 'testing';
-    const PROD = 'prod';
-    const DEV = 'dev';
-    const STAGING = 'staging';
-    const ALL = 'all';
+    public const PROD = 'prod';
+
+    public const DEV = 'dev';
+
+    public const STAGING = 'staging';
+
+    public const ALL = 'all';
 
     private string $environment;
 
     private bool $is_debug;
 
     /**
-     * @psalm-param  self::TESTING | self::PROD | self::DEV | self::STAGING $environment
+     * @param self::DEV|self::PROD|self::STAGING|self::TESTING $environment
      */
     private function __construct(string $environment, bool $is_debug)
     {
-        Assert::stringNotEmpty(
-            $environment,
-            'App environment can not be constructed with an empty string.'
-        );
+        Assert::stringNotEmpty($environment, 'App environment can not be constructed with an empty string.');
 
-        if (!in_array($environment, $this->validEnvironments(), true)) {
+        if (! in_array($environment, $this->validEnvironments(), true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'App environment has to be one of [%s]. Got: [%s].',
@@ -51,9 +53,7 @@ final class Environment
         $this->environment = $environment;
 
         if ($this->isProduction() && $is_debug) {
-            throw new InvalidArgumentException(
-                'App environment can not be in debug mode while in production.'
-            );
+            throw new InvalidArgumentException('App environment can not be in debug mode while in production.');
         }
 
         $this->is_debug = $is_debug;
@@ -65,7 +65,7 @@ final class Environment
     }
 
     /**
-     * @psalm-param  self::TESTING | self::PROD | self::DEV | self::STAGING $environment
+     * @param self::DEV|self::PROD|self::STAGING|self::TESTING $environment
      */
     public static function fromString(string $environment, bool $debug = false): self
     {
@@ -119,7 +119,7 @@ final class Environment
 
     public function isCli(): bool
     {
-        return (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg');
+        return PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg';
     }
 
     /**
@@ -129,5 +129,4 @@ final class Environment
     {
         return [self::TESTING, self::PROD, self::DEV, self::STAGING];
     }
-
 }

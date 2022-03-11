@@ -20,14 +20,9 @@ use function time;
 
 trait SessionHelpers
 {
-
     public function newSession(?SessionId $id = null, array $data = [], int $now = null): Session
     {
-        return new ReadWriteSession(
-            $id ?? SessionId::new(),
-            $data,
-            $now ?? time()
-        );
+        return new ReadWriteSession($id ?? SessionId::new(), $data, $now ?? time());
     }
 
     public function getSessionManager(
@@ -40,16 +35,11 @@ trait SessionHelpers
             $driver ?? new InMemoryDriver(),
             new JsonSerializer(),
             new SystemClock(),
-            $dispatcher ?? new class implements SessionEventDispatcher {
-
+            $dispatcher ?? new class() implements SessionEventDispatcher {
                 public function dispatchAll(array $events): void
                 {
-                    //
                 }
-
             },
         );
     }
-
 }
-

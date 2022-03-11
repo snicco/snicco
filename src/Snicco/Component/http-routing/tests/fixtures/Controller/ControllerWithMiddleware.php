@@ -11,8 +11,8 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 
 class ControllerWithMiddleware extends Controller
 {
+    public const CONSTRUCTED_KEY = 'controller_with_middleware';
 
-    const CONSTRUCTED_KEY = 'controller_with_middleware';
     private Baz $baz;
 
     public function __construct(Baz $baz)
@@ -22,7 +22,7 @@ class ControllerWithMiddleware extends Controller
         $this->baz = $baz;
 
         $count = $GLOBALS['test'][self::CONSTRUCTED_KEY] ?? 0;
-        $count++;
+        ++$count;
         $GLOBALS['test'][self::CONSTRUCTED_KEY] = $count;
     }
 
@@ -30,6 +30,4 @@ class ControllerWithMiddleware extends Controller
     {
         return $this->baz->value . ':controller_with_middleware';
     }
-
 }
-

@@ -7,7 +7,6 @@ use Snicco\Bundle\Session\Option\SessionOption;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 
 return [
-
     /*
      * The name of the session cookie.
      * If you don't need JavaScript access to this cookie you can leave this value as is. It was randomly generated when the configuration was first copied.
@@ -19,7 +18,6 @@ return [
      * For a full list of options see SessionConfig::mergeDefaults()
      */
     SessionOption::CONFIG => [
-
         // The path where the session cookie is available.
         // You should leave this option as is. Otherwise, the cookie won't be available if users are logged-in/logged-out.
         'path' => '/',
@@ -60,7 +58,7 @@ return [
      * If you use the WPObjectCacheDriver you need to make sure that your WordPress cache plugin is persistent.
      */
     SessionOption::DRIVER => WPDBSessionDriver::class,
-//    SessionOption::DRIVER => WPObjectCacheDriver::class,
+    //    SessionOption::DRIVER => WPObjectCacheDriver::class,
 
     /*
      * If your session data contains sensitive information you can encrypt the session content
@@ -75,6 +73,5 @@ return [
      * Otherwise you can use the PHPSerializer.
      */
     SessionOption::SERIALIZER => JsonSerializer::class,
-//    SessionOption::SERIALIZER => PHPSerializer::class,
-
+    //    SessionOption::SERIALIZER => PHPSerializer::class,
 ];

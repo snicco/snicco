@@ -21,41 +21,41 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestResult;
 
-class MiddlewareTestCaseTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class MiddlewareTestCaseTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
-    public function testResponseIsTestResponse(): void
+    public function test_response_is_test_response(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->responseFactory()->html('foo');
+                return $this->responseFactory()
+                    ->html('foo');
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
         $this->assertInstanceOf(MiddlewareTestResult::class, $response);
-        $response->assertableResponse()->assertSeeText('foo');
+        $response->assertableResponse()
+            ->assertSeeText('foo');
     }
 
     /**
      * @test
      */
-    public function assertNextWasCalled_can_pass(): void
+    public function assert_next_was_called_can_pass(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -68,15 +68,14 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasCalled_can_fail(): void
+    public function assert_next_was_called_can_fail(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->responseFactory()->html('foo');
+                return $this->responseFactory()
+                    ->html('foo');
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -94,15 +93,14 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasNotCalled_can_pass(): void
+    public function assert_next_was_not_called_can_pass(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->responseFactory()->html('foo');
+                return $this->responseFactory()
+                    ->html('foo');
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -115,15 +113,13 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assertNextWasNotCalled_can_fail(): void
+    public function assert_next_was_not_called_can_fail(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -141,13 +137,11 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function assertions_about_the_passed_request_to_the_next_middleware_can_be_made(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request->withAttribute('foo', 'bar'));
             }
-
         };
 
         $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -159,15 +153,13 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
      * @test
      */
     public function an_exception_is_thrown_if_the_middleware_did_not_delegate_to_the_next_one_and_assertions_about_the_received_request_are_made(
-    ): void
-    {
-        $middleware = new class extends Middleware {
-
+        ): void {
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->responseFactory()->html('foo');
+                return $this->responseFactory()
+                    ->html('foo');
             }
-
         };
 
         $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -185,14 +177,13 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function delegating_to_the_next_middleware_and_using_its_response_works(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 $response = $next($request);
+
                 return $response->withHeader('foo', 'bar');
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
@@ -200,7 +191,8 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         $this->assertInstanceOf(MiddlewareTestResult::class, $response);
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertHeader('foo', 'bar');
+        $response->assertableResponse()
+            ->assertHeader('foo', 'bar');
     }
 
     /**
@@ -209,67 +201,67 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     public function custom_responses_for_the_next_middleware_can_be_set(): void
     {
         $this->withNextMiddlewareResponse(function () {
-            return $this->responseFactory()->html('foo');
+            return $this->responseFactory()
+                ->html('foo');
         });
 
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
-        $response->assertableResponse()->assertSeeText('foo');
+        $response->assertableResponse()
+            ->assertSeeText('foo');
     }
 
     /**
      * @test
      */
-    public function assertNextMiddlewareCalled_still_works_with_custom_responses(): void
+    public function assert_next_middleware_called_still_works_with_custom_responses(): void
     {
         $this->withNextMiddlewareResponse(function () {
-            return $this->responseFactory()->html('foo');
+            return $this->responseFactory()
+                ->html('foo');
         });
 
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertSeeText('foo');
+        $response->assertableResponse()
+            ->assertSeeText('foo');
     }
 
     /**
      * @test
      */
-    public function assertNextMiddlewareCalled_works_if_the_middleware_under_test_generated_a_custom_responses(): void
+    public function assert_next_middleware_called_works_if_the_middleware_under_test_generated_a_custom_responses(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 $next($request);
 
-                return $this->responseFactory()->html('foo');
+                return $this->responseFactory()
+                    ->html('foo');
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertSeeText('foo');
+        $response->assertableResponse()
+            ->assertSeeText('foo');
     }
 
     /**
@@ -277,26 +269,28 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function everything_is_reset_after_running_a_middleware(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 if ($request->isGet()) {
                     $next($request);
                 }
-                return $this->responseFactory()->html('foo');
-            }
 
+                return $this->responseFactory()
+                    ->html('foo');
+            }
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertSeeText('foo');
+        $response->assertableResponse()
+            ->assertSeeText('foo');
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo', [], 'POST'));
         $response->assertNextMiddlewareNotCalled();
-        $response->assertableResponse()->assertSeeText('foo');
+        $response->assertableResponse()
+            ->assertSeeText('foo');
     }
 
     /**
@@ -323,27 +317,27 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function test_withRoutes(): void
+    public function test_with_routes(): void
     {
         $this->withRoutes([Route::create('/foo', Route::DELEGATE, 'r1')]);
 
         $this->withNextMiddlewareResponse(function () {
-            return $this->responseUtils()->redirectToRoute('r1');
+            return $this->responseUtils()
+                ->redirectToRoute('r1');
         });
 
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
-
         };
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertRedirect('/foo');
+        $response->assertableResponse()
+            ->assertRedirect('/foo');
     }
 
     /**
@@ -355,18 +349,15 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
             return new ViewResponse('foo', $response);
         });
 
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
             }
-
         };
 
         $result = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $result->assertNextMiddlewareCalled();
         $this->assertInstanceOf(ViewResponse::class, $result->assertableResponse()->getPsrResponse());
     }
-
 }

@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Routing\Cache;
 
 use Closure;
 use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
 
+use function is_array;
 use function var_export;
 
 final class FileRouteCache implements RouteCache
 {
-
     private Closure $empty_error_handler;
+
     private string $path;
+
     private int $file_permission;
 
     public function __construct(string $cache_path, int $file_permission = 0644)
@@ -30,7 +31,7 @@ final class FileRouteCache implements RouteCache
     {
         $result = $this->readFile($this->path);
 
-        if ($result !== null) {
+        if (null !== $result) {
             return $result;
         }
         $data = $loader();
@@ -40,7 +41,7 @@ final class FileRouteCache implements RouteCache
     }
 
     /**
-     * @return null|array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}
+     * @return array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>}|null
      */
     private function readFile(string $path): ?array
     {
@@ -50,7 +51,7 @@ final class FileRouteCache implements RouteCache
         $value = include $path;
         restore_error_handler();
 
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return null;
         }
 
@@ -65,5 +66,4 @@ final class FileRouteCache implements RouteCache
     {
         FileWriter::writeFile($path, $content, $this->file_permission);
     }
-
 }

@@ -8,7 +8,5 @@ use Snicco\Component\EventDispatcher\Event;
 
 interface LoggableEvent extends Event
 {
-
     public function message();
-
 }

@@ -6,7 +6,5 @@ use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [
-        BetterWPDBBundle::class
-    ]
+    Environment::ALL => [BetterWPDBBundle::class],
 ];

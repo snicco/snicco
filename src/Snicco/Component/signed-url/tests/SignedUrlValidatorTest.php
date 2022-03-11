@@ -10,7 +10,6 @@ use RuntimeException;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
 use Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded;
-use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
 use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\SignedUrlValidator;
@@ -19,13 +18,16 @@ use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
 use function str_replace;
-use function strval;
 
+/**
+ * @internal
+ */
 final class SignedUrlValidatorTest extends TestCase
 {
-
     private UrlSigner $url_signer;
+
     private InMemoryStorage $storage;
+
     private HMAC $hmac;
 
     protected function setUp(): void
@@ -95,9 +97,9 @@ final class SignedUrlValidatorTest extends TestCase
 
         $this->expectException(InvalidSignature::class);
 
-        $string = preg_replace('/expires=\d+/', 'expires=' . (string)(time() + 100), $signed_url->asString());
+        $string = preg_replace('/expires=\d+/', 'expires=' . (string) (time() + 100), $signed_url->asString());
 
-        if (false == $string) {
+        if (null === $string) {
             throw new RuntimeException('preg_replace failed in test');
         }
 
@@ -114,6 +116,7 @@ final class SignedUrlValidatorTest extends TestCase
         $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
         $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
+
         try {
             $validator->validate($string);
             $this->fail('No exception thrown for tampered signature.');
@@ -128,7 +131,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_if_no_signature(): void
     {
         $e = time() + 10;
-        $url = '/foo?expires=' . strval($e);
+        $url = '/foo?expires=' . (string) $e;
 
         $this->expectException(InvalidSignature::class);
 
@@ -155,11 +158,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator(
-            $this->storage,
-            $this->hmac,
-            $clock = new TestClock()
-        );
+        $validator = new SignedUrlValidator($this->storage, $this->hmac, $clock = new TestClock());
 
         $validator->validate($signed_url->asString());
 
@@ -176,10 +175,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_after_max_usage(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10, 2);
-        $validator = new SignedUrlValidator(
-            $this->storage,
-            $this->hmac,
-        );
+        $validator = new SignedUrlValidator($this->storage, $this->hmac,);
 
         $validator->validate($signed_url->asString());
         $validator->validate($signed_url->asString());
@@ -205,7 +201,7 @@ final class SignedUrlValidatorTest extends TestCase
         $string = $signed_url->asString();
         preg_match_all('/signature=([^|]+)/', $string, $matches);
 
-        if (!isset($matches[1][0])) {
+        if (! isset($matches[1][0])) {
             throw new RuntimeException('Cant extract correct signature in test.');
         }
         $correct_identifier = $matches[1][0];
@@ -222,11 +218,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator(
-            $this->storage,
-            $this->hmac,
-            $clock = new TestClock()
-        );
+        $validator = new SignedUrlValidator($this->storage, $this->hmac, $clock = new TestClock());
 
         $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
 
@@ -295,16 +287,11 @@ final class SignedUrlValidatorTest extends TestCase
      */
     public function additional_request_data_can_be_added_for_validation(): void
     {
-        /** @var null|string $pre */
+        /** @var string|null $pre */
         $pre = $_SERVER['HTTP_USER_AGENT'] ?? null;
         $_SERVER['HTTP_USER_AGENT'] = 'foobar';
 
-        $signed_url = $this->url_signer->sign(
-            'https://foo.com/bar/baz/',
-            10,
-            1,
-            $_SERVER['HTTP_USER_AGENT']
-        );
+        $signed_url = $this->url_signer->sign('https://foo.com/bar/baz/', 10, 1, $_SERVER['HTTP_USER_AGENT']);
 
         $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
@@ -312,24 +299,21 @@ final class SignedUrlValidatorTest extends TestCase
             $validator->validate($signed_url->asString());
             $this->fail('Invalid signature passed validation.');
         } catch (InvalidSignature $e) {
-            //
         }
 
         try {
             $validator->validate($signed_url->asString(), 'bogus');
             $this->fail('Invalid signature passed validation.');
         } catch (InvalidSignature $e) {
-            //
         }
 
         $validator->validate($signed_url->asString(), $_SERVER['HTTP_USER_AGENT']);
 
-        if ($pre === null) {
+        if (null === $pre) {
             unset($_SERVER['HTTP_USER_AGENT']);
         } else {
             $_SERVER['HTTP_USER_AGENT'] = $pre;
         }
         $this->assertTrue(true);
     }
-
 }

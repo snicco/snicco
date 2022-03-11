@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPMail;
 
 use LogicException;
@@ -36,7 +35,6 @@ use function sprintf;
 
 final class BetterWPMailBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/better-wp-mail-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -62,7 +60,6 @@ final class BetterWPMailBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -72,103 +69,112 @@ final class BetterWPMailBundle implements Bundle
 
     private function bindMailer(Kernel $kernel): void
     {
-        $kernel->container()->shared(Mailer::class, function () use ($kernel) {
-            $from_name = $kernel->config()->getString('mail.' . MailOption::FROM_NAME);
-            $from_email = $kernel->config()->getString('mail.' . MailOption::FROM_EMAIL);
-            $reply_to_name = $kernel->config()->getString('mail.' . MailOption::REPLY_TO_NAME);
-            $reply_to_email = $kernel->config()->getString('mail.' . MailOption::REPLY_TO_EMAIL);
+        $kernel->container()
+            ->shared(Mailer::class, function () use ($kernel) {
+                $config = $kernel->config();
+                $from_name = $config->getString('mail.' . MailOption::FROM_NAME);
+                $from_email = $config->getString('mail.' . MailOption::FROM_EMAIL);
+                $reply_to_name = $config->getString('mail.' . MailOption::REPLY_TO_NAME);
+                $reply_to_email = $config->getString('mail.' . MailOption::REPLY_TO_EMAIL);
 
-            $default_config = new MailDefaults(
-                $from_name,
-                $from_email,
-                $reply_to_email,
-                $reply_to_name
-            );
+                $default_config = new MailDefaults($from_name, $from_email, $reply_to_email, $reply_to_name);
 
-            /**
-             * @var class-string<MailRenderer>[] $renderer_names
-             */
-            $renderer_names = $kernel->config()->getListOfStrings('mail.' . MailOption::RENDERER);
-            $renderers = array_map(function ($class) use ($kernel) {
-                if ($class === FilesystemRenderer::class) {
-                    return new FilesystemRenderer();
-                }
-                return $kernel->container()->make($class);
-            }, $renderer_names);
+                /** @var class-string<MailRenderer>[] $renderer_names */
+                $renderer_names = $config->getListOfStrings('mail.' . MailOption::RENDERER);
+                $renderers = array_map(function ($class) use ($kernel) {
+                    if (FilesystemRenderer::class === $class) {
+                        return new FilesystemRenderer();
+                    }
 
-            $renderer = new AggregateRenderer(...$renderers);
+                    return $kernel->container()
+                        ->make($class);
+                }, $renderer_names);
 
-            return new Mailer(
-                $kernel->container()->make(Transport::class),
-                $renderer,
-                $kernel->container()->make(MailEvents::class),
-                $default_config
-            );
-        });
+                $renderer = new AggregateRenderer(...$renderers);
+
+                return new Mailer(
+                    $kernel->container()
+                        ->make(Transport::class),
+                    $renderer,
+                    $kernel->container()
+                        ->make(MailEvents::class),
+                    $default_config
+                );
+            });
     }
 
     private function bindTransport(Kernel $kernel): void
     {
-        $kernel->container()->shared(Transport::class, function () use ($kernel): Transport {
-            if ($kernel->env()->isTesting()) {
-                return new FakeTransport();
-            }
+        $kernel->container()
+            ->shared(Transport::class, function () use ($kernel): Transport {
+                if ($kernel->env()->isTesting()) {
+                    return new FakeTransport();
+                }
 
-            /** @var class-string<Transport> $transport_class */
-            $transport_class = $kernel->config()->getString('mail.' . MailOption::TRANSPORT);
+                /** @var class-string<Transport> $transport_class */
+                $transport_class = $kernel->config()
+                    ->getString('mail.' . MailOption::TRANSPORT);
 
-            if (WPMailTransport::class === $transport_class) {
-                return new WPMailTransport();
-            }
+                if (WPMailTransport::class === $transport_class) {
+                    return new WPMailTransport();
+                }
 
-            return $kernel->container()->make($transport_class);
-        });
+                return $kernel->container()
+                    ->make($transport_class);
+            });
     }
 
     private function bindViewEngineRenderer(Kernel $kernel): void
     {
-        $kernel->container()->shared(ViewEngineMailRenderer::class, function () use ($kernel) {
-            try {
-                $engine = $kernel->container()->make(ViewEngine::class);
-            } catch (NotFoundExceptionInterface $e) {
-                throw new LogicException(
-                    sprintf(
-                        "The ViewEngine is not bound in the container. Make sure that you are using the templating-bundle or that you bind an instance of [%s].\n%s",
-                        ViewEngine::class,
-                        $e->getMessage()
-                    ),
-                    0,
-                    $e
-                );
-            }
+        $kernel->container()
+            ->shared(ViewEngineMailRenderer::class, function () use ($kernel) {
+                try {
+                    $engine = $kernel->container()
+                        ->make(ViewEngine::class);
+                } catch (NotFoundExceptionInterface $e) {
+                    throw new LogicException(
+                        sprintf(
+                            "The ViewEngine is not bound in the container. Make sure that you are using the templating-bundle or that you bind an instance of [%s].\n%s",
+                            ViewEngine::class,
+                            $e->getMessage()
+                        ),
+                        0,
+                        $e
+                    );
+                }
 
-            return new ViewEngineMailRenderer($engine);
-        });
+                return new ViewEngineMailRenderer($engine);
+            });
     }
 
     private function bindMailEvents(Kernel $kernel): void
     {
-        $kernel->container()->shared(MailEvents::class, function () use ($kernel) {
-            $expose = $kernel->config()->getBoolean('mail.' . MailOption::EXPOSE_MAIL_EVENTS);
+        $kernel->container()
+            ->shared(MailEvents::class, function () use ($kernel) {
+                $expose = $kernel->config()
+                    ->getBoolean('mail.' . MailOption::EXPOSE_MAIL_EVENTS);
 
-            if ($kernel->container()->has(EventDispatcher::class)) {
-                $mail_events = new MailEventsUsingBetterWPHooks(
-                    $kernel->container()->make(EventDispatcher::class),
-                    $expose
-                );
-            } else {
-                $mail_events = $expose ? new MailEventsUsingWPHooks() : new NullEvents();
-            }
-            return $mail_events;
-        });
+                if ($kernel->container()->has(EventDispatcher::class)) {
+                    $mail_events = new MailEventsUsingBetterWPHooks(
+                        $kernel->container()
+                            ->make(EventDispatcher::class),
+                        $expose
+                    );
+                } else {
+                    $mail_events = $expose ? new MailEventsUsingWPHooks() : new NullEvents();
+                }
+
+                return $mail_events;
+            });
     }
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
-        $destination = $kernel->directories()->configDir() . '/mail.php';
+        $destination = $kernel->directories()
+            ->configDir() . '/mail.php';
         if (is_file($destination)) {
             return;
         }
@@ -177,9 +183,8 @@ final class BetterWPMailBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

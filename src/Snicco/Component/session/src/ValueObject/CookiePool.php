@@ -6,7 +6,6 @@ namespace Snicco\Component\Session\ValueObject;
 
 final class CookiePool
 {
-
     /**
      * @var array<string,string>
      */
@@ -45,5 +44,4 @@ final class CookiePool
     {
         return $this->cookies[$cookie_name] ?? null;
     }
-
 }

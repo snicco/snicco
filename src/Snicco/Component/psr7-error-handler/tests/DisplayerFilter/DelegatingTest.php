@@ -15,9 +15,11 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 use function array_values;
 
+/**
+ * @internal
+ */
 final class DelegatingTest extends TestCase
 {
-
     private ServerRequest $request;
 
     protected function setUp(): void
@@ -31,10 +33,7 @@ final class DelegatingTest extends TestCase
      */
     public function all_displayers_that_should_display_are_included(): void
     {
-        $filter = new Delegating(
-            new Verbosity(true),
-            new ContentType()
-        );
+        $filter = new Delegating(new Verbosity(true), new ContentType());
 
         $displayers = [
             $d1 = new VerbosePlain(),
@@ -44,51 +43,26 @@ final class DelegatingTest extends TestCase
         ];
 
         $e = new RuntimeException();
-        $info = new ExceptionInformation(
-            500,
-            'foo_id',
-            'foo_title',
-            'foo_details',
-            $e,
-            $e,
-            $this->request
-        );
+        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
         $request = new ServerRequest('GET', '/foo');
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info);
 
         $this->assertSame([$d1, $d2], array_values($filtered));
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'application/json'),
-            $info
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'application/json'), $info);
 
         $this->assertSame([$d3, $d4], array_values($filtered));
 
-        $filter = new Delegating(
-            new Verbosity(false),
-            new ContentType()
-        );
+        $filter = new Delegating(new Verbosity(false), new ContentType());
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info);
 
         $this->assertSame([$d2], array_values($filtered));
     }
-
 }
 
 class VerbosePlain implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -108,12 +82,10 @@ class VerbosePlain implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerbosePlain implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -133,12 +105,10 @@ class NonVerbosePlain implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class VerboseJson implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -158,12 +128,10 @@ class VerboseJson implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class NonVerboseJson implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -183,5 +151,4 @@ class NonVerboseJson implements ExceptionDisplayer
     {
         return true;
     }
-
 }

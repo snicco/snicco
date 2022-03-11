@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Tests\Middleware;
 
 use LogicException;
@@ -22,24 +21,30 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
+/**
+ * @internal
+ */
 final class ShareSessionWithViewsTest extends MiddlewareTestCase
 {
-
     private Session $session;
+
     private Request $request_with_session;
 
     protected function setUp(): void
     {
         parent::setUp();
         $session_manager = new FactorySessionManager(
-            SessionConfig::mergeDefaults('test_cookie', ['garbage_collection_percentage' => 0]),
+            SessionConfig::mergeDefaults('test_cookie', [
+                'garbage_collection_percentage' => 0,
+            ]),
             new InMemoryDriver(),
             new JsonSerializer()
         );
-        $this->request_with_session = $this->frontendRequest()->withAttribute(
-            MutableSession::class,
-            $this->session = $session_manager->start(new CookiePool([]))
-        )->withAttribute(ImmutableSession::class, ReadOnlySession::fromSession($this->session));
+        $this->request_with_session = $this->frontendRequest()
+            ->withAttribute(
+                MutableSession::class,
+                $this->session = $session_manager->start(new CookiePool([]))
+            )->withAttribute(ImmutableSession::class, ReadOnlySession::fromSession($this->session));
     }
 
     /**
@@ -49,17 +54,24 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
     {
         $middleware = new ShareSessionWithViews();
 
-        $this->session->flash(SessionErrors::class, ['default' => ['key1' => ['error1', 'error2']]]);
+        $this->session->flash(SessionErrors::class, [
+            'default' => [
+                'key1' => ['error1', 'error2'],
+            ],
+        ]);
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return (new ViewResponse('foo_view', $response))
-                ->withViewData(['foo' => 'bar']);
+                ->withViewData([
+                    'foo' => 'bar',
+                ]);
         });
 
         $response = $this->runMiddleware($middleware, $this->request_with_session);
         $response->assertNextMiddlewareCalled();
 
-        $view_response = $response->assertableResponse()->getPsrResponse();
+        $view_response = $response->assertableResponse()
+            ->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $view_response);
 
         $this->assertEquals([
@@ -67,12 +79,9 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
             'session' => ReadOnlySession::fromSession($this->session),
             'errors' => new SessionErrors([
                 'default' => [
-                    'key1' => [
-                        'error1',
-                        'error2'
-                    ]
-                ]
-            ])
+                    'key1' => ['error1', 'error2'],
+                ],
+            ]),
         ], $view_response->viewData());
     }
 
@@ -95,13 +104,13 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return (new ViewResponse('foo_view', $response))
-                ->withViewData(['foo' => 'bar']);
+                ->withViewData([
+                    'foo' => 'bar',
+                ]);
         });
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('No session has been set on the request.');
         $this->runMiddleware($middleware, $this->frontendRequest());
     }
-
-
 }

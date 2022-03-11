@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPMail;
 
 use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
@@ -14,7 +13,6 @@ use Snicco\Component\Templating\ViewEngine;
 
 final class ViewEngineMailRenderer implements MailRenderer
 {
-
     private ViewEngine $view_engine;
 
     /**
@@ -31,11 +29,11 @@ final class ViewEngineMailRenderer implements MailRenderer
     {
         try {
             $view = $this->getView($template_name);
-            return $view->with($context)->render();
+
+            return $view->with($context)
+                ->render();
         } catch (ViewCantBeRendered $e) {
-            throw new CouldNotRenderMailContent(
-                $e->getMessage(), 0, $e
-            );
+            throw new CouldNotRenderMailContent($e->getMessage(), 0, $e);
         }
     }
 
@@ -43,6 +41,7 @@ final class ViewEngineMailRenderer implements MailRenderer
     {
         try {
             $this->getView($template_name);
+
             return true;
         } catch (ViewNotFound $e) {
             return false;
@@ -59,7 +58,7 @@ final class ViewEngineMailRenderer implements MailRenderer
         }
         $view = $this->view_engine->make($template_name);
         $this->views[$template_name] = $view;
+
         return $view;
     }
-
 }

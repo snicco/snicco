@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\EventDispatcher\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -13,10 +12,11 @@ use stdClass;
 /**
  * @psalm-suppress UnusedClosureParam
  * @psalm-suppress MissingClosureParamType
+ *
+ * @internal
  */
 final class ClosureTypeHintTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -55,6 +55,4 @@ final class ClosureTypeHintTest extends TestCase
 
         ClosureTypeHint::first($closure);
     }
-
-
 }

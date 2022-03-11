@@ -11,21 +11,23 @@ use mysqli_sql_exception;
 use mysqli_stmt;
 
 use function count;
+use function is_float;
+use function is_int;
 use function sprintf;
 
 /**
- * This class needs to double-check every method call to mysqli for errors because by default
- * WordPress configures mysqli to not throw exceptions and also sets the mysql mode to non-strict.
+ * This class needs to double-check every method call to mysqli for errors
+ * because by default WordPress configures mysqli to not throw exceptions and
+ * also sets the mysql mode to non-strict.
  *
  * @psalm-internal Snicco\Component\Eloquent
  *
  * @interal
- *
  */
 final class MysqliDriver implements MysqliDriverInterface
 {
-
     private mysqli $mysqli;
+
     private MysqliReconnect $reconnect;
 
     public function __construct(mysqli $mysqli, MysqliReconnect $reconnect)
@@ -47,6 +49,7 @@ final class MysqliDriver implements MysqliDriverInterface
         while ($row = $result->fetch_object()) {
             $values[] = $row;
         }
+
         return $values;
     }
 
@@ -63,7 +66,7 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw new QueryException($sql, $bindings, $e);
             }
 
-            return $res === true;
+            return true === $res;
         }
 
         $stmt = $this->createPreparedStatement($sql, $bindings);
@@ -83,7 +86,7 @@ final class MysqliDriver implements MysqliDriverInterface
             throw new QueryException($sql, [], $e);
         }
 
-        return $result === true;
+        return true === $result;
     }
 
     public function doCursorSelect(string $sql, array $bindings): mysqli_result
@@ -97,7 +100,7 @@ final class MysqliDriver implements MysqliDriverInterface
 
     public function lastInsertId(): int
     {
-        return (int)$this->mysqli->insert_id;
+        return (int) $this->mysqli->insert_id;
     }
 
     public function isStillConnected(): bool
@@ -108,6 +111,7 @@ final class MysqliDriver implements MysqliDriverInterface
     public function reconnect(): bool
     {
         $this->mysqli = $this->reconnect->getMysqli();
+
         return true;
     }
 
@@ -195,18 +199,18 @@ final class MysqliDriver implements MysqliDriverInterface
             throw new QueryException($sql, $bindings, $e);
         }
 
-        if (!$stmt instanceof mysqli_stmt) {
+        if (! $stmt instanceof mysqli_stmt) {
             throw new QueryException($sql, $bindings, $this->lastException());
         }
 
-        if (!count($bindings)) {
+        if (! count($bindings)) {
             return $stmt;
         }
 
         $types = '';
 
         foreach ($bindings as $binding) {
-            if (is_double($binding)) {
+            if (is_float($binding)) {
                 $types .= 'd';
             } elseif (is_int($binding)) {
                 $types .= 'i';
@@ -220,15 +224,11 @@ final class MysqliDriver implements MysqliDriverInterface
         try {
             $success = $stmt->bind_param($types, ...$bindings);
         } catch (mysqli_sql_exception $e) {
-            throw new QueryException(
-                $sql, $copy, $this->lastException()
-            );
+            throw new QueryException($sql, $copy, $this->lastException());
         }
 
-        if (!$success) {
-            throw new QueryException(
-                $sql, $copy, $this->lastException()
-            );
+        if (! $success) {
+            throw new QueryException($sql, $copy, $this->lastException());
         }
 
         return $stmt;
@@ -236,9 +236,7 @@ final class MysqliDriver implements MysqliDriverInterface
 
     private function lastException(): mysqli_sql_exception
     {
-        /**
-         * @var array<array{error: string, errno: string, sqlstate: string}> $errors
-         */
+        /** @var array<array{error: string, errno: string, sqlstate: string}> $errors */
         $errors = $this->mysqli->error_list;
         $msg = '';
 
@@ -266,9 +264,7 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw $this->lastException();
             }
         } catch (mysqli_sql_exception $e) {
-            throw new QueryException(
-                $sql, $bindings, $e
-            );
+            throw new QueryException($sql, $bindings, $e);
         }
 
         return $success;
@@ -281,7 +277,7 @@ final class MysqliDriver implements MysqliDriverInterface
     {
         try {
             $result = $stmt->get_result();
-            if (!$result instanceof mysqli_result) {
+            if (! $result instanceof mysqli_result) {
                 throw $this->lastException();
             }
         } catch (mysqli_sql_exception $e) {
@@ -290,5 +286,4 @@ final class MysqliDriver implements MysqliDriverInterface
 
         return $result;
     }
-
 }

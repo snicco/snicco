@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\unit\Middleware;
 
 use Snicco\Bundle\HttpRouting\Middleware\SetUserId;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 
+/**
+ * @internal
+ */
 final class SetUserIdTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -23,12 +24,10 @@ final class SetUserIdTest extends MiddlewareTestCase
 
         $this->assertSame(12, $this->receivedRequest()->userId());
     }
-
 }
 
 class SetUserIDTestWPAPI extends BetterWPAPI
 {
-
     private int $user_id;
 
     public function __construct(int $user_id)
@@ -40,5 +39,4 @@ class SetUserIDTestWPAPI extends BetterWPAPI
     {
         return $this->user_id;
     }
-
 }

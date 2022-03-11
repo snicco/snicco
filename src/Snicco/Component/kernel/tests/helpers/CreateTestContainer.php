@@ -9,10 +9,8 @@ use Snicco\Component\Kernel\DIContainer;
 
 trait CreateTestContainer
 {
-
     private function createContainer(): DIContainer
     {
         return new PimpleContainerAdapter();
     }
-
 }

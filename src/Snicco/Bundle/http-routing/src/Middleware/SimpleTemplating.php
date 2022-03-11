@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
@@ -24,7 +23,7 @@ final class SimpleTemplating extends Middleware
     {
         $response = $next($request);
 
-        if (!$response instanceof ViewResponse) {
+        if (! $response instanceof ViewResponse) {
             return $response;
         }
 
@@ -39,12 +38,10 @@ final class SimpleTemplating extends Middleware
             /** @psalm-suppress UnresolvableInclude */
             require $view;
 
-            return (string)ob_get_clean();
+            return (string) ob_get_clean();
         })();
 
         // Wrap the response inside a normal response so that other middleware does not render it again.
-        return (new Response($response))->withBody(
-            $this->responseFactory()->createStream($body)
-        );
+        return (new Response($response))->withBody($this->responseFactory()->createStream($body));
     }
 }

@@ -10,10 +10,8 @@ use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
 interface Transport
 {
-
     /**
      * @throws CantSendEmail
      */
     public function send(Email $email, Envelope $envelope): void;
-
 }

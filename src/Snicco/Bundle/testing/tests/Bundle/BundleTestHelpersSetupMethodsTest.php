@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\Bundle;
 
 use PHPUnit\Framework\TestCase;
@@ -13,15 +12,17 @@ use function is_dir;
 use function is_file;
 use function touch;
 
+/**
+ * @internal
+ */
 final class BundleTestHelpersSetupMethodsTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**
      * @test
      */
-    public function setUp_and_tearDown_methods_work(): void
+    public function set_up_and_tear_down_methods_work(): void
     {
         $this->assertInstanceOf(Directories::class, $this->directories);
         $this->assertSame($this->fixturesDir(), $this->directories->baseDir());
@@ -34,7 +35,6 @@ final class BundleTestHelpersSetupMethodsTest extends TestCase
     {
         touch(__DIR__ . '/fixtures/dir/file.php');
         touch(__DIR__ . '/fixtures/dir/dir-nested/file-nested.php');
-
 
         $this->assertTrue(is_dir(__DIR__ . '/fixtures/dir'));
         $this->assertTrue(is_dir(__DIR__ . '/fixtures/dir/dir-nested'));

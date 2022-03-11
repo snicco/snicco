@@ -7,7 +7,6 @@ use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 
 return [
-
     /*
      * The global from name that will be used by default for emails.
      * You can always set an individual value when you are sending a specific email.
@@ -44,9 +43,7 @@ return [
      * An array of classes implementing the MailRenderer interface.
      * The first renderer that supports a given mail template will be used to render the template body.
      */
-    MailOption::RENDERER => [
-        FilesystemRenderer::class
-    ],
+    MailOption::RENDERER => [FilesystemRenderer::class],
 
     /*
      * The name of a class implementing the Transport interface.
@@ -61,5 +58,4 @@ return [
      * If you are not distributing code you can set this value to false.
      */
     MailOption::EXPOSE_MAIL_EVENTS => false,
-
 ];

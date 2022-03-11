@@ -16,15 +16,14 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 
 use function count;
 use function func_get_args;
+use function get_class;
 use function is_array;
 use function is_string;
 use function parse_url;
 use function sprintf;
-use function strval;
 
 final class FakeTransport implements Transport
 {
-
     private WPMailAPI $wp;
 
     /**
@@ -46,12 +45,13 @@ final class FakeTransport implements Transport
     {
         $this->wp->addFilter('pre_wp_mail', /** @psalm-suppress MixedArgumentTypeCoercion */ function (): bool {
             $args = func_get_args();
-            if (!isset($args[1]) || !is_array($args[1])) {
+            if (! isset($args[1]) || ! is_array($args[1])) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('pre_wp_mail did not receive correct arguments');
                 // @codeCoverageIgnoreEnd
             }
             $this->recordWPMail($args[1]);
+
             return false;
         }, PHP_INT_MAX, 1000);
     }
@@ -63,23 +63,18 @@ final class FakeTransport implements Transport
 
     public function assertNotSent(string $email_class): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($email_class, fn() => true));
+        $times = count($this->sentEmailsThatMatchCondition($email_class, fn () => true));
 
         PHPUnit::assertSame(
             0,
             $times,
-            sprintf(
-                'Email of type [%s] was sent [%d] %s.',
-                $email_class,
-                $times,
-                $times > 1 ? 'times' : 'time'
-            )
+            sprintf('Email of type [%s] was sent [%d] %s.', $email_class, $times, $times > 1 ? 'times' : 'time')
         );
     }
 
     public function assertSentTimes(string $mailable_class, int $expected): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn() => true));
+        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn () => true));
 
         PHPUnit::assertSame(
             $expected,
@@ -106,7 +101,8 @@ final class FakeTransport implements Transport
         $this->assertSent(
             $email_class,
             function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()->has($expected_recipient);
+                return $envelope->recipients()
+                    ->has($expected_recipient);
             }
         );
     }
@@ -114,7 +110,7 @@ final class FakeTransport implements Transport
     /**
      * @template T
      *
-     * @param class-string<T> $email_class
+     * @param class-string<T>               $email_class
      * @param Closure(T,Envelope):bool|null $closure
      */
     public function assertSent(string $email_class, ?Closure $closure = null): void
@@ -140,16 +136,12 @@ final class FakeTransport implements Transport
             PHPUnit::assertSame(
                 1,
                 count($matching),
-                sprintf(
-                    '[%d] emails were sent that match the provided condition.',
-                    count($matching)
-                )
+                sprintf('[%d] emails were sent that match the provided condition.', count($matching))
             );
         }
     }
 
     /**
-     * @param string $recipient
      * @param class-string<Email> $email_class
      * @psalm-suppress UnusedClosureParam
      */
@@ -159,7 +151,8 @@ final class FakeTransport implements Transport
         $matching = $this->sentEmailsThatMatchCondition(
             $email_class,
             function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()->has($expected_recipient);
+                return $envelope->recipients()
+                    ->has($expected_recipient);
             }
         );
 
@@ -182,21 +175,20 @@ final class FakeTransport implements Transport
     {
         $class = get_class($email);
 
-        $this->sent_mails[$class][] = [$email, $envelope,];
+        $this->sent_mails[$class][] = [$email, $envelope];
     }
 
     /**
      * @param array{to: string|string[], headers:string|string[], subject:string, message:string, attachments: string|string[]} $attributes
-     * @return void
      */
     private function recordWPMail(array $attributes): void
     {
         $to = [];
-        foreach ((array)$attributes['to'] as $recipient) {
+        foreach ((array) $attributes['to'] as $recipient) {
             $to[] = Mailbox::create($recipient);
         }
 
-        $headers = (array)$attributes['headers'];
+        $headers = (array) $attributes['headers'];
         $carbon_copies = [];
         $blind_carbon_copies = [];
 
@@ -204,29 +196,29 @@ final class FakeTransport implements Transport
         $attachments = $attributes['attachments'] ?? [];
         $site_url = $this->wp->siteUrl();
         $site_name = parse_url($site_url, PHP_URL_HOST);
-        if (!is_string($site_name)) {
-            throw new RuntimeException("Cant parse site url [$site_url].");
+        if (! is_string($site_name)) {
+            throw new RuntimeException("Cant parse site url [{$site_url}].");
         }
         if ('www.' === substr($site_name, 0, 4)) {
             $site_name = substr($site_name, 4);
         }
-        $from = 'wordpress@' . (strval($site_name));
+        $from = 'wordpress@' . ((string) $site_name);
 
         foreach (($headers) as $header) {
-            if (strpos($header, 'Cc:') !== false) {
+            if (false !== strpos($header, 'Cc:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $carbon_copies[] = Mailbox::create($matches['value']);
             }
-            if (strpos($header, 'Bcc:') !== false) {
+            if (false !== strpos($header, 'Bcc:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $blind_carbon_copies[] = Mailbox::create($matches['value']);
             }
 
-            if (strpos($header, 'From:') !== false) {
+            if (false !== strpos($header, 'From:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $from = $matches['value'];
             }
-            if (strpos($header, 'Reply-To:') !== false) {
+            if (false !== strpos($header, 'Reply-To:')) {
                 preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
                 $reply_to[] = Mailbox::create($matches['value']);
             }
@@ -256,31 +248,26 @@ final class FakeTransport implements Transport
             $wp_mail = $wp_mail->withReplyTo($reply_to);
         }
 
-        foreach ((array)$attachments as $attachment) {
-            $wp_mail = $wp_mail->addAttachment(
-                $attachment
-            );
+        foreach ((array) $attachments as $attachment) {
+            $wp_mail = $wp_mail->addAttachment($attachment);
         }
 
         $this->recordMail($wp_mail, new Envelope($from, $recipients));
     }
 
     /**
-     * @param string $email_class
-     * @param Closure $condition
-     *
      * @return Email[]
      */
     private function sentEmailsThatMatchCondition(string $email_class, Closure $condition): array
     {
         $matching = [];
 
-        if (!isset($this->sent_mails[$email_class])) {
+        if (! isset($this->sent_mails[$email_class])) {
             return [];
         }
 
         foreach ($this->sent_mails[$email_class] as $mail_data) {
-            if ($condition($mail_data[0], $mail_data[1]) === true) {
+            if (true === $condition($mail_data[0], $mail_data[1])) {
                 $matching[] = $mail_data[0];
             }
         }
@@ -292,5 +279,4 @@ final class FakeTransport implements Transport
     {
         return isset($this->sent_mails[$mailable_class]);
     }
-
 }

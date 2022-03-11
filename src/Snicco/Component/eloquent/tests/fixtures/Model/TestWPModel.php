@@ -9,6 +9,5 @@ use Snicco\Component\Eloquent\Illuminate\WPModel;
 
 class TestWPModel extends WPModel
 {
-
     use WithFactory;
 }

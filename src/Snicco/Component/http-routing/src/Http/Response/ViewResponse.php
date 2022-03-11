@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Http\Response;
 
 use Psr\Http\Message\ResponseInterface;
@@ -34,6 +33,7 @@ final class ViewResponse extends Response
     {
         $new = clone $this;
         $new->view = $view;
+
         return $new;
     }
 
@@ -52,6 +52,7 @@ final class ViewResponse extends Response
     {
         $new = clone $this;
         $new->view_data = array_replace($this->view_data, $data);
+
         return $new;
     }
 }

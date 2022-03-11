@@ -9,7 +9,6 @@ use Snicco\Component\StrArr\Arr;
 
 class ActivityFactory extends Factory
 {
-
     public function definition()
     {
         return [
@@ -19,16 +18,8 @@ class ActivityFactory extends Factory
 
     private function activity()
     {
-        $activities = [
-            'football',
-            'tenis',
-            'basketball',
-            'swimming',
-            'sightseeing',
-            'hockey',
-        ];
+        $activities = ['football', 'tenis', 'basketball', 'swimming', 'sightseeing', 'hockey'];
 
         return Arr::random($activities)[0];
     }
-
 }

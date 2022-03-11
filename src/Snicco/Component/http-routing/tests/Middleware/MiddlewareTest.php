@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use LogicException;
@@ -21,14 +20,17 @@ use Snicco\Component\HttpRouting\Testing\CreatesPsrRequests;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateUrlGenerator;
 
+/**
+ * @internal
+ */
 final class MiddlewareTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
     use CreateUrlGenerator;
 
     private \Pimple\Psr11\Container $pimple_psr;
+
     private Container $pimple;
 
     protected function setUp(): void
@@ -50,19 +52,21 @@ final class MiddlewareTest extends TestCase
      */
     public function middleware_has_access_to_the_url_generator(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $url = $this->url()->to('/foo');
-                return $this->responseFactory()->html($url);
+                $url = $this->url()
+                    ->to('/foo');
+
+                return $this->responseFactory()
+                    ->html($url);
             }
         };
         $middleware->setContainer($this->pimple_psr);
 
         $response = $middleware->process($this->frontendRequest(), $this->getNext());
 
-        $this->assertSame('/foo', (string)$response->getBody());
+        $this->assertSame('/foo', (string) $response->getBody());
     }
 
     /**
@@ -70,11 +74,11 @@ final class MiddlewareTest extends TestCase
      */
     public function middleware_has_access_to_the_response_utils(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respondWith()->redirectTo('/foo', 303);
+                return $this->respondWith()
+                    ->redirectTo('/foo', 303);
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -90,8 +94,7 @@ final class MiddlewareTest extends TestCase
      */
     public function test_process_can_be_called_with_normal_psr_interface(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next($request);
@@ -101,9 +104,9 @@ final class MiddlewareTest extends TestCase
         $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo'),
             new class($rf) implements RequestHandlerInterface {
-
                 private ResponseFactory $factory;
 
                 public function __construct(ResponseFactory $factory)
@@ -118,7 +121,7 @@ final class MiddlewareTest extends TestCase
             }
         );
 
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**
@@ -126,11 +129,11 @@ final class MiddlewareTest extends TestCase
      */
     public function the_current_request_is_used_for_the_response_utils(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respondWith()->refresh();
+                return $this->respondWith()
+                    ->refresh();
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -147,12 +150,12 @@ final class MiddlewareTest extends TestCase
      */
     public function test_exception_if_current_request_is_not_set(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             // Handle method is made public.
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respondWith()->refresh();
+                return $this->respondWith()
+                    ->refresh();
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -171,8 +174,7 @@ final class MiddlewareTest extends TestCase
      */
     public function test_next_middleware_can_be_called_with_handle_method(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $next->handle($request);
@@ -182,9 +184,9 @@ final class MiddlewareTest extends TestCase
         $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo'),
             new class($rf) implements RequestHandlerInterface {
-
                 private ResponseFactory $factory;
 
                 public function __construct(ResponseFactory $factory)
@@ -199,7 +201,7 @@ final class MiddlewareTest extends TestCase
             }
         );
 
-        $this->assertSame('foo', (string)$response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
 
     /**
@@ -207,12 +209,14 @@ final class MiddlewareTest extends TestCase
      */
     public function test_exception_if_response_factory_not_bound(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $url = $this->url()->to('/foo');
-                return $this->responseFactory()->html($url);
+                $url = $this->url()
+                    ->to('/foo');
+
+                return $this->responseFactory()
+                    ->html($url);
             }
         };
 
@@ -230,12 +234,14 @@ final class MiddlewareTest extends TestCase
      */
     public function test_exception_if_url_generator_not_bound(): void
     {
-        $middleware = new class extends Middleware {
-
+        $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $url = $this->url()->to('/foo');
-                return $this->responseFactory()->html($url);
+                $url = $this->url()
+                    ->to('/foo');
+
+                return $this->responseFactory()
+                    ->html($url);
             }
         };
 
@@ -254,6 +260,4 @@ final class MiddlewareTest extends TestCase
             throw new RuntimeException('Next should not be called.');
         });
     }
-
 }
-

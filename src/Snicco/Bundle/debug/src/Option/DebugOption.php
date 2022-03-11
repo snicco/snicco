@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Debug\Option;
 
 /**
@@ -11,8 +10,8 @@ namespace Snicco\Bundle\Debug\Option;
 final class DebugOption
 {
     public const EDITOR = 'editor';
+
     public const APPLICATION_PATHS = 'application_paths';
 
     public const KEY = 'debug';
-
 }

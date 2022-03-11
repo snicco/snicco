@@ -9,8 +9,8 @@ use Snicco\Component\BetterWPHooks\EventMapping\ExposeToWP;
 
 final class StoppableEvent implements StoppableEventInterface, ExposeToWP
 {
-
     public bool $stopped = false;
+
     public string $value;
 
     public function __construct(string $value)
@@ -22,5 +22,4 @@ final class StoppableEvent implements StoppableEventInterface, ExposeToWP
     {
         return $this->stopped;
     }
-
 }

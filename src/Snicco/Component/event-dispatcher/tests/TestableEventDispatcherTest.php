@@ -16,9 +16,11 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class TestableEventDispatcherTest extends TestCase
 {
-
     use AssertListenerResponse;
 
     private TestableEventDispatcher $fake_dispatcher;
@@ -187,11 +189,7 @@ final class TestableEventDispatcherTest extends TestCase
     public function the_return_type_is_correct_for_object_events(): void
     {
         $this->fake_dispatcher->listen(EventStub::class, function (EventStub $event) {
-            $this->respondedToEvent(
-                EventStub::class,
-                'closure1',
-                $event->val1 . $event->val2
-            );
+            $this->respondedToEvent(EventStub::class, 'closure1', $event->val1 . $event->val2);
         });
         $this->fake_dispatcher->fake(EventStub::class);
 
@@ -309,16 +307,14 @@ final class TestableEventDispatcherTest extends TestCase
 
         $this->assertSame('changed', $res->value);
     }
-
 }
 
 class TestableEventDispatcherTestSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
-            stdClass::class => 'foo'
+            stdClass::class => 'foo',
         ];
     }
 
@@ -326,6 +322,4 @@ class TestableEventDispatcherTestSubscriber implements EventSubscriber
     {
         $stdClass->value = 'changed';
     }
-
 }
-

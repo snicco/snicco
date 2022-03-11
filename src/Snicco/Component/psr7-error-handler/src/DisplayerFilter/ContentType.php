@@ -17,25 +17,21 @@ use function strstr;
  */
 final class ContentType implements DisplayerFilter
 {
-
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array
     {
         $accept_header = $this->parse($request->getHeaderLine('accept'));
 
-        return array_filter($displayers,
-            fn($displayer) => $displayer->supportedContentType() === $accept_header
-        );
+        return array_filter($displayers, fn ($displayer) => $displayer->supportedContentType() === $accept_header);
     }
 
     private function parse(string $accept): string
     {
         $result = strstr($accept, ',', true);
 
-        $first = $result === false ? $accept : $result;
+        $first = (false === $result ? $accept : $result);
 
         $result = strstr($first, ';', true);
 
-        return $result === false ? $first : $result;
+        return false === $result ? $first : $result;
     }
-
 }

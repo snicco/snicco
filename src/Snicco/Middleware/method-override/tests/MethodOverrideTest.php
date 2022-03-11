@@ -7,9 +7,11 @@ namespace Snicco\Middleware\MethodOverride\Tests;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\MethodOverride\MethodOverride;
 
-class MethodOverrideTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class MethodOverrideTest extends MiddlewareTestCase
 {
-
     private MethodOverride $middleware;
 
     protected function setUp(): void
@@ -38,9 +40,10 @@ class MethodOverrideTest extends MiddlewareTestCase
      */
     public function the_method_cant_be_overwritten_for_anything_but_post_requests(): void
     {
-        $request = $this->frontendRequest('/foo')->withParsedBody([
-            '_method' => 'PUT',
-        ]);
+        $request = $this->frontendRequest('/foo')
+            ->withParsedBody([
+                '_method' => 'PUT',
+            ]);
 
         $response = $this->runMiddleware($this->middleware, $request);
 
@@ -122,6 +125,4 @@ class MethodOverrideTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
         $this->assertSame('POST', $this->receivedRequest()->getMethod());
     }
-
-
 }

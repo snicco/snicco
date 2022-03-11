@@ -18,7 +18,6 @@ use function sprintf;
  */
 final class WPHookAPI extends BetterWPAPI
 {
-
     /**
      * @psalm-internal Snicco\Component\BetterWPHooks
      *
@@ -26,11 +25,12 @@ final class WPHookAPI extends BetterWPAPI
      */
     public function currentFilter(): ?string
     {
-        /** @var string|false $filter */
+        /** @var false|string $filter */
         $filter = current_filter();
         if (is_string($filter)) {
             return $filter;
         }
+
         return null;
     }
 
@@ -45,15 +45,15 @@ final class WPHookAPI extends BetterWPAPI
         if (null === $hook) {
             return null;
         }
-        if (!$hook instanceof WP_Hook) {
+        if (! $hook instanceof WP_Hook) {
             throw new RuntimeException(
                 sprintf(
-                    "The registered hook [$hook_name] has to be an instance of WP_Hook.\nGot: [%s].",
+                    "The registered hook [{$hook_name}] has to be an instance of WP_Hook.\nGot: [%s].",
                     gettype($hook)
                 )
             );
         }
+
         return $hook;
     }
-
 }

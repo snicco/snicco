@@ -18,7 +18,6 @@ use function sprintf;
  */
 final class ConditionBlueprint
 {
-
     public bool $is_negated = false;
 
     /**
@@ -32,18 +31,18 @@ final class ConditionBlueprint
     public array $passed_args;
 
     /**
-     * @param class-string<RouteCondition>|"!" $condition_class
-     * @param array<scalar> $arguments
+     * @param "!"|class-string<RouteCondition> $condition_class
+     * @param array<scalar>                    $arguments
      */
     public function __construct(string $condition_class, array $arguments = [])
     {
-        if ($condition_class === RouteCondition::NEGATE) {
+        if (RouteCondition::NEGATE === $condition_class) {
             /** @var string $condition_class */
             $condition_class = array_shift($arguments);
             $this->is_negated = true;
         }
 
-        if (!is_subclass_of($condition_class, RouteCondition::class)) {
+        if (! is_subclass_of($condition_class, RouteCondition::class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "A condition has to be an instance of [%s].\nGot [%s].",
@@ -56,5 +55,4 @@ final class ConditionBlueprint
         $this->class = $condition_class;
         $this->passed_args = $arguments;
     }
-
 }

@@ -7,6 +7,7 @@ namespace Snicco\Bridge\Blade\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
+use InvalidArgumentException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
@@ -17,6 +18,10 @@ use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewEngine;
 use Symfony\Component\Finder\Finder;
 
+use WP_UnitTest_Factory;
+use WP_User;
+
+use function array_merge;
 use function class_exists;
 use function dirname;
 use function preg_replace;
@@ -25,14 +30,21 @@ use function unlink;
 use function wp_logout;
 use function wp_set_current_user;
 
-class CustomDirectivesTest extends WPTestCase
+/**
+ * @internal
+ */
+final class CustomDirectivesTest extends WPTestCase
 {
-
     protected string $blade_cache;
+
     protected string $blade_views;
+
     protected ViewEngine $view_engine;
+
     protected ViewComposerCollection $composers;
+
     protected GlobalViewContext $global_view_context;
+
     protected BladeStandalone $blade;
 
     /**
@@ -54,10 +66,7 @@ class CustomDirectivesTest extends WPTestCase
         $this->blade_cache = dirname(__DIR__) . '/fixtures/cache';
         $this->blade_views = dirname(__DIR__) . '/fixtures/views';
 
-        $this->composers = new ViewComposerCollection(
-            null,
-            $global_view_context = new GlobalViewContext()
-        );
+        $this->composers = new ViewComposerCollection(null, $global_view_context = new GlobalViewContext());
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
         $this->blade = $blade;
@@ -80,8 +89,7 @@ class CustomDirectivesTest extends WPTestCase
     {
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
-        $user = $this->factory()->user->create_and_get();
-        wp_set_current_user($user->ID);
+        wp_set_current_user($this->createUserWithRoles('admin')->ID);
 
         $view = $this->view('auth');
         $content = $view->render();
@@ -105,7 +113,7 @@ class CustomDirectivesTest extends WPTestCase
         $content = $view->render();
         $this->assertViewContent('YOU ARE A GUEST', $content);
 
-        wp_set_current_user($this->factory()->user->create_and_get()->ID);
+        wp_set_current_user($this->createUserWithRoles('admin')->ID);
 
         $view = $this->view('guest');
         $content = $view->render();
@@ -119,21 +127,21 @@ class CustomDirectivesTest extends WPTestCase
     {
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
-        $admin = $this->factory()->user->create_and_get(['role' => 'administrator']);
+        $admin = $this->createUserWithRoles('administrator');
         wp_set_current_user($admin->ID);
 
         $view = $this->view('role');
         $content = $view->render();
         $this->assertViewContent('ADMIN', $content);
 
-        $editor = $this->factory()->user->create_and_get(['role' => 'editor']);
+        $editor = $this->createUserWithRoles('editor');
         wp_set_current_user($editor->ID);
 
         $view = $this->view('role');
         $content = $view->render();
         $this->assertViewContent('EDITOR', $content);
 
-        $author = $this->factory()->user->create_and_get(['role' => 'author']);
+        $author = $this->createUserWithRoles('author');
         wp_set_current_user($author->ID);
 
         $view = $this->view('role');
@@ -143,7 +151,7 @@ class CustomDirectivesTest extends WPTestCase
 
     protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+        $actual = preg_replace("/\r|\n|\t|\\s{2,}/", '', $actual);
 
         if (null === $actual) {
             throw new RuntimeException('preg_replcae failed in test case.');
@@ -165,4 +173,19 @@ class CustomDirectivesTest extends WPTestCase
         }
     }
 
+    private function createUserWithRoles(string $role, array $data = []): WP_User
+    {
+        /** @var WP_UnitTest_Factory $factory */
+        $factory = $this->factory();
+
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => $role,
+        ]));
+
+        if (! $user instanceof WP_User) {
+            throw new InvalidArgumentException('Must be WP_USER');
+        }
+
+        return $user;
+    }
 }

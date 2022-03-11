@@ -10,7 +10,6 @@ use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
 
 return [
-
     /*
      * Middleware aliases allow you to reference middleware classes by their alias in route definitions.
      * This can help you to maintain your route files clean and organized. It's however not a requirement
@@ -18,7 +17,7 @@ return [
      * You can always reference middleware by its full class-name, so feel free to remove this option.
      */
     MiddlewareOption::ALIASES => [
-//        'foo' => '\MyPlugin\Middleware\FooMiddleware'
+        //        'foo' => '\MyPlugin\Middleware\FooMiddleware'
     ],
 
     /*
@@ -29,16 +28,14 @@ return [
         RoutingConfigurator::FRONTEND_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
-        RoutingConfigurator::GLOBAL_MIDDLEWARE => [
-            SetUserId::class
-        ]
-//        'custom_group1' => [
-//            'foo',
-//            'custom_group2'
-//        ],
-//        'custom_group2' => [
-//            'bar'
-//        ]
+        RoutingConfigurator::GLOBAL_MIDDLEWARE => [SetUserId::class],
+        //        'custom_group1' => [
+        //            'foo',
+        //            'custom_group2'
+        //        ],
+        //        'custom_group2' => [
+        //            'bar'
+        //        ]
     ],
 
     /*
@@ -50,9 +47,9 @@ return [
      * Feel free to remove this option if you don't use it in your application.
      */
     MiddlewareOption::PRIORITY_LIST => [
-//        '\MyPlugin\Middleware\FooMiddleware',
-//        '\MyPlugin\Middleware\BarMiddleware',
-//        '\MyPlugin\Middleware\BazMiddleware',
+        //        '\MyPlugin\Middleware\FooMiddleware',
+        //        '\MyPlugin\Middleware\BarMiddleware',
+        //        '\MyPlugin\Middleware\BazMiddleware',
     ],
 
     /*
@@ -64,10 +61,10 @@ return [
      * Allowed values: "frontend", "api", "global", "admin"
      */
     MiddlewareOption::ALWAYS_RUN => [
-//        'frontend',
-//        'api',
-//        'global',
-//        'admin'
+        //        'frontend',
+        //        'api',
+        //        'global',
+        //        'admin'
     ],
 
     /*
@@ -82,6 +79,5 @@ return [
         ErrorsToExceptions::class,
         RoutingMiddleware::class,
         RouteRunner::class,
-    ]
-
+    ],
 ];

@@ -7,48 +7,35 @@ namespace Snicco\Component\Kernel\ValueObject;
 use Webmozart\Assert\Assert;
 
 use function sprintf;
+use const DIRECTORY_SEPARATOR;
 
 /**
- * This class represents a simple value object that holds references to all relevant
- * directories the app needs. All directories are validated to be readable and don't end with a
- * trailing slash.
+ * This class represents a simple value object that holds references to all
+ * relevant directories the app needs. All directories are validated to be
+ * readable and don't end with a trailing slash.
  *
  * @psalm-immutable
  */
 final class Directories
 {
-
     private string $config_dir;
+
     private string $cache_dir;
+
     private string $log_dir;
+
     private string $base_directory;
 
-    public function __construct(
-        string $base_directory,
-        string $config_dir,
-        string $cache_dir,
-        string $log_dir
-    ) {
-        Assert::readable(
-            $base_directory,
-            sprintf('$base_directory [%s] is not readable.', $base_directory)
-        );
+    public function __construct(string $base_directory, string $config_dir, string $cache_dir, string $log_dir)
+    {
+        Assert::readable($base_directory, sprintf('$base_directory [%s] is not readable.', $base_directory));
 
-        Assert::readable(
-            $config_dir,
-            sprintf('$config_dir [%s] is not readable.', $config_dir)
-        );
+        Assert::readable($config_dir, sprintf('$config_dir [%s] is not readable.', $config_dir));
 
-        Assert::readable(
-            $cache_dir,
-            sprintf('$cache_dir [%s] is not readable.', $cache_dir)
-        );
+        Assert::readable($cache_dir, sprintf('$cache_dir [%s] is not readable.', $cache_dir));
         Assert::writable($cache_dir, sprintf('$cache_dir [%s] is not writable.', $cache_dir));
 
-        Assert::readable(
-            $log_dir,
-            sprintf('$log_dir [%s] is not readable.', $log_dir)
-        );
+        Assert::readable($log_dir, sprintf('$log_dir [%s] is not readable.', $log_dir));
         Assert::writable($cache_dir, sprintf('$log_dir [%s] is not writable.', $cache_dir));
 
         $this->config_dir = rtrim($config_dir, DIRECTORY_SEPARATOR);
@@ -97,5 +84,4 @@ final class Directories
     {
         return $this->log_dir;
     }
-
 }

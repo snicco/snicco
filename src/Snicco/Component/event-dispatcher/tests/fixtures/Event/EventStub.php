@@ -10,11 +10,11 @@ use Snicco\Component\EventDispatcher\Event;
 
 class EventStub implements Event
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
     public string $val1;
+
     public string $val2;
 
     public function __construct(string $foo, string $bar)
@@ -22,5 +22,4 @@ class EventStub implements Event
         $this->val1 = $foo;
         $this->val2 = $bar;
     }
-
 }

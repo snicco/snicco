@@ -9,7 +9,6 @@ use Webmozart\Assert\Assert;
 
 final class AdminAreaPrefix
 {
-
     private string $prefix;
 
     private function __construct(string $prefix)
@@ -19,14 +18,14 @@ final class AdminAreaPrefix
         $this->prefix = $prefix;
     }
 
-    public static function fromString(string $prefix): AdminAreaPrefix
-    {
-        return new self('/' . trim($prefix, '/'));
-    }
-
     public function __toString()
     {
         return $this->asString();
+    }
+
+    public static function fromString(string $prefix): AdminAreaPrefix
+    {
+        return new self('/' . trim($prefix, '/'));
     }
 
     public function asString(): string
@@ -36,7 +35,6 @@ final class AdminAreaPrefix
 
     public function appendPath(string $path): string
     {
-        return (string)UrlPath::fromString($this->prefix)->append($path);
+        return (string) UrlPath::fromString($this->prefix)->append($path);
     }
-
 }

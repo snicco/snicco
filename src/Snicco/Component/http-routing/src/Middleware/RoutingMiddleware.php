@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 
 final class RoutingMiddleware extends Middleware
 {
-
     private UrlMatcher $url_matcher;
 
     public function __construct(UrlMatcher $url_matcher)
@@ -29,13 +28,10 @@ final class RoutingMiddleware extends Middleware
     {
         $result = $this->url_matcher->dispatch($request);
 
-        if (!$result->isMatch()) {
+        if (! $result->isMatch()) {
             return $next($request);
         }
 
         return $next($request->withAttribute(RoutingResult::class, $result));
     }
-
 }
-
-

@@ -11,7 +11,6 @@ use function json_encode;
 
 final class JsonExceptionDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return json_encode([
@@ -35,5 +34,4 @@ final class JsonExceptionDisplayer implements ExceptionDisplayer
     {
         return true;
     }
-
 }

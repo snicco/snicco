@@ -13,9 +13,11 @@ use Snicco\Component\Session\ValueObject\ReadOnlySession;
 
 use function time;
 
+/**
+ * @internal
+ */
 final class ReadOnlySessionTest extends TestCase
 {
-
     use SessionHelpers;
 
     /**
@@ -36,9 +38,13 @@ final class ReadOnlySessionTest extends TestCase
      */
     public function test_all(): void
     {
-        $session = $this->newSession(null, ['foo' => 'bar']);
+        $session = $this->newSession(null, [
+            'foo' => 'bar',
+        ]);
         $store = ReadOnlySession::fromSession($session);
-        $this->assertSame(['foo' => 'bar'], $store->all());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $store->all());
     }
 
     /**
@@ -46,7 +52,10 @@ final class ReadOnlySessionTest extends TestCase
      */
     public function test_boolean(): void
     {
-        $session = $this->newSession(null, ['foo' => 1, 'bar' => 0]);
+        $session = $this->newSession(null, [
+            'foo' => 1,
+            'bar' => 0,
+        ]);
         $store = ReadOnlySession::fromSession($session);
         $this->assertTrue($store->boolean('foo'));
         $this->assertFalse($store->boolean('bar'));
@@ -57,7 +66,10 @@ final class ReadOnlySessionTest extends TestCase
      */
     public function test_created_at(): void
     {
-        $session = $this->newSession(null, ['foo' => 1, 'bar' => 0]);
+        $session = $this->newSession(null, [
+            'foo' => 1,
+            'bar' => 0,
+        ]);
         $store = ReadOnlySession::fromSession($session);
         $this->assertEqualsWithDelta(time(), $store->createdAt(), 1);
     }
@@ -67,7 +79,11 @@ final class ReadOnlySessionTest extends TestCase
      */
     public function test_exists_has(): void
     {
-        $session = $this->newSession(null, ['foo' => false, 'bar' => null, 'baz' => '']);
+        $session = $this->newSession(null, [
+            'foo' => false,
+            'bar' => null,
+            'baz' => '',
+        ]);
         $store = ReadOnlySession::fromSession($session);
 
         $this->assertTrue($store->exists('foo'));
@@ -82,10 +98,12 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_hasOldInput(): void
+    public function test_has_old_input(): void
     {
         $session = $this->newSession();
-        $session->flashInput(['foo' => 'bar']);
+        $session->flashInput([
+            'foo' => 'bar',
+        ]);
 
         $store = ReadOnlySession::fromSession($session);
 
@@ -131,7 +149,11 @@ final class ReadOnlySessionTest extends TestCase
      */
     public function test_missing(): void
     {
-        $session = $this->newSession(null, ['foo' => false, 'bar' => null, 'baz' => '']);
+        $session = $this->newSession(null, [
+            'foo' => false,
+            'bar' => null,
+            'baz' => '',
+        ]);
         $store = ReadOnlySession::fromSession($session);
 
         $this->assertFalse($store->missing('foo'));
@@ -143,10 +165,12 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_oldInput(): void
+    public function test_old_input(): void
     {
         $session = $this->newSession();
-        $session->flashInput(['foo' => 'bar']);
+        $session->flashInput([
+            'foo' => 'bar',
+        ]);
 
         $store = ReadOnlySession::fromSession($session);
 
@@ -158,16 +182,23 @@ final class ReadOnlySessionTest extends TestCase
      */
     public function test_only(): void
     {
-        $session = $this->newSession(null, ['foo' => false, 'bar' => null, 'baz' => '']);
+        $session = $this->newSession(null, [
+            'foo' => false,
+            'bar' => null,
+            'baz' => '',
+        ]);
         $store = ReadOnlySession::fromSession($session);
 
-        $this->assertSame(['foo' => false, 'bar' => null], $store->only(['foo', 'bar']));
+        $this->assertSame([
+            'foo' => false,
+            'bar' => null,
+        ], $store->only(['foo', 'bar']));
     }
 
     /**
      * @test
      */
-    public function test_userId(): void
+    public function test_user_id(): void
     {
         $session = $this->newSession();
         $session->setUserId(10);
@@ -178,10 +209,9 @@ final class ReadOnlySessionTest extends TestCase
     /**
      * @test
      */
-    public function test_isNew(): void
+    public function test_is_new(): void
     {
         $session = $this->newSession();
         $this->assertTrue(ReadOnlySession::fromSession($session)->isNew());
     }
-
 }

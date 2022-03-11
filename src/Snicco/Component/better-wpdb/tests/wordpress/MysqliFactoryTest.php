@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPDB\MysqliFactory;
 
+/**
+ * @internal
+ */
 final class MysqliFactoryTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -19,5 +20,4 @@ final class MysqliFactoryTest extends WPTestCase
         $mysqli = MysqliFactory::fromWpdbConnection();
         $this->assertTrue($mysqli->ping());
     }
-
 }

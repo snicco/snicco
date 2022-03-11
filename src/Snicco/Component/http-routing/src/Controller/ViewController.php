@@ -17,7 +17,6 @@ use function array_slice;
  */
 final class ViewController extends Controller
 {
-
     /**
      * @param mixed ...$args
      */
@@ -32,8 +31,8 @@ final class ViewController extends Controller
         Assert::allString(array_keys($data));
 
         /** @var array<string,mixed> $data */
-
-        $response = $this->respondWith()->view($view, $data);
+        $response = $this->respondWith()
+            ->view($view, $data);
 
         /**
          * @var array<string,string> $headers
@@ -44,5 +43,4 @@ final class ViewController extends Controller
 
         return $response;
     }
-
 }

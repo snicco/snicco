@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Bundle;
 
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -15,6 +14,7 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 trait BundleTestHelpers
 {
     protected BundleTest $bundle_test;
+
     protected Directories $directories;
 
     /**
@@ -44,15 +44,17 @@ trait BundleTestHelpers
 
     /**
      * @template T
+     *
      * @param class-string<T> $class
      */
     final protected function assertCanBeResolved(string $class, Kernel $kernel): void
     {
         try {
             /** @var T $resolved */
-            $resolved = $kernel->container()->get($class);
+            $resolved = $kernel->container()
+                ->get($class);
         } catch (ContainerExceptionInterface $e) {
-            PHPUnit::fail("Class [$class] could not be resolved.\nMessage: " . $e->getMessage());
+            PHPUnit::fail("Class [{$class}] could not be resolved.\nMessage: " . $e->getMessage());
         }
         PHPUnit::assertInstanceOf($class, $resolved);
     }
@@ -60,11 +62,11 @@ trait BundleTestHelpers
     final protected function assertNotBound(string $identifier, Kernel $kernel): void
     {
         try {
-            $kernel->container()->get($identifier);
-            PHPUnit::fail("Identifier [$identifier] was bound in the container.");
+            $kernel->container()
+                ->get($identifier);
+            PHPUnit::fail("Identifier [{$identifier}] was bound in the container.");
         } catch (NotFoundExceptionInterface $e) {
             PHPUnit::assertStringContainsString($identifier, $e->getMessage());
         }
     }
-
 }

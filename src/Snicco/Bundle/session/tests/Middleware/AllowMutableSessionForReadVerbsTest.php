@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Tests\Middleware;
 
 use LogicException;
@@ -11,17 +10,22 @@ use Snicco\Bundle\Session\Middleware\StatefulRequest;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Session\ImmutableSession;
 
+/**
+ * @internal
+ */
 final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 {
-
-    /** @test */
+    /**
+     * @test
+     */
     public function the_request_is_marked_as_being_allowed_a_write_session_for_read_requests(): void
     {
         $middleware = new AllowMutableSessionForReadVerbs();
 
         $request = $this->frontendRequest();
 
-        $response = $this->runMiddleware($middleware, $request)->assertNextMiddlewareCalled();
+        $response = $this->runMiddleware($middleware, $request)
+            ->assertNextMiddlewareCalled();
         $response->assertNextMiddlewareCalled();
 
         $this->assertTrue($this->receivedRequest()->getAttribute(StatefulRequest::ALLOW_WRITE_SESSION_FOR_READ_VERBS));
@@ -34,12 +38,13 @@ final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
     {
         $middleware = new AllowMutableSessionForReadVerbs();
 
-        $request = $this->frontendRequest()->withAttribute(ImmutableSession::class, 'irrelevant');
+        $request = $this->frontendRequest()
+            ->withAttribute(ImmutableSession::class, 'irrelevant');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("A session has already been set on the request.\nMake sure that ");
 
-        $this->runMiddleware($middleware, $request)->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $request)
+            ->assertNextMiddlewareCalled();
     }
-
 }

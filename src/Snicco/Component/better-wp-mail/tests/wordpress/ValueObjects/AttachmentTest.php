@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
@@ -10,9 +9,11 @@ use InvalidArgumentException;
 use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Attachment;
 
+/**
+ * @internal
+ */
 final class AttachmentTest extends WPTestCase
 {
-
     /**
      * @test
      * @psalm-suppress InvalidScalarArgument
@@ -47,5 +48,4 @@ final class AttachmentTest extends WPTestCase
 
         Attachment::fromPath(__DIR__ . '/bogus.php');
     }
-
 }

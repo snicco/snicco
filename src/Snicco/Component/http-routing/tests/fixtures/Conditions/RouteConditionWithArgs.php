@@ -9,8 +9,8 @@ use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
 class RouteConditionWithArgs extends RouteCondition
 {
-
     private bool $make_it_pass;
+
     private string $val;
 
     public function __construct(string $val, bool $make_it_pass)
@@ -26,7 +26,8 @@ class RouteConditionWithArgs extends RouteCondition
 
     public function getArguments(Request $request): array
     {
-        return ['condition_arg' => $this->val];
+        return [
+            'condition_arg' => $this->val,
+        ];
     }
-
 }

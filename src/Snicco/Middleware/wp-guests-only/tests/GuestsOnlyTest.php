@@ -13,9 +13,11 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
-class GuestsOnlyTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class GuestsOnlyTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -26,7 +28,8 @@ class GuestsOnlyTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -41,7 +44,8 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
-        $response->assertableResponse()->assertRedirect('/dashboard');
+        $response->assertableResponse()
+            ->assertRedirect('/dashboard');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -57,7 +61,8 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
-        $response->assertableResponse()->assertRedirect('/home');
+        $response->assertableResponse()
+            ->assertRedirect('/home');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -70,7 +75,8 @@ class GuestsOnlyTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
-        $response->assertableResponse()->assertRedirect('/');
+        $response->assertableResponse()
+            ->assertRedirect('/');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -84,7 +90,8 @@ class GuestsOnlyTest extends MiddlewareTestCase
             $this->frontendRequest()
         );
 
-        $response->assertableResponse()->assertRedirect('/custom-home-page');
+        $response->assertableResponse()
+            ->assertRedirect('/custom-home-page');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -95,14 +102,17 @@ class GuestsOnlyTest extends MiddlewareTestCase
     {
         $response = $this->runMiddleware(
             $this->newMiddleware(new GuestOnlyTestWPAPI(true)),
-            $this->frontendRequest()->withHeader('Accept', 'application/json')
+            $this->frontendRequest()
+                ->withHeader('Accept', 'application/json')
         );
 
         $response->assertNextMiddlewareNotCalled();
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
         $psr_response->assertBodyExact(
-            json_encode(['message' => 'You are already authenticated'], JSON_THROW_ON_ERROR)
+            json_encode([
+                'message' => 'You are already authenticated',
+            ], JSON_THROW_ON_ERROR)
         );
         $psr_response->assertForbidden();
     }
@@ -114,15 +124,16 @@ class GuestsOnlyTest extends MiddlewareTestCase
     {
         $response = $this->runMiddleware(
             $this->newMiddleware(new GuestOnlyTestWPAPI(true), null, 'Guests only'),
-            $this->frontendRequest()->withHeader('Accept', 'application/json')
+            $this->frontendRequest()
+                ->withHeader('Accept', 'application/json')
         );
 
         $response->assertNextMiddlewareNotCalled();
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
-        $psr_response->assertBodyExact(
-            json_encode(['message' => 'Guests only'], JSON_THROW_ON_ERROR)
-        );
+        $psr_response->assertBodyExact(json_encode([
+            'message' => 'Guests only',
+        ], JSON_THROW_ON_ERROR));
         $psr_response->assertForbidden();
     }
 
@@ -133,13 +144,10 @@ class GuestsOnlyTest extends MiddlewareTestCase
     ): GuestsOnly {
         return new GuestsOnly($redirect_url, $json_message, $scopable_wp);
     }
-
-
 }
 
 class GuestOnlyTestWPAPI extends BetterWPAPI
 {
-
     private bool $is_logged_in;
 
     public function __construct(bool $is_logged_in)
@@ -151,5 +159,4 @@ class GuestOnlyTestWPAPI extends BetterWPAPI
     {
         return $this->is_logged_in;
     }
-
 }

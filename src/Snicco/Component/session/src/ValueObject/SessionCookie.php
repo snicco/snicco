@@ -6,36 +6,40 @@ namespace Snicco\Component\Session\ValueObject;
 
 use Snicco\Component\Session\SessionManager\SessionManager;
 
-use function is_null;
 use function time;
 
 final class SessionCookie
 {
-
     private string $cookie_name;
+
     private string $session_id;
 
     /**
-     * @var null|positive-int|0
+     * @var 0|positive-int|null
      */
     private ?int $life_time;
+
     private bool $http_only;
+
     private bool $secure;
+
     private string $path;
+
     private ?string $domain;
 
     /**
-     * @var 'Lax' | 'Strict' | 'None; Secure'
+     * @var 'Lax'|'None; Secure'|'Strict'
      */
     private string $same_site;
 
     /**
-     * This class MUST only be constructed with {@see SessionManager::toCookie()}
+     * This class MUST only be constructed with {@see
+     * SessionManager::toCookie()}.
      *
      * @psalm-internal Snicco\Component\Session
      *
-     * @param 'Lax' | 'Strict' | 'None; Secure' $same_site
-     * @param null|positive-int|0 $life_time
+     * @param 'Lax'|'None; Secure'|'Strict' $same_site
+     * @param 0|positive-int|null           $life_time
      */
     public function __construct(
         string $cookie_name,
@@ -68,7 +72,7 @@ final class SessionCookie
     }
 
     /**
-     * @return "Lax" | "Strict" | "None; Secure"
+     * @return "Lax"|"None; Secure"|"Strict"
      */
     public function sameSite(): string
     {
@@ -96,11 +100,11 @@ final class SessionCookie
     }
 
     /**
-     * @return positive-int|0
+     * @return 0|positive-int
      */
     public function expiryTimestamp(): int
     {
-        if (is_null($this->life_time)) {
+        if (null === $this->life_time) {
             return 0;
         }
 
@@ -111,5 +115,4 @@ final class SessionCookie
     {
         return $this->life_time;
     }
-
 }

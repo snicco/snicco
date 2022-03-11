@@ -19,9 +19,11 @@ use Illuminate\View\ViewServiceProvider;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
+use function in_array;
+use function is_array;
+
 final class BladeStandalone
 {
-
     private string $view_cache_directory;
 
     /**
@@ -30,7 +32,7 @@ final class BladeStandalone
     private array $view_directories;
 
     /**
-     * @var Container|Application
+     * @var Application|Container
      */
     private $illuminate_container;
 
@@ -38,7 +40,6 @@ final class BladeStandalone
 
     /**
      * @param string[] $view_directories
-     * @psalm-suppress InvalidArgument
      */
     public function __construct(
         string $view_cache_directory,
@@ -49,7 +50,8 @@ final class BladeStandalone
         $this->view_directories = $view_directories;
         $this->blade_view_composer = new BladeViewComposer($composers);
         $this->illuminate_container = Container::getInstance();
-        if (!Facade::getFacadeApplication() instanceof IlluminateContainer) {
+        if (! Facade::getFacadeApplication() instanceof IlluminateContainer) {
+            /** @psalm-suppress InvalidArgument */
             Facade::setFacadeApplication($this->illuminate_container);
         }
     }
@@ -79,23 +81,20 @@ final class BladeStandalone
     {
         $wp = $wp ?: new BetterWPAPI();
 
-        Blade::if('auth', fn() => $wp->isUserLoggedIn());
+        Blade::if('auth', fn () => $wp->isUserLoggedIn());
 
-        Blade::if('guest', fn() => !$wp->isUserLoggedIn());
+        Blade::if('guest', fn () => ! $wp->isUserLoggedIn());
 
         Blade::if('role', function (string $expression) use ($wp) {
-            if ($expression === 'admin') {
+            if ('admin' === $expression) {
                 $expression = 'administrator';
             }
             $user = $wp->currentUser();
-            if (!empty($user->roles) && is_array($user->roles)
-                && in_array(
-                    $expression,
-                    $user->roles,
-                    true
-                )) {
+            if (! empty($user->roles) && is_array($user->roles)
+                && in_array($expression, $user->roles, true)) {
                 return true;
             }
+
             return false;
         });
     }
@@ -113,6 +112,7 @@ final class BladeStandalone
                 $config = new Fluent();
                 $config['view.compiled'] = $this->view_cache_directory;
                 $config['view.paths'] = $this->view_directories;
+
                 return $config;
             });
         }
@@ -121,29 +121,28 @@ final class BladeStandalone
             return new Filesystem();
         }, true);
 
-        $this->illuminate_container->bindIf(
-            'events',
-            function () {
-                return new Dispatcher();
-            },
-            true
-        );
+        $this->illuminate_container->bindIf('events', function () {
+            return new Dispatcher();
+        }, true);
+        /**
+         * @psalm-suppress MixedReturnStatement
+         * @psalm-suppress MixedInferredReturnType
+         */
         $this->illuminate_container->bindIf(Factory::class, function (): Factory {
-            /** @var Factory $view */
-            $view = $this->illuminate_container->make('view');
-            return $view;
+            return $this->illuminate_container->make('view');
         });
         $this->illuminate_container->bindIf(Application::class, function (): DummyApplication {
             return new DummyApplication();
         });
     }
 
-    /**
-     * @psalm-suppress PossiblyInvalidArgument
-     */
     private function bootIlluminateViewServiceProvider(): void
     {
-        ((new ViewServiceProvider($this->illuminate_container)))->register();
+        /**
+         * @psalm-suppress PossiblyInvalidArgument
+         */
+        ((new ViewServiceProvider($this->illuminate_container)))
+            ->register();
     }
 
     private function listenToEvents(): void
@@ -156,9 +155,7 @@ final class BladeStandalone
     private function disableUnsupportedDirectives(): void
     {
         Blade::directive('service', function () {
-            throw new BadMethodCallException(
-                'The service directive is not supported. Dont use it. Its evil.'
-            );
+            throw new BadMethodCallException('The service directive is not supported. Dont use it. Its evil.');
         });
 
         Blade::directive('csrf', function () {
@@ -183,5 +180,4 @@ final class BladeStandalone
             return new BladeViewFactory($container->make('view'), $this->view_directories);
         }, true);
     }
-
 }

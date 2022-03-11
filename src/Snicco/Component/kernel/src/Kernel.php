@@ -23,16 +23,19 @@ use function get_class;
 use function implode;
 use function sprintf;
 
-
 final class Kernel
 {
-
     private DIContainer $container;
+
     private Environment $env;
+
     private Directories $dirs;
+
     private ConfigCache $config_cache;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private ReadOnlyConfig $read_only_config;
 
     private bool $booted = false;
@@ -122,11 +125,10 @@ final class Kernel
 
     public function config(): ReadOnlyConfig
     {
-        if (!isset($this->read_only_config)) {
-            throw new LogicException(
-                'The applications config can only be accessed after bootstrapping.'
-            );
+        if (! isset($this->read_only_config)) {
+            throw new LogicException('The applications config can only be accessed after bootstrapping.');
         }
+
         return $this->read_only_config;
     }
 
@@ -136,8 +138,9 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all bundles and bootstrappers have been registered, but BEFORE
-     * they are bootstrapped. This is the last opportunity to modify services in the container before it gets locked.
+     * Adds a callback that will be run after all bundles and bootstrappers have
+     * been registered, but BEFORE they are bootstrapped. This is the last
+     * opportunity to modify services in the container before it gets locked.
      *
      * @param callable(Kernel):void $callback
      */
@@ -150,8 +153,9 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all configuration files have been loaded from disk but BEFORE all bundles are configured.
-     * Callbacks will NOT be run if the configuration is cached.
+     * Adds a callback that will be run after all configuration files have been
+     * loaded from disk but BEFORE all bundles are configured. Callbacks will
+     * NOT be run if the configuration is cached.
      *
      * @param callable(WritableConfig, Kernel):void $callback
      */
@@ -170,15 +174,15 @@ final class Kernel
         $loaded_config = (new ConfigLoader())($this->dirs->configDir());
         $writable_config = WritableConfig::fromArray($loaded_config);
 
-        if (!$writable_config->has('app')) {
+        if (! $writable_config->has('app')) {
             throw new InvalidArgumentException(
-                "The [app.php] config file was not found in the config dir [$config_dir]."
+                "The [app.php] config file was not found in the config dir [{$config_dir}]."
             );
         }
-        if (!$writable_config->has('app.bootstrappers')) {
+        if (! $writable_config->has('app.bootstrappers')) {
             $writable_config->set('app.bootstrappers', []);
         }
-        if (!$writable_config->has('bundles')) {
+        if (! $writable_config->has('bundles')) {
             $writable_config->set('bundles', []);
         }
 
@@ -235,7 +239,8 @@ final class Kernel
 
     /**
      * @param array{all?: class-string<Bundle>[], prod?: class-string<Bundle>[], testing?: class-string<Bundle>[], dev?: class-string<Bundle>[]} $bundles
-     * @psalm-return Generator<Bundle>
+     *
+     * @return Generator<Bundle>
      */
     private function bundlesInCurrentEnv(array $bundles): Generator
     {
@@ -249,7 +254,7 @@ final class Kernel
 
     private function addBundle(Bundle $bundle): void
     {
-        if (!$bundle->shouldRun($this->env)) {
+        if (! $bundle->shouldRun($this->env)) {
             return;
         }
 
@@ -258,7 +263,7 @@ final class Kernel
         if (isset($this->bundles[$alias])) {
             throw new RuntimeException(
                 sprintf(
-                    "2 bundles in your application share the same alias [$alias].\nAffected [%s]",
+                    "2 bundles in your application share the same alias [{$alias}].\nAffected [%s]",
                     implode(',', [get_class($this->bundles[$alias]), get_class($bundle)])
                 )
             );
@@ -268,7 +273,8 @@ final class Kernel
 
     /**
      * @param class-string<Bootstrapper>[] $bootstrappers
-     * @psalm-return Generator<Bootstrapper>
+     *
+     * @return Generator<Bootstrapper>
      */
     private function bootstrappersInCurrentEnv(array $bootstrappers): Generator
     {
@@ -303,7 +309,7 @@ final class Kernel
         if ($environment->isProduction() || $environment->isStaging()) {
             return new PHPFileCache();
         }
+
         return new NullCache();
     }
-
 }

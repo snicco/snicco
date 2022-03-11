@@ -9,7 +9,6 @@ use Throwable;
 
 final class NewableListenerFactory implements ListenerFactory
 {
-
     /**
      * @psalm-suppress MixedMethodCall
      */
@@ -18,12 +17,7 @@ final class NewableListenerFactory implements ListenerFactory
         try {
             return new $listener_class();
         } catch (Throwable $e) {
-            throw CantCreateListener::becauseTheListenerWasNotInstantiatable(
-                $listener_class,
-                $event_name,
-                $e
-            );
+            throw CantCreateListener::becauseTheListenerWasNotInstantiatable($listener_class, $event_name, $e);
         }
     }
-
 }

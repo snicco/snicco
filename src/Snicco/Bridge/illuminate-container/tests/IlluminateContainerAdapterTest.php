@@ -9,14 +9,15 @@ use Snicco\Bridge\IlluminateContainer\IlluminateContainerAdapter;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
+/**
+ * @internal
+ */
 final class IlluminateContainerAdapterTest extends TestCase
 {
-
     use DIContainerContractTest;
 
-    function createContainer(): DIContainer
+    public function createContainer(): DIContainer
     {
         return new IlluminateContainerAdapter();
     }
-
 }

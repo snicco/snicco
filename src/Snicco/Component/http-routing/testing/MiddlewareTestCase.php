@@ -35,18 +35,21 @@ use function call_user_func;
 
 abstract class MiddlewareTestCase extends TestCase
 {
-
     use CreatesPsrRequests;
 
     private Routes $routes;
+
     private ResponseFactory $response_factory;
 
     /**
      * @var Closure(Response,Request):Response
      */
     private Closure $next_middleware_response;
+
     private bool $next_called = false;
+
     private ?Request $received_request_by_next_middleware = null;
+
     private ?ResponseUtils $response_utils = null;
 
     protected function setUp(): void
@@ -106,33 +109,26 @@ abstract class MiddlewareTestCase extends TestCase
         );
 
         if ($middleware instanceof Middleware) {
-            if (!$pimple->offsetExists(ResponseFactory::class)) {
+            if (! $pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $this->response_factory;
             }
-            if (!$pimple->offsetExists(UrlGenerator::class)) {
+            if (! $pimple->offsetExists(UrlGenerator::class)) {
                 $pimple[UrlGenerator::class] = $url;
             }
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
 
-        $this->response_utils = new ResponseUtils(
-            $url,
-            $this->response_factory,
-            $request
-        );
+        $this->response_utils = new ResponseUtils($url, $this->response_factory, $request);
 
         /** @var Response $response */
         $response = $middleware->process($request, $this->next());
 
-        return new MiddlewareTestResult(
-            $response,
-            $this->next_called
-        );
+        return new MiddlewareTestResult($response, $this->next_called);
     }
 
     final protected function receivedRequest(): Request
     {
-        if (!isset($this->received_request_by_next_middleware)) {
+        if (! isset($this->received_request_by_next_middleware)) {
             throw new RuntimeException('The next middleware was not called.');
         }
 
@@ -146,28 +142,21 @@ abstract class MiddlewareTestCase extends TestCase
 
     final protected function responseUtils(): ResponseUtils
     {
-        if (!isset($this->response_utils)) {
+        if (! isset($this->response_utils)) {
             throw new LogicException('response utils can only be accessed during the next middleware response.');
         }
+
         return $this->response_utils;
     }
 
     private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGenerator
     {
-        return new Generator(
-            $routes,
-            $context,
-            WPAdminArea::fromDefaults(),
-            new RFC3986Encoder()
-        );
+        return new Generator($routes, $context, WPAdminArea::fromDefaults(), new RFC3986Encoder());
     }
 
     private function newResponseFactory(): ResponseFactory
     {
-        return new ResponseFactory(
-            $this->psrResponseFactory(),
-            $this->psrStreamFactory(),
-        );
+        return new ResponseFactory($this->psrResponseFactory(), $this->psrStreamFactory(),);
     }
 
     private function next(): NextMiddleware
@@ -180,10 +169,10 @@ abstract class MiddlewareTestCase extends TestCase
             );
             $this->received_request_by_next_middleware = $request;
             $this->next_called = true;
+
             return $response;
         };
 
         return new NextMiddleware($func);
     }
-
 }

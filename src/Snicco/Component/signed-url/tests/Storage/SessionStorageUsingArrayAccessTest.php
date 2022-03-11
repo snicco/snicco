@@ -7,7 +7,6 @@ namespace Snicco\Component\SignedUrl\Tests\Storage;
 use ArrayAccess;
 use PHPUnit\Framework\TestCase;
 use ReturnTypeWillChange;
-use Snicco\Component\SignedUrl\Hasher\Sha256HMAC;
 use Snicco\Component\SignedUrl\HMAC;
 use Snicco\Component\SignedUrl\Secret;
 use Snicco\Component\SignedUrl\Storage\SessionStorage;
@@ -16,9 +15,11 @@ use Snicco\Component\SignedUrl\Testing\SignedUrlStorageTests;
 use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\Clock;
 
+/**
+ * @internal
+ */
 final class SessionStorageUsingArrayAccessTest extends TestCase
 {
-
     use SignedUrlStorageTests;
 
     /**
@@ -48,18 +49,18 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
     protected function createStorage(Clock $clock): SignedUrlStorage
     {
         $arr = $this->getArrayAccess();
+
         return new SessionStorage($arr, $clock);
     }
 
     private function getArrayAccess(): ArrayAccess
     {
-        return new class implements ArrayAccess {
-
+        return new class() implements ArrayAccess {
             private array $container = [];
 
             /**
              * @param int|string $offset
-             * @param mixed $value
+             * @param mixed      $value
              */
             #[ReturnTypeWillChange]
             public function offsetSet($offset, $value)
@@ -87,6 +88,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
 
             /**
              * @param int|string $offset
+             *
              * @return mixed
              */
             #[ReturnTypeWillChange]
@@ -94,8 +96,6 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
             {
                 return $this->container[$offset];
             }
-
         };
     }
-
 }

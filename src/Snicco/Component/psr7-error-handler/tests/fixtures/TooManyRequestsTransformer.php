@@ -10,13 +10,14 @@ use Throwable;
 
 final class TooManyRequestsTransformer implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         if ($e instanceof SlowDown) {
-            return HttpException::fromPrevious(429, $e, ['X-Retry-After' => 10]);
+            return HttpException::fromPrevious(429, $e, [
+                'X-Retry-After' => '10',
+            ]);
         }
+
         return $e;
     }
-
 }

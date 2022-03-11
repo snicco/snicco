@@ -11,7 +11,6 @@ use Snicco\Component\EventDispatcher\Event;
 
 final class FilterEvent implements Event, ExposeToWP
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -21,5 +20,4 @@ final class FilterEvent implements Event, ExposeToWP
     {
         $this->value = $value;
     }
-
 }

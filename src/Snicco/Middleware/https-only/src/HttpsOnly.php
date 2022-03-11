@@ -13,7 +13,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class HttpsOnly extends Middleware
 {
-
     private bool $is_local;
 
     public function __construct(bool $is_local = false)
@@ -32,17 +31,22 @@ final class HttpsOnly extends Middleware
             return $next($request);
         }
 
-        if (!$request->isSecure()) {
+        if (! $request->isSecure()) {
             $uri = $request->getUri();
 
-            // transport security header is ignored for http access, so we don't set it here.
-            // @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
-            $location = $uri->withScheme('https')->__toString();
+            /**
+             * transport security header is ignored for http access, so we don't
+             * set it here.
+             *
+             * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
+             */
+            $location = $uri->withScheme('https')
+                ->__toString();
 
-            return $this->responseFactory()->redirect($location, 301);
+            return $this->responseFactory()
+                ->redirect($location, 301);
         }
 
         return $next($request);
     }
-
 }

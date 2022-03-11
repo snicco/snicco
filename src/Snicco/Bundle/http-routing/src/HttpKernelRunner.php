@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting;
 
 use Nyholm\Psr7Server\ServerRequestCreator;
@@ -23,11 +22,14 @@ use const PHP_INT_MIN;
 
 final class HttpKernelRunner
 {
-
     private HttpKernel $http_kernel;
+
     private ServerRequestCreator $request_creator;
+
     private EventDispatcherInterface $event_dispatcher;
+
     private ResponseEmitter $emitter;
+
     private StreamFactoryInterface $stream_factory;
 
     /**
@@ -59,10 +61,11 @@ final class HttpKernelRunner
     }
 
     /**
-     * Sets up the runner to send a response an appropriate (later) time based on the request type.
+     * Sets up the runner to send a response an appropriate (later) time based
+     * on the request type.
      *
      * @note Unless you are 100% sure what you are doing you should not change the hooks.
-     *       You have been warned.
+     * You have been warned.
      */
     public function listen(bool $is_admin, string $frontend_hook = 'wp_loaded', string $api_hook = 'init'): void
     {
@@ -78,9 +81,7 @@ final class HttpKernelRunner
             }, PHP_INT_MIN);
         } else {
             add_action($frontend_hook, function () use ($psr_request) {
-                $this->dispatchFrontendRequest(
-                    Request::fromPsr($psr_request, Request::TYPE_FRONTEND)
-                );
+                $this->dispatchFrontendRequest(Request::fromPsr($psr_request, Request::TYPE_FRONTEND));
             }, PHP_INT_MIN);
         }
     }
@@ -113,11 +114,11 @@ final class HttpKernelRunner
             $send_headers = $response->shouldHeadersBeSent();
         }
 
-        if (!$send_headers) {
+        if (! $send_headers) {
             return;
         }
 
-        if (!$send_body) {
+        if (! $send_body) {
             $response = $response->withBody($this->stream_factory->createStream(''));
         }
 
@@ -152,11 +153,11 @@ final class HttpKernelRunner
             $send_body_now = true;
         }
 
-        if (!$send_headers) {
+        if (! $send_headers) {
             return;
         }
 
-        if (!$send_body_now) {
+        if (! $send_body_now) {
             if ($send_body) {
                 $stream = $response->getBody();
                 add_action('all_admin_notices', function () use ($stream) {
@@ -185,5 +186,4 @@ final class HttpKernelRunner
     {
         return $this->api_prefix && Str::startsWith($request->getUri()->getPath(), $this->api_prefix);
     }
-    
 }

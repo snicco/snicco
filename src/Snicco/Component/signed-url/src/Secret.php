@@ -10,11 +10,9 @@ use ParagonIE\ConstantTime\Hex;
 use Webmozart\Assert\Assert;
 
 use function random_bytes;
-use function strval;
 
 final class Secret
 {
-
     private string $hex_encoded;
 
     /**
@@ -37,7 +35,7 @@ final class Secret
         /** @var positive-int $strength */
         $bytes = random_bytes($strength);
 
-        return new Secret(strval($strength) . '|' . Hex::encode($bytes));
+        return new Secret((string) $strength . '|' . Hex::encode($bytes));
     }
 
     public static function fromHexEncoded(string $string): Secret
@@ -50,7 +48,8 @@ final class Secret
         Assert::integerish($parts[0], 'Your stored secret seems to be malformed.');
         Assert::stringNotEmpty($parts[1], 'Your stored secret seems to be malformed.');
 
-        Assert::same(Binary::safeStrlen($parts[1]), intval($parts[0]) * 2);
+        Assert::same(Binary::safeStrlen($parts[1]), (int) ($parts[0]) * 2);
+
         return new self($string);
     }
 
@@ -66,12 +65,11 @@ final class Secret
      */
     public function asBytes(): string
     {
-        if (!isset($this->as_bytes)) {
+        if (! isset($this->as_bytes)) {
             $parts = explode('|', $this->hex_encoded);
             $this->as_bytes = Hex::decode($parts[1]);
         }
 
         return $this->as_bytes;
     }
-
 }

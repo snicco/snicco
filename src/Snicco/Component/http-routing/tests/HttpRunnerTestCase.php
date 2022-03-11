@@ -49,7 +49,6 @@ use function call_user_func;
  */
 abstract class HttpRunnerTestCase extends TestCase
 {
-
     use CreateTestPsr17Factories;
     use CreatesPsrRequests;
     use CreateHttpErrorHandler;
@@ -57,9 +56,13 @@ abstract class HttpRunnerTestCase extends TestCase
     public const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
 
     protected string $app_domain = 'foobar.com';
+
     protected string $routes_dir;
+
     protected Container $pimple;
+
     protected ContainerInterface $psr_container;
+
     private Router $routing;
 
     /**
@@ -112,7 +115,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
         // TestController
         $controller = new RoutingTestController();
-        $this->pimple[RoutingTestController::class] = fn(): RoutingTestController => $controller;
+        $this->pimple[RoutingTestController::class] = fn (): RoutingTestController => $controller;
 
         $this->routes_dir = __DIR__ . '/fixtures/routes';
     }
@@ -128,19 +131,21 @@ abstract class HttpRunnerTestCase extends TestCase
         $this->assertSame(
             $expected,
             $b = $response->body(),
-            "Expected response body [$expected] for path [{$request->path()}].\nGot [$b]."
+            "Expected response body [{$expected}] for path [{$request->path()}].\nGot [{$b}]."
         );
     }
 
     final protected function runNewPipeline(Request $request): AssertableResponse
     {
-        if (!isset($this->routing)) {
+        if (! isset($this->routing)) {
             $this->routing = $this->newRoutingFacade();
         }
         $pipeline = $this->newPipeline();
-        $response = $pipeline->send($request)->then(function () {
-            throw new RuntimeException('Middleware pipeline exhausted.');
-        });
+        $response = $pipeline->send($request)
+            ->then(function () {
+                throw new RuntimeException('Middleware pipeline exhausted.');
+            });
+
         return new AssertableResponse($response);
     }
 
@@ -179,6 +184,7 @@ abstract class HttpRunnerTestCase extends TestCase
     final protected function generator(UrlGenerationContext $context = null): UrlGenerator
     {
         $this->routing = $this->newRoutingFacade(null, null, $context);
+
         return $this->routing->urlGenerator();
     }
 
@@ -191,7 +197,6 @@ abstract class HttpRunnerTestCase extends TestCase
         ?UrlGenerationContext $context = null
     ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
-
             private Closure $loader;
 
             public function __construct(Closure $loader)
@@ -206,7 +211,6 @@ abstract class HttpRunnerTestCase extends TestCase
 
             public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
             {
-                //
             }
         };
 
@@ -222,7 +226,6 @@ abstract class HttpRunnerTestCase extends TestCase
         ?UrlGenerationContext $context = null
     ): Router {
         $on_the_fly_loader = new class($loader) implements RouteLoader {
-
             private Closure $loader;
 
             public function __construct(Closure $loader)
@@ -232,7 +235,6 @@ abstract class HttpRunnerTestCase extends TestCase
 
             public function loadWebRoutes(WebRoutingConfigurator $configurator): void
             {
-                //
             }
 
             public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
@@ -287,8 +289,7 @@ abstract class HttpRunnerTestCase extends TestCase
     {
         $error_handler = new NullErrorHandler();
 
-        unset($this->pimple[RoutingMiddleware::class]);
-        unset($this->pimple[RouteRunner::class]);
+        unset($this->pimple[RoutingMiddleware::class], $this->pimple[RouteRunner::class]);
 
         $this->pimple[RoutingMiddleware::class] = function (): RoutingMiddleware {
             return new RoutingMiddleware($this->routing->urlMatcher());
@@ -296,10 +297,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
         $this->pimple[RouteRunner::class] = function () use ($error_handler): RouteRunner {
             return new RouteRunner(
-                new MiddlewarePipeline(
-                    $this->psr_container,
-                    $error_handler,
-                ),
+                new MiddlewarePipeline($this->psr_container, $error_handler,),
                 new MiddlewareResolver(
                     $this->always_run,
                     $this->middleware_aliases,
@@ -318,18 +316,14 @@ abstract class HttpRunnerTestCase extends TestCase
 
     private function nullLoader(): RouteLoader
     {
-        return new class implements RouteLoader {
-
+        return new class() implements RouteLoader {
             public function loadWebRoutes(WebRoutingConfigurator $configurator): void
             {
-                //
             }
 
             public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
             {
-                //
             }
         };
     }
-
 }

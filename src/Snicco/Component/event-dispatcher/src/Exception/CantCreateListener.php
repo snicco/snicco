@@ -12,16 +12,15 @@ use function sprintf;
 
 final class CantCreateListener extends RuntimeException
 {
-
     public static function becauseTheListenerWasNotInstantiatable(
         string $listener,
         string $event_name,
         Throwable $previous
     ): self {
         $message =
-            "The listener class [$listener] could not be instantiated while dispatching [$event_name].";
+            "The listener class [{$listener}] could not be instantiated while dispatching [{$event_name}].";
 
-        return new self($message, (int)$previous->getCode(), $previous);
+        return new self($message, (int) $previous->getCode(), $previous);
     }
 
     public static function fromPrevious(
@@ -35,8 +34,9 @@ final class CantCreateListener extends RuntimeException
                 $listener_class,
                 $event_name,
                 $e->getMessage()
-            ), (int)$e->getCode(), $e
+            ),
+            (int) $e->getCode(),
+            $e
         );
     }
-
 }

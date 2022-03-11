@@ -15,7 +15,6 @@ use function sprintf;
 
 final class Authenticate extends Middleware
 {
-
     private BetterWPAPI $wp;
 
     public function __construct(BetterWPAPI $wp = null)
@@ -31,10 +30,7 @@ final class Authenticate extends Middleware
 
         throw new HttpException(
             401,
-            sprintf(
-                'Missing authentication for request path [%s].',
-                $request->getUri()->getPath()
-            )
+            sprintf('Missing authentication for request path [%s].', $request->getUri()->getPath())
         );
     }
 }

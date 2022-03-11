@@ -1,38 +1,38 @@
 {
-  "name": "sniccowp/eloquent",
-  "description": "Use Laravel's Eloquent ORM in WordPress. Fully tested with Eloquent 8.x.",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
-    }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "ext-mysqli": "*",
-    "illuminate/database": "^8.81",
-    "illuminate/collections": "^8.81",
-    "illuminate/container": "^8.81",
-    "illuminate/contracts": "^8.81",
-    "illuminate/macroable": "^8.81",
-    "illuminate/support": "^8.81",
-    "sniccowp/better-wp-api": "dev-master"
-  },
-  "require-dev": {
-    "fakerphp/faker": "^1.0.0-stable",
-    "phpunit/phpunit": "9.5.13",
-    "lucatume/wp-browser": "~3.1.3",
-    "sniccowp/str-arr": "dev-master"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\Eloquent\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\Eloquent\\Tests\\": "tests"
-    }
-  },
-  "minimum-stability": "stable"
+    "name": "sniccowp/eloquent",
+    "description": "Use Laravel's Eloquent ORM in WordPress. Fully tested with Eloquent 8.x.",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "ext-mysqli": "*",
+        "illuminate/database": "^8.81",
+        "illuminate/collections": "^8.81",
+        "illuminate/container": "^8.81",
+        "illuminate/contracts": "^8.81",
+        "illuminate/macroable": "^8.81",
+        "illuminate/support": "^8.81",
+        "sniccowp/better-wp-api": "dev-master"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.0.0-stable",
+        "phpunit/phpunit": "9.5.13",
+        "lucatume/wp-browser": "~3.1.4",
+        "sniccowp/str-arr": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\Eloquent\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\Eloquent\\Tests\\": "tests"
+        }
+    },
+    "minimum-stability": "stable"
 }

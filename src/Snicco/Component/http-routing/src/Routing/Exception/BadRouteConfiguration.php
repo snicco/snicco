@@ -10,10 +10,9 @@ use Throwable;
 
 final class BadRouteConfiguration extends LogicException
 {
-
     public static function fromPrevious(Throwable $previous): BadRouteConfiguration
     {
-        return new self($previous->getMessage(), (int)$previous->getCode(), $previous);
+        return new self($previous->getMessage(), (int) $previous->getCode(), $previous);
     }
 
     public static function becauseAdminRouteWasAddedWithHardcodedPrefix(
@@ -32,13 +31,13 @@ final class BadRouteConfiguration extends LogicException
     public static function becauseDelegatedAttributesHaveNotBeenGrouped(string $route_name): BadRouteConfiguration
     {
         return new self(
-            "Cant register route [$route_name] because delegated attributes have not been merged into a route group.\nDid you forget to call group() ?"
+            "Cant register route [{$route_name}] because delegated attributes have not been merged into a route group.\nDid you forget to call group() ?"
         );
     }
 
     public static function becauseFallbackRouteIsAlreadyRegistered(string $name): BadRouteConfiguration
     {
-        return new self("Route [$name] was registered after a fallback route was defined.");
+        return new self("Route [{$name}] was registered after a fallback route was defined.");
     }
 
     public static function becauseWebRouteHasAdminPrefix(string $name): BadRouteConfiguration
@@ -54,9 +53,6 @@ final class BadRouteConfiguration extends LogicException
 
     public static function becauseAdminRouteHasSegments(string $name): BadRouteConfiguration
     {
-        return new self(
-            "Admin routes can not define route parameters.\nViolating route [$name]."
-        );
+        return new self("Admin routes can not define route parameters.\nViolating route [{$name}].");
     }
-
 }

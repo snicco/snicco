@@ -8,7 +8,6 @@ use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 
 interface View
 {
-
     /**
      * Render the view to a string.
      *
@@ -17,10 +16,11 @@ interface View
     public function render(): string;
 
     /**
-     * Takes the provided context and returns a NEW instance that now has the merged context.
+     * Takes the provided context and returns a NEW instance that now has the
+     * merged context.
      *
-     * @param string|array<string, mixed> $key
-     * @param mixed $value
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
      *
      * @return static
      *
@@ -46,5 +46,4 @@ interface View
      * @psalm-mutation-free
      */
     public function path(): string;
-
 }

@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Event;
 
 use Snicco\Component\BetterWPHooks\EventMapping\MappedHook;
-
 
 /**
  * @psalm-internal Snicco\Bundle\Session

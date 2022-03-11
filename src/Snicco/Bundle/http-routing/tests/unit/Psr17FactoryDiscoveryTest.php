@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use GuzzleHttp\Psr7\HttpFactory;
@@ -19,6 +18,9 @@ use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 
 use function sprintf;
 
+/**
+ * @internal
+ */
 final class Psr17FactoryDiscoveryTest extends TestCase
 {
     /**
@@ -33,7 +35,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => Psr17Factory::class,
                 'stream' => Psr17Factory::class,
                 'response' => Psr17Factory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(Psr17Factory::class, $discovery->createServerRequestFactory());
@@ -73,7 +75,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => HttpFactory::class,
                 'stream' => HttpFactory::class,
                 'response' => HttpFactory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(HttpFactory::class, $discovery->createServerRequestFactory());
@@ -104,7 +106,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => Psr17Factory::class,
                 'stream' => Psr17Factory::class,
                 'response' => Psr17Factory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(HttpFactory::class, $discovery->createServerRequestFactory());
@@ -128,7 +130,7 @@ final class Psr17FactoryDiscoveryTest extends TestCase
                 'uploaded_file' => UploadedFileFactory::class,
                 'stream' => StreamFactory::class,
                 'response' => ResponseFactory::class,
-            ]
+            ],
         ]);
 
         $this->assertInstanceOf(ServerRequestFactory::class, $discovery->createServerRequestFactory());
@@ -147,14 +149,15 @@ final class Psr17FactoryDiscoveryTest extends TestCase
      */
     public function test_exception_if_auto_discovery_does_not_work(): void
     {
-        $discovery = new Psr17FactoryDiscovery([
+        $discovery = new Psr17FactoryDiscovery(
+            [
                 '\Slim\Psr7\Factory\RequestFactory' => [
                     'server_request' => ServerRequestFactory::class,
                     'uri' => UriFactory::class,
                     'uploaded_file' => UploadedFileFactory::class,
                     'stream' => StreamFactory::class,
                     'response' => ResponseFactory::class,
-                ]
+                ],
             ]
         );
 
@@ -165,5 +168,4 @@ final class Psr17FactoryDiscoveryTest extends TestCase
 
         $discovery->createServerRequestFactory();
     }
-
 }

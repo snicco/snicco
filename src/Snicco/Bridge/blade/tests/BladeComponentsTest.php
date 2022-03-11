@@ -13,9 +13,11 @@ use Snicco\Bridge\Blade\Tests\fixtures\Components\InlineComponent;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\ToUppercaseComponent;
 use Snicco\Component\Templating\View\View;
 
-class BladeComponentsTest extends BladeTestCase
+/**
+ * @internal
+ */
+final class BladeComponentsTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -159,5 +161,4 @@ class BladeComponentsTest extends BladeTestCase
         $content = $view->render();
         $this->assertViewContent('Hello Calvin', $content);
     }
-
 }

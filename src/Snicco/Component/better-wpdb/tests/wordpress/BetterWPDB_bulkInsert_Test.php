@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use EmptyIterator;
@@ -14,36 +13,36 @@ use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_for_empty_table_name(): void
+    public function test_bulk_insert_throws_exception_for_empty_table_name(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
         $this->better_wpdb->bulkInsert('', [
-            ['test_string' => 'foo']
+            [
+                'test_string' => 'foo',
+            ],
         ]);
     }
 
     /**
      * @test
      */
-    public function test_bulkInsert_throws_exception_for_empty_record(): void
+    public function test_bulk_insert_throws_exception_for_empty_record(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-array');
 
-        $this->better_wpdb->bulkInsert('test_table', [
-            [
-
-            ]
-        ]);
+        $this->better_wpdb->bulkInsert('test_table', [[]]);
     }
 
     /**
@@ -51,14 +50,26 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_for_non_string_record_key(): void
+    public function test_bulk_insert_throws_exception_for_non_string_record_key(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('non-empty-string');
+        $this->better_wpdb->delete('test_table', [['foo']]);
+    }
+
+    /**
+     * @test
+     *
+     * @psalm-suppress InvalidArgument
+     */
+    public function test_bulk_insert_throws_exception_for_empty_string_record_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
         $this->better_wpdb->delete('test_table', [
             [
-                'foo'
-            ]
+                '' => 'foo',
+            ],
         ]);
     }
 
@@ -67,42 +78,36 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
      *
      * @psalm-suppress InvalidArgument
      */
-    public function test_bulkInsert_throws_exception_for_empty_string_record_key(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('non-empty-string');
-        $this->better_wpdb->delete('test_table', [
-            [
-                '' => 'foo'
-            ]
-        ]);
-    }
-
-    /**
-     * @test
-     *
-     * @psalm-suppress InvalidArgument
-     */
-    public function test_bulkInsert_throws_exception_non_scalar_record_value(): void
+    public function test_bulk_insert_throws_exception_non_scalar_record_value(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('scalar');
         $this->better_wpdb->bulkInsert('test_table', [
             [
-                'test_string' => new stdClass()
-            ]
+                'test_string' => new stdClass(),
+            ],
         ]);
     }
 
     /**
      * @test
      */
-    public function test_bulkInsert_throws_exception_for_inconsistent_record_types(): void
+    public function test_bulk_insert_throws_exception_for_inconsistent_record_types(): void
     {
         try {
-            $this->better_wpdb->bulkInsert('test_table', [
-                    ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                    ['test_string' => 'bar', 'test_int' => 2, 'test_float' => 20.00],
+            $this->better_wpdb->bulkInsert(
+                'test_table',
+                [
+                    [
+                        'test_string' => 'foo',
+                        'test_float' => 10.00,
+                        'test_int' => 1,
+                    ],
+                    [
+                        'test_string' => 'bar',
+                        'test_int' => 2,
+                        'test_float' => 20.00,
+                    ],
                 ]
             );
             $this->fail('Bulk insert should have been rolled back');
@@ -131,13 +136,23 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_bulkInsert_with_array(): void
+    public function test_bulk_insert_with_array(): void
     {
         $this->assertRecordCount(0);
 
-        $res = $this->better_wpdb->bulkInsert('test_table', [
-                ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+        $res = $this->better_wpdb->bulkInsert(
+            'test_table',
+            [
+                [
+                    'test_string' => 'foo',
+                    'test_float' => 10.00,
+                    'test_int' => 1,
+                ],
+                [
+                    'test_string' => 'bar',
+                    'test_float' => 20.00,
+                    'test_int' => 2,
+                ],
             ]
         );
 
@@ -147,26 +162,34 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertRecord(1, [
             'test_string' => 'foo',
             'test_float' => 10.00,
-            'test_int' => 1
+            'test_int' => 1,
         ]);
 
         $this->assertRecord(2, [
             'test_string' => 'bar',
             'test_float' => 20.00,
-            'test_int' => 2
+            'test_int' => 2,
         ]);
     }
 
     /**
      * @test
      */
-    public function test_bulkInsert_with_iterator(): void
+    public function test_bulk_insert_with_iterator(): void
     {
         $this->assertRecordCount(0);
 
         $generator = function (): Generator {
-            yield ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1];
-            yield ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2];
+            yield [
+                'test_string' => 'foo',
+                'test_float' => 10.00,
+                'test_int' => 1,
+            ];
+            yield [
+                'test_string' => 'bar',
+                'test_float' => 20.00,
+                'test_int' => 2,
+            ];
         };
 
         $res = $this->better_wpdb->bulkInsert('test_table', $generator());
@@ -177,29 +200,43 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertRecord(1, [
             'test_string' => 'foo',
             'test_float' => 10.00,
-            'test_int' => 1
+            'test_int' => 1,
         ]);
 
         $this->assertRecord(2, [
             'test_string' => 'bar',
             'test_float' => 20.00,
-            'test_int' => 2
+            'test_int' => 2,
         ]);
     }
 
     /**
      * @test
      */
-    public function test_bulkInsert_rolls_back_everything_if_not_all_records_can_be_inserted(): void
+    public function test_bulk_insert_rolls_back_everything_if_not_all_records_can_be_inserted(): void
     {
         $this->assertRecordCount(0);
 
         try {
-            $this->better_wpdb->bulkInsert('test_table', [
-                    ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                    ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+            $this->better_wpdb->bulkInsert(
+                'test_table',
+                [
+                    [
+                        'test_string' => 'foo',
+                        'test_float' => 10.00,
+                        'test_int' => 1,
+                    ],
+                    [
+                        'test_string' => 'bar',
+                        'test_float' => 20.00,
+                        'test_int' => 2,
+                    ],
                     // duplicate string.
-                    ['test_string' => 'bar', 'test_float' => 30.00, 'test_int' => 4],
+                    [
+                        'test_string' => 'bar',
+                        'test_float' => 30.00,
+                        'test_int' => 4,
+                    ],
                 ]
             );
             $this->fail('Bulk insert should not have succeeded.');
@@ -218,9 +255,19 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->bulkInsert('test_table', [
-                ['test_string' => 'foo', 'test_float' => 10.00, 'test_int' => 1],
-                ['test_string' => 'bar', 'test_float' => 20.00, 'test_int' => 2],
+        $db->bulkInsert(
+            'test_table',
+            [
+                [
+                    'test_string' => 'foo',
+                    'test_float' => 10.00,
+                    'test_int' => 1,
+                ],
+                [
+                    'test_string' => 'bar',
+                    'test_float' => 20.00,
+                    'test_int' => 2,
+                ],
             ]
         );
 
@@ -244,5 +291,4 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->assertSame(['bar', 20.00, 2], $logger->queries[2]->bindings);
         $this->assertTrue($logger->queries[2]->end > $logger->queries[2]->start);
     }
-
 }

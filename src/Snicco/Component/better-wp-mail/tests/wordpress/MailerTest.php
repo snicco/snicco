@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
+use InvalidArgumentException;
 use LogicException;
 use MockPHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
@@ -18,9 +19,11 @@ use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
 use WP_Error;
+use WP_UnitTest_Factory;
 use WP_User;
 
 use function array_merge;
+use function array_values;
 use function dirname;
 use function file_get_contents;
 use function sprintf;
@@ -29,11 +32,13 @@ use function wp_mail;
 
 /**
  * @psalm-suppress PossiblyUndefinedIntArrayOffset
+ *
+ * @internal
  */
 final class MailerTest extends WPTestCase
 {
-
     private string $fixtures_dir;
+
     private MockPHPMailer $php_mailer;
 
     protected function setUp(): void
@@ -54,14 +59,21 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer(new WPMailTransport());
 
-        $admin1 = $this->createAdmin(['user_email' => 'admin1@web.de', 'display_name' => 'admin1']);
-        $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
+        $admin1 = $this->createAdmin([
+            'user_email' => 'admin1@web.de',
+            'display_name' => 'admin1',
+        ]);
+        $admin2 = $this->createAdmin([
+            'user_email' => 'admin2@web.de',
+            'display_name' => 'admin2',
+        ]);
 
         $email = new Email();
         $email = $email->withTo([['c@web.de', 'Calvin Alkan'], ['m@web.de', 'Marlon Alkan']])
-            ->withCc(
-                [['name' => 'Jon', 'email' => 'jon@web.de'], ['jane@web.de', 'Jane Doe']]
-            )
+            ->withCc([[
+                'name' => 'Jon',
+                'email' => 'jon@web.de',
+            ], ['jane@web.de', 'Jane Doe']])
             ->withBcc([$admin1, $admin2])
             ->withSubject('Hi Calvin')
             ->withHtmlBody('<h1>whats up</h1>')
@@ -72,19 +84,10 @@ final class MailerTest extends WPTestCase
         $data = $this->getSentMails()[0];
         $header = $data['header'];
 
-        $this->assertStringContainsString(
-            'To: Calvin Alkan <c@web.de>, Marlon Alkan <m@web.de>',
-            $header
-        );
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>, Marlon Alkan <m@web.de>', $header);
         $this->assertStringContainsString('Cc: Jon <jon@web.de>, Jane Doe <jane@web.de>', $header);
-        $this->assertStringContainsString(
-            'Bcc: Admin1 <admin1@web.de>, Admin2 <admin2@web.de>',
-            $header
-        );
-        $this->assertStringContainsString(
-            'From: Calvin Alkan <c@from.de>',
-            $header
-        );
+        $this->assertStringContainsString('Bcc: Admin1 <admin1@web.de>, Admin2 <admin2@web.de>', $header);
+        $this->assertStringContainsString('From: Calvin Alkan <c@from.de>', $header);
 
         $this->assertSame('Hi Calvin', $data['subject']);
 
@@ -104,19 +107,19 @@ final class MailerTest extends WPTestCase
      */
     public function default_headers_are_added_if_not_configured_on_the_sending_mail(): void
     {
-        $config = new MailDefaults(
-            'no-reply@inc.de',
-            'Calvin INC',
-            'office@inc.de',
-            'Office Calvin INC',
-        );
+        $config = new MailDefaults('no-reply@inc.de', 'Calvin INC', 'office@inc.de', 'Office Calvin INC',);
 
         $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), null, $config);
 
-        $email = (new Email())->withTo(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])
+        $email = (new Email())->withTo([
+            'name' => 'Calvin Alkan',
+            'email' => 'c@web.de',
+        ])
             ->withTextBody('foo')
             ->withSubject('foo')
-            ->addCustomHeaders(['X-FOO' => 'BAR']);
+            ->addCustomHeaders([
+                'X-FOO' => 'BAR',
+            ]);
 
         $mailer->send($email);
 
@@ -146,10 +149,7 @@ final class MailerTest extends WPTestCase
         $headers = $data['header'];
 
         $this->assertStringContainsString('To: client@web.de', $headers);
-        $this->assertStringContainsString(
-            'Reply-To: Calvin Alkan <c@web.de>, Marlon Alkan <m@web.de>',
-            $headers
-        );
+        $this->assertStringContainsString('Reply-To: Calvin Alkan <c@web.de>, Marlon Alkan <m@web.de>', $headers);
     }
 
     /**
@@ -159,15 +159,9 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
 
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        )
-            ->withSubject(
-                'Hello'
-            )
-            ->withTextBody(
-                'PLAIN_TEXT'
-            );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>')
+            ->withSubject('Hello')
+            ->withTextBody('PLAIN_TEXT');
 
         $mailer->send($email);
 
@@ -189,16 +183,9 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
 
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        )
-            ->withSubject(
-                'Hello'
-            )
-            ->withTextTemplate(
-                $this->fixtures_dir
-                . '/plain-text-mail.txt'
-            );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>')
+            ->withSubject('Hello')
+            ->withTextTemplate($this->fixtures_dir . '/plain-text-mail.txt');
 
         $mailer->send($email);
 
@@ -234,16 +221,10 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Type: multipart/alternative;', $header);
 
         $this->assertStringContainsString('<h1>Hello World</h1>', $first_email['body']);
-        $this->assertStringContainsString(
-            'Content-Type: text/html; charset=us-ascii',
-            $first_email['body']
-        );
+        $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $first_email['body']);
 
         $this->assertStringContainsString('Hello World', $first_email['body']);
-        $this->assertStringContainsString(
-            'Content-Type: text/plain; charset=us-ascii',
-            $first_email['body']
-        );
+        $this->assertStringContainsString('Content-Type: text/plain; charset=us-ascii', $first_email['body']);
     }
 
     /**
@@ -256,7 +237,10 @@ final class MailerTest extends WPTestCase
         $email = (new Email())->withTo('Calvin Alkan <c@web.de>')
             ->withSubject('Hello Calvin')
             ->withHtmlTemplate($this->fixtures_dir . '/php-mail.php')
-            ->addContext(['foo' => 'FOO', 'baz' => 'BAZ']);
+            ->addContext([
+                'foo' => 'FOO',
+                'baz' => 'BAZ',
+            ]);
 
         $mailer->send($email);
 
@@ -285,16 +269,12 @@ final class MailerTest extends WPTestCase
 
         $mailer = new Mailer();
 
-        $mailer->send(
-            (new TestMail())->withTo(
-                'calvin@web.de'
-            )
-        );
+        $mailer->send((new TestMail())->withTo('calvin@web.de'));
 
         $header = $this->getSentMails()[0]['header'];
 
-        $this->assertStringContainsString("From: $site_name <$admin_email>", $header);
-        $this->assertStringContainsString("Reply-To: $site_name <$admin_email>", $header);
+        $this->assertStringContainsString("From: {$site_name} <{$admin_email}>", $header);
+        $this->assertStringContainsString("Reply-To: {$site_name} <{$admin_email}>", $header);
     }
 
     /**
@@ -339,10 +319,7 @@ final class MailerTest extends WPTestCase
 
         $first_email = $this->getSentMails()[0];
 
-        $this->assertStringContainsString(
-            'Content-Type: text/html; charset=us-ascii',
-            $first_email['body']
-        );
+        $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $first_email['body']);
         $this->assertStringContainsString('<h1>Hi Calvin</h1>', $first_email['body']);
     }
 
@@ -353,8 +330,14 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer(new WPMailTransport());
 
-        $admin1 = $this->createAdmin(['user_email' => 'admin1@web.de', 'display_name' => 'admin1']);
-        $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
+        $admin1 = $this->createAdmin([
+            'user_email' => 'admin1@web.de',
+            'display_name' => 'admin1',
+        ]);
+        $admin2 = $this->createAdmin([
+            'user_email' => 'admin2@web.de',
+            'display_name' => 'admin2',
+        ]);
 
         $email = new TestMail();
 
@@ -363,10 +346,7 @@ final class MailerTest extends WPTestCase
         $first_mail = $this->getSentMails()[0];
         $header = $first_mail['header'];
 
-        $this->assertStringContainsString(
-            'To: Admin1 <admin1@web.de>, Admin2 <admin2@web.de>',
-            $header
-        );
+        $this->assertStringContainsString('To: Admin1 <admin1@web.de>, Admin2 <admin2@web.de>', $header);
     }
 
     /**
@@ -381,10 +361,7 @@ final class MailerTest extends WPTestCase
         $first_mail = $this->getSentMails()[0];
         $header = $first_mail['header'];
 
-        $this->assertStringContainsString(
-            'To: calvin@web.de',
-            $header
-        );
+        $this->assertStringContainsString('To: calvin@web.de', $header);
     }
 
     /**
@@ -420,17 +397,12 @@ final class MailerTest extends WPTestCase
      */
     public function test_with_custom_renderer_chain(): void
     {
-        $chain = new AggregateRenderer(
-            new FilesystemRenderer(),
-            new NamedViewRenderer(),
-        );
+        $chain = new AggregateRenderer(new FilesystemRenderer(), new NamedViewRenderer(),);
 
         $mailer = new Mailer(new WPMailTransport(), $chain);
 
         $email = new Email();
-        $email = $email->withHtmlTemplate($this->fixtures_dir . '/mail.foobar-mail')->withTo(
-            'calvin@web.de'
-        );
+        $email = $email->withHtmlTemplate($this->fixtures_dir . '/mail.foobar-mail')->withTo('calvin@web.de');
 
         $mailer->send($email);
 
@@ -443,10 +415,7 @@ final class MailerTest extends WPTestCase
      */
     public function test_with_custom_renderer_does_work_with_multiple_calls(): void
     {
-        $chain = new AggregateRenderer(
-            new FilesystemRenderer(),
-            new NamedViewRenderer(),
-        );
+        $chain = new AggregateRenderer(new FilesystemRenderer(), new NamedViewRenderer(),);
 
         $mailer = new Mailer(new WPMailTransport(), $chain);
 
@@ -483,10 +452,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('From: Calvin Alkan <c@web.de>', $header);
 
         // PHP Mailer doesnt support return path.
-        $this->assertStringNotContainsString(
-            'Return-Path: My Company <return@company.de>',
-            $header
-        );
+        $this->assertStringNotContainsString('Return-Path: My Company <return@company.de>', $header);
 
         // PHPMailer does not support multiple from Addresses. And since the sender has a higher priority we take that.
         $this->assertStringNotContainsString('Marlon Alkan', $header);
@@ -503,7 +469,10 @@ final class MailerTest extends WPTestCase
                 new WP_Error(
                     'wp_mail_failed',
                     'Something went wrong here.',
-                    ['to' => 'foo', 'subject' => 'bar']
+                    [
+                        'to' => 'foo',
+                        'subject' => 'bar',
+                    ]
                 )
             );
         });
@@ -511,11 +480,7 @@ final class MailerTest extends WPTestCase
         try {
             $mailer = new Mailer();
 
-            $mailer->send(
-                (new TestMail())->withTo(
-                    'calvin@web.de'
-                )
-            );
+            $mailer->send((new TestMail())->withTo('calvin@web.de'));
 
             $this->fail('No exception thrown.');
         } catch (CantSendEmailWithWPMail $e) {
@@ -541,18 +506,17 @@ final class MailerTest extends WPTestCase
                 new WP_Error(
                     'wp_mail_failed',
                     'Something went wrong here.',
-                    ['to' => 'foo', 'subject' => 'bar']
+                    [
+                        'to' => 'foo',
+                        'subject' => 'bar',
+                    ]
                 )
             );
         });
 
         try {
             $mailer = new Mailer();
-            $mailer->send(
-                (new TestMail())->withTo(
-                    'calvin@web.de'
-                )
-            );
+            $mailer->send((new TestMail())->withTo('calvin@web.de'));
             $this->fail('No exception thrown.');
         } catch (CantSendEmailWithWPMail $e) {
             $this->assertSame('', $phpmailer->AltBody);
@@ -566,11 +530,7 @@ final class MailerTest extends WPTestCase
     public function the_priority_is_reset(): void
     {
         $mailer = new Mailer();
-        $mailer->send(
-            (new TestMail())->withTo(
-                'calvin@web.de'
-            )->withPriority(5)
-        );
+        $mailer->send((new TestMail())->withTo('calvin@web.de')->withPriority(5));
 
         $mail = $this->getSentMails()[0];
 
@@ -587,14 +547,9 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer();
 
-        $email = (new TestMail())->withHtmlBody(
-            '<h1>ÜÜ</h1>'
-        )
-            ->withTextBody(
-                'öö'
-            )->withTo(
-                'calvin@web.de'
-            );
+        $email = (new TestMail())->withHtmlBody('<h1>ÜÜ</h1>')
+            ->withTextBody('öö')
+            ->withTo('calvin@web.de');
 
         $mailer->send($email);
 
@@ -604,20 +559,11 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
         $this->assertStringContainsString('boundary=', $header);
 
-        $this->assertStringContainsString(
-            'This is a multi-part message in MIME format',
-            $first_mail['body']
-        );
-        $this->assertStringContainsString(
-            'Content-Type: text/plain; charset=utf-8',
-            $first_mail['body']
-        );
+        $this->assertStringContainsString('This is a multi-part message in MIME format', $first_mail['body']);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $first_mail['body']);
         $this->assertStringContainsString('öö', $first_mail['body']);
 
-        $this->assertStringContainsString(
-            'Content-Type: text/html; charset=utf-8',
-            $first_mail['body']
-        );
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $first_mail['body']);
         $this->assertStringContainsString('<h1>ÜÜ</h1>', $first_mail['body']);
 
         global $phpmailer;
@@ -630,28 +576,19 @@ final class MailerTest extends WPTestCase
     public function all_filters_are_unhooked_after_sending_a_mail(): void
     {
         $mailer = new Mailer();
-        $email = (new TestMail())->withHtmlBody(
-            '<h1>ÜÜ</h1>'
-        )
-            ->withTextBody(
-                'öö'
-            )->withTo(
-                'calvin@web.de'
-            );
+        $email = (new TestMail())->withHtmlBody('<h1>ÜÜ</h1>')
+            ->withTextBody('öö')
+            ->withTo('calvin@web.de');
         $mailer->send($email);
 
-        wp_mail('marlon@web.de', 'foo', '<h1>bar</h1>', ['Content-Type: text/plain; charset=utf-8']
-        );
+        wp_mail('marlon@web.de', 'foo', '<h1>bar</h1>', ['Content-Type: text/plain; charset=utf-8']);
 
         $mails = $this->getSentMails();
         $this->assertCount(2, $mails);
 
         $second_mail = $mails[1];
 
-        $this->assertStringNotContainsString(
-            'Content-Type: multipart/alternative',
-            $second_mail['header']
-        );
+        $this->assertStringNotContainsString('Content-Type: multipart/alternative', $second_mail['header']);
         $this->assertStringNotContainsString('öö', $second_mail['body']);
 
         // Will not throw an exception.
@@ -669,11 +606,7 @@ final class MailerTest extends WPTestCase
         $email = $email->withTo('c@web.de')
             ->withTextBody('öö')
             ->withHtmlBody('<h1>ÜÜ</h1>')
-            ->addAttachment(
-                $this->fixtures_dir . '/php-elephant.jpg',
-                'my-elephant',
-                'image/jpeg'
-            );
+            ->addAttachment($this->fixtures_dir . '/php-elephant.jpg', 'my-elephant', 'image/jpeg');
 
         $mailer->send($email);
 
@@ -747,11 +680,7 @@ final class MailerTest extends WPTestCase
         $email = $email->withTo('c@web.de')
             ->withTextBody('öö')
             ->withHtmlBody('<h1>ÜÜ</h1>')
-            ->addEmbed(
-                $this->fixtures_dir . '/php-elephant.jpg',
-                'my-elephant',
-                'image/jpeg'
-            );
+            ->addEmbed($this->fixtures_dir . '/php-elephant.jpg', 'my-elephant', 'image/jpeg');
 
         $mailer->send($email);
 
@@ -773,8 +702,9 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Disposition: inline;', $body);
         $this->assertStringContainsString('filename=my-elephant', $body);
 
-        $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $expected_cid = $email->attachments()[0]
+            ->cid();
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
     }
 
     /**
@@ -814,8 +744,9 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Disposition: inline;', $body);
         $this->assertStringContainsString('filename=my-elephant', $body);
 
-        $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $expected_cid = $email->attachments()[0]
+            ->cid();
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
     }
 
     /**
@@ -829,16 +760,8 @@ final class MailerTest extends WPTestCase
         $email = $email->withTo('c@web.de')
             ->withTextBody('öö')
             ->withHtmlBody('<h1>ÜÜ</h1>')
-            ->addEmbed(
-                $this->fixtures_dir . '/php-elephant.jpg',
-                'php-elephant-inline',
-                'image/jpeg'
-            )
-            ->addAttachment(
-                $this->fixtures_dir . '/php-elephant.jpg',
-                'php-elephant-attachment',
-                'image/jpeg'
-            );
+            ->addEmbed($this->fixtures_dir . '/php-elephant.jpg', 'php-elephant-inline', 'image/jpeg')
+            ->addAttachment($this->fixtures_dir . '/php-elephant.jpg', 'php-elephant-attachment', 'image/jpeg');
 
         $mailer->send($email);
 
@@ -862,8 +785,9 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
         $this->assertStringContainsString('Content-Disposition: inline;', $body);
         $this->assertStringContainsString('filename=php-elephant-inline', $body);
-        $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $expected_cid = $email->attachments()[0]
+            ->cid();
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
 
         // Attachment
         $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
@@ -882,18 +806,9 @@ final class MailerTest extends WPTestCase
 
         $email =
             (new TestMail())->withTextBody('öö')
-                ->addEmbed(
-                    $this->fixtures_dir
-                    . '/php-elephant.jpg',
-                    'php-elephant-inline'
-                )
-                ->withHtmlTemplate(
-                    $this->fixtures_dir
-                    . '/inline-attachment.php'
-                )
-                ->withTo(
-                    'c@web.de'
-                );
+                ->addEmbed($this->fixtures_dir . '/php-elephant.jpg', 'php-elephant-inline')
+                ->withHtmlTemplate($this->fixtures_dir . '/inline-attachment.php')
+                ->withTo('c@web.de');
 
         $first_attachment = $email->attachments()[0];
 
@@ -923,8 +838,9 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
         $this->assertStringContainsString('Content-Disposition: inline;', $body);
         $this->assertStringContainsString('filename=php-elephant-inline', $body);
-        $expected_cid = $email->attachments()[0]->cid();
-        $this->assertStringContainsString("Content-ID: <$expected_cid>", $body);
+        $expected_cid = $email->attachments()[0]
+            ->cid();
+        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
     }
 
     /**
@@ -935,17 +851,20 @@ final class MailerTest extends WPTestCase
         $mailer = new Mailer();
 
         $email = new TestMail();
-        $email = $email->withTo('c@web.de')->withTextBody('text');
+        $email = $email->withTo('c@web.de')
+            ->withTextBody('text');
 
         $mailer->send($email);
 
         $email = new TestMail();
-        $email = $email->withCc('c@web.de')->withTextBody('text');
+        $email = $email->withCc('c@web.de')
+            ->withTextBody('text');
 
         $mailer->send($email);
 
         $email = new TestMail();
-        $email = $email->withBcc('c@web.de')->withTextBody('text');
+        $email = $email->withBcc('c@web.de')
+            ->withTextBody('text');
 
         $mailer->send($email);
 
@@ -966,11 +885,8 @@ final class MailerTest extends WPTestCase
     {
         $mailer = new Mailer(new WPMailTransport());
 
-        $email = (new Email())->withTo('c@web.de')->addAttachment(
-            $this->fixtures_dir . '/php-elephant.jpg',
-            'my-elephant',
-            'image/jpeg'
-        );
+        $email = (new Email())->withTo('c@web.de')
+            ->addAttachment($this->fixtures_dir . '/php-elephant.jpg', 'my-elephant', 'image/jpeg');
 
         $mailer->send($email);
 
@@ -1021,9 +937,18 @@ final class MailerTest extends WPTestCase
 
     private function createAdmin(array $data): WP_User
     {
-        return $this->factory()->user->create_and_get(
-            array_merge($data, ['role' => 'administrator'])
-        );
+        /** @var WP_UnitTest_Factory $factory */
+        $factory = $this->factory();
+
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => 'administrator',
+        ]));
+
+        if (! $user instanceof WP_User) {
+            throw new InvalidArgumentException('Must be WP_USER');
+        }
+
+        return $user;
     }
 
     /**
@@ -1031,10 +956,9 @@ final class MailerTest extends WPTestCase
      */
     private function getSentMails(): array
     {
-        /** @var list<array{header: string, body:string, subject:string}> $mails */
+        /** @var array<array{header: string, body:string, subject:string}> $mails */
         $mails = $this->php_mailer->mock_sent;
-        return $mails;
+
+        return array_values($mails);
     }
-
 }
-

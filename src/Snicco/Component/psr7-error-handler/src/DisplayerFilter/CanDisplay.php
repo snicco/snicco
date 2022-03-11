@@ -12,12 +12,10 @@ use function array_filter;
 
 final class CanDisplay implements DisplayerFilter
 {
-
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array
     {
         return array_filter($displayers, function (ExceptionDisplayer $displayer) use ($info) {
             return $displayer->canDisplay($info);
         });
     }
-
 }

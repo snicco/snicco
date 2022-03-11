@@ -21,13 +21,16 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 use Throwable;
 
+/**
+ * @internal
+ */
 final class KernelBundlesTest extends TestCase
 {
-
     use CreateTestContainer;
     use CleanDirs;
 
     private string $base_dir;
+
     private string $base_dir_with_bundles;
 
     protected function setUp(): void
@@ -125,7 +128,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::PROD => [stdClass::class]
+                    Environment::PROD => [stdClass::class],
                 ],
             ])
         );
@@ -134,7 +137,7 @@ final class KernelBundlesTest extends TestCase
             $app->boot();
             $this->fail('no exception thrown when expected.');
         } catch (Throwable $e) {
-            $this->assertStringContainsString("Snicco\\Component\\Kernel\\Bundle", $e->getMessage());
+            $this->assertStringContainsString('Snicco\\Component\\Kernel\\Bundle', $e->getMessage());
             $this->assertStringContainsString('stdClass', $e->getMessage());
         }
     }
@@ -190,9 +193,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleWithCustomEnv::class,
-                    ]
+                    Environment::ALL => [BundleWithCustomEnv::class],
                 ],
             ])
         );
@@ -210,10 +211,8 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleWithCustomEnv::class,
-                    ]
-                ]
+                    Environment::ALL => [BundleWithCustomEnv::class],
+                ],
             ])
         );
 
@@ -223,11 +222,13 @@ final class KernelBundlesTest extends TestCase
         $app2->boot();
 
         $this->assertTrue(
-            $app2->container()[BundleWithCustomEnv::class]->booted,
+            $app2->container()[BundleWithCustomEnv::class]
+                ->booted,
             'bundle was not booted when it should be.'
         );
         $this->assertTrue(
-            $app2->container()[BundleWithCustomEnv::class]->registered,
+            $app2->container()[BundleWithCustomEnv::class]
+                ->registered,
             'bundle was not registered when it should be.'
         );
     }
@@ -251,10 +252,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleDuplicate1::class,
-                        BundleDuplicate2::class
-                    ]
+                    Environment::ALL => [BundleDuplicate1::class, BundleDuplicate2::class],
                 ],
             ])
         );
@@ -273,9 +271,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleThatConfigures::class
-                    ]
+                    Environment::ALL => [BundleThatConfigures::class],
                 ],
             ])
         );
@@ -284,7 +280,8 @@ final class KernelBundlesTest extends TestCase
 
         // configure is not called.
         try {
-            $app->config()->get('app.configured_value');
+            $app->config()
+                ->get('app.configured_value');
             $this->fail('Bundle::configure should not be called for a cached configuration.');
         } catch (MissingConfigKey $e) {
             $this->assertStringContainsString('app.configured_value', $e->getMessage());
@@ -297,14 +294,13 @@ final class KernelBundlesTest extends TestCase
         // plugin is used
         $this->assertTrue($app->usesBundle('bundle_that_configures'));
     }
-
 }
 
 class BundleThatConfigures implements Bundle
 {
     public bool $registered = false;
-    public bool $booted = false;
 
+    public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
@@ -326,25 +322,24 @@ class BundleThatConfigures implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()[self::class]->booted = true;
+        $kernel->container()[self::class]
+            ->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
     {
         return true;
     }
-
 }
 
 class BundleWithCustomEnv implements Bundle
 {
-
     public bool $registered = false;
+
     public bool $booted = false;
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
@@ -356,7 +351,8 @@ class BundleWithCustomEnv implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()[self::class]->booted = true;
+        $kernel->container()[self::class]
+            ->booted = true;
     }
 
     public function alias(): string
@@ -367,14 +363,12 @@ class BundleWithCustomEnv implements Bundle
     public function shouldRun(Environment $env): bool
     {
         return isset($_SERVER['_test']['custom_env_bundle_should_run'])
-            && $_SERVER['_test']['custom_env_bundle_should_run'] === true;
+            && true === $_SERVER['_test']['custom_env_bundle_should_run'];
     }
-
 }
 
 class BundleDuplicate1 implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
@@ -396,12 +390,10 @@ class BundleDuplicate1 implements Bundle
     {
         return true;
     }
-
 }
 
 class BundleDuplicate2 implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
@@ -423,5 +415,4 @@ class BundleDuplicate2 implements Bundle
     {
         return true;
     }
-
 }

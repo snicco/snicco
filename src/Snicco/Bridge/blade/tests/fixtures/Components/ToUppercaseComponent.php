@@ -8,7 +8,6 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class ToUppercaseComponent extends BladeComponent
 {
-
     public function render(): string
     {
         return $this->view('uppercase');
@@ -18,5 +17,4 @@ class ToUppercaseComponent extends BladeComponent
     {
         return strtoupper($string);
     }
-
 }

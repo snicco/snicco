@@ -11,9 +11,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class DefaultHeaders implements MiddlewareInterface
 {
-
     /**
-     * @var  array<string,string> $default_headers
+     * @var array<string,string>
      */
     private array $default_headers;
 
@@ -30,7 +29,7 @@ final class DefaultHeaders implements MiddlewareInterface
         $response = $handler->handle($request);
 
         foreach ($this->default_headers as $name => $value) {
-            if (!$response->hasHeader($name)) {
+            if (! $response->hasHeader($name)) {
                 $response = $response->withHeader($name, $value);
             }
         }

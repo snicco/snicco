@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use LogicException;
@@ -17,17 +16,17 @@ use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 
+/**
+ * @internal
+ */
 final class HttpKernelTest extends TestCase
 {
-
     /**
      * @test
      */
     public function test_exception_if_no_response_is_returned_in_middleware_pipeline(): void
     {
-        $pipeline = new MiddlewarePipeline(
-            new PimpleContainerAdapter(), new TestErrorHandler()
-        );
+        $pipeline = new MiddlewarePipeline(new PimpleContainerAdapter(), new TestErrorHandler());
 
         $http_kernel = new HttpKernel(
             $pipeline,
@@ -41,5 +40,4 @@ final class HttpKernelTest extends TestCase
 
         $http_kernel->handle(Request::fromPsr(new ServerRequest('GET', '/')));
     }
-
 }

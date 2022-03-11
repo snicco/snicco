@@ -2,16 +2,13 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB;
 
 use function array_map;
 use function array_shift;
 use function is_float;
 use function is_int;
-use function is_null;
 use function preg_replace_callback;
-use function strval;
 
 /**
  * This class stores information about one executed sql query.
@@ -20,7 +17,6 @@ use function strval;
  */
 final class QueryInfo
 {
-
     public float $start;
 
     public float $end;
@@ -43,7 +39,7 @@ final class QueryInfo
     public array $bindings;
 
     /**
-     * @param non-empty-string $sql_with_placeholders
+     * @param non-empty-string   $sql_with_placeholders
      * @param array<scalar|null> $bindings
      */
     public function __construct(float $start, float $end, string $sql_with_placeholders, array $bindings)
@@ -60,28 +56,31 @@ final class QueryInfo
 
     /**
      * @param non-empty-string $sql_with_placeholders
+     *
+     * @psalm-suppress LessSpecificReturnStatement
+     * @psalm-suppress MoreSpecificReturnType
+     *
      * @return non-empty-string
      */
     private function replacePlaceholders(string $sql_with_placeholders, array $bindings): string
     {
         $bindings = array_map(function ($binding) {
             if (is_int($binding) || is_float($binding)) {
-                return strval($binding);
+                return (string) $binding;
             }
-            if (is_null($binding)) {
+            if (null === $binding) {
                 return 'null';
             }
-            $binding = (string)$binding;
-            return "'$binding'";
+            $binding = (string) $binding;
+
+            return "'{$binding}'";
         }, $bindings);
 
-        /** @var non-empty-string $sql */
-        $sql = (string)preg_replace_callback('/\?/', function () use (&$bindings): string {
-            /** @var string[] $bindings */
-            return strval(array_shift($bindings));
+        return (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
+            /**
+             * @var string[] $bindings
+             */
+            return (string) (array_shift($bindings));
         }, $sql_with_placeholders);
-
-        return $sql;
     }
-
 }

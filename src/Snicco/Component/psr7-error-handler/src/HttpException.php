@@ -9,14 +9,12 @@ use Throwable;
 
 class HttpException extends RuntimeException
 {
-
     private int $status_code;
 
     /**
      * @var array<string,string>
      */
     private array $response_headers;
-
 
     /**
      * @param array<string,string> $response_headers
@@ -46,13 +44,13 @@ class HttpException extends RuntimeException
             $status_code,
             $previous->getMessage(),
             $response_headers,
-            (int)$previous->getCode(),
+            (int) $previous->getCode(),
             $previous
         );
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function headers(): array
     {
@@ -63,5 +61,4 @@ class HttpException extends RuntimeException
     {
         return $this->status_code;
     }
-
 }

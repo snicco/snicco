@@ -9,14 +9,12 @@ use Throwable;
 
 final class ViewCantBeRendered extends RuntimeException
 {
-
     public static function fromPrevious(string $view_name, Throwable $previous): ViewCantBeRendered
     {
         return new self(
-            "Error rendering view [$view_name].\nCaused by: {$previous->getMessage()}",
-            (int)$previous->getCode(),
+            "Error rendering view [{$view_name}].\nCaused by: {$previous->getMessage()}",
+            (int) $previous->getCode(),
             $previous
         );
     }
-
 }

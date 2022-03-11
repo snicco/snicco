@@ -11,7 +11,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class BundleProduction implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
@@ -22,7 +21,6 @@ final class BundleProduction implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -34,5 +32,4 @@ final class BundleProduction implements Bundle
     {
         return true;
     }
-
 }

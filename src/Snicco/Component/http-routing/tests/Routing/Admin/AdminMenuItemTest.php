@@ -10,75 +10,59 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminMenuItem;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
+/**
+ * @internal
+ */
 final class AdminMenuItemTest extends TestCase
 {
-
     /**
      * @test
      */
     public function the_menu_item_can_be_constructed_just_with_a_route(): void
     {
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
         $item = AdminMenuItem::fromRoute($route);
 
         $this->assertSame('My Page', $item->menuTitle());
         $this->assertSame('My Page', $item->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
-        $this->assertSame(null, $item->requiredCapability());
-        $this->assertSame(null, $item->icon());
-        $this->assertSame(null, $item->position());
+        $this->assertNull($item->requiredCapability());
+        $this->assertNull($item->icon());
+        $this->assertNull($item->position());
 
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my-page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my-page');
 
         $item = AdminMenuItem::fromRoute($route);
 
         $this->assertSame('My Page', $item->menuTitle());
         $this->assertSame('My Page', $item->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
-        $this->assertSame(null, $item->requiredCapability());
-        $this->assertSame(null, $item->icon());
-        $this->assertSame(null, $item->position());
+        $this->assertNull($item->requiredCapability());
+        $this->assertNull($item->icon());
+        $this->assertNull($item->position());
     }
 
     /**
      * @test
      */
     public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route(
-    ): void
-    {
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+    ): void {
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
         // Only page  title
-        $item = AdminMenuItem::fromRoute(
-            $route,
-            [AdminMenuItem::PAGE_TITLE => 'My explicit page title']
-        );
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::PAGE_TITLE => 'My explicit page title',
+        ]);
 
         $this->assertSame('My explicit page title', $item->menuTitle());
         $this->assertSame('My explicit page title', $item->pageTitle());
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
-        $this->assertSame(null, $item->requiredCapability());
-        $this->assertSame(null, $item->icon());
-        $this->assertSame(null, $item->position());
+        $this->assertNull($item->requiredCapability());
+        $this->assertNull($item->icon());
+        $this->assertNull($item->position());
 
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
         // menu and page title explicitly
         $item = AdminMenuItem::fromRoute(
@@ -94,18 +78,11 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
 
         // Only menu title
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
-        $item = AdminMenuItem::fromRoute(
-            $route,
-            [
-                AdminMenuItem::MENU_TITLE => 'My explicit menu title',
-            ]
-        );
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::MENU_TITLE => 'My explicit menu title',
+        ]);
 
         $this->assertSame('My explicit menu title', $item->menuTitle());
         $this->assertSame('My explicit menu title', $item->pageTitle());
@@ -143,7 +120,9 @@ final class AdminMenuItemTest extends TestCase
     public function test_a_capability_can_be_set(): void
     {
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => 'read.whatever']);
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::CAPABILITY => 'read.whatever',
+        ]);
 
         $this->assertSame('read.whatever', $item->requiredCapability());
     }
@@ -155,7 +134,9 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$capability has to be null or non empty string.');
         $route = $this->getRoute();
-        AdminMenuItem::fromRoute($route, [AdminMenuItem::CAPABILITY => '']);
+        AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::CAPABILITY => '',
+        ]);
     }
 
     /**
@@ -164,7 +145,9 @@ final class AdminMenuItemTest extends TestCase
     public function test_a_icon_can_be_set(): void
     {
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => 'admin-site-icon']);
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::ICON => 'admin-site-icon',
+        ]);
 
         $this->assertSame('admin-site-icon', $item->icon());
     }
@@ -176,7 +159,9 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectExceptionMessage('$icon has to be null or non empty string.');
         $route = $this->getRoute();
-        AdminMenuItem::fromRoute($route, [AdminMenuItem::ICON => '']);
+        AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::ICON => '',
+        ]);
     }
 
     /**
@@ -185,7 +170,9 @@ final class AdminMenuItemTest extends TestCase
     public function test_a_position_can_be_set(): void
     {
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [AdminMenuItem::POSITION => 12]);
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::POSITION => 12,
+        ]);
 
         $this->assertSame(12, $item->position());
     }
@@ -237,11 +224,6 @@ final class AdminMenuItemTest extends TestCase
 
     private function getRoute(): Route
     {
-        return Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        return Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
     }
-
 }

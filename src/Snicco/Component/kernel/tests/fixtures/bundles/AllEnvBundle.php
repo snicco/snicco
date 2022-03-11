@@ -11,19 +11,16 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class AllEnvBundle implements Bundle
 {
-
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
     }
 
     public function register(Kernel $kernel): void
     {
-        //
     }
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -35,5 +32,4 @@ final class AllEnvBundle implements Bundle
     {
         return true;
     }
-
 }

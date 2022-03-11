@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
@@ -10,9 +9,11 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
-class ViewResponseTest extends TestCase
+/**
+ * @internal
+ */
+final class ViewResponseTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private Response $base_response;
@@ -20,7 +21,8 @@ class ViewResponseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->base_response = $this->createResponseFactory()->createResponse();
+        $this->base_response = $this->createResponseFactory()
+            ->createResponse();
     }
 
     /**
@@ -49,13 +51,17 @@ class ViewResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_viewData(): void
+    public function test_view_data(): void
     {
         $response = new ViewResponse('foo', $this->base_response);
         $this->assertSame([], $response->viewData());
 
-        $new = $response->withViewData(['foo' => 'bar']);
-        $this->assertSame(['foo' => 'bar'], $new->viewData());
+        $new = $response->withViewData([
+            'foo' => 'bar',
+        ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $new->viewData());
         $this->assertSame([], $response->viewData());
     }
 
@@ -67,5 +73,4 @@ class ViewResponseTest extends TestCase
         $response = new ViewResponse('foo', $this->base_response);
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
     }
-
 }

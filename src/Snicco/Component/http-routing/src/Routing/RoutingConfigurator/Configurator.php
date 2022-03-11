@@ -25,6 +25,8 @@ use function array_merge;
 use function array_pop;
 use function array_reverse;
 use function count;
+use function gettype;
+use function is_string;
 use function trim;
 
 /**
@@ -33,7 +35,6 @@ use function trim;
  */
 final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigurator
 {
-
     /**
      * @var list<RouteGroup>
      */
@@ -81,19 +82,14 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         $this->validateThatNoAdminPrefixesAreSet($path, $name);
 
-        $route = $this->createRoute(
-            $name,
-            $this->admin_dashboard_prefix->appendPath($path),
-            ['GET'],
-            $action
-        );
+        $route = $this->createRoute($name, $this->admin_dashboard_prefix->appendPath($path), ['GET'], $action);
         $route->condition(IsAdminDashboardRequest::class);
 
         $this->validateThatAdminRouteHasNoSegments($route);
 
         // It makes no sense to have a menu item without a dedicated action to handle it.
-        if (Route::DELEGATE === $action && !empty($menu_attributes)) {
-            throw new BadRouteConfiguration("Route [$name] can not have an admin menu item without an action.");
+        if (Route::DELEGATE === $action && ! empty($menu_attributes)) {
+            throw new BadRouteConfiguration("Route [{$name}] can not have an admin menu item without an action.");
         }
         // A menu item should explicitly not be added.
         if (null === $menu_attributes || Route::DELEGATE === $action) {
@@ -108,12 +104,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function subPages(Route $parent_route, Closure $routes): void
     {
         if (isset($this->current_parent_route)) {
-            throw new BadRouteConfiguration(
-                sprintf(
-                    'Nested calls to [%s] are not possible.',
-                    __METHOD__
-                )
-            );
+            throw new BadRouteConfiguration(sprintf('Nested calls to [%s] are not possible.', __METHOD__));
         }
 
         $this->current_parent_route = $parent_route;
@@ -121,7 +112,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $this->middleware($parent_route->getMiddleware())
             ->group($routes);
 
-        unset($this->current_parent_route);
+        $this->current_parent_route = null;
     }
 
     /**
@@ -142,31 +133,36 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function middleware($middleware)
     {
         $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::toArray($middleware);
+
         return $this;
     }
 
     public function name(string $name)
     {
         $this->delegate_attributes[RoutingConfigurator::NAME_KEY] = $name;
+
         return $this;
     }
 
     public function namespace(string $namespace)
     {
         $this->delegate_attributes[RoutingConfigurator::NAMESPACE_KEY] = $namespace;
+
         return $this;
     }
 
     /**
      * @psalm-suppress UnresolvableInclude
      * @psalm-suppress MixedAssignment
+     *
+     * @param mixed $file_or_closure
      */
     public function include($file_or_closure): void
     {
         $routes = $file_or_closure;
-        if (!$routes instanceof Closure) {
+        if (! $routes instanceof Closure) {
             Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
-            Assert::readable($file_or_closure, "The file $file_or_closure is not readable.");
+            Assert::readable($file_or_closure, "The file {$file_or_closure} is not readable.");
             Assert::isInstanceOf(
                 $routes = require $file_or_closure,
                 Closure::class,
@@ -221,6 +217,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function redirectAway(string $from_path, string $location, int $status = 302): Route
     {
         $name = $this->redirectRouteName($from_path, $location);
+
         return $this->any($name, $from_path, [RedirectController::class, 'away'])->defaults([
             'location' => $location,
             'status' => $status,
@@ -230,6 +227,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function redirectToRoute(string $from_path, string $route, array $arguments = [], int $status = 302): Route
     {
         $name = $this->redirectRouteName($from_path, $route);
+
         return $this->any($name, $from_path, [RedirectController::class, 'toRoute'])->defaults([
             'route' => $route,
             'arguments' => $arguments,
@@ -285,28 +283,24 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function prefix(string $prefix)
     {
         $this->delegate_attributes[RoutingConfigurator::PREFIX_KEY] = UrlPath::fromString($prefix);
+
         return $this;
     }
 
     public function fallback(
         $fallback_action,
-        array $dont_match_request_including = [
-            'favicon',
-            'robots',
-            'sitemap',
-        ]
+        array $dont_match_request_including = ['favicon', 'robots', 'sitemap']
     ): Route {
-        Assert::allString(
-            $dont_match_request_including,
-            'All fallback excludes have to be strings.'
-        );
+        Assert::allString($dont_match_request_including, 'All fallback excludes have to be strings.');
 
         $dont_match_request_including[] = trim($this->admin_dashboard_prefix->asString(), '/');
 
         $regex = sprintf('(?!%s).+', implode('|', $dont_match_request_including));
 
         $route = $this->any(Route::FALLBACK_NAME, '/{path}', $fallback_action)
-            ->requirements(['path' => $regex])
+            ->requirements([
+                'path' => $regex,
+            ])
             ->condition(RouteCondition::NEGATE, IsAdminDashboardRequest::class);
 
         $this->locked = true;
@@ -326,7 +320,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function validateThatDelegatedAttributesAreEmpty(string $route_name): void
     {
-        if (!empty($this->delegate_attributes)) {
+        if (! empty($this->delegate_attributes)) {
             throw BadRouteConfiguration::becauseDelegatedAttributesHaveNotBeenGrouped($route_name);
         }
     }
@@ -335,10 +329,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     {
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($path)->startsWith($prefix)) {
-            throw BadRouteConfiguration::becauseAdminRouteWasAddedWithHardcodedPrefix(
-                $name,
-                $prefix
-            );
+            throw BadRouteConfiguration::becauseAdminRouteWasAddedWithHardcodedPrefix($name, $prefix);
         }
     }
 
@@ -376,9 +367,9 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         if ($parent_route instanceof Route) {
             $parent_name = $parent_route->getName();
 
-            if (!isset($this->menu_items[$parent_name])) {
+            if (! isset($this->menu_items[$parent_name])) {
                 throw new BadRouteConfiguration(
-                    "Can not use route [$parent_name] as a parent for [{$route->getName()}] because it has no menu item."
+                    "Can not use route [{$parent_name}] as a parent for [{$route->getName()}] because it has no menu item."
                 );
             }
 
@@ -389,13 +380,14 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             if ($parent_slug->isChild()) {
                 /** @var Route $parent_route */
                 $parent_name = $parent_route->getName();
+
                 throw new BadRouteConfiguration(
                     sprintf(
                         'Can not use route [%s] as a parent for route [%s] because [%s] is already a child of parent slug [%s].',
                         $parent_name,
                         $route->getName(),
                         $parent_name,
-                        (string)$parent_slug->parentSlug()
+                        (string) $parent_slug->parentSlug()
                     )
                 );
             }
@@ -406,7 +398,8 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         }
 
         if ($parent_slug instanceof AdminMenuItem) {
-            $parent_slug = $parent_slug->slug()->asString();
+            $parent_slug = $parent_slug->slug()
+                ->asString();
         }
 
         $menu_item = AdminMenuItem::fromRoute($route, $attributes, $parent_slug);
@@ -414,7 +407,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     }
 
     /**
-     * @param string|Route|null $parent
+     * @param Route|string|null $parent
      */
     private function validateParentPageType($parent): void
     {
@@ -422,10 +415,8 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             return;
         }
 
-        if (!is_string($parent) && !$parent instanceof Route) {
-            throw new BadRouteConfiguration(
-                '$parent has to be a string or an instance of Route.'
-            );
+        if (! is_string($parent) && ! $parent instanceof Route) {
+            throw new BadRouteConfiguration('$parent has to be a string or an instance of Route.');
         }
 
         if (isset($this->current_parent_route)) {
@@ -443,7 +434,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($parent)->startsWith($prefix)) {
             throw new BadRouteConfiguration(
-                "You should not add the prefix [$prefix] to the parent slug of pages.\nAffected route [$name]."
+                "You should not add the prefix [{$prefix}] to the parent slug of pages.\nAffected route [{$name}]."
             );
         }
     }
@@ -456,7 +447,8 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function validateSlugCompatibility($parent_item, Route $child_route): void
     {
         if ($parent_item instanceof AdminMenuItem) {
-            $parent_slug = $parent_item->slug()->asString();
+            $parent_slug = $parent_item->slug()
+                ->asString();
             $compare_against = Str::beforeLast($parent_slug, '/');
         } else {
             $parent_slug = $parent_item;
@@ -465,16 +457,16 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         $route_pattern = $child_route->getPattern();
 
-        if (!UrlPath::fromString($route_pattern)->startsWith($compare_against)) {
+        if (! UrlPath::fromString($route_pattern)->startsWith($compare_against)) {
             throw new BadRouteConfiguration(
-                "Route pattern [$route_pattern] is incompatible with parent slug [$parent_slug].\nAffected route [{$child_route->getName()}]."
+                "Route pattern [{$route_pattern}] is incompatible with parent slug [{$parent_slug}].\nAffected route [{$child_route->getName()}]."
             );
         }
     }
 
     /**
-     * @param string|class-string|array{0:class-string, 1:string} $action
-     * @param string[] $methods
+     * @param array{0:class-string, 1:string}|class-string|string $action
+     * @param string[]                                            $methods
      */
     private function addWebRoute(string $name, string $path, array $methods, $action): Route
     {
@@ -493,12 +485,12 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function redirectRouteName(string $from, string $to): string
     {
-        return "redirect_route:$from:$to";
+        return "redirect_route:{$from}:{$to}";
     }
 
     /**
-     * @param string|class-string|array{0: class-string, 1: string} $controller
-     * @param string[] $methods
+     * @param array{0: class-string, 1: string}|class-string|string $controller
+     * @param string[]                                              $methods
      */
     private function createRoute(string $name, string $path, array $methods, $controller): Route
     {
@@ -509,13 +501,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $name = $this->applyGroupName($name);
         $namespace = $this->applyGroupNamespace();
 
-        $route = Route::create(
-            $path->asString(),
-            $controller,
-            $name,
-            $methods,
-            $namespace
-        );
+        $route = Route::create($path->asString(), $controller, $name, $methods, $namespace);
 
         $this->addGroupAttributes($route);
 
@@ -527,7 +513,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupPrefix(UrlPath $path): UrlPath
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return $path;
         }
 
@@ -537,23 +523,23 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupName(string $route_name): string
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return $route_name;
         }
 
         $g = trim($current->name, '.');
 
-        if ($g === '') {
+        if ('' === $g) {
             return $route_name;
         }
 
-        return "$g.$route_name";
+        return "{$g}.{$route_name}";
     }
 
     private function applyGroupNamespace(): string
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return '';
         }
 
@@ -563,7 +549,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function addGroupAttributes(Route $route): void
     {
         $current = $this->currentGroup();
-        if (!$current) {
+        if (! $current) {
             return;
         }
 
@@ -584,9 +570,10 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function currentGroup(): ?RouteGroup
     {
-        if (!count($this->group_stack)) {
+        if (! count($this->group_stack)) {
             return null;
         }
+
         return array_reverse($this->group_stack)[0];
     }
 
@@ -594,5 +581,4 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     {
         array_pop($this->group_stack);
     }
-
 }

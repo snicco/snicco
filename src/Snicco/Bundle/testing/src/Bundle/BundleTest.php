@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Bundle;
 
 use FilesystemIterator;
@@ -26,6 +25,9 @@ use function rmdir;
 use function unlink;
 use function var_export;
 
+/**
+ * @internal
+ */
 final class BundleTest
 {
     private string $fixtures_dir;
@@ -53,10 +55,8 @@ final class BundleTest
     public function withoutHttpErrorHandling(Kernel $kernel): void
     {
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(
-                HttpErrorHandler::class,
-                new TestErrorHandler()
-            );
+            $kernel->container()
+                ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
     }
 
@@ -64,7 +64,7 @@ final class BundleTest
     {
         $fixtures_dir = $this->fixtures_dir;
 
-        if (!is_dir($fixtures_dir)) {
+        if (! is_dir($fixtures_dir)) {
             $res = mkdir($fixtures_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -75,7 +75,7 @@ final class BundleTest
 
         $config_dir = $fixtures_dir . '/config';
 
-        if (!is_dir($config_dir)) {
+        if (! is_dir($config_dir)) {
             $res = mkdir($config_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -84,7 +84,7 @@ final class BundleTest
             }
         }
 
-        if (!is_file($config_dir . '/app.php')) {
+        if (! is_file($config_dir . '/app.php')) {
             $res = file_put_contents($config_dir . '/app.php', '<?php return ' . var_export([], true) . ';');
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -95,7 +95,7 @@ final class BundleTest
 
         $cache_dir = $fixtures_dir . '/var/cache';
 
-        if (!is_dir($cache_dir)) {
+        if (! is_dir($cache_dir)) {
             $res = mkdir($cache_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -106,7 +106,7 @@ final class BundleTest
 
         $log_dir = $fixtures_dir . '/var/log';
 
-        if (!is_dir($log_dir)) {
+        if (! is_dir($log_dir)) {
             $res = mkdir($log_dir, 0775, true);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
@@ -120,10 +120,10 @@ final class BundleTest
 
         /**
          * @var SplFileInfo $file_info
-         * @var string $path
+         * @var string      $path
          */
         foreach ($iterator as $path => $file_info) {
-            if ($file_info->isFile() && $file_info->getExtension() === 'php') {
+            if ($file_info->isFile() && 'php' === $file_info->getExtension()) {
                 $this->fixture_config_files[] = $path;
             }
         }
@@ -145,13 +145,14 @@ final class BundleTest
         $files = [];
 
         /**
-         * @var string $name
+         * @var string      $name
          * @var SplFileInfo $file_info
          */
         foreach ($objects as $name => $file_info) {
             if ($file_info->isDir()) {
                 continue;
-            } elseif ($file_info->isFile() && $file_info->getExtension() === 'php' && !in_array($name, $expect)) {
+            }
+            if ($file_info->isFile() && 'php' === $file_info->getExtension() && ! in_array($name, $expect, true)) {
                 $files[] = $name;
             }
         }
@@ -160,14 +161,15 @@ final class BundleTest
             $res = unlink($file);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [$file].");
+                throw new RuntimeException("Could not remove test fixture file [{$file}].");
                 // @codeCoverageIgnoreEnd
             }
         }
     }
 
     /**
-     * This method will remove the provided directory recursively. You have been warnded.
+     * This method will remove the provided directory recursively. You have been
+     * warned.
      */
     public function removeDirectoryRecursive(string $directory): void
     {
@@ -176,7 +178,7 @@ final class BundleTest
         $files = [];
         $dirs = [];
         /**
-         * @var string $name
+         * @var string      $name
          * @var SplFileInfo $file_info
          */
         foreach ($objects as $name => $file_info) {
@@ -191,7 +193,7 @@ final class BundleTest
             $res = unlink($file);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [$file].");
+                throw new RuntimeException("Could not remove test fixture file [{$file}].");
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -202,7 +204,7 @@ final class BundleTest
             $res = rmdir($dir);
             if (false === $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test directory [$dir].");
+                throw new RuntimeException("Could not remove test directory [{$dir}].");
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -214,5 +216,4 @@ final class BundleTest
         $this->removePHPFilesRecursive($this->directories->logDir());
         $this->removePHPFilesRecursive($this->directories->configDir(), $this->fixture_config_files);
     }
-
 }

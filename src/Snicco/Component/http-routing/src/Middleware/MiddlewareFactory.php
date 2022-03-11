@@ -11,6 +11,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
+use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 
 /**
@@ -20,7 +23,6 @@ use function sprintf;
  */
 final class MiddlewareFactory
 {
-
     private ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)
@@ -43,7 +45,7 @@ final class MiddlewareFactory
                 /** @var mixed $middleware */
                 $middleware = $middleware(...array_values($route_arguments));
             }
-            if (!$middleware instanceof MiddlewareInterface) {
+            if (! $middleware instanceof MiddlewareInterface) {
                 throw new LogicException(
                     sprintf(
                         "Resolving a middleware from the container must return an instance of [%s].\nGot [%s]",
@@ -61,7 +63,7 @@ final class MiddlewareFactory
         if ($middleware instanceof Middleware) {
             $middleware->setContainer($this->container);
         }
+
         return $middleware;
     }
-
 }

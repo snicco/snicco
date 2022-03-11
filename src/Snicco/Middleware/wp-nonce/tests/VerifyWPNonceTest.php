@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Middleware\WPNonce\Tests;
 
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
@@ -14,9 +13,11 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\WPNonce\VerifyWPNonce;
 use Snicco\Middleware\WPNonce\WPNonce;
 
+/**
+ * @internal
+ */
 final class VerifyWPNonceTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -25,12 +26,13 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $middleware = new VerifyWPNonce($wp = new VerifyNonceTestWPApi());
 
         $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
-            VerifyWPNonce::inputKey() => $wp->createNonce('/foo')
+            VerifyWPNonce::inputKey() => $wp->createNonce('/foo'),
         ]);
 
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -41,7 +43,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $middleware = new VerifyWPNonce($wp = new VerifyNonceTestWPApi());
 
         $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
-            VerifyWPNonce::inputKey() => $wp->createNonce('/bar')
+            VerifyWPNonce::inputKey() => $wp->createNonce('/bar'),
         ]);
 
         $this->expectException(HttpException::class);
@@ -66,7 +68,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
 
-        $psr = $response->assertableResponse()->getPsrResponse();
+        $psr = $response->assertableResponse()
+            ->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -89,7 +92,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runMiddleware($middleware, $request);
-        $psr = $response->assertableResponse()->getPsrResponse();
+        $psr = $response->assertableResponse()
+            ->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -109,12 +113,15 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware(
             $middleware,
-            $request->withMethod('POST')->withParsedBody([
-                VerifyWPNonce::inputKey() => 'nonce./foo'
-            ])
+            $request->withMethod('POST')
+                ->withParsedBody([
+                    VerifyWPNonce::inputKey() => 'nonce./foo',
+                ])
         );
 
-        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
+        $response->assertNextMiddlewareCalled()
+            ->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -122,9 +129,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
      */
     public function test_wp_nonce_with_route_name(): void
     {
-        $this->withRoutes([
-            Route::create('/foo/{param}', Route::DELEGATE, 'foo_route')
-        ]);
+        $this->withRoutes([Route::create('/foo/{param}', Route::DELEGATE, 'foo_route')]);
 
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
@@ -135,7 +140,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runMiddleware($middleware, $request);
-        $psr = $response->assertableResponse()->getPsrResponse();
+        $psr = $response->assertableResponse()
+            ->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -143,7 +149,9 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $wp_nonce = $data['wp_nonce'];
         $this->assertInstanceOf(WPNonce::class, $wp_nonce);
 
-        $nonce = $wp_nonce('foo_route', ['param' => 'bar']);
+        $nonce = $wp_nonce('foo_route', [
+            'param' => 'bar',
+        ]);
 
         $key = VerifyWPNonce::inputKey();
 
@@ -155,12 +163,15 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware(
             $middleware,
-            $request->withMethod('POST')->withParsedBody([
-                VerifyWPNonce::inputKey() => 'nonce./foo/bar'
-            ])
+            $request->withMethod('POST')
+                ->withParsedBody([
+                    VerifyWPNonce::inputKey() => 'nonce./foo/bar',
+                ])
         );
 
-        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
+        $response->assertNextMiddlewareCalled()
+            ->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -177,7 +188,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runMiddleware($middleware, $request);
-        $psr = $response->assertableResponse()->getPsrResponse();
+        $psr = $response->assertableResponse()
+            ->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $psr);
 
         $data = $psr->viewData();
@@ -197,12 +209,15 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware(
             $middleware,
-            $request->withMethod('POST')->withParsedBody([
-                VerifyWPNonce::inputKey() => 'nonce./foo_route'
-            ])
+            $request->withMethod('POST')
+                ->withParsedBody([
+                    VerifyWPNonce::inputKey() => 'nonce./foo_route',
+                ])
         );
 
-        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
+        $response->assertNextMiddlewareCalled()
+            ->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -217,14 +232,14 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         });
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
-        $response->assertNextMiddlewareCalled()->assertableResponse()->assertOk();
+        $response->assertNextMiddlewareCalled()
+            ->assertableResponse()
+            ->assertOk();
     }
-
 }
 
 class VerifyNonceTestWPApi extends BetterWPAPI
 {
-
     public function verifyNonce(string $nonce, string $action): bool
     {
         return $nonce === $this->createNonce($action);
@@ -232,7 +247,6 @@ class VerifyNonceTestWPApi extends BetterWPAPI
 
     public function createNonce(string $form_action): string
     {
-        return "nonce.$form_action";
+        return "nonce.{$form_action}";
     }
-
 }

@@ -11,22 +11,19 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 
 interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
 {
-
     /**
-     * A menu item will be added in the following scenario:
-     * $action !== Route::DELEGATE && $menu_attributes !== null
-     * Passing an array of attributes has no effect when the Route delegates the response handling.
+     * A menu item will be added in the following scenario: $action !==
+     * Route::DELEGATE && $menu_attributes !== null Passing an array of
+     * attributes has no effect when the Route delegates the response handling.
      *
-     * @param class-string|array{0:class-string, 1:string} $action
-     *
+     * @param array{0:class-string, 1:string}|class-string $action
      * @param array{
-     *     menu_title?: string,
-     *     page_title?: string,
-     *     icon?: string,
-     *     capability?: string,
-     *     position?: int
+     * menu_title?: string,
+     * page_title?: string,
+     * icon?: string,
+     * capability?: string,
+     * position?: int
      * } $menu_attributes
-     *
      * @param Route|string|null $parent
      *
      * @throws BadRouteConfiguration
@@ -40,11 +37,9 @@ interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
     ): Route;
 
     /**
-     *
      * @param Closure(AdminRoutingConfigurator):void $routes
      *
      * @throws BadRouteConfiguration
      */
     public function subPages(Route $parent_route, Closure $routes): void;
-
 }

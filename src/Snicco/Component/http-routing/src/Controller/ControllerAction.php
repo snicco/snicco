@@ -24,8 +24,8 @@ use function call_user_func_array;
  */
 final class ControllerAction
 {
-
     private object $controller_instance;
+
     private string $controller_method;
 
     /**
@@ -42,14 +42,15 @@ final class ControllerAction
     }
 
     /**
-     * @return mixed
      * @throws ReflectionException
+     *
+     * @return mixed
      */
     public function execute(Request $request, array $captured_args_decoded)
     {
         $callable = [$this->controller_instance, $this->controller_method];
 
-        if (Reflector::firstParameterType($callable) === Request::class) {
+        if (Request::class === Reflector::firstParameterType($callable)) {
             array_unshift($captured_args_decoded, $request);
         }
 
@@ -67,7 +68,7 @@ final class ControllerAction
      */
     public function middleware(): array
     {
-        if (!$this->controller_instance instanceof Controller) {
+        if (! $this->controller_instance instanceof Controller) {
             return [];
         }
 
@@ -92,7 +93,7 @@ final class ControllerAction
         if ($instance instanceof Controller) {
             $instance->setContainer($container);
         }
+
         return $instance;
     }
-
 }

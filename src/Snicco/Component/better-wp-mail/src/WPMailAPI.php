@@ -17,7 +17,6 @@ use function wp_mail;
  */
 final class WPMailAPI extends BetterWPAPI
 {
-
     /**
      * @param string|string[] $to
      * @param string|string[] $headers
@@ -50,5 +49,4 @@ final class WPMailAPI extends BetterWPAPI
     {
         return network_home_url();
     }
-
 }

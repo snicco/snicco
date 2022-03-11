@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use Snicco\Component\BetterWPDB\Exception\QueryException;
@@ -11,6 +10,9 @@ use wpdb;
 
 use function str_repeat;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
 {
     private wpdb $wpdb;
@@ -33,10 +35,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         $this->assertFalse($result);
 
         try {
-            $this->better_wpdb->preparedQuery(
-                'apparently not a valid SQL statement',
-                ['calvin@web.de', 1]
-            );
+            $this->better_wpdb->preparedQuery('apparently not a valid SQL statement', ['calvin@web.de', 1]);
             $this->fail('No exception thrown for bad query [apparently not a valid SQL statement].');
         } catch (QueryException $e) {
             $this->assertStringContainsString('apparently not a valid SQL statement', $e->getMessage());
@@ -58,12 +57,12 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         // test_string is varchar(30)
 
         $result = $this->wpdb->insert('test_table', [
-            'test_string' => str_repeat('X', 30)
+            'test_string' => str_repeat('X', 30),
         ]);
         $this->assertSame(1, $result);
 
         $result = $this->wpdb->insert('test_table', [
-            'test_string' => str_repeat('X', 31)
+            'test_string' => str_repeat('X', 31),
         ]);
         // wpdb reports boolean false.
         $this->assertFalse($result);
@@ -85,7 +84,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
 
         // wpdb is still not reporting
         $result = $this->wpdb->insert('test_table', [
-            'test_string' => str_repeat('X', 31)
+            'test_string' => str_repeat('X', 31),
         ]);
         $this->assertFalse($result);
     }
@@ -105,7 +104,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
 
         $result = $this->wpdb->insert('test_table', [
             'test_string' => 'foo',
-            'test_int' => -10
+            'test_int' => -10,
         ]);
         // invalid data, wpdb no exception, money is clamped to 0.
         // The insert went through with invalid data.
@@ -132,11 +131,10 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         // wpdb is still wrong.
         $result = $this->wpdb->insert('test_table', [
             'test_string' => 'baz',
-            'test_int' => -10
+            'test_int' => -10,
         ]);
         // invalid data, wpdb no exception, money is clamped to 0.
         // The insert went through with invalid data.
         $this->assertSame(1, $result);
     }
-
 }

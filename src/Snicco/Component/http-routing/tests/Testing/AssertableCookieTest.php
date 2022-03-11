@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Testing;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 
+/**
+ * @internal
+ */
 final class AssertableCookieTest extends TestCase
 {
     /**
@@ -23,7 +25,7 @@ final class AssertableCookieTest extends TestCase
         $this->assertSame('/', $cookie->path);
         $this->assertSame('Thu, 01-Jan-2024 00:00:01 GMT', $cookie->expires);
         $this->assertSame('Lax', $cookie->same_site);
-        $this->assertSame(true, $cookie->secure);
-        $this->assertSame(true, $cookie->http_only);
+        $this->assertTrue($cookie->secure);
+        $this->assertTrue($cookie->http_only);
     }
 }

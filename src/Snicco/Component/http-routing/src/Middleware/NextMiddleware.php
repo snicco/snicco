@@ -15,7 +15,6 @@ use function call_user_func;
 
 final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterface
 {
-
     /**
      * @var callable(Request):PsrResponse
      */
@@ -23,19 +22,18 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
 
     /**
      * @param callable(Request):PsrResponse $callback
-     * @psalm-param  callable(Request=):PsrResponse $callback // Request is optional
      */
     public function __construct(callable $callback)
     {
         $this->callback = $callback;
     }
 
-    public function process(PsrRequest $request, RequestHandlerInterface $handler): PsrResponse
+    public function __invoke(PsrRequest $request): Response
     {
         return $this->delegate($request);
     }
 
-    public function __invoke(PsrRequest $request): Response
+    public function process(PsrRequest $request, RequestHandlerInterface $handler): PsrResponse
     {
         return $this->delegate($request);
     }
@@ -47,12 +45,8 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
 
     private function delegate(PsrRequest $request): Response
     {
-        $psr_response = call_user_func(
-            $this->callback,
-            Request::fromPsr($request)
-        );
+        $psr_response = call_user_func($this->callback, Request::fromPsr($request));
 
         return $psr_response instanceof Response ? $psr_response : new Response($psr_response);
     }
-
 }

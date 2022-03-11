@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Encryption;
 
 use Defuse\Crypto\Exception\BadFormatException;
@@ -23,7 +22,6 @@ use function is_file;
 
 final class EncryptionBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/encryption-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -35,11 +33,12 @@ final class EncryptionBundle implements Bundle
     {
         $this->copyConfiguration($kernel);
 
-        if (!$config->has($config_key = 'encryption.' . EncryptionOption::KEY_ASCII)) {
+        if (! $config->has($config_key = 'encryption.' . EncryptionOption::KEY_ASCII)) {
             throw new InvalidArgumentException(
                 $config_key . " is not set.\nGenerate a new config_key by running 'vendor/bin/generate-defuse-key'"
             );
         }
+
         try {
             $this->validateKey($config, $config_key);
         } catch (BadFormatException $e) {
@@ -51,11 +50,15 @@ final class EncryptionBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(DefuseEncryptor::class, function () use ($kernel) {
-            return new DefuseEncryptor(
-                Key::loadFromAsciiSafeString($kernel->config()->getString('encryption.' . EncryptionOption::KEY_ASCII))
-            );
-        });
+        $kernel->container()
+            ->shared(DefuseEncryptor::class, function () use ($kernel) {
+                return new DefuseEncryptor(
+                    Key::loadFromAsciiSafeString(
+                        $kernel->config()
+                            ->getString('encryption.' . EncryptionOption::KEY_ASCII)
+                    )
+                );
+            });
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -78,10 +81,11 @@ final class EncryptionBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
-        $destination = $kernel->directories()->configDir() . '/encryption.php';
+        $destination = $kernel->directories()
+            ->configDir() . '/encryption.php';
         if (is_file($destination)) {
             return;
         }
@@ -90,9 +94,8 @@ final class EncryptionBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }
-
 }

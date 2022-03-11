@@ -9,7 +9,5 @@ use Throwable;
 
 interface ExceptionInformationProvider
 {
-
     public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation;
-
 }

@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Routing;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
+use function is_string;
 use function ltrim;
 use function rtrim;
 
@@ -15,7 +16,6 @@ use function rtrim;
  */
 final class UrlPath
 {
-
     // without leading slash
     private string $path;
 
@@ -24,10 +24,16 @@ final class UrlPath
         $this->path = $path;
     }
 
+    public function __toString(): string
+    {
+        return $this->asString();
+    }
+
     public function withTrailingSlash(): UrlPath
     {
         $new = clone $this;
         $new->path = rtrim($this->path, '/') . '/';
+
         return $new;
     }
 
@@ -35,6 +41,7 @@ final class UrlPath
     {
         $new = clone $this;
         $new->path = rtrim($this->path, '/');
+
         return $new;
     }
 
@@ -74,12 +81,14 @@ final class UrlPath
     public function equals(string $path): bool
     {
         Assert::stringNotEmpty($path);
+
         return $this->asString() === '/' . ltrim($path, '/');
     }
 
     public function contains(string $path): bool
     {
         $path = '/' . ltrim($path, '/');
+
         return Str::contains($this->asString(), $path);
     }
 
@@ -89,12 +98,8 @@ final class UrlPath
     public function startsWith($path): bool
     {
         $path = $path instanceof UrlPath ? $path : UrlPath::fromString($path);
-        return Str::startsWith($this->asString(), $path->asString());
-    }
 
-    public function __toString(): string
-    {
-        return $this->asString();
+        return Str::startsWith($this->asString(), $path->asString());
     }
 
     /**
@@ -112,5 +117,4 @@ final class UrlPath
 
         return ltrim($path, '/');
     }
-
 }

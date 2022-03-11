@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -34,11 +33,15 @@ use function wp_signon;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class LoginTest extends WPTestCase
 {
     use BundleTestHelpers;
 
     private Kernel $kernel;
+
     private InMemoryDriver $driver;
 
     protected function setUp(): void
@@ -47,23 +50,18 @@ final class LoginTest extends WPTestCase
         $this->bundle_test = new BundleTest($this->fixturesDir());
         $this->directories = $this->bundle_test->setUpDirectories();
         unset($_COOKIE['test_cookie']);
-        $this->kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $this->kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
-                SessionOption::COOKIE_NAME => 'test_cookie'
+                SessionOption::COOKIE_NAME => 'test_cookie',
             ]);
             $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
         $this->bundle_test->withoutHttpErrorHandling($this->kernel);
         $this->kernel->boot();
-        /**
-         * @var InMemoryDriver $driver
-         */
-        $driver = $this->kernel->container()->make(SessionDriver::class);
+        /** @var InMemoryDriver $driver */
+        $driver = $this->kernel->container()
+            ->make(SessionDriver::class);
         $this->driver = $driver;
     }
 
@@ -74,20 +72,14 @@ final class LoginTest extends WPTestCase
         parent::tearDown();
     }
 
-    protected function fixturesDir(): string
-    {
-        return dirname(__DIR__) . '/fixtures';
-    }
-
     /**
      * @test
      */
     public function a_valid_session_is_rotated_on_wp_login(): void
     {
-        /**
-         * @var SessionManager $m
-         */
-        $m = $this->kernel->container()->get(SessionManager::class);
+        /** @var SessionManager $m */
+        $m = $this->kernel->container()
+            ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 
@@ -100,7 +92,7 @@ final class LoginTest extends WPTestCase
         ob_start();
         wp_signon([
             'user_login' => (new WP_User(1))->user_login,
-            'user_password' => 'password'
+            'user_password' => 'password',
         ]);
         ob_end_clean();
 
@@ -115,7 +107,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -133,37 +125,35 @@ final class LoginTest extends WPTestCase
      */
     public function a_user_can_be_logged_in_during_the_routing_flow(): void
     {
-        /**
-         * @var SessionManager $m
-         */
-        $m = $this->kernel->container()->get(SessionManager::class);
+        /** @var SessionManager $m */
+        $m = $this->kernel->container()
+            ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
         $m->save($session);
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
-        $pipeline = $this->kernel->container()->get(MiddlewarePipeline::class);
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $this->kernel->container()
+            ->get(MiddlewarePipeline::class);
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
         $request = Request::fromPsr(new ServerRequest('GET', '/'))->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()
+                ->asString(),
         ]);
 
         $this->assertTrue(isset($this->driver->all()[$session->id()->selector()]));
 
         $response = $pipeline->send($request)
-            ->through([
-                StatefulRequest::class
-            ])
+            ->through([StatefulRequest::class])
             ->then(function () {
                 ob_start();
                 wp_signon([
                     'user_login' => (new WP_User(1))->user_login,
-                    'user_password' => 'password'
+                    'user_password' => 'password',
                 ]);
                 ob_end_clean();
+
                 return new Response();
             });
 
@@ -177,7 +167,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -191,41 +181,36 @@ final class LoginTest extends WPTestCase
      */
     public function no_exception_is_thrown_if_a_user_gets_logged_in_and_the_session_is_manually_rotated(): void
     {
-        /**
-         * @var SessionManager $m
-         */
-        $m = $this->kernel->container()->get(SessionManager::class);
+        /** @var SessionManager $m */
+        $m = $this->kernel->container()
+            ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
         $m->save($session);
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
-        $pipeline = $this->kernel->container()->get(MiddlewarePipeline::class);
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $this->kernel->container()
+            ->get(MiddlewarePipeline::class);
 
         $_COOKIE['test_cookie'] = $session->id()->asString();
         $request = Request::fromPsr(new ServerRequest('POST', '/'))->withCookieParams([
-            'test_cookie' => $session->id()->asString()
+            'test_cookie' => $session->id()
+                ->asString(),
         ]);
 
         $this->assertTrue(isset($this->driver->all()[$session->id()->selector()]));
 
         $response = $pipeline->send($request)
-            ->through([
-                StatefulRequest::class
-            ])
+            ->through([StatefulRequest::class])
             ->then(function (Request $request) {
                 ob_start();
                 wp_signon([
                     'user_login' => (new WP_User(1))->user_login,
-                    'user_password' => 'password'
+                    'user_password' => 'password',
                 ]);
                 ob_end_clean();
 
-                /**
-                 * @var MutableSession $session
-                 */
+                /** @var MutableSession $session */
                 $session = $request->getAttribute(MutableSession::class);
                 $session->rotate();
 
@@ -242,7 +227,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array)json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -260,10 +245,14 @@ final class LoginTest extends WPTestCase
         ob_start();
         wp_signon([
             'user_login' => (new WP_User(1))->user_login,
-            'user_password' => 'password'
+            'user_password' => 'password',
         ]);
         ob_end_clean();
         $this->assertCount(0, $this->driver->all());
     }
 
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
+    }
 }

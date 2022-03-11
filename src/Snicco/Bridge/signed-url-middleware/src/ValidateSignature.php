@@ -17,18 +17,17 @@ use function is_callable;
 
 final class ValidateSignature implements MiddlewareInterface
 {
-
     private SignedUrlValidator $validator;
 
     /**
-     * @var Closure(ServerRequestInterface):string | null $request_context
+     * @var Closure(ServerRequestInterface):string|null
      */
     private ?Closure $request_context;
 
     private bool $check_only_unsafe_methods;
 
     /**
-     * @param Closure(ServerRequestInterface):string | null $request_context
+     * @param Closure(ServerRequestInterface):string|null $request_context
      */
     public function __construct(
         SignedUrlValidator $validator,
@@ -43,7 +42,7 @@ final class ValidateSignature implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->check_only_unsafe_methods) {
-            if (!in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
+            if (! in_array($request->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
                 return $handler->handle($request);
             }
         }
@@ -56,5 +55,4 @@ final class ValidateSignature implements MiddlewareInterface
 
         return $handler->handle($request);
     }
-
 }

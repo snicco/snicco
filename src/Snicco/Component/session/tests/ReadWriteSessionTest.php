@@ -22,7 +22,10 @@ use function count;
 use function sleep;
 use function time;
 
-class ReadWriteSessionTest extends TestCase
+/**
+ * @internal
+ */
+final class ReadWriteSessionTest extends TestCase
 {
     /**
      * @test
@@ -50,30 +53,29 @@ class ReadWriteSessionTest extends TestCase
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
 
-        $this->assertSame(
-            [
-                'foo' => 'bar',
-                'baz' => 'biz',
-            ],
-            $session->all()
-        );
+        $this->assertSame([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ], $session->all());
     }
 
     /**
      * @test
      */
-    public function testOnly(): void
+    public function test_only(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $this->assertEquals(['baz' => 'biz'], $session->only(['baz']));
+        $this->assertEquals([
+            'baz' => 'biz',
+        ], $session->only(['baz']));
     }
 
     /**
      * @test
      */
-    public function testExists(): void
+    public function test_exists(): void
     {
         $session = $this->newSession();
 
@@ -81,7 +83,9 @@ class ReadWriteSessionTest extends TestCase
         $this->assertTrue($session->exists('foo'));
 
         $session->put('baz', null);
-        $session->put('hulk', ['one' => true]);
+        $session->put('hulk', [
+            'one' => true,
+        ]);
 
         $this->assertTrue($session->exists('baz'));
         $this->assertTrue($session->exists(['foo', 'baz']));
@@ -95,12 +99,14 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testMissing(): void
+    public function test_missing(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', null);
-        $session->put('hulk', ['one' => true]);
+        $session->put('hulk', [
+            'one' => true,
+        ]);
 
         $this->assertTrue($session->missing('bogus'));
         $this->assertTrue($session->missing(['foo', 'baz', 'bogus']));
@@ -115,7 +121,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testHas(): void
+    public function test_has(): void
     {
         $session = $this->newSession();
         $session->put('foo', null);
@@ -129,7 +135,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testGet(): void
+    public function test_get(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
@@ -142,13 +148,17 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testHasOldInput(): void
+    public function test_has_old_input(): void
     {
         $session = $this->newSession();
 
         $this->assertFalse($session->hasOldInput());
 
-        $session->put('_old_input', ['foo' => 'bar', 'bar' => 'baz', 'boo' => null]);
+        $session->put('_old_input', [
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'boo' => null,
+        ]);
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertTrue($session->hasOldInput('bar'));
@@ -159,13 +169,17 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testGetOldInput(): void
+    public function test_get_old_input(): void
     {
         $session = $this->newSession();
 
         $this->assertSame([], $session->oldInput());
 
-        $session->put('_old_input', ['foo' => 'bar', 'bar' => 'baz', 'boo' => null]);
+        $session->put('_old_input', [
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'boo' => null,
+        ]);
 
         $this->assertSame([
             'foo' => 'bar',
@@ -175,21 +189,23 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertSame('bar', $session->oldInput('foo'));
         $this->assertSame('baz', $session->oldInput('bar'));
-        $this->assertSame(null, $session->oldInput('boo'));
+        $this->assertNull($session->oldInput('boo'));
 
-        $this->assertSame(null, $session->oldInput('boo', 'default'));
+        $this->assertNull($session->oldInput('boo', 'default'));
         $this->assertSame('default', $session->oldInput('bogus', 'default'));
     }
 
     /**
      * @test
      */
-    public function testReplace(): void
+    public function test_replace(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->replace(['foo' => 'baz']);
+        $session->replace([
+            'foo' => 'baz',
+        ]);
         $this->assertSame('baz', $session->get('foo'));
         $this->assertSame('biz', $session->get('baz'));
     }
@@ -197,7 +213,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testPutIfMissing(): void
+    public function test_put_if_missing(): void
     {
         $session = $this->newSession();
 
@@ -218,15 +234,20 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testPush(): void
+    public function test_push(): void
     {
         $session = $this->newSession();
 
         $session->put('foo', ['bar']);
         $session->push('foo', 'bar');
-        $session->push('foo', ['baz' => 'biz']);
+        $session->push('foo', [
+            'baz' => 'biz',
+        ]);
 
-        $this->assertSame(['bar', 'bar', ['baz' => 'biz']], $session->get('foo'));
+        $this->assertSame([
+            'bar', 'bar', [
+                'baz' => 'biz',
+            ], ], $session->get('foo'));
 
         $session->push('int', 'foo');
         $this->assertSame(['foo'], $session->get('int'));
@@ -241,7 +262,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testIncrement(): void
+    public function test_increment(): void
     {
         $session = $this->newSession();
 
@@ -273,7 +294,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testDecrement(): void
+    public function test_decrement(): void
     {
         $session = $this->newSession();
 
@@ -292,7 +313,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testFlash(): void
+    public function test_flash(): void
     {
         $session = $this->newSession();
         $session->flash('foo', 'bar');
@@ -301,7 +322,7 @@ class ReadWriteSessionTest extends TestCase
 
         $this->assertSame('bar', $session->get('foo'));
         $this->assertSame(0, $session->get('bar'));
-        $this->assertSame(true, $session->get('baz'));
+        $this->assertTrue($session->get('baz'));
 
         $session->saveUsing($driver = new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
@@ -319,7 +340,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testflashNow(): void
+    public function testflash_now(): void
     {
         $session = $this->newSession();
         $session->flashNow('foo', 'bar');
@@ -331,7 +352,6 @@ class ReadWriteSessionTest extends TestCase
 
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
-
         $this->assertFalse($session->has('foo'));
         $this->assertNull($session->get('foo'));
     }
@@ -341,14 +361,14 @@ class ReadWriteSessionTest extends TestCase
      *
      * @psalm-suppress MixedArgument
      */
-    public function testReflash(): void
+    public function test_reflash(): void
     {
         $session = $this->newSession();
         $session->flash('foo', 'bar');
         $session->put('_flash.old', ['foo']);
         $session->reflash();
-        $this->assertNotFalse(array_search('foo', $session->get('_flash.new')));
-        $this->assertFalse(array_search('foo', $session->get('_flash.old')));
+        $this->assertNotFalse(array_search('foo', $session->get('_flash.new'), true));
+        $this->assertFalse(array_search('foo', $session->get('_flash.old'), true));
     }
 
     /**
@@ -356,23 +376,26 @@ class ReadWriteSessionTest extends TestCase
      *
      * @psalm-suppress MixedArgument
      */
-    public function testReflashWithNow(): void
+    public function test_reflash_with_now(): void
     {
         $session = $this->newSession();
         $session->flashNow('foo', 'bar');
         $session->reflash();
-        $this->assertNotFalse(array_search('foo', $session->get('_flash.new')));
-        $this->assertFalse(array_search('foo', $session->get('_flash.old')));
+        $this->assertNotFalse(array_search('foo', $session->get('_flash.new'), true));
+        $this->assertFalse(array_search('foo', $session->get('_flash.old'), true));
     }
 
     /**
      * @test
      */
-    public function testFlashInput(): void
+    public function test_flash_input(): void
     {
         $session = $this->newSession();
         $session->put('boom', 'baz');
-        $session->flashInput(['foo' => 'bar', 'bar' => 0]);
+        $session->flashInput([
+            'foo' => 'bar',
+            'bar' => 0,
+        ]);
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertSame('bar', $session->oldInput('foo'));
@@ -392,25 +415,25 @@ class ReadWriteSessionTest extends TestCase
      *
      * @psalm-suppress MixedArgument
      */
-    public function testKeep(): void
+    public function test_keep(): void
     {
         $session = $this->newSession();
         $session->flash('foo', 'bar');
         $session->put('fu', 'baz');
         $session->put('_flash.old', ['qu']);
-        $this->assertNotFalse(array_search('foo', $session->get('_flash.new')));
-        $this->assertFalse(array_search('fu', $session->get('_flash.new')));
+        $this->assertNotFalse(array_search('foo', $session->get('_flash.new'), true));
+        $this->assertFalse(array_search('fu', $session->get('_flash.new'), true));
         $session->keep(['fu', 'qu']);
-        $this->assertNotFalse(array_search('foo', $session->get('_flash.new')));
-        $this->assertNotFalse(array_search('fu', $session->get('_flash.new')));
-        $this->assertNotFalse(array_search('qu', $session->get('_flash.new')));
-        $this->assertFalse(array_search('qu', $session->get('_flash.old')));
+        $this->assertNotFalse(array_search('foo', $session->get('_flash.new'), true));
+        $this->assertNotFalse(array_search('fu', $session->get('_flash.new'), true));
+        $this->assertNotFalse(array_search('qu', $session->get('_flash.new'), true));
+        $this->assertFalse(array_search('qu', $session->get('_flash.old'), true));
     }
 
     /**
      * @test
      */
-    public function testRemove(): void
+    public function test_remove(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
@@ -425,16 +448,22 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testForget(): void
+    public function test_forget(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->put('boo', ['boom', 'bang' => 'bam']);
+        $session->put('boo', [
+            'boom',
+            'bang' => 'bam',
+        ]);
 
         $this->assertSame('bar', $session->get('foo'));
         $this->assertSame('biz', $session->get('baz'));
-        $this->assertSame(['boom', 'bang' => 'bam'], $session->get('boo'));
+        $this->assertSame([
+            'boom',
+            'bang' => 'bam',
+        ], $session->get('boo'));
         $this->assertSame('bam', $session->get('boo.bang'));
 
         $session->forget('foo');
@@ -450,12 +479,15 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testFlush(): void
+    public function test_flush(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->put('boo', ['boom', 'bang' => 'bam']);
+        $session->put('boo', [
+            'boom',
+            'bang' => 'bam',
+        ]);
 
         $session->flush();
 
@@ -465,7 +497,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testBoolean(): void
+    public function test_boolean(): void
     {
         $session = $this->newSession();
         $session->put('foo', 1);
@@ -496,7 +528,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testTimestampValuesStayTheSame(): void
+    public function test_timestamp_values_stay_the_same(): void
     {
         $id = SessionId::new();
 
@@ -525,7 +557,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testLastActivityIsUpdatedOnSave(): void
+    public function test_last_activity_is_updated_on_save(): void
     {
         $id = SessionId::new();
 
@@ -548,7 +580,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testIsDirtyAfterAttributeChange(): void
+    public function test_is_dirty_after_attribute_change(): void
     {
         $session = $this->newPersistedSession();
 
@@ -562,7 +594,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testIsDirtyAfterRotating(): void
+    public function test_is_dirty_after_rotating(): void
     {
         $session = $this->newPersistedSession();
         $this->assertFalse($session->isDirty());
@@ -575,7 +607,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testIsDirtyAfterInvalidating(): void
+    public function test_is_dirty_after_invalidating(): void
     {
         $session = $this->newPersistedSession();
         $this->assertFalse($session->isDirty());
@@ -588,7 +620,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testIsDirtyWithFlashData(): void
+    public function test_is_dirty_with_flash_data(): void
     {
         $old_session = $this->newPersistedSession();
         $old_session->flash('foo', 'bar');
@@ -606,11 +638,7 @@ class ReadWriteSessionTest extends TestCase
         $new_session->saveUsing($driver, $serializer = new JsonSerializer(), 'v', time());
 
         $data = $driver->read($old_session->id()->selector());
-        $new_session = new ReadWriteSession(
-            $new_session->id(),
-            $serializer->deserialize($data->data()),
-            time()
-        );
+        $new_session = new ReadWriteSession($new_session->id(), $serializer->deserialize($data->data()), time());
 
         $this->assertFalse($new_session->isDirty());
     }
@@ -618,7 +646,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function testIsAlwaysDirtyAfterCreating(): void
+    public function test_is_always_dirty_after_creating(): void
     {
         $driver = new InMemoryDriver();
         $session = $this->newSession();
@@ -774,20 +802,22 @@ class ReadWriteSessionTest extends TestCase
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->replace(['foo' => 'bar']);
+        $session->replace([
+            'foo' => 'bar',
+        ]);
     }
 
     /**
      * @test
      */
-    public function test_putIfMissing_throws_after_saving(): void
+    public function test_put_if_missing_throws_after_saving(): void
     {
         $session = $this->newSession();
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->putIfMissing('foo', fn() => 'bar');
+        $session->putIfMissing('foo', fn () => 'bar');
     }
 
     /**
@@ -845,7 +875,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_flashNow_throws_after_saving(): void
+    public function test_flash_now_throws_after_saving(): void
     {
         $session = $this->newSession();
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
@@ -858,14 +888,16 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_flashInput_throws_after_saving(): void
+    public function test_flash_input_throws_after_saving(): void
     {
         $session = $this->newSession();
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->flashInput(['foo' => 'bar']);
+        $session->flashInput([
+            'foo' => 'bar',
+        ]);
     }
 
     /**
@@ -953,11 +985,11 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_userId(): void
+    public function test_user_id(): void
     {
         $session = $this->newSession();
 
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
 
         $session->setUserId(1);
         $this->assertSame(1, $session->userId());
@@ -969,7 +1001,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_userId_is_flushed(): void
+    public function test_user_id_is_flushed(): void
     {
         $session = $this->newSession();
         $session->setUserId(1);
@@ -977,19 +1009,19 @@ class ReadWriteSessionTest extends TestCase
         $this->assertSame(1, $session->userId());
 
         $session->flush();
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
 
         $session = $this->newSession();
         $session->setUserId(1);
 
         $session->invalidate();
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
     }
 
     /**
      * @test
      */
-    public function test_userId_is_saved_to_driver(): void
+    public function test_user_id_is_saved_to_driver(): void
     {
         $session = $this->newSession();
         $session->setUserId(1);
@@ -1014,7 +1046,8 @@ class ReadWriteSessionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('string or integer');
-        $this->newSession()->setUserId(true);
+        $this->newSession()
+            ->setUserId(true);
     }
 
     /**
@@ -1034,7 +1067,7 @@ class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_isNew(): void
+    public function test_is_new(): void
     {
         $driver = new InMemoryDriver();
 
@@ -1057,6 +1090,7 @@ class ReadWriteSessionTest extends TestCase
     private function reloadSession(ReadWriteSession $session, SessionDriver $driver): ReadWriteSession
     {
         $data = $driver->read($session->id()->selector());
+
         return new ReadWriteSession(
             $session->id(),
             (new JsonSerializer())->deserialize($data->data()),
@@ -1072,15 +1106,15 @@ class ReadWriteSessionTest extends TestCase
         $session = $this->newSession($id, $data);
         $driver = $driver ?? new InMemoryDriver();
         $session->saveUsing($driver, new JsonSerializer(), 'v', time());
+
         return $this->reloadSession($session, $driver);
     }
-
 }
 
 class SpyDriver implements SessionDriver
 {
-
     public array $written = [];
+
     public array $touched = [];
 
     public function read(string $selector): SerializedSession
@@ -1107,6 +1141,4 @@ class SpyDriver implements SessionDriver
     {
         $this->touched[$selector] = $current_timestamp;
     }
-
 }
-

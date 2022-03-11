@@ -12,10 +12,9 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 
 interface SessionDriver
 {
-
     /**
-     * Returns the data of the session with the given selector.
-     * It is NOT required to check if the session can still be considered active.
+     * Returns the data of the session with the given selector. It is NOT
+     * required to check if the session can still be considered active.
      *
      * @throws BadSessionID
      * @throws CouldNotReadSessionContent
@@ -29,6 +28,7 @@ interface SessionDriver
 
     /**
      * @param string[] $selectors
+     *
      * @throws CouldNotDestroySessions
      */
     public function destroy(array $selectors): void;
@@ -39,11 +39,10 @@ interface SessionDriver
     public function gc(int $seconds_without_activity): void;
 
     /**
-     * Update the last activity of the session
+     * Update the last activity of the session.
      *
      * @throws BadSessionID
      * @throws CouldNotWriteSessionContent
      */
     public function touch(string $selector, int $current_timestamp): void;
-
 }

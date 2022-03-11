@@ -14,9 +14,11 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 use const JSON_THROW_ON_ERROR;
 
-class ResponseTest extends TestCase
+/**
+ * @internal
+ */
+final class ResponseTest extends TestCase
 {
-
     use CreateTestPsr17Factories;
 
     private ResponseFactory $factory;
@@ -30,14 +32,20 @@ class ResponseTest extends TestCase
         $this->response = $this->factory->createResponse();
     }
 
-    public function testIsPsrResponse(): void
+    /**
+     * @test
+     */
+    public function is_psr_response(): void
     {
         $response = $this->factory->createResponse();
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function testIsImmutable(): void
+    /**
+     * @test
+     */
+    public function is_immutable(): void
     {
         $response1 = $this->factory->createResponse();
         $response2 = $response1->withHeader('foo', 'bar');
@@ -47,7 +55,10 @@ class ResponseTest extends TestCase
         $this->assertFalse($response1->hasHeader('foo'));
     }
 
-    public function test_magic_set_throws_exception(): void
+    /**
+     * @test
+     */
+    public function magic_set_throws_exception(): void
     {
         $response1 = $this->factory->createResponse();
 
@@ -57,27 +68,42 @@ class ResponseTest extends TestCase
         $response1->foo = 'bar';
     }
 
-    public function testHtml(): void
+    /**
+     * @test
+     */
+    public function html(): void
     {
         $stream = $this->factory->createStream('foo');
 
-        $response = $this->factory->createResponse()->withHtml($stream);
+        $response = $this->factory->createResponse()
+            ->withHtml($stream);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
     }
 
-    public function testJson(): void
+    /**
+     * @test
+     */
+    public function json(): void
     {
-        $stream = $this->factory->createStream(json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
+        $stream = $this->factory->createStream(json_encode([
+            'foo' => 'bar',
+        ], JSON_THROW_ON_ERROR));
 
-        $response = $this->factory->createResponse()->withJson($stream);
+        $response = $this->factory->createResponse()
+            ->withJson($stream);
 
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->__toString(), true));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], json_decode($response->getBody()->__toString(), true));
     }
 
-    public function testNoIndex(): void
+    /**
+     * @test
+     */
+    public function no_index(): void
     {
         $response = $this->response->withNoIndex();
         $this->assertSame('noindex', $response->getHeaderLine('x-robots-tag'));
@@ -86,7 +112,10 @@ class ResponseTest extends TestCase
         $this->assertSame('googlebot: noindex', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function testNoFollow(): void
+    /**
+     * @test
+     */
+    public function no_follow(): void
     {
         $response = $this->response->withNoFollow();
         $this->assertSame('nofollow', $response->getHeaderLine('x-robots-tag'));
@@ -95,7 +124,10 @@ class ResponseTest extends TestCase
         $this->assertSame('googlebot: nofollow', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function testNoRobots(): void
+    /**
+     * @test
+     */
+    public function no_robots(): void
     {
         $response = $this->response->withNoRobots();
         $this->assertSame('none', $response->getHeaderLine('x-robots-tag'));
@@ -104,7 +136,10 @@ class ResponseTest extends TestCase
         $this->assertSame('googlebot: none', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function testNoArchive(): void
+    /**
+     * @test
+     */
+    public function no_archive(): void
     {
         $response = $this->response->withNoArchive();
         $this->assertSame('noarchive', $response->getHeaderLine('x-robots-tag'));
@@ -113,7 +148,10 @@ class ResponseTest extends TestCase
         $this->assertSame('googlebot: noarchive', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function testIsInformational(): void
+    /**
+     * @test
+     */
+    public function is_informational(): void
     {
         $response = $this->response->withStatus(100);
         $this->assertTrue($response->isInformational());
@@ -124,7 +162,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testIsRedirection(): void
+    public function test_is_redirection(): void
     {
         $response = $this->response->withStatus(299);
         $this->assertFalse($response->isRedirection());
@@ -135,7 +173,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testIsClientError(): void
+    public function test_is_client_error(): void
     {
         $response = $this->response->withStatus(399);
         $this->assertFalse($response->isClientError());
@@ -146,7 +184,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testIsServerError(): void
+    public function test_is_server_error(): void
     {
         $response = $this->response->withStatus(499);
         $this->assertFalse($response->isServerError());
@@ -157,12 +195,13 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testHasEmptyBody(): void
+    public function test_has_empty_body(): void
     {
         $response = $this->factory->createResponse();
         $this->assertTrue($response->hasEmptyBody());
 
-        $response->getBody()->detach();
+        $response->getBody()
+            ->detach();
         $this->assertTrue($response->hasEmptyBody());
 
         $html_response = $this->factory->html('foobar');
@@ -172,7 +211,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testIsEmpty(): void
+    public function test_is_empty(): void
     {
         $response = $this->response->withStatus(204);
         $this->assertTrue($response->isEmpty());
@@ -184,11 +223,12 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testWithCookie(): void
+    public function test_with_cookie(): void
     {
         $response = $this->response->withCookie(new Cookie('foo', 'bar'));
 
-        $cookies = $response->cookies()->toHeaders();
+        $cookies = $response->cookies()
+            ->toHeaders();
         $this->assertCount(1, $cookies);
         $this->assertCount(0, $this->response->cookies()->toHeaders());
     }
@@ -196,11 +236,12 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function testWithoutCookie(): void
+    public function test_without_cookie(): void
     {
         $response = $this->response->withoutCookie('foo');
 
-        $cookies = $response->cookies()->toHeaders();
+        $cookies = $response->cookies()
+            ->toHeaders();
         $this->assertCount(1, $cookies);
         $this->assertCount(0, $this->response->cookies()->toHeaders());
     }
@@ -211,7 +252,8 @@ class ResponseTest extends TestCase
      */
     public function cookies_are_not_reset_in_nested_responses(): void
     {
-        $redirect_response = $this->factory->createResponse()->withCookie(new Cookie('foo', 'bar'));
+        $redirect_response = $this->factory->createResponse()
+            ->withCookie(new Cookie('foo', 'bar'));
 
         $response = new Response($redirect_response);
 
@@ -229,92 +271,134 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_withFlashMessages(): void
+    public function test_with_flash_messages(): void
     {
-        $response = $this->response->withFlashMessages(['foo' => 'bar']);
+        $response = $this->response->withFlashMessages([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(['foo' => 'bar'], $response->flashMessages());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
 
-        $response = $this->response->withFlashMessages($arr = ['foo' => 'bar', 'bar' => 'baz']);
+        $response = $this->response->withFlashMessages($arr = [
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ]);
 
         $this->assertSame($arr, $response->flashMessages());
         $this->assertSame([], $this->response->flashMessages());
 
-        $response_new = $response->withFlashMessages(['biz' => 'boom']);
+        $response_new = $response->withFlashMessages([
+            'biz' => 'boom',
+        ]);
 
-        $this->assertSame(
-            ['foo' => 'bar', 'bar' => 'baz', 'biz' => 'boom'],
-            $response_new->flashMessages()
-        );
+        $this->assertSame([
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'biz' => 'boom',
+        ], $response_new->flashMessages());
         $this->assertSame($arr, $response->flashMessages());
     }
 
     /**
      * @test
      */
-    public function testWithInput(): void
+    public function test_with_input(): void
     {
-        $response = $this->response->withOldInput(['foo' => 'bar']);
+        $response = $this->response->withOldInput([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(['foo' => 'bar'], $response->oldInput());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
 
-        $response = $this->response->withOldInput($arr = ['foo' => 'bar', 'bar' => 'baz']);
+        $response = $this->response->withOldInput($arr = [
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ]);
 
         $this->assertSame($arr, $response->oldInput());
         $this->assertSame([], $this->response->oldInput());
 
-        $response_new = $response->withOldInput(['biz' => 'boom']);
+        $response_new = $response->withOldInput([
+            'biz' => 'boom',
+        ]);
 
-        $this->assertSame(
-            ['foo' => 'bar', 'bar' => 'baz', 'biz' => 'boom'],
-            $response_new->oldInput()
-        );
+        $this->assertSame([
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'biz' => 'boom',
+        ], $response_new->oldInput());
         $this->assertSame($arr, $response->oldInput());
     }
 
     /**
      * @test
      */
-    public function testWithErrors(): void
+    public function test_with_errors(): void
     {
-        $response = $this->response->withErrors(['foo' => 'bar']);
+        $response = $this->response->withErrors([
+            'foo' => 'bar',
+        ]);
 
-        $this->assertSame(['default' => ['foo' => ['bar']]], $response->errors());
-        $this->assertSame([], $this->response->errors());
-
-        $response = $this->response->withErrors(['foo' => ['bar', 'baz'], 'baz' => 'biz']);
-
-        $this->assertSame(
-            [
-                'default' => [
-                    'foo' => ['bar', 'baz'],
-                    'baz' => ['biz'],
-                ],
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar'],
             ],
-            $response->errors()
-        );
+        ], $response->errors());
         $this->assertSame([], $this->response->errors());
 
-        $response = $this->response->withErrors(['foo' => 'bar']);
+        $response = $this->response->withErrors([
+            'foo' => ['bar', 'baz'],
+            'baz' => 'biz',
+        ]);
 
-        $response_new = $response->withErrors(['bar' => 'baz']);
-        $this->assertSame(['default' => ['foo' => ['bar']]], $response->errors());
-        $this->assertSame(
-            ['default' => ['foo' => ['bar'], 'bar' => ['baz']]],
-            $response_new->errors()
-        );
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar', 'baz'],
+                'baz' => ['biz'],
+            ],
+        ], $response->errors());
+        $this->assertSame([], $this->response->errors());
 
-        $response = $this->response->withErrors(['foo' => 'bar'], 'namespace1');
-        $this->assertSame(['namespace1' => ['foo' => ['bar']]], $response->errors());
+        $response = $this->response->withErrors([
+            'foo' => 'bar',
+        ]);
+
+        $response_new = $response->withErrors([
+            'bar' => 'baz',
+        ]);
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar'],
+            ],
+        ], $response->errors());
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar'],
+                'bar' => ['baz'],
+            ],
+        ], $response_new->errors());
+
+        $response = $this->response->withErrors([
+            'foo' => 'bar',
+        ], 'namespace1');
+        $this->assertSame([
+            'namespace1' => [
+                'foo' => ['bar'],
+            ],
+        ], $response->errors());
         $this->assertSame([], $this->response->errors());
     }
 
     /**
      * @test
      */
-    public function test_getProtocolVersion(): void
+    public function test_get_protocol_version(): void
     {
         $this->assertSame('1.1', $this->response->getProtocolVersion());
         $response = $this->response->withProtocolVersion('1.0');
@@ -324,7 +408,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_getHeaders(): void
+    public function test_get_headers(): void
     {
         $response = $this->response
             ->withHeader('foo', 'bar1')
@@ -332,20 +416,15 @@ class ResponseTest extends TestCase
             ->withHeader('baz', 'biz');
 
         $this->assertSame([
-            'foo' => [
-                'bar1',
-                'bar2'
-            ],
-            'baz' => [
-                'biz'
-            ]
+            'foo' => ['bar1', 'bar2'],
+            'baz' => ['biz'],
         ], $response->getHeaders());
     }
 
     /**
      * @test
      */
-    public function test_isRedirect(): void
+    public function test_is_redirect(): void
     {
         $response = $this->response->withStatus(301);
         $this->assertTrue($response->isRedirect());
@@ -362,7 +441,8 @@ class ResponseTest extends TestCase
         $response = $this->response->withStatus(308);
         $this->assertTrue($response->isRedirect());
 
-        $response = $this->response->withStatus(301)->withHeader('location', '/foo');
+        $response = $this->response->withStatus(301)
+            ->withHeader('location', '/foo');
         $this->assertTrue($response->isRedirect('/foo'));
         $this->assertFalse($response->isRedirect('/bar'));
 
@@ -373,7 +453,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_isOk(): void
+    public function test_is_ok(): void
     {
         $response = $this->response->withStatus(201);
         $this->assertFalse($response->isOk());
@@ -385,7 +465,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_isNotFound(): void
+    public function test_is_not_found(): void
     {
         $response = $this->response->withStatus(403);
         $this->assertFalse($response->isNotFound());
@@ -397,7 +477,7 @@ class ResponseTest extends TestCase
     /**
      * @test
      */
-    public function test_isForbidden(): void
+    public function test_is_forbidden(): void
     {
         $response = $this->response->withStatus(404);
         $this->assertFalse($response->isForbidden());
@@ -405,5 +485,4 @@ class ResponseTest extends TestCase
         $response = $this->response->withStatus(403);
         $this->assertTrue($response->isForbidden());
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\wordpress\fixtures;
 
 use Psr\Http\Message\UploadedFileInterface;
@@ -27,22 +26,26 @@ final class WebTestCaseController extends Controller
 
     public function __invoke(): Response
     {
-        return $this->respondWith()->html('<h1>' . __CLASS__ . '</h1>');
+        return $this->respondWith()
+            ->html('<h1>' . __CLASS__ . '</h1>');
     }
 
     public function queryParams(Request $request): Response
     {
-        return $this->respondWith()->json($request->getQueryParams());
+        return $this->respondWith()
+            ->json($request->getQueryParams());
     }
 
     public function cookiesAsJson(Request $request): Response
     {
-        return $this->respondWith()->json($request->getCookieParams());
+        return $this->respondWith()
+            ->json($request->getCookieParams());
     }
 
     public function bodyAsJson(Request $request): Response
     {
-        return $this->respondWith()->json($request->getParsedBody());
+        return $this->respondWith()
+            ->json($request->getParsedBody());
     }
 
     public function filesAsJson(Request $request): Response
@@ -55,20 +58,24 @@ final class WebTestCaseController extends Controller
         foreach ($request->getUploadedFiles() as $file) {
             $info[] = [
                 'size' => $file->getSize(),
-                'name' => $file->getClientFilename()
+                'name' => $file->getClientFilename(),
             ];
         }
-        return $this->respondWith()->json($info);
+
+        return $this->respondWith()
+            ->json($info);
     }
 
     public function admin(): Response
     {
-        return $this->respondWith()->html('admin');
+        return $this->respondWith()
+            ->html('admin');
     }
 
     public function checkIfApi(Request $request): Response
     {
-        return $this->respondWith()->html($request->isToApiEndpoint() ? 'true' : 'false');
+        return $this->respondWith()
+            ->html($request->isToApiEndpoint() ? 'true' : 'false');
     }
 
     public function serverVars(Request $request): Response
@@ -79,28 +86,32 @@ final class WebTestCaseController extends Controller
          * @var string $value
          */
         foreach ($request->getServerParams() as $name => $value) {
-            if (strpos((string)$name, 'X-') === 0) {
-                $string .= "$name=$value";
+            if (0 === strpos((string) $name, 'X-')) {
+                $string .= "{$name}={$value}";
             }
         }
-        return $this->respondWith()->html($string);
+
+        return $this->respondWith()
+            ->html($string);
     }
 
     public function fullUrl(Request $request): Response
     {
-        return $this->respondWith()->html($request->fullUrl());
+        return $this->respondWith()
+            ->html($request->fullUrl());
     }
 
     public function sendMail(Request $request): Response
     {
         $email = new Email();
         $email = $email
-            ->withTo((string)$request->post('to'))
-            ->withTextBody((string)$request->post('message'));
+            ->withTo((string) $request->post('to'))
+            ->withTextBody((string) $request->post('message'));
 
         $this->mailer->send($email);
 
-        return $this->respondWith()->html('Mail sent!');
+        return $this->respondWith()
+            ->html('Mail sent!');
     }
 
     public function incrementCounter(Request $request): Response
@@ -114,11 +125,12 @@ final class WebTestCaseController extends Controller
         $immutable_session = $request->getAttribute(ImmutableSession::class);
 
         $info = [
-            'id' => $immutable_session->id()->asString(),
-            'counter' => $immutable_session->get('counter')
+            'id' => $immutable_session->id()
+                ->asString(),
+            'counter' => $immutable_session->get('counter'),
         ];
 
-        return $this->respondWith()->json($info);
+        return $this->respondWith()
+            ->json($info);
     }
-
 }

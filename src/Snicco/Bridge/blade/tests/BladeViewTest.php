@@ -9,9 +9,11 @@ use Snicco\Bridge\Blade\BladeView;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\View\View;
 
-class BladeViewTest extends BladeTestCase
+/**
+ * @internal
+ */
+final class BladeViewTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -63,7 +65,9 @@ class BladeViewTest extends BladeTestCase
      */
     public function blade_views_can_be_rendered(): void
     {
-        $html = $this->view_engine->render('variables', ['name' => 'calvin']);
+        $html = $this->view_engine->render('variables', [
+            'name' => 'calvin',
+        ]);
 
         $this->assertViewContent('hello calvin', $html);
     }
@@ -76,7 +80,7 @@ class BladeViewTest extends BladeTestCase
         $path = realpath($this->blade_views . '/foo.blade.php');
 
         if (false === $path) {
-            throw new RuntimeException("path [$path] does not exist.");
+            throw new RuntimeException("path [{$path}] does not exist.");
         }
 
         $view = $this->view_engine->make($path);
@@ -96,7 +100,9 @@ class BladeViewTest extends BladeTestCase
         $html = $view1->render();
         $this->assertViewContent('hello calvin', $html);
 
-        $view2 = $view1->with(['name' => 'marlon']);
+        $view2 = $view1->with([
+            'name' => 'marlon',
+        ]);
         $html = $view2->render();
         $this->assertViewContent('hello marlon', $html);
 
@@ -113,5 +119,4 @@ class BladeViewTest extends BladeTestCase
         $this->assertSame('foo', $view->name());
         $this->assertSame(__DIR__ . '/fixtures/views/foo.blade.php', $view->path());
     }
-
 }

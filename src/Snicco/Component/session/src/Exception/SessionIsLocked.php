@@ -9,7 +9,6 @@ use Throwable;
 
 final class SessionIsLocked extends LogicException
 {
-
     public function __construct(
         string $message = 'The session has been persisted and can not be changed any longer.',
         int $code = 0,
@@ -21,5 +20,4 @@ final class SessionIsLocked extends LogicException
             $previous
         );
     }
-
 }

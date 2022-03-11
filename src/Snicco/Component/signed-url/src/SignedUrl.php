@@ -10,14 +10,18 @@ use function time;
 
 final class SignedUrl
 {
+    public const EXPIRE_KEY = 'expires';
 
-    const EXPIRE_KEY = 'expires';
-    const SIGNATURE_KEY = 'signature';
+    public const SIGNATURE_KEY = 'signature';
 
     private string $link_target;
+
     private string $identifier;
+
     private int $expires_at;
+
     private int $max_usage;
+
     private string $protects;
 
     private function __construct(
@@ -32,6 +36,11 @@ final class SignedUrl
         $this->expires_at = $expires_at;
         $this->max_usage = $max_usage;
         $this->protects = $protects;
+    }
+
+    public function __toString(): string
+    {
+        return $this->link_target;
     }
 
     public static function create(
@@ -55,11 +64,6 @@ final class SignedUrl
         return $this->link_target;
     }
 
-    public function __toString(): string
-    {
-        return $this->link_target;
-    }
-
     public function identifier(): string
     {
         return $this->identifier;
@@ -79,5 +83,4 @@ final class SignedUrl
     {
         return $this->protects;
     }
-
 }

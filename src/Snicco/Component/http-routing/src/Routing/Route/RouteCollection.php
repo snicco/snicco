@@ -19,7 +19,6 @@ use function count;
  */
 final class RouteCollection implements Routes
 {
-
     /**
      * @var array<string,Route>
      */
@@ -33,7 +32,7 @@ final class RouteCollection implements Routes
         foreach ($routes as $route) {
             $name = $route->getName();
             if (isset($this->routes[$name])) {
-                throw new InvalidArgumentException("Duplicate route name [$name].");
+                throw new InvalidArgumentException("Duplicate route name [{$name}].");
             }
             $this->routes[$name] = $route;
         }
@@ -41,9 +40,10 @@ final class RouteCollection implements Routes
 
     public function getByName(string $name): Route
     {
-        if (!isset($this->routes[$name])) {
+        if (! isset($this->routes[$name])) {
             throw RouteNotFound::name($name);
         }
+
         return $this->routes[$name];
     }
 
@@ -61,5 +61,4 @@ final class RouteCollection implements Routes
     {
         return new ArrayIterator($this->toArray());
     }
-
 }

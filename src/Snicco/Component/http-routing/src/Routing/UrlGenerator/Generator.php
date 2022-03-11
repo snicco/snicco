@@ -15,7 +15,9 @@ use function array_diff_key;
 use function array_key_exists;
 use function array_map;
 use function array_merge;
-use function is_null;
+use function gettype;
+use function is_int;
+use function is_string;
 use function ltrim;
 use function parse_str;
 use function preg_match;
@@ -30,10 +32,12 @@ use function trim;
  */
 final class Generator implements UrlGenerator
 {
-
     private Routes $routes;
+
     private UrlGenerationContext $context;
+
     private AdminArea $admin_area;
+
     private UrlEncoder $encoder;
 
     public function __construct(
@@ -47,7 +51,6 @@ final class Generator implements UrlGenerator
         $this->encoder = $encoder ?? new RFC3986Encoder();
         $this->admin_area = $admin_area;
     }
-
 
     public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string
     {
@@ -63,17 +66,16 @@ final class Generator implements UrlGenerator
         try {
             return $this->toRoute('login', $arguments, $type, true);
         } catch (RouteNotFound $e) {
-            //
         }
+
         try {
             return $this->toRoute('auth.login', $arguments, $type, true);
         } catch (RouteNotFound $e) {
-            //
         }
+
         try {
             return $this->toRoute('framework.auth.login', $arguments, $type, true);
         } catch (RouteNotFound $e) {
-            //
         }
 
         return $this->to($this->admin_area->loginPath(), $arguments, $type, true);
@@ -91,7 +93,7 @@ final class Generator implements UrlGenerator
 
         $route_path = $route->getPattern();
 
-        if (Str::startsWith($route_path, (string)$this->admin_area->urlPrefix())) {
+        if (Str::startsWith($route_path, (string) $this->admin_area->urlPrefix())) {
             [$route_path, $q] = $this->admin_area->rewriteForUrlGeneration($route_path);
             $arguments = array_merge($arguments, $q);
         }
@@ -106,13 +108,7 @@ final class Generator implements UrlGenerator
         $extra = array_diff_key($arguments, array_flip($route->getSegmentNames()));
 
         // Replace required segments
-        $route_path = $this->replaceSegments(
-            $required_segments,
-            $requirements,
-            $arguments,
-            $route_path,
-            $name,
-        );
+        $route_path = $this->replaceSegments($required_segments, $requirements, $arguments, $route_path, $name,);
 
         // Replace optional segments
         $route_path = $this->replaceSegments(
@@ -138,11 +134,12 @@ final class Generator implements UrlGenerator
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * @param array<string,string|int> $extra
+     * @param array<string,int|string> $extra
      */
     private function generate(
         string $path,
@@ -172,7 +169,7 @@ final class Generator implements UrlGenerator
 
         $target = $path . $query_string . $fragment;
 
-        if ($type === self::ABSOLUTE_PATH) {
+        if (self::ABSOLUTE_PATH === $type) {
             return $target;
         }
 
@@ -193,21 +190,17 @@ final class Generator implements UrlGenerator
         $query_string = '';
         $fragment = '';
 
-        if ($query_pos !== false) {
+        if (false !== $query_pos) {
             $path = Str::substr($path_with_query_and_fragment, 0, $query_pos);
             $query_string = Str::substr($path_with_query_and_fragment, $query_pos + 1);
         }
 
-        if ($fragment_pos !== false) {
+        if (false !== $fragment_pos) {
             $path = Str::substr($path_with_query_and_fragment, 0, $fragment_pos);
             $fragment = Str::substr($path_with_query_and_fragment, $fragment_pos + 1);
         }
 
-        return [
-            $path,
-            $query_string,
-            $fragment,
-        ];
+        return [$path, $query_string, $fragment];
     }
 
     private function formatPath(string $path): string
@@ -225,10 +218,9 @@ final class Generator implements UrlGenerator
         parse_str($existing_query_string, $existing_query);
 
         /** @var array<string,string> $existing_query */
-
         $query = array_merge($existing_query, $extra_query_args);
 
-        if ($query === []) {
+        if ([] === $query) {
             return '';
         }
 
@@ -237,11 +229,11 @@ final class Generator implements UrlGenerator
 
     private function buildFragment(string $existing_fragment, string $extra_fragment): string
     {
-        if (!empty($extra_fragment)) {
+        if (! empty($extra_fragment)) {
             return '#' . $this->encoder->encodeFragment($extra_fragment);
         }
 
-        if (!empty($existing_fragment)) {
+        if (! empty($existing_fragment)) {
             return '#' . $this->encoder->encodeFragment($existing_fragment);
         }
 
@@ -250,7 +242,7 @@ final class Generator implements UrlGenerator
 
     private function requiredScheme(?bool $secure): string
     {
-        if (is_null($secure)) {
+        if (null === $secure) {
             return $this->context->httpsByDefault() ? 'https' : 'http';
         }
 
@@ -261,13 +253,13 @@ final class Generator implements UrlGenerator
     {
         $port = '';
 
-        if ($scheme === 'https') {
-            if ($this->context->httpsPort() !== 443) {
-                $port = ':' . (string)$this->context->httpsPort();
+        if ('https' === $scheme) {
+            if (443 !== $this->context->httpsPort()) {
+                $port = ':' . (string) $this->context->httpsPort();
             }
-        } elseif ($scheme === 'http') {
-            if ($this->context->httpPort() !== 80) {
-                $port = ':' . (string)$this->context->httpPort();
+        } elseif ('http' === $scheme) {
+            if (80 !== $this->context->httpPort()) {
+                $port = ':' . (string) $this->context->httpPort();
             }
         }
 
@@ -275,7 +267,7 @@ final class Generator implements UrlGenerator
     }
 
     /**
-     * @param string[] $segments
+     * @param string[]             $segments
      * @param array<string,string> $requirements
      * @param array<string,string> $provided_arguments
      */
@@ -290,11 +282,8 @@ final class Generator implements UrlGenerator
         foreach ($segments as $segment) {
             $has_value = array_key_exists($segment, $provided_arguments);
 
-            if (!$has_value && !$optional) {
-                throw BadRouteParameter::becauseRequiredParameterIsMissing(
-                    $segment,
-                    $name
-                );
+            if (! $has_value && ! $optional) {
+                throw BadRouteParameter::becauseRequiredParameterIsMissing($segment, $name);
             }
 
             $replacement = $provided_arguments[$segment] ?? '';
@@ -302,13 +291,8 @@ final class Generator implements UrlGenerator
             if ($has_value && array_key_exists($segment, $requirements)) {
                 $pattern = $requirements[$segment];
 
-                if (!preg_match('/^' . $pattern . '$/', $replacement)) {
-                    throw BadRouteParameter::becauseRegexDoesntMatch(
-                        $replacement,
-                        $segment,
-                        $pattern,
-                        $name
-                    );
+                if (! preg_match('/^' . $pattern . '$/', $replacement)) {
+                    throw BadRouteParameter::becauseRegexDoesntMatch($replacement, $segment, $pattern, $name);
                 }
             }
 
@@ -323,21 +307,19 @@ final class Generator implements UrlGenerator
 
     /**
      * @param array<string,mixed> $extra
+     *
      * @return array<string,string>
      */
     private function toStringValues(array $extra): array
     {
         return array_map(function ($value) {
-            if (!is_string($value) && !is_int($value)) {
+            if (! is_string($value) && ! is_int($value)) {
                 throw new InvalidArgumentException(
-                    sprintf(
-                        'Replacements must be string or integer. Got [%s].',
-                        gettype($value)
-                    )
+                    sprintf('Replacements must be string or integer. Got [%s].', gettype($value))
                 );
             }
-            return (string)$value;
+
+            return (string) $value;
         }, $extra);
     }
-
 }

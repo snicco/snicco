@@ -8,10 +8,8 @@ use Snicco\Component\BetterWPAPI\BetterWPAPI;
 
 class TestWPAPI extends BetterWPAPI
 {
-
     public function customMethod(): string
     {
         return 'customMethod';
     }
-
 }

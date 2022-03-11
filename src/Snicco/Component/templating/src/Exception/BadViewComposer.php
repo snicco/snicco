@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\Exception;
 
-use RuntimeException;
+use InvalidArgumentException;
 
-final class BadViewComposer extends RuntimeException
+final class BadViewComposer extends InvalidArgumentException
 {
-
 }

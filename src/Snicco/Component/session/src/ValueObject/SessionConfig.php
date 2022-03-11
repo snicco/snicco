@@ -16,24 +16,30 @@ use function ucfirst;
 
 final class SessionConfig
 {
-
     private string $path;
+
     private string $cookie_name;
+
     private ?string $cookie_domain;
 
     /**
-     * @var "Lax" | "Strict" | "None; Secure"
+     * @var "Lax"|"None; Secure"|"Strict"
      */
     private string $same_site;
+
     private bool $http_only;
+
     private bool $only_secure;
 
     /**
-     * @var null|positive-int
+     * @var positive-int|null
      */
     private ?int $absolute_lifetime_in_sec;
+
     private int $idle_timeout;
+
     private int $rotation_interval;
+
     private int $gc_percentage;
 
     /**
@@ -56,47 +62,38 @@ final class SessionConfig
             ? '/' . ltrim($config['path'], '/')
             : '/';
 
-        if (!isset($config['cookie_name'])) {
+        if (! isset($config['cookie_name'])) {
             throw new InvalidArgumentException('A cookie name is required');
-        } else {
-            $this->cookie_name = $config['cookie_name'];
         }
+        $this->cookie_name = $config['cookie_name'];
 
         $this->absolute_lifetime_in_sec = $config['absolute_lifetime_in_sec'] ?? null;
 
-        if (!isset($config['idle_timeout_in_sec'])) {
+        if (! isset($config['idle_timeout_in_sec'])) {
             throw new InvalidArgumentException('An idle timeout is required.');
-        } else {
-            $this->idle_timeout = $config['idle_timeout_in_sec'];
         }
+        $this->idle_timeout = $config['idle_timeout_in_sec'];
 
         $this->cookie_domain = $config['domain'] ?? null;
 
         $same_site = ucfirst(strtolower($config['same_site'] ?? 'Lax'));
-        if ($same_site === 'None') {
+        if ('None' === $same_site) {
             $same_site = 'None; Secure';
         }
 
-        if (!in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'])) {
-            throw new InvalidArgumentException(
-                sprintf('same_site must be one of [%s].', implode(', ', $req))
-            );
-        } else {
-            /** @var 'Lax' | 'Strict' | 'None; Secure' same_site */
-            $this->same_site = $same_site;
+        if (! in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'], true)) {
+            throw new InvalidArgumentException(sprintf('same_site must be one of [%s].', implode(', ', $req)));
         }
+        $this->same_site = $same_site;
 
-        if (!isset($config['rotation_interval_in_sec'])) {
+        if (! isset($config['rotation_interval_in_sec'])) {
             throw new InvalidArgumentException('A rotation interval is required.');
-        } else {
-            $this->rotation_interval = $config['rotation_interval_in_sec'];
         }
+        $this->rotation_interval = $config['rotation_interval_in_sec'];
 
         $gc_percentage = $config['garbage_collection_percentage'] ?? -1;
         if ($gc_percentage < 0 || $gc_percentage > 100) {
-            throw new InvalidArgumentException(
-                'The garbage collection percentage has to be between 0 and 100.'
-            );
+            throw new InvalidArgumentException('The garbage collection percentage has to be between 0 and 100.');
         }
         $this->gc_percentage = $gc_percentage;
 
@@ -164,7 +161,7 @@ final class SessionConfig
     }
 
     /**
-     * @return  "Lax" | "Strict" | "None; Secure"
+     * @return "Lax"|"None; Secure"|"Strict"
      */
     public function sameSite(): string
     {
@@ -206,5 +203,4 @@ final class SessionConfig
     {
         return new SessionLottery($this->gc_percentage);
     }
-
 }

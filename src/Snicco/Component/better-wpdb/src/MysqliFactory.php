@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB;
 
 use mysqli;
@@ -11,7 +10,6 @@ use ReflectionProperty;
 
 final class MysqliFactory
 {
-
     /**
      * @throws ReflectionException
      */
@@ -22,9 +20,7 @@ final class MysqliFactory
         $dbh = new ReflectionProperty($wpdb, 'dbh');
         $dbh->setAccessible(true);
 
-        /**
-         * @var mysqli $mysqli
-         */
+        /** @var mysqli $mysqli */
         $mysqli = $dbh->getValue($wpdb);
 
         $dbh->setAccessible(false);

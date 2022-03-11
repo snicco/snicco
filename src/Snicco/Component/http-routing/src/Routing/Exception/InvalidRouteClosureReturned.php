@@ -13,7 +13,6 @@ use function sprintf;
 
 final class InvalidRouteClosureReturned extends InvalidArgumentException
 {
-
     public static function adminRoutesAreUsingWebRouting(string $filepath): InvalidRouteClosureReturned
     {
         return new self(
@@ -49,10 +48,8 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
         );
     }
 
-    public static function becauseArgumentCountMismatch(
-        string $path,
-        int $count
-    ): InvalidRouteClosureReturned {
+    public static function becauseArgumentCountMismatch(string $path, int $count): InvalidRouteClosureReturned
+    {
         return new self(
             sprintf(
                 "The returned closure from the route file\n[%s]\nwill must receive an instance of [%s] but required [%s] parameters.",
@@ -62,5 +59,4 @@ final class InvalidRouteClosureReturned extends InvalidArgumentException
             )
         );
     }
-
 }

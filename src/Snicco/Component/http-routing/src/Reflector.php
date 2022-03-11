@@ -15,6 +15,7 @@ use ReflectionParameter;
 
 use function class_exists;
 use function class_implements;
+use function count;
 use function in_array;
 use function interface_exists;
 use function is_string;
@@ -26,13 +27,12 @@ use function sprintf;
  */
 final class Reflector
 {
-
     /**
      * @template Interface
      *
      * @psalm-assert class-string<Interface> $class_string
      *
-     * @param string|class-string $class_string
+     * @param class-string|string     $class_string
      * @param class-string<Interface> $expected_interface
      *
      * @throws InvalidArgumentException
@@ -46,36 +46,28 @@ final class Reflector
         $interface_exists = interface_exists($expected_interface);
 
         if (false === $interface_exists) {
-            throw new InvalidArgumentException("Interface [$expected_interface] does not exist.");
+            throw new InvalidArgumentException("Interface [{$expected_interface}] does not exist.");
         }
 
-        if (!$class_exists) {
+        if (! $class_exists) {
             throw new InvalidArgumentException(
-                sprintf(
-                    $message ?: "Expected class-string<%s>\nGot: [%s].",
-                    $expected_interface,
-                    $class_string
-                )
+                sprintf($message ?: "Expected class-string<%s>\nGot: [%s].", $expected_interface, $class_string)
             );
         }
 
-        $implements = (array)class_implements($class_string);
+        $implements = (array) class_implements($class_string);
 
         if (in_array($expected_interface, $implements, true)) {
             return;
         }
 
         throw new InvalidArgumentException(
-            sprintf(
-                $message ?: "Expected class-string<%s>\nGot: [%s].",
-                $expected_interface,
-                $class_string
-            )
+            sprintf($message ?: "Expected class-string<%s>\nGot: [%s].", $expected_interface, $class_string)
         );
     }
 
     /**
-     * @param Closure|class-string|array{0: class-string|object, 1: string} $callable
+     * @param array{0: class-string|object, 1: string}|class-string|Closure $callable
      *
      * @throws ReflectionException
      */
@@ -85,7 +77,7 @@ final class Reflector
 
         $parameters = $reflection->getParameters();
 
-        if (!count($parameters) || !$parameters[0] instanceof ReflectionParameter) {
+        if (! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
             return null;
         }
 
@@ -97,7 +89,8 @@ final class Reflector
     }
 
     /**
-     * @param Closure|class-string|array{0: class-string|object, 1: string} $callable
+     * @param array{0: class-string|object, 1: string}|class-string|Closure $callable
+     *
      * @throws ReflectionException
      */
     private static function reflectionFunction($callable): ReflectionFunctionAbstract
@@ -111,5 +104,4 @@ final class Reflector
 
         return new ReflectionMethod($callable[0], $callable[1]);
     }
-
 }

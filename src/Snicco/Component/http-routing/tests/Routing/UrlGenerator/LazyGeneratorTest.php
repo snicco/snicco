@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlGenerator;
 
 use PHPUnit\Framework\TestCase;
@@ -19,10 +18,11 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 /**
  * @psalm-suppress DocblockTypeContradiction
+ *
+ * @internal
  */
 final class LazyGeneratorTest extends TestCase
 {
-
     use CreatesPsrRequests;
     use CreateTestPsr17Factories;
 
@@ -40,7 +40,7 @@ final class LazyGeneratorTest extends TestCase
     public function test_to_works(): void
     {
         $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
+            ++$this->constructed;
 
             return new Generator(
                 new RouteCollection([]),
@@ -51,13 +51,17 @@ final class LazyGeneratorTest extends TestCase
 
         $this->assertSame(0, $this->constructed);
 
-        $this->assertSame('/foo?bar=baz', $lazy_generator->to('/foo', ['bar' => 'baz']));
+        $this->assertSame('/foo?bar=baz', $lazy_generator->to('/foo', [
+            'bar' => 'baz',
+        ]));
 
         $this->assertSame(1, $this->constructed);
 
         $this->assertSame(
             'https://127.0.0.1/foo?bar=baz',
-            $lazy_generator->to('/foo', ['bar' => 'baz'], UrlGenerator::ABSOLUTE_URL)
+            $lazy_generator->to('/foo', [
+                'bar' => 'baz',
+            ], UrlGenerator::ABSOLUTE_URL)
         );
 
         $this->assertSame(1, $this->constructed);
@@ -69,7 +73,7 @@ final class LazyGeneratorTest extends TestCase
     public function test_to_route_works(): void
     {
         $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
+            ++$this->constructed;
 
             $route = Route::create('/foo', Route::DELEGATE, 'foo');
 
@@ -93,10 +97,10 @@ final class LazyGeneratorTest extends TestCase
     /**
      * @test
      */
-    public function test_toLogin_works(): void
+    public function test_to_login_works(): void
     {
         $lazy_generator = new LazyGenerator(function () {
-            $this->constructed++;
+            ++$this->constructed;
 
             return new Generator(
                 new RouteCollection(),
@@ -107,9 +111,10 @@ final class LazyGeneratorTest extends TestCase
 
         $this->assertSame(0, $this->constructed);
 
-        $this->assertSame('/wp-login.php?bar=baz', $lazy_generator->toLogin(['bar' => 'baz']));
+        $this->assertSame('/wp-login.php?bar=baz', $lazy_generator->toLogin([
+            'bar' => 'baz',
+        ]));
 
         $this->assertSame(1, $this->constructed);
     }
-
 }

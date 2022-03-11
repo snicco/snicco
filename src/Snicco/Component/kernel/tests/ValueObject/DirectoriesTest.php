@@ -10,9 +10,11 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class DirectoriesTest extends TestCase
 {
-
     private string $valid_base_dir;
 
     protected function setUp(): void
@@ -80,9 +82,7 @@ final class DirectoriesTest extends TestCase
     public function test_exception_if_config_dir_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf('$config_dir [%s] is not readable', __DIR__ . '/config')
-        );
+        $this->expectExceptionMessage(sprintf('$config_dir [%s] is not readable', __DIR__ . '/config'));
 
         new Directories(__DIR__, __DIR__ . '/config', __DIR__ . '/cache', __DIR__ . '/log');
     }
@@ -93,9 +93,7 @@ final class DirectoriesTest extends TestCase
     public function test_exception_if_cache_dir_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf('$cache_dir [%s] is not readable', __DIR__ . '/cache')
-        );
+        $this->expectExceptionMessage(sprintf('$cache_dir [%s] is not readable', __DIR__ . '/cache'));
 
         new Directories(
             $this->valid_base_dir,
@@ -111,9 +109,7 @@ final class DirectoriesTest extends TestCase
     public function test_exception_if_log_dir_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf('$log_dir [%s] is not readable', __DIR__ . '/log')
-        );
+        $this->expectExceptionMessage(sprintf('$log_dir [%s] is not readable', __DIR__ . '/log'));
 
         new Directories(
             $this->valid_base_dir,
@@ -122,5 +118,4 @@ final class DirectoriesTest extends TestCase
             __DIR__ . '/log'
         );
     }
-
 }

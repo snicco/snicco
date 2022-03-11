@@ -8,14 +8,13 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 abstract class RouteCondition
 {
-
-    const NEGATE = '!';
+    public const NEGATE = '!';
 
     abstract public function isSatisfied(Request $request): bool;
 
     /**
-     * Get an array of arguments that will be merged with the url segments and passed to the
-     * controller.
+     * Get an array of arguments that will be merged with the url segments and
+     * passed to the controller.
      *
      * @return array<string,string>
      */
@@ -23,5 +22,4 @@ abstract class RouteCondition
     {
         return [];
     }
-
 }

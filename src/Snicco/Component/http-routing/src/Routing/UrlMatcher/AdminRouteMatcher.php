@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -15,6 +14,7 @@ use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 final class AdminRouteMatcher implements UrlMatcher
 {
     private UrlMatcher $url_matcher;
+
     private AdminArea $admin_area;
 
     public function __construct(UrlMatcher $url_matcher, AdminArea $admin_area)
@@ -30,11 +30,11 @@ final class AdminRouteMatcher implements UrlMatcher
 
     private function allowMatchingAdminDashboardRequests(Request $request): Request
     {
-        if (!$request->isGet()) {
+        if (! $request->isGet()) {
             return $request;
         }
 
-        if (!$request->isToAdminArea()) {
+        if (! $request->isToAdminArea()) {
             return $request;
         }
 
@@ -43,5 +43,4 @@ final class AdminRouteMatcher implements UrlMatcher
 
         return $request->withUri($new_uri);
     }
-
 }

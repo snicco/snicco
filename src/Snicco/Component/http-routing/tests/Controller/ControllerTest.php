@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Controller;
 
 use LogicException;
@@ -15,9 +14,11 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+/**
+ * @internal
+ */
 final class ControllerTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -51,7 +52,8 @@ final class ControllerTest extends HttpRunnerTestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Current request');
 
-        $controller->responseWith()->refresh();
+        $controller->responseWith()
+            ->refresh();
     }
 
     /**
@@ -70,7 +72,8 @@ final class ControllerTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The UrlGenerator is not bound');
 
-        $controller->responseWith()->refresh();
+        $controller->responseWith()
+            ->refresh();
     }
 
     /**
@@ -89,22 +92,21 @@ final class ControllerTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The ResponseFactory is not bound');
 
-        $controller->responseWith()->refresh();
+        $controller->responseWith()
+            ->refresh();
     }
-
 }
 
 class ResponseUtilsTestController extends Controller
 {
+    public function __invoke()
+    {
+        return $this->respondWith()
+            ->refresh();
+    }
 
     public function responseWith(): ResponseUtils
     {
         return parent::respondWith();
     }
-
-    public function __invoke()
-    {
-        return $this->respondWith()->refresh();
-    }
-
 }

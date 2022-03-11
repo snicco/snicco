@@ -26,12 +26,17 @@ use function realpath;
 
 use const DIRECTORY_SEPARATOR;
 
-class ViewEngineTest extends TestCase
+/**
+ * @internal
+ */
+final class ViewEngineTest extends TestCase
 {
-
     private ViewEngine $view_engine;
+
     private GlobalViewContext $global_view_context;
+
     private ViewComposerCollection $composers;
+
     private PHPViewFactory $php_view_factory;
 
     private string $view_dir;
@@ -48,10 +53,7 @@ class ViewEngineTest extends TestCase
             $this->global_view_context
         );
 
-        $this->php_view_factory = new PHPViewFactory(
-            new PHPViewFinder([$this->view_dir]),
-            $this->composers
-        );
+        $this->php_view_factory = new PHPViewFactory(new PHPViewFinder([$this->view_dir]), $this->composers);
 
         $this->view_engine = new ViewEngine($this->php_view_factory);
     }
@@ -85,7 +87,7 @@ class ViewEngineTest extends TestCase
         $path = realpath($this->view_dir . '/foo.php');
 
         if (false === $path) {
-            throw new RuntimeException("test view [$path] does not exist.");
+            throw new RuntimeException("test view [{$path}] does not exist.");
         }
 
         $view = $this->view_engine->make($path);
@@ -134,7 +136,9 @@ class ViewEngineTest extends TestCase
      */
     public function a_view_can_be_rendered_to_a_string(): void
     {
-        $view_content = $this->view_engine->render('greeting', ['name' => 'Calvin']);
+        $view_content = $this->view_engine->render('greeting', [
+            'name' => 'Calvin',
+        ]);
 
         $this->assertSame('Hello Calvin', $view_content);
     }
@@ -160,8 +164,16 @@ class ViewEngineTest extends TestCase
      */
     public function multiple_global_variables_can_be_shared(): void
     {
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
-        $this->global_view_context->add('global2', ['foo' => ['bar' => 'biz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+            ],
+        ]);
+        $this->global_view_context->add('global2', [
+            'foo' => [
+                'bar' => 'biz',
+            ],
+        ]);
 
         $view = $this->view_engine->make('multiple-globals');
 
@@ -173,7 +185,11 @@ class ViewEngineTest extends TestCase
      */
     public function test_global_view_context_array_access(): void
     {
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+            ],
+        ]);
         $view = $this->view_engine->make('array-access-isset');
 
         $this->assertSame('Isset works', $view->render());
@@ -187,7 +203,11 @@ class ViewEngineTest extends TestCase
         $this->expectException(ViewCantBeRendered::class);
         $this->expectExceptionMessage('offsetSet');
 
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+            ],
+        ]);
         $view = $this->view_engine->make('array-access-set');
 
         $view->render();
@@ -201,7 +221,11 @@ class ViewEngineTest extends TestCase
         $this->expectException(ViewCantBeRendered::class);
         $this->expectExceptionMessage('offsetUnset');
 
-        $this->global_view_context->add('global1', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('global1', [
+            'foo' => [
+                'bar' => 'baz',
+            ],
+        ]);
         $view = $this->view_engine->make('array-access-unset');
 
         $view->render();
@@ -212,12 +236,18 @@ class ViewEngineTest extends TestCase
      */
     public function view_composers_have_precedence_over_globals(): void
     {
-        $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('test_context', [
+            'foo' => [
+                'bar' => 'baz',
+            ],
+        ]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             return $view->with([
                 'test_context' => [
-                    'foo' => ['bar' => 'biz'],
+                    'foo' => [
+                        'bar' => 'biz',
+                    ],
                 ],
             ]);
         });
@@ -232,20 +262,28 @@ class ViewEngineTest extends TestCase
      */
     public function local_context_has_precedence_over_composers_and_globals(): void
     {
-        $this->global_view_context->add('test_context', ['foo' => ['bar' => 'baz']]);
+        $this->global_view_context->add('test_context', [
+            'foo' => [
+                'bar' => 'baz',
+            ],
+        ]);
 
         $this->composers->addComposer('context-priority', function (View $view) {
             return $view->with([
                 'test_context' => [
-                    'foo' => ['bar' => 'biz'],
-                ]
+                    'foo' => [
+                        'bar' => 'biz',
+                    ],
+                ],
             ]);
         });
 
         $view = $this->view_engine->make('context-priority');
         $view = $view->with([
             'test_context' => [
-                'foo' => ['bar' => 'boom'],
+                'foo' => [
+                    'bar' => 'boom',
+                ],
             ],
         ]);
 
@@ -292,6 +330,7 @@ class ViewEngineTest extends TestCase
         $view = $this->view_engine->make('bad-function');
 
         ob_start();
+
         try {
             $view->render();
             $this->fail('The view should not be able to render.');
@@ -312,10 +351,7 @@ class ViewEngineTest extends TestCase
         $engine = new ViewEngine(
             new PHPViewFactory(
                 new PHPViewFinder(
-                    [
-                        __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view2',
-                        $this->view_dir,
-                    ]
+                    [__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view2', $this->view_dir]
                 ),
                 $this->composers
             )
@@ -330,10 +366,7 @@ class ViewEngineTest extends TestCase
      */
     public function extended_parents_view_are_also_passed_through_view_composers(): void
     {
-        $this->composers->addComposer(
-            'post-layout',
-            fn(View $view) => $view->with('sidebar', 'hi')
-        );
+        $this->composers->addComposer('post-layout', fn (View $view) => $view->with('sidebar', 'hi'));
 
         $view = $this->view_engine->make('partials.post-title');
         $view = $view->with('post_title', 'Foobar');
@@ -350,6 +383,7 @@ class ViewEngineTest extends TestCase
 
         $view = $this->view_engine->make('partials.with-error');
         ob_start();
+
         try {
             $view->render();
         } finally {
@@ -421,19 +455,16 @@ class ViewEngineTest extends TestCase
         $this->expectException(ViewNotFound::class);
         $this->view_engine->render(['bogus1', 'bogus2']);
     }
-
-
 }
 
 class TestTwigViewFactory implements ViewFactory
 {
-
     public function make(string $view): View
     {
-        if (!strpos($view, 'twig')) {
+        if (! strpos($view, 'twig')) {
             throw new ViewNotFound();
         }
+
         return new TestView($view);
     }
-
 }
