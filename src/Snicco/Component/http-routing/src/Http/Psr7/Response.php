@@ -288,7 +288,11 @@ class Response implements ResponseInterface
 
     final public function isSuccessful(): bool
     {
-        return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+        if ($this->getStatusCode() < 200) {
+            return false;
+        }
+
+        return $this->getStatusCode() < 300;
     }
 
     final public function isOk(): bool
@@ -308,7 +312,11 @@ class Response implements ResponseInterface
 
     final public function isInformational(): bool
     {
-        return $this->getStatusCode() >= 100 && $this->getStatusCode() < 200;
+        if ($this->getStatusCode() < 100) {
+            return false;
+        }
+
+        return $this->getStatusCode() < 200;
     }
 
     final public function isRedirection(): bool

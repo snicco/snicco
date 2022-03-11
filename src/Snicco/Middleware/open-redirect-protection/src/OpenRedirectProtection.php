@@ -66,13 +66,15 @@ final class OpenRedirectProtection extends Middleware
         }
 
         $target_host = parse_url($target, PHP_URL_HOST);
-
         // Only allow redirects away to whitelisted hosts.
-        if ($target_host && $this->isWhitelisted($target_host)) {
-            return $response;
+        if (! $target_host) {
+            return $this->forbiddenRedirect($target);
+        }
+        if (! $this->isWhitelisted($target_host)) {
+            return $this->forbiddenRedirect($target);
         }
 
-        return $this->forbiddenRedirect($target);
+        return $response;
     }
 
     /**

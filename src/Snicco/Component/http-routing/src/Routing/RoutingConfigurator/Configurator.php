@@ -94,9 +94,11 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
                 $name
             ));
         }
-
         // A menu item should explicitly not be added.
-        if (null === $menu_attributes || Route::DELEGATE === $action) {
+        if (null === $menu_attributes) {
+            return $route;
+        }
+        if (Route::DELEGATE === $action) {
             return $route;
         }
 

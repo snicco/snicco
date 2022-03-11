@@ -158,16 +158,14 @@ final class BetterWPMailBundle implements Bundle
                     ->getBoolean('mail.' . MailOption::EXPOSE_MAIL_EVENTS);
 
                 if ($kernel->container()->has(EventDispatcher::class)) {
-                    $mail_events = new MailEventsUsingBetterWPHooks(
+                    return new MailEventsUsingBetterWPHooks(
                         $kernel->container()
                             ->make(EventDispatcher::class),
                         $expose
                     );
-                } else {
-                    $mail_events = $expose ? new MailEventsUsingWPHooks() : new NullEvents();
                 }
 
-                return $mail_events;
+                return $expose ? new MailEventsUsingWPHooks() : new NullEvents();
             });
     }
 

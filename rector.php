@@ -72,8 +72,10 @@ return static function (ContainerConfigurator $configurator): void {
     // Breaks typed array properties in psalm
     $services->remove(AddArrayDefaultToArrayPropertyRector::class);
 
-//    $configurator->import(SetList::EARLY_RETURN);
-//
+    $configurator->import(SetList::EARLY_RETURN);
+
+
+
 //    // Trimmed Privatisation list
 //    $services->set(FinalizeClassesWithoutChildrenRector::class);
 //    $services->set(ChangeReadOnlyPropertyWithDefaultValueToConstantRector::class);

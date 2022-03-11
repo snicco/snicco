@@ -198,15 +198,19 @@ final class SessionBundle implements Bundle
                 )
             );
         }
-
-        if (WPObjectCacheDriver::class === $driver && ! $kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'You need to add [%s] to your bundles.php config if you are using the object-cache session driver',
-                    BetterWPCacheBundle::class,
-                )
-            );
+        if (WPObjectCacheDriver::class !== $driver) {
+            return;
         }
+        if ($kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'You need to add [%s] to your bundles.php config if you are using the object-cache session driver',
+                BetterWPCacheBundle::class,
+            )
+        );
     }
 
     private function bindWPDBSessionDriver(Kernel $kernel, ReadOnlyConfig $config): void

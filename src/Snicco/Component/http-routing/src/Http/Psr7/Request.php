@@ -100,7 +100,10 @@ final class Request implements ServerRequestInterface
     public function userAgent(): ?string
     {
         $user_agent = substr($this->getHeaderLine('user-agent'), 0, 500);
-        if (false === $user_agent || '' === $user_agent) {
+        if (false === $user_agent) {
+            return null;
+        }
+        if ('' === $user_agent) {
             return null;
         }
 
@@ -710,10 +713,12 @@ rawurldecode(strtr($part, [
 
     private function matchesType(string $match_against, string $accept_header): bool
     {
-        if ('*/*' === $accept_header || '*' === $accept_header) {
+        if ('*/*' === $accept_header) {
             return true;
         }
-
+        if ('*' === $accept_header) {
+            return true;
+        }
         $tok = strtok($match_against, '/');
 
         if (false === $tok) {

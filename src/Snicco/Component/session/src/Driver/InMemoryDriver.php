@@ -101,9 +101,13 @@ final class InMemoryDriver implements UserSessionsDriver
     public function destroyAllForUserIdExcept(string $selector, $user_id): void
     {
         foreach ($this->storage as $s => $data) {
-            if ($data['user_id'] === $user_id && $s !== $selector) {
-                unset($this->storage[$s]);
+            if ($data['user_id'] !== $user_id) {
+                continue;
             }
+            if ($s === $selector) {
+                continue;
+            }
+            unset($this->storage[$s]);
         }
     }
 

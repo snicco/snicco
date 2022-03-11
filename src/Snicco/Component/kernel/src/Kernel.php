@@ -311,7 +311,10 @@ final class Kernel
 
     private function determineCache(Environment $environment): ConfigCache
     {
-        if ($environment->isProduction() || $environment->isStaging()) {
+        if ($environment->isProduction()) {
+            return new PHPFileCache();
+        }
+        if ($environment->isStaging()) {
             return new PHPFileCache();
         }
 
