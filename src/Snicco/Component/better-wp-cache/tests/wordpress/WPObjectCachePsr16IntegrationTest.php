@@ -6,6 +6,7 @@ namespace Snicco\Component\BetterWPCache\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use DateInterval;
+use Generator;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use RuntimeException;
@@ -57,20 +58,16 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
     /**
      * Data provider for invalid cache keys.
-     *
-     * @return array
      */
-    public static function invalidKeys()
+    public static function invalidKeys(): array
     {
         return array_merge(self::invalidArrayKeys(), [[2]]);
     }
 
     /**
      * Data provider for invalid array keys.
-     *
-     * @return array
      */
-    public static function invalidArrayKeys()
+    public static function invalidArrayKeys(): array
     {
         return [
             [''],
@@ -93,10 +90,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public static function invalidTtl()
+    public static function invalidTtl(): array
     {
         return [
             [''],
@@ -114,20 +108,16 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
     /**
      * Data provider for valid keys.
-     *
-     * @return array
      */
-    public static function validKeys()
+    public static function validKeys(): array
     {
         return [['AbC19_.'], ['1234567890123456789012345678901234567890123456789012345678901234']];
     }
 
     /**
      * Data provider for valid data to store.
-     *
-     * @return array
      */
-    public static function validData()
+    public static function validData(): array
     {
         return [
             ['AbC19_.'],
@@ -153,7 +143,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
     /**
      * @return CacheInterface that is used in the tests
      */
-    public function createSimpleCache()
+    public function createSimpleCache(): CacheInterface
     {
         return CacheFactory::psr16('testing');
     }
@@ -213,10 +203,8 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
      * in.
      *
      * {@link createSimpleCache()}, to speed up the tests.
-     *
-     * @param int $seconds
      */
-    public function advanceTime($seconds): void
+    public function advanceTime(int $seconds): void
     {
         sleep($seconds);
     }
@@ -375,7 +363,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $gen = function () {
+        $gen = function (): Generator {
             yield 'key0' => 'value0';
             yield 'key1' => 'value1';
         };
@@ -427,7 +415,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $gen = function () {
+        $gen = function (): Generator {
             yield 1 => 'key0';
             yield 1 => 'key1';
         };
@@ -482,7 +470,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $gen = function () {
+        $gen = function (): Generator {
             yield 1 => 'key0';
             yield 1 => 'key1';
         };
@@ -542,7 +530,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->get($key);
     }
 
@@ -559,7 +547,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->getMultiple(['key1', $key, 'key2']);
     }
 
@@ -572,7 +560,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->getMultiple('key');
     }
 
@@ -610,12 +598,12 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $values = function () use ($key) {
+        $values = function () use ($key): Generator {
             yield 'key1' => 'foo';
             yield $key => 'bar';
             yield 'key2' => 'baz';
         };
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->setMultiple($values());
     }
 
@@ -628,7 +616,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->setMultiple('key');
     }
 
@@ -645,7 +633,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->has($key);
     }
 
@@ -662,7 +650,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->delete($key);
     }
 
@@ -679,7 +667,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->deleteMultiple(['key1', $key, 'key2']);
     }
 
@@ -692,7 +680,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->deleteMultiple('key');
     }
 
@@ -709,7 +697,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->set('key', 'value', $ttl);
     }
 
@@ -726,7 +714,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->setMultiple([
             'key' => 'value',
         ], $ttl);
@@ -871,7 +859,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function set_valid_keys($key): void
+    public function set_valid_keys(string $key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -888,7 +876,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function set_multiple_valid_keys($key): void
+    public function set_multiple_valid_keys(string $key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);

@@ -63,7 +63,7 @@ final class BetterWPHooksBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->shared(Listener::class, fn () => new Listener(new ListenerDependency()));
             $dispatcher = $kernel->container()

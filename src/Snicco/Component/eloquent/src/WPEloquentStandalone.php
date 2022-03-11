@@ -40,6 +40,8 @@ final class WPEloquentStandalone
 
     /**
      * @psalm-suppress InvalidArgument
+     *
+     * @param mixed[] $connection_configuration
      */
     public function __construct(array $connection_configuration = [], bool $enable_global_facades = true)
     {
@@ -76,7 +78,7 @@ final class WPEloquentStandalone
 
         $this->illuminate_container->singletonIf(
             FakerGenerator::class,
-            function () use ($faker_locale) {
+            function () use ($faker_locale): FakerGenerator {
                 $faker = Factory::create($faker_locale);
                 $faker->unique(true);
 
@@ -84,7 +86,7 @@ final class WPEloquentStandalone
             }
         );
 
-        EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace) {
+        EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace): string {
             $model = class_basename($model);
 
             return rtrim($factory_namespace, '\\') . '\\' . $model . 'Factory';
@@ -133,7 +135,7 @@ final class WPEloquentStandalone
             $config['database.connections'] = $this->connection_configuration;
         } else {
             // eloquent only needs some config element that works with array access.
-            $this->illuminate_container->singleton('config', function () {
+            $this->illuminate_container->singleton('config', function (): Fluent {
                 $config = new Fluent();
                 $config['database.connections'] = $this->connection_configuration;
 
@@ -150,7 +152,7 @@ final class WPEloquentStandalone
     /**
      * @psalm-suppress PossiblyInvalidArgument
      */
-    private function newConnectionResolver(): ConnectionResolverInterface
+    private function newConnectionResolver(): WPConnectionResolver
     {
         $illuminate_database_manager = new DatabaseManager(
             $this->illuminate_container,

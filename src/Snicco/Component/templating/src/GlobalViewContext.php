@@ -43,11 +43,17 @@ final class GlobalViewContext
         return array_map(fn ($context) => ($context instanceof Closure) ? $context() : $context, $this->context);
     }
 
+    /**
+     * @param mixed[] $context
+     */
     private function getArrayAccess(array $context): ArrayAccess
     {
         return new class($context) implements ArrayAccess {
             private array $context;
 
+            /**
+             * @param mixed[] $context
+             */
             public function __construct(array $context)
             {
                 $this->context = $context;

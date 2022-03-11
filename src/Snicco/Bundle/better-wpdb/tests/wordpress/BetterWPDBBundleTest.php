@@ -76,7 +76,7 @@ final class BetterWPDBBundleTest extends WPTestCase
     public function a_custom_query_logger_is_used_if_bound(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(QueryLogger::class, new TestQueryLogger());
         });

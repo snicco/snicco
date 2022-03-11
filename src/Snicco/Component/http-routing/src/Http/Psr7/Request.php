@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
@@ -583,72 +584,72 @@ rawurldecode(strtr($part, [
         return $this->psr_request->getAttributes();
     }
 
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): Request
     {
         return $this->new($this->psr_request->withAttribute($name, $value));
     }
 
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): Request
     {
         return $this->new($this->psr_request->withProtocolVersion($version));
     }
 
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): Request
     {
         return $this->new($this->psr_request->withHeader($name, $value));
     }
 
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): Request
     {
         return $this->new($this->psr_request->withAddedHeader($name, $value));
     }
 
-    public function withoutHeader($name)
+    public function withoutHeader($name): Request
     {
         return $this->new($this->psr_request->withoutHeader($name));
     }
 
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): Request
     {
         return $this->new($this->psr_request->withBody($body));
     }
 
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): Request
     {
         return $this->new($this->psr_request->withRequestTarget($requestTarget));
     }
 
-    public function withMethod($method)
+    public function withMethod($method): Request
     {
         return $this->new($this->psr_request->withMethod($method));
     }
 
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): Request
     {
         return $this->new($this->psr_request->withUri($uri, $preserveHost));
     }
 
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): Request
     {
         return $this->new($this->psr_request->withQueryParams($query));
     }
 
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): Request
     {
         return $this->new($this->psr_request->withCookieParams($cookies));
     }
 
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): Request
     {
         return $this->new($this->psr_request->withoutAttribute($name));
     }
 
-    public function withParsedBody($data)
+    public function withParsedBody($data): Request
     {
         return $this->new($this->psr_request->withParsedBody($data));
     }
 
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): Request
     {
         return $this->new($this->psr_request->withUploadedFiles($uploadedFiles));
     }
@@ -669,7 +670,7 @@ rawurldecode(strtr($part, [
     /**
      * @return static
      */
-    public function withUserId(int $user_id)
+    public function withUserId(int $user_id): Request
     {
         return $this->withAttribute('snicco.user_id', $user_id);
     }
@@ -678,7 +679,7 @@ rawurldecode(strtr($part, [
     {
         $route = $this->routingResult()
             ->route();
-        if (! $route instanceof \Snicco\Component\HttpRouting\Routing\Route\Route) {
+        if (! $route instanceof Route) {
             return false;
         }
 
@@ -688,7 +689,7 @@ rawurldecode(strtr($part, [
     /**
      * @return static
      */
-    private function new(ServerRequestInterface $new_psr_request)
+    private function new(ServerRequestInterface $new_psr_request): Request
     {
         return new self($new_psr_request, $this->type);
     }

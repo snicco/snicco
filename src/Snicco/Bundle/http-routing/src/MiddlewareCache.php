@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting;
 
 use Closure;
+use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
@@ -22,15 +23,7 @@ use function var_export;
 final class MiddlewareCache
 {
     /**
-     * @template return as array{
-     *     route_map: array<string, list<array{class: class-string<\Psr\Http\Server\MiddlewareInterface>, args: array<string>}>>,
-     *     request_map: array{
-     *          api: list<array{class: class-string<\Psr\Http\Server\MiddlewareInterface>, args: array<string>}>,
-     *          frontend: list<array{class: class-string<\Psr\Http\Server\MiddlewareInterface>, args: array<string>}>,
-     *          admin: list<array{class: class-string<\Psr\Http\Server\MiddlewareInterface>, args: array<string>}>,
-     *          global: list<array{class: class-string<\Psr\Http\Server\MiddlewareInterface>, args: array<string>}>
-     *      }
-     * }
+     * @template return as array{route_map: array<string, list<array{class: class-string<MiddlewareInterface>, args: array<string>}>>, request_map: array{api: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>, frontend: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>, admin: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>, global: list<array{class: class-string<MiddlewareInterface>, args: array<string>}>}}
      *
      * @param Closure(): return $loader
      *

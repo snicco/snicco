@@ -45,7 +45,7 @@ final class ResponsePreparation
      * @param string[] $sent_headers_with_php A list of headers sent directly with
      *                                        {@see header()}. Use {@see headers_list()}
      */
-    public function prepare(Psr7\Response $response, Psr7\Request $request, array $sent_headers_with_php): Psr7\Response
+    public function prepare(Response $response, Request $request, array $sent_headers_with_php): Response
     {
         $response = $this->fixDate($response);
         $response = $this->fixCacheControl($response, $sent_headers_with_php);

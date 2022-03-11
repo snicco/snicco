@@ -111,7 +111,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->directories = $this->bundle_test->setUpDirectories();
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle1::class],
             ]);
@@ -130,7 +130,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->directories = $this->bundle_test->setUpDirectories();
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle1::class],
             ]);
@@ -153,7 +153,7 @@ final class BundleTestHelpersTest extends TestCase
     {
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle2::class],
             ]);
@@ -189,7 +189,7 @@ final class BundleTestHelpersTest extends TestCase
     {
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [TestingBundleBundle1::class],
             ]);

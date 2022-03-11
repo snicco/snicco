@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Functional;
 
-use Closure;
 use Codeception\TestCase\WPTestCase;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;

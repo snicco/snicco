@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 
+use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator;
+
 return [
     MiddlewareOption::GROUPS => [
-        Snicco\Component\HttpRouting\Routing\RoutingConfigurator\RoutingConfigurator::GLOBAL_MIDDLEWARE => [
+        RoutingConfigurator::GLOBAL_MIDDLEWARE => [
             // empty
         ],
     ],

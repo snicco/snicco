@@ -25,7 +25,7 @@ final class WPMailTransportTest extends WPTestCase
     {
         $php_mailer_exception = new Exception('bad email debug data.');
 
-        add_action('wp_mail_content_type', function () use ($php_mailer_exception) {
+        add_action('wp_mail_content_type', function () use ($php_mailer_exception): void {
             throw $php_mailer_exception;
         });
 

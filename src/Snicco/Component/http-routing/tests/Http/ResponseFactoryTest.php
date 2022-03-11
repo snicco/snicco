@@ -163,7 +163,7 @@ final class ResponseFactoryTest extends TestCase
     public function test_to_response_for_responseable(): void
     {
         $class = new class() implements Responsable {
-            public function toResponsable()
+            public function toResponsable(): string
             {
                 return 'foo';
             }

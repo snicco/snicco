@@ -64,7 +64,7 @@ final class WPCacheItem implements CacheItemInterface
         return $this->is_hit;
     }
 
-    public function set($value)
+    public function set($value): self
     {
         $this->value = $value;
         $this->is_hit = true;
@@ -72,7 +72,7 @@ final class WPCacheItem implements CacheItemInterface
         return $this;
     }
 
-    public function expiresAt($expiration)
+    public function expiresAt($expiration): self
     {
         if ($expiration instanceof DateTimeInterface) {
             $this->expiration_timestamp = $expiration->getTimestamp();
@@ -90,7 +90,7 @@ final class WPCacheItem implements CacheItemInterface
         return $this;
     }
 
-    public function expiresAfter($time)
+    public function expiresAfter($time): self
     {
         if (null === $time) {
             $this->expiration_timestamp = null;

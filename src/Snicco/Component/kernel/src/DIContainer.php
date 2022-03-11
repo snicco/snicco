@@ -86,7 +86,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @return T
      */
     #[ReturnTypeWillChange]
-    final public function offsetGet($offset)
+    final public function offsetGet($offset): object
     {
         Assert::stringNotEmpty($offset);
 
@@ -125,7 +125,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @psalm-return T
      */
-    final public function make(string $id) :object
+    final public function make(string $id): object
     {
         /**
          * @var mixed $res

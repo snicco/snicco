@@ -138,7 +138,7 @@ final class HttpRoutingBundle implements Bundle
     private function bindRouter(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(Router::class, function () use ($kernel) {
+            ->shared(Router::class, function () use ($kernel): Router {
                 $container = $kernel->container();
                 $config = $kernel->config();
                 $env = $kernel->env();
@@ -189,7 +189,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindErrorHandler(DIContainer $container, Kernel $kernel): void
     {
-        $container->shared(HttpErrorHandler::class, function () use ($container, $kernel) {
+        $container->shared(HttpErrorHandler::class, function () use ($container, $kernel): ProductionErrorHandler {
             $config = $kernel->config();
 
             $error_logger = $container[TestLogger::class] ?? $container->make(LoggerInterface::class);
@@ -249,7 +249,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindRouteRunnerMiddleware(DIContainer $container, Kernel $kernel): void
     {
-        $container->shared(RouteRunner::class, function () use ($container, $kernel) {
+        $container->shared(RouteRunner::class, function () use ($container, $kernel): RouteRunner {
             $middleware_resolver = ($kernel->env()->isProduction() || $kernel->env()->isStaging())
                 ? $this->getCachedMiddlewareResolver($kernel)
                 : $this->getMiddlewareResolver($kernel);
@@ -260,7 +260,7 @@ final class HttpRoutingBundle implements Bundle
 
     private function bindResponseFactory(DIContainer $container): void
     {
-        $container->shared(ResponseFactory::class, function () use ($container) {
+        $container->shared(ResponseFactory::class, function () use ($container): ResponseFactory {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
 
             return new ResponseFactory($discovery->createResponseFactory(), $discovery->createStreamFactory(),);
@@ -308,7 +308,7 @@ final class HttpRoutingBundle implements Bundle
         $cache_file = $kernel->directories()
             ->cacheDir() . '/prod.middleware-map-generated.php';
 
-        return MiddlewareCache::get($cache_file, function () use ($kernel) {
+        return MiddlewareCache::get($cache_file, function () use ($kernel): array {
             $resolver = $this->getMiddlewareResolver($kernel);
             $routes = $kernel->container()
                 ->make(Routes::class);
@@ -624,7 +624,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
     {
         // The HttpKernel needs to be resolvable on it's on so that we can use it in functional tests.
         $kernel->container()
-            ->shared(HttpKernel::class, function () use ($kernel) {
+            ->shared(HttpKernel::class, function () use ($kernel): HttpKernel {
                 /** @var class-string<MiddlewareInterface>[] $kernel_middleware */
                 $kernel_middleware = $kernel->config()
                     ->getListOfStrings(MiddlewareOption::key(MiddlewareOption::KERNEL_MIDDLEWARE));
@@ -640,7 +640,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
             });
 
         $kernel->container()
-            ->shared(HttpKernelRunner::class, function () use ($kernel) {
+            ->shared(HttpKernelRunner::class, function () use ($kernel): HttpKernelRunner {
                 $container = $kernel->container();
 
                 $dispatcher = $container->make(EventDispatcher::class);

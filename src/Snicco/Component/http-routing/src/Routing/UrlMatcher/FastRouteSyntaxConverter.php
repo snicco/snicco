@@ -98,7 +98,7 @@ final class FastRouteSyntaxConverter
 
         $pattern = sprintf('/(%s(?=\\}))/', preg_quote($param_name, '/'));
 
-        $url = preg_replace_callback($pattern, function (array $match) use ($regex) {
+        $url = preg_replace_callback($pattern, function (array $match) use ($regex): string {
             if (! isset($match[0])) {
                 // @codeCoverageIgnoreStart
                 return $regex;

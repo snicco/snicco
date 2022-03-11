@@ -86,7 +86,7 @@ final class FileRouteCacheTest extends TestCase
                 'url_matcher' => [],
                 'admin_menu' => [],
             ],
-            $cache->get(function () {
+            $cache->get(function (): void {
                 throw new RuntimeException('Data not loaded from cache.');
             })
         );

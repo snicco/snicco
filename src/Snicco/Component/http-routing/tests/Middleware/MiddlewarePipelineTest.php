@@ -163,7 +163,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through($middleware)
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('This should never run.');
             });
 
@@ -226,7 +226,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $pipeline
             ->send($this->request)
             ->through($middleware)
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('This should never run.');
             });
 
@@ -251,7 +251,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $pipeline
             ->send($this->request)
             ->through($middleware)
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('error');
             });
 

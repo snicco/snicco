@@ -16,6 +16,9 @@ final class TestEventDispatcher implements SessionEventDispatcher
      */
     private array $listeners;
 
+    /**
+     * @param array<string, Closure> $listeners
+     */
     public function __construct(array $listeners)
     {
         $this->listeners = $listeners;

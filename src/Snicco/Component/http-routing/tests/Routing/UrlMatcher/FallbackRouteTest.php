@@ -19,7 +19,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function users_can_create_a_custom_fallback_web_route(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 
@@ -38,7 +38,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
         $this->expectExceptionMessage(LogicException::class);
         $this->expectExceptionMessage('Route [route1] was registered after a fallback route was defined.');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback']);
             $configurator->get('route1', '/foo');
         });
@@ -49,7 +49,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function the_fallback_route_does_not_match_admin_requests(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback(RoutingTestController::class);
         });
 
@@ -62,7 +62,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function the_fallback_route_will_not_match_for_requests_that_are_specified_in_the_exclusion_list(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 
@@ -79,7 +79,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function custom_exclusions_words_can_be_specified(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback'], ['foo', 'bar']);
         });
 
@@ -100,7 +100,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('All fallback excludes have to be strings.');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback'], ['foo', 1]);
         });
     }
@@ -110,7 +110,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function the_pipe_symbol_can_be_passed(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback'], ['foo|bar', 'baz']);
         });
 
@@ -126,7 +126,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function fallback_routes_dont_match_requests_starting_with_wp_admin(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 
@@ -139,7 +139,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
      */
     public function the_fallback_route_will_match_trailing_slashes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 

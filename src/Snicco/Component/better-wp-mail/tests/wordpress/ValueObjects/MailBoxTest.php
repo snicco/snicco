@@ -188,11 +188,10 @@ final class MailBoxTest extends WPTestCase
     /**
      * @test
      * @psalm-suppress InvalidPropertyAssignmentValue
-     * @psalm-suppress MissingClosureReturnType
      */
     public function test_exception_if_validation_function_does_not_return_bool(): void
     {
-        Mailbox::$email_validator = function () {
+        Mailbox::$email_validator = function (): void {
         };
 
         $this->expectException(LogicException::class);

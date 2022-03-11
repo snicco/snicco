@@ -85,7 +85,7 @@ final class BladeStandalone
 
         Blade::if('guest', fn () => ! $wp->isUserLoggedIn());
 
-        Blade::if('role', function (string $expression) use ($wp) {
+        Blade::if('role', function (string $expression) use ($wp): bool {
             if ('admin' === $expression) {
                 $expression = 'administrator';
             }
@@ -105,7 +105,7 @@ final class BladeStandalone
             $config['view.paths'] = $this->view_directories;
         } else {
             // Blade only needs some config element that works with array access.
-            $this->illuminate_container->singleton('config', function () {
+            $this->illuminate_container->singleton('config', function (): Fluent {
                 $config = new Fluent();
                 $config['view.compiled'] = $this->view_cache_directory;
                 $config['view.paths'] = $this->view_directories;
@@ -146,17 +146,17 @@ final class BladeStandalone
 
     private function disableUnsupportedDirectives(): void
     {
-        Blade::directive('service', function () {
+        Blade::directive('service', function (): void {
             throw new BadMethodCallException('The service directive is not supported. Dont use it. Its evil.');
         });
 
-        Blade::directive('csrf', function () {
+        Blade::directive('csrf', function (): void {
             throw new BadMethodCallException(
                 'The csrf directive is not supported as it requires the entire laravel framework.'
             );
         });
 
-        Blade::directive('method', function () {
+        Blade::directive('method', function (): void {
             throw new BadMethodCallException(
                 'The method directive is not supported because form-method spoofing is not supported in WordPress.'
             );

@@ -10,6 +10,7 @@ use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use Snicco\Bundle\BetterWPCache\Option\BetterWPCacheOption;
 use Snicco\Component\BetterWPCache\CacheFactory;
+use Snicco\Component\BetterWPCache\WPObjectCachePsr6;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
@@ -40,7 +41,7 @@ final class BetterWPCacheBundle implements Bundle
     public function register(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(CacheItemPoolInterface::class, function () use ($kernel) {
+            ->shared(CacheItemPoolInterface::class, function () use ($kernel): WPObjectCachePsr6 {
                 /** @var non-empty-string $group */
                 $group = $kernel->config()
                     ->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
@@ -48,7 +49,7 @@ final class BetterWPCacheBundle implements Bundle
                 return CacheFactory::psr6($group);
             });
         $kernel->container()
-            ->shared(CacheInterface::class, function () use ($kernel) {
+            ->shared(CacheInterface::class, function () use ($kernel): CacheInterface {
                 /** @var non-empty-string $group */
                 $group = $kernel->config()
                     ->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);

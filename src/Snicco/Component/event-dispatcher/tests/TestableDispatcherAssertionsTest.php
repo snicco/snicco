@@ -46,7 +46,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_nothing_dispatched_can_pass(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
 
@@ -58,7 +58,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_nothing_dispatched_can_fail(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
 
@@ -75,7 +75,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_pass(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
@@ -88,13 +88,13 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_fail(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was not dispatched',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched('foo_event');
             }
         );
@@ -105,7 +105,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_pass_with_truthful_condition_about_the_event(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO', 'BAR']));
@@ -120,7 +120,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was not dispatched',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     'foo_event',
                     fn ($foo, $bar) => 'FOO' === $foo && 'BAR' === $bar
@@ -138,7 +138,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched but the provided condition did not pass.',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     'foo_event',
                     fn ($foo, $bar) => 'FOO' === $foo && 'BAR' === $bar
@@ -169,7 +169,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched but the provided condition did not pass.', EventStub::class),
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     EventStub::class,
                     fn (EventStub $event_stub) => 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2
@@ -199,7 +199,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched but the provided condition did not pass', EventStub::class),
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     fn (EventStub $event_stub) => 'FOO' === $event_stub->val1
                         && 'BAZ' === $event_stub->val2
@@ -240,7 +240,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched [3] time[s].',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
                 $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
                 $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
@@ -266,7 +266,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched [1] time[s].',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertNotDispatched('foo_event');
             }
         );
@@ -291,7 +291,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched and the condition passed.',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertNotDispatched('foo_event', fn ($val) => 'BAR' === $val);
             }
         );

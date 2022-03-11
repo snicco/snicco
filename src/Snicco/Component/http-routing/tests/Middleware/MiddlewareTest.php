@@ -252,7 +252,7 @@ final class MiddlewareTest extends TestCase
 
     private function getNext(): NextMiddleware
     {
-        return new NextMiddleware(function () {
+        return new NextMiddleware(function (): void {
             throw new RuntimeException('Next should not be called.');
         });
     }

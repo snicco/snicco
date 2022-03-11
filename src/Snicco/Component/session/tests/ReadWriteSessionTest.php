@@ -222,7 +222,7 @@ final class ReadWriteSessionTest extends TestCase
 
         $session->put('baz', 'biz');
 
-        $session->putIfMissing('baz', function () {
+        $session->putIfMissing('baz', function (): void {
             $this->fail('This should not have been called');
         });
 

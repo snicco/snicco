@@ -12,7 +12,7 @@ final class FilesystemRenderer implements MailRenderer
     public function render(string $template_name, array $context = []): string
     {
         ob_start();
-        (static function () use ($template_name, $context) {
+        (static function () use ($template_name, $context): void {
             extract($context, EXTR_SKIP);
             require $template_name;
         })();

@@ -79,7 +79,7 @@ final class OpenRedirectProtection extends Middleware
      */
     private function formatWhiteList(array $whitelist): array
     {
-        return array_map(function (string $pattern) {
+        return array_map(function (string $pattern): string {
             if (Str::startsWith($pattern, '*.')) {
                 return $this->allSubdomains(Str::afterFirst($pattern, '*.'));
             }

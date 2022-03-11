@@ -36,7 +36,7 @@ final class BladeBundle implements Bundle
         }
 
         $container = $kernel->container();
-        $container->shared(BladeViewFactory::class, function () use ($kernel) {
+        $container->shared(BladeViewFactory::class, function () use ($kernel): BladeViewFactory {
             $composers = $kernel->container()
                 ->make(ViewComposerCollection::class);
 

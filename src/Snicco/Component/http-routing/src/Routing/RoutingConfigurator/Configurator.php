@@ -30,6 +30,7 @@ use function trim;
 
 /**
  * @interal
+ *
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigurator
@@ -129,21 +130,21 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $this->deleteCurrentGroup();
     }
 
-    public function middleware($middleware)
+    public function middleware($middleware): self
     {
         $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::toArray($middleware);
 
         return $this;
     }
 
-    public function name(string $name)
+    public function name(string $name): self
     {
         $this->delegate_attributes[RoutingConfigurator::NAME_KEY] = $name;
 
         return $this;
     }
 
-    public function namespace(string $namespace)
+    public function namespace(string $namespace): self
     {
         $this->delegate_attributes[RoutingConfigurator::NAMESPACE_KEY] = $namespace;
 
@@ -279,7 +280,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         return $this->addWebRoute($name, $path, ['OPTIONS'], $action);
     }
 
-    public function prefix(string $prefix)
+    public function prefix(string $prefix): self
     {
         $this->delegate_attributes[RoutingConfigurator::PREFIX_KEY] = UrlPath::fromString($prefix);
 

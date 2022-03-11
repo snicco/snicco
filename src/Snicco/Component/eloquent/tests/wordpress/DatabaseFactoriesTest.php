@@ -93,7 +93,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $this->assertInstanceOf(Collection::class, $country);
         $this->assertCount(3, $country);
-        $country->each(function ($country) {
+        $country->each(function ($country): void {
             $this->assertInstanceOf(Country::class, $country);
         });
     }
@@ -147,7 +147,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
 
-        $countries->each(function ($country) use ($table) {
+        $countries->each(function ($country) use ($table): void {
             $table->assertRecordExists([
                 'name' => $country->name,
             ]);

@@ -55,6 +55,8 @@ final class ReadWriteSession implements Session
 
     /**
      * @interal Sessions MUST only be started from a {@see SessionManager}
+     *
+     * @param mixed[] $data
      */
     public function __construct(SessionId $id, array $data, int $last_activity)
     {

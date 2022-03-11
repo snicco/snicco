@@ -1216,6 +1216,9 @@ class SupportTestArrayAccess implements ArrayAccess
 {
     private array $attributes;
 
+    /**
+     * @param mixed[] $attributes
+     */
     public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
@@ -1223,11 +1226,9 @@ class SupportTestArrayAccess implements ArrayAccess
 
     /**
      * @param int|string $offset
-     *
-     * @return bool
      */
     #[ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->attributes);
     }
@@ -1248,7 +1249,7 @@ class SupportTestArrayAccess implements ArrayAccess
      * @param mixed      $value
      */
     #[ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->attributes[$offset] = $value;
     }
@@ -1257,7 +1258,7 @@ class SupportTestArrayAccess implements ArrayAccess
      * @param int|string $offset
      */
     #[ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->attributes[$offset]);
     }

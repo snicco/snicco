@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
 
 trait WithTestTables
 {
-    protected static $tables_created = false;
+    protected static bool $tables_created = false;
 
     /**
      * @var array
@@ -123,14 +123,14 @@ trait WithTestTables
 
     private function createTables(): void
     {
-        Schema::create('countries', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('continent');
             $table->timestamps();
         });
 
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->foreignId('country_id')
@@ -141,13 +141,13 @@ trait WithTestTables
             $table->timestamps();
         });
 
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->timestamps();
         });
 
-        Schema::create('activity_city', function (Blueprint $table) {
+        Schema::create('activity_city', function (Blueprint $table): void {
             $table->integer('city_id');
             $table->integer('activity_id');
             $table->integer('popularity')

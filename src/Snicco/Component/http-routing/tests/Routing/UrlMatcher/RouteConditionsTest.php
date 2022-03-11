@@ -21,7 +21,7 @@ final class RouteConditionsTest extends HttpRunnerTestCase
      */
     public function custom_conditions_can_be_added_as_a_full_namespace(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->condition(MaybeRouteCondition::class, true);
 
@@ -44,7 +44,7 @@ final class RouteConditionsTest extends HttpRunnerTestCase
      */
     public function the_route_does_not_match_if_the_path_matches_but_the_condition_does_not(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo/bar', RoutingTestController::class)
                 ->condition(MaybeRouteCondition::class, false);
 
@@ -68,7 +68,7 @@ final class RouteConditionsTest extends HttpRunnerTestCase
     {
         $GLOBALS['test']['maybe_condition_run'] = 0;
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->post('r1', '/foo', RoutingTestController::class)
                 ->condition(MaybeRouteCondition::class, true)
                 ->condition(FalseRouteCondition::class);

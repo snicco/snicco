@@ -51,7 +51,7 @@ final class LogoutTest extends WPTestCase
         $this->directories = $this->bundle_test->setUpDirectories();
         unset($_COOKIE['test_cookie']);
         $this->kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('session', [
                 SessionOption::COOKIE_NAME => 'test_cookie',
             ]);
@@ -129,7 +129,7 @@ final class LogoutTest extends WPTestCase
 
         $response = $pipeline->send($request)
             ->through([StatefulRequest::class])
-            ->then(function () {
+            ->then(function (): Response {
                 wp_logout();
 
                 return new Response();
@@ -175,7 +175,7 @@ final class LogoutTest extends WPTestCase
 
         $response = $pipeline->send($request)
             ->through([StatefulRequest::class])
-            ->then(function (Request $request) {
+            ->then(function (Request $request): Response {
                 /** @var MutableSession $session */
                 $session = $request->getAttribute(MutableSession::class);
                 $session->invalidate();

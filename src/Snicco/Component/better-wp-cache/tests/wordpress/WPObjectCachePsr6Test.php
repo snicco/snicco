@@ -127,32 +127,32 @@ final class WPObjectCachePsr6Test extends WPTestCase
     public function test_exception_for_different_cache_item(): void
     {
         $item = new class() implements CacheItemInterface {
-            public function getKey()
+            public function getKey(): string
             {
                 return '';
             }
 
-            public function get()
+            public function get(): string
             {
                 return '';
             }
 
-            public function isHit()
+            public function isHit(): bool
             {
                 return false;
             }
 
-            public function set($value)
+            public function set($value): self
             {
                 return $this;
             }
 
-            public function expiresAt($expiration)
+            public function expiresAt($expiration): self
             {
                 return $this;
             }
 
-            public function expiresAfter($time)
+            public function expiresAfter($time): self
             {
                 return $this;
             }
@@ -170,8 +170,12 @@ final class WPObjectCachePsr6Test extends WPTestCase
     public function test_is_always_miss_for_non_string_cache_data(): void
     {
         $cache_api = new class() extends WPCacheAPI {
-            public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
-            {
+            public function cacheGet(
+                string $key,
+                string $group = '',
+                bool $force = false,
+                bool &$found = null
+            ): stdClass {
                 return new stdClass();
             }
         };
@@ -192,7 +196,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
     public function test_is_always_miss_for_badly_serialized_data(): void
     {
         $notice_triggered = false;
-        set_error_handler(function () use (&$notice_triggered) {
+        set_error_handler(function () use (&$notice_triggered): bool {
             $notice_triggered = true;
 
             return true;
@@ -200,8 +204,12 @@ final class WPObjectCachePsr6Test extends WPTestCase
 
         try {
             $cache_api = new class() extends WPCacheAPI {
-                public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
-                {
+                public function cacheGet(
+                    string $key,
+                    string $group = '',
+                    bool $force = false,
+                    bool &$found = null
+                ): string {
                     $found = true;
 
                     return 'not-serialized';

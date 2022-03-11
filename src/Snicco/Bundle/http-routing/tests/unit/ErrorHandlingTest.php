@@ -64,7 +64,7 @@ final class ErrorHandlingTest extends TestCase
         $response = $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', '/')))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('secret error in routing.');
             });
 
@@ -91,7 +91,7 @@ final class ErrorHandlingTest extends TestCase
         $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', '/')))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new TypeError('secret error in routing.');
             });
 
@@ -123,7 +123,7 @@ final class ErrorHandlingTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
@@ -141,7 +141,7 @@ final class ErrorHandlingTest extends TestCase
         $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new TypeError('secret error in routing.');
             });
 
@@ -164,7 +164,7 @@ final class ErrorHandlingTest extends TestCase
     public function custom_transformers_can_be_added(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::TRANSFORMERS => [Transformer2::class, Transformer1::class],
             ]);
@@ -182,7 +182,7 @@ final class ErrorHandlingTest extends TestCase
         $response = $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('error1');
             });
 
@@ -192,7 +192,7 @@ final class ErrorHandlingTest extends TestCase
         $response = $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new LogicException('irrelevant');
             });
 
@@ -206,7 +206,7 @@ final class ErrorHandlingTest extends TestCase
     public function custom_displayers_can_be_added(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::DISPLAYERS => [CustomHtmlDisplayer::class],
             ]);
@@ -226,7 +226,7 @@ final class ErrorHandlingTest extends TestCase
         $response = $pipeline
             ->send($request)
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new TypeError('secret error in routing.');
             });
 
@@ -239,7 +239,7 @@ final class ErrorHandlingTest extends TestCase
     public function custom_log_levels_can_be_used(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     TypeError::class => LogLevel::WARNING,
@@ -255,7 +255,7 @@ final class ErrorHandlingTest extends TestCase
         $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new TypeError('secret error in routing.');
             });
 
@@ -308,7 +308,7 @@ final class ErrorHandlingTest extends TestCase
 
         $request = new ServerRequest('GET', '/foo');
 
-        $response = $pipeline->send(Request::fromPsr($request))->through([])->then(function () {
+        $response = $pipeline->send(Request::fromPsr($request))->through([])->then(function (): void {
             throw new RuntimeException('error');
         });
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\HttpRouting;
 
+use GuzzleHttp\Psr7\HttpFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -52,20 +54,20 @@ final class Psr17FactoryDiscovery
     {
         $this->check_for_classes = $check_for_classes ?: [
             // nyholm-psr7
-            \Nyholm\Psr7\Factory\Psr17Factory::class => [
-                'server_request' => \Nyholm\Psr7\Factory\Psr17Factory::class,
-                'uri' => \Nyholm\Psr7\Factory\Psr17Factory::class,
-                'uploaded_file' => \Nyholm\Psr7\Factory\Psr17Factory::class,
-                'stream' => \Nyholm\Psr7\Factory\Psr17Factory::class,
-                'response' => \Nyholm\Psr7\Factory\Psr17Factory::class,
+            Psr17Factory::class => [
+                'server_request' => Psr17Factory::class,
+                'uri' => Psr17Factory::class,
+                'uploaded_file' => Psr17Factory::class,
+                'stream' => Psr17Factory::class,
+                'response' => Psr17Factory::class,
             ],
             // guzzle
-            \GuzzleHttp\Psr7\HttpFactory::class => [
-                'server_request' => \GuzzleHttp\Psr7\HttpFactory::class,
-                'uri' => \GuzzleHttp\Psr7\HttpFactory::class,
-                'uploaded_file' => \GuzzleHttp\Psr7\HttpFactory::class,
-                'stream' => \GuzzleHttp\Psr7\HttpFactory::class,
-                'response' => \GuzzleHttp\Psr7\HttpFactory::class,
+            HttpFactory::class => [
+                'server_request' => HttpFactory::class,
+                'uri' => HttpFactory::class,
+                'uploaded_file' => HttpFactory::class,
+                'stream' => HttpFactory::class,
+                'response' => HttpFactory::class,
             ],
         ];
     }

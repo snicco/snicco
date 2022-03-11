@@ -105,7 +105,7 @@ final class TransactionsTest extends WPTestCase
                 ],
             ]);
 
-            $this->withDatabaseExceptions(function () {
+            $this->withDatabaseExceptions(function (): void {
                 // will throw non-unique error
                 DB::table('football_teams')->insert([
                     [
@@ -131,8 +131,8 @@ final class TransactionsTest extends WPTestCase
     public function nested_transactions_work(): void
     {
         try {
-            DB::transaction(function () {
-                DB::transaction(function () {
+            DB::transaction(function (): void {
+                DB::transaction(function (): void {
                     DB::table('football_teams')
                         ->where('name', 'Real Madrid')
                         ->delete();
@@ -153,7 +153,7 @@ final class TransactionsTest extends WPTestCase
      */
     public function automatic_transactions_work_when_no_errors_occur(): void
     {
-        DB::transaction(function (MysqliConnection $connection) {
+        DB::transaction(function (MysqliConnection $connection): void {
             $connection->table('football_teams')
                 ->insert([
                     [
@@ -182,7 +182,7 @@ final class TransactionsTest extends WPTestCase
     public function automatic_transactions_get_rolled_back_when_a_sql_error_occurs(): void
     {
         try {
-            DB::transaction(function (MysqliConnection $connection) {
+            DB::transaction(function (MysqliConnection $connection): void {
                 $connection->table('football_teams')
                     ->insert([
                         [
@@ -227,7 +227,7 @@ final class TransactionsTest extends WPTestCase
     public function any_exception_will_cause_the_transaction_to_be_rolled_back(): void
     {
         try {
-            DB::transaction(function (MysqliConnection $connection) {
+            DB::transaction(function (MysqliConnection $connection): void {
                 $connection->table('football_teams')
                     ->insert([
                         [
@@ -291,7 +291,7 @@ final class TransactionsTest extends WPTestCase
     private function createInitialTable(): void
     {
         if (! Schema::hasTable('football_teams')) {
-            Schema::create('football_teams', function (Blueprint $table) {
+            Schema::create('football_teams', function (Blueprint $table): void {
                 $table->bigIncrements('id');
                 $table->string('name')
                     ->unique();

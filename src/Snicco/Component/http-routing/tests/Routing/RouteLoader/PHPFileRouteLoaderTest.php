@@ -651,6 +651,10 @@ class ConfigurableLoadingOptions implements RouteLoadingOptions
 
     private array $return_normal;
 
+    /**
+     * @param mixed[] $return_api
+     * @param mixed[] $return_normal
+     */
     public function __construct(array $return_api, array $return_normal = [])
     {
         $this->return_api = $return_api;

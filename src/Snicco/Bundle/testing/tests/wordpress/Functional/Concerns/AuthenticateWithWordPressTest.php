@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Tests\wordpress\Functional\Concerns;
 
-use Closure;
 use PHPUnit\Framework\AssertionFailedError;
 use RuntimeException;
 use Snicco\Bundle\Testing\Functional\WebTestCase;

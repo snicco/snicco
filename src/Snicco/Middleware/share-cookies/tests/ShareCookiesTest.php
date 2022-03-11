@@ -33,7 +33,7 @@ final class ShareCookiesTest extends MiddlewareTestCase
      */
     public function multiple_cookies_can_be_added(): void
     {
-        $this->withNextMiddlewareResponse(function (Response $response) {
+        $this->withNextMiddlewareResponse(function (Response $response): Response {
             $cookie1 = new Cookie('foo', 'bar');
             $cookie2 = new Cookie('baz', 'biz');
 

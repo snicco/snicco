@@ -70,7 +70,7 @@ final class BetterWPMailBundle implements Bundle
     private function bindMailer(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(Mailer::class, function () use ($kernel) {
+            ->shared(Mailer::class, function () use ($kernel): Mailer {
                 $config = $kernel->config();
                 $from_name = $config->getString('mail.' . MailOption::FROM_NAME);
                 $from_email = $config->getString('mail.' . MailOption::FROM_EMAIL);
@@ -81,7 +81,7 @@ final class BetterWPMailBundle implements Bundle
 
                 /** @var class-string<MailRenderer>[] $renderer_names */
                 $renderer_names = $config->getListOfStrings('mail.' . MailOption::RENDERER);
-                $renderers = array_map(function ($class) use ($kernel) {
+                $renderers = array_map(function ($class) use ($kernel): MailRenderer {
                     if (FilesystemRenderer::class === $class) {
                         return new FilesystemRenderer();
                     }
@@ -127,7 +127,7 @@ final class BetterWPMailBundle implements Bundle
     private function bindViewEngineRenderer(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ViewEngineMailRenderer::class, function () use ($kernel) {
+            ->shared(ViewEngineMailRenderer::class, function () use ($kernel): ViewEngineMailRenderer {
                 try {
                     $engine = $kernel->container()
                         ->make(ViewEngine::class);
@@ -150,7 +150,7 @@ final class BetterWPMailBundle implements Bundle
     private function bindMailEvents(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(MailEvents::class, function () use ($kernel) {
+            ->shared(MailEvents::class, function () use ($kernel): MailEvents {
                 $expose = $kernel->config()
                     ->getBoolean('mail.' . MailOption::EXPOSE_MAIL_EVENTS);
 

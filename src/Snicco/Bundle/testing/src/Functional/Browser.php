@@ -83,7 +83,7 @@ final class Browser extends AbstractBrowser
     /**
      * @return never
      */
-    public function getRequest()
+    public function getRequest(): void
     {
         throw new BadMethodCallException(__METHOD__ . ' is not implemented since psr7 requests are immutable.');
     }

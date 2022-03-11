@@ -33,7 +33,7 @@ final class WPLogin implements MappedHook
         return self::class;
     }
 
-    public function payload()
+    public function payload(): self
     {
         return $this;
     }

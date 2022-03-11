@@ -40,7 +40,7 @@ final class MiddlewareCacheTest extends TestCase
     {
         $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('middleware', [
                 MiddlewareOption::ALWAYS_RUN => [RoutingConfigurator::FRONTEND_MIDDLEWARE],
                 MiddlewareOption::ALIASES => [],
@@ -68,7 +68,7 @@ final class MiddlewareCacheTest extends TestCase
     {
         $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('middleware', [
                 MiddlewareOption::ALWAYS_RUN => [RoutingConfigurator::FRONTEND_MIDDLEWARE],
                 MiddlewareOption::ALIASES => [],
@@ -100,7 +100,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('pipeline exhausted');
             });
 
@@ -113,7 +113,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('pipeline exhausted');
             });
 
@@ -127,7 +127,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('pipeline exhausted');
             });
 
