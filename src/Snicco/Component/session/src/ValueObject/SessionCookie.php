@@ -33,7 +33,8 @@ final class SessionCookie
     private string $same_site;
 
     /**
-     * This class MUST only be constructed with {@see SessionManager::toCookie()}.
+     * This class MUST only be constructed with {@see
+     * SessionManager::toCookie()}.
      *
      * @psalm-internal Snicco\Component\Session
      *

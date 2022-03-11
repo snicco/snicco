@@ -138,8 +138,9 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all bundles and bootstrappers have been registered, but BEFORE they are
-     * bootstrapped. This is the last opportunity to modify services in the container before it gets locked.
+     * Adds a callback that will be run after all bundles and bootstrappers have
+     * been registered, but BEFORE they are bootstrapped. This is the last
+     * opportunity to modify services in the container before it gets locked.
      *
      * @param callable(Kernel):void $callback
      */
@@ -152,8 +153,9 @@ final class Kernel
     }
 
     /**
-     * Adds a callback that will be run after all configuration files have been loaded from disk but BEFORE all bundles
-     * are configured. Callbacks will NOT be run if the configuration is cached.
+     * Adds a callback that will be run after all configuration files have been
+     * loaded from disk but BEFORE all bundles are configured. Callbacks will
+     * NOT be run if the configuration is cached.
      *
      * @param callable(WritableConfig, Kernel):void $callback
      */

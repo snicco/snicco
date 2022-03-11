@@ -11,8 +11,8 @@ use Snicco\Component\SignedUrl\SignedUrl;
 interface SignedUrlStorage
 {
     /**
-     * Decrement the number of left usages for the signed url by one. Remove the signed url from storage if the new left
-     * usage is zero.
+     * Decrement the number of left usages for the signed url by one. Remove the
+     * signed url from storage if the new left usage is zero.
      *
      * @throws UnavailableStorage if the usage count can not be updated
      * @throws BadIdentifier      if the identifier does not exist

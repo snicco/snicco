@@ -129,8 +129,8 @@ final class BetterWPDB
     }
 
     /**
-     * Runs the callback inside a database transaction that automatically commits on success and rolls back if any
-     * errors happen.
+     * Runs the callback inside a database transaction that automatically
+     * commits on success and rolls back if any errors happen.
      *
      * @template T
      *
@@ -289,8 +289,11 @@ final class BetterWPDB
     }
 
     /**
-     * Returns the entire result set as associative array. This method is preferred for small result sets. For large
-     * result sets this method will cause memory issues, and it's better to use {@see BetterWPDB::selectAll()}.
+     * Returns the entire result set as associative array. This method is
+     * preferred for small result sets. For large result sets this method will
+     * cause memory issues, and it's better to use.
+     *
+     * {@see BetterWPDB::selectAll()}.
      *
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
@@ -391,7 +394,8 @@ final class BetterWPDB
     }
 
     /**
-     * This method should be used if you want to iterate over a big number of records.
+     * This method should be used if you want to iterate over a big number of
+     * records.
      *
      * @param non-empty-string       $sql
      * @param array<int,scalar|null> $bindings
@@ -431,8 +435,8 @@ final class BetterWPDB
     }
 
     /**
-     * Runs a bulk insert of records in a transaction. If any record can't be inserted the entire transaction will be
-     * rolled back.
+     * Runs a bulk insert of records in a transaction. If any record can't be
+     * inserted the entire transaction will be rolled back.
      *
      * @param non-empty-string                              $table
      * @param iterable<array<non-empty-string,scalar|null>> $records !!! IMPORTANT !!!

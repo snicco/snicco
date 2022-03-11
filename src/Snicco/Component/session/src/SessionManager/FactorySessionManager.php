@@ -24,7 +24,8 @@ use Throwable;
 use function hash_equals;
 
 /**
- * This session manager will always return a new session object when start is being called.
+ * This session manager will always return a new session object when start is
+ * being called.
  */
 final class FactorySessionManager implements SessionManager
 {

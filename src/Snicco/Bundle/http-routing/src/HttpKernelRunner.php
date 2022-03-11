@@ -61,7 +61,8 @@ final class HttpKernelRunner
     }
 
     /**
-     * Sets up the runner to send a response an appropriate (later) time based on the request type.
+     * Sets up the runner to send a response an appropriate (later) time based
+     * on the request type.
      *
      * @note Unless you are 100% sure what you are doing you should not change the hooks.
      * You have been warned.

@@ -16,9 +16,10 @@ use function sprintf;
 use function strip_tags;
 
 /**
- * This class is an IMMUTABLE value object representing an email. The method on this class follow a simple convention:
- * 1) $email = $email->withXXX(); Will replace the attributes and return a new object. 2 $email = $email->addXXX(); Will
- * merge the attributes and return a new object.
+ * This class is an IMMUTABLE value object representing an email. The method on
+ * this class follow a simple convention: 1) $email = $email->withXXX(); Will
+ * replace the attributes and return a new object. 2 $email = $email->addXXX();
+ * Will merge the attributes and return a new object.
  */
 class Email
 {

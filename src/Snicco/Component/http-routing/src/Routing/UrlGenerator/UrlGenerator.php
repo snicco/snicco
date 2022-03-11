@@ -45,8 +45,9 @@ interface UrlGenerator
     ): string;
 
     /**
-     * Tries to redirect to the routes in the following order: 'login' 'auth.login' 'framework.auth.login' If no named
-     * route exists the url is generated to a static page that the implementation may choose.
+     * Tries to redirect to the routes in the following order: 'login'
+     * 'auth.login' 'framework.auth.login' If no named route exists the url is
+     * generated to a static page that the implementation may choose.
      *
      * @param array<string,int|string> $arguments
      */

@@ -16,7 +16,8 @@ interface View
     public function render(): string;
 
     /**
-     * Takes the provided context and returns a NEW instance that now has the merged context.
+     * Takes the provided context and returns a NEW instance that now has the
+     * merged context.
      *
      * @param array<string, mixed>|string $key
      * @param mixed                       $value

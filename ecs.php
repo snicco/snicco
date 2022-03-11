@@ -170,7 +170,7 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services->set(DocBlockLineLengthFixer::class)->call('configure', [
         [
-            DocBlockLineLengthFixer::LINE_LENGTH => 100,
+            DocBlockLineLengthFixer::LINE_LENGTH => 80,
         ],
     ]);
 };

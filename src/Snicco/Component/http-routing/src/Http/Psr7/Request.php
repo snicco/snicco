@@ -108,9 +108,11 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Returns the value of a received cookie or $default if no cookie with the given name exists.
+     * Returns the value of a received cookie or $default if no cookie with the
+     * given name exists.
      *
-     * If multiple cookie headers have been sent for $name only the first one will be returned.
+     * If multiple cookie headers have been sent for $name only the first one
+     * will be returned.
      */
     public function cookie(string $name, ?string $default = null): ?string
     {
@@ -200,10 +202,12 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * A request is considered secure when the scheme is set to "https". If your site runs behind a reverse proxy you
-     * have to make sure that your reverse proxy is configured correctly for setting the HTTP_X_FORWARDED_PROTO header.
-     * It's not possible to configure trusted proxies because if this is not configured at the server level the entire
-     * WP application will misbehave anyway.
+     * A request is considered secure when the scheme is set to "https". If your
+     * site runs behind a reverse proxy you have to make sure that your reverse
+     * proxy is configured correctly for setting the HTTP_X_FORWARDED_PROTO
+     * header. It's not possible to configure trusted proxies because if this is
+     * not configured at the server level the entire WP application will
+     * misbehave anyway.
      */
     public function isSecure(): bool
     {
@@ -338,7 +342,8 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_GET). Supports 'dot' notation and accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_GET). Supports 'dot' notation and
+     * accessing nested values with * wildcards.
      *
      * @param mixed $default
      *
@@ -368,7 +373,8 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_POST). Supports 'dot' notation and accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_POST). Supports 'dot' notation and
+     * accessing nested values with * wildcards.
      *
      * @param mixed $default
      *

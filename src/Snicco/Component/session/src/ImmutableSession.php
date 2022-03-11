@@ -11,7 +11,8 @@ interface ImmutableSession
     public function id(): SessionId;
 
     /**
-     * Indicates if this session was newly created and has not been persisted yet.
+     * Indicates if this session was newly created and has not been persisted
+     * yet.
      */
     public function isNew(): bool;
 
@@ -81,7 +82,8 @@ interface ImmutableSession
     public function exists($keys): bool;
 
     /**
-     * Get a value form the session with dot notation. $session->get('user.name', 'calvin').
+     * Get a value form the session with dot notation.
+     * $session->get('user.name', 'calvin').
      *
      * @param mixed $default
      *

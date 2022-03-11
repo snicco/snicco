@@ -25,8 +25,9 @@ use function sprintf;
 
 /**
  * The test methods in this class are copied from
- * https://github.com/php-cache/integration-tests/blob/master/src/SimpleCacheTest.php. We can't extend the provided test
- * case because we already need to extend WPTestCase.
+ * https://github.com/php-cache/integration-tests/blob/master/src/SimpleCacheTest.php.
+ * We can't extend the provided test case because we already need to extend
+ * WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
  *
@@ -206,8 +207,10 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
     }
 
     /**
-     * Advance time perceived by the cache for the purposes of testing TTL. The default implementation sleeps for the
-     * specified duration, but subclasses are encouraged to override this, adjusting a mocked time possibly set up in.
+     * Advance time perceived by the cache for the purposes of testing TTL. The
+     * default implementation sleeps for the specified duration, but subclasses
+     * are encouraged to override this, adjusting a mocked time possibly set up
+     * in.
      *
      * {@link createSimpleCache()}, to speed up the tests.
      *

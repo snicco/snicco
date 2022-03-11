@@ -12,8 +12,9 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 interface AdminRoutingConfigurator extends RoutingConfigurator, AdminMenu
 {
     /**
-     * A menu item will be added in the following scenario: $action !== Route::DELEGATE && $menu_attributes !== null
-     * Passing an array of attributes has no effect when the Route delegates the response handling.
+     * A menu item will be added in the following scenario: $action !==
+     * Route::DELEGATE && $menu_attributes !== null Passing an array of
+     * attributes has no effect when the Route delegates the response handling.
      *
      * @param array{0:class-string, 1:string}|class-string $action
      * @param array{
