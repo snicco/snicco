@@ -55,7 +55,7 @@ use const PREG_BAD_UTF8_OFFSET_ERROR;
 use const PREG_INTERNAL_ERROR;
 use const PREG_RECURSION_LIMIT_ERROR;
 
-class Str
+final class Str
 {
     /**
      * @var array<string,string>

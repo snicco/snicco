@@ -440,7 +440,7 @@ final class ErrorHandlingTest extends TestCase
     }
 }
 
-class Transformer1 implements ExceptionTransformer
+final class Transformer1 implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
@@ -456,7 +456,7 @@ class Transformer1 implements ExceptionTransformer
     }
 }
 
-class Transformer2 implements ExceptionTransformer
+final class Transformer2 implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
@@ -468,7 +468,7 @@ class Transformer2 implements ExceptionTransformer
     }
 }
 
-class PathLogContext implements RequestLogContext
+final class PathLogContext implements RequestLogContext
 {
     public function add(array $context, ExceptionInformation $information): array
     {
@@ -478,7 +478,7 @@ class PathLogContext implements RequestLogContext
     }
 }
 
-class QueryStringLogContext implements RequestLogContext
+final class QueryStringLogContext implements RequestLogContext
 {
     public function add(array $context, ExceptionInformation $information): array
     {
@@ -488,7 +488,7 @@ class QueryStringLogContext implements RequestLogContext
     }
 }
 
-class CustomHtmlDisplayer implements ExceptionDisplayer
+final class CustomHtmlDisplayer implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

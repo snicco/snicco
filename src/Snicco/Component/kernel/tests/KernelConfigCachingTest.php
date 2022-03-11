@@ -177,7 +177,7 @@ final class KernelConfigCachingTest extends TestCase
     }
 }
 
-class TestConfigCache implements ConfigCache
+final class TestConfigCache implements ConfigCache
 {
     /**
      * @psalm-suppress MixedReturnStatement

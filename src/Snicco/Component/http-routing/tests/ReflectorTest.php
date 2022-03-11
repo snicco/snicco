@@ -85,11 +85,11 @@ final class ReflectorTest extends TestCase
     }
 }
 
-class NoConstructor
+final class NoConstructor
 {
 }
 
-class ClassWithConstructor
+final class ClassWithConstructor
 {
     public string $foo;
 
@@ -97,13 +97,9 @@ class ClassWithConstructor
     {
         $this->foo = $foo;
     }
-
-    public function someMethod(string $foo, string $bar): void
-    {
-    }
 }
 
-class TestSubject implements Countable
+final class TestSubject implements Countable
 {
     public function count(): int
     {
@@ -111,7 +107,7 @@ class TestSubject implements Countable
     }
 }
 
-class TestTraversable implements Iterator
+final class TestTraversable implements Iterator
 {
     #[ReturnTypeWillChange]
 

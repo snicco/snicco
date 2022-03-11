@@ -84,7 +84,7 @@ final class ContentTypeTest extends TestCase
     }
 }
 
-class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
+final class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -107,7 +107,7 @@ class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
     }
 }
 
-class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
+final class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -130,7 +130,7 @@ class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
     }
 }
 
-class JsonExceptionDisplayer1 implements ExceptionDisplayer
+final class JsonExceptionDisplayer1 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -153,7 +153,7 @@ class JsonExceptionDisplayer1 implements ExceptionDisplayer
     }
 }
 
-class JsonExceptionDisplayer2 implements ExceptionDisplayer
+final class JsonExceptionDisplayer2 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

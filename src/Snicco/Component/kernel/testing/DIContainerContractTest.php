@@ -343,16 +343,16 @@ trait DIContainerContractTest
     }
 }
 
-class Foo
+final class Foo
 {
     public string $value = 'foo';
 }
 
-class Bar
+final class Bar
 {
     public string $value = 'bar';
 }
 
-class Baz
+final class Baz
 {
 }

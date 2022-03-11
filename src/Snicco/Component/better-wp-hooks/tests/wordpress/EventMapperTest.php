@@ -656,7 +656,7 @@ final class EventMapperTest extends WPTestCase
     }
 }
 
-class ConditionalFilter implements MappedFilter
+final class ConditionalFilter implements MappedFilter
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -682,7 +682,7 @@ class ConditionalFilter implements MappedFilter
     }
 }
 
-class ConditionalAction implements MappedHook
+final class ConditionalAction implements MappedHook
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -700,13 +700,13 @@ class ConditionalAction implements MappedHook
     }
 }
 
-class NormalEvent implements Event
+final class NormalEvent implements Event
 {
     use ClassAsName;
     use ClassAsPayload;
 }
 
-class EventFilterWithNoArgs implements MappedFilter
+final class EventFilterWithNoArgs implements MappedFilter
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -729,7 +729,7 @@ class EventFilterWithNoArgs implements MappedFilter
     }
 }
 
-class EventFilter1 implements MappedFilter
+final class EventFilter1 implements MappedFilter
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -755,7 +755,7 @@ class EventFilter1 implements MappedFilter
     }
 }
 
-class EventFilter2 implements MappedFilter
+final class EventFilter2 implements MappedFilter
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -781,7 +781,7 @@ class EventFilter2 implements MappedFilter
     }
 }
 
-class EmptyActionEvent implements MappedHook
+final class EmptyActionEvent implements MappedHook
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -794,7 +794,7 @@ class EmptyActionEvent implements MappedHook
     }
 }
 
-class EmptyActionEvent2 implements MappedHook
+final class EmptyActionEvent2 implements MappedHook
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -807,7 +807,7 @@ class EmptyActionEvent2 implements MappedHook
     }
 }
 
-class FooActionEvent implements MappedHook
+final class FooActionEvent implements MappedHook
 {
     use ClassAsName;
     use ClassAsPayload;
@@ -836,7 +836,7 @@ class FooActionEvent implements MappedHook
     }
 }
 
-class ActionWithArrayArguments implements MappedHook
+final class ActionWithArrayArguments implements MappedHook
 {
     use ClassAsName;
     use ClassAsPayload;

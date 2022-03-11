@@ -137,7 +137,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
     }
 }
 
-class MiddlewareWithClassAndParamDependencies extends Middleware
+final class MiddlewareWithClassAndParamDependencies extends Middleware
 {
     private Foo $foo;
 
@@ -166,7 +166,7 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
     }
 }
 
-class MiddlewareWithTypedDefault extends Middleware
+final class MiddlewareWithTypedDefault extends Middleware
 {
     private ?Foo $foo;
 

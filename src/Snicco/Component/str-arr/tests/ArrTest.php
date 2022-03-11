@@ -1212,7 +1212,7 @@ final class ArrTest extends TestCase
     }
 }
 
-class SupportTestArrayAccess implements ArrayAccess
+final class SupportTestArrayAccess implements ArrayAccess
 {
     private array $attributes;
 

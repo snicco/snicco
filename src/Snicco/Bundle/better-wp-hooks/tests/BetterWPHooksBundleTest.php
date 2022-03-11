@@ -127,11 +127,11 @@ final class BetterWPHooksBundleTest extends TestCase
     }
 }
 
-class ListenerDependency
+final class ListenerDependency
 {
 }
 
-class Listener
+final class Listener
 {
     public ListenerDependency $dependency;
 

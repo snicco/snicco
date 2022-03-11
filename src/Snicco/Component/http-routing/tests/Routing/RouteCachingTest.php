@@ -163,7 +163,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
     }
 }
 
-class Controller
+final class Controller
 {
     public function handle(): string
     {

@@ -9,7 +9,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 
-class ControllerWithMiddleware extends Controller
+final class ControllerWithMiddleware extends Controller
 {
     /**
      * @var string

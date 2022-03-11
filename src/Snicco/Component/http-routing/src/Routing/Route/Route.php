@@ -245,7 +245,7 @@ final class Route
         Assert::keyNotExists(
             $this->conditions,
             $condition,
-            sprintf('Condition [%s] was added twice to route [%s].', $condition, $this->getName())
+            sprintf('Condition [%s] was added twice to route [%s].', $condition, $this->name)
         );
 
         $this->conditions[$b->class] = $b;

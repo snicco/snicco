@@ -11,7 +11,7 @@ use Snicco\Component\Templating\View\View;
 use function is_array;
 use function sprintf;
 
-class TestView implements View
+final class TestView implements View
 {
     /**
      * @var array<string,mixed>
@@ -37,7 +37,7 @@ class TestView implements View
     {
         $new = clone $this;
         if (is_array($key)) {
-            $new->context = array_merge($this->context(), $key);
+            $new->context = array_merge($this->context, $key);
         } else {
             $new->context[$key] = $value;
         }

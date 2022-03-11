@@ -249,7 +249,7 @@ final class HttpInformationProviderTest extends TestCase
     }
 }
 
-class StubIdentifier implements ExceptionIdentifier
+final class StubIdentifier implements ExceptionIdentifier
 {
     private string $stub_id;
 
@@ -264,7 +264,7 @@ class StubIdentifier implements ExceptionIdentifier
     }
 }
 
-class ToUserFacingException implements ExceptionTransformer
+final class ToUserFacingException implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
@@ -272,7 +272,7 @@ class ToUserFacingException implements ExceptionTransformer
     }
 }
 
-class TransformEverythingTo403 implements ExceptionTransformer
+final class TransformEverythingTo403 implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
@@ -280,7 +280,7 @@ class TransformEverythingTo403 implements ExceptionTransformer
     }
 }
 
-class UserFacingException extends RuntimeException implements UserFacing
+final class UserFacingException extends RuntimeException implements UserFacing
 {
     public function title(): string
     {
@@ -293,7 +293,7 @@ class UserFacingException extends RuntimeException implements UserFacing
     }
 }
 
-class LastTransformer implements ExceptionTransformer
+final class LastTransformer implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
@@ -301,7 +301,7 @@ class LastTransformer implements ExceptionTransformer
     }
 }
 
-class RuntimeToAuthTransformer implements ExceptionTransformer
+final class RuntimeToAuthTransformer implements ExceptionTransformer
 {
     public function transform(Throwable $e): Throwable
     {
@@ -313,7 +313,7 @@ class RuntimeToAuthTransformer implements ExceptionTransformer
     }
 }
 
-class TransformedUserFacingException extends RuntimeException implements UserFacing
+final class TransformedUserFacingException extends RuntimeException implements UserFacing
 {
     public function title(): string
     {

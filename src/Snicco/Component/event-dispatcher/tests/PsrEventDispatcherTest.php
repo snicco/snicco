@@ -83,14 +83,14 @@ final class PsrEventDispatcherTest extends TestCase
     }
 }
 
-class Object1
+final class Object1
 {
     public string $foo = 'foo';
 
     public string $bar = 'foo';
 }
 
-class StoppableEvent implements StoppableEventInterface
+final class StoppableEvent implements StoppableEventInterface
 {
     public bool $should_stop = false;
 

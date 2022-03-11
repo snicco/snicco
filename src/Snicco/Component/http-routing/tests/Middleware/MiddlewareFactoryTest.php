@@ -145,7 +145,7 @@ final class MiddlewareFactoryTest extends TestCase
     }
 }
 
-class MiddlewareWithContextualAndRuntimeArgs extends Middleware
+final class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 {
     public string $bar;
 

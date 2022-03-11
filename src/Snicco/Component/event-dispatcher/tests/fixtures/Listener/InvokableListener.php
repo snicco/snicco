@@ -6,7 +6,7 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Listener;
 
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 
-class InvokableListener
+final class InvokableListener
 {
     use AssertListenerResponse;
 

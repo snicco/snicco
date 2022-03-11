@@ -216,7 +216,7 @@ final class BetterWPMailBundleTest extends WPTestCase
     }
 }
 
-class CustomTransport implements Transport
+final class CustomTransport implements Transport
 {
     public function send(Email $email, Envelope $envelope): void
     {

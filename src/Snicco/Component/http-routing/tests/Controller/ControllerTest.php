@@ -89,7 +89,7 @@ final class ControllerTest extends HttpRunnerTestCase
     }
 }
 
-class ResponseUtilsTestController extends Controller
+final class ResponseUtilsTestController extends Controller
 {
     public function __invoke()
     {

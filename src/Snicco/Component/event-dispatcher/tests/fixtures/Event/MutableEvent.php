@@ -8,7 +8,7 @@ use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 
-class MutableEvent implements Event
+final class MutableEvent implements Event
 {
     use ClassAsName;
     use ClassAsPayload;

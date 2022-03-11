@@ -309,7 +309,7 @@ final class TestableEventDispatcherTest extends TestCase
     }
 }
 
-class TestableEventDispatcherTestSubscriber implements EventSubscriber
+final class TestableEventDispatcherTestSubscriber implements EventSubscriber
 {
     public static function subscribedEvents(): array
     {

@@ -309,7 +309,7 @@ final class MiddlewarePipelineTest extends TestCase
     }
 }
 
-class ThrowExceptionMiddleware extends Middleware
+final class ThrowExceptionMiddleware extends Middleware
 {
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
@@ -317,7 +317,7 @@ class ThrowExceptionMiddleware extends Middleware
     }
 }
 
-class StopMiddleware extends Middleware
+final class StopMiddleware extends Middleware
 {
     /**
      * @var string
@@ -331,7 +331,7 @@ class StopMiddleware extends Middleware
     }
 }
 
-class PipelineTestMiddleware1 extends Middleware
+final class PipelineTestMiddleware1 extends Middleware
 {
     /**
      * @var string
@@ -355,7 +355,7 @@ class PipelineTestMiddleware1 extends Middleware
     }
 }
 
-class PipelineTestMiddleware2 extends Middleware
+final class PipelineTestMiddleware2 extends Middleware
 {
     /**
      * @var string

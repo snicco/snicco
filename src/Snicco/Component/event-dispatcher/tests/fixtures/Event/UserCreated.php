@@ -7,7 +7,7 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Event;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 
-class UserCreated implements Event
+final class UserCreated implements Event
 {
     use ClassAsPayload;
 

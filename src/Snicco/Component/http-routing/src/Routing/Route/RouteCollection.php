@@ -60,6 +60,6 @@ final class RouteCollection implements Routes
 
     public function getIterator(): Traversable
     {
-        return new ArrayIterator($this->toArray());
+        return new ArrayIterator($this->routes);
     }
 }

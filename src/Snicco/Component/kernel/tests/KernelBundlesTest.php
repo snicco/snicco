@@ -296,7 +296,7 @@ final class KernelBundlesTest extends TestCase
     }
 }
 
-class BundleThatConfigures implements Bundle
+final class BundleThatConfigures implements Bundle
 {
     public bool $registered = false;
 
@@ -332,7 +332,7 @@ class BundleThatConfigures implements Bundle
     }
 }
 
-class BundleWithCustomEnv implements Bundle
+final class BundleWithCustomEnv implements Bundle
 {
     public bool $registered = false;
 
@@ -367,7 +367,7 @@ class BundleWithCustomEnv implements Bundle
     }
 }
 
-class BundleDuplicate1 implements Bundle
+final class BundleDuplicate1 implements Bundle
 {
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
@@ -392,7 +392,7 @@ class BundleDuplicate1 implements Bundle
     }
 }
 
-class BundleDuplicate2 implements Bundle
+final class BundleDuplicate2 implements Bundle
 {
     public function configure(WritableConfig $config, Kernel $kernel): void
     {

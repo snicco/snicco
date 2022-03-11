@@ -458,7 +458,7 @@ final class SessionBundleTest extends WPTestCase
     }
 }
 
-class TestSerializer implements Serializer
+final class TestSerializer implements Serializer
 {
     public function serialize(array $session_data): string
     {

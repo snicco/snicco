@@ -113,7 +113,7 @@ final class AuthorizeTest extends MiddlewareTestCase
     }
 }
 
-class AuthorizeTestBetterWPAPI extends BetterWPAPI
+final class AuthorizeTestBetterWPAPI extends BetterWPAPI
 {
     /**
      * @var Closure(string, mixed...):bool

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Array_\ArrayThisCallToThisMethodCallRector;
+
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
@@ -15,11 +16,36 @@ use Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
+use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
+use Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector;
+use Rector\Privatization\Rector\Property\ChangeReadOnlyPropertyWithDefaultValueToConstantRector;
+use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
+use Snicco\Bridge\SessionWP\WPDBSessionDriver;
+use Snicco\Bundle\HttpRouting\StdErrLogger;
+use Snicco\Component\BetterWPCache\Tests\wordpress\TaggingIntegrationTest;
+use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr16IntegrationTest;
+use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr6IntegrationTest;
+use Snicco\Component\BetterWPCache\WPCacheAPI;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
+if (!function_exists('_classFile')) {
+    /**
+     * @param class-string $class_name
+     *
+     * @throws ReflectionException
+     */
+    function _classFile(string $class_name): string
+    {
+        return (new ReflectionClass($class_name))->getFileName();
+    }
+}
 
 return static function (ContainerConfigurator $configurator): void {
     $parameters = $configurator->parameters();
@@ -35,14 +61,19 @@ return static function (ContainerConfigurator $configurator): void {
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
     $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
     $parameters->set(Option::SKIP, [
-        StringifyStrNeedlesRector::class => [__DIR__ . '/src/Snicco/Bundle/http-routing/src/StdErrLogger.php'],
-        EncapsedStringsToSprintfRector::class => [
-            __DIR__ . '/src/Snicco/Bridge/session-wp/src/WPDBSessionDriver.php',
-        ],
+        StringifyStrNeedlesRector::class => [_classFile(StdErrLogger::class)],
+        EncapsedStringsToSprintfRector::class => [_classFile(WPDBSessionDriver::class)],
         // This is not our code
-        __DIR__ . '/src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr16IntegrationTest.php',
-        __DIR__ . '/src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr6IntegrationTest.php',
-        __DIR__ . '/src/Snicco/Component/better-wp-cache/tests/wordpress/TaggingIntegrationTest.php',
+        _classFile(WPObjectCachePsr16IntegrationTest::class),
+        _classFile(WPObjectCachePsr6IntegrationTest::class),
+        _classFile(TaggingIntegrationTest::class),
+
+        FinalizeClassesWithoutChildrenRector::class => [
+            // This does not work correctly with classes in different sub-namespaces
+            _classFile(Email::class),
+            _classFile(WPCacheAPI::class),
+            _classFile(HttpException::class),
+        ],
     ]);
 
     $services = $configurator->services();
@@ -84,4 +115,11 @@ return static function (ContainerConfigurator $configurator): void {
     $configurator->import(PHPUnitSetList::PHPUNIT_CODE_QUALITY);
     // Useless. PHPStorms supports this out of the box.
     $services->remove(AddSeeTestAnnotationRector::class);
+
+    // Parts to the SetList::PRIVATIZATION list
+    $services->set(FinalizeClassesWithoutChildrenRector::class);
+    $services->set(ChangeReadOnlyPropertyWithDefaultValueToConstantRector::class);
+    $services->set(PrivatizeLocalGetterToPropertyRector::class);
+    $services->set(PrivatizeFinalClassPropertyRector::class);
+    $services->set(PrivatizeFinalClassMethodRector::class);
 };

@@ -23,6 +23,13 @@ use function strip_tags;
  */
 class Email
 {
+    /**
+     * @var array<string, string>
+     */
+    private const RESERVED_CONTEXT = [
+        'images' => 'Its used to generated CIDs in your templates',
+    ];
+
     protected string $subject = '';
 
     protected ?string $html = null;
@@ -36,13 +43,6 @@ class Email
     protected string $text_charset = 'utf-8';
 
     protected string $html_charset = 'utf-8';
-
-    /**
-     * @var array<string,string>
-     */
-    private array $reserved_context = [
-        'images' => 'Its used to generated CIDs in your templates',
-    ];
 
     /**
      * @var list<Mailbox>
@@ -540,12 +540,12 @@ class Email
         ];
 
         foreach ($context as $key => $value) {
-            if (isset($this->reserved_context[$key])) {
+            if (isset(self::RESERVED_CONTEXT[$key])) {
                 throw new LogicException(
                     sprintf(
                         "[%s] is a reserved context key.\n[%s].\nPlease choose a different key.",
                         $key,
-                        $this->reserved_context[$key]
+                        self::RESERVED_CONTEXT[$key]
                     )
                 );
             }

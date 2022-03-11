@@ -453,7 +453,7 @@ final class ViewEngineTest extends TestCase
     }
 }
 
-class TestTwigViewFactory implements ViewFactory
+final class TestTwigViewFactory implements ViewFactory
 {
     public function make(string $view): View
     {

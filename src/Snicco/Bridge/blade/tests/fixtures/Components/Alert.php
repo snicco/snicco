@@ -6,7 +6,7 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
 use Snicco\Bridge\Blade\BladeComponent;
 
-class Alert extends BladeComponent
+final class Alert extends BladeComponent
 {
     public string $type;
 

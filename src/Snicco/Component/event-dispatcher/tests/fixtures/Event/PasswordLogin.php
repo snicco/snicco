@@ -7,7 +7,7 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Event;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 
-class PasswordLogin extends AbstractLogin
+final class PasswordLogin extends AbstractLogin
 {
     use ClassAsName;
     use ClassAsPayload;

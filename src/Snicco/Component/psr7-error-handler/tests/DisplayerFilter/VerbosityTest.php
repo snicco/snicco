@@ -54,7 +54,7 @@ final class VerbosityTest extends TestCase
     }
 }
 
-class Verbose1 implements ExceptionDisplayer
+final class Verbose1 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -77,7 +77,7 @@ class Verbose1 implements ExceptionDisplayer
     }
 }
 
-class Verbose2 implements ExceptionDisplayer
+final class Verbose2 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -100,7 +100,7 @@ class Verbose2 implements ExceptionDisplayer
     }
 }
 
-class NonVerbose1 implements ExceptionDisplayer
+final class NonVerbose1 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -123,7 +123,7 @@ class NonVerbose1 implements ExceptionDisplayer
     }
 }
 
-class NonVerbose2 implements ExceptionDisplayer
+final class NonVerbose2 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

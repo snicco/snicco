@@ -6,7 +6,7 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Activity extends TestWPModel
+final class Activity extends TestWPModel
 {
     public function cities(): BelongsToMany
     {

@@ -228,7 +228,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     }
 }
 
-class VerifyNonceTestWPApi extends BetterWPAPI
+final class VerifyNonceTestWPApi extends BetterWPAPI
 {
     public function verifyNonce(string $nonce, string $action): bool
     {

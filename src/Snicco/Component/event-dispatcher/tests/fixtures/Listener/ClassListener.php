@@ -9,7 +9,7 @@ use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FooEvent;
 
 use function get_class;
 
-class ClassListener
+final class ClassListener
 {
     use AssertListenerResponse;
 
