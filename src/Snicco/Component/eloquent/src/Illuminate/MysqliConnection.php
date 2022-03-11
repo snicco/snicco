@@ -126,7 +126,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     public function statement($query, $bindings = []): bool
     {
-        return $this->run($query, $bindings, function ($query, $bindings) {
+        return $this->run($query, $bindings, function ($query, $bindings): bool {
             if ($this->pretending) {
                 return true;
             }
@@ -158,7 +158,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     public function affectingStatement($query, $bindings = []): int
     {
-        return $this->run($query, $bindings, function ($query, $bindings) {
+        return $this->run($query, $bindings, function ($query, $bindings): int {
             if ($this->pretending) {
                 return 0;
             }
@@ -189,7 +189,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     public function unprepared($query): bool
     {
-        return $this->run($query, [], function ($query) {
+        return $this->run($query, [], function ($query): bool {
             if ($this->pretending) {
                 return true;
             }
@@ -237,7 +237,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param array                    $bindings
      * @param Closure(string,array): T $callback
      *
-     * @return T
+     * @psalm-return T
      *
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress MoreSpecificImplementedParamType
@@ -262,7 +262,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
     /**
      * Reconnect to the database if a PDO connection is missing.
      */
-    protected function reconnectIfMissingConnection()
+    protected function reconnectIfMissingConnection(): void
     {
         if (! $this->mysqli_driver->isStillConnected()) {
             $this->mysqli_driver->reconnect();
