@@ -15,6 +15,9 @@ use function is_array;
 
 final class SessionStorage implements SignedUrlStorage
 {
+    /**
+     * @var string
+     */
     private const namespace = '_signed_urls';
 
     /**
@@ -42,6 +45,7 @@ final class SessionStorage implements SignedUrlStorage
             throw new InvalidArgumentException('$storage must be an array or instance of ArrayAccess');
             // @codeCoverageIgnoreEnd
         }
+
         $this->clock = $clock ?? SystemClock::fromUTC();
     }
 

@@ -21,6 +21,9 @@ use function class_exists;
 
 final class BetterWPHooksBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/better-wp-hooks-bundle';
 
     public function shouldRun(Environment $env): bool

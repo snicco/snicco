@@ -41,6 +41,7 @@ final class InMemoryDriver implements UserSessionsDriver
         if ($this->fail_gc) {
             throw new CouldNotDestroySessions('InMemory driver force-failed garbage collection.');
         }
+
         $expiration = $this->calculateExpiration($seconds_without_activity);
 
         foreach ($this->storage as $sessionId => $session) {

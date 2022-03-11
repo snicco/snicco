@@ -35,6 +35,9 @@ use function sprintf;
 
 final class BetterWPMailBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/better-wp-mail-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -173,6 +176,7 @@ final class BetterWPMailBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
+
         $destination = $kernel->directories()
             ->configDir() . '/mail.php';
         if (is_file($destination)) {
@@ -183,7 +187,10 @@ final class BetterWPMailBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
+            throw new RuntimeException(sprintf(
+                'Could not copy the default templating config to destination [%s]',
+                $destination
+            ));
             // @codeCoverageIgnoreEnd
         }
     }

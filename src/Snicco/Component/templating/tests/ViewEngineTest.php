@@ -87,7 +87,7 @@ final class ViewEngineTest extends TestCase
         $path = realpath($this->view_dir . '/foo.php');
 
         if (false === $path) {
-            throw new RuntimeException("test view [{$path}] does not exist.");
+            throw new RuntimeException(sprintf('test view [%s] does not exist.', $this->view_dir . '/foo.php'));
         }
 
         $view = $this->view_engine->make($path);

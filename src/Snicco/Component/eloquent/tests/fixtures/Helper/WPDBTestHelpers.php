@@ -34,7 +34,7 @@ trait WPDBTestHelpers
             $test();
         } finally {
             mysqli_report(MYSQLI_REPORT_OFF);
-            $mysqli->query("SET SESSION sql_mode='{$current_default}'");
+            $mysqli->query(sprintf("SET SESSION sql_mode='%s'", (string) $current_default));
         }
     }
 

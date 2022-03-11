@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Array_\ArrayThisCallToThisMethodCallRector;
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
+use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
+use Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector;
+use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Core\Configuration\Option;
+use Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -29,10 +34,15 @@ return static function (ContainerConfigurator $configurator): void {
         StringifyStrNeedlesRector::class => [
             __DIR__ . '/src/Snicco/Bundle/http-routing/src/StdErrLogger.php',
         ],
-        // This is not our code
-        __DIR__ . 'src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr16IntegrationTest.php',
-        __DIR__ . 'src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr6IntegrationTest.php',
-        __DIR__ . 'src/Snicco/Component/better-wp-cache/tests/wordpress/TaggingIntegrationTest.php',
+        EncapsedStringsToSprintfRector::class => [
+            __DIR__ . '/src/Snicco/Bridge/session-wp/src/WPDBSessionDriver.php',
+        ],
+        ThisCallOnStaticMethodToStaticCallRector::class => [
+            // This is not our code
+            __DIR__ . 'src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr16IntegrationTest.php',
+            __DIR__ . 'src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr6IntegrationTest.php',
+            __DIR__ . 'src/Snicco/Component/better-wp-cache/tests/wordpress/TaggingIntegrationTest.php',
+        ]
     ]);
 
     $services = $configurator->services();
@@ -53,6 +63,15 @@ return static function (ContainerConfigurator $configurator): void {
     $services->remove(AddArrayReturnDocTypeRector::class);
 
     $configurator->import(SetList::TYPE_DECLARATION_STRICT);
+
+    $configurator->import(SetList::CODING_STYLE);
+    // Don't want this since it only support kebabCase
+    $services->remove(CatchExceptionNameMatchingTypeRector::class);
+    // Break classes like ViewEngine where we rely on ... for type-checks
+    $services->remove(UnSpreadOperatorRector::class);
+    // Breaks typed array properties in psalm
+    $services->remove(AddArrayDefaultToArrayPropertyRector::class);
+
 //    $configurator->import(SetList::EARLY_RETURN);
 //
 //    // Trimmed Privatisation list

@@ -33,8 +33,14 @@ use const SORT_REGULAR;
 
 final class MiddlewareResolver
 {
+    /**
+     * @var string
+     */
     public const MIDDLEWARE_DELIMITER = ':';
 
+    /**
+     * @var string
+     */
     public const ARGUMENT_SEPARATOR = ',';
 
     /**
@@ -130,7 +136,7 @@ final class MiddlewareResolver
             $map = $this->route_map[$route->getName()] ?? null;
             if (null === $map) {
                 throw new LogicException(
-                    "The middleware resolver is cached but has no entry for route [{$route->getName()}]."
+                    sprintf('The middleware resolver is cached but has no entry for route [%s].', $route->getName())
                 );
             }
 
@@ -204,6 +210,7 @@ final class MiddlewareResolver
                 $route_map[$name][] = $middleware->asArray();
             }
         }
+
         $request_map = [
             'api' => [],
             'frontend' => [],
@@ -274,7 +281,7 @@ final class MiddlewareResolver
             $middleware_id = $pieces[0];
             $replaced = $this->resolveAlias($middleware_id);
 
-            if ($replaced) {
+            if (null !== $replaced) {
                 $blueprints[] = new MiddlewareBlueprint(
                     $replaced,
                     isset($pieces[1]) ? explode(',', $pieces[1]) : []
@@ -407,9 +414,10 @@ final class MiddlewareResolver
             Assert::stringNotEmpty($name);
             Assert::allString($aliases_or_class_strings);
             if (isset($this->middleware_aliases[$name])) {
-                throw new InvalidMiddleware("Middleware group and alias have the same name [{$name}].");
+                throw new InvalidMiddleware(sprintf('Middleware group and alias have the same name [%s].', $name));
             }
         }
+
         foreach ($middleware_groups as $name => $aliases_or_class_strings) {
             try {
                 $this->middleware_groups[$name] = $this->parse($aliases_or_class_strings, $middleware_groups);

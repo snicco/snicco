@@ -8,6 +8,9 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 abstract class RouteCondition
 {
+    /**
+     * @var string
+     */
     public const NEGATE = '!';
 
     abstract public function isSatisfied(Request $request): bool;

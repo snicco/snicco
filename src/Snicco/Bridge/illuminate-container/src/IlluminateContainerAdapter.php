@@ -57,6 +57,7 @@ final class IlluminateContainerAdapter extends DIContainer
         if ($this->locked) {
             throw ContainerIsLocked::whileRemovingId((string) $offset);
         }
+
         $this->illuminate_container->offsetUnset((string) $offset);
     }
 

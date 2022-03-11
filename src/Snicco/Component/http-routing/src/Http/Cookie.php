@@ -127,7 +127,7 @@ final class Cookie
         }
 
         if (! in_array($same_site, ['Lax', 'Strict', 'None'], true)) {
-            throw new LogicException("The value [{$same_site}] is not supported for the SameSite cookie.");
+            throw new LogicException(sprintf('The value [%s] is not supported for the SameSite cookie.', $same_site));
         }
 
         $cookie = clone $this;

@@ -40,7 +40,7 @@ final class RouteRunner extends Middleware
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedArgument
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $result = $request->routingResult();
         $route = $result->route();

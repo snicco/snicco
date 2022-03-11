@@ -49,11 +49,11 @@ final class WPMailTransport implements Transport
         $bcc = $this->stringifyAddresses($email->bcc(), 'Bcc:');
 
         if ($html = $email->htmlBody()) {
-            $content_type = "Content-Type: text/html; charset={$email->htmlCharset()}";
+            $content_type = sprintf('Content-Type: text/html; charset=%s', $email->htmlCharset());
             $message = $html;
         } else {
             $message = $email->textBody();
-            $content_type = "Content-Type: text/plain; charset={$email->textCharset()}";
+            $content_type = sprintf('Content-Type: text/plain; charset=%s', $email->textCharset());
         }
 
         if (null === $message) {

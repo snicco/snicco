@@ -99,6 +99,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
         foreach ($all as $row) {
             $this->assertSame(['test_string'], array_keys($row));
         }
+
         $this->assertSame('foo', $all[0]['test_string']);
         $this->assertSame('bar', $all[1]['test_string']);
     }

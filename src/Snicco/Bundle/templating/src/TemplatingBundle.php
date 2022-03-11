@@ -29,6 +29,9 @@ use function is_readable;
 
 final class TemplatingBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/templating-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -43,7 +46,10 @@ final class TemplatingBundle implements Bundle
 
         foreach ($config->getListOfStrings('templating.directories') as $directory) {
             if (! is_readable($directory)) {
-                throw new InvalidArgumentException("templating.directories: Directory [{$directory}] is not readable.");
+                throw new InvalidArgumentException(sprintf(
+                    'templating.directories: Directory [%s] is not readable.',
+                    $directory
+                ));
             }
         }
 
@@ -77,6 +83,7 @@ final class TemplatingBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
+
         $destination = $kernel->directories()
             ->configDir() . '/templating.php';
         if (is_file($destination)) {
@@ -87,7 +94,10 @@ final class TemplatingBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
+            throw new RuntimeException(sprintf(
+                'Could not copy the default templating config to destination [%s]',
+                $destination
+            ));
             // @codeCoverageIgnoreEnd
         }
     }

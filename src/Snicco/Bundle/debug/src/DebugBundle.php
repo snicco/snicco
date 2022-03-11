@@ -29,6 +29,9 @@ use function is_file;
 
 final class DebugBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/debug-bundle';
 
     public function shouldRun(Environment $env): bool

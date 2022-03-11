@@ -59,6 +59,7 @@ final class SessionBundleTest extends WPTestCase
         $this->directories = $this->bundle_test->setUpDirectories();
         $this->better_wpdb = BetterWPDB::fromWpdb();
         $this->better_wpdb->unprepared('drop table if exists `my_plugin_sessions`');
+
         $this->dbname = (string) ($_ENV['DB_NAME'] ?? '');
     }
 

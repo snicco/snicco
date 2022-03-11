@@ -21,6 +21,9 @@ use Snicco\Component\Eloquent\WPEloquentStandalone;
 
 /**
  * @internal
+ *
+ * @psalm-suppress MixedArgumentTypeCoercion
+ * @psalm-suppress UndefinedMagicPropertyFetch
  */
 final class DatabaseFactoriesTest extends WPTestCase
 {
@@ -120,7 +123,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordNotExists([
-            'name' => $country->name,
+            'name' => (string) $country->name,
         ]);
         $table->assertTotalCount(0);
     }
@@ -134,7 +137,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'name' => $country->name,
+            'name' => (string) $country->name,
         ]);
     }
 
@@ -147,9 +150,9 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
 
-        $countries->each(function ($country) use ($table): void {
+        $countries->each(function (Country $country) use ($table): void {
             $table->assertRecordExists([
-                'name' => $country->name,
+                'name' => (string) $country->name,
             ]);
         });
 
@@ -167,7 +170,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'name' => $country->name,
+            'name' => (string) $country->name,
             'continent' => 'Narnia',
         ]);
     }
@@ -189,9 +192,13 @@ final class DatabaseFactoriesTest extends WPTestCase
         $table = $this->assertDbTable('wp_countries');
         $table->assertTotalCount(6);
 
-        $countries_in_narnia = $countries->filter(fn ($country): bool => 'Narnia' === $country->continent);
+        $countries_in_narnia = $countries->filter(
+            fn (Country $country): bool => 'Narnia' === (string) $country->continent
+        );
 
-        $countries_in_westeros = $countries->filter(fn ($country): bool => 'Westeros' === $country->continent);
+        $countries_in_westeros = $countries->filter(
+            fn (Country $country): bool => 'Westeros' === (string) $country->continent
+        );
 
         $this->assertCount(3, $countries_in_narnia);
         $this->assertCount(3, $countries_in_westeros);
@@ -210,7 +217,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'id' => $country->id,
+            'id' => (int) $country->id,
         ]);
         $table->assertTotalCount(1);
 
@@ -233,13 +240,13 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'id' => $country->id,
+            'id' => (int) $country->id,
         ]);
         $table->assertTotalCount(1);
 
         $table = $this->assertDbTable('wp_cities');
         $table->assertCountWhere([
-            'country_id' => $country->id,
+            'country_id' => (int) $country->id,
         ], 3);
     }
 
@@ -258,13 +265,13 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'id' => $country->id,
+            'id' => (int) $country->id,
         ]);
         $table->assertTotalCount(1);
 
         $table = $this->assertDbTable('wp_cities');
         $table->assertCountWhere([
-            'country_id' => $country->id,
+            'country_id' => (int) $country->id,
             'population' => 10,
         ], 3);
     }
@@ -283,13 +290,13 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'name' => $cities[0]->country->name,
+            'name' => (string) $cities[0]->country->name,
         ]);
         $table->assertTotalCount(1);
 
         $table = $this->assertDbTable('wp_cities');
         $table->assertCountWhere([
-            'country_id' => $cities[0]->country->id,
+            'country_id' => (string) $cities[0]->country->id,
         ], 3);
     }
 
@@ -328,13 +335,13 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'name' => $city->country->name,
+            'name' => (string) $city->country->name,
         ]);
         $table->assertTotalCount(1);
 
         $table = $this->assertDbTable('wp_cities');
         $table->assertCountWhere([
-            'country_id' => $city->country->id,
+            'country_id' => (string) $city->country->id,
         ], 1);
 
         $table = $this->assertDbTable('wp_activities');
@@ -342,7 +349,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_activity_city');
         $table->assertCountWhere([
-            'city_id' => $city->id,
+            'city_id' => (int) $city->id,
         ], 3);
     }
 
@@ -362,7 +369,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_activity_city');
         $table->assertCountWhere([
-            'city_id' => $city->id,
+            'city_id' => (int) $city->id,
             'popularity' => 10,
         ], 3);
     }
@@ -385,7 +392,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_activity_city');
         $table->assertCountWhere([
-            'city_id' => $city->id,
+            'city_id' => (int) $city->id,
         ], 4);
     }
 
@@ -400,13 +407,13 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_countries');
         $table->assertRecordExists([
-            'name' => $city->country->name,
+            'name' => (string) $city->country->name,
         ]);
         $table->assertTotalCount(1);
 
         $table = $this->assertDbTable('wp_cities');
         $table->assertCountWhere([
-            'country_id' => $city->country->id,
+            'country_id' => (int) $city->country->id,
         ], 1);
 
         $table = $this->assertDbTable('wp_activities');
@@ -414,7 +421,7 @@ final class DatabaseFactoriesTest extends WPTestCase
 
         $table = $this->assertDbTable('wp_activity_city');
         $table->assertCountWhere([
-            'city_id' => $city->id,
+            'city_id' => (int) $city->id,
         ], 3);
     }
 }

@@ -13,12 +13,12 @@ final class CachedAdminMenu implements AdminMenu
     /**
      * @var string[]
      */
-    private array $serialized_menu_items;
+    private array $serialized_menu_items = [];
 
     /**
      * @var list<AdminMenuItem>
      */
-    private array $hydrated_items;
+    private array $hydrated_items = [];
 
     /**
      * @param string[] $serialized_menu_items
@@ -52,6 +52,7 @@ final class CachedAdminMenu implements AdminMenu
                     "Cached admin menu is corrupted.\nOne item could not be unserialized: [{$item}]"
                 );
             }
+
             $items[] = $res;
         }
 

@@ -18,9 +18,9 @@ use function str_replace;
 use function strlen;
 
 /**
- * @psalm-immutable
- *
  * @interal
+ *
+ * @psalm-immutable
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class FastRouteSyntaxConverter
@@ -76,7 +76,7 @@ final class FastRouteSyntaxConverter
 
     private function mergeOptionalSegments(string $url_pattern): string
     {
-        preg_match('/(\[(.*?)])/', $url_pattern, $matches);
+        preg_match('#(\[(.*?)])#', $url_pattern, $matches);
 
         if (! isset($matches[0])) {
             // @codeCoverageIgnoreStart
@@ -98,7 +98,7 @@ final class FastRouteSyntaxConverter
 
         $pattern = sprintf('/(%s(?=\\}))/', preg_quote($param_name, '/'));
 
-        $url = preg_replace_callback($pattern, function (array $match) use ($regex): string {
+        $replaced_url = preg_replace_callback($pattern, function (array $match) use ($regex): string {
             if (! isset($match[0])) {
                 // @codeCoverageIgnoreStart
                 return $regex;
@@ -108,13 +108,13 @@ final class FastRouteSyntaxConverter
             return $match[0] . ':' . $regex;
         }, $url, 1);
 
-        if (null === $url) {
+        if (null === $replaced_url) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_replace_callback returned an error for url [{$url}].");
+            throw new RuntimeException(sprintf('preg_replace_callback returned an error for url [%s].', $url));
             // @codeCoverageIgnoreEnd
         }
 
-        return rtrim($url, '/');
+        return rtrim($replaced_url, '/');
     }
 
     /**

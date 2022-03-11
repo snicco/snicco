@@ -6,5 +6,8 @@ namespace Snicco\Bundle\BetterWPCache\Option;
 
 final class BetterWPCacheOption
 {
+    /**
+     * @var string
+     */
     public const CACHE_GROUP = 'group';
 }

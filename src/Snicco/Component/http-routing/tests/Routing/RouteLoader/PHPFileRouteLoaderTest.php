@@ -25,10 +25,19 @@ use function dirname;
  */
 final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 {
+    /**
+     * @var string
+     */
     public const WEB_PATH = '/web';
 
+    /**
+     * @var string
+     */
     public const PARTIAL_PATH = '/partial';
 
+    /**
+     * @var string
+     */
     public const ADMIN_PATH = '/admin.php/foo';
 
     public static bool $web_include_partial = false;
@@ -632,6 +641,7 @@ class TestLoadingOptions implements RouteLoadingOptions
         if ($this->fail_because_of_array) {
             $att['middleware'] = 'foo';
         }
+
         if ($this->fail_because_of_wrong_type) {
             $att['middleware'] = ['foo', 1];
         }

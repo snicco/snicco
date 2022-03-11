@@ -10,8 +10,14 @@ use function time;
 
 final class SignedUrl
 {
+    /**
+     * @var string
+     */
     public const EXPIRE_KEY = 'expires';
 
+    /**
+     * @var string
+     */
     public const SIGNATURE_KEY = 'signature';
 
     private string $link_target;

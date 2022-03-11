@@ -58,8 +58,8 @@ final class StdErrLogger extends AbstractLogger
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
-            if (false !== strpos($message, "{{$key}}")) {
-                $replacements["{{$key}}"] = $this->valueToString($value);
+            if (false !== strpos($message, sprintf('{%s}', $key))) {
+                $replacements[sprintf('{%s}', $key)] = $this->valueToString($value);
 
                 continue;
             }
@@ -86,12 +86,14 @@ final class StdErrLogger extends AbstractLogger
 
             foreach ($additional as $key => $value) {
                 if (is_string($key)) {
-                    $message .= "'{$key}' => " . $value;
+                    $message .= sprintf("'%s' => ", $key) . $value;
                 } else {
                     $message .= $value;
                 }
+
                 $message .= ', ';
             }
+
             $message = rtrim($message, ', ');
             $message .= ']';
         }
@@ -111,9 +113,11 @@ final class StdErrLogger extends AbstractLogger
         if (is_scalar($value)) {
             return (string) $value;
         }
+
         if ($value instanceof DateTimeInterface) {
             return $value->format('d-M-Y H:i:s e');
         }
+
         if (is_object($value)) {
             if (method_exists($value, '__toString')) {
                 return (string) $value;

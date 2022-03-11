@@ -110,9 +110,11 @@ abstract class MiddlewareTestCase extends TestCase
             if (! $pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $this->response_factory;
             }
+
             if (! $pimple->offsetExists(UrlGenerator::class)) {
                 $pimple[UrlGenerator::class] = $url;
             }
+
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
 

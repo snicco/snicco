@@ -311,7 +311,7 @@ final class MiddlewarePipelineTest extends TestCase
 
 class ThrowExceptionMiddleware extends Middleware
 {
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         throw new RuntimeException('Error in middleware');
     }
@@ -319,9 +319,12 @@ class ThrowExceptionMiddleware extends Middleware
 
 class StopMiddleware extends Middleware
 {
+    /**
+     * @var string
+     */
     public const ATTR = 'stop_middleware';
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         return $this->responseFactory()
             ->html('stopped');
@@ -330,6 +333,9 @@ class StopMiddleware extends Middleware
 
 class PipelineTestMiddleware1 extends Middleware
 {
+    /**
+     * @var string
+     */
     public const ATTRIBUTE = 'pipeline1';
 
     private string $value_to_add;
@@ -339,7 +345,7 @@ class PipelineTestMiddleware1 extends Middleware
         $this->value_to_add = $value_to_add;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
         $response->getBody()
@@ -351,6 +357,9 @@ class PipelineTestMiddleware1 extends Middleware
 
 class PipelineTestMiddleware2 extends Middleware
 {
+    /**
+     * @var string
+     */
     public const ATTRIBUTE = 'pipeline2';
 
     private string $value_to_add;
@@ -360,7 +369,7 @@ class PipelineTestMiddleware2 extends Middleware
         $this->value_to_add = $value_to_add;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next->process($request->withAttribute(self::ATTRIBUTE, $this->value_to_add), $next);
         $response->getBody()

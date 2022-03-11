@@ -49,7 +49,7 @@ final class VerifyWPNonce extends Middleware
         $nonce = (string) $request->post(self::inputKey(), '');
 
         if (! $this->wp->verifyNonce($nonce, $current_path)) {
-            throw new HttpException(401, "Nonce check failed for request path [{$current_path}].");
+            throw new HttpException(401, sprintf('Nonce check failed for request path [%s].', $current_path));
         }
 
         return $next($request);

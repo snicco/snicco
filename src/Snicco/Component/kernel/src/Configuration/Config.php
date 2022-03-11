@@ -47,7 +47,7 @@ abstract class Config
     final public function getListOfStrings(string $key, ?array $default = null): array
     {
         $val = $this->get($key, $default);
-        Assert::isList($val, "Config value for key [{$key}] is not a list of strings.");
+        Assert::isList($val, sprintf('Config value for key [%s] is not a list of strings.', $key));
         Assert::allString($val, "Config value for key [{$key}] is not a list of strings.\nGot: [%s].");
 
         return $val;

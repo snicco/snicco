@@ -9,15 +9,22 @@ use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
 interface UrlGenerator
 {
+    /**
+     * @var string
+     */
     public const FRAGMENT_KEY = '_fragment';
 
     /**
      * Generate an absolute URL, e.g. 'https://example.com/foo/bar'.
+     *
+     * @var int
      */
     public const ABSOLUTE_URL = 0;
 
     /**
      * Generate an absolute path, e.g. '/foo/bar'.
+     *
+     * @var int
      */
     public const ABSOLUTE_PATH = 1;
 

@@ -19,6 +19,9 @@ use function trim;
  */
 final class RFC3986Encoder implements UrlEncoder
 {
+    /**
+     * @var array<string, string>
+     */
     public const RFC3986_UNRESERVED = [
         '-' => '-',
         '.' => '.',
@@ -26,6 +29,9 @@ final class RFC3986Encoder implements UrlEncoder
         '~' => '~',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     public const RFC3986_SUB_DELIMITERS = [
         '!' => '%21',
         '$' => '%24',
@@ -40,11 +46,17 @@ final class RFC3986Encoder implements UrlEncoder
         ')' => '%29',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     public const RFC3986_PCHARS = self::RFC3986_UNRESERVED + self::RFC3986_SUB_DELIMITERS + [
         '@' => '%40',
         ':' => '%3A',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     private const QUERY_FRAGMENT_EXTRA = [
         '/' => '%2F',
         '?' => '%3F',
@@ -53,7 +65,7 @@ final class RFC3986Encoder implements UrlEncoder
     /**
      * @var array<string,string>
      */
-    private array $query_special;
+    private array $query_special = [];
 
     /**
      * @param array<string,string>|null $query_special

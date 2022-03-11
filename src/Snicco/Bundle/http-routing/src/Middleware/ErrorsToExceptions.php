@@ -37,10 +37,11 @@ final class ErrorsToExceptions implements MiddlewareInterface
             if (($this->throw_at & $level) !== 0) {
                 throw new ErrorException($message, 0, $level, $file, $line);
             }
+
             // Don't pass the deprecation to PHPs native error handler since it will display them with display errors set to one.
             // This will cause the laminas' response emitter to throw an exception because of previous output.
             $line = (string) $line;
-            $this->logger->info("PHP Deprecated: {$message} in {$file} on line {$line}");
+            $this->logger->info(sprintf('PHP Deprecated: %s in %s on line %s', $message, $file, $line));
 
             return true;
         });

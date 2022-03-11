@@ -50,7 +50,7 @@ class Response implements ResponseInterface
     final public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", static::class)
+            sprintf(sprintf('Cannot set undefined property [%s] on immutable class [%%s]', $name), static::class)
         );
     }
 

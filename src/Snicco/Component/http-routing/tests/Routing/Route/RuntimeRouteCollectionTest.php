@@ -45,6 +45,7 @@ final class RuntimeRouteCollectionTest extends TestCase
             $this->assertInstanceOf(Route::class, $route);
             ++$count;
         }
+
         $this->assertSame(2, $count);
     }
 

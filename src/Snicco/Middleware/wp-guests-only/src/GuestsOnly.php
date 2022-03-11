@@ -26,7 +26,7 @@ final class GuestsOnly extends Middleware
         $this->wp = $wp ?: new BetterWPAPI();
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (! $this->wp->isUserLoggedIn()) {
             return $next($request);

@@ -65,6 +65,7 @@ final class MiddlewarePipeline
             if ($m instanceof MiddlewareInterface || $m instanceof MiddlewareBlueprint) {
                 continue;
             }
+
             Reflector::assertInterfaceString($m, MiddlewareInterface::class);
         }
 
@@ -157,6 +158,7 @@ final class MiddlewarePipeline
             if ('true' === strtolower($value)) {
                 return true;
             }
+
             if ('false' === strtolower($value)) {
                 return false;
             }

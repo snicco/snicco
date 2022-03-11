@@ -129,6 +129,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         );
         $session = $manager->start(new CookiePool([]));
         $session->put('foo', 'bar');
+
         $manager->save($session);
 
         $this->assertCount(1, $this->session_driver->all());
@@ -350,6 +351,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $session = $manager->start(new CookiePool([]));
         $session->put('foo', 'bar');
         $session->setUserId(12);
+
         $manager->save($session);
 
         $request = $this->frontendRequest()

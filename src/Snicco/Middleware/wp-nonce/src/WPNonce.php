@@ -51,7 +51,7 @@ final class WPNonce
         $nonce = $this->noHtml($this->wp->createNonce($nonce_action));
         $name = VerifyWPNonce::inputKey();
 
-        return "<input type='hidden' name='{$name}' value='{$nonce}'>";
+        return sprintf("<input type='hidden' name='%s' value='%s'>", $name, $nonce);
     }
 
     private function noHtml(string $nonce): string

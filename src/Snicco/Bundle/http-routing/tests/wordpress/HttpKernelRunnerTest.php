@@ -57,6 +57,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $this->_server = $_server;
         $this->kernel = new Kernel(new PimpleContainerAdapter(), Environment::testing(), $this->directories,);
         $this->kernel->boot();
+
         $this->http_dispatcher = $this->kernel->container()
             ->make(HttpKernelRunner::class);
         remove_all_filters('admin_init');
@@ -577,6 +578,7 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $property = new ReflectionProperty(HttpKernelRunner::class, 'emitter');
         $property->setAccessible(true);
+
         $emitter = $property->getValue($http_runner);
 
         $this->assertInstanceOf(LaminasEmitterStack::class, $emitter);

@@ -19,12 +19,12 @@ final class NegotiateContent extends Middleware
     /**
      * @var string[]
      */
-    private array $languages;
+    private array $languages = [];
 
     /**
      * @var string[]
      */
-    private array $charsets;
+    private array $charsets = [];
 
     /**
      * @param string[]      $languages
@@ -42,18 +42,19 @@ final class NegotiateContent extends Middleware
         $this->content_types = $content_types ?: $this->defaultConfiguration();
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $content_type = new ContentType($this->content_types);
         $content_type->charsets($this->charsets);
         $content_type->errorResponse($this->responseFactory());
         $content_type->nosniff(true);
+
         $language = new ContentLanguage($this->languages);
 
         $response = $content_type->process($request, $this->next($language, $next));
 
         if (406 === $response->getStatusCode()) {
-            throw new HttpException(406, "Failed content negotiation for path [{$request->path()}].");
+            throw new HttpException(406, sprintf('Failed content negotiation for path [%s].', $request->path()));
         }
 
         return $response;

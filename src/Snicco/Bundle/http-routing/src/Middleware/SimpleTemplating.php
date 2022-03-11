@@ -19,7 +19,7 @@ use const EXTR_SKIP;
 
 final class SimpleTemplating extends Middleware
 {
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 

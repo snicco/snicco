@@ -67,6 +67,7 @@ final class ReadWriteSession implements Session
             $this->put('_sniccowp.timestamps.created_at', $last_activity);
             $this->is_new = true;
         }
+
         if (! $this->has('_sniccowp.timestamps.last_rotated')) {
             $this->put('_sniccowp.timestamps.last_rotated', $last_activity);
         }
@@ -144,9 +145,10 @@ final class ReadWriteSession implements Session
         if (! $this->has($key)) {
             $this->put($key, $start_value);
         }
+
         $current = $this->get($key, 0);
         if (! is_int($current)) {
-            throw new LogicException("Current value for key [{$key}] is not an integer.");
+            throw new LogicException(sprintf('Current value for key [%s] is not an integer.', $key));
         }
 
         $this->put($key, $current + $amount);
@@ -178,7 +180,7 @@ final class ReadWriteSession implements Session
         $array = $this->get($key, []);
 
         if (! is_array($array)) {
-            throw new LogicException("Value for key [{$key}] is not an array.");
+            throw new LogicException(sprintf('Value for key [%s] is not an array.', $key));
         }
 
         $array[] = $value;
@@ -210,6 +212,7 @@ final class ReadWriteSession implements Session
         if (null === $key) {
             return $old;
         }
+
         if (! is_array($old)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('_old_input must be an associative array.');

@@ -57,7 +57,7 @@ final class ProductionErrorHandlerTest extends TestCase
     /**
      * @var array<positive-int,array{title:string, message:string}>
      */
-    private array $error_data;
+    private array $error_data = [];
 
     private SplHashIdentifier $identifier;
 

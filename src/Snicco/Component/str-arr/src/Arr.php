@@ -68,15 +68,17 @@ class Arr
      */
     public static function first(iterable $array, Closure $condition = null, $default = null)
     {
-        if ($condition) {
+        if (null !== $condition) {
             foreach ($array as $key => $value) {
                 if ($condition($value, $key)) {
                     return $value;
                 }
             }
+
             /** @var TVal|null $default */
             return $default;
         }
+
         foreach ($array as $value) {
             return $value;
         }
@@ -112,7 +114,7 @@ class Arr
 
         if ($number > $count) {
             throw new InvalidArgumentException(
-                "You requested [{$number}] items, but there are only [{$count}] items available."
+                sprintf('You requested [%d] items, but there are only [%d] items available.', $number, $count)
             );
         }
 
@@ -124,6 +126,7 @@ class Arr
             if (1 === $number) {
                 return $array[$key];
             }
+
             $results[] = $array[$key];
         }
 
@@ -488,6 +491,7 @@ class Arr
             if (! is_iterable($values)) {
                 continue;
             }
+
             foreach ($values as $value) {
                 $results[] = $value;
             }
@@ -536,6 +540,7 @@ class Arr
         if (is_array($array)) {
             return array_values($array);
         }
+
         $res = [];
         foreach ($array as $item) {
             $res[] = $item;

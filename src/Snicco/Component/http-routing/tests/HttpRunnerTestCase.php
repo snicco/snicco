@@ -53,6 +53,9 @@ abstract class HttpRunnerTestCase extends TestCase
     use CreatesPsrRequests;
     use CreateHttpErrorHandler;
 
+    /**
+     * @var string
+     */
     public const CONTROLLER_NAMESPACE = 'Snicco\\Component\\HttpRouting\\Tests\\fixtures\\Controller';
 
     protected string $app_domain = 'foobar.com';
@@ -134,6 +137,7 @@ abstract class HttpRunnerTestCase extends TestCase
         if (! isset($this->routing)) {
             $this->routing = $this->newRoutingFacade();
         }
+
         $pipeline = $this->newPipeline();
         $response = $pipeline->send($request)
             ->then(function () {

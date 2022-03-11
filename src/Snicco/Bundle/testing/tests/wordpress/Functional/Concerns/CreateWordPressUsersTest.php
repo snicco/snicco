@@ -83,7 +83,7 @@ final class CreateWordPressUsersTest extends WebTestCase
             $this->assertUserExists($id);
             $this->fail('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
-            $this->assertStringStartsWith("The user with id [{$id}] does not exist.", $e->getMessage());
+            $this->assertStringStartsWith(sprintf('The user with id [%s] does not exist.', $id), $e->getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ final class CreateWordPressUsersTest extends WebTestCase
             $this->assertUserDoesntExists($id);
             $this->fail('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
-            $this->assertStringStartsWith("The user with id [{$id}] does exist.", $e->getMessage());
+            $this->assertStringStartsWith(sprintf('The user with id [%s] does exist.', $id), $e->getMessage());
         }
     }
 

@@ -113,6 +113,7 @@ final class LogoutTest extends WPTestCase
             ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
+
         $m->save($session);
 
         /** @var MiddlewarePipeline $pipeline */
@@ -159,6 +160,7 @@ final class LogoutTest extends WPTestCase
             ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
+
         $m->save($session);
 
         /** @var MiddlewarePipeline $pipeline */

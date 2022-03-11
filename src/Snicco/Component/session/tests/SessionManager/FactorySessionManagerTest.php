@@ -179,6 +179,7 @@ final class FactorySessionManagerTest extends TestCase
         $session = $manager->start(CookiePool::fromSuperGlobals());
 
         $session->invalidate();
+
         $manager->save($session);
 
         $new_session = $manager->start(new CookiePool([
@@ -207,6 +208,7 @@ final class FactorySessionManagerTest extends TestCase
         $manager = $this->getSessionManager();
         $session = $manager->start(CookiePool::fromSuperGlobals());
         $session->rotate();
+
         $manager->save($session);
         $new_id = $session->id();
 
@@ -227,11 +229,13 @@ final class FactorySessionManagerTest extends TestCase
 
         $test_clock = new TestClock();
         $test_clock->travelIntoFuture($this->idle_timeout + 1);
+
         $manager = $this->getSessionManager($test_clock);
 
         $session = $manager->start(CookiePool::fromSuperGlobals());
 
         $session->invalidate();
+
         $manager->save($session);
 
         $new_session = $manager->start(new CookiePool([
@@ -290,6 +294,7 @@ final class FactorySessionManagerTest extends TestCase
         // The session is about to expire because it's idle.
         $clock = new TestClock();
         $clock->travelIntoFuture($this->idle_timeout);
+
         $manager = $this->getSessionManager($clock);
 
         $session = $manager->start(CookiePool::fromSuperGlobals());
@@ -299,6 +304,7 @@ final class FactorySessionManagerTest extends TestCase
         // The session is about to expire again, but we don't exceed the 3 sec idle timeout.
         $clock = new TestClock();
         $clock->travelIntoFuture($this->absolute_lifetime);
+
         $manager = $this->getSessionManager($clock);
         $session = $manager->start(CookiePool::fromSuperGlobals());
         $manager->save($session);
@@ -309,6 +315,7 @@ final class FactorySessionManagerTest extends TestCase
         // its expired absolutely
         $clock = new TestClock();
         $clock->travelIntoFuture($this->absolute_lifetime + 1);
+
         $manager = $this->getSessionManager($clock);
         $session = $manager->start(CookiePool::fromSuperGlobals());
 

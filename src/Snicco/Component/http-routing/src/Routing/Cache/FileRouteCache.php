@@ -34,6 +34,7 @@ final class FileRouteCache implements RouteCache
         if (null !== $result) {
             return $result;
         }
+
         $data = $loader();
         $this->writeToFile($this->path, '<?php return ' . var_export($data, true) . ';');
 

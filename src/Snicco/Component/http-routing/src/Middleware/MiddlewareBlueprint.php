@@ -23,7 +23,7 @@ final class MiddlewareBlueprint
     /**
      * @var array<string>
      */
-    public array $arguments;
+    public array $arguments = [];
 
     /**
      * @param class-string<MiddlewareInterface> $class

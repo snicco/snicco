@@ -155,7 +155,7 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
         $this->biz = $biz;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 
@@ -175,7 +175,7 @@ class MiddlewareWithTypedDefault extends Middleware
         $this->foo = $foo;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (null !== $this->foo) {
             throw new RuntimeException('Foo is not null');

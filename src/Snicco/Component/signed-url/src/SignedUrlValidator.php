@@ -51,11 +51,11 @@ final class SignedUrlValidator
         [$path, $query_string, $query_as_array] = $this->parse($request_target);
 
         if (! isset($query_as_array[SignedUrl::SIGNATURE_KEY])) {
-            throw new InvalidSignature("Missing signature parameter for path [{$path}].");
+            throw new InvalidSignature(sprintf('Missing signature parameter for path [%s].', $path));
         }
 
         if (! isset($query_as_array[SignedUrl::EXPIRE_KEY])) {
-            throw new InvalidSignature("Missing expires parameter for path [{$path}].");
+            throw new InvalidSignature(sprintf('Missing expires parameter for path [%s].', $path));
         }
 
         $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
@@ -100,7 +100,7 @@ final class SignedUrlValidator
 
         if (null === $qs) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_replace returned null for query_string [{$query_string}].");
+            throw new RuntimeException(sprintf('preg_replace returned null for query_string [%s].', $query_string));
             // @codeCoverageIgnoreEnd
         }
 
@@ -116,14 +116,14 @@ final class SignedUrlValidator
         if ($diff < 0) {
             $diff = abs($diff);
 
-            throw new SignedUrlExpired("Signed url expired by [{$diff}] seconds for path [{$path}].");
+            throw new SignedUrlExpired(sprintf('Signed url expired by [%d] seconds for path [%s].', $diff, $path));
         }
     }
 
     private function validateSignature(string $expected_signature, string $provided_signature, string $path): void
     {
         if (! hash_equals($expected_signature, $provided_signature)) {
-            throw new InvalidSignature("Invalid signature for path [{$path}].");
+            throw new InvalidSignature(sprintf('Invalid signature for path [%s].', $path));
         }
     }
 
@@ -132,7 +132,10 @@ final class SignedUrlValidator
         try {
             $this->storage->consume($identifier);
         } catch (BadIdentifier $e) {
-            throw new SignedUrlUsageExceeded("Signed url usages exceeded for path [{$path}].", $e->getCode(), $e);
+            throw new SignedUrlUsageExceeded(sprintf(
+                'Signed url usages exceeded for path [%s].',
+                $path
+            ), $e->getCode(), $e);
         }
     }
 }

@@ -388,6 +388,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $keys[] = $i;
             $this->assertNull($r);
         }
+
         sort($keys);
         $this->assertSame(['key0', 'key1'], $keys);
 
@@ -402,6 +403,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
                 $this->assertEquals('foo', $r);
             }
         }
+
         sort($keys);
         $this->assertSame(['key2', 'key3', 'key4'], $keys);
     }
@@ -433,6 +435,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
                 $this->assertFalse(true, 'This should not happend');
             }
         }
+
         sort($keys);
         $this->assertSame(['key0', 'key1'], $keys);
         $this->assertEquals('value0', $this->cache->get('key0'));
@@ -892,6 +895,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->assertEquals($key, $i);
             $this->assertEquals('foobar', $r);
         }
+
         $this->assertSame([$key], $keys);
     }
 
@@ -934,6 +938,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $keys[] = $i;
             $this->assertEquals($data, $r);
         }
+
         $this->assertSame(['key'], $keys);
     }
 

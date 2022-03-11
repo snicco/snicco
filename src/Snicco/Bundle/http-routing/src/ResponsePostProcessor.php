@@ -31,6 +31,7 @@ final class ResponsePostProcessor implements Unremovable
         if ($this->environment->isTesting()) {
             return;
         }
+
         // @codeCoverageIgnoreStart
         exit();
         // @codeCoverageIgnoreEnd

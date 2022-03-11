@@ -521,6 +521,7 @@ class Email
         if ($priority < 1 || $priority > 5) {
             throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
         }
+
         $this->priority = $priority;
     }
 
@@ -548,6 +549,7 @@ class Email
                     )
                 );
             }
+
             $this->context[$key] = $value;
         }
     }
@@ -579,6 +581,7 @@ class Email
             if (null === $first_key) {
                 return [];
             }
+
             if (is_string($addresses[$first_key])) {
                 $addresses = [$addresses];
             }

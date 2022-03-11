@@ -216,6 +216,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key')
             ->set('value');
         $item->setTags(['tag', 'tag', 'tag']);
+
         $this->cache->save($item);
         $item = $this->cache->getItem('key');
 
@@ -267,6 +268,7 @@ final class TaggingIntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key')
             ->set('value');
         $item->setTags(['tag1']);
+
         $this->cache->save($item);
 
         // Clear the pool
@@ -293,10 +295,12 @@ final class TaggingIntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key')
             ->set('value');
         $item->setTags(['tag1', 'tag2']);
+
         $this->cache->save($item);
         $item = $this->cache->getItem('key2')
             ->set('value');
         $item->setTags(['tag1']);
+
         $this->cache->save($item);
 
         $this->cache->invalidateTag('tag2');
@@ -326,10 +330,12 @@ final class TaggingIntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key')
             ->set('value');
         $item->setTags(['tag1', 'tag2']);
+
         $this->cache->save($item);
         $item = $this->cache->getItem('key2')
             ->set('value');
         $item->setTags(['tag1']);
+
         $this->cache->save($item);
 
         $this->cache->invalidateTags(['tag1', 'tag2']);

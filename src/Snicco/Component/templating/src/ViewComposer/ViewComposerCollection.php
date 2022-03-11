@@ -56,7 +56,7 @@ final class ViewComposerCollection
         }
 
         if (! class_exists($composer)) {
-            throw new InvalidArgumentException("[{$composer}] is not a valid class.");
+            throw new InvalidArgumentException(sprintf('[%s] is not a valid class.', $composer));
         }
 
         if (! in_array(ViewComposer::class, (array) class_implements($composer), true)) {

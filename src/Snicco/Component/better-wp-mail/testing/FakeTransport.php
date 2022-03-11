@@ -53,6 +53,7 @@ final class FakeTransport implements Transport
                     throw new RuntimeException('pre_wp_mail did not receive correct arguments');
                     // @codeCoverageIgnoreEnd
                 }
+
                 /** @psalm-suppress MixedArgumentTypeCoercion */
                 $this->recordWPMail($args[1]);
 
@@ -125,7 +126,7 @@ final class FakeTransport implements Transport
             sprintf('No email of type [%s] was sent.', $email_class),
         );
 
-        if ($closure) {
+        if (null !== $closure) {
             $matching = $this->sentEmailsThatMatchCondition($email_class, $closure);
             $count = count($this->sent_mails[$email_class] ?? []);
 
@@ -200,29 +201,33 @@ final class FakeTransport implements Transport
         $site_url = $this->wp->siteUrl();
         $site_name = parse_url($site_url, PHP_URL_HOST);
         if (! is_string($site_name)) {
-            throw new RuntimeException("Cant parse site url [{$site_url}].");
+            throw new RuntimeException(sprintf('Cant parse site url [%s].', $site_url));
         }
+
         if ('www.' === substr($site_name, 0, 4)) {
             $site_name = substr($site_name, 4);
         }
+
         $from = 'wordpress@' . ((string) $site_name);
 
         foreach (($headers) as $header) {
             if (false !== strpos($header, 'Cc:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $carbon_copies[] = Mailbox::create($matches['value']);
             }
+
             if (false !== strpos($header, 'Bcc:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $blind_carbon_copies[] = Mailbox::create($matches['value']);
             }
 
             if (false !== strpos($header, 'From:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $from = $matches['value'];
             }
+
             if (false !== strpos($header, 'Reply-To:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $reply_to[] = Mailbox::create($matches['value']);
             }
         }
@@ -243,10 +248,12 @@ final class FakeTransport implements Transport
             $wp_mail = $wp_mail->withCc($carbon_copies);
             $recipients = $recipients->merge($carbon_copies);
         }
+
         if ([] !== $blind_carbon_copies) {
             $wp_mail = $wp_mail->withBcc($blind_carbon_copies);
             $recipients = $recipients->merge($blind_carbon_copies);
         }
+
         if ([] !== $reply_to) {
             $wp_mail = $wp_mail->withReplyTo($reply_to);
         }

@@ -28,7 +28,7 @@ final class HttpKernel
     /**
      * @var class-string<MiddlewareInterface>[]
      */
-    private array $kernel_middleware;
+    private array $kernel_middleware = [];
 
     /**
      * @param class-string<MiddlewareInterface>[] $kernel_middleware

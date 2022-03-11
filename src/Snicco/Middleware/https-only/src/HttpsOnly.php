@@ -24,7 +24,7 @@ final class HttpsOnly extends Middleware
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         // Don't enforce https in local development mode to allow CI/CD testing.
         if ($this->is_local) {

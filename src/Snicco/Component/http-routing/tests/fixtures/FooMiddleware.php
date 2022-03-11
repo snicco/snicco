@@ -17,7 +17,7 @@ class FooMiddleware extends Middleware
         $this->foo = $foo;
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    protected function handle(Request $request, $next): ResponseInterface
     {
         $response = $next($request);
 

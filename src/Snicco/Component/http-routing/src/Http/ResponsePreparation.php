@@ -125,11 +125,11 @@ final class ResponsePreparation
         $content_type = $response->getHeaderLine('content-type');
 
         if ('' === $content_type) {
-            $response = $response->withContentType("text/html; charset={$this->charset}");
+            $response = $response->withContentType(sprintf('text/html; charset=%s', $this->charset));
         } elseif (Str::startsWith($content_type, 'text/')
             && ! Str::contains($content_type, 'charset')) {
             $content_type = trim($content_type, ';');
-            $response = $response->withContentType("{$content_type}; charset={$this->charset}");
+            $response = $response->withContentType(sprintf('%s; charset=%s', $content_type, $this->charset));
         }
 
         // Fix Content-Length, don't add if anything is buffered since we will mess up plugins that use it.

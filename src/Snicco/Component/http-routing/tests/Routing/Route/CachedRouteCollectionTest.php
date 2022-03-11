@@ -74,6 +74,7 @@ final class CachedRouteCollectionTest extends TestCase
             $this->assertInstanceOf(Route::class, $route);
             ++$count;
         }
+
         $this->assertSame(2, $count);
     }
 
@@ -159,6 +160,7 @@ final class CachedRouteCollectionTest extends TestCase
             $this->assertInstanceOf(Route::class, $route);
             ++$count;
         }
+
         $this->assertSame(2, $count);
     }
 

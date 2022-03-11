@@ -38,6 +38,7 @@ final class StdErrLoggerTest extends TestCase
         if (false === $prev) {
             throw new RuntimeException('Could not set php ini setting for error_log.');
         }
+
         $this->prev_error_log = $prev;
         if (is_file($this->log_file)) {
             unlink($this->log_file);
@@ -53,6 +54,7 @@ final class StdErrLoggerTest extends TestCase
         if (is_file($this->log_file)) {
             unlink($this->log_file);
         }
+
         parent::tearDown();
     }
 

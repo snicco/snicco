@@ -20,7 +20,7 @@ final class BladeView implements View
     /**
      * @var array<string,mixed>
      */
-    private array $context;
+    private array $context = [];
 
     private string $name;
 

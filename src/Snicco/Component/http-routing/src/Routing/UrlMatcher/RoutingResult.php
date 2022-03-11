@@ -17,7 +17,7 @@ final class RoutingResult
     /**
      * @var array<string,string>
      */
-    private array $captured_segments;
+    private array $captured_segments = [];
 
     /**
      * @var array<string,int|string>

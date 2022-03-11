@@ -37,7 +37,7 @@ final class BadRouteConfiguration extends LogicException
 
     public static function becauseFallbackRouteIsAlreadyRegistered(string $name): BadRouteConfiguration
     {
-        return new self("Route [{$name}] was registered after a fallback route was defined.");
+        return new self(sprintf('Route [%s] was registered after a fallback route was defined.', $name));
     }
 
     public static function becauseWebRouteHasAdminPrefix(string $name): BadRouteConfiguration

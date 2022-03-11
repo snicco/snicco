@@ -122,6 +122,7 @@ final class FactorySessionManager implements SessionManager
                 catch (Throwable $e) {
                     // Don't handle this exception. Its more important to let the developer know about a possible attack.
                 }
+
                 // @codeCoverageIgnoreEnd
 
                 throw new RuntimeException(

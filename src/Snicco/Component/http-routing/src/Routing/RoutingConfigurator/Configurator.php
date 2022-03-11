@@ -89,8 +89,12 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         // It makes no sense to have a menu item without a dedicated action to handle it.
         if (Route::DELEGATE === $action && ! empty($menu_attributes)) {
-            throw new BadRouteConfiguration("Route [{$name}] can not have an admin menu item without an action.");
+            throw new BadRouteConfiguration(sprintf(
+                'Route [%s] can not have an admin menu item without an action.',
+                $name
+            ));
         }
+
         // A menu item should explicitly not be added.
         if (null === $menu_attributes || Route::DELEGATE === $action) {
             return $route;
@@ -162,7 +166,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $routes = $file_or_closure;
         if (! $routes instanceof Closure) {
             Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
-            Assert::readable($file_or_closure, "The file {$file_or_closure} is not readable.");
+            Assert::readable($file_or_closure, sprintf('The file %s is not readable.', $file_or_closure));
             Assert::isInstanceOf(
                 $routes = require $file_or_closure,
                 Closure::class,
@@ -369,7 +373,11 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
             if (! isset($this->menu_items[$parent_name])) {
                 throw new BadRouteConfiguration(
-                    "Can not use route [{$parent_name}] as a parent for [{$route->getName()}] because it has no menu item."
+                    sprintf(
+                        'Can not use route [%s] as a parent for [%s] because it has no menu item.',
+                        $parent_name,
+                        $route->getName()
+                    )
                 );
             }
 
@@ -483,7 +491,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function redirectRouteName(string $from, string $to): string
     {
-        return "redirect_route:{$from}:{$to}";
+        return sprintf('redirect_route:%s:%s', $from, $to);
     }
 
     /**
@@ -531,7 +539,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             return $route_name;
         }
 
-        return "{$g}.{$route_name}";
+        return sprintf('%s.%s', $g, $route_name);
     }
 
     private function applyGroupNamespace(): string

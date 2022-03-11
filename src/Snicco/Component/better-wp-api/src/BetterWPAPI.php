@@ -71,9 +71,10 @@ class BetterWPAPI
         $actual = gettype($return_value);
         if ($actual !== $expected) {
             throw new InvalidArgumentException(
-                "Initial value for filter [{$hook_name}] is {$expected}. Returned [{$actual}]."
+                sprintf('Initial value for filter [%s] is %s. Returned [%s].', $hook_name, $expected, $actual)
             );
         }
+
         if ('object' === $expected) {
             /**
              * @var object $filterable_value
@@ -84,10 +85,16 @@ class BetterWPAPI
 
             if ($value_class !== $returned_class) {
                 throw new InvalidArgumentException(
-                    "Initial value for filter [{$hook_name}] is an instance of [{$value_class}]. Returned [{$returned_class}]."
+                    sprintf(
+                        'Initial value for filter [%s] is an instance of [%s]. Returned [%s].',
+                        $hook_name,
+                        $value_class,
+                        $returned_class
+                    )
                 );
             }
         }
+
         /**
          * @var T $return_value
          */

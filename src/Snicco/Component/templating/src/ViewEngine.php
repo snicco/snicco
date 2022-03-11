@@ -17,7 +17,7 @@ final class ViewEngine
     /**
      * @var ViewFactory[]
      */
-    private array $view_factories;
+    private array $view_factories = [];
 
     public function __construct(ViewFactory ...$view_factories)
     {

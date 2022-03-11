@@ -21,15 +21,16 @@ class QueryException extends RuntimeException
     {
         $message .= "\nQuery: [{$sql}]";
 
-        $bindings = array_map(function ($binding) {
+        $bindings = array_map(function ($binding): string {
             if (null === $binding) {
                 return 'null';
             }
+
             if (! is_string($binding)) {
                 return (string) $binding;
             }
 
-            return "'{$binding}'";
+            return sprintf("'%s'", $binding);
         }, $bindings);
 
         $message .= "\nBindings: [" . implode(', ', $bindings) . ']';

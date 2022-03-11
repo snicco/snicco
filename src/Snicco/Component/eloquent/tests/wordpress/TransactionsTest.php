@@ -263,11 +263,12 @@ final class TransactionsTest extends WPTestCase
     private function assertTeamNotExists(string $team_name): void
     {
         $result = $this->verification_connection->query(
-            "select count(*) as `count` from `wp_football_teams` where `name` = '{$team_name}'"
+            sprintf("select count(*) as `count` from `wp_football_teams` where `name` = '%s'", $team_name)
         );
         if (! $result instanceof mysqli_result) {
             throw new InvalidArgumentException('must be mysqli_result');
         }
+
         $res = (object) $result->fetch_object();
         $this->assertTrue(property_exists($res, 'count'));
 
@@ -277,15 +278,16 @@ final class TransactionsTest extends WPTestCase
     private function assertTeamExists(string $team_name): void
     {
         $result = $this->verification_connection->query(
-            "select count(*) as `count` from `wp_football_teams` where `name` = '{$team_name}'"
+            sprintf("select count(*) as `count` from `wp_football_teams` where `name` = '%s'", $team_name)
         );
         if (! $result instanceof mysqli_result) {
             throw new InvalidArgumentException('must be mysqli_result');
         }
+
         $res = (object) $result->fetch_object();
         $this->assertTrue(property_exists($res, 'count'));
 
-        $this->assertSame('1', (string) $res->count, "The team [{$team_name}] was not found.");
+        $this->assertSame('1', (string) $res->count, sprintf('The team [%s] was not found.', $team_name));
     }
 
     private function createInitialTable(): void

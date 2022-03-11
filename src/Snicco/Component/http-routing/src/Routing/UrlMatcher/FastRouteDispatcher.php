@@ -86,7 +86,7 @@ final class FastRouteDispatcher implements UrlMatcher
      *
      * @var array<string,array<string,string>>
      */
-    private array $static_route_map;
+    private array $static_route_map = [];
 
     /**
      * A multidimensional array where each HTTP Verbs contains multiple arrays
@@ -97,7 +97,7 @@ final class FastRouteDispatcher implements UrlMatcher
      * routeMap: array<int,array{0: string, 1: array<string,string>}>
      * }>>
      */
-    private array $dynamic_route_map;
+    private array $dynamic_route_map = [];
 
     public function __construct(Routes $routes, array $data, RouteConditionFactory $condition_factory)
     {
@@ -145,6 +145,7 @@ final class FastRouteDispatcher implements UrlMatcher
                     return $result;
                 }
             }
+
             if (isset($this->dynamic_route_map['GET'])) {
                 $result = $this->dispatchVariableRoute($this->dynamic_route_map['GET'], $path, $request);
 

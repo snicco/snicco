@@ -24,7 +24,7 @@ final class RoutingMiddleware extends Middleware
      * @throws MethodNotAllowed
      * @throws BadRouteConfiguration
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $result = $this->url_matcher->dispatch($request);
 

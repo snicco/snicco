@@ -33,7 +33,7 @@ final class ProductionErrorHandler implements HttpErrorHandler
     /**
      * @var ExceptionDisplayer[]
      */
-    private array $displayers;
+    private array $displayers = [];
 
     /**
      * @param ExceptionDisplayer[] $displayers
@@ -93,6 +93,7 @@ final class ProductionErrorHandler implements HttpErrorHandler
         if (isset($displayers[0])) {
             return $displayers[0];
         }
+
         $content_type_filter = new ContentType();
 
         $displayers = array_values(

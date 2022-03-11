@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @var int    $status_code
  * @var string $identifier
  */
-echo "Title: {$safe_title}";
-echo "Details: {$safe_details}";
-echo "Status: {$status_code}";
-echo "Identifier: {$identifier}";
+echo sprintf('Title: %s', $safe_title);
+echo sprintf('Details: %s', $safe_details);
+echo sprintf('Status: %d', $status_code);
+echo sprintf('Identifier: %s', $identifier);
