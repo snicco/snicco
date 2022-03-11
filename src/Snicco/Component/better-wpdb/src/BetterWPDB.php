@@ -575,7 +575,7 @@ final class BetterWPDB
      * @param non-empty-string   $table
      * @param non-empty-string[] $column_names
      *
-     * @return non-empty-string
+     * @psalm-return non-empty-string
      */
     private function buildInsertSql(string $table, array $column_names): string
     {
