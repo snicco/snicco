@@ -233,7 +233,7 @@ final class BundleTestHelpersTest extends TestCase
 
 class ServiceA
 {
-    private ServiceB $b;
+    public ServiceB $b;
 
     public function __construct(ServiceB $b)
     {

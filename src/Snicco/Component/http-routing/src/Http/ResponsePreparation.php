@@ -74,9 +74,11 @@ final class ResponsePreparation
             if ($response->hasHeader('Last-Modified')) {
                 return $response->withHeader('Cache-Control', 'private, must-revalidate');
             }
+
             if ($response->hasHeader('Expires')) {
                 return $response->withHeader('Cache-Control', 'private, must-revalidate');
             }
+
             // conservative by default
             return $response->withHeader('Cache-Control', 'no-cache, private');
         }

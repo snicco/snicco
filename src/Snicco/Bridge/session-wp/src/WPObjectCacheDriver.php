@@ -34,7 +34,6 @@ final class WPObjectCacheDriver implements SessionDriver
 
     public function gc(int $seconds_without_activity): void
     {
-        $this->driver->gc($seconds_without_activity);
     }
 
     public function touch(string $selector, int $current_timestamp): void

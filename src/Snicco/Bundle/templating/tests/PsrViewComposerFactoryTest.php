@@ -72,7 +72,7 @@ class TestComposerNewable implements ViewComposer
 
 class TestComposerNotNewable implements ViewComposer
 {
-    private stdClass $std;
+    public stdClass $std;
 
     public function __construct(stdClass $std)
     {

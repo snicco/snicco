@@ -70,6 +70,7 @@ final class OpenRedirectProtection extends Middleware
         if (! $target_host) {
             return $this->forbiddenRedirect($target);
         }
+
         if (! $this->isWhitelisted($target_host)) {
             return $this->forbiddenRedirect($target);
         }

@@ -42,7 +42,7 @@ final class WPAdminMenuTest extends WPTestCase
         $this->kernel->boot();
 
         /**
-         * @var WP_UnitTest_Factory_For_User
+         * @var WP_UnitTest_Factory_For_User $user_factory
          * @psalm-suppress MixedPropertyFetch
          */
         $user_factory = $this->factory()

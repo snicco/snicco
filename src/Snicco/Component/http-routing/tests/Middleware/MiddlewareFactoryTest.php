@@ -151,7 +151,7 @@ class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 
     public string $baz;
 
-    private Foo $foo;
+    public Foo $foo;
 
     public function __construct(Foo $foo, string $bar, string $baz)
     {

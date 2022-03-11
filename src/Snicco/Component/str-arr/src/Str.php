@@ -87,6 +87,7 @@ class Str
             if ('' === $needle) {
                 continue;
             }
+
             if (false === mb_strpos($subject, $needle)) {
                 continue;
             }
@@ -223,6 +224,7 @@ class Str
         if ('' === $from) {
             return $subject;
         }
+
         if ('' === $to) {
             return $subject;
         }
@@ -263,6 +265,7 @@ class Str
         if ('' === $from) {
             return $subject;
         }
+
         if ('' === $to) {
             return $subject;
         }

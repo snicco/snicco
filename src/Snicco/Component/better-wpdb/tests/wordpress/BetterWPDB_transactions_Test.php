@@ -77,6 +77,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
                     throw new RuntimeException('should never run.');
                 });
             });
+            // @noRector
             $this->fail('No exception thrown for nested transaction.');
         } catch (LogicException $e) {
             $this->assertSame('Nested transactions are currently not supported.', $e->getMessage());

@@ -112,7 +112,6 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     {
         Assert::allString(array_keys($data));
 
-        /** @var array<string,mixed> $data */
         $response = new ViewResponse($view, $this->createResponse());
 
         return $response->withViewData($data);

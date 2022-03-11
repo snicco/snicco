@@ -65,9 +65,11 @@ final class MiddlewarePipeline
             if ($m instanceof MiddlewareInterface) {
                 continue;
             }
+
             if ($m instanceof MiddlewareBlueprint) {
                 continue;
             }
+
             Reflector::assertInterfaceString($m, MiddlewareInterface::class);
         }
 

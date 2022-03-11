@@ -91,8 +91,11 @@ class NoConstructor
 
 class ClassWithConstructor
 {
+    public string $foo;
+
     public function __construct(string $foo)
     {
+        $this->foo = $foo;
     }
 
     public function someMethod(string $foo, string $bar): void

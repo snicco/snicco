@@ -24,7 +24,6 @@ class WPCacheAPI extends BetterWPAPI
      */
     public function cacheGetMultiple(array $keys, string $group = '', bool $force_reload = false): array
     {
-        /** @var array<string,mixed> */
         $cached_values = [];
 
         /**

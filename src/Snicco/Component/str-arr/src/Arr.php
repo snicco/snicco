@@ -333,6 +333,7 @@ class Arr
         if ([] === $keys) {
             return false;
         }
+
         if ([] === $array) {
             return false;
         }
@@ -561,6 +562,7 @@ class Arr
         if (is_string($key)) {
             return;
         }
+
         if (is_int($key)) {
             return;
         }
