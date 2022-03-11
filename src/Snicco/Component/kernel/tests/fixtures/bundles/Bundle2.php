@@ -33,6 +33,7 @@ class Bundle2 implements Bundle
         if (! $config->has('bundle1.configured')) {
             throw new RuntimeException('bundle1 should have been configured first.');
         }
+
         $config->set('bundle2.configured', true);
     }
 
@@ -55,6 +56,7 @@ class Bundle2 implements Bundle
         if (! $container[Bundle1::class]->booted) {
             throw new RuntimeException('bundle1 should have been booted first');
         }
+
         $container[self::class]->booted = true;
     }
 

@@ -11,7 +11,12 @@ use function is_float;
 use function is_int;
 use function is_string;
 
-class AssertableWpDB
+/**
+ * @internal
+ *
+ * @psalm-internal Snicco\Component\Eloquent
+ */
+final class AssertableWpDB
 {
     private string $table;
 
@@ -20,11 +25,12 @@ class AssertableWpDB
     public function __construct(string $table)
     {
         $this->table = $table;
-
-        global $wpdb;
-        $this->wpdb = $wpdb;
+        $this->wpdb = $GLOBALS['wpdb'];
     }
 
+    /**
+     * @param array<string,scalar|null> $column_conditions
+     */
     public function assertRecordExists(array $column_conditions): void
     {
         $wheres = '';
@@ -50,8 +56,9 @@ class AssertableWpDB
             $values[] = $value;
         }
 
+        /** @var string $query */
         $query = $this->wpdb->prepare(
-            "SELECT EXISTS(SELECT 1 FROM {$this->table} WHERE {$wheres} LIMIT 1)",
+            sprintf('SELECT EXISTS(SELECT 1 FROM %s WHERE %s LIMIT 1)', $this->table, $wheres),
             $values
         );
 
@@ -62,23 +69,27 @@ class AssertableWpDB
         $record_as_string = '';
 
         foreach ($column_conditions as $column => $value) {
-            $record_as_string .= "{$column} => {$value},";
+            $record_as_string .= sprintf('%s => %s,', $column, (string) $value);
         }
 
         $record_as_string = trim($record_as_string, ',');
 
         PHPUnit::assertTrue(
             $result,
-            "The record [{$record_as_string}] was not found in the table [{$this->table}]."
+            sprintf('The record [%s] was not found in the table [%s].', $record_as_string, $this->table)
         );
     }
 
+    /**
+     * @param array<string,scalar|null> $column_conditions
+     */
     public function assertRecordNotExists(array $column_conditions): void
     {
         [$wheres, $values] = $this->compile($column_conditions);
 
+        /** @var string $query */
         $query = $this->wpdb->prepare(
-            "SELECT EXISTS(SELECT 1 FROM {$this->table} WHERE {$wheres} LIMIT 1)",
+            sprintf('SELECT EXISTS(SELECT 1 FROM %s WHERE %s LIMIT 1)', $this->table, $wheres),
             $values
         );
 
@@ -87,7 +98,7 @@ class AssertableWpDB
         $record_as_string = '';
 
         foreach ($column_conditions as $column => $value) {
-            $record_as_string .= "{$column} => {$value},";
+            $record_as_string .= sprintf('%s => %s,', $column, (string) $value);
         }
 
         $record_as_string = trim($record_as_string, ',');
@@ -95,7 +106,7 @@ class AssertableWpDB
         PHPUnit::assertSame(
             '0',
             $exists,
-            "The record [{$record_as_string}] was unexpectedly found in the table [{$this->table}]."
+            sprintf('The record [%s] was unexpectedly found in the table [%s].', $record_as_string, $this->table)
         );
     }
 
@@ -108,7 +119,7 @@ class AssertableWpDB
         [$wheres, $values] = $this->compile($conditions);
 
         $record = $this->wpdb->get_row(
-            (string) $this->wpdb->prepare("SELECT * FROM {$this->table} WHERE {$wheres} LIMIT 1", $values),
+            (string) $this->wpdb->prepare(sprintf('SELECT * FROM %s WHERE %s LIMIT 1', $this->table, $wheres), $values),
             'ARRAY_A'
         );
 
@@ -117,14 +128,14 @@ class AssertableWpDB
 
     public function assertTotalCount(int $int): void
     {
-        $query = "SELECT COUNT(*) FROM {$this->table}";
+        $query = sprintf('SELECT COUNT(*) FROM %s', $this->table);
 
-        $result = $this->wpdb->get_var($query);
+        $result = (int) $this->wpdb->get_var($query);
 
         PHPUnit::assertSame(
-            "{$int}",
+            $int,
             $result,
-            "The expected count [{$int}] does not match the actual count [{$result}]."
+            sprintf('The expected count [%d] does not match the actual count [%d].', $int, $result)
         );
     }
 
@@ -132,37 +143,44 @@ class AssertableWpDB
     {
         [$wheres, $values] = $this->compile($column_conditions);
 
-        $query = $this->wpdb->prepare("SELECT COUNT(*) FROM {$this->table} WHERE {$wheres}", $values);
+        /** @var string $query */
+        $query = $this->wpdb->prepare(sprintf('SELECT COUNT(*) FROM %s WHERE %s', $this->table, $wheres), $values);
 
-        $actual_count = $this->wpdb->get_var($query);
+        $actual_count = (int) $this->wpdb->get_var($query);
 
         PHPUnit::assertSame(
-            "{$count}",
+            $count,
             $actual_count,
-            "The expected count [{$count}] does not match the actual count [{$actual_count}]."
+            sprintf('The expected count [%d] does not match the actual count [%d].', $count, $actual_count)
         );
     }
 
+    /**
+     * @return array{0:string, 1:array}
+     */
     private function compile(array $conditions): array
     {
         $wheres = '';
         $values = [];
 
+        /**
+         * @var scalar $value
+         */
         foreach ($conditions as $column => $value) {
             if ('' !== $wheres) {
                 $wheres .= ' AND ';
             }
 
             if (is_float($value)) {
-                $wheres .= "`{$column}`" . ' = %f';
+                $wheres .= sprintf('`%s`', $column) . ' = %f';
             }
 
             if (is_int($value)) {
-                $wheres .= "`{$column}`" . ' = %d';
+                $wheres .= sprintf('`%s`', $column) . ' = %d';
             }
 
             if (is_string($value)) {
-                $wheres .= "`{$column}`" . ' = %s';
+                $wheres .= sprintf('`%s`', $column) . ' = %s';
             }
 
             $values[] = $value;

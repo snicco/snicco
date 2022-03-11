@@ -56,6 +56,7 @@ trait CreatesPsrRequests
         if ('' === $uri->getHost()) {
             $uri = $uri->withHost($this->host());
         }
+
         if ('' === $uri->getScheme()) {
             $uri = $uri->withScheme('https');
         }

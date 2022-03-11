@@ -202,6 +202,7 @@ final class ReadOnlySessionTest extends TestCase
     {
         $session = $this->newSession();
         $session->setUserId(10);
+
         $store = ReadOnlySession::fromSession($session);
         $this->assertSame(10, $store->userId());
     }

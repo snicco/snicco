@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use PhpCsFixer\Fixer\Alias\NoMixedEchoPrintFixer;
+use PhpCsFixer\Fixer\ClassNotation\OrderedClassElementsFixer;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
 use PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer;
 use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
@@ -176,4 +177,6 @@ return static function (ContainerConfigurator $configurator): void {
             DocBlockLineLengthFixer::LINE_LENGTH => 80,
         ],
     ]);
+
+    $services->set(OrderedClassElementsFixer::class);
 };

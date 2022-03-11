@@ -147,6 +147,7 @@ final class KernelConfigCachingTest extends TestCase
                 if (true === $run) {
                     throw new RuntimeException('after configuration callback run for cached kernel');
                 }
+
                 $run = true;
 
                 $config->set('foo_config', 'bar');

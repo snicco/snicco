@@ -11,7 +11,7 @@ final class AggregateRenderer implements MailRenderer
     /**
      * @var MailRenderer[]
      */
-    private array $renderers;
+    private array $renderers = [];
 
     /**
      * @var array<string,MailRenderer>
@@ -48,7 +48,7 @@ final class AggregateRenderer implements MailRenderer
 
         if (null === $renderer) {
             throw new CouldNotRenderMailContent(
-                "None of the given renderers supports the current the template [{$template_name}]."
+                sprintf('None of the given renderers supports the current the template [%s].', $template_name)
             );
         }
 

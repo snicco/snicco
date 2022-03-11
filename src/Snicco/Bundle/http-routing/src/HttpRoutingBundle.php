@@ -83,6 +83,9 @@ use function sprintf;
 
 final class HttpRoutingBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/http-routing-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -453,6 +456,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
                     ) . " has to an associative array of string => array pairs.\nGot key [{$key}]."
                 );
             }
+
             if (! is_array($middleware)) {
                 $type = gettype($middleware);
 
@@ -485,11 +489,12 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
                     ) . ' has to be an array of string => middleware-class pairs.'
                 );
             }
+
             if (! is_string($class)
                 || ! class_exists($class)
                 || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
                 throw new InvalidArgumentException(
-                    "Middleware alias [{$alias}] has to resolve to a middleware class."
+                    sprintf('Middleware alias [%s] has to resolve to a middleware class.', $alias)
                 );
             }
         }
@@ -611,7 +616,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
                 $class = (string) $class;
 
                 throw new InvalidArgumentException(
-                    "[{$class}] is not a valid exception class-string for " . HttpErrorHandlingOption::key(
+                    sprintf('[%s] is not a valid exception class-string for ', $class) . HttpErrorHandlingOption::key(
                         HttpErrorHandlingOption::LOG_LEVELS
                     )
                 );
@@ -622,7 +627,10 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
 
                 throw new InvalidArgumentException(
                     sprintf(
-                        "[{$level}] is not a valid PSR-3 log-level for exception class " . $class . "\nValid levels: [%s]",
+                        sprintf(
+                            '[%s] is not a valid PSR-3 log-level for exception class ',
+                            $level
+                        ) . $class . "\nValid levels: [%s]",
                         implode(',', $valid_levels)
                     )
                 );
@@ -712,11 +720,11 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
             return;
         }
 
-        $copied = copy(dirname(__DIR__) . "/config/{$namespace}.php", $destination);
+        $copied = copy(dirname(__DIR__) . sprintf('/config/%s.php', $namespace), $destination);
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy default routing.php config to path {$destination}");
+            throw new RuntimeException(sprintf('Could not copy default routing.php config to path %s', $destination));
             // @codeCoverageIgnoreEnd
         }
     }

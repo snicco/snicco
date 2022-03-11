@@ -52,6 +52,7 @@ final class SchemaBuilderTest extends WPTestCase
         if ($this->builder->hasTable('books')) {
             $this->builder->drop('books');
         }
+
         if ($this->builder->hasTable('authors')) {
             $this->builder->drop('authors');
         }
@@ -1983,7 +1984,7 @@ final class SchemaBuilderTest extends WPTestCase
     private function getColumnsByOrdinalPosition(string $table_name): array
     {
         global $wpdb;
-        $table_name = "{$wpdb->prefix}" . trim($table_name, $wpdb->prefix);
+        $table_name = sprintf('%s', $wpdb->prefix) . trim($table_name, (string) $wpdb->prefix);
 
         $columns = collect($this->getFullColumnInfo($table_name));
 
@@ -1995,7 +1996,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         global $wpdb;
 
-        return $wpdb->get_results("show full columns from {$table_with_prefix}", ARRAY_A);
+        return $wpdb->get_results(sprintf('show full columns from %s', $table_with_prefix), ARRAY_A);
     }
 
     private function newTestBuilder(string $table): TestSchemaBuilder

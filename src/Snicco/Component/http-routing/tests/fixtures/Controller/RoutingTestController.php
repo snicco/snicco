@@ -6,13 +6,21 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures\Controller;
 
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
+use function sprintf;
+
 class RoutingTestController
 {
+    /**
+     * @var string
+     */
     public const static = 'static';
 
+    /**
+     * @var string
+     */
     public const dynamic = 'dynamic';
 
-    public function __invoke()
+    public function __invoke(): string
     {
         return $this->static();
     }
@@ -29,7 +37,7 @@ class RoutingTestController
 
     public function dynamicInt(int $param): string
     {
-        return 'dynamic:' . $param;
+        return 'dynamic:' . (string) $param;
     }
 
     public function twoParams(string $param1, string $param2): string
@@ -51,9 +59,12 @@ class RoutingTestController
         return $param1 . ':' . $param2 . ':' . $condition_arg;
     }
 
+    /**
+     * @param string|int $param1
+     */
     public function twoOptional($param1 = 'default1', string $param2 = 'default2'): string
     {
-        return "{$param1}:{$param2}";
+        return sprintf('%s:%s', (string) $param1, $param2);
     }
 
     public function requiredAndOptional(
@@ -61,21 +72,21 @@ class RoutingTestController
         string $param2 = 'default1',
         string $param3 = 'default2'
     ): string {
-        return "{$param1}:{$param2}:{$param3}";
+        return sprintf('%s:%s:%s', $param1, $param2, $param3);
     }
 
     public function users(int $id, string $name = 'default_user'): string
     {
-        return 'dynamic:' . $id . ':' . $name;
+        return sprintf('dynamic:%d:%s', $id, $name);
     }
 
     public function bandSong(string $band, string $song = null): string
     {
         if ($song) {
-            return "Show song [{$song}] of band [{$band}].";
+            return sprintf('Show song [%s] of band [%s].', $song, $band);
         }
 
-        return "Show all songs of band [{$band}].";
+        return sprintf('Show all songs of band [%s].', $band);
     }
 
     public function onlyRequest(Request $request): string

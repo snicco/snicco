@@ -70,6 +70,7 @@ final class CustomDirectivesTest extends WPTestCase
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
         $this->blade = $blade;
+
         $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
         $this->global_view_context = $global_view_context;
 
@@ -151,7 +152,9 @@ final class CustomDirectivesTest extends WPTestCase
 
     protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace("/\r|\n|\t|\\s{2,}/", '', $actual);
+        $actual = preg_replace('#
+|
+|	|\\s{2,}#', '', $actual);
 
         if (null === $actual) {
             throw new RuntimeException('preg_replcae failed in test case.');

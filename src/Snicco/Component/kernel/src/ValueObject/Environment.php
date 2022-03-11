@@ -19,14 +19,29 @@ use const PHP_SAPI;
  */
 final class Environment
 {
+    /**
+     * @var string
+     */
     public const TESTING = 'testing';
 
+    /**
+     * @var string
+     */
     public const PROD = 'prod';
 
+    /**
+     * @var string
+     */
     public const DEV = 'dev';
 
+    /**
+     * @var string
+     */
     public const STAGING = 'staging';
 
+    /**
+     * @var string
+     */
     public const ALL = 'all';
 
     private string $environment;

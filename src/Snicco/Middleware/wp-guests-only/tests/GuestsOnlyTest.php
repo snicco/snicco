@@ -107,6 +107,7 @@ final class GuestsOnlyTest extends MiddlewareTestCase
         );
 
         $response->assertNextMiddlewareNotCalled();
+
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
         $psr_response->assertBodyExact(
@@ -129,6 +130,7 @@ final class GuestsOnlyTest extends MiddlewareTestCase
         );
 
         $response->assertNextMiddlewareNotCalled();
+
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
         $psr_response->assertBodyExact(json_encode([

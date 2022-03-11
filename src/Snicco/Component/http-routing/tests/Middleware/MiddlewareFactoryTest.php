@@ -160,7 +160,7 @@ class MiddlewareWithContextualAndRuntimeArgs extends Middleware
         $this->baz = $baz;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         return $next($request);
     }

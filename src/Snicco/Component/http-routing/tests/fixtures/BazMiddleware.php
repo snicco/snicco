@@ -17,7 +17,7 @@ class BazMiddleware extends Middleware
         $this->baz = $baz;
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    protected function handle(Request $request, $next): ResponseInterface
     {
         $response = $next($request);
 

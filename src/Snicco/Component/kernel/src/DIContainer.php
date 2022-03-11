@@ -112,6 +112,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
             return;
         }
+
         $this->instance($offset, $value);
     }
 

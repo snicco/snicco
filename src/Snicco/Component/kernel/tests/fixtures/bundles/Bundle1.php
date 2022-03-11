@@ -37,6 +37,7 @@ class Bundle1 implements Bundle
         if ($config->has('bundle2.configured')) {
             throw new RuntimeException('bundle 2 configured first');
         }
+
         $config->set('bundle1.configured', true);
     }
 
@@ -47,9 +48,11 @@ class Bundle1 implements Bundle
         if (isset($container[Bundle2::class])) {
             throw new RuntimeException('bundle 2 registered first');
         }
+
         if (! $kernel->config()->get('bundle2.configured')) {
             throw new RuntimeException('bundle1 was registered before bundle2 was configured.');
         }
+
         $instance = new self();
         $instance->registered = true;
 
@@ -63,6 +66,7 @@ class Bundle1 implements Bundle
         if ($container[Bundle2::class]->booted) {
             throw new RuntimeException('bundle 2 booted first');
         }
+
         if (! $container[Bundle2::class]->registered) {
             throw new RuntimeException('bundle1 was booted before bundle2 was registered.');
         }

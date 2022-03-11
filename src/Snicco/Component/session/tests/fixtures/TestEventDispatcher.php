@@ -14,7 +14,7 @@ final class TestEventDispatcher implements SessionEventDispatcher
     /**
      * @var array<string,Closure>
      */
-    private array $listeners;
+    private array $listeners = [];
 
     /**
      * @param array<string, Closure> $listeners

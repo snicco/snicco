@@ -158,7 +158,7 @@ final class KernelTest extends TestCase
 
         $dir = $this->base_dir . '/base_dir_without_app_config/config';
 
-        $this->expectExceptionMessage("The [app.php] config file was not found in the config dir [{$dir}].");
+        $this->expectExceptionMessage(sprintf('The [app.php] config file was not found in the config dir [%s].', $dir));
 
         $app->boot();
     }

@@ -15,7 +15,13 @@ final class BadRouteParameter extends InvalidArgumentException
         string $route_name
     ): self {
         return new self(
-            "Parameter [{$param_name}] for route [{$route_name}] must match [{$pattern}] to generate an URL. Given [{$provided_value}]."
+            sprintf(
+                'Parameter [%s] for route [%s] must match [%s] to generate an URL. Given [%s].',
+                $param_name,
+                $route_name,
+                $pattern,
+                $provided_value
+            )
         );
     }
 
@@ -23,6 +29,6 @@ final class BadRouteParameter extends InvalidArgumentException
         string $required_segment,
         string $route_name
     ): BadRouteParameter {
-        return new self("Required parameter [{$required_segment}] is missing for route [{$route_name}].");
+        return new self(sprintf('Required parameter [%s] is missing for route [%s].', $required_segment, $route_name));
     }
 }

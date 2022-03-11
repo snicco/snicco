@@ -21,7 +21,7 @@ class FoobarMiddleware extends Middleware
         }
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    protected function handle(Request $request, $next): ResponseInterface
     {
         $response = $next($request);
 

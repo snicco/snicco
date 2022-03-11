@@ -49,6 +49,9 @@ use function sprintf;
 
 final class SessionBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/session-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -91,6 +94,7 @@ final class SessionBundle implements Bundle
             ->make(EventMapper::class);
         $event_mapper->map('wp_logout', WPLogout::class);
         $event_mapper->map('wp_login', WPLogin::class);
+
         $event_dispatcher = $kernel->container()
             ->make(EventDispatcher::class);
         $event_dispatcher->listen(WPLogout::class, [StatefulRequest::class, 'wpLogoutEvent']);
@@ -194,6 +198,7 @@ final class SessionBundle implements Bundle
                 )
             );
         }
+
         if (WPObjectCacheDriver::class === $driver && ! $kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -258,6 +263,7 @@ final class SessionBundle implements Bundle
         if (JsonSerializer::class === $serializer) {
             return new JsonSerializer();
         }
+
         if (PHPSerializer::class === $serializer) {
             return new PHPSerializer();
         }
@@ -271,6 +277,7 @@ final class SessionBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
+
         $destination = $kernel->directories()
             ->configDir() . '/session.php';
         if (is_file($destination)) {
@@ -281,7 +288,10 @@ final class SessionBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default session config to destination [{$destination}]");
+            throw new RuntimeException(sprintf(
+                'Could not copy the default session config to destination [%s]',
+                $destination
+            ));
             // @codeCoverageIgnoreEnd
         }
     }

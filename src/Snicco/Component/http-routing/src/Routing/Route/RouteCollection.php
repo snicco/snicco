@@ -32,8 +32,9 @@ final class RouteCollection implements Routes
         foreach ($routes as $route) {
             $name = $route->getName();
             if (isset($this->routes[$name])) {
-                throw new InvalidArgumentException("Duplicate route name [{$name}].");
+                throw new InvalidArgumentException(sprintf('Duplicate route name [%s].', $name));
             }
+
             $this->routes[$name] = $route;
         }
     }

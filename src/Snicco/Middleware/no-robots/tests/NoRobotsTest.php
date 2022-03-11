@@ -22,6 +22,7 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
+
         $header = $response->assertableResponse()
             ->getHeader('X-Robots-Tag');
 
@@ -40,6 +41,7 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
+
         $header = $response->assertableResponse()
             ->getHeader('X-Robots-Tag');
 
@@ -58,6 +60,7 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
+
         $header = $response->assertableResponse()
             ->getHeader('X-Robots-Tag');
 
@@ -76,6 +79,7 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
+
         $header = $response->assertableResponse()
             ->getPsrResponse()
             ->getHeader('X-Robots-Tag');

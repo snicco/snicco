@@ -93,18 +93,18 @@ final class EventMapper
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
-                "Tried to map the event class [{$map_to}] twice to the [{$wordpress_hook_name}] hook."
+                sprintf('Tried to map the event class [%s] twice to the [%s] hook.', $map_to, $wordpress_hook_name)
             );
         }
 
         if (isset($this->mapped_filters[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
-                "Tried to map the event class [{$map_to}] twice to the [{$wordpress_hook_name}] filter."
+                sprintf('Tried to map the event class [%s] twice to the [%s] filter.', $map_to, $wordpress_hook_name)
             );
         }
 
         if (! class_exists($map_to)) {
-            throw new InvalidArgumentException("The event class [{$map_to}] does not exist.");
+            throw new InvalidArgumentException(sprintf('The event class [%s] does not exist.', $map_to));
         }
 
         $interfaces = (array) class_implements($map_to);
@@ -114,6 +114,7 @@ final class EventMapper
 
             return;
         }
+
         if (in_array(MappedHook::class, $interfaces, true)) {
             $this->mapped_actions[$wordpress_hook_name][$map_to] = true;
 
@@ -121,7 +122,7 @@ final class EventMapper
         }
 
         throw new InvalidArgumentException(
-            "The event [{$map_to}] has to implement either the [MappedHook] or the [MappedFilter] interface."
+            sprintf('The event [%s] has to implement either the [MappedHook] or the [MappedFilter] interface.', $map_to)
         );
     }
 
@@ -177,7 +178,7 @@ final class EventMapper
             if (! isset($args_from_wordpress_hooks[0])) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
-                    "Event mapper received invalid arguments from WP for mapped hook [{$event_class}]."
+                    sprintf('Event mapper received invalid arguments from WP for mapped hook [%s].', $event_class)
                 );
                 // @codeCoverageIgnoreEnd
             }
@@ -201,7 +202,11 @@ final class EventMapper
         $filter = $this->wp->currentFilter();
         if ($filter && $filter === $wordpress_hook_name) {
             throw new LogicException(
-                "You can can't map the event [{$map_to}] to the hook [{$wordpress_hook_name}] after it was fired."
+                sprintf(
+                    "You can can't map the event [%s] to the hook [%s] after it was fired.",
+                    $map_to,
+                    $wordpress_hook_name
+                )
             );
         }
 

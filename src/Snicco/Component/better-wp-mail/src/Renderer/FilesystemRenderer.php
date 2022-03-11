@@ -25,6 +25,7 @@ final class FilesystemRenderer implements MailRenderer
         if (empty($extension)) {
             return false;
         }
+
         $intersect = array_intersect([$extension], ['txt', 'php', 'html']);
 
         return [] !== $intersect;

@@ -87,7 +87,7 @@ final class WebTestCaseController extends Controller
          */
         foreach ($request->getServerParams() as $name => $value) {
             if (0 === strpos((string) $name, 'X-')) {
-                $string .= "{$name}={$value}";
+                $string .= sprintf('%s=%s', $name, $value);
             }
         }
 

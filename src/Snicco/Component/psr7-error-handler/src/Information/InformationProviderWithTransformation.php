@@ -27,12 +27,12 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
     /**
      * @var array<positive-int,array{title:string, message:string}>
      */
-    private array $default_messages;
+    private array $default_messages = [];
 
     /**
      * @var ExceptionTransformer[]
      */
-    private array $transformer;
+    private array $transformer = [];
 
     /**
      * @param array<positive-int,array{title:string, message:string}> $data
@@ -42,9 +42,11 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         foreach ($data as $status_code => $title_and_details) {
             $this->addMessage($status_code, $title_and_details);
         }
+
         if (! isset($this->default_messages[500])) {
             throw new InvalidArgumentException('Data for the 500 status code must be provided.');
         }
+
         $this->transformer = $transformer;
         $this->identifier = $identifier;
     }
@@ -95,13 +97,16 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         if ($status_code < 400) {
             throw new InvalidArgumentException('$status_code must be greater >= 400.');
         }
+
         /** @var positive-int $status_code */
         if (! isset($info['title']) || ! is_string($info['title'])) {
-            throw new InvalidArgumentException("\$title must be string for status code [{$status_code}].");
+            throw new InvalidArgumentException(sprintf('$title must be string for status code [%d].', $status_code));
         }
+
         if (! isset($info['message']) || ! is_string($info['message'])) {
-            throw new InvalidArgumentException("\$message must be string for status code [{$status_code}].");
+            throw new InvalidArgumentException(sprintf('$message must be string for status code [%d].', $status_code));
         }
+
         $this->default_messages[$status_code] = $info;
     }
 

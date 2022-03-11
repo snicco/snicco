@@ -18,7 +18,7 @@ final class BooleanMiddleware extends Middleware
         $this->val = 'boolean_' . ($val ? 'true' : 'false');
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 

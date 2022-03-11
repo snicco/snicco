@@ -253,7 +253,8 @@ trait DIContainerContractTest
     public function test_offsetSet(): void
     {
         $container = $this->createContainer();
-        $container[Foo::class] = ($foo = new Foo());
+        $container[Foo::class] = new Foo();
+        $foo = $container[Foo::class];
 
         // instance
         PHPUnit::assertSame($foo, $container[Foo::class]);
@@ -271,7 +272,8 @@ trait DIContainerContractTest
     public function test_offsetUnset(): void
     {
         $container = $this->createContainer();
-        $container[stdClass::class] = $std = new stdClass();
+        $container[stdClass::class] = new stdClass();
+        $std = $container[stdClass::class];
 
         PHPUnit::assertSame($std, $container[stdClass::class]);
 

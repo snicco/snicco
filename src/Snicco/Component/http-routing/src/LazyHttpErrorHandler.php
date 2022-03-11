@@ -31,6 +31,7 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
                 sprintf('The psr container needs a service for id [%s].', HttpErrorHandler::class)
             );
         }
+
         $this->psr_container = $c;
     }
 

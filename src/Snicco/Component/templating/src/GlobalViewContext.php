@@ -20,7 +20,9 @@ final class GlobalViewContext
     private array $context = [];
 
     /**
-     * @param Closure():mixed|mixed $context
+     * @param mixed|Closure $context
+     *
+     * @psalm-param mixed|Closure():mixed $context
      */
     public function add(string $name, $context): void
     {

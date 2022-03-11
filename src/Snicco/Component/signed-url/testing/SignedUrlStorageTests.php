@@ -46,6 +46,7 @@ trait SignedUrlStorageTests
         } catch (BadIdentifier $e) {
             PHPUnit::assertStringContainsString($foo_url->identifier(), $e->getMessage());
         }
+
         // still valid
         $storage->consume($bar_url->identifier());
 
@@ -79,7 +80,7 @@ trait SignedUrlStorageTests
             $storage->consume($id);
             PHPUnit::fail('Decrementing a used signed url below 0 should throw an exception');
         } catch (BadIdentifier $e) {
-            PHPUnit::assertStringStartsWith("The identifier [{$id}] does not exist", $e->getMessage());
+            PHPUnit::assertStringStartsWith(sprintf('The identifier [%s] does not exist', $id), $e->getMessage());
         }
     }
 
@@ -98,7 +99,10 @@ trait SignedUrlStorageTests
             $storage->consume($signature);
             PHPUnit::fail('Expected exception to be thrown');
         } catch (BadIdentifier $e) {
-            PHPUnit::assertStringStartsWith("The identifier [{$signature}] does not exist", $e->getMessage());
+            PHPUnit::assertStringStartsWith(
+                sprintf('The identifier [%s] does not exist', $signature),
+                $e->getMessage()
+            );
         }
     }
 

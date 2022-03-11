@@ -26,12 +26,12 @@ final class SerializedRouteCollection implements Routes
     /**
      * @var array<string,string>
      */
-    private array $serialized_routes;
+    private array $serialized_routes = [];
 
     /**
      * @var array<string,Route>
      */
-    private array $hydrated_routes;
+    private array $hydrated_routes = [];
 
     /**
      * @param array<string,string> $serialized_routes

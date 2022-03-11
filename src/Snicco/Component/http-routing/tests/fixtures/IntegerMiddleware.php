@@ -18,7 +18,7 @@ final class IntegerMiddleware extends Middleware
         $this->val = 'integer_' . (string) $val;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 

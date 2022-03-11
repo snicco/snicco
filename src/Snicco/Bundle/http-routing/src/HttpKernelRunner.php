@@ -54,9 +54,10 @@ final class HttpKernelRunner
         $this->emitter = $emitter;
         $this->stream_factory = $stream_factory;
 
-        if ($api_prefix) {
+        if (null !== $api_prefix) {
             $api_prefix = '/' . ltrim($api_prefix, '/');
         }
+
         $this->api_prefix = $api_prefix;
     }
 
@@ -166,6 +167,7 @@ final class HttpKernelRunner
                     echo $stream->__toString();
                 });
             }
+
             $empty_stream = $this->stream_factory->createStream();
             $response = $response->withBody($empty_stream);
             // This is of extreme importance. Not removing this header here will lead to a very sad admin dashboard.

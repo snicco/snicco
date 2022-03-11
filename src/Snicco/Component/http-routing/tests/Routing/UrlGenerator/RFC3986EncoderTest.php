@@ -16,6 +16,9 @@ use function rawurlencode;
  */
 final class RFC3986EncoderTest extends TestCase
 {
+    /**
+     * @var array<string, string>
+     */
     private const QUERY_FRAGMENT_EXTRA = [
         '/' => '%2F',
         '?' => '%3F',

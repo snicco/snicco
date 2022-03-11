@@ -44,7 +44,10 @@ final class AuthenticateWithWordPressTest extends WebTestCase
 
             throw new RuntimeException('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
-            $this->assertStringStartsWith("The current user [{$admin->ID}] is not a guest.", $e->getMessage());
+            $this->assertStringStartsWith(
+                sprintf('The current user [%s] is not a guest.', $admin->ID),
+                $e->getMessage()
+            );
         }
     }
 
@@ -77,7 +80,7 @@ final class AuthenticateWithWordPressTest extends WebTestCase
             throw new RuntimeException('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
             $this->assertStringStartsWith(
-                "The current user [{$editor->ID}] is not the expected one [{$admin->ID}].",
+                sprintf('The current user [%s] is not the expected one [%s].', $editor->ID, $admin->ID),
                 $e->getMessage()
             );
         }

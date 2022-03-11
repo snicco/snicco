@@ -14,7 +14,7 @@ final class ControllerMiddleware
     /**
      * @var class-string<MiddlewareInterface>[]
      */
-    private array $middleware_classes;
+    private array $middleware_classes = [];
 
     /**
      * Methods the middleware applies to.

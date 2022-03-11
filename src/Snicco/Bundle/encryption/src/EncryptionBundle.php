@@ -22,6 +22,9 @@ use function is_file;
 
 final class EncryptionBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/encryption-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -84,6 +87,7 @@ final class EncryptionBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
+
         $destination = $kernel->directories()
             ->configDir() . '/encryption.php';
         if (is_file($destination)) {
@@ -94,7 +98,10 @@ final class EncryptionBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
+            throw new RuntimeException(sprintf(
+                'Could not copy the default templating config to destination [%s]',
+                $destination
+            ));
             // @codeCoverageIgnoreEnd
         }
     }

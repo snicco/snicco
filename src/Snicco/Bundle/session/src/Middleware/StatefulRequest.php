@@ -28,6 +28,9 @@ use function setcookie;
 
 final class StatefulRequest extends Middleware
 {
+    /**
+     * @var string
+     */
     public const ALLOW_WRITE_SESSION_FOR_READ_VERBS = '_stateful_request.allow_write';
 
     private SessionManager $session_manager;
@@ -56,6 +59,7 @@ final class StatefulRequest extends Middleware
 
             return;
         }
+
         // A user got logged out by WordPress. We have to invalidate the session if one is currently active.
         $session = $this->session_manager->start(CookiePool::fromSuperGlobals());
 
@@ -80,6 +84,7 @@ final class StatefulRequest extends Middleware
 
             return;
         }
+
         // A user got logged in by WordPress. We have to rotate the session id.
         $session = $this->session_manager->start(CookiePool::fromSuperGlobals());
 
@@ -94,6 +99,7 @@ final class StatefulRequest extends Middleware
 
         $session->setUserId($event->user->ID);
         $session->rotate();
+
         $this->session_manager->save($session);
         $this->emitCookie($this->session_manager->toCookie($session));
     }
@@ -170,6 +176,7 @@ final class StatefulRequest extends Middleware
         if ($session->userId()) {
             return $session;
         }
+
         $user_id = $request->userId();
 
         if ($user_id) {
@@ -199,9 +206,11 @@ final class StatefulRequest extends Middleware
         if (! $session_cookie->httpOnly()) {
             $http_cookie = $http_cookie->withJsAccess();
         }
+
         if (! $session_cookie->secureOnly()) {
             $http_cookie = $http_cookie->withUnsecureHttp();
         }
+
         $http_cookie = $http_cookie->withSameSite($session_cookie->sameSite());
 
         $expires_at = $session_cookie->expiryTimestamp();

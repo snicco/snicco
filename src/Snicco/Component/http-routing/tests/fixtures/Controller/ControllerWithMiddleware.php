@@ -11,6 +11,9 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 
 class ControllerWithMiddleware extends Controller
 {
+    /**
+     * @var string
+     */
     public const CONSTRUCTED_KEY = 'controller_with_middleware';
 
     private Baz $baz;

@@ -22,7 +22,7 @@ final class OpenRedirectProtection extends Middleware
     /**
      * @var string[]
      */
-    private array $whitelist;
+    private array $whitelist = [];
 
     private string $host;
 
@@ -35,15 +35,16 @@ final class OpenRedirectProtection extends Middleware
     {
         $parsed = parse_url($host, PHP_URL_HOST);
         if (! is_string($parsed) || '' === $parsed) {
-            throw new InvalidArgumentException("Invalid host [{$host}].");
+            throw new InvalidArgumentException(sprintf('Invalid host [%s].', $host));
         }
+
         $this->host = $parsed;
         $this->exit_path = $exit_path;
         $this->whitelist = $this->formatWhiteList($whitelist);
         $this->whitelist[] = $this->allSubdomainsOfApplication();
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 
@@ -106,6 +107,7 @@ final class OpenRedirectProtection extends Middleware
         if (! $target && isset($parsed['path'])) {
             return true;
         }
+
         $uri = $request->getUri();
 
         return $uri->getHost() === $target;

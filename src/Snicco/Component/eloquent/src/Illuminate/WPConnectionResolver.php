@@ -91,6 +91,7 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
         if (isset($this->mysqli_connection)) {
             return $this->mysqli_connection;
         }
+
         $this->mysqli_connection = $this->mysqli_connection_factory->create();
 
         return $this->mysqli_connection;

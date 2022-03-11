@@ -82,6 +82,7 @@ final class Attachment
         if (! is_readable($path)) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
         }
+
         $stream = @fopen($path, 'r');
         if (false === $stream) {
             // @codeCoverageIgnoreStart

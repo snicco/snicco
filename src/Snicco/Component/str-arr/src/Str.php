@@ -191,7 +191,7 @@ class Str
         $res = substr($subject, $position + strlen($search));
         if (false === $res) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("substr returned false for subject [{$subject}].");
+            throw new RuntimeException(sprintf('substr returned false for subject [%s].', $subject));
             // @codeCoverageIgnoreEnd
         }
 
@@ -341,7 +341,7 @@ class Str
 
                     break;
                 case PREG_BAD_UTF8_OFFSET_ERROR:
-                    $message = 'Offset didn\'t correspond to the begin of a valid UTF-8 code point';
+                    $message = "Offset didn't correspond to the begin of a valid UTF-8 code point";
 
                     break;
                 default:

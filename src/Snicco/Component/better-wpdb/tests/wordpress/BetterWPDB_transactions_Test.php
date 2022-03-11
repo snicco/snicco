@@ -142,6 +142,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
                 if ('COMMIT' === $info->sql_with_placeholders) {
                     throw new RuntimeException('cant log.');
                 }
+
                 $this->queries[] = $info;
             }
         };

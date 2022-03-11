@@ -465,6 +465,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             $this->assertInstanceOf(AdminMenuItem::class, $item);
             ++$count;
         }
+
         $this->assertSame(3, $count);
     }
 }

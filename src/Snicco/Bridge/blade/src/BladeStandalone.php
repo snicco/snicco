@@ -31,9 +31,6 @@ final class BladeStandalone
      */
     private array $view_directories;
 
-    /**
-     * @var Application|Container
-     */
     private Container $illuminate_container;
 
     private BladeViewComposer $blade_view_composer;
@@ -89,6 +86,7 @@ final class BladeStandalone
             if ('admin' === $expression) {
                 $expression = 'administrator';
             }
+
             $user = $wp->currentUser();
 
             return ! empty($user->roles) && is_array($user->roles)
@@ -131,7 +129,7 @@ final class BladeStandalone
     private function bootIlluminateViewServiceProvider(): void
     {
         /**
-         * @psalm-suppress PossiblyInvalidArgument
+         * @psalm-suppress InvalidArgument
          */
         ((new ViewServiceProvider($this->illuminate_container)))
             ->register();

@@ -34,10 +34,19 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 final class Request implements ServerRequestInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE_FRONTEND = 'frontend';
 
+    /**
+     * @var string
+     */
     public const TYPE_ADMIN_AREA = 'admin';
 
+    /**
+     * @var string
+     */
     public const TYPE_API = 'api';
 
     private ServerRequestInterface $psr_request;
@@ -72,7 +81,7 @@ final class Request implements ServerRequestInterface
     public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", self::class)
+            sprintf(sprintf('Cannot set undefined property [%s] on immutable class [%%s]', $name), self::class)
         );
     }
 
@@ -709,7 +718,7 @@ rawurldecode(strtr($part, [
 
         if (false === $tok) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not parse accept header [{$match_against}].");
+            throw new RuntimeException(sprintf('Could not parse accept header [%s].', $match_against));
             // @codeCoverageIgnoreEnd
         }
 
@@ -741,6 +750,7 @@ rawurldecode(strtr($part, [
         if (null === $value) {
             return true;
         }
+
         if ([] === $value) {
             return true;
         }

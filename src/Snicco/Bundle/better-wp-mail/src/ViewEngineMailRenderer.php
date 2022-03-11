@@ -56,6 +56,7 @@ final class ViewEngineMailRenderer implements MailRenderer
         if (isset($this->views[$template_name])) {
             return $this->views[$template_name];
         }
+
         $view = $this->view_engine->make($template_name);
         $this->views[$template_name] = $view;
 

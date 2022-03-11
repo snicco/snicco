@@ -9,7 +9,7 @@ final class CookiePool
     /**
      * @var array<string,string>
      */
-    private array $cookies;
+    private array $cookies = [];
 
     /**
      * @param array<string,string> $cookies

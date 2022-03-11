@@ -45,7 +45,7 @@ final class Reflector
         $interface_exists = interface_exists($expected_interface);
 
         if (! $interface_exists) {
-            throw new InvalidArgumentException("Interface [{$expected_interface}] does not exist.");
+            throw new InvalidArgumentException(sprintf('Interface [%s] does not exist.', $expected_interface));
         }
 
         if (! $class_exists) {
@@ -97,6 +97,7 @@ final class Reflector
         if ($callable instanceof Closure) {
             return new ReflectionFunction($callable);
         }
+
         if (is_string($callable)) {
             return new ReflectionMethod($callable, '__construct');
         }

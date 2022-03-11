@@ -38,7 +38,7 @@ final class Psr17FactoryDiscovery
      *                      response: class-string|string
      * }> $check_for_classes
      */
-    private array $check_for_classes;
+    private array $check_for_classes = [];
 
     /**
      * @param array<class-string,
@@ -155,6 +155,7 @@ final class Psr17FactoryDiscovery
             } else {
                 $this->factories[$class] = $instance;
             }
+
             /**
              * @psalm-var  T $instance
              */

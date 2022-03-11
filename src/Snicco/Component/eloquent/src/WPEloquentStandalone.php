@@ -10,7 +10,6 @@ use Faker\Generator as FakerGenerator;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
@@ -35,6 +34,9 @@ final class WPEloquentStandalone
 
     private bool $enable_global_facades;
 
+    /**
+     * @param mixed[] $connection_configuration
+     */
     public function __construct(array $connection_configuration = [], bool $enable_global_facades = true)
     {
         $this->illuminate_container = Container::getInstance();

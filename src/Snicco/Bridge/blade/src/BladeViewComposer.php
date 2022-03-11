@@ -22,6 +22,7 @@ final class BladeViewComposer
         if (! isset($payload[0]) || ! $payload[0] instanceof View) {
             throw new RuntimeException(sprintf('Expected payload[0] to be instance of [%s].', View::class,));
         }
+
         $view = $payload[0];
         $blade_view = $this->composers->compose(new BladeView($view));
         $view->with($blade_view->context());

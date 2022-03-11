@@ -17,7 +17,7 @@ class BarMiddleware extends Middleware
         $this->bar = $bar;
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    protected function handle(Request $request, $next): ResponseInterface
     {
         $response = $next($request);
 

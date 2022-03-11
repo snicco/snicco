@@ -106,6 +106,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/custom-server-vars');
+
         $response = $browser->getResponse();
 
         $response->assertOk();
@@ -128,6 +129,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/cookies-as-json');
+
         $response = $browser->lastResponse();
 
         $response->assertOk();
@@ -148,6 +150,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/full-url');
+
         $response = $browser->lastResponse();
 
         $response->assertOk()
@@ -167,6 +170,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/full-url');
+
         $response = $browser->lastResponse();
 
         $response->assertOk()
@@ -287,6 +291,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/force-exception-middleware');
+
         $response = $browser->lastResponse();
 
         $response->assertOk();

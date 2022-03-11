@@ -60,10 +60,12 @@ final class WPObjectCachePsr6Test extends WPTestCase
 
         $item = $psr_cache->getItem('key1');
         $item->set('val1');
+
         $psr_cache->save($item);
 
         $item = $psr_cache->getItem('key2');
         $item->set('val2');
+
         $psr_cache->save($item);
 
         $this->assertFalse($psr_cache->deleteItems($keys));
@@ -88,10 +90,12 @@ final class WPObjectCachePsr6Test extends WPTestCase
 
         $item = $psr_cache->getItem('key1');
         $item->set('val1');
+
         $psr_cache->saveDeferred($item);
 
         $item = $psr_cache->getItem('key2');
         $item->set('val2');
+
         $psr_cache->saveDeferred($item);
 
         $this->assertFalse($psr_cache->commit());
@@ -115,6 +119,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
         $item = $this->cache->getItem('key1');
         $item->set('val1');
         $item->expiresAfter(10);
+
         $this->cache->saveDeferred($item);
 
         $new = $this->cache->getItem('key1');
@@ -183,6 +188,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
 
         $item = $psr_cache->getItem('key1');
         $item->set('val');
+
         $psr_cache->save($item);
 
         $new = $psr_cache->getItem('key1');

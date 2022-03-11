@@ -51,7 +51,7 @@ abstract class WebTestCase extends WPTestCase
     /**
      * @var TestExtension[]
      */
-    private array $extensions;
+    private array $extensions = [];
 
     /**
      * @var array<string,mixed>
@@ -124,6 +124,7 @@ abstract class WebTestCase extends WPTestCase
             ->make(SessionManager::class);
         $session = $session_manager->start(new CookiePool($this->cookies));
         $session->put($data);
+
         $session_manager->save($session);
 
         $this->withCookies([
@@ -282,7 +283,10 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getKernel();
         if ($kernel->booted()) {
-            throw new LogicException("Method [{$__METHOD__}] can not be used if the kernel was already booted.");
+            throw new LogicException(sprintf(
+                'Method [%s] can not be used if the kernel was already booted.',
+                $__METHOD__
+            ));
         }
 
         return $kernel;
@@ -291,7 +295,10 @@ abstract class WebTestCase extends WPTestCase
     private function assertBrowserNotCreated(string $__METHOD__): void
     {
         if (isset($this->browser)) {
-            throw new LogicException("Method [{$__METHOD__}] can not be used if the browser was already created.");
+            throw new LogicException(sprintf(
+                'Method [%s] can not be used if the browser was already created.',
+                $__METHOD__
+            ));
         }
     }
 }

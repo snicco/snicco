@@ -27,7 +27,7 @@ final class TrailingSlash extends Middleware
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $path = $request->path();
 

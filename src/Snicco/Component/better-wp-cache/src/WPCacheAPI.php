@@ -40,9 +40,11 @@ class WPCacheAPI extends BetterWPAPI
                     );
                     // @codeCoverageIgnoreEnd
                 }
+
                 // We need to cast keys like (string) "1" back to a string to fulfill the PSR cache API.
                 $key = (string) $key;
             }
+
             /**
              * @psalm-suppress MixedAssignment
              */

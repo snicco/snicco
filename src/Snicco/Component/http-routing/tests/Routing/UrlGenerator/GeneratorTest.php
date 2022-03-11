@@ -221,7 +221,7 @@ final class GeneratorTest extends HttpRunnerTestCase
         $m = rawurlencode('münchen');
         $d = rawurlencode('düsseldorf');
 
-        $this->assertSame("/{$m}/{$d}", $this->generator()->to('münchen/düsseldorf'));
+        $this->assertSame(sprintf('/%s/%s', $m, $d), $this->generator()->to('münchen/düsseldorf'));
     }
 
     /**

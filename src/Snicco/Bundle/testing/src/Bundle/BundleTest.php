@@ -151,6 +151,7 @@ final class BundleTest
             if ($file_info->isDir()) {
                 continue;
             }
+
             if ($file_info->isFile() && 'php' === $file_info->getExtension() && ! in_array($name, $expect, true)) {
                 $files[] = $name;
             }
@@ -160,7 +161,7 @@ final class BundleTest
             $res = unlink($file);
             if (! $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [{$file}].");
+                throw new RuntimeException(sprintf('Could not remove test fixture file [%s].', $file));
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -192,7 +193,7 @@ final class BundleTest
             $res = unlink($file);
             if (! $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [{$file}].");
+                throw new RuntimeException(sprintf('Could not remove test fixture file [%s].', $file));
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -203,7 +204,7 @@ final class BundleTest
             $res = rmdir($dir);
             if (! $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test directory [{$dir}].");
+                throw new RuntimeException(sprintf('Could not remove test directory [%s].', $dir));
                 // @codeCoverageIgnoreEnd
             }
         }

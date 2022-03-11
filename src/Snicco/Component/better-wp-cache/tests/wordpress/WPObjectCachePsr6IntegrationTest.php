@@ -113,10 +113,12 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('4711');
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key2');
         $item->set('4712');
+
         $this->cache->save($item);
 
         $fooItem = $this->cache->getItem('key');
@@ -195,6 +197,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         // get existing item
@@ -289,6 +292,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         // has existing item
@@ -309,6 +313,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         $return = $this->cache->clear();
@@ -333,6 +338,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         $this->cache->clear();
@@ -352,6 +358,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         $this->assertTrue($this->cache->deleteItem('key'));
@@ -404,6 +411,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $return = $this->cache->save($item);
 
         $this->assertTrue($return, 'save() should return true when items are saved.');
@@ -422,6 +430,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAt(DateTime::createFromFormat('U', (string) (time() + 10)));
+
         $this->cache->save($item);
         $item->expiresAt(DateTime::createFromFormat('U', (string) (time() - 1)));
         $this->cache->save($item);
@@ -440,6 +449,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('test_ttl_null');
         $item->set('data');
+
         $this->cache->save($item);
 
         // Use a new pool instance to ensure that we don't hit any caches
@@ -461,11 +471,13 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('4711');
+
         $return = $this->cache->saveDeferred($item);
         $this->assertTrue($return, 'save() should return true when items are saved.');
 
         $item = $this->cache->getItem('key2');
         $item->set('4712');
+
         $this->cache->saveDeferred($item);
 
         // They are not saved yet but should be a hit
@@ -499,6 +511,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('4711');
         $item->expiresAt(DateTime::createFromFormat('U', (string) (time() - 1)));
+
         $this->cache->saveDeferred($item);
 
         $this->assertFalse($this->cache->hasItem('key'), 'Cache should not have expired deferred item');
@@ -518,6 +531,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('4711');
+
         $this->cache->saveDeferred($item);
         $this->assertTrue($this->cache->getItem('key')->isHit());
 
@@ -568,6 +582,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
         $return = $this->cache->commit();
 
@@ -592,6 +607,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAfter(2);
+
         $this->cache->save($item);
 
         sleep(3);
@@ -612,6 +628,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAt(new DateTime('+2hours'));
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -630,6 +647,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAt(null);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -648,6 +666,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAfter(null);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -767,6 +786,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('5');
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -785,6 +805,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(5);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -803,6 +824,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(null);
+
         $this->cache->save($item);
 
         $this->assertTrue(
@@ -827,6 +849,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $float = 1.23456789;
         $item = $this->cache->getItem('key');
         $item->set($float);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -846,6 +869,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(true);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -855,6 +879,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key2');
         $item->set(false);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key2');
@@ -878,6 +903,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         ];
         $item = $this->cache->getItem('key');
         $item->set($array);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -899,6 +925,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $object->a = 'foo';
         $item = $this->cache->getItem('key');
         $item->set($object);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -923,6 +950,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set($data);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -940,6 +968,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -957,6 +986,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         // Test accessing the value before it is committed
@@ -979,6 +1009,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         $item = $this->cache->getItem('key');
@@ -1011,10 +1042,12 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         $item = $this->cache->getItem('key');
         $item->set('new value');
+
         $this->cache->saveDeferred($item);
 
         $item = $this->cache->getItem('key');
@@ -1036,6 +1069,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(new DateTime());
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -1057,6 +1091,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAfter(2);
+
         $this->cache->saveDeferred($item);
 
         sleep(3);
@@ -1070,6 +1105,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $cache->getItem('key');
         $item->set('4711');
+
         $cache->saveDeferred($item);
     }
 }

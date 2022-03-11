@@ -147,7 +147,7 @@ final class AssertableResponse
     {
         PHPUnit::assertFalse(
             $this->psr_response->hasHeader($header_name),
-            "Header [{$header_name}] was not expected to be in the response.."
+            sprintf('Header [%s] was not expected to be in the response..', $header_name)
         );
 
         return $this;
@@ -189,7 +189,7 @@ final class AssertableResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->hasHeader($header_name),
-            "Response does not have header [{$header_name}]."
+            sprintf('Response does not have header [%s].', $header_name)
         );
 
         if (null === $value) {
@@ -201,7 +201,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $value,
             $actual,
-            "Value [{$actual}] for header [{$header_name}] does not match [{$value}]."
+            sprintf('Value [%s] for header [%s] does not match [%s].', $actual, $header_name, $value)
         );
 
         return $this;
@@ -220,9 +220,9 @@ final class AssertableResponse
 
         $count = count($headers);
 
-        PHPUnit::assertNotEquals(0, $count, "Response does not have cookie matching name [{$cookie_name}].");
+        PHPUnit::assertNotEquals(0, $count, sprintf('Response does not have cookie matching name [%s].', $cookie_name));
 
-        PHPUnit::assertSame(1, $count, "The cookie [{$cookie_name}] was sent [{$count}] times.");
+        PHPUnit::assertSame(1, $count, sprintf('The cookie [%s] was sent [%d] times.', $cookie_name, $count));
 
         return new AssertableCookie($headers[0]);
     }
@@ -241,7 +241,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $path,
             parse_url($location, PHP_URL_PATH),
-            "Redirect path [{$path}] does not match location header [{$location}]."
+            sprintf('Redirect path [%s] does not match location header [%s].', $path, $location)
         );
 
         return $this;
@@ -276,7 +276,7 @@ final class AssertableResponse
         PHPUnit::assertSame(
             $expected,
             $this->streamed_content,
-            "Response body does not match expected [{$expected}]."
+            sprintf('Response body does not match expected [%s].', $expected)
         );
 
         return $this;
@@ -298,7 +298,7 @@ final class AssertableResponse
         PHPUnit::assertEquals(
             $expected,
             $actual = $this->psr_response->getHeaderLine('content-type'),
-            "Expected content-type [{$expected}] but received [{$actual}]."
+            sprintf('Expected content-type [%s] but received [%s].', $expected, $actual)
         );
     }
 
@@ -310,7 +310,7 @@ final class AssertableResponse
         PHPUnit::assertSame(
             $expected,
             $this->streamed_content,
-            "Response json body does not match expected [{$expected}]."
+            sprintf('Response json body does not match expected [%s].', $expected)
         );
 
         return $this;
@@ -337,7 +337,7 @@ final class AssertableResponse
     {
         PHPUnit::assertTrue(
             $this->psr_response->isRedirection(),
-            "Status code [{$this->status_code}] is not a redirection status code."
+            sprintf('Status code [%d] is not a redirection status code.', $this->status_code)
         );
     }
 
@@ -347,7 +347,11 @@ final class AssertableResponse
             strip_tags($this->streamed_content)
             : $this->streamed_content;
 
-        PHPUnit::assertStringContainsString($value, $compare_to, "Response body does not contain [{$value}].");
+        PHPUnit::assertStringContainsString(
+            $value,
+            $compare_to,
+            sprintf('Response body does not contain [%s].', $value)
+        );
 
         return $this;
     }
@@ -358,7 +362,7 @@ final class AssertableResponse
             strip_tags($this->streamed_content)
             : $this->streamed_content;
 
-        PHPUnit::assertStringNotContainsString($value, $compare_to, "Response body contains [{$value}].");
+        PHPUnit::assertStringNotContainsString($value, $compare_to, sprintf('Response body contains [%s].', $value));
 
         return $this;
     }

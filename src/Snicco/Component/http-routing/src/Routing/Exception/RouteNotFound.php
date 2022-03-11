@@ -10,7 +10,7 @@ final class RouteNotFound extends InvalidArgumentException
 {
     public static function name(string $name): RouteNotFound
     {
-        return new self("There is no route with name [{$name}].");
+        return new self(sprintf('There is no route with name [%s].', $name));
     }
 
     public static function accessByBadName(string $used_name, string $real_name): RouteNotFound

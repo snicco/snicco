@@ -10,7 +10,7 @@ final class RedirectResponse extends Response
 {
     private bool $bypass_validation = false;
 
-    public function to(string $url): Response
+    public function to(string $url): RedirectResponse
     {
         return $this->withHeader('Location', $url);
     }

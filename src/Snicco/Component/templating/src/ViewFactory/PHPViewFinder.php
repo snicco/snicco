@@ -16,7 +16,7 @@ final class PHPViewFinder
     /**
      * @var list<string>
      */
-    private array $directories;
+    private array $directories = [];
 
     /**
      * @param list<string> $directories
@@ -49,7 +49,7 @@ final class PHPViewFinder
             }
         }
 
-        throw new ViewNotFound("No file can be found for view name [{$view_name}].");
+        throw new ViewNotFound(sprintf('No file can be found for view name [%s].', $view_name));
     }
 
     /**

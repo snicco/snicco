@@ -237,6 +237,6 @@ class VerifyNonceTestWPApi extends BetterWPAPI
 
     public function createNonce(string $form_action): string
     {
-        return "nonce.{$form_action}";
+        return sprintf('nonce.%s', $form_action);
     }
 }

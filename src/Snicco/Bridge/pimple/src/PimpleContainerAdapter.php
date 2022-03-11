@@ -65,6 +65,7 @@ final class PimpleContainerAdapter extends DIContainer
         if ($this->locked) {
             throw ContainerIsLocked::whileRemovingId((string) $offset);
         }
+
         $this->pimple->offsetUnset((string) $offset);
     }
 

@@ -16,7 +16,7 @@ final class RequestAwareLogger
     /**
      * @var RequestLogContext[]
      */
-    private array $context;
+    private array $context = [];
 
     /**
      * @var array<class-string<Throwable>,string>

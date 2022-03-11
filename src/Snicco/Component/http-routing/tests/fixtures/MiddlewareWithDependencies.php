@@ -23,7 +23,7 @@ class MiddlewareWithDependencies extends Middleware
         $this->bar = $bar;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 

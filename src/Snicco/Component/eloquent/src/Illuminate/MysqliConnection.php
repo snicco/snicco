@@ -24,6 +24,9 @@ use function is_array;
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {
+    /**
+     * @var string
+     */
     public const CONNECTION_NAME = 'wp_mysqli_connection';
 
     private MysqliDriverInterface $mysqli_driver;

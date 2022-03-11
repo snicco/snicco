@@ -31,6 +31,7 @@ final class MailboxListTest extends WPTestCase
             $this->assertIsInt($key);
             $this->assertSame($address1, $address);
         }
+
         $this->assertSame(1, $count);
     }
 
@@ -52,6 +53,7 @@ final class MailboxListTest extends WPTestCase
             $this->assertIsInt($key);
             $this->assertSame($address1, $address);
         }
+
         $this->assertSame(1, $count);
     }
 

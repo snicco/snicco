@@ -109,24 +109,24 @@ final class Psr16SessionDriver implements SessionDriver
         }
 
         if (! is_array($payload)) {
-            throw new CouldNotReadSessionContent("Session content for id [{$session_id}] is not an array.");
+            throw new CouldNotReadSessionContent(sprintf('Session content for id [%s] is not an array.', $session_id));
         }
 
         if (! isset($payload['last_activity']) || ! is_int($payload['last_activity'])) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [last_activity] is not an integer for selector [{$session_id}]."
+                sprintf('Cache corrupted. [last_activity] is not an integer for selector [%s].', $session_id)
             );
         }
 
         if (! isset($payload['data']) || ! is_string($payload['data'])) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [data] is not a string for selector [{$session_id}]."
+                sprintf('Cache corrupted. [data] is not a string for selector [%s].', $session_id)
             );
         }
 
         if (! isset($payload['hashed_validator']) || ! is_string($payload['hashed_validator'])) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [hashed_validator] is not a string for selector [{$session_id}]."
+                sprintf('Cache corrupted. [hashed_validator] is not a string for selector [%s].', $session_id)
             );
         }
 
@@ -136,7 +136,7 @@ final class Psr16SessionDriver implements SessionDriver
             (! is_string($payload['user_id']) && ! is_int($payload['user_id']) && null !== $payload['user_id'])
         ) {
             throw new InvalidArgumentException(
-                "Cache corrupted. [user_id] is not a null,string or integer for selector [{$session_id}]."
+                sprintf('Cache corrupted. [user_id] is not a null,string or integer for selector [%s].', $session_id)
             );
         }
 
