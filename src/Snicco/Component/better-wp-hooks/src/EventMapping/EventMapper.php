@@ -14,7 +14,9 @@ use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 
 use function array_key_first;
+use function count;
 use function in_array;
+use function is_string;
 
 use const PHP_INT_MIN;
 

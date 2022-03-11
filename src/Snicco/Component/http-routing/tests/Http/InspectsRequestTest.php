@@ -18,7 +18,10 @@ final class InspectsRequestTest extends TestCase
     use CreatesPsrRequests;
     use CreateUrlGenerator;
 
-    public function test_is_get(): void
+    /**
+     * @test
+     */
+    public function is_get(): void
     {
         $request = $this->frontendRequest('/foo');
         $this->assertTrue($request->isGet());
@@ -27,7 +30,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isGet());
     }
 
-    public function test_is_post(): void
+    /**
+     * @test
+     */
+    public function is_post(): void
     {
         $request = $this->frontendRequest('/', [], 'POST');
         $this->assertTrue($request->isPost());
@@ -36,7 +42,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isPost());
     }
 
-    public function test_is_put(): void
+    /**
+     * @test
+     */
+    public function is_put(): void
     {
         $request = $this->frontendRequest('/', [], 'PUT');
         $this->assertTrue($request->isPut());
@@ -45,7 +54,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isPut());
     }
 
-    public function test_is_patch(): void
+    /**
+     * @test
+     */
+    public function is_patch(): void
     {
         $request = $this->frontendRequest('/', [], 'PATCH');
         $this->assertTrue($request->isPatch());
@@ -54,7 +66,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isPatch());
     }
 
-    public function test_is_options(): void
+    /**
+     * @test
+     */
+    public function is_options(): void
     {
         $request = $this->frontendRequest('/', [], 'OPTIONS');
         $this->assertTrue($request->isOptions());
@@ -63,7 +78,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isOptions());
     }
 
-    public function test_is_delete(): void
+    /**
+     * @test
+     */
+    public function is_delete(): void
     {
         $request = $this->frontendRequest('/', [], 'DELETE');
         $this->assertTrue($request->isDelete());
@@ -72,7 +90,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isDelete());
     }
 
-    public function test_is_head(): void
+    /**
+     * @test
+     */
+    public function is_head(): void
     {
         $request = $this->frontendRequest('/', [], 'HEAD');
         $this->assertTrue($request->isHead());
@@ -81,7 +102,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isHead());
     }
 
-    public function test_is_safe(): void
+    /**
+     * @test
+     */
+    public function is_safe(): void
     {
         $request = $this->frontendRequest('/', [], 'HEAD');
         $this->assertTrue($request->isMethodSafe());
@@ -108,7 +132,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isMethodSafe());
     }
 
-    public function test_is_read_verb(): void
+    /**
+     * @test
+     */
+    public function is_read_verb(): void
     {
         $request = $this->frontendRequest('/', [], 'HEAD');
         $this->assertTrue($request->isReadVerb());
@@ -135,7 +162,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isReadVerb());
     }
 
-    public function test_is_ajax(): void
+    /**
+     * @test
+     */
+    public function is_ajax(): void
     {
         $request = $this->frontendRequest('foo')
             ->withAddedHeader('X-Requested-With', 'XMLHttpRequest');
@@ -149,7 +179,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isXmlHttpRequest());
     }
 
-    public function test_is_sending_json(): void
+    /**
+     * @test
+     */
+    public function is_sending_json(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')
             ->withAddedHeader('Content-Type', 'application/json');
@@ -163,7 +196,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isSendingJson());
     }
 
-    public function test_is_expecting_json(): void
+    /**
+     * @test
+     */
+    public function is_expecting_json(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')
             ->withAddedHeader('Content-Type', 'application/json')
@@ -178,7 +214,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->isExpectingJson());
     }
 
-    public function test_accepts(): void
+    /**
+     * @test
+     */
+    public function accepts(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')
             ->withAddedHeader('Accept', 'application/json');
@@ -201,7 +240,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->accepts('text/html'));
     }
 
-    public function test_accepts_one_of(): void
+    /**
+     * @test
+     */
+    public function accepts_one_of(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')
             ->withAddedHeader('Accept', 'application/json');
@@ -210,7 +252,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->acceptsOneOf(['text/html', 'application/json+ld']));
     }
 
-    public function test_accepts_html(): void
+    /**
+     * @test
+     */
+    public function accepts_html(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')->withAddedHeader('Accept', 'text/html');
 
@@ -220,7 +265,10 @@ final class InspectsRequestTest extends TestCase
         $this->assertFalse($request->acceptsHtml());
     }
 
-    public function test_get_real_method(): void
+    /**
+     * @test
+     */
+    public function get_real_method(): void
     {
         $request = $this->frontendRequest('/foo', [
             'REQUEST_METHOD' => 'POST',

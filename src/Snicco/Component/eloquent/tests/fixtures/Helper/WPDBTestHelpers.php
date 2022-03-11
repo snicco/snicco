@@ -7,6 +7,9 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Helper;
 use Closure;
 use mysqli;
 
+use function is_float;
+use function is_int;
+use function is_string;
 use function mysqli_report;
 
 use const MYSQLI_REPORT_ALL;

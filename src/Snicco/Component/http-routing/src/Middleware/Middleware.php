@@ -17,6 +17,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 
+use Webmozart\Assert\Assert;
+
 use function sprintf;
 
 abstract class Middleware implements MiddlewareInterface
@@ -27,8 +29,6 @@ abstract class Middleware implements MiddlewareInterface
 
     /**
      * @psalm-internal Snicco\Component\HttpRouting
-     *
-     * @interal
      */
     final public function setContainer(ContainerInterface $container): void
     {
@@ -55,8 +55,10 @@ abstract class Middleware implements MiddlewareInterface
     final protected function url(): UrlGenerator
     {
         try {
-            /** @var UrlGenerator $url */
-            return $this->container->get(UrlGenerator::class);
+            $url = $this->container->get(UrlGenerator::class);
+            Assert::isInstanceOf($url, UrlGenerator::class);
+
+            return $url;
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The UrlGenerator is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
@@ -69,8 +71,10 @@ abstract class Middleware implements MiddlewareInterface
     final protected function responseFactory(): ResponseFactory
     {
         try {
-            /** @var ResponseFactory $factory */
-            return $this->container->get(ResponseFactory::class);
+            $res = $this->container->get(ResponseFactory::class);
+            Assert::isInstanceOf($res, ResponseFactory::class);
+
+            return $res;
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The ResponseFactory is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",

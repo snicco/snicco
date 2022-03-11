@@ -15,6 +15,8 @@ namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use InvalidArgumentException;
 
+use function count;
+
 final class Envelope
 {
     private Mailbox $sender;

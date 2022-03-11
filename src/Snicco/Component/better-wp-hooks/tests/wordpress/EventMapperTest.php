@@ -153,7 +153,6 @@ final class EventMapperTest extends WPTestCase
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
-            /** @var int $count */
             ++$count;
         }, 5);
 
@@ -177,7 +176,6 @@ final class EventMapperTest extends WPTestCase
     {
         $count = 0;
         add_action('empty', function () use (&$count) {
-            /** @var int $count */
             ++$count;
         }, 5);
 
@@ -207,7 +205,6 @@ final class EventMapperTest extends WPTestCase
         $count = 0;
 
         add_action(EmptyActionEvent::class, function () use (&$count) {
-            /** @var int $count */
             ++$count;
         }, 1);
 

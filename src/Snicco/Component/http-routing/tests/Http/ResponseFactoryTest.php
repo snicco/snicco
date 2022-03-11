@@ -41,7 +41,10 @@ final class ResponseFactoryTest extends TestCase
         $this->factory = $this->createResponseFactory();
     }
 
-    public function test_make(): void
+    /**
+     * @test
+     */
+    public function make(): void
     {
         $response = $this->factory->createResponse(204, 'Hello');
 
@@ -51,7 +54,10 @@ final class ResponseFactoryTest extends TestCase
         $this->assertSame('Hello', $response->getReasonPhrase());
     }
 
-    public function test_json(): void
+    /**
+     * @test
+     */
+    public function json(): void
     {
         $response = $this->factory->json([
             'foo' => 'bar',

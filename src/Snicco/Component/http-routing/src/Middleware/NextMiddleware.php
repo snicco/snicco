@@ -22,7 +22,6 @@ final class NextMiddleware implements RequestHandlerInterface, MiddlewareInterfa
 
     /**
      * @param callable(Request):PsrResponse $callback
-     * @param callable(Request=):PsrResponse $callback // Request is optional
      */
     public function __construct(callable $callback)
     {

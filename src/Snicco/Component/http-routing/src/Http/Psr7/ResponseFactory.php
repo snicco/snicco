@@ -19,6 +19,7 @@ use stdClass;
 use Webmozart\Assert\Assert;
 
 use function array_keys;
+use function is_array;
 use function is_string;
 use function json_encode;
 

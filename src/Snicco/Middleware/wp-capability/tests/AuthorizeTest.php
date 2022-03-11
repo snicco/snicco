@@ -13,6 +13,7 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\WPCap\Authorize;
 
 use function array_values;
+use function call_user_func;
 
 /**
  * @internal

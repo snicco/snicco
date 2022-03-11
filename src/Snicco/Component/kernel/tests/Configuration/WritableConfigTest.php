@@ -23,13 +23,6 @@ final class WritableConfigTest extends TestCase
         $this->config = new WritableConfig();
     }
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->config = null;
-    }
-
     /**
      * @test
      */

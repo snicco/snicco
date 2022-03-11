@@ -37,7 +37,10 @@ final class RequestTest extends TestCase
         $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
     }
 
-    public function test_is_immutable(): void
+    /**
+     * @test
+     */
+    public function is_immutable(): void
     {
         $request = $this->frontendRequest('foo');
 
@@ -52,7 +55,10 @@ final class RequestTest extends TestCase
         $this->assertSame('POST', $next->getMethod());
     }
 
-    public function test_get_path(): void
+    /**
+     * @test
+     */
+    public function get_path(): void
     {
         $request = $this->frontendRequest('/foo/bar');
         $this->assertSame('/foo/bar', $request->path());
@@ -73,7 +79,10 @@ final class RequestTest extends TestCase
         $this->assertSame('/', $request->path());
     }
 
-    public function test_get_url(): void
+    /**
+     * @test
+     */
+    public function get_url(): void
     {
         $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
@@ -88,7 +97,10 @@ final class RequestTest extends TestCase
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
     }
 
-    public function test_get_full_url(): void
+    /**
+     * @test
+     */
+    public function get_full_url(): void
     {
         $request = $this->frontendRequest('https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
@@ -106,7 +118,10 @@ final class RequestTest extends TestCase
         $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
     }
 
-    public function test_cookie(): void
+    /**
+     * @test
+     */
+    public function cookie(): void
     {
         $this->assertNull($this->request->cookie('foo'));
 
@@ -125,7 +140,10 @@ final class RequestTest extends TestCase
         $this->assertSame('bar', $request->cookie('foo'));
     }
 
-    public function test_full_url_is(): void
+    /**
+     * @test
+     */
+    public function full_url_is(): void
     {
         $request = $this->frontendRequest('https://example.com/foo/bar');
 
@@ -135,7 +153,10 @@ final class RequestTest extends TestCase
         $this->assertTrue($request->fullUrlIs('https://example.com/foo/*'));
     }
 
-    public function test_path_is(): void
+    /**
+     * @test
+     */
+    public function path_is(): void
     {
         $request = $this->frontendRequest('https://example.com/foo/bar');
 
@@ -157,7 +178,10 @@ final class RequestTest extends TestCase
         $this->assertTrue($request->pathIs('/münchen/*'));
     }
 
-    public function test_decoded_path(): void
+    /**
+     * @test
+     */
+    public function decoded_path(): void
     {
         $request = $this->frontendRequest('/münchen/düsseldorf');
 

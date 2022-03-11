@@ -11,6 +11,8 @@ use mysqli_sql_exception;
 use mysqli_stmt;
 
 use function count;
+use function is_float;
+use function is_int;
 use function sprintf;
 
 /**

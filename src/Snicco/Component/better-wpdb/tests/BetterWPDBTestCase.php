@@ -12,7 +12,7 @@ use function array_key_exists;
 /**
  * @internal
  */
-final class BetterWPDBTestCase extends WPTestCase
+abstract class BetterWPDBTestCase extends WPTestCase
 {
     protected BetterWPDB $better_wpdb;
 

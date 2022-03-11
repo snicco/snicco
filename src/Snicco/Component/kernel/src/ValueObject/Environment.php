@@ -7,6 +7,8 @@ namespace Snicco\Component\Kernel\ValueObject;
 use InvalidArgumentException;
 use Webmozart\Assert\Assert;
 
+use function in_array;
+
 use const PHP_SAPI;
 
 /**

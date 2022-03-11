@@ -12,6 +12,7 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\SerializedRouteCollection;
 use stdClass;
 
+use function count;
 use function serialize;
 
 /**

@@ -19,6 +19,9 @@ use Illuminate\View\ViewServiceProvider;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
+use function in_array;
+use function is_array;
+
 final class BladeStandalone
 {
     private string $view_cache_directory;
@@ -37,7 +40,6 @@ final class BladeStandalone
 
     /**
      * @param string[] $view_directories
-     * @psalm-suppress InvalidArgument
      */
     public function __construct(
         string $view_cache_directory,
@@ -49,6 +51,7 @@ final class BladeStandalone
         $this->blade_view_composer = new BladeViewComposer($composers);
         $this->illuminate_container = Container::getInstance();
         if (! Facade::getFacadeApplication() instanceof IlluminateContainer) {
+            /** @psalm-suppress InvalidArgument */
             Facade::setFacadeApplication($this->illuminate_container);
         }
     }
@@ -129,8 +132,11 @@ final class BladeStandalone
             },
             true
         );
+        /**
+         * @psalm-suppress MixedReturnStatement
+         * @psalm-suppress MixedInferredReturnType
+         */
         $this->illuminate_container->bindIf(Factory::class, function (): Factory {
-            /** @var Factory $view */
             return $this->illuminate_container->make('view');
         });
         $this->illuminate_container->bindIf(Application::class, function (): DummyApplication {
@@ -138,11 +144,11 @@ final class BladeStandalone
         });
     }
 
-    /**
-     * @psalm-suppress PossiblyInvalidArgument
-     */
     private function bootIlluminateViewServiceProvider(): void
     {
+        /**
+         * @psalm-suppress PossiblyInvalidArgument
+         */
         ((new ViewServiceProvider($this->illuminate_container)))->register();
     }
 

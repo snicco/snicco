@@ -7,6 +7,7 @@ namespace Snicco\Component\HttpRouting\Routing;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
+use function is_string;
 use function ltrim;
 use function rtrim;
 

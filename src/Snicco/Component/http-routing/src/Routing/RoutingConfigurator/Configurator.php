@@ -25,6 +25,8 @@ use function array_merge;
 use function array_pop;
 use function array_reverse;
 use function count;
+use function gettype;
+use function is_string;
 use function trim;
 
 /**

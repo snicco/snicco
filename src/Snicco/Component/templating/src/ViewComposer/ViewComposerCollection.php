@@ -10,6 +10,10 @@ use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\View\View;
 
+use function in_array;
+use function is_array;
+use function is_string;
+
 final class ViewComposerCollection
 {
     private ViewComposerFactory $composer_factory;

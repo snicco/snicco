@@ -164,9 +164,12 @@ final class ViewEngineMailRendererTest extends WPTestCase
         return $kernel;
     }
 
+    /**
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
     private function getTransport(Kernel $kernel): FakeTransport
     {
-        /** @var FakeTransport $transport */
         return $kernel->container()->get(Transport::class);
     }
 

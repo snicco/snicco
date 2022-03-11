@@ -9,6 +9,7 @@ use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
+use function get_class;
 use function implode;
 
 final class ViewEngine

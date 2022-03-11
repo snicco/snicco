@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use PhpCsFixer\Fixer\Alias\NoMixedEchoPrintFixer;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
-use PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer;
 use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
+use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoUselessInheritdocFixer;
@@ -34,12 +34,13 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services = $configurator->services();
 
-    // Import base rules
+    // Import base rules.
     $configurator->import(SetList::PHP_CS_FIXER);
 
-    // We do not use @covers annotations
+    // We don't use @covers annotations.
     $services->remove(PhpUnitTestClassRequiresCoversFixer::class);
 
+    // Don't turn inline psalm annotations to comments.
     // @see https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/4446
     $services->set(PhpdocToCommentFixer::class)->call('configure', [
         [
@@ -53,21 +54,25 @@ return static function (ContainerConfigurator $configurator): void {
         ],
     ]);
 
+    // PHPUnit test methods must be snake_case
     $services->set(PhpUnitMethodCasingFixer::class)->call('configure', [
         [
             'case' => 'snake_case',
         ],
     ]);
 
+    // Don't sort parameters or psalm will get confused for something like @param Closure():foo|string $param
     $services->set(PhpdocTypesOrderFixer::class)->call('configure', [
         [
             'null_adjustment' => 'always_last',
+            'sort_algorithm' => 'none',
         ],
     ]);
 
     $services->set(NoExtraBlankLinesFixer::class)->call('configure', [
         [
             'tokens' => [
+                //                'use', Allow blank lines in import statements to separate functions/classes/constants
                 'break',
                 'case',
                 'continue',
@@ -79,7 +84,6 @@ return static function (ContainerConfigurator $configurator): void {
                 'square_brace_block',
                 'switch',
                 'throw',
-                //                'use', Allow blank line in use statement for separation between functions/consts/classes
                 'use_trait',
             ],
         ],
@@ -88,20 +92,23 @@ return static function (ContainerConfigurator $configurator): void {
     // Import base rules
     $configurator->import(SetList::PHP_CS_FIXER_RISKY);
 
-    // Dont rename test methods
-    $services->remove(PhpUnitTestAnnotationFixer::class);
-    // We want to import functions
-    $services->remove(NativeFunctionInvocationFixer::class);
-    // This breaks assertions that compare object equality but not reference.
-    $services->remove(PhpUnitStrictFixer::class);
-    // Allow class names inside same class
-    $services->remove(SelfAccessorFixer::class);
-
+    // Test methods should have an annotation and not be prefixed with "test_"
+    $services->set(PhpUnitTestAnnotationFixer::class)->call('configure', [
+        [
+            'style' => 'annotation',
+        ],
+    ]);
+    // Assertions should be called with $this instead of self::
     $services->set(PhpUnitTestCaseStaticMethodCallsFixer::class)->call('configure', [
         [
             'call_type' => 'this',
         ],
     ]);
+    // This breaks assertions that compare object equality but not reference.
+    $services->remove(PhpUnitStrictFixer::class);
+
+    // Allow class names inside same class
+    $services->remove(SelfAccessorFixer::class);
 
     $configurator->import(SetList::PSR_12);
     $configurator->import(SetList::SPACES);
@@ -112,13 +119,15 @@ return static function (ContainerConfigurator $configurator): void {
     $configurator->import(SetList::STRICT);
     $configurator->import(SetList::COMMENTS);
 
+    // Only echo, no print.
+    $services->set(NoMixedEchoPrintFixer::class);
+
     $services->set(OrderedImportsFixer::class)->call('configure', [
         [
             'sort_algorithm' => 'alpha',
             'imports_order' => ['class', 'function', 'const'],
         ],
     ]);
-    $services->set(NoMixedEchoPrintFixer::class);
     $services->set(GlobalNamespaceImportFixer::class)->call('configure', [
         [
             'import_classes' => true,
@@ -127,15 +136,21 @@ return static function (ContainerConfigurator $configurator): void {
         ],
     ]);
 
-    // Allow @throws annotation.
     $services->set(GeneralPhpdocAnnotationRemoveFixer::class)->call(
         'configure',
         [
             [
-                'annotations' => ['author', 'package', 'group', 'covers', 'since'],
+                'annotations' => [
+                    //                   'throws', Allow @throws annotation.
+                    'author',
+                    'package',
+                    'group',
+                    'covers',
+                    'since',
+                ],
             ],
         ]
     );
-
     $services->set(PhpdocNoUselessInheritdocFixer::class);
+    $services->set(NoUnusedImportsFixer::class);
 };

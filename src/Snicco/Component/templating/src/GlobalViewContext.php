@@ -10,6 +10,8 @@ use Closure;
 use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 
+use function is_array;
+
 final class GlobalViewContext
 {
     /**

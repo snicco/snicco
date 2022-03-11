@@ -2,5 +2,7 @@
 
 declare(strict_types=1);
 
-/** @var string|null $greet */
-echo 'Hello ' . (isset($greet) ? (string) $greet : 'World');
+/**
+ * @var string|null $greet
+ */
+echo 'Hello ' . (is_string($greet) ? $greet : 'World');

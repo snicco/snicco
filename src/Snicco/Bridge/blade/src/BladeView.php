@@ -59,10 +59,12 @@ final class BladeView implements View
     }
 
     /**
-     * @psalm-mutation-free
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
      *
-     * @param mixed      $key
-     * @param mixed|null $value
+     * @return static
+     *
+     * @psalm-mutation-free
      */
     public function with($key, $value = null): View
     {

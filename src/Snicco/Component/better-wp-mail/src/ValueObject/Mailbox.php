@@ -8,9 +8,12 @@ use InvalidArgumentException;
 use LogicException;
 use WP_User;
 
+use function call_user_func;
 use function filter_var;
 use function gettype;
+use function is_array;
 use function is_bool;
+use function is_string;
 use function sprintf;
 
 use const FILTER_VALIDATE_EMAIL;

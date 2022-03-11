@@ -17,6 +17,7 @@ use function array_key_first;
 use function array_keys;
 use function array_merge;
 use function array_shift;
+use function count;
 use function hash;
 use function time;
 

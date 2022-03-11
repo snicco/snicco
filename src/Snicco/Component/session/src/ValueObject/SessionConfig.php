@@ -86,7 +86,6 @@ final class SessionConfig
                 sprintf('same_site must be one of [%s].', implode(', ', $req))
             );
         }
-        /** @var 'Lax'|'None; Secure'|'Strict' same_site */
         $this->same_site = $same_site;
 
         if (! isset($config['rotation_interval_in_sec'])) {
