@@ -189,13 +189,9 @@ final class DatabaseFactoriesTest extends WPTestCase
         $table = $this->assertDbTable('wp_countries');
         $table->assertTotalCount(6);
 
-        $countries_in_narnia = $countries->filter(function ($country) {
-            return 'Narnia' === $country->continent;
-        });
+        $countries_in_narnia = $countries->filter(fn ($country) => 'Narnia' === $country->continent);
 
-        $countries_in_westeros = $countries->filter(function ($country) {
-            return 'Westeros' === $country->continent;
-        });
+        $countries_in_westeros = $countries->filter(fn ($country) => 'Westeros' === $country->continent);
 
         $this->assertCount(3, $countries_in_narnia);
         $this->assertCount(3, $countries_in_westeros);
@@ -253,11 +249,9 @@ final class DatabaseFactoriesTest extends WPTestCase
     public function test_has_many_with_custom_attributes(): void
     {
         $country = Country::factory()
-            ->hasCities(3, function (array $attributes, Country $country) {
-                return [
-                    'population' => 10,
-                ];
-            })
+            ->hasCities(3, fn (array $attributes, Country $country) => [
+                'population' => 10,
+            ])
             ->create();
 
         $this->assertInstanceOf(Country::class, $country);

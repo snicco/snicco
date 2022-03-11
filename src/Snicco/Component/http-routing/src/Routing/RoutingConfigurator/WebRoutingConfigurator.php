@@ -79,7 +79,8 @@ interface WebRoutingConfigurator extends RoutingConfigurator
     ): Route;
 
     /**
-     * This method will create an internal route that will return an instance of.
+     * This method will create an internal route that will return an instance
+     * of.
      *
      * {@see ViewResponse} Its the users' responsibility when and where this
      * response is transformed into an actual response with content.

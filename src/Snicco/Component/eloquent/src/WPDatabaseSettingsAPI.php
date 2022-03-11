@@ -66,6 +66,8 @@ class WPDatabaseSettingsAPI extends BetterWPAPI
 
     public function mysqli(): mysqli
     {
+        $wpdb = null;
+
         try {
             // This is a protected property in wpdb, but it has __get() access.
             /** @var mysqli $mysqli */
@@ -76,9 +78,8 @@ class WPDatabaseSettingsAPI extends BetterWPAPI
 
             // This will work for sure if WordPress where ever
             // to delete magic method accessors, which tbh will probably never happen.
-            return (function () {
-                return $this->dbh;
-            })->call($wpdb);
+            return (fn () => $this->dbh)
+                ->call($wpdb);
             // @codeCoverageIgnoreEnd
         }
     }

@@ -39,12 +39,8 @@ final class MiddlewareTest extends TestCase
         $pimple = new Container();
         $this->pimple = $pimple;
         $this->pimple_psr = new \Pimple\Psr11\Container($pimple);
-        $pimple[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory();
-        };
-        $pimple[UrlGenerator::class] = function (): UrlGenerator {
-            return $this->createUrlGenerator();
-        };
+        $pimple[ResponseFactory::class] = fn (): ResponseFactory => $this->createResponseFactory();
+        $pimple[UrlGenerator::class] = fn (): UrlGenerator => $this->createUrlGenerator();
     }
 
     /**

@@ -40,11 +40,7 @@ final class GlobalViewContext
     {
         /** @psalm-suppress MissingClosureParamType */
         /** @psalm-suppress MissingClosureReturnType */
-        return array_map(function ($context) {
-            return ($context instanceof Closure)
-                ? $context()
-                : $context;
-        }, $this->context);
+        return array_map(fn ($context) => ($context instanceof Closure) ? $context() : $context, $this->context);
     }
 
     private function getArrayAccess(array $context): ArrayAccess

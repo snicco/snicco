@@ -94,11 +94,9 @@ final class TemplatingMiddlewareTest extends TestCase
         $response = $pipeline
             ->send($request)
             ->through([TemplatingMiddleware::class])
-            ->then(function () {
-                return new Response(200, [
-                    'location' => '/foo',
-                ]);
-            });
+            ->then(fn () => new Response(200, [
+                'location' => '/foo',
+            ]));
 
         $this->assertSame('', (string) $response->getBody());
         $this->assertSame('/foo', $response->getHeaderLine('location'));

@@ -117,23 +117,18 @@ final class BladeStandalone
             });
         }
 
-        $this->illuminate_container->bindIf('files', function () {
-            return new Filesystem();
-        }, true);
+        $this->illuminate_container->bindIf('files', fn () => new Filesystem(), true);
 
-        $this->illuminate_container->bindIf('events', function () {
-            return new Dispatcher();
-        }, true);
+        $this->illuminate_container->bindIf('events', fn () => new Dispatcher(), true);
         /**
          * @psalm-suppress MixedReturnStatement
          * @psalm-suppress MixedInferredReturnType
          */
-        $this->illuminate_container->bindIf(Factory::class, function (): Factory {
-            return $this->illuminate_container->make('view');
-        });
-        $this->illuminate_container->bindIf(Application::class, function (): DummyApplication {
-            return new DummyApplication();
-        });
+        $this->illuminate_container->bindIf(
+            Factory::class,
+            fn (): Factory => $this->illuminate_container->make('view')
+        );
+        $this->illuminate_container->bindIf(Application::class, fn (): DummyApplication => new DummyApplication());
     }
 
     private function bootIlluminateViewServiceProvider(): void
@@ -176,8 +171,12 @@ final class BladeStandalone
      */
     private function bindFrameworkDependencies(): void
     {
-        $this->illuminate_container->bindIf(BladeViewFactory::class, function (IlluminateContainer $container) {
-            return new BladeViewFactory($container->make('view'), $this->view_directories);
-        }, true);
+        $this->illuminate_container->bindIf(
+            BladeViewFactory::class,
+            fn (IlluminateContainer $container) => new BladeViewFactory($container->make(
+                'view'
+            ), $this->view_directories),
+            true
+        );
     }
 }

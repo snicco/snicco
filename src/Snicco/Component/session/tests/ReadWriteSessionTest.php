@@ -217,9 +217,7 @@ final class ReadWriteSessionTest extends TestCase
     {
         $session = $this->newSession();
 
-        $session->putIfMissing('foo', function () {
-            return 'bar';
-        });
+        $session->putIfMissing('foo', fn () => 'bar');
         $this->assertSame('bar', $session->get('foo'));
 
         $session->put('baz', 'biz');
@@ -1104,7 +1102,7 @@ final class ReadWriteSessionTest extends TestCase
         ?InMemoryDriver $driver = null
     ): ReadWriteSession {
         $session = $this->newSession($id, $data);
-        $driver = $driver ?? new InMemoryDriver();
+        $driver ??= new InMemoryDriver();
         $session->saveUsing($driver, new JsonSerializer(), 'v', time());
 
         return $this->reloadSession($session, $driver);

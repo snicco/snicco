@@ -51,14 +51,12 @@ final class EncryptionBundle implements Bundle
     public function register(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(DefuseEncryptor::class, function () use ($kernel) {
-                return new DefuseEncryptor(
-                    Key::loadFromAsciiSafeString(
-                        $kernel->config()
-                            ->getString('encryption.' . EncryptionOption::KEY_ASCII)
-                    )
-                );
-            });
+            ->shared(DefuseEncryptor::class, fn () => new DefuseEncryptor(
+                Key::loadFromAsciiSafeString(
+                    $kernel->config()
+                        ->getString('encryption.' . EncryptionOption::KEY_ASCII)
+                )
+            ));
     }
 
     public function bootstrap(Kernel $kernel): void

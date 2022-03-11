@@ -27,13 +27,14 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
     {
         parent::setUp();
 
-        $this->pimple[MiddlewareWithDependencies::class] = function (): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies(new Foo(), new Bar());
-        };
+        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+            new Foo(),
+            new Bar()
+        );
 
-        $this->pimple[ControllerWithMiddleware::class] = function (): ControllerWithMiddleware {
-            return new ControllerWithMiddleware(new Baz());
-        };
+        $this->pimple[ControllerWithMiddleware::class] = fn (): ControllerWithMiddleware => new ControllerWithMiddleware(
+            new Baz()
+        );
     }
 
     /**
@@ -47,9 +48,10 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies($foo, $bar);
-        };
+        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+            $foo,
+            $bar
+        );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
@@ -97,14 +99,12 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->pimple[Bar::class] = fn (): Bar => $bar;
 
         $this->pimple[MiddlewareWithClassAndParamDependencies::class] = $this->pimple->protect(
-            function (string $foo, string $bar) {
-                return new MiddlewareWithClassAndParamDependencies(
-                    $this->pimple[Foo::class],
-                    $this->pimple[Bar::class],
-                    $foo,
-                    $bar
-                );
-            }
+            fn (string $foo, string $bar) => new MiddlewareWithClassAndParamDependencies(
+                $this->pimple[Foo::class],
+                $this->pimple[Bar::class],
+                $foo,
+                $bar
+            )
         );
 
         $this->withMiddlewareAlias([

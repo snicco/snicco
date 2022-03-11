@@ -356,7 +356,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         $parent_slug = null;
 
-        $parent_route = $parent_route ?? $this->current_parent_route ?? null;
+        $parent_route ??= $this->current_parent_route ?? null;
 
         if (is_string($parent_route)) {
             $this->validateThatParentHasNoAdminPrefixSet($parent_route, $route->getName());

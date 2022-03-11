@@ -46,7 +46,7 @@ final class BladeFeaturesTest extends BladeTestCase
         $content = $view->render();
         $this->assertSame([
             'foo' => 'bar',
-        ], json_decode($content, true));
+        ], json_decode($content, true, 512, JSON_THROW_ON_ERROR));
     }
 
     /**

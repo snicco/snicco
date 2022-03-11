@@ -101,9 +101,11 @@ final class ResponsePreparation
             return strtolower($response->getHeaderLine('cache-control'));
         }
 
-        $header = Arr::first($headers_sent_with_php, function (string $header): bool {
-            return Str::startsWith(strtolower($header), 'cache-control');
-        }, '');
+        $header = Arr::first(
+            $headers_sent_with_php,
+            fn (string $header): bool => Str::startsWith(strtolower($header), 'cache-control'),
+            ''
+        );
 
         return str_replace('cache-control: ', '', strtolower($header));
     }

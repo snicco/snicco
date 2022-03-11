@@ -70,7 +70,7 @@ final class MiddlewareResolver
     /**
      * @var array<string,true>
      */
-    private $unfinished_group_trace = [];
+    private array $unfinished_group_trace = [];
 
     private bool $is_cached = false;
 
@@ -243,7 +243,7 @@ final class MiddlewareResolver
         $blueprints = $this->sort($blueprints);
 
         if (! empty($prepend)) {
-            $blueprints = array_merge($this->parse($prepend, $this->middleware_groups), $blueprints);
+            $blueprints = [...$this->parse($prepend, $this->middleware_groups), ...$blueprints];
         }
 
         return array_values(array_unique($blueprints, SORT_REGULAR));
@@ -298,7 +298,7 @@ final class MiddlewareResolver
 
             $group_middleware = $groups[$middleware_id];
 
-            $blueprints = array_merge($blueprints, $this->parse($group_middleware, $groups));
+            $blueprints = [...$blueprints, ...$this->parse($group_middleware, $groups)];
 
             unset($this->unfinished_group_trace[$middleware_string]);
         }

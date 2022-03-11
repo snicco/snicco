@@ -53,19 +53,17 @@ final class RFC3986Encoder implements UrlEncoder
     /**
      * @var array<string,string>
      */
-    private $query_special;
+    private array $query_special;
 
     /**
      * @param array<string,string>|null $query_special
      */
     public function __construct(?array $query_special = null)
     {
-        $this->query_special = null === $query_special
-            ? [
-                '=' => '%3D',
-                '&' => '%26',
-            ]
-            : $query_special;
+        $this->query_special = $query_special ?? [
+            '=' => '%3D',
+            '&' => '%26',
+        ];
     }
 
     public function encodeQuery(array $query): string

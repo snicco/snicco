@@ -22,11 +22,9 @@ class CountryFactory extends Factory
      */
     public function narnia(): self
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'continent' => 'Narnia',
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'continent' => 'Narnia',
+        ]);
     }
 
     private function continent()

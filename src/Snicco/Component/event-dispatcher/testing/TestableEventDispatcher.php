@@ -32,7 +32,7 @@ final class TestableEventDispatcher implements EventDispatcher
     /**
      * @var array<string, list<Event>>
      */
-    private $dispatched_events = [];
+    private array $dispatched_events = [];
 
     /**
      * @var string[]

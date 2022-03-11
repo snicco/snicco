@@ -184,7 +184,7 @@ final class DebugBundleTest extends TestCase
         $body = (string) $response->getBody();
 
         /** @var array $decoded */
-        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
+        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         $this->assertTrue(isset($decoded['errors']));
         $this->assertTrue(isset($decoded['errors'][0]));

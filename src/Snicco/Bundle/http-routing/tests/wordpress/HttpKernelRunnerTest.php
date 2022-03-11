@@ -105,14 +105,13 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
-        $dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->body_sent;
-        });
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => $event->body_sent);
 
-        $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            return RoutingBundleTestController::class === (string) $response->getBody()
-                && ! $response instanceof DelegatedResponse;
-        });
+        $dispatcher->assertDispatched(
+            'test_emitter',
+            fn (Response $response) => RoutingBundleTestController::class === (string) $response->getBody()
+            && ! $response instanceof DelegatedResponse
+        );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
 
@@ -138,9 +137,7 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
-        $dispatcher->assertDispatched(function (ResponseSent $event) {
-            return false === $event->body_sent;
-        });
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => false === $event->body_sent);
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $body = (string) $response->getBody();
@@ -490,9 +487,7 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
-        $dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->body_sent;
-        });
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => $event->body_sent);
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
@@ -524,14 +519,13 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
-        $dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->body_sent;
-        });
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => $event->body_sent);
 
-        $dispatcher->assertDispatched('test_emitter', function (Response $response) {
-            return RoutingBundleTestController::class === (string) $response->getBody()
-                && ! $response instanceof DelegatedResponse;
-        });
+        $dispatcher->assertDispatched(
+            'test_emitter',
+            fn (Response $response) => RoutingBundleTestController::class === (string) $response->getBody()
+            && ! $response instanceof DelegatedResponse
+        );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
 
@@ -555,9 +549,7 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
-        $dispatcher->assertDispatched(function (ResponseSent $event) {
-            return $event->body_sent;
-        });
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => $event->body_sent);
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());

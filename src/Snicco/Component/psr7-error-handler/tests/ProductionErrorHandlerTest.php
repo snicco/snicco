@@ -70,6 +70,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->error_data = json_decode(
             (string) file_get_contents(dirname(__DIR__) . '/resources/en_US.error.json'),
             true,
+            JSON_THROW_ON_ERROR,
             JSON_THROW_ON_ERROR
         );
         $this->identifier = new SplHashIdentifier();
@@ -126,7 +127,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $body = (string) $response->getBody();
         $this->assertStringNotContainsString('Secret message here', $body);
 
-        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
+        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertIsArray($decoded);
         $this->assertTrue(isset($decoded['errors']));
         $this->assertTrue(isset($decoded['errors'][0]));
@@ -248,7 +249,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $body = (string) $response->getBody();
 
         /** @var array $response_data */
-        $response_data = json_decode($body, true, JSON_THROW_ON_ERROR);
+        $response_data = json_decode($body, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         $this->assertTrue(isset($response_data['title']));
         $this->assertTrue(isset($response_data['details']));

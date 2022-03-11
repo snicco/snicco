@@ -80,9 +80,6 @@ final class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(function () {
-                return $this->responseFactory()
-                    ->delegate();
-            });
+            ->then(fn () => $this->responseFactory()->delegate());
     }
 }

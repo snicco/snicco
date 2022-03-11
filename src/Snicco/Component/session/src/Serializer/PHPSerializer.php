@@ -23,7 +23,7 @@ final class PHPSerializer implements Serializer
     {
         set_error_handler(function (int $code, string $message) {
             throw new RuntimeException(
-                'Could not unserialize session content in ' . __CLASS__ . "\nMessage: " . $message,
+                'Could not unserialize session content in ' . self::class . "\nMessage: " . $message,
                 $code
             );
         });

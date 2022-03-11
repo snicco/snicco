@@ -20,7 +20,6 @@ use Throwable;
 
 use function array_keys;
 use function array_map;
-use function array_merge;
 use function array_values;
 use function count;
 use function implode;
@@ -245,7 +244,7 @@ final class BetterWPDB
         $sql .= implode(', ', $updates);
         $sql .= ' where ' . implode(' and ', $wheres);
 
-        $stmt = $this->preparedQuery($sql, array_merge($bindings, $where_bindings));
+        $stmt = $this->preparedQuery($sql, [...$bindings, ...$where_bindings]);
 
         return $stmt->affected_rows;
     }
@@ -266,7 +265,7 @@ final class BetterWPDB
         $table = $this->escIdentifier($table);
         $sql = "delete from {$table} where ";
 
-        list($wheres, $bindings) = $this->buildWhereArray($conditions);
+        [$wheres, $bindings] = $this->buildWhereArray($conditions);
 
         $sql .= implode(' and ', $wheres);
 
@@ -462,14 +461,10 @@ final class BetterWPDB
                     throw new InvalidArgumentException('Each record has to be a non-empty-array.');
                 }
                 // only create the insert sql once.
-                $sql = null === $sql
-                    ? $this->buildInsertSql($table, array_keys($record))
-                    : $sql;
+                $sql ??= $this->buildInsertSql($table, array_keys($record));
 
                 // only create one prepared statement
-                $stmt = null === $stmt
-                    ? $this->mysqli->prepare($sql)
-                    : $stmt;
+                $stmt ??= $this->mysqli->prepare($sql);
 
                 $bindings = $this->convertBindings($record);
 

@@ -56,9 +56,10 @@ final class BetterWPCacheBundle implements Bundle
                 return CacheFactory::psr16($group);
             });
         $kernel->container()
-            ->shared(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
-                return CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class));
-            });
+            ->shared(
+                TaggableCacheItemPoolInterface::class,
+                fn () => CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class))
+            );
     }
 
     public function bootstrap(Kernel $kernel): void

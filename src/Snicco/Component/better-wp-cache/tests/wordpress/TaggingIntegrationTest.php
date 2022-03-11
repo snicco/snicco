@@ -183,7 +183,7 @@ final class TaggingIntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key')
             ->set('value');
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $item->setTags(['']);
     }
 
@@ -202,7 +202,7 @@ final class TaggingIntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key')
             ->set('value');
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $item->setTags([$tag]);
     }
 

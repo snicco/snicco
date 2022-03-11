@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use mysqli_sql_exception;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\AssertableWpDB;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
@@ -30,15 +29,9 @@ final class SchemaBuilderTest extends WPTestCase
 {
     use WPDBTestHelpers;
 
-    /**
-     * @var MySqlBuilder
-     */
-    private $builder;
+    private \Illuminate\Database\Schema\MySqlBuilder $builder;
 
-    /**
-     * @var MysqliConnection
-     */
-    private $mysqli_connection;
+    private \Snicco\Component\Eloquent\Illuminate\MysqliConnection $mysqli_connection;
 
     protected function setUp(): void
     {
@@ -2016,10 +2009,7 @@ final class SchemaBuilderTest extends WPTestCase
  */
 class TestSchemaBuilder extends MySqlBuilder
 {
-    /**
-     * @var string|null
-     */
-    private $table;
+    private ?string $table;
 
     public function __construct($connection, $table = null)
     {

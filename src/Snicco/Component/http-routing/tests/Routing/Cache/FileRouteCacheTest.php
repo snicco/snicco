@@ -40,15 +40,13 @@ final class FileRouteCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->test_cache_file));
 
-        $res = $cache->get(function () {
-            return [
-                'route_collection' => [
-                    'foo' => 'bar',
-                ],
-                'url_matcher' => [],
-                'admin_menu' => [],
-            ];
-        });
+        $res = $cache->get(fn () => [
+            'route_collection' => [
+                'foo' => 'bar',
+            ],
+            'url_matcher' => [],
+            'admin_menu' => [],
+        ]);
 
         $this->assertSame([
             'route_collection' => [
@@ -70,15 +68,13 @@ final class FileRouteCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->test_cache_file));
 
-        $cache->get(function () {
-            return [
-                'route_collection' => [
-                    'foo' => 'bar',
-                ],
-                'url_matcher' => [],
-                'admin_menu' => [],
-            ];
-        });
+        $cache->get(fn () => [
+            'route_collection' => [
+                'foo' => 'bar',
+            ],
+            'url_matcher' => [],
+            'admin_menu' => [],
+        ]);
 
         $this->assertTrue(is_file($this->test_cache_file));
 

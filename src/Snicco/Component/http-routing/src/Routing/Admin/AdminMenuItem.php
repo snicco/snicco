@@ -103,7 +103,7 @@ final class AdminMenuItem
 
         if (isset($attributes[self::PAGE_TITLE])) {
             $page_title = $attributes[self::PAGE_TITLE];
-            $menu_title = $menu_title ?? $page_title;
+            $menu_title ??= $page_title;
         }
 
         if (null === $page_title) {
@@ -174,9 +174,7 @@ final class AdminMenuItem
         $parts = explode(' ', str_replace(['.', '_', '-'], ' ', $route_name));
 
         if (count($parts) > 1) {
-            $parts = array_map(function (string $part) {
-                return mb_convert_case($part, MB_CASE_TITLE, 'UTF-8');
-            }, $parts);
+            $parts = array_map(fn (string $part) => mb_convert_case($part, MB_CASE_TITLE, 'UTF-8'), $parts);
         }
 
         return implode(' ', $parts);

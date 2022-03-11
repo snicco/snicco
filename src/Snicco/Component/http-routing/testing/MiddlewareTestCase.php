@@ -55,9 +55,7 @@ abstract class MiddlewareTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->next_middleware_response = function (Response $response): Response {
-            return $response;
-        };
+        $this->next_middleware_response = fn (Response $response): Response => $response;
         $this->response_factory = $this->newResponseFactory();
     }
 

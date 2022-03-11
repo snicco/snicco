@@ -52,20 +52,20 @@ final class Psr17FactoryDiscovery
     {
         $this->check_for_classes = $check_for_classes ?: [
             // nyholm-psr7
-            '\Nyholm\Psr7\Factory\Psr17Factory' => [
-                'server_request' => '\Nyholm\Psr7\Factory\Psr17Factory',
-                'uri' => '\Nyholm\Psr7\Factory\Psr17Factory',
-                'uploaded_file' => '\Nyholm\Psr7\Factory\Psr17Factory',
-                'stream' => '\Nyholm\Psr7\Factory\Psr17Factory',
-                'response' => '\Nyholm\Psr7\Factory\Psr17Factory',
+            \Nyholm\Psr7\Factory\Psr17Factory::class => [
+                'server_request' => \Nyholm\Psr7\Factory\Psr17Factory::class,
+                'uri' => \Nyholm\Psr7\Factory\Psr17Factory::class,
+                'uploaded_file' => \Nyholm\Psr7\Factory\Psr17Factory::class,
+                'stream' => \Nyholm\Psr7\Factory\Psr17Factory::class,
+                'response' => \Nyholm\Psr7\Factory\Psr17Factory::class,
             ],
             // guzzle
-            '\GuzzleHttp\Psr7\HttpFactory' => [
-                'server_request' => '\GuzzleHttp\Psr7\HttpFactory',
-                'uri' => '\GuzzleHttp\Psr7\HttpFactory',
-                'uploaded_file' => '\GuzzleHttp\Psr7\HttpFactory',
-                'stream' => '\GuzzleHttp\Psr7\HttpFactory',
-                'response' => '\GuzzleHttp\Psr7\HttpFactory',
+            \GuzzleHttp\Psr7\HttpFactory::class => [
+                'server_request' => \GuzzleHttp\Psr7\HttpFactory::class,
+                'uri' => \GuzzleHttp\Psr7\HttpFactory::class,
+                'uploaded_file' => \GuzzleHttp\Psr7\HttpFactory::class,
+                'stream' => \GuzzleHttp\Psr7\HttpFactory::class,
+                'response' => \GuzzleHttp\Psr7\HttpFactory::class,
             ],
         ];
     }

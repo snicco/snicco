@@ -292,13 +292,11 @@ final class ErrorHandlingTest extends TestCase
     public function a_custom_exception_information_provider_can_be_used(): void
     {
         $container = $this->newContainer();
-        $container[ExceptionInformationProvider::class] = function (): ExceptionInformationProvider {
-            return new class() implements ExceptionInformationProvider {
-                public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
-                {
-                    return new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request,);
-                }
-            };
+        $container[ExceptionInformationProvider::class] = fn (): ExceptionInformationProvider => new class() implements ExceptionInformationProvider {
+            public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
+            {
+                return new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request,);
+            }
         };
 
         $kernel = new Kernel($container, Environment::prod(), $this->directories);

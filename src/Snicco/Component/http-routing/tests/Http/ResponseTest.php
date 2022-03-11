@@ -97,7 +97,7 @@ final class ResponseTest extends TestCase
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame([
             'foo' => 'bar',
-        ], json_decode($response->getBody()->__toString(), true));
+        ], json_decode($response->getBody()->__toString(), true, 512, JSON_THROW_ON_ERROR));
     }
 
     /**
