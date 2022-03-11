@@ -228,6 +228,6 @@ final class MailEventsTest extends WPTestCase
     }
 }
 
-class TestEmail extends Email
+final class TestEmail extends Email
 {
 }

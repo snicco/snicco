@@ -1108,7 +1108,7 @@ final class ReadWriteSessionTest extends TestCase
     }
 }
 
-class SpyDriver implements SessionDriver
+final class SpyDriver implements SessionDriver
 {
     public array $written = [];
 

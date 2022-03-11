@@ -109,7 +109,7 @@ final class TemplatingMiddlewareTest extends TestCase
     }
 }
 
-class CreateViewResponseMiddleware extends Middleware
+final class CreateViewResponseMiddleware extends Middleware
 {
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {

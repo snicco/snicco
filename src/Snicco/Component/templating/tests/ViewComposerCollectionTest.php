@@ -296,7 +296,7 @@ final class ViewComposerCollectionTest extends TestCase
     }
 }
 
-class TestComposer implements ViewComposer
+final class TestComposer implements ViewComposer
 {
     public function compose(View $view): View
     {
@@ -306,7 +306,7 @@ class TestComposer implements ViewComposer
     }
 }
 
-class ComposerWithoutInterface
+final class ComposerWithoutInterface
 {
     public function compose(View $view): View
     {

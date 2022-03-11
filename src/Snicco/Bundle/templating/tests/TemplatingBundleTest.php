@@ -357,7 +357,7 @@ final class TemplatingBundleTest extends TestCase
     }
 }
 
-class CustomBundleComposer implements ViewComposer
+final class CustomBundleComposer implements ViewComposer
 {
     public function compose(View $view): View
     {

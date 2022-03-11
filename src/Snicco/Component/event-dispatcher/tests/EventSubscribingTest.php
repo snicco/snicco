@@ -70,13 +70,13 @@ final class EventSubscribingTest extends TestCase
         $this->dispatcher->subscribe(BadMethodSubscriber::class);
     }
 
-    private function getDispatcher(): EventDispatcher
+    private function getDispatcher(): BaseEventDispatcher
     {
         return new BaseEventDispatcher(new NewableListenerFactory());
     }
 }
 
-class BadSubscriber
+final class BadSubscriber
 {
     public static function subscribedEvents(): array
     {
@@ -86,7 +86,7 @@ class BadSubscriber
     }
 }
 
-class BadMethodSubscriber implements EventSubscriber
+final class BadMethodSubscriber implements EventSubscriber
 {
     public static function subscribedEvents(): array
     {
@@ -96,7 +96,7 @@ class BadMethodSubscriber implements EventSubscriber
     }
 }
 
-class TestSubscriber implements EventSubscriber
+final class TestSubscriber implements EventSubscriber
 {
     public static function subscribedEvents(): array
     {

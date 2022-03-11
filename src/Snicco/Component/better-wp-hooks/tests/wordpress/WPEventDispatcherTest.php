@@ -220,7 +220,7 @@ final class WPEventDispatcherTest extends WPTestCase
     }
 }
 
-class WPDispatcherSubscriber implements EventSubscriber
+final class WPDispatcherSubscriber implements EventSubscriber
 {
     public static function subscribedEvents(): array
     {

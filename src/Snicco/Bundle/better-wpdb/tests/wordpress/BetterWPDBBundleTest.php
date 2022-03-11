@@ -107,7 +107,7 @@ final class BetterWPDBBundleTest extends WPTestCase
     }
 }
 
-class TestQueryLogger implements QueryLogger
+final class TestQueryLogger implements QueryLogger
 {
     /**
      * @var QueryInfo[]

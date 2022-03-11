@@ -10,7 +10,7 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
-class Bundle1 implements Bundle
+final class Bundle1 implements Bundle
 {
     public bool $registered = false;
 

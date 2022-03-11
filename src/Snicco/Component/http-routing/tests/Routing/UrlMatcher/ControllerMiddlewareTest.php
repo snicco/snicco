@@ -73,7 +73,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
     }
 }
 
-class ArrayMiddlewareController extends Controller
+final class ArrayMiddlewareController extends Controller
 {
     public function __construct()
     {
@@ -86,7 +86,7 @@ class ArrayMiddlewareController extends Controller
     }
 }
 
-class MiddlewareController extends Controller
+final class MiddlewareController extends Controller
 {
     public function __construct()
     {

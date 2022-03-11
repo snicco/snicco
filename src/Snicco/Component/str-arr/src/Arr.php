@@ -43,7 +43,7 @@ use function is_string;
 use function sprintf;
 use function strpos;
 
-class Arr
+final class Arr
 {
     /**
      * @param string|string[] $keys
@@ -554,8 +554,6 @@ class Arr
 
     /**
      * @param int|string $key
-     *
-     * @psalm-suppress DocblockTypeContradiction
      */
     private static function checkKeyStringInt($key, string $called_method): void
     {

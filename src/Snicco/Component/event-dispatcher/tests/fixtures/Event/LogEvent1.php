@@ -7,7 +7,7 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Event;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 
-class LogEvent1 implements LoggableEvent
+final class LogEvent1 implements LoggableEvent
 {
     use ClassAsName;
     use ClassAsPayload;

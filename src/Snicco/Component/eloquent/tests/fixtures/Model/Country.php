@@ -6,7 +6,7 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Model;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Country extends TestWPModel
+final class Country extends TestWPModel
 {
     /**
      * @var string[]

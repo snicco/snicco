@@ -7,7 +7,7 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Factory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Snicco\Component\Eloquent\Tests\fixtures\Model\Country;
 
-class CityFactory extends Factory
+final class CityFactory extends Factory
 {
     public function definition(): array
     {

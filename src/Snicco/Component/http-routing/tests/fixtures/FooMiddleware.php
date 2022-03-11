@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 
-class FooMiddleware extends Middleware
+final class FooMiddleware extends Middleware
 {
     public string $foo;
 

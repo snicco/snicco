@@ -54,7 +54,7 @@ final class CanDisplayTest extends TestCase
     }
 }
 
-class CanDisplayRuntimeException implements ExceptionDisplayer
+final class CanDisplayRuntimeException implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -77,7 +77,7 @@ class CanDisplayRuntimeException implements ExceptionDisplayer
     }
 }
 
-class CanDisplayRuntimeException2 implements ExceptionDisplayer
+final class CanDisplayRuntimeException2 implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -99,7 +99,7 @@ class CanDisplayRuntimeException2 implements ExceptionDisplayer
     }
 }
 
-class CanDisplayInvalidArgException implements ExceptionDisplayer
+final class CanDisplayInvalidArgException implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures\Conditions;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
-class RouteConditionWithArgs extends RouteCondition
+final class RouteConditionWithArgs extends RouteCondition
 {
     private bool $make_it_pass;
 

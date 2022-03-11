@@ -49,7 +49,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
     }
 }
 
-class ComplexComposer implements ViewComposer
+final class ComplexComposer implements ViewComposer
 {
     public stdClass $stdClass;
 

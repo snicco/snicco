@@ -21,7 +21,7 @@ use const DB_USER;
  *
  * @interal
  */
-class WPDatabaseSettingsAPI extends BetterWPAPI
+final class WPDatabaseSettingsAPI extends BetterWPAPI
 {
     public function dbHost(): string
     {

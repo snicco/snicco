@@ -11,7 +11,7 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
-class MiddlewareWithDependencies extends Middleware
+final class MiddlewareWithDependencies extends Middleware
 {
     public Foo $foo;
 

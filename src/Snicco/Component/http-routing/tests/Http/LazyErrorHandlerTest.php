@@ -101,7 +101,7 @@ final class LazyErrorHandlerTest extends TestCase
     }
 }
 
-class TestableErrorHandler implements HttpErrorHandler
+final class TestableErrorHandler implements HttpErrorHandler
 {
     /**
      * @var Closure(Throwable, ServerRequestInterface) :ResponseInterface

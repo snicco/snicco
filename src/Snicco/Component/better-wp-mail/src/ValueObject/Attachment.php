@@ -30,7 +30,10 @@ use const SEEK_CUR;
 
 final class Attachment
 {
-    private string $encoding = 'base64';
+    /**
+     * @var string
+     */
+    private const ENCODING = 'base64';
 
     private string $content_type;
 
@@ -140,7 +143,7 @@ final class Attachment
 
     public function isInline(): bool
     {
-        return 'inline' === $this->disposition();
+        return 'inline' === $this->disposition;
     }
 
     public function disposition(): string
@@ -150,7 +153,7 @@ final class Attachment
 
     public function encoding(): string
     {
-        return $this->encoding;
+        return self::ENCODING;
     }
 
     public function cid(): string

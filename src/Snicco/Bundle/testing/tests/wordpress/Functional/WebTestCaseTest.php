@@ -25,9 +25,9 @@ use function dirname;
 final class WebTestCaseTest extends WebTestCase
 {
     /**
-     * @var class-string<TestExtension>[]
+     * @var array<class-string<\Snicco\Bundle\Testing\Tests\wordpress\Functional\DummyTestExtension>>
      */
-    private array $extensions = [DummyTestExtension::class];
+    private const EXTENSIONS = [DummyTestExtension::class];
 
     protected function setUp(): void
     {
@@ -410,7 +410,7 @@ final class WebTestCaseTest extends WebTestCase
 
     protected function extensions(): array
     {
-        return $this->extensions;
+        return self::EXTENSIONS;
     }
 
     protected function createKernel(): callable
@@ -419,7 +419,7 @@ final class WebTestCaseTest extends WebTestCase
     }
 }
 
-class DummyTestExtension implements TestExtension
+final class DummyTestExtension implements TestExtension
 {
     public bool $setUp = false;
 

@@ -398,7 +398,7 @@ final class ProductionErrorHandlerTest extends TestCase
     }
 }
 
-class RequestLogContextWithException implements RequestLogContext
+final class RequestLogContextWithException implements RequestLogContext
 {
     private int $count = 0;
 
@@ -415,7 +415,7 @@ class RequestLogContextWithException implements RequestLogContext
     }
 }
 
-class DisplayerWithException implements ExceptionDisplayer
+final class DisplayerWithException implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

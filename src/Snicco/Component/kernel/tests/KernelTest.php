@@ -322,9 +322,6 @@ final class KernelTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @psalm-suppress DocblockTypeContradiction
-         */
         $this->assertTrue($kernel->booted());
     }
 }

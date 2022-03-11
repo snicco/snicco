@@ -7,7 +7,7 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class City extends TestWPModel
+final class City extends TestWPModel
 {
     public function country(): BelongsTo
     {

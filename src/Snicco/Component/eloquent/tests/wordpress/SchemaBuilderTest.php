@@ -2008,7 +2008,7 @@ final class SchemaBuilderTest extends WPTestCase
 /**
  * @see MySqlBuilder
  */
-class TestSchemaBuilder extends MySqlBuilder
+final class TestSchemaBuilder extends MySqlBuilder
 {
     private ?string $table;
 

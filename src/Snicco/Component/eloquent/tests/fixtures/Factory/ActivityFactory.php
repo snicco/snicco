@@ -7,7 +7,7 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Factory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Snicco\Component\StrArr\Arr;
 
-class ActivityFactory extends Factory
+final class ActivityFactory extends Factory
 {
     public function definition(): array
     {

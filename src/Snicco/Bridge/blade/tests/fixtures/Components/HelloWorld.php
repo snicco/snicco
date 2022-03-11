@@ -6,7 +6,7 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
 use Snicco\Bridge\Blade\BladeComponent;
 
-class HelloWorld extends BladeComponent
+final class HelloWorld extends BladeComponent
 {
     public function render(): string
     {

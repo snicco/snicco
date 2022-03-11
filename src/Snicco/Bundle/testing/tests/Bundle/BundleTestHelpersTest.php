@@ -43,17 +43,17 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_directories_are_setup(): void
     {
-        $this->assertFalse(is_dir($this->fixturesDir()));
-        $this->assertFalse(is_file($this->fixturesDir() . '/config/app.php'));
+        $this->assertFalse(is_dir($this->fixtures_dir));
+        $this->assertFalse(is_file($this->fixtures_dir . '/config/app.php'));
 
         $this->directories = $this->bundle_test->setUpDirectories();
 
-        $this->assertTrue(is_dir($this->fixturesDir()));
-        $this->assertTrue(is_file($this->fixturesDir() . '/config/app.php'));
+        $this->assertTrue(is_dir($this->fixtures_dir));
+        $this->assertTrue(is_file($this->fixtures_dir . '/config/app.php'));
 
-        $this->assertSame($this->fixturesDir() . '/var/cache', $this->directories->cacheDir());
-        $this->assertSame($this->fixturesDir() . '/var/log', $this->directories->logDir());
-        $this->assertSame($this->fixturesDir(), $this->directories->baseDir());
+        $this->assertSame($this->fixtures_dir . '/var/cache', $this->directories->cacheDir());
+        $this->assertSame($this->fixtures_dir . '/var/log', $this->directories->logDir());
+        $this->assertSame($this->fixtures_dir, $this->directories->baseDir());
     }
 
     /**
@@ -61,15 +61,15 @@ final class BundleTestHelpersTest extends TestCase
      */
     public function test_cache_directory_is_cleared(): void
     {
-        $this->assertFalse(is_dir($this->fixturesDir()));
+        $this->assertFalse(is_dir($this->fixtures_dir));
 
         $this->directories = $this->bundle_test->setUpDirectories();
 
-        $this->assertTrue(is_dir($this->fixturesDir()));
+        $this->assertTrue(is_dir($this->fixtures_dir));
 
-        $this->assertSame($this->fixturesDir() . '/var/cache', $this->directories->cacheDir());
-        $this->assertSame($this->fixturesDir() . '/var/log', $this->directories->logDir());
-        $this->assertSame($this->fixturesDir(), $this->directories->baseDir());
+        $this->assertSame($this->fixtures_dir . '/var/cache', $this->directories->cacheDir());
+        $this->assertSame($this->fixtures_dir . '/var/log', $this->directories->logDir());
+        $this->assertSame($this->fixtures_dir, $this->directories->baseDir());
 
         touch($this->directories->cacheDir() . '/prod.config.php');
         touch($this->directories->cacheDir() . '/staging.config.php');
@@ -231,7 +231,7 @@ final class BundleTestHelpersTest extends TestCase
     }
 }
 
-class ServiceA
+final class ServiceA
 {
     public ServiceB $b;
 
@@ -241,11 +241,11 @@ class ServiceA
     }
 }
 
-class ServiceB
+final class ServiceB
 {
 }
 
-class TestingBundleBundle1 implements Bundle
+final class TestingBundleBundle1 implements Bundle
 {
     public function shouldRun(Environment $env): bool
     {
@@ -275,7 +275,7 @@ class TestingBundleBundle1 implements Bundle
     }
 }
 
-class TestingBundleBundle2 implements Bundle
+final class TestingBundleBundle2 implements Bundle
 {
     public function shouldRun(Environment $env): bool
     {

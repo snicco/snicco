@@ -41,7 +41,7 @@ final class EventDispatcherWithContainerTest extends TestCase
     }
 }
 
-class ListenerWithDependency
+final class ListenerWithDependency
 {
     private Dependency $dep;
 
@@ -56,7 +56,7 @@ class ListenerWithDependency
     }
 }
 
-class Dependency
+final class Dependency
 {
     public string $value;
 

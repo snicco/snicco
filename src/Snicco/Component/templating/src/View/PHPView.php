@@ -70,7 +70,7 @@ final class PHPView implements View
     {
         $new = clone $this;
         if (is_array($key)) {
-            $new->context = array_merge($this->context(), $key);
+            $new->context = array_merge($this->context, $key);
         } else {
             $new->context[$key] = $value;
         }

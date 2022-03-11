@@ -148,7 +148,7 @@ final class GuestsOnlyTest extends MiddlewareTestCase
     }
 }
 
-class GuestOnlyTestWPAPI extends BetterWPAPI
+final class GuestOnlyTestWPAPI extends BetterWPAPI
 {
     private bool $is_logged_in;
 

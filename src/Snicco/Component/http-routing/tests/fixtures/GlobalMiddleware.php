@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class GlobalMiddleware implements MiddlewareInterface
+final class GlobalMiddleware implements MiddlewareInterface
 {
     /**
      * @var string

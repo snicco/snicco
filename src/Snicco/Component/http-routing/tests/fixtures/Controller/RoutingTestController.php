@@ -8,7 +8,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 
 use function sprintf;
 
-class RoutingTestController
+final class RoutingTestController
 {
     /**
      * @var string
