@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
+use InvalidArgumentException;
 use LogicException;
 use MockPHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmailWithWPMail;
@@ -18,6 +19,7 @@ use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
 use WP_Error;
+use WP_UnitTest_Factory;
 use WP_User;
 
 use function array_merge;
@@ -935,10 +937,18 @@ final class MailerTest extends WPTestCase
 
     private function createAdmin(array $data): WP_User
     {
-        return $this->factory()
-            ->user->create_and_get(array_merge($data, [
-                'role' => 'administrator',
-            ]));
+        /** @var WP_UnitTest_Factory $factory */
+        $factory = $this->factory();
+
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => 'administrator',
+        ]));
+
+        if (! $user instanceof WP_User) {
+            throw new InvalidArgumentException('Must be WP_USER');
+        }
+
+        return $user;
     }
 
     /**

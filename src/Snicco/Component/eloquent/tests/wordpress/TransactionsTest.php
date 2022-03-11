@@ -13,11 +13,15 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
+use InvalidArgumentException;
 use mysqli;
+use mysqli_result;
 use RuntimeException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
+
+use function property_exists;
 
 /**
  * @internal
@@ -261,10 +265,13 @@ final class TransactionsTest extends WPTestCase
         $result = $this->verification_connection->query(
             "select count(*) as `count` from `wp_football_teams` where `name` = '{$team_name}'"
         );
-        $count = $result->fetch_object()
-            ->count;
+        if (! $result instanceof mysqli_result) {
+            throw new InvalidArgumentException('must be mysqli_result');
+        }
+        $res = (object) $result->fetch_object();
+        $this->assertTrue(property_exists($res, 'count'));
 
-        $this->assertSame('0', $count, 'The team: ' . $team_name . ' was found.');
+        $this->assertSame('0', (string) $res->count, 'The team: ' . $team_name . ' was found.');
     }
 
     private function assertTeamExists(string $team_name): void
@@ -272,10 +279,13 @@ final class TransactionsTest extends WPTestCase
         $result = $this->verification_connection->query(
             "select count(*) as `count` from `wp_football_teams` where `name` = '{$team_name}'"
         );
-        $count = $result->fetch_object()
-            ->count;
+        if (! $result instanceof mysqli_result) {
+            throw new InvalidArgumentException('must be mysqli_result');
+        }
+        $res = (object) $result->fetch_object();
+        $this->assertTrue(property_exists($res, 'count'));
 
-        $this->assertSame('1', $count, "The team [{$team_name}] was not found.");
+        $this->assertSame('1', (string) $res->count, "The team [{$team_name}] was not found.");
     }
 
     private function createInitialTable(): void

@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
+use WP_UnitTest_Factory;
 use WP_User;
 
 use function array_merge;
@@ -204,9 +205,17 @@ final class MailBoxTest extends WPTestCase
 
     private function createAdmin(array $data): WP_User
     {
-        return $this->factory()
-            ->user->create_and_get(array_merge($data, [
-                'role' => 'administrator',
-            ]));
+        /** @var WP_UnitTest_Factory $factory */
+        $factory = $this->factory();
+
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => 'administrator',
+        ]));
+
+        if (! $user instanceof WP_User) {
+            throw new InvalidArgumentException('Must be WP_USER');
+        }
+
+        return $user;
     }
 }
