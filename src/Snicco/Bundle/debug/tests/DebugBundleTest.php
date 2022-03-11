@@ -77,7 +77,7 @@ final class DebugBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [StubDisplayer::class]);
         });
 
@@ -100,7 +100,7 @@ final class DebugBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [DebugBundle::class]);
         });
 
@@ -145,7 +145,7 @@ final class DebugBundleTest extends TestCase
 
         $response = $pipeline->send($request)
             ->through([RoutingMiddleware::class])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('debug stuff');
             });
 
@@ -177,7 +177,7 @@ final class DebugBundleTest extends TestCase
 
         $response = $pipeline->send($request)
             ->through([RoutingMiddleware::class])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('debug stuff');
             });
 
@@ -215,7 +215,7 @@ final class DebugBundleTest extends TestCase
 
         $response = $pipeline->send($request)
             ->through([RoutingMiddleware::class])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('debug stuff');
             });
 
@@ -244,7 +244,7 @@ final class DebugBundleTest extends TestCase
             ->withHeader('accept', 'text/plain');
 
         $response = $pipeline->send($request)
-            ->through([])->then(function () {
+            ->through([])->then(function (): void {
                 throw new RuntimeException('debug stuff');
             });
 
@@ -272,7 +272,7 @@ final class DebugBundleTest extends TestCase
             ->withHeader('accept', 'text/html');
 
         $response = $pipeline->send($request)
-            ->through([])->then(function () {
+            ->through([])->then(function (): void {
                 throw new RuntimeException('debug stuff');
             });
 
@@ -317,7 +317,7 @@ final class DebugBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('debug.' . DebugOption::APPLICATION_PATHS, [__DIR__]);
         });
 

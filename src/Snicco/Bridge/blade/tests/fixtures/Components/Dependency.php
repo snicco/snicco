@@ -13,6 +13,9 @@ class Dependency extends BladeComponent
 
     public string $message;
 
+    /**
+     * @var array
+     */
     protected $except = ['foo'];
 
     public function __construct(Foo $foo, string $message)

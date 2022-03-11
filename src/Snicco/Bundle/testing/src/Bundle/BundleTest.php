@@ -9,7 +9,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
@@ -47,14 +46,14 @@ final class BundleTest
         $this->fixtures_dir = $fixtures_dir;
     }
 
-    public function newContainer(): DIContainer
+    public function newContainer(): PimpleContainerAdapter
     {
         return new PimpleContainerAdapter();
     }
 
     public function withoutHttpErrorHandling(Kernel $kernel): void
     {
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });

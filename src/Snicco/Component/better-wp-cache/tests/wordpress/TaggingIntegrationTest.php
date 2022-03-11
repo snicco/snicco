@@ -6,6 +6,7 @@ namespace Snicco\Component\BetterWPCache\Tests\wordpress;
 
 use Cache\TagInterop\TaggableCacheItemPoolInterface;
 use Codeception\TestCase\WPTestCase;
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use Snicco\Component\BetterWPCache\CacheFactory;
 use stdClass;
@@ -28,12 +29,9 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @var array with functionName => reason
      */
-    protected $skippedTests = [];
+    protected array $skippedTests = [];
 
-    /**
-     * @var TaggableCacheItemPoolInterface
-     */
-    protected $cache;
+    protected ?TaggableCacheItemPoolInterface $cache = null;
 
     protected function setUp(): void
     {
@@ -61,7 +59,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @before
      */
-    public function setupService()
+    public function setupService(): void
     {
         $this->cache = $this->createCachePool();
     }
@@ -69,14 +67,14 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @after
      */
-    public function tearDownService()
+    public function tearDownService(): void
     {
         if (null !== $this->cache) {
             $this->cache->clear();
         }
     }
 
-    public function invalidKeys()
+    public function invalidKeys(): array
     {
         return [
             [true],
@@ -102,7 +100,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function multiple_tags()
+    public function multiple_tags(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -129,7 +127,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function previous_tag()
+    public function previous_tag(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -154,7 +152,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function previous_tag_deferred()
+    public function previous_tag_deferred(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -175,7 +173,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function tag_accessor_with_empty_tag()
+    public function tag_accessor_with_empty_tag(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -183,7 +181,7 @@ final class TaggingIntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key')
             ->set('value');
-        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $item->setTags(['']);
     }
 
@@ -194,7 +192,7 @@ final class TaggingIntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function tag_accessor_with_invalid_tag($tag)
+    public function tag_accessor_with_invalid_tag($tag): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -202,14 +200,14 @@ final class TaggingIntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key')
             ->set('value');
-        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $item->setTags([$tag]);
     }
 
     /**
      * @test
      */
-    public function tag_accessor_duplicate_tags()
+    public function tag_accessor_duplicate_tags(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -230,7 +228,7 @@ final class TaggingIntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function remove_tag_when_item_is_removed()
+    public function remove_tag_when_item_is_removed(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -260,7 +258,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function clear_pool()
+    public function clear_pool(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -286,7 +284,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function invalidate_tag()
+    public function invalidate_tag(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -319,7 +317,7 @@ final class TaggingIntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function invalidate_tags()
+    public function invalidate_tags(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -352,7 +350,7 @@ final class TaggingIntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function tags_are_cleaned_on_save()
+    public function tags_are_cleaned_on_save(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);

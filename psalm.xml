@@ -35,6 +35,24 @@
         <RedundantConditionGivenDocblockType errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
 
+        <MoreSpecificReturnType>
+            <errorLevel type="suppress">
+<!--                This is a final class and @return static makes no sense. https://github.com/vimeo/psalm/issues/5802 -->
+                <file name="src/Snicco/Component/http-routing/src/Http/Psr7/Request.php"/>
+                <file name="src/Snicco/Component/http-routing/src/Routing/RoutingConfigurator/Configurator.php"/>
+                <file name="src/Snicco/Component/better-wp-cache/src/WPCacheItem.php"/>
+            </errorLevel>
+        </MoreSpecificReturnType>
+        <LessSpecificReturnStatement>
+            <errorLevel type="suppress">
+                <!--                This is a final class and @return static makes no sense. https://github.com/vimeo/psalm/issues/5802 -->
+                <file name="src/Snicco/Component/http-routing/src/Http/Psr7/Request.php"/>
+                <file name="src/Snicco/Component/http-routing/src/Routing/RoutingConfigurator/Configurator.php"/>
+                <file name="src/Snicco/Component/better-wp-cache/src/WPCacheItem.php"/>
+            </errorLevel>
+
+        </LessSpecificReturnStatement>
+
         <MixedAssignment>
             <errorLevel type="suppress">
                 <!--                Deals with mixed arguments by design -->

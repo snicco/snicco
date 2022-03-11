@@ -41,7 +41,7 @@ final class StdErrLogger extends AbstractLogger
         $this->channel = $channel;
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         $level = (string) $level;
 

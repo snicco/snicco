@@ -329,7 +329,7 @@ final class Route
      */
     public function requireOneOf(string $segment_name, array $values): Route
     {
-        $values = array_map(function ($value) {
+        $values = array_map(function ($value): string {
             $value = is_int($value) ? (string) $value : $value;
             Assert::string($value);
 

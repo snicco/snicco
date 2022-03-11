@@ -67,7 +67,7 @@ final class RoutingFunctionalityTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -92,7 +92,7 @@ final class RoutingFunctionalityTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -119,7 +119,7 @@ final class RoutingFunctionalityTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -143,7 +143,7 @@ final class RoutingFunctionalityTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -167,7 +167,7 @@ final class RoutingFunctionalityTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -193,7 +193,7 @@ final class RoutingFunctionalityTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function () {
+            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
                 throw new RuntimeException('no routing performed');
             });
 

@@ -50,7 +50,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
 
         $mailer->send($email);
 
-        $transport->assertSent(Email::class, function (Email $email) {
+        $transport->assertSent(Email::class, function (Email $email): bool {
             $this->assertStringContainsString('<h1>FOO</h1>', (string) $email->htmlBody());
             $this->assertStringContainsString('extra-bar', (string) $email->htmlBody());
             $this->assertStringContainsString('FOO', (string) $email->textBody());
@@ -65,7 +65,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $email = $email->withContext('mail_content', 'BAR');
         $mailer->send($email);
 
-        $transport->assertSent(Email::class, function (Email $email) {
+        $transport->assertSent(Email::class, function (Email $email): bool {
             $this->assertSame('<h1>BAR</h1>', $email->htmlBody());
             $this->assertSame('BAR', $email->textBody());
 
@@ -139,7 +139,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
     private function getKernel(): Kernel
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [BetterWPMailBundle::class, TemplatingBundle::class],
             ]);

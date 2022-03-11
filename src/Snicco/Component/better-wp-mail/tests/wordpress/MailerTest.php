@@ -463,7 +463,7 @@ final class MailerTest extends WPTestCase
      */
     public function wp_mail_errors_lead_to_an_exception(): void
     {
-        add_action('wp_mail_content_type', function () {
+        add_action('wp_mail_content_type', function (): void {
             do_action(
                 'wp_mail_failed',
                 new WP_Error(
@@ -500,7 +500,7 @@ final class MailerTest extends WPTestCase
         $phpmailer->AltBody = 'foobar';
         $phpmailer->Body = 'baz';
 
-        add_action('wp_mail_content_type', function () {
+        add_action('wp_mail_content_type', function (): void {
             do_action(
                 'wp_mail_failed',
                 new WP_Error(

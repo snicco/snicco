@@ -254,7 +254,7 @@ final class BrowserTest extends WPTestCase
     private function getBrowser(array $server = [], CookieJar $cookies = null): Browser
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });

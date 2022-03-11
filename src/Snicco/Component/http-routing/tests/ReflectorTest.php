@@ -112,7 +112,7 @@ class TestTraversable implements Iterator
 {
     #[ReturnTypeWillChange]
 
-    public function current()
+    public function current(): void
     {
     }
 
@@ -122,7 +122,7 @@ class TestTraversable implements Iterator
 
     #[ReturnTypeWillChange]
 
-    public function key()
+    public function key(): void
     {
     }
 

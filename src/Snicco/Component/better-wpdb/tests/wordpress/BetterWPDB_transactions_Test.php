@@ -26,7 +26,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $this->assertRecordCount(0);
 
         try {
-            $this->better_wpdb->transactional(function (BetterWPDB $db) {
+            $this->better_wpdb->transactional(function (BetterWPDB $db): void {
                 $res = $db->insert('test_table', [
                     'test_string' => 'foo',
                 ]);
@@ -51,7 +51,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
     {
         $this->assertRecordCount(0);
 
-        $return = $this->better_wpdb->transactional(function (BetterWPDB $db) {
+        $return = $this->better_wpdb->transactional(function (BetterWPDB $db): string {
             $db->insert('test_table', [
                 'test_string' => 'foo',
             ]);
@@ -72,8 +72,8 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
     public function test_nested_transactions_throw_expection(): void
     {
         try {
-            $this->better_wpdb->transactional(function (BetterWPDB $db) {
-                $db->transactional(function () {
+            $this->better_wpdb->transactional(function (BetterWPDB $db): void {
+                $db->transactional(function (): void {
                     throw new RuntimeException('should never run.');
                 });
             });
@@ -91,7 +91,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->transactional(function (BetterWPDB $db) {
+        $db->transactional(function (BetterWPDB $db): void {
             $db->insert('test_table', [
                 'test_string' => 'foo',
             ]);
@@ -148,7 +148,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $db = BetterWPDB::fromWpdb($logger);
 
         try {
-            $db->transactional(function (BetterWPDB $db) {
+            $db->transactional(function (BetterWPDB $db): void {
                 $db->insert('test_table', [
                     'test_string' => 'foo',
                 ]);

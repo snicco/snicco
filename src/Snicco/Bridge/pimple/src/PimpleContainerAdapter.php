@@ -60,7 +60,7 @@ final class PimpleContainerAdapter extends DIContainer
     }
 
     #[ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         if ($this->locked) {
             throw ContainerIsLocked::whileRemovingId((string) $offset);

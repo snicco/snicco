@@ -6,6 +6,7 @@ namespace Snicco\Component\Eloquent\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Container\Container;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use mysqli_sql_exception;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\AssertableWpDB;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
@@ -29,9 +31,9 @@ final class SchemaBuilderTest extends WPTestCase
 {
     use WPDBTestHelpers;
 
-    private \Illuminate\Database\Schema\MySqlBuilder $builder;
+    private MySqlBuilder $builder;
 
-    private \Snicco\Component\Eloquent\Illuminate\MysqliConnection $mysqli_connection;
+    private MysqliConnection $mysqli_connection;
 
     protected function setUp(): void
     {
@@ -74,7 +76,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $this->assertFalse($this->builder->hasTable('books'));
 
-        $this->builder->create('books', function (Blueprint $table) {
+        $this->builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('email');
         });
@@ -89,7 +91,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $this->assertFalse($this->builder->hasTable('books'));
 
-        $this->builder->create('books', function (Blueprint $table) {
+        $this->builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('email');
         });
@@ -144,7 +146,7 @@ final class SchemaBuilderTest extends WPTestCase
      */
     public function a_table_can_be_dropped(): void
     {
-        $this->builder->create('books2', function (Blueprint $table) {
+        $this->builder->create('books2', function (Blueprint $table): void {
             $table->id();
             $table->string('email');
         });
@@ -165,7 +167,7 @@ final class SchemaBuilderTest extends WPTestCase
      */
     public function columns_can_be_dropped(): void
     {
-        $this->builder->create('books', function (Blueprint $table) {
+        $this->builder->create('books', function (Blueprint $table): void {
             $table->bigIncrements('book_id');
             $table->string('title');
             $table->integer('page_count');
@@ -183,7 +185,7 @@ final class SchemaBuilderTest extends WPTestCase
             5 => 'bio',
         ], $this->getColumnsByOrdinalPosition('books'));
 
-        $this->builder->table('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table): void {
             $table->dropColumn(['title', 'published']);
             $table->dropColumn('bio');
         });
@@ -206,7 +208,7 @@ final class SchemaBuilderTest extends WPTestCase
      */
     public function an_existing_column_can_be_renamed(): void
     {
-        $this->builder->create('books', function (Blueprint $table) {
+        $this->builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('email');
         });
@@ -224,11 +226,11 @@ final class SchemaBuilderTest extends WPTestCase
      */
     public function columns_can_be_added_to_an_existing_table(): void
     {
-        $this->builder->create('books', function (Blueprint $table) {
+        $this->builder->create('books', function (Blueprint $table): void {
             $table->bigIncrements('book_id');
         });
 
-        $this->builder->table('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table): void {
             $table->string('title');
         });
 
@@ -242,7 +244,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->bigIncrements('id');
         });
 
@@ -258,7 +260,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->bigInteger('votes');
         });
 
@@ -276,7 +278,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->binary('photo');
         });
 
@@ -290,7 +292,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->boolean('confirmed');
         });
 
@@ -304,7 +306,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->char('name', 100);
             $table->char('email', 255);
         });
@@ -320,7 +322,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->dateTimeTz('created_at', 1);
             $table->dateTimeTz('created_at_precise', 2);
         });
@@ -336,7 +338,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->dateTime('created_at', 1);
             $table->dateTime('created_at_precise', 2);
         });
@@ -352,7 +354,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->date('date');
         });
 
@@ -366,7 +368,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->decimal('money');
             $table->decimal('vote_count', 10, 3);
         });
@@ -382,7 +384,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->double('money');
             $table->double('vote_count', 10, 3);
         });
@@ -398,7 +400,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->enum('difficulty', ['easy', 'hard']);
         });
 
@@ -412,7 +414,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->float('amount');
             $table->float('money', 10, 3);
         });
@@ -428,7 +430,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->foreignId('user_id');
         });
 
@@ -442,7 +444,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->geometryCollection('positions');
         });
 
@@ -456,7 +458,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id('ID');
         });
 
@@ -471,7 +473,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->increments('id');
         });
 
@@ -486,7 +488,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->integer('amount');
         });
 
@@ -500,7 +502,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->ipAddress('visitor');
         });
 
@@ -514,7 +516,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->json('options');
         });
 
@@ -528,7 +530,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->jsonB('options');
         });
 
@@ -542,7 +544,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->lineString('position');
         });
 
@@ -556,7 +558,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->longText('description');
         });
 
@@ -570,7 +572,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->macAddress('device');
         });
 
@@ -584,7 +586,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->mediumIncrements('id');
         });
 
@@ -599,7 +601,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->mediumInteger('votes');
         });
 
@@ -613,7 +615,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->mediumText('descriptions');
         });
 
@@ -627,7 +629,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->morphs('taggable');
         });
 
@@ -642,7 +644,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->multiLineString('positions');
         });
 
@@ -656,7 +658,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->multiPoint('positions');
         });
 
@@ -670,7 +672,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->multiPolygon('positions');
         });
 
@@ -684,7 +686,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->nullableTimestamps('1');
         });
 
@@ -701,7 +703,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->nullableMorphs('taggable');
         });
 
@@ -718,7 +720,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->nullableUuidMorphs('taggable');
         });
 
@@ -735,7 +737,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->point('position');
         });
 
@@ -749,7 +751,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->polygon('position');
         });
 
@@ -763,7 +765,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->rememberToken();
         });
 
@@ -777,7 +779,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->set('flavors', ['strawberry', 'vanilla']);
         });
 
@@ -791,7 +793,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->smallIncrements('id');
         });
 
@@ -807,7 +809,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->smallInteger('amount');
         });
 
@@ -821,7 +823,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->softDeletesTz('deleted_at');
             $table->softDeletesTz('deleted_at_precise', 2);
         });
@@ -837,7 +839,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->softDeletes('deleted_at');
             $table->softDeletes('deleted_at_precise', 2);
         });
@@ -853,7 +855,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->string('name', 55);
         });
 
@@ -867,7 +869,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->text('description');
         });
 
@@ -881,7 +883,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->timeTz('sunrise', 2);
         });
 
@@ -895,7 +897,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->time('sunrise', 2);
         });
 
@@ -909,7 +911,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->timestampTz('added_at', 2);
         });
 
@@ -923,7 +925,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->timestamp('added_at', 2);
         });
 
@@ -937,7 +939,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->timestampsTz(2);
         });
 
@@ -952,7 +954,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->timestamps(2);
         });
 
@@ -967,7 +969,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->tinyIncrements('id');
         });
 
@@ -983,7 +985,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->tinyInteger('amount');
         });
 
@@ -997,7 +999,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->unsignedBigInteger('votes');
         });
 
@@ -1011,7 +1013,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->unsignedDecimal('votes', '10', '2');
         });
 
@@ -1025,7 +1027,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->unsignedInteger('votes');
         });
 
@@ -1039,7 +1041,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->unsignedMediumInteger('votes');
         });
 
@@ -1053,7 +1055,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->unsignedSmallInteger('votes');
         });
 
@@ -1067,7 +1069,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->unsignedTinyInteger('votes');
         });
 
@@ -1081,7 +1083,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->uuidMorphs('taggable');
         });
 
@@ -1096,7 +1098,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->uuid('id');
         });
 
@@ -1110,7 +1112,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->year('birth_year');
         });
 
@@ -1122,13 +1124,13 @@ final class SchemaBuilderTest extends WPTestCase
      */
     public function new_columns_can_be_inserted_after_existing_columns(): void
     {
-        $this->builder->create('books', function (Blueprint $table) {
+        $this->builder->create('books', function (Blueprint $table): void {
             $table->string('first_name');
             $table->string('email');
         });
 
         // With after() method
-        $this->builder->table('books', function (Blueprint $table) {
+        $this->builder->table('books', function (Blueprint $table): void {
             $table->string('last_name')
                 ->after('first_name');
             $table->string('phone')
@@ -1140,8 +1142,8 @@ final class SchemaBuilderTest extends WPTestCase
             $this->getColumnsByOrdinalPosition('books')
         );
 
-        $this->builder->table('books', function (Blueprint $table) {
-            $table->after('phone', function ($table) {
+        $this->builder->table('books', function (Blueprint $table): void {
+            $table->after('phone', function ($table): void {
                 $table->string('address_line1');
                 $table->string('city');
             });
@@ -1160,7 +1162,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->integer('user_id')
                 ->autoIncrement();
             $table->string('email');
@@ -1203,7 +1205,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->charset = 'utf8mb4';
             $table->id();
             $table->string('name')
@@ -1225,7 +1227,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_520_ci';
             $table->id();
@@ -1247,7 +1249,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('name')
                 ->comment('My comment');
@@ -1265,7 +1267,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->integer('count')
                 ->default(10);
@@ -1299,7 +1301,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->integer('count');
             $table->string('name');
@@ -1307,7 +1309,7 @@ final class SchemaBuilderTest extends WPTestCase
 
         $this->assertSame(['id', 'count', 'name'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->string('email')
                 ->first();
         });
@@ -1322,13 +1324,13 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('email')
                 ->nullable(false);
         });
 
-        $this->withDatabaseExceptions(function () {
+        $this->withDatabaseExceptions(function (): void {
             try {
                 $this->wpdbInsert('wp_books', [
                     'id' => 1,
@@ -1341,12 +1343,12 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->dropColumns('books', 'email');
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->string('email')
                 ->nullable(true);
         });
 
-        $this->withDatabaseExceptions(function () {
+        $this->withDatabaseExceptions(function (): void {
             $this->wpdbInsert('wp_books', [
                 'id' => 1,
             ]);
@@ -1362,7 +1364,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
@@ -1409,7 +1411,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
@@ -1455,7 +1457,7 @@ final class SchemaBuilderTest extends WPTestCase
     public function integers_can_be_unsigned(): void
     {
         $builder = $this->newTestBuilder('books');
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->integer('price')
                 ->unsigned();
@@ -1477,7 +1479,7 @@ final class SchemaBuilderTest extends WPTestCase
                 'price' => 10,
             ], $expected);
 
-        $this->withDatabaseExceptions(function () {
+        $this->withDatabaseExceptions(function (): void {
             try {
                 global $wpdb;
 
@@ -1497,7 +1499,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->timestamp('time')
                 ->nullable();
@@ -1525,14 +1527,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->morphs('taggable');
         });
 
         $this->assertSame(['id', 'taggable_type', 'taggable_id'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropMorphs('taggable');
         });
 
@@ -1550,14 +1552,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->rememberToken();
         });
 
         $this->assertSame(['id', 'remember_token'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropRememberToken();
         });
 
@@ -1571,14 +1573,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->softDeletes();
         });
 
         $this->assertSame(['id', 'deleted_at'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropSoftDeletes();
         });
 
@@ -1592,14 +1594,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->softDeletesTz();
         });
 
         $this->assertSame(['id', 'deleted_at'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropSoftDeletesTz();
         });
 
@@ -1613,14 +1615,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->timestamps();
         });
 
         $this->assertSame(['id', 'created_at', 'updated_at'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropTimestamps();
         });
 
@@ -1634,14 +1636,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->timestampsTz();
         });
 
         $this->assertSame(['id', 'created_at', 'updated_at'], $builder->getColumnsByOrdinalPosition('books'));
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropTimestampsTz();
         });
 
@@ -1655,7 +1657,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('email')
                 ->unique();
@@ -1664,7 +1666,7 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->seeUniqueColumn('email');
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->unique('name');
         });
 
@@ -1683,7 +1685,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('email')
                 ->index();
@@ -1693,7 +1695,7 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->seeIndexColumn('email');
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->index('address');
         });
 
@@ -1707,14 +1709,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('email');
             $table->string('address');
         });
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->index(['name', 'email', 'address']);
         });
 
@@ -1728,7 +1730,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->string('email');
             $table->string('name')
                 ->primary();
@@ -1744,7 +1746,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->id();
             $table->string('name')
                 ->index();
@@ -1752,7 +1754,7 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->seeIndexColumn('name');
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->renameIndex('books_name_index', 'new_index');
         });
 
@@ -1766,7 +1768,7 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder = $this->newTestBuilder('books');
 
-        $builder->create('books', function (Blueprint $table) {
+        $builder->create('books', function (Blueprint $table): void {
             $table->integer('amount')
                 ->primary();
             $table->string('name')
@@ -1782,7 +1784,7 @@ final class SchemaBuilderTest extends WPTestCase
         $builder->seeUniqueColumn('email');
         $builder->seeIndexColumn('phone');
 
-        $builder->table('books', function (Blueprint $table) {
+        $builder->table('books', function (Blueprint $table): void {
             $table->dropPrimary('books_amount_primary');
             $table->dropUnique('books_email_unique');
             $table->dropIndex(['phone']);
@@ -1813,13 +1815,13 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder1 = $this->newTestBuilder('authors');
 
-        $builder1->create('authors', function (Blueprint $table) {
+        $builder1->create('authors', function (Blueprint $table): void {
             $table->id();
         });
 
         $builder2 = $this->newTestBuilder('books');
 
-        $builder2->create('books', function (Blueprint $table) {
+        $builder2->create('books', function (Blueprint $table): void {
             $table->id();
 
             $table->foreignId('author_id')
@@ -1840,14 +1842,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder1 = $this->newTestBuilder('authors');
 
-        $builder1->create('authors', function (Blueprint $table) {
+        $builder1->create('authors', function (Blueprint $table): void {
             $table->id();
             $table->string('author_name');
         });
 
         $builder2 = $this->newTestBuilder('books');
 
-        $builder2->create('books', function (Blueprint $table) {
+        $builder2->create('books', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('author_id')
                 ->unique()
@@ -1883,14 +1885,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder1 = $this->newTestBuilder('authors');
 
-        $builder1->create('authors', function (Blueprint $table) {
+        $builder1->create('authors', function (Blueprint $table): void {
             $table->id();
             $table->string('author_name');
         });
 
         $builder2 = $this->newTestBuilder('books');
 
-        $builder2->create('books', function (Blueprint $table) {
+        $builder2->create('books', function (Blueprint $table): void {
             $table->id();
 
             $table->foreignId('author_id')
@@ -1931,14 +1933,14 @@ final class SchemaBuilderTest extends WPTestCase
     {
         $builder1 = $this->newTestBuilder('authors');
 
-        $builder1->create('authors', function (Blueprint $table) {
+        $builder1->create('authors', function (Blueprint $table): void {
             $table->id();
             $table->string('author_name');
         });
 
         $builder2 = $this->newTestBuilder('books');
 
-        $builder2->create('books', function (Blueprint $table) {
+        $builder2->create('books', function (Blueprint $table): void {
             $table->id();
 
             $table->foreignId('author_id')
@@ -1954,7 +1956,7 @@ final class SchemaBuilderTest extends WPTestCase
             'author_id' => 1,
         ]);
 
-        $builder2->table('books', function (Blueprint $table) {
+        $builder2->table('books', function (Blueprint $table): void {
             $table->dropForeign(['author_id']);
         });
 
@@ -2003,15 +2005,13 @@ final class SchemaBuilderTest extends WPTestCase
 }
 
 /**
- * Class TestSchemaBuilder.
- *
  * @see MySqlBuilder
  */
 class TestSchemaBuilder extends MySqlBuilder
 {
     private ?string $table;
 
-    public function __construct($connection, $table = null)
+    public function __construct(Connection $connection, $table = null)
     {
         $this->table = $table;
 

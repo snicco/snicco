@@ -11,6 +11,9 @@ final class ReadOnlyConfig extends Config
 {
     private array $items;
 
+    /**
+     * @param mixed[] $items
+     */
     private function __construct(array $items)
     {
         $this->items = $items;

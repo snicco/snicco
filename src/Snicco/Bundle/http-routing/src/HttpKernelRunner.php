@@ -72,15 +72,15 @@ final class HttpKernelRunner
         $psr_request = $this->request_creator->fromGlobals();
 
         if ($this->isApiRequest($psr_request)) {
-            add_action($api_hook, function () use ($psr_request) {
+            add_action($api_hook, function () use ($psr_request): void {
                 $this->dispatchFrontendRequest(Request::fromPsr($psr_request, Request::TYPE_API));
             }, PHP_INT_MIN);
         } elseif ($is_admin) {
-            add_action('admin_init', function () use ($psr_request) {
+            add_action('admin_init', function () use ($psr_request): void {
                 $this->dispatchAdminRequest($psr_request);
             }, PHP_INT_MIN);
         } else {
-            add_action($frontend_hook, function () use ($psr_request) {
+            add_action($frontend_hook, function () use ($psr_request): void {
                 $this->dispatchFrontendRequest(Request::fromPsr($psr_request, Request::TYPE_FRONTEND));
             }, PHP_INT_MIN);
         }
@@ -160,7 +160,7 @@ final class HttpKernelRunner
         if (! $send_body_now) {
             if ($send_body) {
                 $stream = $response->getBody();
-                add_action('all_admin_notices', function () use ($stream) {
+                add_action('all_admin_notices', function () use ($stream): void {
                     // Let's hope that the developer did read the docs and only returns an admin view and not
                     // 200MB of string content.
                     echo $stream->__toString();

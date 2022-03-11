@@ -105,7 +105,7 @@ final class SessionBundle implements Bundle
     private function bindSessionDriver(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionDriver::class, function () use ($kernel) {
+            ->shared(SessionDriver::class, function () use ($kernel): SessionDriver {
                 if ($kernel->env()->isTesting()) {
                     return new InMemoryDriver();
                 }
@@ -207,7 +207,7 @@ final class SessionBundle implements Bundle
     private function bindWPDBSessionDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
         $kernel->container()
-            ->shared(WPDBSessionDriver::class, function () use ($kernel, $config) {
+            ->shared(WPDBSessionDriver::class, function () use ($kernel, $config): WPDBSessionDriver {
                 /** @var non-empty-string $table */
                 $table = $config->getString('session.' . SessionOption::PREFIX);
 
@@ -222,7 +222,7 @@ final class SessionBundle implements Bundle
     private function bindObjectCacheDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
         $kernel->container()
-            ->shared(WPObjectCacheDriver::class, function () use ($kernel, $config) {
+            ->shared(WPObjectCacheDriver::class, function () use ($kernel, $config): WPObjectCacheDriver {
                 /** @var non-empty-string $group */
                 $group = $config->getString('session.' . SessionOption::PREFIX);
 
@@ -239,7 +239,7 @@ final class SessionBundle implements Bundle
     private function bindSessionConfig(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionConfig::class, function () use ($kernel) {
+            ->shared(SessionConfig::class, function () use ($kernel): SessionConfig {
                 $cookie_name = $kernel->config()
                     ->getString('session.' . SessionOption::COOKIE_NAME);
                 $config = $kernel->config()

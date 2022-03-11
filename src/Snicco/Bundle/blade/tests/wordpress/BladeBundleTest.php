@@ -75,7 +75,7 @@ final class BladeBundleTest extends WPTestCase
     public function test_exception_without_templating_bundle(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [BladeBundle::class],
             ]);

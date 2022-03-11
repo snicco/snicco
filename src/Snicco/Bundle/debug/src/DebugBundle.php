@@ -88,7 +88,7 @@ final class DebugBundle implements Bundle
     {
         // private
         $kernel->container()
-            ->factory(Run::class, function () {
+            ->factory(Run::class, function (): Run {
                 $whoops = new Run();
                 $whoops->allowQuit(false);
                 $whoops->writeToOutput(false);
@@ -97,7 +97,7 @@ final class DebugBundle implements Bundle
             });
 
         $kernel->container()
-            ->shared(PrettyPageHandler::class, function () use ($kernel) {
+            ->shared(PrettyPageHandler::class, function () use ($kernel): FilterablePrettyPageHandler {
                 $handler = new FilterablePrettyPageHandler();
                 $handler->handleUnconditionally(true);
 
@@ -114,7 +114,7 @@ final class DebugBundle implements Bundle
             });
 
         $kernel->container()
-            ->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
+            ->shared(WhoopsHtmlDisplayer::class, function () use ($kernel): WhoopsHtmlDisplayer {
                 $whoops = $kernel->container()
                     ->make(Run::class);
                 $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
@@ -123,7 +123,7 @@ final class DebugBundle implements Bundle
             });
 
         $kernel->container()
-            ->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
+            ->shared(WhoopsJsonDisplayer::class, function () use ($kernel): WhoopsJsonDisplayer {
                 $whoops = $kernel->container()
                     ->make(Run::class);
 

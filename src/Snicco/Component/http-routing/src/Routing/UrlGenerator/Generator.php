@@ -309,7 +309,7 @@ final class Generator implements UrlGenerator
      */
     private function toStringValues(array $extra): array
     {
-        return array_map(function ($value) {
+        return array_map(function ($value): string {
             if (! is_string($value) && ! is_int($value)) {
                 throw new InvalidArgumentException(
                     sprintf('Replacements must be string or integer. Got [%s].', gettype($value))

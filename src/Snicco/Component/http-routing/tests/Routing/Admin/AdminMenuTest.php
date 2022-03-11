@@ -28,7 +28,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function an_admin_menu_will_not_be_configured_if_no_route_handler_is_defined(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin1', '/foo', Route::DELEGATE, [], null);
         });
 
@@ -46,7 +46,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('Route [admin2] can not have an admin menu item without an action.');
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page(
                 'admin2',
                 '/bar',
@@ -63,7 +63,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function an_admin_menu_will_be_preconfigured_based_on_the_route(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin.my_route', 'admin.php/foo', RoutingTestController::class,);
 
             $configurator->page('admin.my.second_route', 'admin.php/bar', RoutingTestController::class,);
@@ -98,7 +98,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function arguments_can_be_passed_explicitly_and_will_be_merged(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page(
                 'admin.my_route',
                 'admin.php/foo',
@@ -126,7 +126,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function admin_menus_will_not_be_added_if_null_is_passed_explicitly_even_tho_a_controller_is_defined(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin.redirect', 'admin.php/foo', RoutingTestController::class, null,);
         });
 
@@ -141,7 +141,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function sub_menu_items_can_be_added_by_passing_in_another_route(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $route1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class,);
 
             $configurator->page(
@@ -171,10 +171,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function sub_menu_items_can_be_added_in_a_parent_scope_closure(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $parent = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class,);
 
-            $configurator->subPages($parent, function (AdminRoutingConfigurator $configurator) {
+            $configurator->subPages($parent, function (AdminRoutingConfigurator $configurator): void {
                 $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
                 $configurator->page('admin_sub_2', '/admin.php/sub2', RoutingTestController::class);
             });
@@ -200,12 +200,12 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('Nested calls');
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, [],);
-            $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator) {
+            $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator): void {
                 $r2 = $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
 
-                $configurator->subPages($r2, function () {
+                $configurator->subPages($r2, function (): void {
                 });
             });
         });
@@ -221,10 +221,10 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'You can not pass route/parent_slug [admin_sub_1] as the last argument during a call to subPages().'
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, [],);
 
-            $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator) {
+            $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator): void {
                 $r2 = $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
                 $configurator->page('admin_sub_2', '/admin.php/sub2', RoutingTestController::class, [], $r2);
             });
@@ -236,9 +236,9 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function test_routing_to_subpages_works(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class);
-            $configurator->subPages($r1, function (AdminRoutingConfigurator $router) {
+            $configurator->subPages($r1, function (AdminRoutingConfigurator $router): void {
                 $router->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
             });
         });
@@ -253,7 +253,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function calling_sub_pages_will_apply_all_middleware_of_the_parent_group(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page(
                 'admin_parent',
                 '/admin.php/parent',
@@ -261,7 +261,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
                 [],
             )->middleware(FooMiddleware::class);
 
-            $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator) {
+            $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator): void {
                 $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
             });
         });
@@ -280,8 +280,8 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'admin' => [FoobarMiddleware::class],
         ]);
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
-            $configurator->group(function (AdminRoutingConfigurator $router) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
+            $configurator->group(function (AdminRoutingConfigurator $router): void {
                 $r1 = $router->page(
                     'admin_parent',
                     '/admin.php/parent',
@@ -289,7 +289,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
                     [],
                 )->middleware(FooMiddleware::class);
 
-                $router->subPages($r1, function (AdminRoutingConfigurator $router) {
+                $router->subPages($r1, function (AdminRoutingConfigurator $router): void {
                     $router->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class)
                         ->middleware(BarMiddleware::class);
                 });
@@ -308,7 +308,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function parent_pages_can_be_added_by_slug_only(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page(
                 'options.sub',
                 '/options.php/sub',
@@ -344,7 +344,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             "You should not add the prefix [/wp-admin] to the parent slug of pages.\nAffected route [options.sub]"
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page(
                 'options.sub',
                 '/options.php/sub',
@@ -368,7 +368,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'Can not use route [options.redirect] as a parent for [options.sub] because it has no menu item.'
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page('options.redirect', '/options.php',);
 
             $configurator->page('options.sub', '/options.php/sub', RoutingTestController::class, [], $r1);
@@ -385,7 +385,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'Route pattern [/wp-admin/admin.php/sub] is incompatible with parent slug [/wp-admin/options.php].'
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page(
                 'options.sub',
                 '/admin.php/sub',
@@ -408,7 +408,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'Route pattern [/wp-admin/options.php/sub] is incompatible with parent slug [/wp-admin/admin.php/parent].'
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page('page1', '/admin.php/parent', RoutingTestController::class);
             $configurator->page('page2', '/options.php/sub', RoutingTestController::class, [], $r1);
         });
@@ -424,7 +424,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
             'Can not use route [admin.sub1] as a parent for route [admin.sub2] because [admin.sub1] is already a child of parent slug [/wp-admin/admin.php/parent].'
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $r1 = $configurator->page('admin.parent', '/admin.php/parent', RoutingTestController::class,);
             $r2 = $configurator->page('admin.sub1', '/admin.php/sub1', RoutingTestController::class, [], $r1);
 
@@ -441,7 +441,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('$parent has to be a string or an instance of Route.');
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin.sub1', '/admin.php/sub1', RoutingTestController::class, [], 1);
         });
     }
@@ -453,7 +453,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
      */
     public function test_is_iterator(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('page1', 'admin.php/foo', RoutingTestController::class);
             $configurator->page('page2', 'admin.php/bar', RoutingTestController::class);
             $configurator->page('page3', 'admin.php/baz', RoutingTestController::class);

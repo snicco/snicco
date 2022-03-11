@@ -24,7 +24,7 @@ final class ControllerTest extends HttpRunnerTestCase
      */
     public function test_controllers_have_access_to_response_utils(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $router) {
+        $this->webRouting(function (WebRoutingConfigurator $router): void {
             $router->get('r1', '/foo', ResponseUtilsTestController::class);
         });
 

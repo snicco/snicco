@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 
-use Closure;
 use LogicException;
 use RuntimeException;
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
@@ -217,7 +216,7 @@ final class WebTestCaseTest extends WebTestCase
     public function test_with_session_data_works(): void
     {
         $kernel = $this->getKernel();
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->extend('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
@@ -246,7 +245,7 @@ final class WebTestCaseTest extends WebTestCase
     public function session_data_is_not_lost_between_requests(): void
     {
         $kernel = $this->getKernel();
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->extend('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
@@ -409,7 +408,7 @@ final class WebTestCaseTest extends WebTestCase
         return $this->extensions;
     }
 
-    protected function createKernel(): Closure
+    protected function createKernel(): callable
     {
         return require dirname(__DIR__) . '/fixtures/test-kernel.php';
     }

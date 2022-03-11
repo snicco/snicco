@@ -9,14 +9,14 @@ use Snicco\Component\StrArr\Arr;
 
 class ActivityFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->activity(),
         ];
     }
 
-    private function activity()
+    private function activity(): string
     {
         $activities = ['football', 'tenis', 'basketball', 'swimming', 'sightseeing', 'hockey'];
 

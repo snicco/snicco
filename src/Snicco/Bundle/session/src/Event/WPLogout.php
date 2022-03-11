@@ -29,7 +29,7 @@ final class WPLogout implements MappedHook
         return self::class;
     }
 
-    public function payload()
+    public function payload(): self
     {
         return $this;
     }

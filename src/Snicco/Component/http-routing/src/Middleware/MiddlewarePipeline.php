@@ -104,7 +104,7 @@ final class MiddlewarePipeline
 
     private function lazyNext(): NextMiddleware
     {
-        return new NextMiddleware(function (Request $request) {
+        return new NextMiddleware(function (Request $request): ResponseInterface {
             try {
                 return $this->runNext($request);
             } catch (Throwable $e) {

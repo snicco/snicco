@@ -144,7 +144,7 @@ final class MysqliDriver implements MysqliDriverInterface
         }
     }
 
-    public function exec(string $statement)
+    public function exec(string $statement): int
     {
         return $this->doAffectingStatement($statement, []);
     }

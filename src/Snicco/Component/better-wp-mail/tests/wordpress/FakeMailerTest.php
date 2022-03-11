@@ -42,7 +42,7 @@ final class FakeMailerTest extends WPTestCase
      */
     public function no_emails_are_sent_if_the_fake_mailer_is_used(): void
     {
-        add_filter('pre_wp_mail', function ($null, array $wp_mail_input) {
+        add_filter('pre_wp_mail', function ($null, array $wp_mail_input): bool {
             $this->mail_data[] = $wp_mail_input;
 
             return true;
@@ -65,7 +65,7 @@ final class FakeMailerTest extends WPTestCase
         $fake_transport->interceptWordPressEmails();
 
         $count = 0;
-        add_action('phpmailer_init', function () use (&$count) {
+        add_action('phpmailer_init', function () use (&$count): void {
             ++$count;
         }, PHP_INT_MAX);
 

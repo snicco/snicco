@@ -29,9 +29,9 @@ final class MysqliFactory
     /**
      * @return Closure():mysqli
      */
-    private function getReconnect(WPDatabaseSettingsAPI $wp): Closure
+    private function getReconnect(WPDatabaseSettingsAPI $wp): callable
     {
-        return function () use ($wp) {
+        return function () use ($wp): mysqli {
             $success = $wp->wpdb()
                 ->check_connection(false);
             if (! $success) {

@@ -190,7 +190,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
     {
         $m = $this->getMiddleware();
 
-        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request): Response {
             /** @var MutableSession $session */
             $session = $request->getAttribute(MutableSession::class);
             $session->put('foo', 'bar');
@@ -224,7 +224,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
                 'test_cookie' => urldecode($cookie->value),
             ]);
 
-        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request): Response {
             /** @var ImmutableSession $session */
             $session = $request->getAttribute(ImmutableSession::class);
 

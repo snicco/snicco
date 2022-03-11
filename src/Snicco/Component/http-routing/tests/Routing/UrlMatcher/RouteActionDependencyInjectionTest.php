@@ -24,7 +24,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
     {
         $this->assertFalse($this->psr_container->has(Request::class));
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/foo', [RoutingTestController::class, 'onlyRequest']);
         });
 
@@ -37,7 +37,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function its_not_required_to_have_class_dependencies(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'teams/{team}/{player}', [RoutingTestController::class, 'twoParams']);
         });
 
@@ -50,7 +50,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function the_request_can_be_required_together_with_params(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get(
                 'r1',
                 'teams/{team}/{player}',
@@ -75,7 +75,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
             $foo
         );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', ControllerWithDependencies::class);
         });
 
@@ -88,7 +88,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
      */
     public function arguments_from_conditions_are_passed_after_class_dependencies(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get(
                 'r1',
                 'teams/{team}/{player}',

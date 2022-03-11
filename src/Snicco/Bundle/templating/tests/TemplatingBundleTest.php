@@ -87,7 +87,7 @@ final class TemplatingBundleTest extends TestCase
     public function the_url_generator_is_added_to_the_global_context_if_routing_bundle_is_used(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
         $kernel->boot();
@@ -119,12 +119,12 @@ final class TemplatingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('templating.directories', [__DIR__ . '/fixtures/templates']);
         });
 
         $std_class = new stdClass();
-        $kernel->afterRegister(function (Kernel $kernel) use ($std_class) {
+        $kernel->afterRegister(function (Kernel $kernel) use ($std_class): void {
             $kernel->container()
                 ->shared(ViewComposerWithDependency::class, fn () => new ViewComposerWithDependency($std_class));
         });
@@ -173,7 +173,7 @@ final class TemplatingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('templating', [
                 TemplatingOption::DIRECTORIES => [__DIR__ . '/fixtures/templates'],
                 TemplatingOption::VIEW_COMPOSERS => [
@@ -202,7 +202,7 @@ final class TemplatingBundleTest extends TestCase
     public function the_templating_middleware_can_be_resolved(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [
                     HttpRoutingBundle::class,
@@ -237,7 +237,7 @@ final class TemplatingBundleTest extends TestCase
         $this->assertNotBound(TemplatingExceptionDisplayer::class, $kernel);
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [
                     HttpRoutingBundle::class,
@@ -257,7 +257,7 @@ final class TemplatingBundleTest extends TestCase
     public function config_defaults_are_set(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('templating', []);
         });
 
@@ -274,7 +274,7 @@ final class TemplatingBundleTest extends TestCase
     public function test_exception_if_directories_not_readable(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('templating.directories', [__DIR__ . '/bogus']);
         });
 

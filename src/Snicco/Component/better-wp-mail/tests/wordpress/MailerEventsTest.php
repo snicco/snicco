@@ -7,7 +7,6 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use MockPHPMailer;
 use Snicco\Component\BetterWPMail\Event\EmailWasSent;
-use Snicco\Component\BetterWPMail\Event\MailEvents;
 use Snicco\Component\BetterWPMail\Event\MailEventsUsingWPHooks;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Mailer;
@@ -37,7 +36,7 @@ final class MailerEventsTest extends WPTestCase
     {
         $count = 0;
 
-        add_filter(WelcomeEmail::class, function (SendingEmail $email) use (&$count) {
+        add_filter(WelcomeEmail::class, function (SendingEmail $email) use (&$count): void {
             ++$count;
         });
 
@@ -62,7 +61,7 @@ final class MailerEventsTest extends WPTestCase
     {
         add_filter(
             WelcomeEmail::class,
-            function (SendingEmail $event) {
+            function (SendingEmail $event): void {
                 $event->email = $event->email->withHtmlBody('Custom Html');
             }
         );
@@ -85,7 +84,7 @@ final class MailerEventsTest extends WPTestCase
     public function an_event_is_dispatched_after_an_email_is_sent(): void
     {
         $count = 0;
-        add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count) {
+        add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count): void {
             $this->assertSame('foo', $sent_email->email()->htmlBody());
             $this->assertTrue($sent_email->envelope()->recipients()->has('c@web.de'));
             ++$count;
@@ -105,7 +104,7 @@ final class MailerEventsTest extends WPTestCase
         $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
     }
 
-    private function getEventDispatcher(): MailEvents
+    private function getEventDispatcher(): MailEventsUsingWPHooks
     {
         return new MailEventsUsingWPHooks(new WPMailAPI());
     }

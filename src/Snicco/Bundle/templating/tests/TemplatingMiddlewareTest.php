@@ -36,7 +36,7 @@ final class TemplatingMiddlewareTest extends TestCase
     public function the_templating_middleware_works(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [
                     HttpRoutingBundle::class,
@@ -58,7 +58,7 @@ final class TemplatingMiddlewareTest extends TestCase
         $response = $pipeline
             ->send($request)
             ->through([TemplatingMiddleware::class, CreateViewResponseMiddleware::class])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('pipeline exhausted');
             });
 
@@ -72,7 +72,7 @@ final class TemplatingMiddlewareTest extends TestCase
     public function non_view_responses_are_not_affected(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [
                     HttpRoutingBundle::class,

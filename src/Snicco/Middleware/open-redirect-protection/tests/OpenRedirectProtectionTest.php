@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Middleware\OpenRedirectProtection\Tests;
 
 use InvalidArgumentException;
+use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
 
@@ -151,7 +152,7 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function redirects_to_same_site_subdomains_are_allowed(): void
     {
-        $this->withNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function (): RedirectResponse {
             $target = 'https://accounts.foo.com/foo';
 
             return $this->responseFactory()
@@ -172,7 +173,7 @@ final class OpenRedirectProtectionTest extends MiddlewareTestCase
      */
     public function all_protection_can_be_bypassed_if_using_the_away_method(): void
     {
-        $this->withNextMiddlewareResponse(function () {
+        $this->withNextMiddlewareResponse(function (): RedirectResponse {
             $target = 'https://external-site.com';
 
             return $this->responseUtils()

@@ -33,7 +33,7 @@ final class EncryptionBundleTest extends TestCase
     public function test_alias(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
@@ -48,7 +48,7 @@ final class EncryptionBundleTest extends TestCase
     public function test_encryptor_can_be_resolved(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
@@ -64,7 +64,7 @@ final class EncryptionBundleTest extends TestCase
     public function test_encrypt_decrypt(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);
@@ -88,7 +88,7 @@ final class EncryptionBundleTest extends TestCase
     public function test_exception_for_missing_defuse_key(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('encryption', []);
         });
 
@@ -104,7 +104,7 @@ final class EncryptionBundleTest extends TestCase
     public function test_exception_for_bad_defuse_key(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString() . 'bad',
             ]);
@@ -176,7 +176,7 @@ final class EncryptionBundleTest extends TestCase
     public function the_default_configuration_is_only_copied_in_dev_environment(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => Key::createNewRandomKey()->saveToAsciiSafeString(),
             ]);

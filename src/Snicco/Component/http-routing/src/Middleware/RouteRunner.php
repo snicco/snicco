@@ -12,6 +12,7 @@ use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 
 final class RouteRunner extends Middleware
 {
@@ -43,7 +44,7 @@ final class RouteRunner extends Middleware
         $result = $request->routingResult();
         $route = $result->route();
 
-        if (! $route instanceof \Snicco\Component\HttpRouting\Routing\Route\Route) {
+        if (! $route instanceof Route) {
             return $this->delegate($request);
         }
 
@@ -54,7 +55,7 @@ final class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(function (Request $request) use ($result, $action) {
+            ->then(function (Request $request) use ($result, $action): Response {
                 $segments = $result->decodedSegments();
                 /** @var Routing\Route\Route $route */
                 $route = $result->route();

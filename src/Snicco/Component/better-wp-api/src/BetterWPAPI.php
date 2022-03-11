@@ -10,6 +10,7 @@ use WP_User;
 use function add_action;
 use function add_filter;
 use function apply_filters_ref_array;
+use function array_unshift;
 use function current_user_can;
 use function do_action;
 use function get_class;
@@ -59,7 +60,7 @@ class BetterWPAPI
      * @param T     $filterable_value
      * @param mixed ...$args
      *
-     * @return T
+     * @psalm-return T
      */
     public function applyFiltersStrict(string $hook_name, $filterable_value, ...$args)
     {
@@ -101,7 +102,9 @@ class BetterWPAPI
      */
     public function applyFilters(string $hook_name, $value, ...$args)
     {
-        return apply_filters_ref_array($hook_name, [...[$value], ...$args]);
+        array_unshift($args, $value);
+
+        return apply_filters_ref_array($hook_name, $args);
     }
 
     public function removeFilter(string $hook_name, callable $callback, int $priority = 10): bool

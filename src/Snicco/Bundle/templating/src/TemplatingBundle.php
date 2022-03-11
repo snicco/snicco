@@ -95,7 +95,7 @@ final class TemplatingBundle implements Bundle
     private function bindViewEngine(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ViewEngine::class, function () use ($kernel) {
+            ->shared(ViewEngine::class, function () use ($kernel): ViewEngine {
                 $class_names = $kernel->config()
                     ->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
 
@@ -143,7 +143,7 @@ $kernel->container()
     private function bindViewComposerCollection(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ViewComposerCollection::class, function () use ($kernel) {
+            ->shared(ViewComposerCollection::class, function () use ($kernel): ViewComposerCollection {
                 $composer_collection = new ViewComposerCollection(
                     new PsrViewComposerFactory($kernel->container()),
                     $kernel->container()
@@ -165,7 +165,7 @@ $kernel->container()
     private function bindGlobalViewContext(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(GlobalViewContext::class, function () use ($kernel) {
+            ->shared(GlobalViewContext::class, function () use ($kernel): GlobalViewContext {
                 $context = new GlobalViewContext();
                 // This needs to be a closure.
                 $context->add('view', fn () => $kernel->container()->make(ViewEngine::class));

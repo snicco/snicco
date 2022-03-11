@@ -53,7 +53,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             $bar
         );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
                 MiddlewareWithDependencies::class
             );
@@ -75,7 +75,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             return new ControllerWithMiddleware($baz);
         };
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', ControllerWithMiddleware::class . '@handle');
         });
 
@@ -111,7 +111,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             'm' => MiddlewareWithClassAndParamDependencies::class,
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('m:BAZ,BIZ');
         });
 
@@ -128,7 +128,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             'm' => MiddlewareWithTypedDefault::class,
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('m');
         });
 

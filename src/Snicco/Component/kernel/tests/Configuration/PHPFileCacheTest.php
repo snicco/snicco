@@ -73,7 +73,7 @@ final class PHPFileCacheTest extends TestCase
         ]);
 
         $new = new PHPFileCache();
-        $res = $new->get($this->cache_file, function () {
+        $res = $new->get($this->cache_file, function (): void {
             throw new RuntimeException('This should never be called.');
         });
 

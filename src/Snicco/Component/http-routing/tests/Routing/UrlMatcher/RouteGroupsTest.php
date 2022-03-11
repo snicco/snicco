@@ -23,7 +23,7 @@ final class RouteGroupsTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Cant register route [r1] because delegated');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->prefix('foo')
                 ->get('r1', '/bar', RoutingTestController::class);
         });
@@ -34,9 +34,9 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function middleware_is_merged_for_route_groups(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->middleware('foo:FOO')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router
                         ->get('r1', '/foo', RoutingTestController::class)
                         ->middleware('bar:BAR');
@@ -58,9 +58,9 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function the_group_namespace_is_applied_to_child_routes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->namespace(self::CONTROLLER_NAMESPACE)
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router->get('r1', '/foo', 'RoutingTestController');
                 });
         });
@@ -74,9 +74,9 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function a_group_can_prefix_all_child_route_urls(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->prefix('foo')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router->get('r1', '/bar', RoutingTestController::class);
                     $router->get('r2', '/baz', RoutingTestController::class);
                 });
@@ -94,9 +94,9 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function a_group_name_can_be_applied_to_child_routes(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->name('users')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router->get('route1', '/bar', RoutingTestController::class);
                     $router->get('route2', '/baz', RoutingTestController::class);
                 });
@@ -115,12 +115,12 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function the_namespace_is_always_overwritten_by_child_routes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->namespace('Tests\FalseNamespace')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router
                         ->namespace(self::CONTROLLER_NAMESPACE)->group(
-                            function (WebRoutingConfigurator $router) {
+                            function (WebRoutingConfigurator $router): void {
                                 $router->get('r1', '/foo', 'RoutingTestController');
                             }
                         );
@@ -136,12 +136,12 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function group_prefixes_are_merged_on_multiple_levels(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->prefix('foo')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router
                         ->prefix('bar')
-                        ->group(function (WebRoutingConfigurator $router) {
+                        ->group(function (WebRoutingConfigurator $router): void {
                             $router->get('r1', '/baz', RoutingTestController::class);
                             $router->get('r2', '/biz', RoutingTestController::class);
                         });
@@ -163,11 +163,11 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function group_names_are_merged_on_multiple_levels(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->name('users')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router->name('admins')
-                        ->group(function (WebRoutingConfigurator $router) {
+                        ->group(function (WebRoutingConfigurator $router): void {
                             $router->get('calvin', '/bar', RoutingTestController::class);
                             $router->get('marlon', '/baz', RoutingTestController::class);
                         });
@@ -190,11 +190,11 @@ final class RouteGroupsTest extends HttpRunnerTestCase
      */
     public function middleware_is_merged_on_multiple_levels(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->middleware('foo:FOO')
-                ->group(function (WebRoutingConfigurator $router) {
+                ->group(function (WebRoutingConfigurator $router): void {
                     $router->middleware('bar:BAR')
-                        ->group(function (WebRoutingConfigurator $router) {
+                        ->group(function (WebRoutingConfigurator $router): void {
                             $router
                                 ->get('r1', '/foo', RoutingTestController::class)
                                 ->middleware('baz');

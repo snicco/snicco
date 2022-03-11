@@ -10,6 +10,9 @@ final class FixedConfigCache implements ConfigCache
 {
     private array $config;
 
+    /**
+     * @param mixed[] $config
+     */
     public function __construct(array $config)
     {
         if (! isset($config['app'])) {

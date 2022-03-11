@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Transport;
 
-use Closure;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
@@ -84,10 +83,10 @@ final class WPMailTransport implements Transport
      * Throwing explicit exceptions we also allow a far better usage for clients
      * since they would have to create their own hook callbacks otherwise.
      */
-    private function handleFailure(): Closure
+    private function handleFailure(): callable
     {
         $closure = /** @return never */
-            function (WP_Error $error) {
+            function (WP_Error $error): void {
                 throw CantSendEmailWithWPMail::becauseWPMailRaisedErrors($error);
             };
 
@@ -102,7 +101,7 @@ final class WPMailTransport implements Transport
      * break plugins that need it. Here we directly configure the underlying
      * PHPMailer instance which has all the options we need.
      */
-    private function justInTimeConfiguration(Email $mail): Closure
+    private function justInTimeConfiguration(Email $mail): callable
     {
         $closure = function (PHPMailer $php_mailer) use ($mail): void {
             if ($priority = $mail->priority()) {

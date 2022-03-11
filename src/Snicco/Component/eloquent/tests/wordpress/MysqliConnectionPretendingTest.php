@@ -57,7 +57,7 @@ final class MysqliConnectionPretendingTest extends WPTestCase
             ->count();
         $this->assertSame(2, $count);
 
-        $sql = $connection->pretend(function (MysqliConnection $connection) {
+        $sql = $connection->pretend(function (MysqliConnection $connection): void {
             $result = $connection->table('cities')
                 ->insert([
                     'name' => 'düsseldorf',
@@ -89,7 +89,7 @@ final class MysqliConnectionPretendingTest extends WPTestCase
             ->count();
         $this->assertSame(2, $count);
 
-        $sql = $connection->pretend(function (MysqliConnection $connection) {
+        $sql = $connection->pretend(function (MysqliConnection $connection): void {
             $result = $connection->table('cities')
                 ->where('country_id', 1)
                 ->update([
@@ -117,7 +117,7 @@ final class MysqliConnectionPretendingTest extends WPTestCase
             ->count();
         $this->assertSame(2, $count);
 
-        $sql = $connection->pretend(function (MysqliConnection $connection) {
+        $sql = $connection->pretend(function (MysqliConnection $connection): void {
             $result = $connection->table('cities')
                 ->where('country_id', 1)
                 ->delete();
@@ -143,7 +143,7 @@ final class MysqliConnectionPretendingTest extends WPTestCase
             ->count();
         $this->assertSame(2, $count);
 
-        $sql = $connection->pretend(function (MysqliConnection $connection) {
+        $sql = $connection->pretend(function (MysqliConnection $connection): void {
             $result = $connection->unprepared('delete from wp_cities where country_id = 1');
             $this->assertTrue($result);
         });
@@ -162,7 +162,7 @@ final class MysqliConnectionPretendingTest extends WPTestCase
     {
         $connection = $this->getMysqliConnection();
 
-        $sql = $connection->pretend(function (MysqliConnection $connection) {
+        $sql = $connection->pretend(function (MysqliConnection $connection): void {
             $records = $connection->table('cities')
                 ->whereIn('country_id', [1, 2])
                 ->cursor();

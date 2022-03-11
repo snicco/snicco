@@ -152,7 +152,6 @@ class Arr
      *
      * @param array           $array Passed by reference
      * @param string|string[] $keys
-     *
      */
     public static function forget(array &$array, $keys): void
     {

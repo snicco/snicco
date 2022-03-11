@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPHooks\EventMapping;
 
-use Closure;
 use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
@@ -143,7 +142,7 @@ final class EventMapper
      * @param class-string<MappedHook> $event_class
      * @psalm-suppress MissingClosureParamType
      */
-    private function dispatchMappedAction(string $event_class): Closure
+    private function dispatchMappedAction(string $event_class): callable
     {
         return function (...$args_from_wordpress_hooks) use ($event_class): void {
             // Remove the empty "" that WordPress will pass for actions without any passed arguments.
@@ -170,7 +169,7 @@ final class EventMapper
      * @psalm-suppress MissingClosureParamType
      * @psalm-suppress MissingClosureReturnType
      */
-    private function dispatchMappedFilter(string $event_class): Closure
+    private function dispatchMappedFilter(string $event_class): callable
     {
         return function (...$args_from_wordpress_hooks) use ($event_class) {
             $event = $this->event_factory->make($event_class, $args_from_wordpress_hooks);

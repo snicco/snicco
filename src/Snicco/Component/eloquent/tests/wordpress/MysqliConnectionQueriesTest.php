@@ -278,7 +278,7 @@ final class MysqliConnectionQueriesTest extends WPTestCase
     public function test_cursor_when_pretending(): void
     {
         $connection = $this->getMysqliConnection();
-        $sql = $connection->pretend(function (MysqliConnection $connection) {
+        $sql = $connection->pretend(function (MysqliConnection $connection): void {
             $records = $connection->table('cities')
                 ->whereIn('country_id', [1, 2])
                 ->cursor();

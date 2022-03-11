@@ -9,7 +9,7 @@ use Snicco\Component\StrArr\Arr;
 
 class CountryFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker->country(),
@@ -27,7 +27,7 @@ class CountryFactory extends Factory
         ]);
     }
 
-    private function continent()
+    private function continent(): string
     {
         $continents = ['Asia', 'Africa', 'Europe', 'Australia', 'North America', 'South America', 'Antarctica.'];
 
