@@ -138,7 +138,7 @@ final class BetterWPDB
      * @throws QueryException
      * @throws InvalidArgumentException
      *
-     * @return T
+     * @psalm-return  T
      */
     public function transactional(Closure $callback)
     {
@@ -519,7 +519,7 @@ final class BetterWPDB
      *
      * @param Closure():T $run_query
      *
-     * @return T
+     * @psalm-return  T
      */
     private function runWithErrorHandling(Closure $run_query)
     {
