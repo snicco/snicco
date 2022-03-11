@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-08 19:17:44        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-11 14:06:49        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -611,6 +611,7 @@
             "\\Psr\\Container\\ContainerInterface",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
             "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
+            "\\Webmozart\\Assert\\Assert",
             "\\LogicException",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\ResponseFactory",
             "\\Snicco\\Component\\HttpRouting\\Http\\ResponseUtils",
@@ -1326,9 +1327,7 @@
     {
         "name": "\\Snicco\\Component\\Templating\\Exception\\BadViewComposer",
         "size": 3000,
-        "relations": [
-            "\\RuntimeException"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Templating\\OutputBuffer",
@@ -1356,7 +1355,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000001ae43ea70000000036c7291d",
+        "name": "\\anonymous@000000000e701ce10000000004c7e3e1",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1537,7 +1536,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000001ae427b40000000036c7291d",
+        "name": "\\anonymous@000000000e70111c0000000004c7e3e1",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2093,7 +2092,8 @@
         "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
+            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "\\InvalidArgumentException"
         ]
     },
     {
@@ -2463,7 +2463,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000001ae43abe0000000036c7291d",
+        "name": "\\anonymous@000000000e701e060000000004c7e3e1",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
@@ -2944,8 +2944,8 @@
             "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
             "\\Psr\\Container\\ContainerInterface",
             "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
-            "\\ReflectionClass",
-            "\\InvalidArgumentException"
+            "\\Snicco\\Component\\Templating\\Exception\\BadViewComposer",
+            "\\ReflectionClass"
         ]
     },
     {
