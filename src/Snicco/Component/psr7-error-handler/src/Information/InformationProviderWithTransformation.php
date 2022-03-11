@@ -60,7 +60,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         }
 
         /** @var array<positive-int,array{title:string, message:string}> $decoded */
-        $decoded = json_decode($data, true, JSON_THROW_ON_ERROR);
+        $decoded = json_decode($data, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         return new self($decoded, $identifier, ...$transformer);
     }

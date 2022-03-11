@@ -50,9 +50,7 @@ final class BetterWPHooksBundle implements Bundle
         $container->shared(EventDispatcherInterface::class, fn () => $container->make(EventDispatcher::class));
 
         if ($kernel->env()->isTesting()) {
-            $container->shared(TestableEventDispatcher::class, function () use ($container) {
-                return $container->make(EventDispatcher::class);
-            });
+            $container->shared(TestableEventDispatcher::class, fn () => $container->make(EventDispatcher::class));
         }
 
         $container->shared(

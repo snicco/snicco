@@ -67,9 +67,7 @@ abstract class WebTestCase extends WPTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->extensions = array_map(function (string $class) {
-            return new $class();
-        }, $this->extensions());
+        $this->extensions = array_map(fn (string $class) => new $class(), $this->extensions());
         $this->setUpExtensions();
     }
 

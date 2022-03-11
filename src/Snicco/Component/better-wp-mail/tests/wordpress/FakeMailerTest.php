@@ -114,12 +114,10 @@ final class FakeMailerTest extends WPTestCase
 
         $this->fake_transport->assertSent(
             TestMail::class,
-            function (TestMail $email, Envelope $envelope) {
-                return $email->to()
-                    ->has('c@web.de')
-                    && 'm@web.de' === $envelope->sender()
-                        ->address();
-            }
+            fn (TestMail $email, Envelope $envelope) => $email->to()
+                ->has('c@web.de')
+                && 'm@web.de' === $envelope->sender()
+                    ->address()
         );
     }
 
@@ -141,10 +139,8 @@ final class FakeMailerTest extends WPTestCase
             ),
             fn () => $this->fake_transport->assertSent(
                 TestMail::class,
-                function (TestMail $email) {
-                    return $email->to()
-                        ->has('c@web.de');
-                }
+                fn (TestMail $email) => $email->to()
+                    ->has('c@web.de')
             )
         );
     }
@@ -366,20 +362,18 @@ final class FakeMailerTest extends WPTestCase
             ]
         );
 
-        $this->fake_transport->assertSent(WPMail::class, function (WPMail $email) {
-            return $email->to()
-                ->has('calvin@web.de')
-                && $email->cc()
-                    ->has('Jane Doe <jane@web.de>')
-                && $email->bcc()
-                    ->has('jon@web.de')
-                && 'subject' === $email->subject()
-                && 'Office' === iterator_to_array($email->replyTo())[0]
-                    ->name()
-                && 'My Company <mycompany@web.de>'
-                === iterator_to_array($email->from())[0]
-                    ->toString();
-        });
+        $this->fake_transport->assertSent(WPMail::class, fn (WPMail $email) => $email->to()
+            ->has('calvin@web.de')
+            && $email->cc()
+                ->has('Jane Doe <jane@web.de>')
+            && $email->bcc()
+                ->has('jon@web.de')
+            && 'subject' === $email->subject()
+            && 'Office' === iterator_to_array($email->replyTo())[0]
+                ->name()
+            && 'My Company <mycompany@web.de>'
+            === iterator_to_array($email->from())[0]
+                ->toString());
     }
 
     private function aValidTestEmail(): Email

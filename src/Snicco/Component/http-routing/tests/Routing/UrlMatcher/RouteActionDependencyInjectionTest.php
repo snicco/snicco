@@ -71,9 +71,9 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $this->pimple[Foo::class] = $foo;
         $foo->value = 'FOO';
 
-        $this->pimple[ControllerWithDependencies::class] = function () use ($foo): ControllerWithDependencies {
-            return new ControllerWithDependencies($foo);
-        };
+        $this->pimple[ControllerWithDependencies::class] = fn (): ControllerWithDependencies => new ControllerWithDependencies(
+            $foo
+        );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', ControllerWithDependencies::class);

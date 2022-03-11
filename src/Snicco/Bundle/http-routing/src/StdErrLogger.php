@@ -59,7 +59,7 @@ final class StdErrLogger extends AbstractLogger
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
-            if (false !== strpos($message, "{{$key}}")) {
+            if (false !== strpos($message, (string) "{{$key}}")) {
                 $replacements["{{$key}}"] = $this->valueToString($value);
 
                 continue;

@@ -18,10 +18,7 @@ final class MustMatchRouteTest extends MiddlewareTestCase
      */
     public function test_exception_for_delegated_response(): void
     {
-        $this->withNextMiddlewareResponse(function () {
-            return $this->responseFactory()
-                ->delegate();
-        });
+        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->delegate());
 
         $middleware = new MustMatchRoute();
 
@@ -38,10 +35,7 @@ final class MustMatchRouteTest extends MiddlewareTestCase
      */
     public function test_no_exception_for_handled_response(): void
     {
-        $this->withNextMiddlewareResponse(function () {
-            return $this->responseFactory()
-                ->html('foo');
-        });
+        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->html('foo'));
 
         $middleware = new MustMatchRoute();
 

@@ -46,7 +46,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
                 [$selector]
             );
         } catch (NoMatchingRowFound $e) {
-            throw BadSessionID::forSelector($selector, __CLASS__);
+            throw BadSessionID::forSelector($selector, self::class);
         }
 
         return $this->instantiate($session);
@@ -101,7 +101,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
         );
 
         if (0 === $rows && ! $this->exists($selector)) {
-            throw BadSessionID::forSelector($selector, __CLASS__);
+            throw BadSessionID::forSelector($selector, self::class);
         }
     }
 

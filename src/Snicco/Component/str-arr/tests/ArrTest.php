@@ -201,9 +201,7 @@ final class ArrTest extends TestCase
             ],
         ];
         $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', 'dayle'));
-        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', function () {
-            return 'dayle';
-        }));
+        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', fn () => 'dayle'));
 
         // test keys with dots have priority
         $array = [
@@ -339,23 +337,15 @@ final class ArrTest extends TestCase
         $this->assertEquals(100, Arr::first($array));
 
         // Callback is not null and array is not empty
-        $value = Arr::first($array, function (int $value) {
-            return $value >= 150;
-        });
+        $value = Arr::first($array, fn (int $value) => $value >= 150);
         $this->assertEquals(200, $value);
 
         // Callback is not null, array is not empty but no satisfied item
-        $value2 = Arr::first($array, function (int $value) {
-            return $value > 300;
-        });
+        $value2 = Arr::first($array, fn (int $value) => $value > 300);
 
-        $value3 = Arr::first($array, function (int $value) {
-            return $value > 300;
-        }, 500);
+        $value3 = Arr::first($array, fn (int $value) => $value > 300, 500);
 
-        $value4 = Arr::first($array, function (int $value) {
-            return $value > 300;
-        }, 600);
+        $value4 = Arr::first($array, fn (int $value) => $value > 300, 600);
 
         $this->assertNull($value2);
         $this->assertSame(500, $value3);
@@ -1100,9 +1090,7 @@ final class ArrTest extends TestCase
         $this->assertSame('Taylor', Arr::dataGet($array, '0.users.0.name'));
         $this->assertNull(Arr::dataGet($array, '0.users.3'));
         $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', 'Not found'));
-        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', function () {
-            return 'Not found';
-        }));
+        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', fn () => 'Not found'));
         $this->assertSame('Taylor', Arr::dataGet($dottedArray, ['users', 'first.name']));
         $this->assertNull(Arr::dataGet($dottedArray, ['users', 'middle.name']));
         $this->assertSame('Not found', Arr::dataGet($dottedArray, ['users', 'last.name'], 'Not found'));

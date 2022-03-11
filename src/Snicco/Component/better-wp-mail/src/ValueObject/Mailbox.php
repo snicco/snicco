@@ -44,9 +44,7 @@ final class Mailbox
         $address = strtolower($address);
 
         if (null === self::$email_validator) {
-            self::$email_validator = function (string $email): bool {
-                return false !== filter_var($email, FILTER_VALIDATE_EMAIL);
-            };
+            self::$email_validator = fn (string $email): bool => false !== filter_var($email, FILTER_VALIDATE_EMAIL);
         }
 
         if (! $this->isEmailValid($address, self::$email_validator)) {

@@ -99,11 +99,12 @@ final class TemplatingBundle implements Bundle
                 $class_names = $kernel->config()
                     ->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
 
-                $factories = array_map(function (string $class_name) use ($kernel): ViewFactory {
-                    /** @var class-string<ViewFactory> $class_name */
-                    return $kernel->container()
-                        ->make($class_name);
-                }, $class_names);
+                $factories = array_map(
+                    fn (string $class_name): ViewFactory => /** @var class-string<ViewFactory> $class_name */
+$kernel->container()
+    ->make($class_name),
+                    $class_names
+                );
 
                 return new ViewEngine(...$factories);
             });
@@ -112,15 +113,13 @@ final class TemplatingBundle implements Bundle
     private function bindPHPViewFactory(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(PHPViewFactory::class, function () use ($kernel) {
-                return new PHPViewFactory(
-                    new PHPViewFinder($kernel->config()->getListOfStrings(
-                        'templating.' . TemplatingOption::DIRECTORIES
-                    )),
-                    $kernel->container()
-                        ->make(ViewComposerCollection::class),
-                );
-            });
+            ->shared(PHPViewFactory::class, fn () => new PHPViewFactory(
+                new PHPViewFinder($kernel->config()->getListOfStrings(
+                    'templating.' . TemplatingOption::DIRECTORIES
+                )),
+                $kernel->container()
+                    ->make(ViewComposerCollection::class),
+            ));
     }
 
     private function bindTemplatingMiddleware(Kernel $kernel): void
@@ -169,10 +168,7 @@ final class TemplatingBundle implements Bundle
             ->shared(GlobalViewContext::class, function () use ($kernel) {
                 $context = new GlobalViewContext();
                 // This needs to be a closure.
-                $context->add('view', function () use ($kernel) {
-                    return $kernel->container()
-                        ->make(ViewEngine::class);
-                });
+                $context->add('view', fn () => $kernel->container()->make(ViewEngine::class));
 
                 if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
                     $context->add('url', fn () => $kernel->container()->make(UrlGenerator::class));

@@ -137,8 +137,8 @@ final class KernelBundlesTest extends TestCase
             $app->boot();
             $this->fail('no exception thrown when expected.');
         } catch (Throwable $e) {
-            $this->assertStringContainsString('Snicco\\Component\\Kernel\\Bundle', $e->getMessage());
-            $this->assertStringContainsString('stdClass', $e->getMessage());
+            $this->assertStringContainsString(\Snicco\Component\Kernel\Bundle::class, $e->getMessage());
+            $this->assertStringContainsString(stdClass::class, $e->getMessage());
         }
     }
 

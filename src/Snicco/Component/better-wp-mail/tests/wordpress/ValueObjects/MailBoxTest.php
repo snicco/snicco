@@ -174,9 +174,7 @@ final class MailBoxTest extends WPTestCase
      */
     public function test_custom_validation_function_can_be_set(): void
     {
-        Mailbox::$email_validator = function (string $email): bool {
-            return 'calvin@web.de' === $email;
-        };
+        Mailbox::$email_validator = fn (string $email): bool => 'calvin@web.de' === $email;
 
         // ok
         Mailbox::create('calvin@web.de');

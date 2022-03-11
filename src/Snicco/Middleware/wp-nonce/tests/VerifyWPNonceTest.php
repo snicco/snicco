@@ -59,9 +59,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response) => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -85,9 +83,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response) => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -133,9 +129,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
 
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response) => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -181,9 +175,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response) => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -227,9 +219,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response;
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response) => $response);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertNextMiddlewareCalled()

@@ -200,10 +200,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function custom_responses_for_the_next_middleware_can_be_set(): void
     {
-        $this->withNextMiddlewareResponse(function () {
-            return $this->responseFactory()
-                ->html('foo');
-        });
+        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->html('foo'));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -223,10 +220,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function assert_next_middleware_called_still_works_with_custom_responses(): void
     {
-        $this->withNextMiddlewareResponse(function () {
-            return $this->responseFactory()
-                ->html('foo');
-        });
+        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->html('foo'));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -321,10 +315,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
     {
         $this->withRoutes([Route::create('/foo', Route::DELEGATE, 'r1')]);
 
-        $this->withNextMiddlewareResponse(function () {
-            return $this->responseUtils()
-                ->redirectToRoute('r1');
-        });
+        $this->withNextMiddlewareResponse(fn () => $this->responseUtils()->redirectToRoute('r1'));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
@@ -345,9 +336,7 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
      */
     public function test_response_instance_is_not_changed(): void
     {
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response) => new ViewResponse('foo', $response));
 
         $middleware = new class() extends Middleware {
             public function handle(Request $request, NextMiddleware $next): ResponseInterface

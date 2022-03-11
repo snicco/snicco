@@ -52,7 +52,7 @@ final class ReadWriteSession implements Session
     /**
      * @var list<object>
      */
-    private $stored_events = [];
+    private array $stored_events = [];
 
     /**
      * @interal Sessions MUST only be started from a {@see SessionManager}

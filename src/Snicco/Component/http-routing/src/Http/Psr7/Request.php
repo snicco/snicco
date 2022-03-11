@@ -181,12 +181,10 @@ final class Request implements ServerRequestInterface
 
         return implode(
             '/',
-            array_map(function ($part) {
-                // Make sure that %2F stays %2F
-                return rawurldecode(strtr($part, [
-                    '%2F' => '%252F',
-                ]));
-            }, explode('/', $path))
+            array_map(fn ($part) => // Make sure that %2F stays %2F
+rawurldecode(strtr($part, [
+    '%2F' => '%252F',
+])), explode('/', $path))
         );
     }
 

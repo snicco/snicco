@@ -38,9 +38,7 @@ final class MiddlewareCache
      */
     public static function get(string $cache_file, Closure $loader): MiddlewareResolver
     {
-        set_error_handler(function (): bool {
-            return true;
-        });
+        set_error_handler(fn (): bool => true);
 
         /**
          * @var mixed $cached_value

@@ -25,7 +25,7 @@ final class AllowMutableSessionForReadVerbs implements MiddlewareInterface
             throw new LogicException(
                 sprintf(
                     "A session has already been set on the request.\nMake sure that the [%s] middleware is run before the [%s] middleware.",
-                    __CLASS__,
+                    self::class,
                     StatefulRequest::class
                 )
             );

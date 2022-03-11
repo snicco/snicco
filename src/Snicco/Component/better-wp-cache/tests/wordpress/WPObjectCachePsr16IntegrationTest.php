@@ -542,7 +542,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->get($key);
     }
 
@@ -559,7 +559,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->getMultiple(['key1', $key, 'key2']);
     }
 
@@ -572,7 +572,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->getMultiple('key');
     }
 
@@ -615,7 +615,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             yield $key => 'bar';
             yield 'key2' => 'baz';
         };
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->setMultiple($values());
     }
 
@@ -628,7 +628,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->setMultiple('key');
     }
 
@@ -645,7 +645,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->has($key);
     }
 
@@ -662,7 +662,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->delete($key);
     }
 
@@ -679,7 +679,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->deleteMultiple(['key1', $key, 'key2']);
     }
 
@@ -692,7 +692,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->deleteMultiple('key');
     }
 
@@ -709,7 +709,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->set('key', 'value', $ttl);
     }
 
@@ -726,7 +726,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
+        $this->expectException(\Psr\SimpleCache\InvalidArgumentException::class);
         $this->cache->setMultiple([
             'key' => 'value',
         ], $ttl);

@@ -121,9 +121,7 @@ final class WPEloquentStandalone
 
     private function bindEventDispatcher(Dispatcher $event_dispatcher): void
     {
-        $this->illuminate_container->singleton('events', function () use ($event_dispatcher) {
-            return $event_dispatcher;
-        });
+        $this->illuminate_container->singleton('events', fn () => $event_dispatcher);
         Eloquent::setEventDispatcher($event_dispatcher);
     }
 
@@ -146,9 +144,7 @@ final class WPEloquentStandalone
 
     private function bindTransactionManager(): void
     {
-        $this->illuminate_container->singletonIf('db.transactions', function () {
-            return new DatabaseTransactionsManager();
-        });
+        $this->illuminate_container->singletonIf('db.transactions', fn () => new DatabaseTransactionsManager());
     }
 
     /**
@@ -166,8 +162,6 @@ final class WPEloquentStandalone
 
     private function bindDBFacade(ConnectionResolverInterface $connection_resolver): void
     {
-        $this->illuminate_container->singletonIf('db', function () use ($connection_resolver) {
-            return $connection_resolver;
-        });
+        $this->illuminate_container->singletonIf('db', fn () => $connection_resolver);
     }
 }

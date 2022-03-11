@@ -242,15 +242,13 @@ final class ViewEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', function (View $view) {
-            return $view->with([
-                'test_context' => [
-                    'foo' => [
-                        'bar' => 'biz',
-                    ],
+        $this->composers->addComposer('context-priority', fn (View $view) => $view->with([
+            'test_context' => [
+                'foo' => [
+                    'bar' => 'biz',
                 ],
-            ]);
-        });
+            ],
+        ]));
 
         $view = $this->view_engine->make('context-priority');
 
@@ -268,15 +266,13 @@ final class ViewEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', function (View $view) {
-            return $view->with([
-                'test_context' => [
-                    'foo' => [
-                        'bar' => 'biz',
-                    ],
+        $this->composers->addComposer('context-priority', fn (View $view) => $view->with([
+            'test_context' => [
+                'foo' => [
+                    'bar' => 'biz',
                 ],
-            ]);
-        });
+            ],
+        ]));
 
         $view = $this->view_engine->make('context-priority');
         $view = $view->with([

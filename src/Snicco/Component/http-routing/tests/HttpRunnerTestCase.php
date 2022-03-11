@@ -103,15 +103,9 @@ abstract class HttpRunnerTestCase extends TestCase
         $this->psr_container = new \Pimple\Psr11\Container($this->pimple);
 
         // internal controllers
-        $this->pimple[DelegateResponseController::class] = function (): DelegateResponseController {
-            return new DelegateResponseController();
-        };
-        $this->pimple[ViewController::class] = function (): ViewController {
-            return new ViewController();
-        };
-        $this->pimple[RedirectController::class] = function (): RedirectController {
-            return new RedirectController();
-        };
+        $this->pimple[DelegateResponseController::class] = fn (): DelegateResponseController => new DelegateResponseController();
+        $this->pimple[ViewController::class] = fn (): ViewController => new ViewController();
+        $this->pimple[RedirectController::class] = fn (): RedirectController => new RedirectController();
 
         // TestController
         $controller = new RoutingTestController();
@@ -291,22 +285,20 @@ abstract class HttpRunnerTestCase extends TestCase
 
         unset($this->pimple[RoutingMiddleware::class], $this->pimple[RouteRunner::class]);
 
-        $this->pimple[RoutingMiddleware::class] = function (): RoutingMiddleware {
-            return new RoutingMiddleware($this->routing->urlMatcher());
-        };
+        $this->pimple[RoutingMiddleware::class] = fn (): RoutingMiddleware => new RoutingMiddleware(
+            $this->routing->urlMatcher()
+        );
 
-        $this->pimple[RouteRunner::class] = function () use ($error_handler): RouteRunner {
-            return new RouteRunner(
-                new MiddlewarePipeline($this->psr_container, $error_handler,),
-                new MiddlewareResolver(
-                    $this->always_run,
-                    $this->middleware_aliases,
-                    $this->middleware_groups,
-                    $this->middleware_priority
-                ),
-                $this->psr_container
-            );
-        };
+        $this->pimple[RouteRunner::class] = fn (): RouteRunner => new RouteRunner(
+            new MiddlewarePipeline($this->psr_container, $error_handler,),
+            new MiddlewareResolver(
+                $this->always_run,
+                $this->middleware_aliases,
+                $this->middleware_groups,
+                $this->middleware_priority
+            ),
+            $this->psr_container
+        );
 
         return (new MiddlewarePipeline($this->psr_container, $error_handler))->through([
             RoutingMiddleware::class,

@@ -111,7 +111,7 @@ class Email
     final public function addTo($address): Email
     {
         $new = clone $this;
-        $new->to = array_merge($this->to, $this->normalizeAddresses($address));
+        $new->to = [...$this->to, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -137,7 +137,7 @@ class Email
     final public function addCc($address): Email
     {
         $new = clone $this;
-        $new->cc = array_merge($this->cc, $this->normalizeAddresses($address));
+        $new->cc = [...$this->cc, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -163,7 +163,7 @@ class Email
     final public function addBcc($address): Email
     {
         $new = clone $this;
-        $new->bcc = array_merge($this->bcc, $this->normalizeAddresses($address));
+        $new->bcc = [...$this->bcc, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -223,7 +223,7 @@ class Email
     final public function addReplyTo($address): Email
     {
         $new = clone $this;
-        $new->reply_to = array_merge($this->reply_to, $this->normalizeAddresses($address));
+        $new->reply_to = [...$this->reply_to, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -249,7 +249,7 @@ class Email
     final public function addFrom($address): Email
     {
         $new = clone $this;
-        $new->from = array_merge($this->from, $this->normalizeAddresses($address));
+        $new->from = [...$this->from, ...$this->normalizeAddresses($address)];
 
         return $new;
     }

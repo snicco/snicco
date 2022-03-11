@@ -67,7 +67,7 @@ final class InMemoryDriver implements UserSessionsDriver
     public function touch(string $selector, int $current_timestamp): void
     {
         if (! isset($this->storage[$selector])) {
-            throw BadSessionID::forSelector($selector, __CLASS__);
+            throw BadSessionID::forSelector($selector, self::class);
         }
 
         $this->storage[$selector]['last_activity'] = $current_timestamp;

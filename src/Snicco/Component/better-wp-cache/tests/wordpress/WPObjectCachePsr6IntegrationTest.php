@@ -10,7 +10,6 @@ use Psr\Cache\CacheItemInterface;
 use RuntimeException;
 use Snicco\Component\BetterWPCache\WPObjectCachePsr6;
 use stdClass;
-use Traversable;
 use WP_Object_Cache;
 
 use function chr;
@@ -33,7 +32,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      */
     protected $skippedTests = [];
 
-    protected ?WPObjectCachePsr6 $cache;
+    protected ?WPObjectCachePsr6 $cache = null;
 
     protected function setUp(): void
     {
@@ -268,7 +267,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $items = $this->cache->getItems([]);
         $this->assertTrue(
-            is_array($items) || $items instanceof Traversable,
+            is_iterable($items),
             'A call to getItems with an empty array must always return an array or \Traversable.'
         );
 
@@ -686,7 +685,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $this->cache->getItem($key);
     }
 
@@ -703,7 +702,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $this->cache->getItems(['key1', $key, 'key2']);
     }
 
@@ -720,7 +719,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $this->cache->hasItem($key);
     }
 
@@ -737,7 +736,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $this->cache->deleteItem($key);
     }
 
@@ -754,7 +753,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(\Psr\Cache\InvalidArgumentException::class);
         $this->cache->deleteItems(['key1', $key, 'key2']);
     }
 
@@ -1042,7 +1041,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $value = $item->get();
-        $this->assertInstanceOf('DateTime', $value, 'You must be able to store objects in cache.');
+        $this->assertInstanceOf(DateTime::class, $value, 'You must be able to store objects in cache.');
     }
 
     /**

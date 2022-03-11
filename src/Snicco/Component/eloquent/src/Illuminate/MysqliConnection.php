@@ -31,9 +31,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
     public function __construct(MysqliDriverInterface $mysqli_driver, WPDatabaseSettingsAPI $wp)
     {
         $this->mysqli_driver = $mysqli_driver;
-        $pdo_adapter = function (): PDOAdapter {
-            return $this->mysqli_driver;
-        };
+        $pdo_adapter = fn (): PDOAdapter => $this->mysqli_driver;
 
         parent::__construct($pdo_adapter, $wp->dbName(), $wp->tablePrefix(), [
             'driver' => 'mysql',

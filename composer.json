@@ -65,6 +65,7 @@
         "laminas/laminas-diactoros": "^2.8",
         "nyholm/psr7": "^1.0.0",
         "php-stubs/wordpress-stubs": "^5.8.0",
+        "rector/rector": "^0.12.17",
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "^10.1",
         "symplify/monorepo-builder": "9.4.70",

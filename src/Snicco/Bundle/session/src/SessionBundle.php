@@ -131,15 +131,13 @@ final class SessionBundle implements Bundle
     private function bindSessionManager(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionManager::class, function () use ($kernel) {
-                return new FactorySessionManager(
-                    $kernel->container()
-                        ->make(SessionConfig::class),
-                    $kernel->container()
-                        ->make(SessionDriver::class),
-                    $this->resolveSerializer($kernel),
-                );
-            });
+            ->shared(SessionManager::class, fn () => new FactorySessionManager(
+                $kernel->container()
+                    ->make(SessionConfig::class),
+                $kernel->container()
+                    ->make(SessionDriver::class),
+                $this->resolveSerializer($kernel),
+            ));
     }
 
     private function validateConfig(Kernel $kernel, WritableConfig $config): void
@@ -291,15 +289,13 @@ final class SessionBundle implements Bundle
     private function bindMiddleware(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(StatefulRequest::class, function () use ($kernel) {
-                return new StatefulRequest(
-                    $kernel->container()
-                        ->make(SessionManager::class),
-                    $kernel->container()
-                        ->make(LoggerInterface::class),
-                    $kernel->container()
-                        ->make(SessionConfig::class)->cookiePath()
-                );
-            });
+            ->shared(StatefulRequest::class, fn () => new StatefulRequest(
+                $kernel->container()
+                    ->make(SessionManager::class),
+                $kernel->container()
+                    ->make(LoggerInterface::class),
+                $kernel->container()
+                    ->make(SessionConfig::class)->cookiePath()
+            ));
     }
 }

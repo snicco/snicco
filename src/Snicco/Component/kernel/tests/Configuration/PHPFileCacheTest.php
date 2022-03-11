@@ -44,11 +44,9 @@ final class PHPFileCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->cache_file));
 
-        $res = $cache->get($this->cache_file, function () {
-            return [
-                'foo' => 'bar',
-            ];
-        });
+        $res = $cache->get($this->cache_file, fn () => [
+            'foo' => 'bar',
+        ]);
 
         $this->assertSame([
             'foo' => 'bar',
@@ -70,11 +68,9 @@ final class PHPFileCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->cache_file));
 
-        $cache->get($this->cache_file, function () {
-            return [
-                'foo' => 'bar',
-            ];
-        });
+        $cache->get($this->cache_file, fn () => [
+            'foo' => 'bar',
+        ]);
 
         $new = new PHPFileCache();
         $res = $new->get($this->cache_file, function () {

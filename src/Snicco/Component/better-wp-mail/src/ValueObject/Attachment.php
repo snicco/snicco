@@ -52,7 +52,7 @@ final class Attachment
      */
     private function __construct($body, string $filename, string $content_type = null, bool $inline = false)
     {
-        $this->content_type = (null === $content_type) ? 'application/octet-stream' : $content_type;
+        $this->content_type = $content_type ?? 'application/octet-stream';
         $this->filename = $filename;
         $this->disposition = $inline ? 'inline' : 'attachment';
 

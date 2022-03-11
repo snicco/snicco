@@ -29,7 +29,7 @@ final class FakeTransport implements Transport
     /**
      * @var array<class-string, array<array{0: Email, 1: Envelope}>>
      */
-    private $sent_mails = [];
+    private array $sent_mails = [];
 
     public function __construct(WPMailAPI $wp = null)
     {
@@ -100,10 +100,8 @@ final class FakeTransport implements Transport
 
         $this->assertSent(
             $email_class,
-            function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()
-                    ->has($expected_recipient);
-            }
+            fn (Email $email, Envelope $envelope): bool => $envelope->recipients()
+                ->has($expected_recipient)
         );
     }
 
@@ -150,10 +148,8 @@ final class FakeTransport implements Transport
         $expected_recipient = Mailbox::create($recipient);
         $matching = $this->sentEmailsThatMatchCondition(
             $email_class,
-            function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()
-                    ->has($expected_recipient);
-            }
+            fn (Email $email, Envelope $envelope): bool => $envelope->recipients()
+                ->has($expected_recipient)
         );
 
         $count = count($matching);
