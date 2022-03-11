@@ -28,14 +28,14 @@ final class CreatesPsrRequestsTests extends TestCase
         $request = $this->frontendRequest('foo?bar=baz#section1');
         $this->assertInstanceOf(Request::class, $request);
 
-        $this->assertEquals('https://foo.com/foo?bar=baz#section1', (string) $request->getUri());
+        $this->assertSame('https://foo.com/foo?bar=baz#section1', (string) $request->getUri());
         $this->assertEquals([
             'bar' => 'baz',
         ], $request->getQueryParams());
 
         $request = $this->frontendRequest('foo?city=foo bar');
         $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals('https://foo.com/foo?city=foo%20bar', (string) $request->getUri());
+        $this->assertSame('https://foo.com/foo?city=foo%20bar', (string) $request->getUri());
         $this->assertEquals([
             'city' => 'foo bar',
         ], $request->getQueryParams());
@@ -49,7 +49,7 @@ final class CreatesPsrRequestsTests extends TestCase
         $request = $this->frontendRequest('http://foobar.com:8080/foo?bar=baz#section1');
         $this->assertInstanceOf(Request::class, $request);
 
-        $this->assertEquals('http://foobar.com:8080/foo?bar=baz#section1', (string) $request->getUri());
+        $this->assertSame('http://foobar.com:8080/foo?bar=baz#section1', (string) $request->getUri());
         $this->assertEquals([
             'bar' => 'baz',
         ], $request->getQueryParams());
@@ -61,8 +61,8 @@ final class CreatesPsrRequestsTests extends TestCase
     public function the_method_is_get_by_default(): void
     {
         $request = $this->frontendRequest('/foo');
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('GET', $request->server('REQUEST_METHOD'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('GET', $request->server('REQUEST_METHOD'));
     }
 
     /**
@@ -71,8 +71,8 @@ final class CreatesPsrRequestsTests extends TestCase
     public function the_method_can_be_changed(): void
     {
         $request = $this->frontendRequest('/foo', [], 'POST');
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('POST', $request->server('REQUEST_METHOD'));
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('POST', $request->server('REQUEST_METHOD'));
     }
 
     /**
@@ -83,8 +83,8 @@ final class CreatesPsrRequestsTests extends TestCase
         $request = $this->frontendRequest('/foo', [
             'X-FOO' => 'BAR',
         ], 'POST');
-        $this->assertEquals('POST', $request->server('REQUEST_METHOD'));
-        $this->assertEquals('BAR', $request->server('X-FOO'));
+        $this->assertSame('POST', $request->server('REQUEST_METHOD'));
+        $this->assertSame('BAR', $request->server('X-FOO'));
     }
 
     /**
@@ -106,7 +106,7 @@ final class CreatesPsrRequestsTests extends TestCase
         ]);
 
         $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals(
+        $this->assertSame(
             'https://foo.com/wp-admin/admin.php?page=foo&city=foo%20bar',
             (string) $request->getUri()
         );
@@ -130,7 +130,7 @@ final class CreatesPsrRequestsTests extends TestCase
         ]);
 
         $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals('https://foo.com/foo/bar?page=foo&city=foo%20bar', (string) $request->getUri());
+        $this->assertSame('https://foo.com/foo/bar?page=foo&city=foo%20bar', (string) $request->getUri());
         $this->assertEquals([
             'city' => 'foo bar',
             'page' => 'foo',

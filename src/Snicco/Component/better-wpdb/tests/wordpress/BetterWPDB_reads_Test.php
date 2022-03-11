@@ -328,7 +328,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
         $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
-        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+        $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
 
     /**
@@ -346,7 +346,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
         $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
-        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+        $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
 
     /**
@@ -369,7 +369,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
         $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[1]->bindings);
-        $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
+        $this->assertGreaterThan($logger->queries[1]->start, $logger->queries[1]->end);
     }
 
     /**
@@ -392,7 +392,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
         $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[1]->bindings);
-        $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
+        $this->assertGreaterThan($logger->queries[1]->start, $logger->queries[1]->end);
     }
 
     /**
@@ -415,6 +415,6 @@ final class BetterWPDB_reads_Test extends WPTestCase
             $logger->queries[0]->sql_with_placeholders
         );
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
-        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+        $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
 }

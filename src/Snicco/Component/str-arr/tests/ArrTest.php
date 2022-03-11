@@ -334,11 +334,11 @@ final class ArrTest extends TestCase
         $this->assertSame('bar', Arr::first([], null, 'bar'));
 
         // Callback is null and array is not empty
-        $this->assertEquals(100, Arr::first($array));
+        $this->assertSame(100, Arr::first($array));
 
         // Callback is not null and array is not empty
         $value = Arr::first($array, fn (int $value): bool => $value >= 150);
-        $this->assertEquals(200, $value);
+        $this->assertSame(200, $value);
 
         // Callback is not null, array is not empty but no satisfied item
         $value2 = Arr::first($array, fn (int $value): bool => $value > 300);
@@ -1094,7 +1094,7 @@ final class ArrTest extends TestCase
         $this->assertSame('Taylor', Arr::dataGet($dottedArray, ['users', 'first.name']));
         $this->assertNull(Arr::dataGet($dottedArray, ['users', 'middle.name']));
         $this->assertSame('Not found', Arr::dataGet($dottedArray, ['users', 'last.name'], 'Not found'));
-        $this->assertEquals(56, Arr::dataGet($arrayAccess, 'price'));
+        $this->assertSame(56, Arr::dataGet($arrayAccess, 'price'));
         $this->assertSame('John', Arr::dataGet($arrayAccess, 'user.name'));
         $this->assertSame('void', Arr::dataGet($arrayAccess, 'foo', 'void'));
         $this->assertSame('void', Arr::dataGet($arrayAccess, 'user.foo', 'void'));

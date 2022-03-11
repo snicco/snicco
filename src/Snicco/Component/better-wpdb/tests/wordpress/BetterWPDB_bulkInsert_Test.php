@@ -282,13 +282,13 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
             $logger->queries[1]->sql_with_placeholders
         );
         $this->assertSame(['foo', 10.00, 1], $logger->queries[1]->bindings);
-        $this->assertTrue($logger->queries[1]->end > $logger->queries[1]->start);
+        $this->assertGreaterThan($logger->queries[1]->start, $logger->queries[1]->end);
 
         $this->assertSame(
             'insert into `test_table` (`test_string`,`test_float`,`test_int`) values (?,?,?)',
             $logger->queries[2]->sql_with_placeholders
         );
         $this->assertSame(['bar', 20.00, 2], $logger->queries[2]->bindings);
-        $this->assertTrue($logger->queries[2]->end > $logger->queries[2]->start);
+        $this->assertGreaterThan($logger->queries[2]->start, $logger->queries[2]->end);
     }
 }

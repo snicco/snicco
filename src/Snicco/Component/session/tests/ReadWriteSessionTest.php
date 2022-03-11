@@ -18,7 +18,6 @@ use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\Session\ValueObject\SessionId;
 
-use function count;
 use function sleep;
 use function time;
 
@@ -266,14 +265,14 @@ final class ReadWriteSessionTest extends TestCase
 
         $session->put('foo', 5);
         $session->increment('foo');
-        $this->assertEquals(6, $session->get('foo'));
+        $this->assertSame(6, $session->get('foo'));
 
         $session->increment('foo', 4);
-        $this->assertEquals(10, $session->get('foo'));
+        $this->assertSame(10, $session->get('foo'));
 
-        $this->assertEquals(0, $session->get('bar'));
+        $this->assertNull($session->get('bar'));
         $session->increment('bar');
-        $this->assertEquals(1, $session->get('bar'));
+        $this->assertSame(1, $session->get('bar'));
     }
 
     /**
@@ -298,14 +297,14 @@ final class ReadWriteSessionTest extends TestCase
 
         $session->put('foo', 5);
         $session->decrement('foo');
-        $this->assertEquals(4, $session->get('foo'));
+        $this->assertSame(4, $session->get('foo'));
 
         $session->decrement('foo', 4);
-        $this->assertEquals(0, $session->get('foo'));
+        $this->assertSame(0, $session->get('foo'));
 
-        $this->assertEquals(0, $session->get('bar'));
+        $this->assertNull($session->get('bar'));
         $session->decrement('bar');
-        $this->assertEquals(-1, $session->get('bar'));
+        $this->assertSame(-1, $session->get('bar'));
     }
 
     /**
@@ -326,7 +325,7 @@ final class ReadWriteSessionTest extends TestCase
 
         $this->assertTrue($session->has('foo'));
         $this->assertSame('bar', $session->get('foo'));
-        $this->assertEquals(0, $session->get('bar'));
+        $this->assertSame(0, $session->get('bar'));
 
         $session = $this->reloadSession($session, $driver);
         $session->saveUsing($driver, new JsonSerializer(), 'v', time());
@@ -346,7 +345,7 @@ final class ReadWriteSessionTest extends TestCase
 
         $this->assertTrue($session->has('foo'));
         $this->assertSame('bar', $session->get('foo'));
-        $this->assertEquals(0, $session->get('bar'));
+        $this->assertSame(0, $session->get('bar'));
 
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
@@ -397,14 +396,14 @@ final class ReadWriteSessionTest extends TestCase
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertSame('bar', $session->oldInput('foo'));
-        $this->assertEquals(0, $session->oldInput('bar'));
+        $this->assertSame(0, $session->oldInput('bar'));
         $this->assertFalse($session->hasOldInput('boom'));
 
         $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
 
         $this->assertTrue($session->hasOldInput('foo'));
         $this->assertSame('bar', $session->oldInput('foo'));
-        $this->assertEquals(0, $session->oldInput('bar'));
+        $this->assertSame(0, $session->oldInput('bar'));
         $this->assertFalse($session->hasOldInput('boom'));
     }
 
@@ -669,10 +668,10 @@ final class ReadWriteSessionTest extends TestCase
         $session->saveUsing($spy_driver, new JsonSerializer(), 'v', time());
 
         $calls = $spy_driver->written;
-        $this->assertSame(1, count($calls));
+        $this->assertCount(1, $calls);
 
         $calls = $spy_driver->touched;
-        $this->assertSame(0, count($calls));
+        $this->assertCount(0, $calls);
     }
 
     /**
@@ -686,10 +685,10 @@ final class ReadWriteSessionTest extends TestCase
         $session->saveUsing($spy_driver, new JsonSerializer(), 'v', time());
 
         $calls = $spy_driver->written;
-        $this->assertSame(0, count($calls));
+        $this->assertCount(0, $calls);
 
         $calls = $spy_driver->touched;
-        $this->assertSame(1, count($calls));
+        $this->assertCount(1, $calls);
     }
 
     /**

@@ -23,7 +23,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function add_action;
 use function dirname;
-use function get_class;
 
 /**
  * @internal
@@ -59,7 +58,7 @@ final class MailEventsTest extends WPTestCase
 
         add_action(TestEmail::class, function (SendingEmail $event) use (&$called): void {
             $called = true;
-            $this->assertSame(TestEmail::class, get_class($event->email));
+            $this->assertInstanceOf(TestEmail::class, $event->email);
         });
 
         add_action(EmailWasSent::class, function (EmailWasSent $event) use (&$was_sent_called): void {
@@ -149,7 +148,7 @@ final class MailEventsTest extends WPTestCase
 
         add_action(TestEmail::class, function (SendingEmail $event) use (&$called): void {
             $called = true;
-            $this->assertSame(TestEmail::class, get_class($event->email));
+            $this->assertInstanceOf(TestEmail::class, $event->email);
         });
 
         add_action(EmailWasSent::class, function (EmailWasSent $event) use (&$was_sent_called): void {

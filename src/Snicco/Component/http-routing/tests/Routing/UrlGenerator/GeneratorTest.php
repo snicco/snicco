@@ -711,7 +711,7 @@ final class GeneratorTest extends HttpRunnerTestCase
                 'param1' => 'foo',
             ]);
 
-        $this->assertEquals('/foo?param1=foo', $url);
+        $this->assertSame('/foo?param1=foo', $url);
     }
 
     /**

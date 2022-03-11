@@ -52,7 +52,7 @@ final class TestClockTest extends TestCase
         usleep(11 * 10 ** 5);
 
         $ts2 = $clock->currentTimestamp();
-        $this->assertEquals($ts1, $ts2);
+        $this->assertSame($ts1, $ts2);
     }
 
     /**
@@ -69,11 +69,11 @@ final class TestClockTest extends TestCase
 
         $clock->travelIntoFuture(1);
 
-        $this->assertEquals($ts1 + 100, $clock->currentTimestamp());
+        $this->assertSame($ts1 + 100, $clock->currentTimestamp());
 
         $clock->travelIntoFuture(1);
 
-        $this->assertEquals($ts1 + 101, $clock->currentTimestamp());
+        $this->assertSame($ts1 + 101, $clock->currentTimestamp());
     }
 
     /**
@@ -86,14 +86,14 @@ final class TestClockTest extends TestCase
 
         $clock->travelIntoPast(99);
 
-        $this->assertEquals($ts1 - 99, $clock->currentTimestamp());
+        $this->assertSame($ts1 - 99, $clock->currentTimestamp());
 
         $clock->travelIntoPast(1);
 
-        $this->assertEquals($ts1 - 100, $clock->currentTimestamp());
+        $this->assertSame($ts1 - 100, $clock->currentTimestamp());
 
         $clock->travelIntoPast(1);
 
-        $this->assertEquals($ts1 - 101, $clock->currentTimestamp());
+        $this->assertSame($ts1 - 101, $clock->currentTimestamp());
     }
 }

@@ -81,6 +81,6 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
             $first->sql_with_placeholders
         );
         $this->assertSame([], $first->bindings);
-        $this->assertTrue($first->end > $first->start);
+        $this->assertGreaterThan($first->start, $first->end);
     }
 }

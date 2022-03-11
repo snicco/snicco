@@ -160,6 +160,6 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
             $logger->queries[0]->sql_with_placeholders
         );
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
-        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+        $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
 }

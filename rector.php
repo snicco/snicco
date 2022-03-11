@@ -13,6 +13,8 @@ use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector;
 use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
+use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
+use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
@@ -78,4 +80,8 @@ return static function (ContainerConfigurator $configurator): void {
     // Does not play nicely with psalm and (string) casts
     $services->remove(RecastingRemovalRector::class);
     $services->remove(RemoveConcatAutocastRector::class);
+
+    $configurator->import(PHPUnitSetList::PHPUNIT_CODE_QUALITY);
+    // Useless. PHPStorms supports this out of the box.
+    $services->remove(AddSeeTestAnnotationRector::class);
 };

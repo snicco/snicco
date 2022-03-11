@@ -99,7 +99,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $response = $this->error_handler->handle($e, $this->base_request);
 
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertSame(500, $response->getStatusCode());
 
         $body = (string) $response->getBody();
 
@@ -121,8 +121,8 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withAddedHeader('Accept', 'application/json; text/html;')
         );
 
-        $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
 
         $body = (string) $response->getBody();
         $this->assertStringNotContainsString('Secret message here', $body);
@@ -151,7 +151,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $response = $this->error_handler->handle($e, $this->base_request);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
 
         $body = (string) $response->getBody();
 
@@ -176,8 +176,8 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withHeader('Accept', 'text/plain'),
         );
 
-        $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('text/plain', $response->getHeaderLine('content-type'));
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('text/plain', $response->getHeaderLine('content-type'));
 
         $body = (string) $response->getBody();
         $title = $this->error_data[500]['title'];
@@ -200,9 +200,9 @@ final class ProductionErrorHandlerTest extends TestCase
             ->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
 
         // default handler handles this.
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertSame(500, $response->getStatusCode());
         $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', (string) $response->getBody());
-        $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
+        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
     }
 
     /**
