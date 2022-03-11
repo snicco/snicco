@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Templating\Tests\fixtures;
 
 use Snicco\Component\Templating\View\View;
@@ -13,7 +12,6 @@ use function spl_object_hash;
 
 final class ViewComposerWithDependency implements ViewComposer
 {
-
     private stdClass $stdClass;
 
     public function __construct(stdClass $stdClass)

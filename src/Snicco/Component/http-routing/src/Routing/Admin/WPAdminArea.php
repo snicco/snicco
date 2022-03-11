@@ -15,8 +15,8 @@ use function trim;
 
 final class WPAdminArea implements AdminArea
 {
-
     private string $prefix;
+
     private string $login_path;
 
     public function __construct(string $admin_dashboard_url_prefix, string $login_path)
@@ -60,7 +60,7 @@ final class WPAdminArea implements AdminArea
         $path = $request->path();
         $page = $request->query('page');
 
-        if (!$page || !is_string($page)) {
+        if (! $page || ! is_string($page)) {
             return $request->path();
         }
 
@@ -71,5 +71,4 @@ final class WPAdminArea implements AdminArea
     {
         return $this->login_path;
     }
-
 }

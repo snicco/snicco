@@ -22,7 +22,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class InformationProviderWithTransformation implements ExceptionInformationProvider
 {
-
     private ExceptionIdentifier $identifier;
 
     /**
@@ -43,10 +42,8 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         foreach ($data as $status_code => $title_and_details) {
             $this->addMessage($status_code, $title_and_details);
         }
-        if (!isset($this->default_messages[500])) {
-            throw new InvalidArgumentException(
-                'Data for the 500 status code must be provided.'
-            );
+        if (! isset($this->default_messages[500])) {
+            throw new InvalidArgumentException('Data for the 500 status code must be provided.');
         }
         $this->transformer = $transformer;
         $this->identifier = $identifier;
@@ -65,11 +62,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         /** @var array<positive-int,array{title:string, message:string}> $decoded */
         $decoded = json_decode($data, true, JSON_THROW_ON_ERROR);
 
-        return new self(
-            $decoded,
-            $identifier,
-            ...$transformer
-        );
+        return new self($decoded, $identifier, ...$transformer);
     }
 
     public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
@@ -93,7 +86,6 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
     }
 
     /**
-     * @param int $status_code
      * @param array{title: string, message:string} $info
      *
      * @psalm-suppress DocblockTypeContradiction
@@ -104,14 +96,11 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             throw new InvalidArgumentException('$status_code must be greater >= 400.');
         }
         /** @var positive-int $status_code */
-
-        if (!isset($info['title']) || !is_string($info['title'])) {
-            throw new InvalidArgumentException("\$title must be string for status code [$status_code].");
+        if (! isset($info['title']) || ! is_string($info['title'])) {
+            throw new InvalidArgumentException("\$title must be string for status code [{$status_code}].");
         }
-        if (!isset($info['message']) || !is_string($info['message'])) {
-            throw new InvalidArgumentException(
-                "\$message must be string for status code [$status_code]."
-            );
+        if (! isset($info['message']) || ! is_string($info['message'])) {
+            throw new InvalidArgumentException("\$message must be string for status code [{$status_code}].");
         }
         $this->default_messages[$status_code] = $info;
     }
@@ -149,5 +138,4 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
 
         return [$title, $safe_message];
     }
-
 }

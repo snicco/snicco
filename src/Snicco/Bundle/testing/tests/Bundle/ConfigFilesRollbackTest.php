@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\Bundle;
 
 use PHPUnit\Framework\TestCase;
@@ -13,9 +12,11 @@ use function is_file;
 use function touch;
 use function unlink;
 
+/**
+ * @internal
+ */
 final class ConfigFilesRollbackTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     protected function setUp(): void
@@ -35,11 +36,6 @@ final class ConfigFilesRollbackTest extends TestCase
         parent::tearDown();
     }
 
-    protected function fixturesDir(): string
-    {
-        return __DIR__ . '/fixtures/config-rollback';
-    }
-
     /**
      * @test
      */
@@ -56,5 +52,10 @@ final class ConfigFilesRollbackTest extends TestCase
         $this->assertFalse(is_file($this->directories->configDir() . '/other-config.php'));
         $this->assertTrue(is_file($this->directories->configDir() . '/app.php'));
         $this->assertTrue(is_file($this->directories->configDir() . '/routing.php'));
+    }
+
+    protected function fixturesDir(): string
+    {
+        return __DIR__ . '/fixtures/config-rollback';
     }
 }

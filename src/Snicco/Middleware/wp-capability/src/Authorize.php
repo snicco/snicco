@@ -15,9 +15,10 @@ use function sprintf;
 
 final class Authorize implements MiddlewareInterface
 {
-
     private string $capability;
+
     private ?int $object_id;
+
     private BetterWPAPI $wp;
 
     public function __construct(string $capability, int $object_id = null, BetterWPAPI $wp = null)
@@ -45,7 +46,8 @@ final class Authorize implements MiddlewareInterface
             403,
             sprintf(
                 'Authorization failed for path [%s] with required capability [%s].',
-                $request->getUri()->getPath(),
+                $request->getUri()
+                    ->getPath(),
                 $this->capability
             )
         );

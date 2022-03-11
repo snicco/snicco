@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPMail\Tests\wordpress\Transport;
 
 use Codeception\TestCase\WPTestCase;
@@ -14,9 +13,11 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 
 use function add_action;
 
+/**
+ * @internal
+ */
 final class WPMailTransportTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -38,6 +39,4 @@ final class WPMailTransportTest extends WPTestCase
             $this->assertSame('bad email debug data.', $e->getDebugData());
         }
     }
-
-
 }

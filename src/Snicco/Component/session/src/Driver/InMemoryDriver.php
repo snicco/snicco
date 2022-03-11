@@ -12,13 +12,13 @@ use Snicco\Component\TestableClock\SystemClock;
 
 final class InMemoryDriver implements UserSessionsDriver
 {
-
     /**
-     * @var array<string,array{data:string, last_activity:positive-int, hashed_validator:string, user_id: string|int|null}>
+     * @var array<string,array{data:string, last_activity:positive-int, hashed_validator:string, user_id: int|string|null}>
      */
     private array $storage = [];
 
     private Clock $clock;
+
     private bool $fail_gc;
 
     public function __construct(Clock $clock = null, bool $fail_gc = false)
@@ -52,9 +52,10 @@ final class InMemoryDriver implements UserSessionsDriver
 
     public function read(string $selector): SerializedSession
     {
-        if (!isset($this->storage[$selector])) {
+        if (! isset($this->storage[$selector])) {
             throw BadSessionID::forSelector($selector, 'array');
         }
+
         return SerializedSession::fromString(
             $this->storage[$selector]['data'],
             $this->storage[$selector]['hashed_validator'],
@@ -65,7 +66,7 @@ final class InMemoryDriver implements UserSessionsDriver
 
     public function touch(string $selector, int $current_timestamp): void
     {
-        if (!isset($this->storage[$selector])) {
+        if (! isset($this->storage[$selector])) {
             throw BadSessionID::forSelector($selector, __CLASS__);
         }
 
@@ -78,7 +79,7 @@ final class InMemoryDriver implements UserSessionsDriver
             'data' => $session->data(),
             'last_activity' => $session->lastActivity(),
             'hashed_validator' => $session->hashedValidator(),
-            'user_id' => $session->userId()
+            'user_id' => $session->userId(),
         ];
     }
 
@@ -114,6 +115,7 @@ final class InMemoryDriver implements UserSessionsDriver
                 $return[$selector] = $this->read($selector);
             }
         }
+
         return $return;
     }
 

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Middleware;
 
 use LogicException;
@@ -16,26 +15,25 @@ use Snicco\Component\Session\ImmutableSession;
 
 final class ShareSessionWithViews extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 
         $session = $request->getAttribute(ImmutableSession::class);
 
-        if (!$session instanceof ImmutableSession) {
+        if (! $session instanceof ImmutableSession) {
             throw new LogicException('No session has been set on the request.');
         }
 
-        if (!$response instanceof ViewResponse) {
+        if (! $response instanceof ViewResponse) {
             return $response;
         }
-        
-        $errors = (array)$session->get(SessionErrors::class, []);
+
+        $errors = (array) $session->get(SessionErrors::class, []);
 
         return $response->withViewData([
             'session' => $session,
-            'errors' => new SessionErrors($errors)
+            'errors' => new SessionErrors($errors),
         ]);
     }
 }

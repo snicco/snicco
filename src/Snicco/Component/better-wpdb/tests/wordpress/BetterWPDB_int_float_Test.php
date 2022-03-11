@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use wpdb;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
 {
-
     private wpdb $wpdb;
 
     protected function setUp(): void
@@ -28,7 +29,7 @@ final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
             'test_string' => 'foo',
             'test_int' => 10,
             'test_float' => 20.20,
-            'test_bool' => 1
+            'test_bool' => 1,
         ]);
 
         /** @var array{test_int: int, test_float:float, test_bool:int, test_string:string} $row */
@@ -47,5 +48,4 @@ final class BetterWPDB_int_float_Test extends BetterWPDBTestCase
         $this->assertSame('20.20', $wpdb_result['test_float']);
         $this->assertSame('1', $wpdb_result['test_bool']);
     }
-
 }

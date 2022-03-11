@@ -13,10 +13,11 @@ use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Reflector;
 use Traversable;
 
+/**
+ * @internal
+ */
 final class ReflectorTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -69,35 +70,27 @@ final class ReflectorTest extends TestCase
      * @test
      * @psalm-suppress UnusedClosureParam
      */
-    public function test_firstParameterType_with_closure(): void
+    public function test_first_parameter_type_with_closure(): void
     {
-        $this->assertSame(
-            'string',
-            Reflector::firstParameterType(function (string $foo): void {
-                //
-            })
-        );
+        $this->assertSame('string', Reflector::firstParameterType(function (string $foo): void {
+        }));
     }
 
     /**
      * @test
      */
-    public function test_firstParameterType_with_class_string_uses_constructor(): void
+    public function test_first_parameter_type_with_class_string_uses_constructor(): void
     {
         $this->assertSame('string', Reflector::firstParameterType(ClassWithConstructor::class));
     }
-
-
 }
 
 class NoConstructor
 {
-
 }
 
 class ClassWithConstructor
 {
-
     public function __construct(string $foo)
     {
     }
@@ -105,26 +98,20 @@ class ClassWithConstructor
     public function someMethod(string $foo, string $bar): void
     {
     }
-
 }
 
 class TestSubject implements Countable
 {
-
     public function count(): int
     {
         return 0;
     }
-
 }
 
 class TestTraversable implements Iterator
 {
-
     #[ReturnTypeWillChange]
-    /**
-     * @return void
-     */
+
     public function current()
     {
     }
@@ -134,9 +121,7 @@ class TestTraversable implements Iterator
     }
 
     #[ReturnTypeWillChange]
-    /**
-     * @return void
-     */
+
     public function key()
     {
     }
@@ -148,7 +133,5 @@ class TestTraversable implements Iterator
 
     public function rewind(): void
     {
-        //
     }
-
 }

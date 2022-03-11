@@ -15,8 +15,8 @@ use function array_filter;
 
 final class PHPViewFactory implements ViewFactory
 {
-
     private PHPViewFinder $finder;
+
     private ViewComposerCollection $composer_collection;
 
     public function __construct(PHPViewFinder $finder, ViewComposerCollection $composers)
@@ -27,11 +27,7 @@ final class PHPViewFactory implements ViewFactory
 
     public function make(string $view): PHPView
     {
-        return new PHPView(
-            $this,
-            $view,
-            $this->finder->filePath($view)
-        );
+        return new PHPView($this, $view, $this->finder->filePath($view));
     }
 
     /**
@@ -64,15 +60,12 @@ final class PHPViewFactory implements ViewFactory
             $parent = $parent
                 ->with(
                     array_filter($view->context(), function ($value) {
-                        return !$value instanceof ChildContent;
+                        return ! $value instanceof ChildContent;
                     })
                 )
-                ->with(
-                    '__content',
-                    new ChildContent(function () use ($view) {
-                        $this->requireView($view);
-                    })
-                );
+                ->with('__content', new ChildContent(function () use ($view) {
+                    $this->requireView($view);
+                }));
 
             $this->render($parent);
 
@@ -84,15 +77,13 @@ final class PHPViewFactory implements ViewFactory
 
     private function requireView(View $view): void
     {
-        $this->finder->includeFile(
-            $view->path(),
-            $view->context()
-        );
+        $this->finder->includeFile($view->path(), $view->context());
     }
 
     /**
-     * @return never
      * @throws ViewCantBeRendered
+     *
+     * @return never
      */
     private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
     {
@@ -102,5 +93,4 @@ final class PHPViewFactory implements ViewFactory
 
         throw ViewCantBeRendered::fromPrevious($view->name(), $e);
     }
-
 }

@@ -10,16 +10,40 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\LazyCollection;
+use InvalidArgumentException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WithTestTables;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
+/**
+ * @internal
+ */
 final class MysqliConnectionPretendingTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
     use WithTestTables;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+        $wp_eloquent = new WPEloquentStandalone();
+        $wp_eloquent->bootstrap();
+
+        $this->withNewTables();
+        DB::beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        DB::rollBack();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -28,13 +52,18 @@ final class MysqliConnectionPretendingTest extends WPTestCase
     {
         $connection = $this->getMysqliConnection();
 
-        $count = $connection->table('cities')->where('country_id', 1)->count();
+        $count = $connection->table('cities')
+            ->where('country_id', 1)
+            ->count();
         $this->assertSame(2, $count);
 
         $sql = $connection->pretend(function (MysqliConnection $connection) {
-            $result = $connection->table('cities')->insert(
-                ['name' => 'düsseldorf', 'country_id' => 1, 'population' => 1]
-            );
+            $result = $connection->table('cities')
+                ->insert([
+                    'name' => 'düsseldorf',
+                    'country_id' => 1,
+                    'population' => 1,
+                ]);
             $this->assertTrue($result);
         });
 
@@ -48,13 +77,6 @@ final class MysqliConnectionPretendingTest extends WPTestCase
         $this->assertIsFloat($sql[0]['time']);
     }
 
-    private function getMysqliConnection(): MysqliConnection
-    {
-        /** @var MysqliConnection $connection */
-        $connection = DB::connection();
-        return $connection;
-    }
-
     /**
      * @test
      */
@@ -62,22 +84,23 @@ final class MysqliConnectionPretendingTest extends WPTestCase
     {
         $connection = $this->getMysqliConnection();
 
-        $count = $connection->table('cities')->where('country_id', 1)->count();
+        $count = $connection->table('cities')
+            ->where('country_id', 1)
+            ->count();
         $this->assertSame(2, $count);
 
         $sql = $connection->pretend(function (MysqliConnection $connection) {
-            $result = $connection->table('cities')->where('country_id', 1)->update(
-                ['country_id' => 3]
-            );
+            $result = $connection->table('cities')
+                ->where('country_id', 1)
+                ->update([
+                    'country_id' => 3,
+                ]);
             $this->assertSame(0, $result);
         });
 
         // No records have been inserted.
         $this->assertSame(2, $connection->table('cities')->where('country_id', 1)->count());
-        $this->assertSame(
-            'update `wp_cities` set `country_id` = ? where `country_id` = ?',
-            $sql[0]['query']
-        );
+        $this->assertSame('update `wp_cities` set `country_id` = ? where `country_id` = ?', $sql[0]['query']);
         $this->assertSame([3, 1], $sql[0]['bindings']);
         $this->assertIsFloat($sql[0]['time']);
     }
@@ -89,20 +112,21 @@ final class MysqliConnectionPretendingTest extends WPTestCase
     {
         $connection = $this->getMysqliConnection();
 
-        $count = $connection->table('cities')->where('country_id', 1)->count();
+        $count = $connection->table('cities')
+            ->where('country_id', 1)
+            ->count();
         $this->assertSame(2, $count);
 
         $sql = $connection->pretend(function (MysqliConnection $connection) {
-            $result = $connection->table('cities')->where('country_id', 1)->delete();
+            $result = $connection->table('cities')
+                ->where('country_id', 1)
+                ->delete();
             $this->assertSame(0, $result);
         });
 
         // No records have been deleted
         $this->assertSame(2, $connection->table('cities')->where('country_id', 1)->count());
-        $this->assertSame(
-            'delete from `wp_cities` where `country_id` = ?',
-            $sql[0]['query']
-        );
+        $this->assertSame('delete from `wp_cities` where `country_id` = ?', $sql[0]['query']);
         $this->assertSame([1], $sql[0]['bindings']);
         $this->assertIsFloat($sql[0]['time']);
     }
@@ -114,22 +138,19 @@ final class MysqliConnectionPretendingTest extends WPTestCase
     {
         $connection = $this->getMysqliConnection();
 
-        $count = $connection->table('cities')->where('country_id', 1)->count();
+        $count = $connection->table('cities')
+            ->where('country_id', 1)
+            ->count();
         $this->assertSame(2, $count);
 
         $sql = $connection->pretend(function (MysqliConnection $connection) {
-            $result = $connection->unprepared(
-                'delete from wp_cities where country_id = 1'
-            );
+            $result = $connection->unprepared('delete from wp_cities where country_id = 1');
             $this->assertTrue($result);
         });
 
         // No records have been deleted
         $this->assertSame(2, $connection->table('cities')->where('country_id', 1)->count());
-        $this->assertSame(
-            'delete from wp_cities where country_id = 1',
-            $sql[0]['query']
-        );
+        $this->assertSame('delete from wp_cities where country_id = 1', $sql[0]['query']);
         $this->assertSame([], $sql[0]['bindings']);
         $this->assertIsFloat($sql[0]['time']);
     }
@@ -158,33 +179,18 @@ final class MysqliConnectionPretendingTest extends WPTestCase
             $this->assertSame([], $names);
         });
 
-        $this->assertSame(
-            'select * from `wp_cities` where `country_id` in (?, ?)',
-            $sql[0]['query']
-        );
+        $this->assertSame('select * from `wp_cities` where `country_id` in (?, ?)', $sql[0]['query']);
         $this->assertSame([1, 2], $sql[0]['bindings']);
         $this->assertIsFloat($sql[0]['time']);
     }
 
-    protected function setUp(): void
+    private function getMysqliConnection(): MysqliConnection
     {
-        parent::setUp();
-        Container::setInstance();
-        Facade::clearResolvedInstances();
-        Facade::setFacadeApplication(null);
-        Model::unsetEventDispatcher();
-        Model::unsetConnectionResolver();
-        $wp_eloquent = new WPEloquentStandalone();
-        $wp_eloquent->bootstrap();
+        $c = DB::connection();
+        if (! $c instanceof MysqliConnection) {
+            throw new InvalidArgumentException('Wrong connection type.');
+        }
 
-        $this->withNewTables();
-        DB::beginTransaction();
+        return $c;
     }
-
-    protected function tearDown(): void
-    {
-        DB::rollBack();
-        parent::tearDown();
-    }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session;
 
 use InvalidArgumentException;
@@ -50,7 +49,6 @@ use function sprintf;
 
 final class SessionBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/session-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -69,7 +67,7 @@ final class SessionBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        if (!$kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
+        if (! $kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if you are using the SessionBundle',
@@ -89,10 +87,12 @@ final class SessionBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $event_mapper = $kernel->container()->make(EventMapper::class);
+        $event_mapper = $kernel->container()
+            ->make(EventMapper::class);
         $event_mapper->map('wp_logout', WPLogout::class);
         $event_mapper->map('wp_login', WPLogin::class);
-        $event_dispatcher = $kernel->container()->make(EventDispatcher::class);
+        $event_dispatcher = $kernel->container()
+            ->make(EventDispatcher::class);
         $event_dispatcher->listen(WPLogout::class, [StatefulRequest::class, 'wpLogoutEvent']);
         $event_dispatcher->listen(WPLogin::class, [StatefulRequest::class, 'wpLoginEvent']);
     }
@@ -102,37 +102,44 @@ final class SessionBundle implements Bundle
         return self::ALIAS;
     }
 
-    protected function bindSessionDriver(Kernel $kernel): void
+    private function bindSessionDriver(Kernel $kernel): void
     {
-        $kernel->container()->shared(SessionDriver::class, function () use ($kernel) {
-            if ($kernel->env()->isTesting()) {
-                return new InMemoryDriver();
-            }
+        $kernel->container()
+            ->shared(SessionDriver::class, function () use ($kernel) {
+                if ($kernel->env()->isTesting()) {
+                    return new InMemoryDriver();
+                }
 
-            /** @var class-string<SessionDriver> $driver_class */
-            $driver_class = $kernel->config()->getString('session.' . SessionOption::DRIVER);
+                /** @var class-string<SessionDriver> $driver_class */
+                $driver_class = $kernel->config()
+                    ->getString('session.' . SessionOption::DRIVER);
 
-            $driver = $kernel->container()->make($driver_class);
+                $driver = $kernel->container()
+                    ->make($driver_class);
 
-            if ($kernel->config()->getBoolean('session.' . SessionOption::ENCRYPT_DATA)) {
-                $driver = new EncryptedDriver(
-                    $driver,
-                    new DefuseSessionEncryptor($kernel->container()->make(DefuseEncryptor::class))
-                );
-            }
-            return $driver;
-        });
+                if ($kernel->config()->getBoolean('session.' . SessionOption::ENCRYPT_DATA)) {
+                    $driver = new EncryptedDriver(
+                        $driver,
+                        new DefuseSessionEncryptor($kernel->container()->make(DefuseEncryptor::class))
+                    );
+                }
+
+                return $driver;
+            });
     }
 
-    protected function bindSessionManager(Kernel $kernel): void
+    private function bindSessionManager(Kernel $kernel): void
     {
-        $kernel->container()->shared(SessionManager::class, function () use ($kernel) {
-            return new FactorySessionManager(
-                $kernel->container()->make(SessionConfig::class),
-                $kernel->container()->make(SessionDriver::class),
-                $this->resolveSerializer($kernel),
-            );
-        });
+        $kernel->container()
+            ->shared(SessionManager::class, function () use ($kernel) {
+                return new FactorySessionManager(
+                    $kernel->container()
+                        ->make(SessionConfig::class),
+                    $kernel->container()
+                        ->make(SessionDriver::class),
+                    $this->resolveSerializer($kernel),
+                );
+            });
     }
 
     private function validateConfig(Kernel $kernel, WritableConfig $config): void
@@ -145,7 +152,7 @@ final class SessionBundle implements Bundle
 
         $serializer = $config->getString('session.' . SessionOption::SERIALIZER);
 
-        if (!class_exists($serializer) || !in_array(Serializer::class, (array)class_implements($serializer))) {
+        if (! class_exists($serializer) || ! in_array(Serializer::class, (array) class_implements($serializer), true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'session.' . SessionOption::SERIALIZER . " has to be a class-name that implements [%s].\nGot [%s].",
@@ -156,7 +163,7 @@ final class SessionBundle implements Bundle
         }
 
         $driver = $config->getString('session.' . SessionOption::DRIVER);
-        if (!class_exists($driver) || !in_array(SessionDriver::class, (array)class_implements($driver))) {
+        if (! class_exists($driver) || ! in_array(SessionDriver::class, (array) class_implements($driver), true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'session.' . SessionOption::DRIVER . " has to be a class-name that implements [%s].\nGot [%s].",
@@ -171,7 +178,7 @@ final class SessionBundle implements Bundle
         }
 
         if ($config->getBoolean('session.' . SessionOption::ENCRYPT_DATA)
-            && !$kernel->usesBundle(EncryptionBundle::ALIAS)) {
+            && ! $kernel->usesBundle(EncryptionBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if [%s] is set to true.',
@@ -181,7 +188,7 @@ final class SessionBundle implements Bundle
             );
         }
 
-        if (WPDBSessionDriver::class === $driver && !$kernel->usesBundle(BetterWPDBBundle::ALIAS)) {
+        if (WPDBSessionDriver::class === $driver && ! $kernel->usesBundle(BetterWPDBBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if you are using the database session driver',
@@ -189,7 +196,7 @@ final class SessionBundle implements Bundle
                 )
             );
         }
-        if (WPObjectCacheDriver::class === $driver && !$kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
+        if (WPObjectCacheDriver::class === $driver && ! $kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'You need to add [%s] to your bundles.php config if you are using the object-cache session driver',
@@ -201,49 +208,54 @@ final class SessionBundle implements Bundle
 
     private function bindWPDBSessionDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
-        $kernel->container()->shared(WPDBSessionDriver::class, function () use ($kernel, $config) {
-            /** @var non-empty-string $table */
-            $table = $config->getString('session.' . SessionOption::PREFIX);
+        $kernel->container()
+            ->shared(WPDBSessionDriver::class, function () use ($kernel, $config) {
+                /** @var non-empty-string $table */
+                $table = $config->getString('session.' . SessionOption::PREFIX);
 
-            $driver = new WPDBSessionDriver($table, $kernel->container()->make(BetterWPDB::class));
+                $driver = new WPDBSessionDriver($table, $kernel->container()->make(BetterWPDB::class));
 
-            $driver->createTable();
+                $driver->createTable();
 
-            return $driver;
-        });
+                return $driver;
+            });
     }
 
     private function bindObjectCacheDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
-        $kernel->container()->shared(WPObjectCacheDriver::class, function () use ($kernel, $config) {
-            /** @var non-empty-string $group */
-            $group = $config->getString('session.' . SessionOption::PREFIX);
+        $kernel->container()
+            ->shared(WPObjectCacheDriver::class, function () use ($kernel, $config) {
+                /** @var non-empty-string $group */
+                $group = $config->getString('session.' . SessionOption::PREFIX);
 
-            $driver = new WPObjectCacheDriver(
-                new Psr16SessionDriver(
-                    CacheFactory::psr16($group),
-                    $kernel->container()->make(SessionConfig::class)->idleTimeoutInSec()
-                )
-            );
-
-            return $driver;
-        });
+                return new WPObjectCacheDriver(
+                    new Psr16SessionDriver(
+                        CacheFactory::psr16($group),
+                        $kernel->container()
+                            ->make(SessionConfig::class)->idleTimeoutInSec()
+                    )
+                );
+            });
     }
 
     private function bindSessionConfig(Kernel $kernel): void
     {
-        $kernel->container()->shared(SessionConfig::class, function () use ($kernel) {
-            $cookie_name = $kernel->config()->getString('session.' . SessionOption::COOKIE_NAME);
-            $config = $kernel->config()->getArray('session.' . SessionOption::CONFIG);
-            /** @psalm-suppress MixedArgumentTypeCoercion $config */
-            return SessionConfig::mergeDefaults($cookie_name, $config);
-        });
+        $kernel->container()
+            ->shared(SessionConfig::class, function () use ($kernel) {
+                $cookie_name = $kernel->config()
+                    ->getString('session.' . SessionOption::COOKIE_NAME);
+                $config = $kernel->config()
+                    ->getArray('session.' . SessionOption::CONFIG);
+                /** @psalm-suppress MixedArgumentTypeCoercion $config */
+                return SessionConfig::mergeDefaults($cookie_name, $config);
+            });
     }
 
     private function resolveSerializer(Kernel $kernel): Serializer
     {
         /** @var class-string<Serializer> $serializer */
-        $serializer = $kernel->config()->getString('session.' . SessionOption::SERIALIZER);
+        $serializer = $kernel->config()
+            ->getString('session.' . SessionOption::SERIALIZER);
 
         if (JsonSerializer::class === $serializer) {
             return new JsonSerializer();
@@ -252,15 +264,17 @@ final class SessionBundle implements Bundle
             return new PHPSerializer();
         }
 
-        return $kernel->container()->make($serializer);
+        return $kernel->container()
+            ->make($serializer);
     }
 
     private function copyConfig(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
-        $destination = $kernel->directories()->configDir() . '/session.php';
+        $destination = $kernel->directories()
+            ->configDir() . '/session.php';
         if (is_file($destination)) {
             return;
         }
@@ -269,20 +283,23 @@ final class SessionBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default session config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default session config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }
 
     private function bindMiddleware(Kernel $kernel): void
     {
-        $kernel->container()->shared(StatefulRequest::class, function () use ($kernel) {
-            return new StatefulRequest(
-                $kernel->container()->make(SessionManager::class),
-                $kernel->container()->make(LoggerInterface::class),
-                $kernel->container()->make(SessionConfig::class)->cookiePath()
-            );
-        });
+        $kernel->container()
+            ->shared(StatefulRequest::class, function () use ($kernel) {
+                return new StatefulRequest(
+                    $kernel->container()
+                        ->make(SessionManager::class),
+                    $kernel->container()
+                        ->make(LoggerInterface::class),
+                    $kernel->container()
+                        ->make(SessionConfig::class)->cookiePath()
+                );
+            });
     }
-
 }

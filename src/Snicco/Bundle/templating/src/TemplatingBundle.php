@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Templating;
 
 use InvalidArgumentException;
@@ -30,7 +29,6 @@ use function is_readable;
 
 final class TemplatingBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/templating-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -41,14 +39,11 @@ final class TemplatingBundle implements Bundle
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         $defaults = require dirname(__DIR__) . '/config/templating.php';
-        $config->set(
-            'templating',
-            array_replace($defaults, $config->getArray('templating', []))
-        );
+        $config->set('templating', array_replace($defaults, $config->getArray('templating', [])));
 
         foreach ($config->getListOfStrings('templating.directories') as $directory) {
-            if (!is_readable($directory)) {
-                throw new InvalidArgumentException("templating.directories: Directory [$directory] is not readable.");
+            if (! is_readable($directory)) {
+                throw new InvalidArgumentException("templating.directories: Directory [{$directory}] is not readable.");
             }
         }
 
@@ -70,7 +65,6 @@ final class TemplatingBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -80,10 +74,11 @@ final class TemplatingBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
-        $destination = $kernel->directories()->configDir() . '/templating.php';
+        $destination = $kernel->directories()
+            ->configDir() . '/templating.php';
         if (is_file($destination)) {
             return;
         }
@@ -92,85 +87,98 @@ final class TemplatingBundle implements Bundle
 
         if (false === $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [$destination]");
+            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd
         }
     }
 
     private function bindViewEngine(Kernel $kernel): void
     {
-        $kernel->container()->shared(ViewEngine::class, function () use ($kernel) {
-            $class_names = $kernel->config()->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
+        $kernel->container()
+            ->shared(ViewEngine::class, function () use ($kernel) {
+                $class_names = $kernel->config()
+                    ->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
 
-            $factories = array_map(function (string $class_name) use ($kernel): ViewFactory {
-                /** @var class-string<ViewFactory> $class_name */
-                return $kernel->container()->make($class_name);
-            }, $class_names);
+                $factories = array_map(function (string $class_name) use ($kernel): ViewFactory {
+                    /** @var class-string<ViewFactory> $class_name */
+                    return $kernel->container()
+                        ->make($class_name);
+                }, $class_names);
 
-            return new ViewEngine(...$factories);
-        });
+                return new ViewEngine(...$factories);
+            });
     }
 
     private function bindPHPViewFactory(Kernel $kernel): void
     {
-        $kernel->container()->shared(PHPViewFactory::class, function () use ($kernel) {
-            return new PHPViewFactory(
-                new PHPViewFinder($kernel->config()->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)),
-                $kernel->container()->make(ViewComposerCollection::class),
-            );
-        });
+        $kernel->container()
+            ->shared(PHPViewFactory::class, function () use ($kernel) {
+                return new PHPViewFactory(
+                    new PHPViewFinder($kernel->config()->getListOfStrings(
+                        'templating.' . TemplatingOption::DIRECTORIES
+                    )),
+                    $kernel->container()
+                        ->make(ViewComposerCollection::class),
+                );
+            });
     }
 
     private function bindTemplatingMiddleware(Kernel $kernel): void
     {
-        $kernel->container()->shared(TemplatingMiddleware::class, fn() => new TemplatingMiddleware(
-            fn() => $kernel->container()->make(ViewEngine::class)
-        ));
+        $kernel->container()
+            ->shared(TemplatingMiddleware::class, fn () => new TemplatingMiddleware(
+                fn () => $kernel->container()
+                    ->make(ViewEngine::class)
+            ));
     }
 
     private function bindExceptionDisplayer(Kernel $kernel): void
     {
-        $kernel->container()->shared(
-            TemplatingExceptionDisplayer::class,
-            fn() => new TemplatingExceptionDisplayer($kernel->container()->make(ViewEngine::class))
-        );
+        $kernel->container()
+            ->shared(
+                TemplatingExceptionDisplayer::class,
+                fn () => new TemplatingExceptionDisplayer($kernel->container()->make(ViewEngine::class))
+            );
     }
 
     private function bindViewComposerCollection(Kernel $kernel): void
     {
-        $kernel->container()->shared(ViewComposerCollection::class, function () use ($kernel) {
-            $composer_collection = new ViewComposerCollection(
-                new PsrViewComposerFactory($kernel->container()),
-                $kernel->container()->make(GlobalViewContext::class)
-            );
+        $kernel->container()
+            ->shared(ViewComposerCollection::class, function () use ($kernel) {
+                $composer_collection = new ViewComposerCollection(
+                    new PsrViewComposerFactory($kernel->container()),
+                    $kernel->container()
+                        ->make(GlobalViewContext::class)
+                );
 
+                /** @var array<class-string<ViewComposer>, list<string>> */
+                $composers = $kernel->config()
+                    ->getArray('templating.' . TemplatingOption::VIEW_COMPOSERS);
 
-            /**
-             * @var array<class-string<ViewComposer>, list<string>>
-             */
-            $composers = $kernel->config()->getArray('templating.' . TemplatingOption::VIEW_COMPOSERS);
+                foreach ($composers as $class => $views) {
+                    $composer_collection->addComposer($views, $class);
+                }
 
-            foreach ($composers as $class => $views) {
-                $composer_collection->addComposer($views, $class);
-            }
-
-            return $composer_collection;
-        });
+                return $composer_collection;
+            });
     }
 
     private function bindGlobalViewContext(Kernel $kernel): void
     {
-        $kernel->container()->shared(GlobalViewContext::class, function () use ($kernel) {
-            $context = new GlobalViewContext();
-            // This needs to be a closure.
-            $context->add('view', function () use ($kernel) {
-                return $kernel->container()->make(ViewEngine::class);
-            });
+        $kernel->container()
+            ->shared(GlobalViewContext::class, function () use ($kernel) {
+                $context = new GlobalViewContext();
+                // This needs to be a closure.
+                $context->add('view', function () use ($kernel) {
+                    return $kernel->container()
+                        ->make(ViewEngine::class);
+                });
 
-            if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
-                $context->add('url', fn() => $kernel->container()->make(UrlGenerator::class));
-            }
-            return $context;
-        });
+                if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
+                    $context->add('url', fn () => $kernel->container()->make(UrlGenerator::class));
+                }
+
+                return $context;
+            });
     }
 }

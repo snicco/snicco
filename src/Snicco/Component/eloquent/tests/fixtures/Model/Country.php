@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends TestWPModel
 {
-
     /**
      * @var string[]
      */
@@ -20,5 +19,4 @@ class Country extends TestWPModel
     {
         return $this->hasMany(City::class);
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPCache\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -20,16 +19,18 @@ use const E_NOTICE;
 
 /**
  * The test methods in this class are copied from
- * https://github.com/php-cache/integration-tests/blob/master/src/CachePoolTest.php. We can't
- * extend the provided test case because we already need to extend WPTestCase.
+ * https://github.com/php-cache/integration-tests/blob/master/src/CachePoolTest.php.
+ * We can't extend the provided test case because we already need to extend
+ * WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
  *
  * @psalm-suppress InternalClass
+ *
+ * @internal
  */
 final class WPObjectCachePsr6Test extends WPTestCase
 {
-
     private WPObjectCachePsr6 $cache;
 
     protected function setUp(): void
@@ -41,16 +42,17 @@ final class WPObjectCachePsr6Test extends WPTestCase
     /**
      * @test
      */
-    public function test_deleteItems_returns_false_if_one_item_cant_be_deleted(): void
+    public function test_delete_items_returns_false_if_one_item_cant_be_deleted(): void
     {
         $keys = ['key1', 'key2'];
 
-        $cache_api = new class extends WPCacheAPI {
+        $cache_api = new class() extends WPCacheAPI {
             public function cacheDelete(string $key, string $group = ''): bool
             {
                 if ('key2' === $key) {
                     return false;
                 }
+
                 return parent::cacheDelete($key, $group);
             }
         };
@@ -72,12 +74,13 @@ final class WPObjectCachePsr6Test extends WPTestCase
      */
     public function test_commit_returns_false_if_one_item_cant_be_saved(): void
     {
-        $cache_api = new class extends WPCacheAPI {
+        $cache_api = new class() extends WPCacheAPI {
             public function cacheSet(string $key, $data, string $group = '', int $expire = 0): bool
             {
                 if ('key2' === $key) {
                     return false;
                 }
+
                 return parent::cacheSet($key, $data, $group, $expire);
             }
         };
@@ -123,8 +126,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
      */
     public function test_exception_for_different_cache_item(): void
     {
-        $item = new class implements CacheItemInterface {
-
+        $item = new class() implements CacheItemInterface {
             public function getKey()
             {
                 return '';
@@ -167,7 +169,7 @@ final class WPObjectCachePsr6Test extends WPTestCase
      */
     public function test_is_always_miss_for_non_string_cache_data(): void
     {
-        $cache_api = new class extends WPCacheAPI {
+        $cache_api = new class() extends WPCacheAPI {
             public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
             {
                 return new stdClass();
@@ -192,14 +194,16 @@ final class WPObjectCachePsr6Test extends WPTestCase
         $notice_triggered = false;
         set_error_handler(function () use (&$notice_triggered) {
             $notice_triggered = true;
+
             return true;
         }, E_NOTICE);
 
         try {
-            $cache_api = new class extends WPCacheAPI {
+            $cache_api = new class() extends WPCacheAPI {
                 public function cacheGet(string $key, string $group = '', bool $force = false, bool &$found = null)
                 {
                     $found = true;
+
                     return 'not-serialized';
                 }
             };
@@ -227,5 +231,4 @@ final class WPObjectCachePsr6Test extends WPTestCase
 
         $this->assertFalse($cache_two->hasItem('key1'));
     }
-
 }

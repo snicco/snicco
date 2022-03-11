@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 
 use BadMethodCallException;
@@ -29,9 +28,11 @@ use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @internal
+ */
 final class BrowserTest extends WPTestCase
 {
-
     /**
      * @var Closure(Environment):Kernel
      */
@@ -58,7 +59,7 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
-    public function test_getRequest_throws_exception(): void
+    public function test_get_request_throws_exception(): void
     {
         $browser = $this->getBrowser();
 
@@ -72,7 +73,7 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
-    public function test_getResponse_returns_assertable_response(): void
+    public function test_get_response_returns_assertable_response(): void
     {
         $browser = $this->getBrowser();
 
@@ -91,7 +92,8 @@ final class BrowserTest extends WPTestCase
         $browser = $this->getBrowser();
 
         $crawler = $browser->request('GET', '/foo');
-        $node = $crawler->filter('h1')->first();
+        $node = $crawler->filter('h1')
+            ->first();
         $this->assertSame(WebTestCaseController::class, $node->innerText());
 
         $response = $browser->getResponse();
@@ -111,12 +113,13 @@ final class BrowserTest extends WPTestCase
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
-        $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'foo' => 'bar',
-            'baz' => 'biz'
+            'baz' => 'biz',
         ], $body);
     }
 
@@ -137,12 +140,13 @@ final class BrowserTest extends WPTestCase
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
-        $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'cookie1' => 'foo',
-            'cookie2' => 'bar'
+            'cookie2' => 'bar',
         ], $body);
     }
 
@@ -153,16 +157,20 @@ final class BrowserTest extends WPTestCase
     {
         $browser = $this->getBrowser();
 
-        $browser->request('POST', '/body-as-json', ['foo' => 'bar', 'baz' => 'biz']);
+        $browser->request('POST', '/body-as-json', [
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ]);
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
-        $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'foo' => 'bar',
-            'baz' => 'biz'
+            'baz' => 'biz',
         ], $body);
     }
 
@@ -174,26 +182,27 @@ final class BrowserTest extends WPTestCase
         $browser = $this->getBrowser();
 
         $browser->request('POST', '/files-as-json', [], [
-            'php-image-custom-name' => dirname(__DIR__) . '/fixtures/php-image.png'
+            'php-image-custom-name' => dirname(__DIR__) . '/fixtures/php-image.png',
         ]);
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
-        $body = (array)json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             [
                 'size' => filesize(dirname(__DIR__) . '/fixtures/php-image.png'),
-                'name' => 'php-image-custom-name'
-            ]
+                'name' => 'php-image-custom-name',
+            ],
         ], $body);
     }
 
     /**
      * @test
      */
-    public function test_adminRequests_are_created_if_the_prefix_is_correct(): void
+    public function test_admin_requests_are_created_if_the_prefix_is_correct(): void
     {
         $browser = $this->getBrowser();
         $browser->request('GET', '/wp-admin/admin.php?page=foo');
@@ -246,12 +255,16 @@ final class BrowserTest extends WPTestCase
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(HttpErrorHandler::class, new TestErrorHandler());
+            $kernel->container()
+                ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
         $kernel->boot();
+
         return new Browser(
-            $kernel->container()->make(HttpKernel::class),
-            $kernel->container()->make(Psr17FactoryDiscovery::class),
+            $kernel->container()
+                ->make(HttpKernel::class),
+            $kernel->container()
+                ->make(Psr17FactoryDiscovery::class),
             AdminAreaPrefix::fromString('/wp-admin'),
             UrlPath::fromString('/api'),
             $server,
@@ -259,5 +272,4 @@ final class BrowserTest extends WPTestCase
             $cookies
         );
     }
-
 }

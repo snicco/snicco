@@ -13,9 +13,11 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 use function is_file;
 
-class RouteCachingTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class RouteCachingTest extends HttpRunnerTestCase
 {
-
     private string $route_cache_file;
 
     protected function setUp(): void
@@ -45,10 +47,7 @@ class RouteCachingTest extends HttpRunnerTestCase
             $configurator->get('foo', '/foo', RoutingTestController::class);
         }, new FileRouteCache($this->route_cache_file));
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('foo')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('foo'));
     }
 
     /**
@@ -60,10 +59,7 @@ class RouteCachingTest extends HttpRunnerTestCase
             $configurator->get('foo', '/foo', RoutingTestController::class);
         }, new FileRouteCache($this->route_cache_file));
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('foo')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('foo'));
 
         $this->assertTrue(is_file($this->route_cache_file));
     }
@@ -93,7 +89,6 @@ class RouteCachingTest extends HttpRunnerTestCase
 
         // Simulate a new request with empty routes.
         $this->webRouting(function () {
-            //
         }, new FileRouteCache($this->route_cache_file));
 
         $request = $this->frontendRequest('foo');
@@ -162,19 +157,16 @@ class RouteCachingTest extends HttpRunnerTestCase
         $this->assertTrue(isset($items[1]));
         $this->assertTrue(isset($items[2]));
 
-        $this->assertSame('/wp-admin/admin.php/foo', (string)$items[0]->slug());
-        $this->assertSame('/wp-admin/admin.php/bar', (string)$items[1]->slug());
-        $this->assertSame('/wp-admin/admin.php/baz', (string)$items[2]->slug());
+        $this->assertSame('/wp-admin/admin.php/foo', (string) $items[0]->slug());
+        $this->assertSame('/wp-admin/admin.php/bar', (string) $items[1]->slug());
+        $this->assertSame('/wp-admin/admin.php/baz', (string) $items[2]->slug());
     }
-
 }
 
 class Controller
 {
-
     public function handle(): string
     {
         return 'foo';
     }
-
 }

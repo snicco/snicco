@@ -8,7 +8,6 @@ use Snicco\Component\Session\SessionEncryptor;
 
 class TestSessionEncryptor implements SessionEncryptor
 {
-
     public function decrypt(string $data): string
     {
         return trim($data, 'X');
@@ -18,5 +17,4 @@ class TestSessionEncryptor implements SessionEncryptor
     {
         return 'XXX' . $data . 'XXX';
     }
-
 }

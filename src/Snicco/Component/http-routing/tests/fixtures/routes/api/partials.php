@@ -6,9 +6,5 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 
 return function (WebRoutingConfigurator $router) {
-    $router->get(
-        'cart',
-        '/cart',
-        RoutingTestController::class
-    );
+    $router->get('cart', '/cart', RoutingTestController::class);
 };

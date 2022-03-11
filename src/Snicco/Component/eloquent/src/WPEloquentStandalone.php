@@ -29,12 +29,13 @@ use function rtrim;
 
 final class WPEloquentStandalone
 {
-
     /**
-     * @var Container|Application
+     * @var Application|Container
      */
     private $illuminate_container;
+
     private array $connection_configuration;
+
     private bool $enable_global_facades;
 
     /**
@@ -51,7 +52,7 @@ final class WPEloquentStandalone
             );
         }
 
-        if ($enable_global_facades && !Facade::getFacadeApplication() instanceof IlluminateContainer) {
+        if ($enable_global_facades && ! Facade::getFacadeApplication() instanceof IlluminateContainer) {
             Facade::setFacadeApplication($this->illuminate_container);
         }
 
@@ -65,7 +66,7 @@ final class WPEloquentStandalone
         string $factory_namespace,
         string $faker_locale = 'en_US'
     ): void {
-        if (!class_exists(FakerGenerator::class)) {
+        if (! class_exists(FakerGenerator::class)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException(
                 'Faker is not installed. Please try running composer require fakerphp/faker --dev'
@@ -78,17 +79,20 @@ final class WPEloquentStandalone
             function () use ($faker_locale) {
                 $faker = Factory::create($faker_locale);
                 $faker->unique(true);
+
                 return $faker;
             }
         );
 
         EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace) {
             $model = class_basename($model);
+
             return rtrim($factory_namespace, '\\') . '\\' . $model . 'Factory';
         });
 
         EloquentFactory::guessModelNamesUsing(function (EloquentFactory $factory) use ($model_namespace): string {
             $model = class_basename($factory);
+
             return str_replace('Factory', '', rtrim($model_namespace, '\\') . '\\' . $model);
         });
 
@@ -111,6 +115,7 @@ final class WPEloquentStandalone
         if ($this->enable_global_facades) {
             $this->bindDBFacade($connection_resolver);
         }
+
         return $connection_resolver;
     }
 
@@ -133,6 +138,7 @@ final class WPEloquentStandalone
             $this->illuminate_container->singleton('config', function () {
                 $config = new Fluent();
                 $config['database.connections'] = $this->connection_configuration;
+
                 return $config;
             });
         }
@@ -141,7 +147,7 @@ final class WPEloquentStandalone
     private function bindTransactionManager(): void
     {
         $this->illuminate_container->singletonIf('db.transactions', function () {
-            return new DatabaseTransactionsManager;
+            return new DatabaseTransactionsManager();
         });
     }
 
@@ -155,10 +161,7 @@ final class WPEloquentStandalone
             new ConnectionFactory($this->illuminate_container)
         );
 
-        return new WPConnectionResolver(
-            $illuminate_database_manager,
-            new MysqliFactory()
-        );
+        return new WPConnectionResolver($illuminate_database_manager, new MysqliFactory());
     }
 
     private function bindDBFacade(ConnectionResolverInterface $connection_resolver): void
@@ -167,5 +170,4 @@ final class WPEloquentStandalone
             return $connection_resolver;
         });
     }
-
 }

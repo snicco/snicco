@@ -13,12 +13,27 @@ use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 
+/**
+ * @internal
+ */
 final class EventSubscribingTest extends TestCase
 {
-
     use AssertListenerResponse;
 
     private EventDispatcher $dispatcher;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->resetListenersResponses();
+        $this->dispatcher = $this->getDispatcher();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->resetListenersResponses();
+        parent::tearDown();
+    }
 
     /**
      * @test
@@ -55,55 +70,34 @@ final class EventSubscribingTest extends TestCase
         $this->dispatcher->subscribe(BadMethodSubscriber::class);
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->resetListenersResponses();
-        $this->dispatcher = $this->getDispatcher();
-    }
-
     private function getDispatcher(): EventDispatcher
     {
-        return new BaseEventDispatcher(
-            new NewableListenerFactory()
-        );
+        return new BaseEventDispatcher(new NewableListenerFactory());
     }
-
-    protected function tearDown(): void
-    {
-        $this->resetListenersResponses();
-        parent::tearDown();
-    }
-
 }
 
 class BadSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
             EventStub::class => 'handleEvent',
         ];
     }
-
 }
 
 class BadMethodSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
             EventStub::class => 'bogus',
         ];
     }
-
 }
 
 class TestSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
@@ -115,5 +109,4 @@ class TestSubscriber implements EventSubscriber
     {
         $event_stub->val1 = 'SUBSCRIBED';
     }
-
 }

@@ -15,14 +15,13 @@ use const ENT_QUOTES;
 
 final class FallbackHtmlDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         $content = @file_get_contents($file = dirname(__DIR__, 2) . '/resources/error.fallback.html');
 
         if (false === $content) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Cant read fallback error template at location [$file].");
+            throw new RuntimeException("Cant read fallback error template at location [{$file}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -37,9 +36,10 @@ final class FallbackHtmlDisplayer implements ExceptionDisplayer
             htmlentities($exception_information->identifier(), ENT_QUOTES),
             $content
         );
+
         return str_replace(
             '{{status}}',
-            htmlentities((string)$exception_information->statusCode(), ENT_QUOTES),
+            htmlentities((string) $exception_information->statusCode(), ENT_QUOTES),
             $content
         );
     }
@@ -58,5 +58,4 @@ final class FallbackHtmlDisplayer implements ExceptionDisplayer
     {
         return true;
     }
-
 }

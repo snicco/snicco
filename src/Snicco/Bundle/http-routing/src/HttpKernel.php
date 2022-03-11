@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting;
 
 use LogicException;
@@ -21,7 +20,9 @@ use function microtime;
 final class HttpKernel
 {
     private MiddlewarePipeline $pipeline;
+
     private ResponsePreparation $preparation;
+
     private EventDispatcherInterface $dispatcher;
 
     /**
@@ -63,5 +64,4 @@ final class HttpKernel
 
         return $response;
     }
-
 }

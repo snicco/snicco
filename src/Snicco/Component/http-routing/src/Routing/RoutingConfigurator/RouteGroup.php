@@ -18,11 +18,15 @@ use function trim;
  */
 final class RouteGroup
 {
-
     public string $namespace;
+
     public UrlPath $prefix;
+
     public string $name;
-    /** @var string[] */
+
+    /**
+     * @var string[]
+     */
     public array $middleware;
 
     /**
@@ -54,6 +58,7 @@ final class RouteGroup
 
     /**
      * @param string[] $old_middleware
+     *
      * @return string[]
      */
     private function mergeMiddleware(array $old_middleware): array
@@ -76,5 +81,4 @@ final class RouteGroup
     {
         return $old_group->prefix->append($this->prefix);
     }
-
 }

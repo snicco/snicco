@@ -22,18 +22,21 @@ use Snicco\Component\TestableClock\SystemClock;
 use Throwable;
 
 use function hash_equals;
-use function is_null;
 
 /**
- * This session manager will always return a new session object when start is being called.
+ * This session manager will always return a new session object when start is
+ * being called.
  */
 final class FactorySessionManager implements SessionManager
 {
-
     private SessionConfig $config;
+
     private SessionDriver $driver;
+
     private Clock $clock;
+
     private SessionEventDispatcher $event_dispatcher;
+
     private Serializer $serializer;
 
     public function __construct(
@@ -69,12 +72,7 @@ final class FactorySessionManager implements SessionManager
     {
         $hashed_validator = $this->hash($session->id()->validator());
 
-        $session->saveUsing(
-            $this->driver,
-            $this->serializer,
-            $hashed_validator,
-            $this->clock->currentTimestamp()
-        );
+        $session->saveUsing($this->driver, $this->serializer, $hashed_validator, $this->clock->currentTimestamp());
 
         $this->event_dispatcher->dispatchAll($session->releaseEvents());
     }
@@ -83,7 +81,8 @@ final class FactorySessionManager implements SessionManager
     {
         return new SessionCookie(
             $this->config->cookieName(),
-            $session->id()->asString(),
+            $session->id()
+                ->asString(),
             $this->config->absoluteLifetimeInSec(),
             $this->config->onlyHttp(),
             $this->config->onlySecure(),
@@ -103,6 +102,7 @@ final class FactorySessionManager implements SessionManager
     private function parseSessionId(CookiePool $cookie_pool): SessionId
     {
         $id = $cookie_pool->get($this->config->cookieName()) ?? '';
+
         return SessionId::fromCookieId($id);
     }
 
@@ -115,7 +115,7 @@ final class FactorySessionManager implements SessionManager
             $provided_validator = $this->hash($id->validator());
 
             // Do we have a timing-based side-channel attack?
-            if (!hash_equals($stored_validator, $provided_validator)) {
+            if (! hash_equals($stored_validator, $provided_validator)) {
                 try {
                     $this->driver->destroy([$id->selector()]);
                 } // @codeCoverageIgnoreStart
@@ -135,6 +135,7 @@ final class FactorySessionManager implements SessionManager
         } catch (BadSessionID $e) {
             $session = ReadWriteSession::createEmpty($this->clock->currentTimestamp());
         }
+
         return $session;
     }
 
@@ -155,7 +156,7 @@ final class FactorySessionManager implements SessionManager
     private function isExpired(Session $session): bool
     {
         $abs_lifetime = $this->config->absoluteLifetimeInSec();
-        if (is_null($abs_lifetime)) {
+        if (null === $abs_lifetime) {
             return false;
         }
 
@@ -172,6 +173,7 @@ final class FactorySessionManager implements SessionManager
             throw new RuntimeException('Could not hash session id.');
             // @codeCoverageIgnoreEnd
         }
+
         return $hash;
     }
 }

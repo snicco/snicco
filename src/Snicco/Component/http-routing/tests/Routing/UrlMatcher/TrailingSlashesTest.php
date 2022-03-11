@@ -8,9 +8,11 @@ use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigura
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
-class TrailingSlashesTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class TrailingSlashesTest extends HttpRunnerTestCase
 {
-
     /**
      * @test
      */
@@ -75,16 +77,8 @@ class TrailingSlashesTest extends HttpRunnerTestCase
     public function test_required_route_segments_and_trailing_slashes(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'route1',
-                '/route1/{param1}/{param2}',
-                [RoutingTestController::class, 'twoParams']
-            );
-            $configurator->get(
-                'route2',
-                '/route2/{param1}/{param2}/',
-                [RoutingTestController::class, 'twoParams']
-            );
+            $configurator->get('route1', '/route1/{param1}/{param2}', [RoutingTestController::class, 'twoParams']);
+            $configurator->get('route2', '/route2/{param1}/{param2}/', [RoutingTestController::class, 'twoParams']);
         });
 
         $request = $this->frontendRequest('/route1/foo/bar/');
@@ -150,16 +144,8 @@ class TrailingSlashesTest extends HttpRunnerTestCase
     public function test_with_only_one_optional_segment(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'route1',
-                '/no_trailing/{param1?}',
-                [RoutingTestController::class, 'dynamic']
-            );
-            $configurator->get(
-                'route2',
-                '/trailing/{param1?}/',
-                [RoutingTestController::class, 'dynamic']
-            );
+            $configurator->get('route1', '/no_trailing/{param1?}', [RoutingTestController::class, 'dynamic']);
+            $configurator->get('route2', '/trailing/{param1?}/', [RoutingTestController::class, 'dynamic']);
         });
 
         // Only with trailing
@@ -176,5 +162,4 @@ class TrailingSlashesTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/no_trailing/foo/');
         $this->assertResponseBody('', $request);
     }
-
 }

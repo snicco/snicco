@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\EventDispatcher\Tests\ListenerFactory;
 
 use PHPUnit\Framework\TestCase;
@@ -11,6 +10,9 @@ use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class PsrListenerFactoryTest extends TestCase
 {
     /**
@@ -43,5 +45,4 @@ final class PsrListenerFactoryTest extends TestCase
         $this->expectExceptionMessage('Cant create listener class [stdClass] for event [foo_event]');
         $factory->create(stdClass::class, 'foo_event');
     }
-
 }

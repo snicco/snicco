@@ -8,12 +8,13 @@ use RuntimeException;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 
+use function is_array;
+
 /**
  * @psalm-internal Snicco\Component\Templating
  */
 final class PHPView implements View
 {
-
     /**
      * Name of view file header based on which to resolve parent views.
      *
@@ -58,6 +59,11 @@ final class PHPView implements View
     }
 
     /**
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
+     *
+     * @return static
+     *
      * @psalm-mutation-free
      */
     public function with($key, $value = null): View
@@ -68,6 +74,7 @@ final class PHPView implements View
         } else {
             $new->context[$key] = $value;
         }
+
         return $new;
     }
 
@@ -101,7 +108,7 @@ final class PHPView implements View
 
         if (false === $data) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Cant read file contents of view [$this->filepath].");
+            throw new RuntimeException("Cant read file contents of view [{$this->filepath}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -111,14 +118,14 @@ final class PHPView implements View
 
         if (false === $match) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_match failed on string [$scope]");
+            throw new RuntimeException("preg_match failed on string [{$scope}]");
             // @codeCoverageIgnoreEnd
         }
         if (0 === $match) {
             return null;
         }
 
-        if (!isset($matches[1])) {
+        if (! isset($matches[1])) {
             // @codeCoverageIgnoreStart
             return null;
             // @codeCoverageIgnoreEnd

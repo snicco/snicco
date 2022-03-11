@@ -41,10 +41,11 @@ use const E_USER_NOTICE;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class ErrorHandlingTest extends TestCase
 {
-
     use BundleTestHelpers;
 
     /**
@@ -52,18 +53,13 @@ final class ErrorHandlingTest extends TestCase
      */
     public function exceptions_are_handled_by_default_during_routing(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $response = $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', '/')))
@@ -73,7 +69,7 @@ final class ErrorHandlingTest extends TestCase
             });
 
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertStringNotContainsString('secret error in routing', (string)$response->getBody());
+        $this->assertStringNotContainsString('secret error in routing', (string) $response->getBody());
     }
 
     /**
@@ -81,11 +77,7 @@ final class ErrorHandlingTest extends TestCase
      */
     public function a_test_logger_is_used_in_testing_environments(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
@@ -93,7 +85,8 @@ final class ErrorHandlingTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', '/')))
@@ -103,7 +96,8 @@ final class ErrorHandlingTest extends TestCase
             });
 
         /** @var TestLogger $logger */
-        $logger = $kernel->container()->make(TestLogger::class);
+        $logger = $kernel->container()
+            ->make(TestLogger::class);
 
         $this->assertTrue($logger->hasCriticalRecords());
 
@@ -115,11 +109,7 @@ final class ErrorHandlingTest extends TestCase
      */
     public function the_test_logger_is_not_bound_in_non_testing_env(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $kernel->boot();
 
@@ -131,27 +121,22 @@ final class ErrorHandlingTest extends TestCase
      */
     public function request_log_context_can_be_added(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
-                    QueryStringLogContext::class
-                ]
+                    QueryStringLogContext::class,
+                ],
             ]);
         });
 
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
@@ -161,7 +146,8 @@ final class ErrorHandlingTest extends TestCase
             });
 
         /** @var TestLogger $logger */
-        $logger = $kernel->container()->make(TestLogger::class);
+        $logger = $kernel->container()
+            ->make(TestLogger::class);
 
         $this->assertTrue(
             $logger->hasCritical([
@@ -177,17 +163,10 @@ final class ErrorHandlingTest extends TestCase
      */
     public function custom_transformers_can_be_added(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
-                HttpErrorHandlingOption::TRANSFORMERS => [
-                    Transformer2::class,
-                    Transformer1::class,
-                ]
+                HttpErrorHandlingOption::TRANSFORMERS => [Transformer2::class, Transformer1::class],
             ]);
         });
 
@@ -197,7 +176,8 @@ final class ErrorHandlingTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $response = $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
@@ -225,16 +205,10 @@ final class ErrorHandlingTest extends TestCase
      */
     public function custom_displayers_can_be_added(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
-                HttpErrorHandlingOption::DISPLAYERS => [
-                    CustomHtmlDisplayer::class,
-                ]
+                HttpErrorHandlingOption::DISPLAYERS => [CustomHtmlDisplayer::class],
             ]);
         });
         $kernel->boot();
@@ -243,7 +217,8 @@ final class ErrorHandlingTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz'));
         $request = $request->withHeader('accept', 'text/html');
@@ -255,7 +230,7 @@ final class ErrorHandlingTest extends TestCase
                 throw new TypeError('secret error in routing.');
             });
 
-        $this->assertSame('foobar', (string)$response->getBody());
+        $this->assertSame('foobar', (string) $response->getBody());
     }
 
     /**
@@ -263,24 +238,19 @@ final class ErrorHandlingTest extends TestCase
      */
     public function custom_log_levels_can_be_used(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
-                    TypeError::class => LogLevel::WARNING
-                ]
+                    TypeError::class => LogLevel::WARNING,
+                ],
             ]);
         });
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $pipeline
             ->send(Request::fromPsr(new ServerRequest('GET', 'https://foo.com/bar?baz=biz')))
@@ -290,7 +260,8 @@ final class ErrorHandlingTest extends TestCase
             });
 
         /** @var TestLogger $logger */
-        $logger = $kernel->container()->make(TestLogger::class);
+        $logger = $kernel->container()
+            ->make(TestLogger::class);
 
         $this->assertFalse($logger->hasCriticalRecords());
         $this->assertTrue($logger->hasWarningRecords());
@@ -301,23 +272,15 @@ final class ErrorHandlingTest extends TestCase
      */
     public function in_production_the_std_error_logger_is_bound_if_not_already_set_in_the_container(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->boot();
 
         $this->assertInstanceOf(StdErrLogger::class, $kernel->container()->make(LoggerInterface::class));
 
         $container = $this->newContainer();
-        $container[LoggerInterface::class] = fn(): NullLogger => new NullLogger();
+        $container[LoggerInterface::class] = fn (): NullLogger => new NullLogger();
 
-        $kernel = new Kernel(
-            $container,
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($container, Environment::prod(), $this->directories);
         $kernel->boot();
 
         $this->assertInstanceOf(NullLogger::class, $kernel->container()->make(LoggerInterface::class));
@@ -330,34 +293,20 @@ final class ErrorHandlingTest extends TestCase
     {
         $container = $this->newContainer();
         $container[ExceptionInformationProvider::class] = function (): ExceptionInformationProvider {
-            return new class implements ExceptionInformationProvider {
-
+            return new class() implements ExceptionInformationProvider {
                 public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
                 {
-                    return new ExceptionInformation(
-                        500,
-                        'foo_id',
-                        'foo_title',
-                        'foo_details',
-                        $e,
-                        $e,
-                        $request,
-                    );
+                    return new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request,);
                 }
             };
         };
 
-        $kernel = new Kernel(
-            $container,
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($container, Environment::prod(), $this->directories);
         $kernel->boot();
 
-        /**
-         * @var MiddlewarePipeline $pipeline
-         */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/foo');
 
@@ -365,7 +314,7 @@ final class ErrorHandlingTest extends TestCase
             throw new RuntimeException('error');
         });
 
-        $body = (string)$response->getBody();
+        $body = (string) $response->getBody();
 
         $this->assertStringContainsString('foo_id', $body);
         $this->assertStringContainsString('foo_title', $body);
@@ -380,28 +329,24 @@ final class ErrorHandlingTest extends TestCase
         $handled_by_global_handler = false;
         set_error_handler(function () use (&$handled_by_global_handler): bool {
             $handled_by_global_handler = true;
+
             return false;
         });
 
         try {
-            $kernel = new Kernel(
-                $this->newContainer(),
-                Environment::testing(),
-                $this->directories
-            );
+            $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
             $kernel->boot();
 
-            /**
-             * @var HttpKernel $http_kernel
-             */
-            $http_kernel = $kernel->container()->make(HttpKernel::class);
+            /** @var HttpKernel $http_kernel */
+            $http_kernel = $kernel->container()
+                ->make(HttpKernel::class);
 
             $request = new ServerRequest('GET', '/trigger-notice');
 
             $response = $http_kernel->handle(Request::fromPsr($request));
 
-            $body = (string)$response->getBody();
+            $body = (string) $response->getBody();
 
             $this->assertSame(500, $response->getStatusCode());
             $this->assertStringNotContainsString(RoutingBundleTestController::class, $body);
@@ -410,15 +355,12 @@ final class ErrorHandlingTest extends TestCase
                 'the error was handled by the global exception handler, not the kernel.'
             );
 
-            /**
-             * @var TestLogger $logger
-             */
-            $logger = $kernel->container()->make(TestLogger::class);
-            $this->assertTrue(
-                $logger->hasCritical([
-                    'message' => RoutingBundleTestController::class
-                ])
-            );
+            /** @var TestLogger $logger */
+            $logger = $kernel->container()
+                ->make(TestLogger::class);
+            $this->assertTrue($logger->hasCritical([
+                'message' => RoutingBundleTestController::class,
+            ]));
         } finally {
             restore_error_handler();
         }
@@ -432,22 +374,18 @@ final class ErrorHandlingTest extends TestCase
         $handled_by_global_handler = false;
         set_error_handler(function () use (&$handled_by_global_handler): bool {
             $handled_by_global_handler = true;
+
             return true;
         });
 
         try {
-            $kernel = new Kernel(
-                $this->newContainer(),
-                Environment::testing(),
-                $this->directories
-            );
+            $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
             $kernel->boot();
 
-            /**
-             * @var HttpKernel $http_kernel
-             */
-            $http_kernel = $kernel->container()->make(HttpKernel::class);
+            /** @var HttpKernel $http_kernel */
+            $http_kernel = $kernel->container()
+                ->make(HttpKernel::class);
 
             $request = new ServerRequest('GET', '/trigger-notice');
 
@@ -478,18 +416,13 @@ final class ErrorHandlingTest extends TestCase
      */
     public function deprecations_are_not_converted_to_exceptions(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
-        /**
-         * @var HttpKernel $http_kernel
-         */
-        $http_kernel = $kernel->container()->make(HttpKernel::class);
+        /** @var HttpKernel $http_kernel */
+        $http_kernel = $kernel->container()
+            ->make(HttpKernel::class);
 
         $request = new ServerRequest('GET', '/trigger-deprecation');
 
@@ -497,76 +430,68 @@ final class ErrorHandlingTest extends TestCase
 
         $this->assertSame(200, $response->getStatusCode());
 
-        /**
-         * @var TestLogger $test_logger
-         */
-        $test_logger = $kernel->container()->make(TestLogger::class);
-        $this->assertTrue(
-            $test_logger->hasInfoThatContains('PHP Deprecated')
-        );
+        /** @var TestLogger $test_logger */
+        $test_logger = $kernel->container()
+            ->make(TestLogger::class);
+        $this->assertTrue($test_logger->hasInfoThatContains('PHP Deprecated'));
     }
 
     protected function fixturesDir(): string
     {
         return dirname(__DIR__) . '/fixtures';
     }
-
-
 }
 
 class Transformer1 implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
         if ($e instanceof LogicException) {
             return new HttpException(401, 'test');
         }
 
-        if ($e->getMessage() === 'error1') {
+        if ('error1' === $e->getMessage()) {
             return new HttpException(403, 'custom1');
         }
+
         return $e;
     }
 }
 
 class Transformer2 implements ExceptionTransformer
 {
-
-
     public function transform(Throwable $e): Throwable
     {
-        if ($e->getMessage() === 'error1') {
+        if ('error1' === $e->getMessage()) {
             return new HttpException(404, 'custom2');
         }
+
         return $e;
     }
 }
 
 class PathLogContext implements RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['path'] = $information->serverRequest()->getUri()->getPath();
+
         return $context;
     }
 }
 
 class QueryStringLogContext implements RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['query_string'] = $information->serverRequest()->getUri()->getQuery();
+
         return $context;
     }
-
 }
 
 class CustomHtmlDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return 'foobar';

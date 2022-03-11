@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Templating\Tests\ViewComposer;
 
 use PHPUnit\Framework\TestCase;
@@ -14,6 +13,9 @@ use stdClass;
 
 use function sprintf;
 
+/**
+ * @internal
+ */
 final class NewableInstanceViewComposerFactoryTest extends TestCase
 {
     /**
@@ -41,18 +43,14 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
         $factory = new NewableInstanceViewComposerFactory();
 
         $this->expectException(BadViewComposer::class);
-        $this->expectExceptionMessage(
-            'The view composer class [ComplexComposer] is not a newable.'
-        );
+        $this->expectExceptionMessage('The view composer class [ComplexComposer] is not a newable.');
 
         $factory->create('ComplexComposer');
     }
-
 }
 
 class ComplexComposer implements ViewComposer
 {
-
     private stdClass $stdClass;
 
     public function __construct(stdClass $stdClass)

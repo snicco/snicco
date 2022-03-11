@@ -8,14 +8,12 @@ use Throwable;
 
 final class BadIdentifier extends SignedUrlException
 {
-
     public static function for(string $id, Throwable $previous = null): BadIdentifier
     {
         return new self(
-            "The identifier [$id] does not exists.",
-            $previous ? (int)$previous->getCode() : 0,
+            "The identifier [{$id}] does not exists.",
+            $previous ? (int) $previous->getCode() : 0,
             $previous
         );
     }
-
 }

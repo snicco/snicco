@@ -9,13 +9,18 @@ use Throwable;
 
 final class ExceptionInformation
 {
-
     private int $status_code;
+
     private string $identifier;
+
     private string $title;
+
     private string $safe_details;
+
     private Throwable $original;
+
     private Throwable $transformed;
+
     private ServerRequestInterface $server_request;
 
     public function __construct(
@@ -70,5 +75,4 @@ final class ExceptionInformation
     {
         return $this->server_request;
     }
-
 }

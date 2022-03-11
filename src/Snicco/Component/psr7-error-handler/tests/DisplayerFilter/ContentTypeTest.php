@@ -14,9 +14,11 @@ use Snicco\Component\Psr7ErrorHandler\Tests\fixtures\PlainTextExceptionDisplayer
 
 use function array_values;
 
+/**
+ * @internal
+ */
 final class ContentTypeTest extends TestCase
 {
-
     private ServerRequest $request;
 
     protected function setUp(): void
@@ -42,19 +44,11 @@ final class ContentTypeTest extends TestCase
         $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
         $request = new ServerRequest('GET', '/foo');
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
 
         $this->assertSame([$d1, $d2], array_values($filtered));
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'application/json'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'application/json'), $info,);
 
         $this->assertSame([$d3, $d4], array_values($filtered));
     }
@@ -65,10 +59,7 @@ final class ContentTypeTest extends TestCase
     public function the_content_type_is_only_parsed_for_the_first_mime_type(): void
     {
         $filter = new ContentType();
-        $displayers = [
-            $d1 = new PlaintTextExceptionDisplayer1(),
-            $d2 = new JsonExceptionDisplayer1(),
-        ];
+        $displayers = [$d1 = new PlaintTextExceptionDisplayer1(), $d2 = new JsonExceptionDisplayer1()];
 
         $e = new RuntimeException();
         $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
@@ -91,12 +82,10 @@ final class ContentTypeTest extends TestCase
 
         $this->assertSame([$d2], array_values($filtered));
     }
-
 }
 
 class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -116,12 +105,10 @@ class PlaintTextExceptionDisplayer1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -141,12 +128,10 @@ class PlaintTextExceptionDisplayer2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class JsonExceptionDisplayer1 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -166,12 +151,10 @@ class JsonExceptionDisplayer1 implements ExceptionDisplayer
     {
         return true;
     }
-
 }
 
 class JsonExceptionDisplayer2 implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return '';
@@ -191,5 +174,4 @@ class JsonExceptionDisplayer2 implements ExceptionDisplayer
     {
         return true;
     }
-
 }

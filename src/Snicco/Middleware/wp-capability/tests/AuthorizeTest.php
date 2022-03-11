@@ -13,10 +13,13 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\WPCap\Authorize;
 
 use function array_values;
+use function call_user_func;
 
-class AuthorizeTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class AuthorizeTest extends MiddlewareTestCase
 {
-
     private Request $request;
 
     protected function setUp(): void
@@ -31,9 +34,10 @@ class AuthorizeTest extends MiddlewareTestCase
     public function a_user_with_given_capabilities_can_access_the_route(): void
     {
         $wp = new AuthorizeTestBetterWPAPI(function (string $cap) {
-            if ($cap !== 'manage_options') {
+            if ('manage_options' !== $cap) {
                 throw new RuntimeException('Wrong cap passed');
             }
+
             return true;
         });
 
@@ -50,9 +54,10 @@ class AuthorizeTest extends MiddlewareTestCase
     public function a_user_without_authorisation_to_the_route_will_throw_an_exception(): void
     {
         $wp = new AuthorizeTestBetterWPAPI(function (string $cap) {
-            if ($cap !== 'manage_options') {
+            if ('manage_options' !== $cap) {
                 throw new RuntimeException('Wrong cap passed');
             }
+
             return false;
         });
 
@@ -76,10 +81,11 @@ class AuthorizeTest extends MiddlewareTestCase
     public function the_user_can_be_authorized_against_a_resource(): void
     {
         $wp = new AuthorizeTestBetterWPAPI(function (string $cap, int $resource_id) {
-            if ($cap !== 'manage_options') {
+            if ('manage_options' !== $cap) {
                 throw new RuntimeException('Wrong cap passed');
             }
-            return $resource_id === 1;
+
+            return 1 === $resource_id;
         });
 
         $m = $this->newMiddleware($wp, 'manage_options', 1);
@@ -105,14 +111,12 @@ class AuthorizeTest extends MiddlewareTestCase
     {
         return new Authorize($cap, $id, $wp);
     }
-
 }
 
 class AuthorizeTestBetterWPAPI extends BetterWPAPI
 {
-
     /**
-     * @var Closure(string, mixed...):bool $user_can
+     * @var Closure(string, mixed...):bool
      */
     private Closure $user_can;
 
@@ -128,7 +132,4 @@ class AuthorizeTestBetterWPAPI extends BetterWPAPI
     {
         return call_user_func($this->user_can, $capability, ...array_values($args));
     }
-
 }
-
-

@@ -10,12 +10,13 @@ use Psr\Http\Message\StreamInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Cookies;
 
+use function in_array;
 use function sprintf;
 
 class Response implements ResponseInterface
 {
-
     private ResponseInterface $psr7_response;
+
     private Cookies $cookies;
 
     /**
@@ -43,20 +44,19 @@ class Response implements ResponseInterface
 
     /**
      * @param mixed $value
+     *
      * @return never
      */
     final public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [$name] on immutable class [%s]", static::class)
+            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", static::class)
         );
     }
 
     final public function withAddedHeader($name, $value)
     {
-        return $this->new(
-            $this->psr7_response->withAddedHeader($name, $value)
-        );
+        return $this->new($this->psr7_response->withAddedHeader($name, $value));
     }
 
     final public function withHeader($name, $value)
@@ -209,6 +209,7 @@ class Response implements ResponseInterface
 
     /**
      * @param array<string,string> $flash
+     *
      * @return static
      */
     final public function withFlashMessages(array $flash)
@@ -227,6 +228,7 @@ class Response implements ResponseInterface
 
     /**
      * @param array<string,string> $old_input
+     *
      * @return static
      */
     final public function withOldInput(array $old_input)
@@ -250,7 +252,7 @@ class Response implements ResponseInterface
     {
         $_errors = $this->errors;
         foreach ($errors as $key => $messages) {
-            $messages = (array)$messages;
+            $messages = (array) $messages;
             foreach ($messages as $message) {
                 $_errors[$namespace][$key][] = $message;
             }
@@ -270,18 +272,18 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param StreamInterface $json
      * @return static
      */
     final public function withJson(StreamInterface $json)
     {
-        return $this->withHeader('Content-Type', 'application/json')->withBody($json);
+        return $this->withHeader('Content-Type', 'application/json')
+            ->withBody($json);
     }
 
     final public function isRedirect(string $location = null): bool
     {
-        return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308])
-            && (null === $location || $location == $this->getHeaderLine('Location'));
+        return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308], true)
+            && (null === $location || $location === $this->getHeaderLine('Location'));
     }
 
     final public function isSuccessful(): bool
@@ -312,33 +314,36 @@ class Response implements ResponseInterface
     final public function isRedirection(): bool
     {
         $status = $this->getStatusCode();
+
         return $status >= 300 && $status < 400;
     }
 
     final public function isClientError(): bool
     {
         $status = $this->getStatusCode();
+
         return $status >= 400 && $status < 500;
     }
 
     final public function isServerError(): bool
     {
         $status = $this->getStatusCode();
+
         return $status >= 500 && $status < 600;
     }
 
     final public function isEmpty(): bool
     {
-        return in_array($this->getStatusCode(), [204, 205, 304]);
+        return in_array($this->getStatusCode(), [204, 205, 304], true);
     }
 
     final public function hasEmptyBody(): bool
     {
-        return (intval($this->getBody()->getSize())) === 0;
+        return ((int) ($this->getBody()->getSize())) === 0;
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function flashMessages(): array
     {
@@ -346,7 +351,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function oldInput(): array
     {
@@ -368,6 +373,7 @@ class Response implements ResponseInterface
     {
         $new = clone $this;
         $new->psr7_response = $new_psr_response;
+
         return $new;
     }
 }

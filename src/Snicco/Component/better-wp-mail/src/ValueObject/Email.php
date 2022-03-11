@@ -16,20 +16,25 @@ use function sprintf;
 use function strip_tags;
 
 /**
- * This class is an IMMUTABLE value object representing an email.
- * The method on this class follow a simple convention:
- * 1) $email = $email->withXXX(); Will replace the attributes and return a new object.
- * 2 $email = $email->addXXX(); Will merge the attributes and return a new object.
+ * This class is an IMMUTABLE value object representing an email. The method on
+ * this class follow a simple convention: 1) $email = $email->withXXX(); Will
+ * replace the attributes and return a new object. 2 $email = $email->addXXX();
+ * Will merge the attributes and return a new object.
  */
 class Email
 {
-
     protected string $subject = '';
+
     protected ?string $html = null;
+
     protected ?string $html_template = null;
+
     protected ?string $text_template = null;
+
     protected ?string $text = null;
+
     protected string $text_charset = 'utf-8';
+
     protected string $html_charset = 'utf-8';
 
     /**
@@ -87,89 +92,105 @@ class Email
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param Mailbox|string|T|WP_User|WP_User[]|Mailbox[]|T[] $addresses
+     *
+     * @param Mailbox|Mailbox[]|string|T|T[]|WP_User|WP_User[] $addresses
      */
     final public function withTo($addresses): Email
     {
         $new = clone $this;
         $new->to = $this->normalizeAddresses($addresses);
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function addTo($address): Email
     {
         $new = clone $this;
         $new->to = array_merge($this->to, $this->normalizeAddresses($address));
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param Mailbox|string|T|WP_User|WP_User[]|Mailbox[]|T[] $addresses
+     *
+     * @param Mailbox|Mailbox[]|string|T|T[]|WP_User|WP_User[] $addresses
      */
     final public function withCc($addresses): Email
     {
         $new = clone $this;
         $new->cc = $this->normalizeAddresses($addresses);
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function addCc($address): Email
     {
         $new = clone $this;
         $new->cc = array_merge($this->cc, $this->normalizeAddresses($address));
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param Mailbox|string|T|WP_User|WP_User[]|Mailbox[]|T[] $addresses
+     *
+     * @param Mailbox|Mailbox[]|string|T|T[]|WP_User|WP_User[] $addresses
      */
     final public function withBcc($addresses): Email
     {
         $new = clone $this;
         $new->bcc = $this->normalizeAddresses($addresses);
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function addBcc($address): Email
     {
         $new = clone $this;
         $new->bcc = array_merge($this->bcc, $this->normalizeAddresses($address));
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function withSender($address): Email
     {
         $new = clone $this;
         $new->sender = Mailbox::create($address);
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function withReturnPath($address): Email
     {
         $new = clone $this;
         $new->return_path = Mailbox::create($address);
+
         return $new;
     }
 
@@ -177,50 +198,59 @@ class Email
     {
         $new = clone $this;
         $new->subject = $subject;
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param Mailbox|string|T|WP_User|WP_User[]|Mailbox[]|T[] $addresses
+     *
+     * @param Mailbox|Mailbox[]|string|T|T[]|WP_User|WP_User[] $addresses
      */
     final public function withReplyTo($addresses): Email
     {
         $new = clone $this;
         $new->reply_to = $this->normalizeAddresses($addresses);
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function addReplyTo($address): Email
     {
         $new = clone $this;
         $new->reply_to = array_merge($this->reply_to, $this->normalizeAddresses($address));
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param Mailbox|string|T|WP_User|WP_User[]|Mailbox[]|T[] $addresses
+     *
+     * @param Mailbox|Mailbox[]|string|T|T[]|WP_User|WP_User[] $addresses
      */
     final public function withFrom($addresses): Email
     {
         $new = clone $this;
         $new->from = $this->normalizeAddresses($addresses);
+
         return $new;
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
+     *
      * @param Mailbox|string|T|WP_User $address
      */
     final public function addFrom($address): Email
     {
         $new = clone $this;
         $new->from = array_merge($this->from, $this->normalizeAddresses($address));
+
         return $new;
     }
 
@@ -228,16 +258,18 @@ class Email
     {
         $new = clone $this;
         $new->_addAttachment(Attachment::fromPath($path, $name, $content_type));
+
         return $new;
     }
 
     /**
-     * @param string|resource $data
+     * @param resource|string $data
      */
     final public function addBinaryAttachment($data, string $name, string $content_type = null): Email
     {
         $new = clone $this;
         $new->_addAttachment(Attachment::fromData($data, $name, $content_type));
+
         return $new;
     }
 
@@ -245,6 +277,7 @@ class Email
     {
         $new = clone $this;
         $new->_addAttachment(Attachment::fromPath($path, $name, $content_type, true));
+
         return $new;
     }
 
@@ -255,6 +288,7 @@ class Email
     {
         $new = clone $this;
         $new->_addAttachment(Attachment::fromData($data, $name, $content_type, true));
+
         return $new;
     }
 
@@ -262,6 +296,7 @@ class Email
     {
         $new = clone $this;
         $new->_setPriority($priority);
+
         return $new;
     }
 
@@ -269,6 +304,7 @@ class Email
     {
         $new = clone $this;
         $new->html_template = $template;
+
         return $new;
     }
 
@@ -276,6 +312,7 @@ class Email
     {
         $new = clone $this;
         $new->html = $html_body;
+
         return $new;
     }
 
@@ -283,6 +320,7 @@ class Email
     {
         $new = clone $this;
         $new->text = $text_body;
+
         return $new;
     }
 
@@ -290,35 +328,37 @@ class Email
     {
         $new = clone $this;
         $new->text_template = $template;
+
         return $new;
     }
 
     /**
-     * @param string|array<string,mixed> $key
-     * @param mixed $value
+     * @param array<string,mixed>|string $key
+     * @param mixed                      $value
      */
     final public function withContext($key, $value = null): Email
     {
         $new = clone $this;
         $new->context = [];
         $new->_addContext($key, $value);
+
         return $new;
     }
 
     /**
-     * @param string|array<string,mixed> $key
-     * @param mixed $value
+     * @param array<string,mixed>|string $key
+     * @param mixed                      $value
      */
     final public function addContext($key, $value = null): Email
     {
         $new = clone $this;
         $new->_addContext($key, $value);
+
         return $new;
     }
 
     /**
      * @param array<string,string> $headers
-     * @return Email
      */
     final public function addCustomHeaders(array $headers): Email
     {
@@ -326,12 +366,12 @@ class Email
         foreach ($headers as $name => $value) {
             $new->_addCustomHeader($name, $value);
         }
+
         return $new;
     }
 
     /**
      * @param array<string,string> $headers
-     * @return Email
      */
     final public function withCustomHeaders(array $headers): Email
     {
@@ -340,6 +380,7 @@ class Email
         foreach ($headers as $name => $value) {
             $new->_addCustomHeader($name, $value);
         }
+
         return $new;
     }
 
@@ -416,7 +457,7 @@ class Email
 
     final public function htmlBody(): ?string
     {
-        if (!isset($this->html)) {
+        if (! isset($this->html)) {
             return null;
         }
 
@@ -442,11 +483,12 @@ class Email
                 $context['images'][$attachment->name()] = $cid;
             }
         }
+
         return $context;
     }
 
     /**
-     * @return  array<string,string>
+     * @return array<string,string>
      */
     final public function customHeaders(): array
     {
@@ -483,15 +525,18 @@ class Email
     }
 
     /**
-     * @param string|array<string,mixed> $key
-     * @param mixed $value
+     * @param array<string,mixed>|string $key
+     * @param mixed                      $value
+     *
      * @api
      *
      * @psalm-suppress MixedAssignment
      */
     final protected function _addContext($key, $value = null): void
     {
-        $context = is_array($key) ? $key : [$key => $value];
+        $context = is_array($key) ? $key : [
+            $key => $value,
+        ];
 
         foreach ($context as $key => $value) {
             if (isset($this->reserved_context[$key])) {
@@ -512,12 +557,16 @@ class Email
      */
     final protected function _addCustomHeader(string $name, string $value): void
     {
-        $this->custom_headers = array_merge($this->custom_headers, [$name => $value]);
+        $this->custom_headers = array_merge($this->custom_headers, [
+            $name => $value,
+        ]);
     }
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
-     * @param string|Mailbox|WP_User|T|WP_User[]|Mailbox[]|T[] $addresses
+     *
+     * @param Mailbox|Mailbox[]|string|T|T[]|WP_User|WP_User[] $addresses
+     *
      * @return list<Mailbox>
      *
      * @psalm-suppress PossiblyUndefinedArrayOffset
@@ -544,5 +593,4 @@ class Email
 
         return $a;
     }
-
 }

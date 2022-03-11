@@ -19,13 +19,23 @@ use function sprintf;
 
 use const PHP_INT_MAX;
 
+/**
+ * @internal
+ */
 final class FakeMailerTest extends WPTestCase
 {
-
     use AssertFails;
 
     private array $mail_data = [];
+
     private FakeTransport $fake_transport;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->mail_data = [];
+        $this->fake_transport = new FakeTransport();
+    }
 
     /**
      * @test
@@ -34,16 +44,13 @@ final class FakeMailerTest extends WPTestCase
     {
         add_filter('pre_wp_mail', function ($null, array $wp_mail_input) {
             $this->mail_data[] = $wp_mail_input;
+
             return true;
         }, 10, 2);
 
         $mailer = new Mailer(new FakeTransport());
 
-        $mailer->send(
-            (new TestMail())->withTo(
-                'calvin@web.de'
-            )
-        );
+        $mailer->send((new TestMail())->withTo('calvin@web.de'));
 
         $this->assertCount(0, $this->mail_data);
     }
@@ -59,16 +66,12 @@ final class FakeMailerTest extends WPTestCase
 
         $count = 0;
         add_action('phpmailer_init', function () use (&$count) {
-            $count++;
+            ++$count;
         }, PHP_INT_MAX);
 
         wp_mail('calvin@web.de', 'subject', 'message');
 
-        $mailer->send(
-            (new TestMail())->withTo(
-                'calvin@web.de'
-            )
-        );
+        $mailer->send((new TestMail())->withTo('calvin@web.de'));
 
         $this->assertSame(0, $count, 'wp_mail function not intercepted.');
     }
@@ -76,53 +79,46 @@ final class FakeMailerTest extends WPTestCase
     /**
      * @test
      */
-    public function test_assertSent_can_pass(): void
+    public function test_assert_sent_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
         $mailer->send($this->aValidTestEmail());
 
-        $this->fake_transport->assertSent(
-            TestMail::class
-        );
+        $this->fake_transport->assertSent(TestMail::class);
     }
 
     /**
      * @test
      */
-    public function test_assertSent_can_fail(): void
+    public function test_assert_sent_can_fail(): void
     {
         $this->assertFailsWithMessageStarting(
-            sprintf(
-                'No email of type [%s] was sent.',
-                TestMail::class
-            ),
-            fn() => $this->fake_transport->assertSent(
-                TestMail::class
-            )
+            sprintf('No email of type [%s] was sent.', TestMail::class),
+            fn () => $this->fake_transport->assertSent(TestMail::class)
         );
     }
 
     /**
      * @test
      */
-    public function test_assertSent_can_pass_with_valid_condition(): void
+    public function test_assert_sent_can_pass_with_valid_condition(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
         $email =
             (new TestMail())->withTo('c@web.de')
-                ->withSender(
-                    'm@web.de'
-                );
+                ->withSender('m@web.de');
 
         $mailer->send($email);
 
         $this->fake_transport->assertSent(
             TestMail::class,
             function (TestMail $email, Envelope $envelope) {
-                return $email->to()->has('c@web.de')
-                    && $envelope->sender()->address() === 'm@web.de';
+                return $email->to()
+                    ->has('c@web.de')
+                    && 'm@web.de' === $envelope->sender()
+                        ->address();
             }
         );
     }
@@ -130,13 +126,11 @@ final class FakeMailerTest extends WPTestCase
     /**
      * @test
      */
-    public function test_assertSent_can_fail_with_invalid_condition(): void
+    public function test_assert_sent_can_fail_with_invalid_condition(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
-        $email = (new TestMail())->withTo(
-            'm@web.de'
-        );
+        $email = (new TestMail())->withTo('m@web.de');
 
         $mailer->send($email);
 
@@ -145,10 +139,11 @@ final class FakeMailerTest extends WPTestCase
                 'The email [%s] was sent [1] time[s] but no email matched the provided condition.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertSent(
+            fn () => $this->fake_transport->assertSent(
                 TestMail::class,
                 function (TestMail $email) {
-                    return $email->to()->has('c@web.de');
+                    return $email->to()
+                        ->has('c@web.de');
                 }
             )
         );
@@ -157,21 +152,19 @@ final class FakeMailerTest extends WPTestCase
     /**
      * @test
      */
-    public function test_assertNotSent_can_pass(): void
+    public function test_assert_not_sent_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
         $mailer->send($this->aValidTestEmail());
 
-        $this->fake_transport->assertNotSent(
-            TestMail2::class
-        );
+        $this->fake_transport->assertNotSent(TestMail2::class);
     }
 
     /**
      * @test
      */
-    public function test_assertNotSent_can_fail(): void
+    public function test_assert_not_sent_can_fail(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -179,36 +172,28 @@ final class FakeMailerTest extends WPTestCase
         $mailer->send($this->aValidTestEmail());
 
         $this->assertFailsWithMessageStarting(
-            sprintf(
-                'Email of type [%s] was sent [2] times.',
-                TestMail::class
-            ),
-            fn() => $this->fake_transport->assertNotSent(
-                TestMail::class
-            )
+            sprintf('Email of type [%s] was sent [2] times.', TestMail::class),
+            fn () => $this->fake_transport->assertNotSent(TestMail::class)
         );
     }
 
     /**
      * @test
      */
-    public function test_assertSentTimes_can_pass(): void
+    public function test_assert_sent_times_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
         $mailer->send($this->aValidTestEmail());
         $mailer->send($this->aValidTestEmail());
 
-        $this->fake_transport->assertSentTimes(
-            TestMail::class,
-            2
-        );
+        $this->fake_transport->assertSentTimes(TestMail::class, 2);
     }
 
     /**
      * @test
      */
-    public function test_assertSentTimes_can_fail(): void
+    public function test_assert_sent_times_can_fail(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
@@ -217,14 +202,8 @@ final class FakeMailerTest extends WPTestCase
         $mailer->send($this->aValidTestEmail());
 
         $this->assertFailsWithMessageStarting(
-            sprintf(
-                'Email of type [%s] was sent [3] times. Expected [2] times.',
-                TestMail::class
-            ),
-            fn() => $this->fake_transport->assertSentTimes(
-                TestMail::class,
-                2
-            )
+            sprintf('Email of type [%s] was sent [3] times. Expected [2] times.', TestMail::class),
+            fn () => $this->fake_transport->assertSentTimes(TestMail::class, 2)
         );
     }
 
@@ -235,77 +214,57 @@ final class FakeMailerTest extends WPTestCase
     {
         $mailer = new Mailer($this->fake_transport);
 
-        $this->fake_transport->assertNotSent(
-            TestMail::class
-        );
+        $this->fake_transport->assertNotSent(TestMail::class);
 
         $mailer->send($this->aValidTestEmail());
 
-        $this->fake_transport->assertSent(
-            TestMail::class
-        );
+        $this->fake_transport->assertSent(TestMail::class);
 
         $this->fake_transport->reset();
 
-        $this->fake_transport->assertNotSent(
-            TestMail::class
-        );
+        $this->fake_transport->assertNotSent(TestMail::class);
     }
 
     /**
      * @test
      */
-    public function test_assertSentTo_can_pass(): void
+    public function test_assert_sent_to_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>');
         $mailer->send($email);
 
-        $email = (new TestMail())->withTo(
-            'Marlon Alkan <m@web.de>'
-        );
+        $email = (new TestMail())->withTo('Marlon Alkan <m@web.de>');
         $mailer->send($email);
 
-        $this->fake_transport->assertSentTo(
-            'm@web.de',
-            TestMail::class
-        );
+        $this->fake_transport->assertSentTo('m@web.de', TestMail::class);
     }
 
     /**
      * @test
      */
-    public function test_assertTo_can_fail_for_duplicate_sending(): void
+    public function test_assert_to_can_fail_for_duplicate_sending(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>');
         $mailer->send($email);
         $mailer->send($email);
 
         $this->assertFailsWithMessageStarting(
             '[2] emails were sent that match the provided condition',
-            fn() => $this->fake_transport->assertSentTo(
-                'c@web.de',
-                TestMail::class
-            )
+            fn () => $this->fake_transport->assertSentTo('c@web.de', TestMail::class)
         );
     }
 
     /**
      * @test
      */
-    public function test_assertTo_can_fail_for_wrong_recipient(): void
+    public function test_assert_to_can_fail_for_wrong_recipient(): void
     {
         $mailer = new Mailer($this->fake_transport);
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>');
         $mailer->send($email);
 
         $this->assertFailsWithMessageStarting(
@@ -313,52 +272,36 @@ final class FakeMailerTest extends WPTestCase
                 'The email [%s] was sent [1] time[s] but no email matched the provided condition.',
                 TestMail::class
             ),
-            fn() => $this->fake_transport->assertSentTo(
-                'm@web.de',
-                TestMail::class
-            )
+            fn () => $this->fake_transport->assertSentTo('m@web.de', TestMail::class)
         );
     }
 
     /**
      * @test
      */
-    public function test_assertNotSentTo_can_pass(): void
+    public function test_assert_not_sent_to_can_pass(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>');
         $mailer->send($email);
 
-        $this->fake_transport->assertNotSentTo(
-            'm@web.de',
-            TestMail::class
-        );
+        $this->fake_transport->assertNotSentTo('m@web.de', TestMail::class);
     }
 
     /**
      * @test
      */
-    public function test_assertNotSentTo_can_fail(): void
+    public function test_assert_not_sent_to_can_fail(): void
     {
         $mailer = new Mailer($this->fake_transport);
 
-        $email = (new TestMail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        );
+        $email = (new TestMail())->withTo('Calvin Alkan <c@web.de>');
         $mailer->send($email);
 
         $this->assertFailsWithMessageStarting(
-            sprintf(
-                '[1] email of type [%s] was sent to recipient [c@web.de].',
-                TestMail::class
-            ),
-            fn() => $this->fake_transport->assertNotSentTo(
-                'c@web.de',
-                TestMail::class
-            )
+            sprintf('[1] email of type [%s] was sent to recipient [c@web.de].', TestMail::class),
+            fn () => $this->fake_transport->assertNotSentTo('c@web.de', TestMail::class)
         );
     }
 
@@ -405,7 +348,7 @@ final class FakeMailerTest extends WPTestCase
     /**
      * @test
      */
-    public function testAssertSentWithClosureAndWordPressEmail(): void
+    public function test_assert_sent_with_closure_and_word_press_email(): void
     {
         $this->fake_transport->interceptWordPressEmails();
 
@@ -424,30 +367,23 @@ final class FakeMailerTest extends WPTestCase
         );
 
         $this->fake_transport->assertSent(WPMail::class, function (WPMail $email) {
-            return $email->to()->has('calvin@web.de')
-                && $email->cc()->has('Jane Doe <jane@web.de>')
-                && $email->bcc()->has('jon@web.de')
-                && $email->subject() === 'subject'
-                && iterator_to_array($email->replyTo())[0]->name() === 'Office'
-                && iterator_to_array($email->from())[0]->toString()
-                === 'My Company <mycompany@web.de>';
+            return $email->to()
+                ->has('calvin@web.de')
+                && $email->cc()
+                    ->has('Jane Doe <jane@web.de>')
+                && $email->bcc()
+                    ->has('jon@web.de')
+                && 'subject' === $email->subject()
+                && 'Office' === iterator_to_array($email->replyTo())[0]
+                    ->name()
+                && 'My Company <mycompany@web.de>'
+                === iterator_to_array($email->from())[0]
+                    ->toString();
         });
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->mail_data = [];
-        $this->fake_transport = new FakeTransport();
     }
 
     private function aValidTestEmail(): Email
     {
-        return (new TestMail())->withTo(
-            'Calvin Alkan <calvin@web.de>'
-        );
+        return (new TestMail())->withTo('Calvin Alkan <calvin@web.de>');
     }
-
 }
-
-

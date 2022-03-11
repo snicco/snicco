@@ -8,23 +8,30 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Middleware\DefaultHeaders\DefaultHeaders;
 
-class DefaultHeadersTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class DefaultHeadersTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
     public function all_headers_are_added_to_the_response(): void
     {
         $response = $this->runMiddleware(
-            new DefaultHeaders(['foo' => 'bar', 'baz' => 'biz']),
+            new DefaultHeaders([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ]),
             $this->frontendRequest()
         );
 
         $response->assertNextMiddlewareCalled();
 
-        $response->assertableResponse()->assertHeader('foo', 'bar');
-        $response->assertableResponse()->assertHeader('baz', 'biz');
+        $response->assertableResponse()
+            ->assertHeader('foo', 'bar');
+        $response->assertableResponse()
+            ->assertHeader('baz', 'biz');
     }
 
     /**
@@ -36,13 +43,12 @@ class DefaultHeadersTest extends MiddlewareTestCase
             return $response->withHeader('foo', 'bar');
         });
 
-        $response = $this->runMiddleware(
-            new DefaultHeaders(['foo' => 'baz']),
-            $this->frontendRequest()
-        );
+        $response = $this->runMiddleware(new DefaultHeaders([
+            'foo' => 'baz',
+        ]), $this->frontendRequest());
         $response->assertNextMiddlewareCalled();
 
-        $response->assertableResponse()->assertHeader('foo', 'bar');
+        $response->assertableResponse()
+            ->assertHeader('foo', 'bar');
     }
-
 }

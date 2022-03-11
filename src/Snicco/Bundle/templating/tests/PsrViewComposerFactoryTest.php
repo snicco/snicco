@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Templating\Tests;
 
 use InvalidArgumentException;
@@ -13,9 +12,11 @@ use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class PsrViewComposerFactoryTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -59,7 +60,6 @@ final class PsrViewComposerFactoryTest extends TestCase
         $this->expectExceptionMessage(TestComposerNotNewable::class);
         $factory->create(TestComposerNotNewable::class);
     }
-
 }
 
 class TestComposerNewable implements ViewComposer

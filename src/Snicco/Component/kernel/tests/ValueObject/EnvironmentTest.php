@@ -8,9 +8,11 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+/**
+ * @internal
+ */
 final class EnvironmentTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -27,9 +29,7 @@ final class EnvironmentTest extends TestCase
     public function test_exception_if_empty_string(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'App environment can not be constructed with an empty string.'
-        );
+        $this->expectExceptionMessage('App environment can not be constructed with an empty string.');
         /** @psalm-suppress InvalidArgument */
         Environment::fromString('');
     }
@@ -45,9 +45,7 @@ final class EnvironmentTest extends TestCase
         Environment::fromString('staging');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'App environment has to be one of [testing,prod,dev,staging]. Got: [local]'
-        );
+        $this->expectExceptionMessage('App environment has to be one of [testing,prod,dev,staging]. Got: [local]');
 
         /** @psalm-suppress InvalidArgument */
         Environment::fromString('local');
@@ -131,9 +129,7 @@ final class EnvironmentTest extends TestCase
         $this->assertFalse($app_env->isDebug());
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'App environment can not be in debug mode while in production.'
-        );
+        $this->expectExceptionMessage('App environment can not be in debug mode while in production.');
         Environment::fromString('prod', true);
     }
 
@@ -211,5 +207,4 @@ final class EnvironmentTest extends TestCase
         $env = Environment::prod();
         $this->assertTrue($env->isCli());
     }
-
 }

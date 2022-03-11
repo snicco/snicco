@@ -11,9 +11,11 @@ use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class EventDispatcherWithContainerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -27,9 +29,7 @@ final class EventDispatcherWithContainerTest extends TestCase
 
         $pimple[Dependency::class] = new Dependency('FOOBAR');
 
-        $event_dispatcher = new BaseEventDispatcher(
-            new PsrListenerFactory($container)
-        );
+        $event_dispatcher = new BaseEventDispatcher(new PsrListenerFactory($container));
 
         $event = new stdClass();
         $event->value = 'foo';
@@ -39,12 +39,10 @@ final class EventDispatcherWithContainerTest extends TestCase
         $event = $event_dispatcher->dispatch($event);
         $this->assertSame('FOOBAR', $event->value);
     }
-
 }
 
 class ListenerWithDependency
 {
-
     private Dependency $dep;
 
     public function __construct(Dependency $dep)
@@ -56,17 +54,14 @@ class ListenerWithDependency
     {
         return $event->value = $this->dep->value;
     }
-
 }
 
 class Dependency
 {
-
     public string $value;
 
     public function __construct(string $value)
     {
         $this->value = $value;
     }
-
 }

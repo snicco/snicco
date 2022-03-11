@@ -8,9 +8,5 @@ use Snicco\Bundle\Session\SessionBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [
-        SessionBundle::class,
-        BetterWPDBBundle::class,
-        BetterWPHooksBundle::class
-    ]
+    Environment::ALL => [SessionBundle::class, BetterWPDBBundle::class, BetterWPHooksBundle::class],
 ];

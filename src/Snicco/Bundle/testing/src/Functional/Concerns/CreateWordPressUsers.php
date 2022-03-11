@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Functional\Concerns;
 
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -14,7 +13,6 @@ use function get_user_by;
 
 trait CreateWordPressUsers
 {
-
     abstract protected function userFactory(): WP_UnitTest_Factory_For_User;
 
     final protected function createAdmin(array $args = []): WP_User
@@ -44,31 +42,30 @@ trait CreateWordPressUsers
 
     final protected function createUserWithRole(string $user_role, array $args = []): WP_User
     {
-        $user = $this->userFactory()->create_and_get(
-            array_merge([
+        $user = $this->userFactory()
+            ->create_and_get(array_merge([
                 'role' => $user_role,
-            ], $args)
-        );
+            ], $args));
         Assert::isInstanceOf($user, WP_User::class);
+
         return $user;
     }
 
     /**
-     * @param WP_User|int $user
+     * @param int|WP_User $user
      */
     final protected function assertUserExists($user): void
     {
         $id = $user instanceof WP_User ? $user->ID : $user;
-        PHPUnit::assertInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [$id] does not exist.");
+        PHPUnit::assertInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [{$id}] does not exist.");
     }
 
     /**
-     * @param WP_User|int $user
+     * @param int|WP_User $user
      */
     final protected function assertUserDoesntExists($user): void
     {
         $id = $user instanceof WP_User ? $user->ID : $user;
-        PHPUnit::assertNotInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [$id] does exist.");
+        PHPUnit::assertNotInstanceOf(WP_User::class, get_user_by('id', $id), "The user with id [{$id}] does exist.");
     }
-
 }

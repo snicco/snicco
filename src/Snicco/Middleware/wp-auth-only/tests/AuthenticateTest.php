@@ -9,9 +9,11 @@ use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\WPAuth\Authenticate;
 
-class AuthenticateTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class AuthenticateTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
@@ -34,22 +36,17 @@ class AuthenticateTest extends MiddlewareTestCase
         $middleware = new Authenticate(new WPAPI(false));
 
         try {
-            $this->runMiddleware(
-                $middleware,
-                $request
-            );
+            $this->runMiddleware($middleware, $request);
             $this->fail('An exception should have been thrown');
         } catch (HttpException $e) {
             $this->assertSame(401, $e->statusCode());
             $this->assertSame('Missing authentication for request path [/foo].', $e->getMessage());
         }
     }
-
 }
 
 class WPAPI extends BetterWPAPI
 {
-
     private bool $is_logged_in;
 
     public function __construct(bool $is_logged_in)
@@ -66,5 +63,4 @@ class WPAPI extends BetterWPAPI
     {
         return $this->is_logged_in ? 1 : 0;
     }
-
 }

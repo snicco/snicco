@@ -16,12 +16,10 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 use WP_Error;
 
 use function count;
-use function is_null;
 use function trim;
 
 final class WPMailTransport implements Transport
 {
-
     private WPMailAPI $wp;
 
     public function __construct(WPMailAPI $wp = null)
@@ -59,17 +57,11 @@ final class WPMailTransport implements Transport
             $content_type = "Content-Type: text/plain; charset={$email->textCharset()}";
         }
 
-        if (is_null($message)) {
+        if (null === $message) {
             $message = '';
         }
 
-        $headers = array_merge(
-            $ccs,
-            $bcc,
-            $reply_to,
-            $from,
-            [$content_type],
-        );
+        $headers = array_merge($ccs, $bcc, $reply_to, $from, [$content_type],);
 
         try {
             // Don't set attachments here since WordPress only adds attachments by file path. Really?
@@ -89,10 +81,10 @@ final class WPMailTransport implements Transport
 
     /**
      * We want to throw a {@link CantSendEmail} to confirm with the interface.
-     * Throwing explicit exceptions we also allow a far better usage for clients since they would
-     * have to create their own hook callbacks otherwise.
+     * Throwing explicit exceptions we also allow a far better usage for clients
+     * since they would have to create their own hook callbacks otherwise.
      */
-    protected function handleFailure(): Closure
+    private function handleFailure(): Closure
     {
         $closure = /** @return never */
             function (WP_Error $error) {
@@ -105,10 +97,10 @@ final class WPMailTransport implements Transport
     }
 
     /**
-     * WordPress fires this action just before sending the mail with the global php mailer.
-     * SMTP plugins should also include this filter in order to not break plugins that need it.
-     * Here we directly configure the underlying PHPMailer instance which has all the options we
-     * need.
+     * WordPress fires this action just before sending the mail with the global
+     * php mailer. SMTP plugins should also include this filter in order to not
+     * break plugins that need it. Here we directly configure the underlying
+     * PHPMailer instance which has all the options we need.
      */
     private function justInTimeConfiguration(Email $mail): Closure
     {
@@ -130,7 +122,7 @@ final class WPMailTransport implements Transport
             }
 
             foreach ($attachments as $attachment) {
-                if ($attachment->disposition() === 'inline') {
+                if ('inline' === $attachment->disposition()) {
                     $php_mailer->addStringEmbeddedImage(
                         $attachment->bodyAsString(),
                         $attachment->cid(),
@@ -138,6 +130,7 @@ final class WPMailTransport implements Transport
                         $attachment->encoding(),
                         $attachment->contentType(),
                     );
+
                     continue;
                 }
 
@@ -164,11 +157,12 @@ final class WPMailTransport implements Transport
      */
     private function getTo(Email $email, Envelope $envelope): array
     {
-        $merged = $email->cc()->merge($email->bcc());
+        $merged = $email->cc()
+            ->merge($email->bcc());
 
         $to = [];
         foreach ($envelope->recipients() as $recipient) {
-            if (!$merged->has($recipient)) {
+            if (! $merged->has($recipient)) {
                 $to[] = $recipient;
             }
         }
@@ -205,5 +199,4 @@ final class WPMailTransport implements Transport
         $mailer->clearCustomHeaders();
         $mailer->clearReplyTos();
     }
-
 }

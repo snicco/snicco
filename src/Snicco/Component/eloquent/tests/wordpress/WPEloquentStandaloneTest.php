@@ -22,9 +22,11 @@ use Snicco\Component\Eloquent\Illuminate\WPConnectionResolver;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
+/**
+ * @internal
+ */
 final class WPEloquentStandaloneTest extends WPTestCase
 {
-
     use WPDBTestHelpers;
 
     protected function setUp(): void
@@ -95,7 +97,8 @@ final class WPEloquentStandaloneTest extends WPTestCase
      */
     public function events_can_be_activated(): void
     {
-        ($eloquent = new WPEloquentStandalone())->bootstrap();
+        ($eloquent = new WPEloquentStandalone())
+            ->bootstrap();
 
         $this->assertNull(Eloquent::getEventDispatcher());
         $eloquent->withEvents($d = new \Illuminate\Events\Dispatcher());
@@ -174,10 +177,7 @@ final class WPEloquentStandaloneTest extends WPTestCase
     {
         (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
 
-        $this->assertInstanceOf(
-            DatabaseTransactionsManager::class,
-            Container::getInstance()['db.transactions']
-        );
+        $this->assertInstanceOf(DatabaseTransactionsManager::class, Container::getInstance()['db.transactions']);
     }
 
     /**
@@ -192,9 +192,11 @@ final class WPEloquentStandaloneTest extends WPTestCase
         // The laravel Schema Builder.
         $this->assertInstanceOf(\Illuminate\Database\Schema\Builder::class, $schema);
 
-        $schema->getConnection()->getName() === 'mysql2';
-        $schema->getConnection()->getConfig('driver') === 'mysql';
-        $schema->getConnection()->getConfig('database') === 'sniccowp_testing_secondary';
+        'mysql2' === $schema->getConnection()
+            ->getName();
+        'mysql' === $schema->getConnection()
+            ->getConfig('driver');
+        'sniccowp_testing_secondary' === $schema->getConnection()
+            ->getConfig('database');
     }
-
 }

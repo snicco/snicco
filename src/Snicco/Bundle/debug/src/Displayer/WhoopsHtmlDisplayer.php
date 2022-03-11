@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Debug\Displayer;
 
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
@@ -11,7 +10,6 @@ use Whoops\Run;
 
 final class WhoopsHtmlDisplayer implements ExceptionDisplayer
 {
-
     private Run $whoops;
 
     public function __construct(Run $whoops)

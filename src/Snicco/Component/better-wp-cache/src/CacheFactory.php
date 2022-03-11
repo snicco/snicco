@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPCache;
 
 use Cache\Bridge\SimpleCache\SimpleCacheBridge;
@@ -13,7 +12,6 @@ use Psr\SimpleCache\CacheInterface;
 
 final class CacheFactory
 {
-
     /**
      * @param non-empty-string $group
      */
@@ -34,5 +32,4 @@ final class CacheFactory
     {
         return TaggablePSR6PoolAdapter::makeTaggable($psr6);
     }
-
 }

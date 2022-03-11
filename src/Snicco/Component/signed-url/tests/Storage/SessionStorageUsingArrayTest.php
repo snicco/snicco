@@ -16,9 +16,11 @@ use Snicco\Component\TestableClock\Clock;
 
 use function array_key_first;
 
+/**
+ * @internal
+ */
 final class SessionStorageUsingArrayTest extends TestCase
 {
-
     use SignedUrlStorageTests;
 
     /**
@@ -59,7 +61,7 @@ final class SessionStorageUsingArrayTest extends TestCase
     protected function createStorage(Clock $clock): SignedUrlStorage
     {
         $arr = [];
+
         return new SessionStorage($arr, $clock);
     }
-
 }

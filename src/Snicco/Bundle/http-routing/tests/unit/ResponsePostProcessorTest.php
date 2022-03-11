@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use PHPUnit\Framework\TestCase;
@@ -18,6 +17,8 @@ use function dirname;
 
 /**
  * @psalm-suppress UnnecessaryVarAnnotation
+ *
+ * @internal
  */
 final class ResponsePostProcessorTest extends TestCase
 {
@@ -34,15 +35,13 @@ final class ResponsePostProcessorTest extends TestCase
 
         $kernel->boot();
 
-        /**
-         * @var EventDispatcher $dispatcher
-         */
-        $dispatcher = $kernel->container()->make(EventDispatcher::class);
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $kernel->container()
+            ->make(EventDispatcher::class);
 
-        /**
-         * @var ResponsePostProcessor $response_post_processor
-         */
-        $response_post_processor = $kernel->container()->make(ResponsePostProcessor::class);
+        /** @var ResponsePostProcessor $response_post_processor */
+        $response_post_processor = $kernel->container()
+            ->make(ResponsePostProcessor::class);
 
         $this->assertFalse($response_post_processor->did_shutdown);
 
@@ -53,5 +52,4 @@ final class ResponsePostProcessorTest extends TestCase
          */
         $this->assertTrue($response_post_processor->did_shutdown);
     }
-
 }

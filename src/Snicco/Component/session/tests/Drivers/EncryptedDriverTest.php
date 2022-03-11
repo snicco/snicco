@@ -18,9 +18,11 @@ use Snicco\Component\TestableClock\Clock;
 
 use function time;
 
+/**
+ * @internal
+ */
 final class EncryptedDriverTest extends TestCase
 {
-
     use SessionDriverTests;
     use UserSessionDriverTests;
 
@@ -31,15 +33,9 @@ final class EncryptedDriverTest extends TestCase
     {
         $array_driver = new InMemoryDriver();
 
-        $driver = new EncryptedDriver(
-            $array_driver,
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($array_driver, new TestSessionEncryptor());
 
-        $driver->write(
-            'session1',
-            SerializedSession::fromString('foo_data', 'validator', time())
-        );
+        $driver->write('session1', SerializedSession::fromString('foo_data', 'validator', time()));
 
         $all = $array_driver->all();
 
@@ -54,91 +50,72 @@ final class EncryptedDriverTest extends TestCase
     /**
      * @test
      */
-    public function test_destroyAll_throws_exception(): void
+    public function test_destroy_all_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAll');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->destroyAll();
     }
 
     /**
      * @test
      */
-    public function test_destroyAllForUserId_throws_exception(): void
+    public function test_destroy_all_for_user_id_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAllForUserId');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->destroyAllForUserId(1);
     }
 
     /**
      * @test
      */
-    public function test_getAllForUserId_throws_exception(): void
+    public function test_get_all_for_user_id_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('getAllForUserId');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->getAllForUserId(1);
     }
 
     /**
      * @test
      */
-    public function test_destroyAllForUserIdExcept_throws_exception(): void
+    public function test_destroy_all_for_user_id_except_throws_exception(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAllForUserIdExcept');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->destroyAllForUserIdExcept('s', 1);
     }
 
-
     protected function createDriver(Clock $clock): SessionDriver
     {
-        return new EncryptedDriver(
-            new InMemoryDriver($clock),
-            new TestSessionEncryptor()
-        );
+        return new EncryptedDriver(new InMemoryDriver($clock), new TestSessionEncryptor());
     }
 
     protected function createUserSessionDriver(array $user_sessions): UserSessionsDriver
     {
         $array_driver = new InMemoryDriver();
 
-        $driver = new EncryptedDriver(
-            $array_driver,
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($array_driver, new TestSessionEncryptor());
 
         foreach ($user_sessions as $selector => $user_session) {
             $array_driver->write($selector, $user_session);
         }
+
         return $driver;
     }
 
     private function notUserSessionDriver(): SessionDriver
     {
-        return new class implements SessionDriver {
-
+        return new class() implements SessionDriver {
             public function read(string $selector): SerializedSession
             {
                 throw new BadMethodCallException(__METHOD__);
@@ -165,6 +142,4 @@ final class EncryptedDriverTest extends TestCase
             }
         };
     }
-
 }
-

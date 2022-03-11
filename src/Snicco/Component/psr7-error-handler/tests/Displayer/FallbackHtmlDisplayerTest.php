@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Psr7ErrorHandler\Tests\Displayer;
 
 use Exception;
@@ -12,9 +11,11 @@ use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackHtmlDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 
+/**
+ * @internal
+ */
 final class FallbackHtmlDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -23,7 +24,7 @@ final class FallbackHtmlDisplayerTest extends TestCase
         $info = InformationProviderWithTransformation::fromDefaultData(new SplHashIdentifier());
 
         $request = new ServerRequest('GET', '/');
-        
+
         $this->assertTrue((new FallbackHtmlDisplayer())->canDisplay($info->createFor(new Exception(), $request)));
     }
 
@@ -42,5 +43,4 @@ final class FallbackHtmlDisplayerTest extends TestCase
     {
         $this->assertSame('text/html', (new FallbackHtmlDisplayer())->supportedContentType());
     }
-
 }

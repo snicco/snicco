@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Templating\Tests;
 
 use Nyholm\Psr7\ServerRequest;
@@ -17,9 +16,11 @@ use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
+/**
+ * @internal
+ */
 final class TemplatingExceptionDisplayerTest extends TestCase
 {
-
     private TemplatingExceptionDisplayer $displayer;
 
     protected function setUp(): void
@@ -38,7 +39,7 @@ final class TemplatingExceptionDisplayerTest extends TestCase
     /**
      * @test
      */
-    public function test_supportedContentType(): void
+    public function test_supported_content_type(): void
     {
         $this->assertSame('text/html', $this->displayer->supportedContentType());
     }
@@ -46,41 +47,25 @@ final class TemplatingExceptionDisplayerTest extends TestCase
     /**
      * @test
      */
-    public function test_isVerbose(): void
+    public function test_is_verbose(): void
     {
-        $this->assertSame(false, $this->displayer->isVerbose());
+        $this->assertFalse($this->displayer->isVerbose());
     }
 
     /**
      * @test
      */
-    public function test_canDisplay(): void
+    public function test_can_display(): void
     {
-        $this->assertTrue(
-            $this->displayer->canDisplay(
-                $this->getInformation(500, 'foo_id')
-            )
-        );
+        $this->assertTrue($this->displayer->canDisplay($this->getInformation(500, 'foo_id')));
 
-        $this->assertFalse(
-            $this->displayer->canDisplay(
-                $this->getInformation(404, 'bar_id')
-            )
-        );
+        $this->assertFalse($this->displayer->canDisplay($this->getInformation(404, 'bar_id')));
 
         // errors.403
-        $this->assertTrue(
-            $this->displayer->canDisplay(
-                $this->getInformation(403, 'baz_id')
-            )
-        );
+        $this->assertTrue($this->displayer->canDisplay($this->getInformation(403, 'baz_id')));
 
         // exceptions.406
-        $this->assertTrue(
-            $this->displayer->canDisplay(
-                $this->getInformation(406, 'biz_id')
-            )
-        );
+        $this->assertTrue($this->displayer->canDisplay($this->getInformation(406, 'biz_id')));
     }
 
     /**
@@ -130,7 +115,6 @@ final class TemplatingExceptionDisplayerTest extends TestCase
         $this->assertStringContainsString('403-frontend', $content);
     }
 
-
     private function getInformation(
         int $status_code,
         string $id,
@@ -146,5 +130,4 @@ final class TemplatingExceptionDisplayerTest extends TestCase
             $request ?: new ServerRequest('GET', '/')
         );
     }
-
 }

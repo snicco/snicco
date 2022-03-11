@@ -10,10 +10,14 @@ use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\View\View;
 
+use function in_array;
+use function is_array;
+use function is_string;
+
 final class ViewComposerCollection
 {
-
     private ViewComposerFactory $composer_factory;
+
     private GlobalViewContext $global_view_context;
 
     /**
@@ -30,7 +34,7 @@ final class ViewComposerCollection
     }
 
     /**
-     * @param string|list<string> $views
+     * @param list<string>|string                           $views
      * @param class-string<ViewComposer>|Closure(View):View $composer
      */
     public function addComposer($views, $composer): void
@@ -42,23 +46,20 @@ final class ViewComposerCollection
                 'views' => $views,
                 'handler' => $composer,
             ];
+
             return;
         }
 
         /** @psalm-suppress DocblockTypeContradiction */
-        if (!is_string($composer)) {
-            throw new InvalidArgumentException(
-                'A view composer has to be a closure or a class name.'
-            );
+        if (! is_string($composer)) {
+            throw new InvalidArgumentException('A view composer has to be a closure or a class name.');
         }
 
-        if (!class_exists($composer)) {
-            throw new InvalidArgumentException(
-                "[$composer] is not a valid class."
-            );
+        if (! class_exists($composer)) {
+            throw new InvalidArgumentException("[{$composer}] is not a valid class.");
         }
 
-        if (!in_array(ViewComposer::class, (array)class_implements($composer), true)) {
+        if (! in_array(ViewComposer::class, (array) class_implements($composer), true)) {
             throw new InvalidArgumentException(
                 sprintf('Class [%s] does not implement [%s]', $composer, ViewComposer::class)
             );
@@ -71,11 +72,8 @@ final class ViewComposerCollection
     }
 
     /**
-     *
-     * Composes the context the passed view in the following order.
-     * => global context
-     * => view composer context
-     * => local context
+     * Composes the context the passed view in the following order. => global
+     * context => view composer context => local context.
      *
      * @template T of View
      *
@@ -119,7 +117,7 @@ final class ViewComposerCollection
                 }
             }
         }
+
         return $matching;
     }
-
 }

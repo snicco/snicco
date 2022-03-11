@@ -14,15 +14,18 @@ use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 
 use function array_key_first;
+use function count;
 use function in_array;
+use function is_string;
 
 use const PHP_INT_MIN;
 
 final class EventMapper
 {
-
     private EventDispatcher $event_dispatcher;
+
     private WPHookAPI $wp;
+
     private MappedHookFactory $event_factory;
 
     /**
@@ -46,7 +49,9 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class with the provided priority.
+     * Map a WordPress hook to a dedicated event class with the provided
+     * priority.
+     *
      * @param class-string<MappedHook> $map_to_event_class
      */
     public function map(string $wordpress_hook_name, string $map_to_event_class, int $priority = 10): void
@@ -56,8 +61,8 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE
-     * any other callbacks are run for the hook.
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be
+     * dispatched BEFORE any other callbacks are run for the hook.
      *
      * @param class-string<MappedHook> $map_to_event_class
      */
@@ -68,11 +73,10 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all
-     * other callbacks are run for the hook.
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be
+     * dispatched AFTER all other callbacks are run for the hook.
      *
      * @param class-string<MappedHook> $map_to
-     *
      */
     public function mapLast(string $wordpress_hook_name, string $map_to): void
     {
@@ -83,40 +87,42 @@ final class EventMapper
     /**
      * @param class-string<MappedHook> $map_to
      *
-     * @throws LogicException If the hook is already mapped to the same event class
+     * @throws LogicException           If the hook is already mapped to the same event class
      * @throws InvalidArgumentException If $map_to is not either a MappedAction or MappedFilter
      */
     private function validate(string $wordpress_hook_name, string $map_to): void
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
-                "Tried to map the event class [$map_to] twice to the [$wordpress_hook_name] hook."
+                "Tried to map the event class [{$map_to}] twice to the [{$wordpress_hook_name}] hook."
             );
         }
 
         if (isset($this->mapped_filters[$wordpress_hook_name][$map_to])) {
             throw new LogicException(
-                "Tried to map the event class [$map_to] twice to the [$wordpress_hook_name] filter."
+                "Tried to map the event class [{$map_to}] twice to the [{$wordpress_hook_name}] filter."
             );
         }
 
-        if (!class_exists($map_to)) {
-            throw new InvalidArgumentException("The event class [$map_to] does not exist.");
+        if (! class_exists($map_to)) {
+            throw new InvalidArgumentException("The event class [{$map_to}] does not exist.");
         }
 
-        $interfaces = (array)class_implements($map_to);
+        $interfaces = (array) class_implements($map_to);
 
         if (in_array(MappedFilter::class, $interfaces, true)) {
             $this->mapped_filters[$wordpress_hook_name][$map_to] = true;
+
             return;
         }
         if (in_array(MappedHook::class, $interfaces, true)) {
             $this->mapped_actions[$wordpress_hook_name][$map_to] = true;
+
             return;
         }
 
         throw new InvalidArgumentException(
-            "The event [$map_to] has to implement either the [MappedHook] or the [MappedFilter] interface."
+            "The event [{$map_to}] has to implement either the [MappedHook] or the [MappedFilter] interface."
         );
     }
 
@@ -126,20 +132,10 @@ final class EventMapper
     private function mapValidated(string $wordpress_hook_name, string $map_to, int $priority): void
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
-            $this->wp->addAction(
-                $wordpress_hook_name,
-                $this->dispatchMappedAction($map_to),
-                $priority,
-                9999
-            );
+            $this->wp->addAction($wordpress_hook_name, $this->dispatchMappedAction($map_to), $priority, 9999);
         } else {
             /** @var class-string<MappedFilter> $map_to */
-            $this->wp->addFilter(
-                $wordpress_hook_name,
-                $this->dispatchMappedFilter($map_to),
-                $priority,
-                9999
-            );
+            $this->wp->addFilter($wordpress_hook_name, $this->dispatchMappedFilter($map_to), $priority, 9999);
         }
     }
 
@@ -153,16 +149,13 @@ final class EventMapper
             // Remove the empty "" that WordPress will pass for actions without any passed arguments.
             if (is_string($args_from_wordpress_hooks[0] ?? null)
                 && empty($args_from_wordpress_hooks[0])
-                && count($args_from_wordpress_hooks) === 1) {
+                && 1 === count($args_from_wordpress_hooks)) {
                 array_shift($args_from_wordpress_hooks);
             }
 
-            $event = $this->event_factory->make(
-                $event_class,
-                $args_from_wordpress_hooks
-            );
+            $event = $this->event_factory->make($event_class, $args_from_wordpress_hooks);
 
-            if (!$event->shouldDispatch()) {
+            if (! $event->shouldDispatch()) {
                 // We don't need to return any values here.
                 return;
             }
@@ -180,20 +173,17 @@ final class EventMapper
     private function dispatchMappedFilter(string $event_class): Closure
     {
         return function (...$args_from_wordpress_hooks) use ($event_class) {
-            $event = $this->event_factory->make(
-                $event_class,
-                $args_from_wordpress_hooks
-            );
+            $event = $this->event_factory->make($event_class, $args_from_wordpress_hooks);
 
-            if (!isset($args_from_wordpress_hooks[0])) {
+            if (! isset($args_from_wordpress_hooks[0])) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
-                    "Event mapper received invalid arguments from WP for mapped hook [$event_class]."
+                    "Event mapper received invalid arguments from WP for mapped hook [{$event_class}]."
                 );
                 // @codeCoverageIgnoreEnd
             }
 
-            if (!$event->shouldDispatch()) {
+            if (! $event->shouldDispatch()) {
                 // It's crucial to return the first argument here.
                 return $args_from_wordpress_hooks[0];
             }
@@ -212,7 +202,7 @@ final class EventMapper
         $filter = $this->wp->currentFilter();
         if ($filter && $filter === $wordpress_hook_name) {
             throw new LogicException(
-                "You can can't map the event [$map_to] to the hook [$wordpress_hook_name] after it was fired."
+                "You can can't map the event [{$map_to}] to the hook [{$wordpress_hook_name}] after it was fired."
             );
         }
 
@@ -221,8 +211,9 @@ final class EventMapper
         // Unless there is another filter registered with the priority PHP_INT_MIN
         // all we have to do is add our mapped event at this priority.
         // Even if other callback were to be added later with the same priority they would still be run after ours.
-        if (!$wp_hook || empty($wp_hook->callbacks)) {
+        if (! $wp_hook || empty($wp_hook->callbacks)) {
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
+
             return;
         }
 
@@ -233,6 +224,7 @@ final class EventMapper
 
         if ($lowest_priority > PHP_INT_MIN) {
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
+
             return;
         }
 
@@ -265,8 +257,8 @@ final class EventMapper
             }
 
             $this->mapValidated($current, $map_to, PHP_INT_MAX);
+
             return $args[0] ?? [];
         }, PHP_INT_MAX - 1, 999);
     }
-
 }

@@ -17,15 +17,16 @@ use Symfony\Component\EventDispatcher\Event;
 
 use function add_filter;
 
+/**
+ * @internal
+ */
 final class WPEventDispatcherTest extends WPTestCase
 {
-
     /**
      * @test
      */
     public function if_event_objects_implement_expose_to_wp_they_are_passed_to_the_wp_hook_system_after_the_internal_dispatcher(
-    ): void
-    {
+        ): void {
         add_filter(
             FilterEvent::class,
             function (FilterEvent $event) {
@@ -101,9 +102,11 @@ final class WPEventDispatcherTest extends WPTestCase
      */
     public function events_that_dont_implement_expose_to_wp_are_not_shared(): void
     {
-        add_filter(stdClass::class, function (stdClass $event) {
-            $event->value = $event->value . ':filtered_by_wordpress';
-        }
+        add_filter(
+            stdClass::class,
+            function (stdClass $event) {
+                $event->value = $event->value . ':filtered_by_wordpress';
+            }
         );
 
         $dispatcher = $this->getDispatcher();
@@ -225,20 +228,16 @@ final class WPEventDispatcherTest extends WPTestCase
 
     private function getDispatcher(): WPEventDispatcher
     {
-        return new WPEventDispatcher(
-            new BaseEventDispatcher()
-        );
+        return new WPEventDispatcher(new BaseEventDispatcher());
     }
-
 }
 
 class WPDispatcherSubscriber implements EventSubscriber
 {
-
     public static function subscribedEvents(): array
     {
         return [
-            stdClass::class => 'foo'
+            stdClass::class => 'foo',
         ];
     }
 
@@ -246,5 +245,4 @@ class WPDispatcherSubscriber implements EventSubscriber
     {
         $stdClass->value = 'bar';
     }
-
 }

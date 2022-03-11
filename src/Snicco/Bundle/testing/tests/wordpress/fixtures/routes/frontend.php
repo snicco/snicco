@@ -14,10 +14,11 @@ return function (WebRoutingConfigurator $router) {
     $router->get('check-api-frontend', '/check-api', [WebTestCaseController::class, 'checkIfApi']);
     $router->get('full', '/full-url', [WebTestCaseController::class, 'fullUrl']);
     $router->get('custom-server', '/custom-server-vars', [WebTestCaseController::class, 'serverVars']);
-    $router->post('session-counter', '/increment-counter', [WebTestCaseController::class, 'incrementCounter']
-    )->middleware(
-        StatefulRequest::class
-    );
+    $router->post(
+        'session-counter',
+        '/increment-counter',
+        [WebTestCaseController::class, 'incrementCounter']
+    )->middleware(StatefulRequest::class);
     $router->post('body-as-json', '/body-as-json', [WebTestCaseController::class, 'bodyAsJson']);
     $router->post('files-as-json', '/files-as-json', [WebTestCaseController::class, 'filesAsJson']);
     $router->post('send-mail', '/send-mail', [WebTestCaseController::class, 'sendMail']);

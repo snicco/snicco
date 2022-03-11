@@ -25,9 +25,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'codeception/codeception' => '4.1.29',
             'symplify/monorepo-builder' => '9.4.70',
             'vlucas/phpdotenv' => '5.4.1',
-            'lucatume/wp-browser' => '~3.1.3',
+            'lucatume/wp-browser' => '~3.1.4',
             'vimeo/psalm' => '^4.10',
-            'php-stubs/wordpress-stubs' => '^5.8.0'
+            'php-stubs/wordpress-stubs' => '^5.8.0',
         ],
         ComposerJsonSection::AUTHORS => [
             [

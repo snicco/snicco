@@ -15,9 +15,10 @@ use Snicco\Component\SignedUrl\Storage\SignedUrlStorage;
 
 final class CollectGarbage implements MiddlewareInterface
 {
-
     private int $percentage;
+
     private LoggerInterface $logger;
+
     private SignedUrlStorage $storage;
 
     public function __construct(int $percentage, SignedUrlStorage $storage, LoggerInterface $logger)
@@ -32,10 +33,11 @@ final class CollectGarbage implements MiddlewareInterface
         try {
             GarbageCollector::clean($this->storage, $this->percentage);
         } catch (UnavailableStorage $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
+            $this->logger->error($e->getMessage(), [
+                'exception' => $e,
+            ]);
         }
 
         return $handler->handle($request);
     }
-
 }

@@ -9,7 +9,6 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 
 final class PlainTextExceptionDisplayer implements ExceptionDisplayer
 {
-
     private bool $should_handle;
 
     public function __construct(bool $should_handle = true)
@@ -41,5 +40,4 @@ final class PlainTextExceptionDisplayer implements ExceptionDisplayer
     {
         return $this->should_handle;
     }
-
 }

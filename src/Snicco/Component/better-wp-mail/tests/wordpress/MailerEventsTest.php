@@ -16,9 +16,11 @@ use Snicco\Component\BetterWPMail\Tests\fixtures\Email\WelcomeEmail;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\WPMailAPI;
 
+/**
+ * @internal
+ */
 final class MailerEventsTest extends WPTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,22 +37,13 @@ final class MailerEventsTest extends WPTestCase
     {
         $count = 0;
 
-        add_filter(
-            WelcomeEmail::class,
-            function (SendingEmail $email) use (&$count) {
-                $count++;
-            }
-        );
+        add_filter(WelcomeEmail::class, function (SendingEmail $email) use (&$count) {
+            ++$count;
+        });
 
-        $mailer = new Mailer(
-            new WPMailTransport(),
-            new FilesystemRenderer(),
-            $this->getEventDispatcher()
-        );
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), $this->getEventDispatcher());
 
-        $email = (new WelcomeEmail())->withTo(
-            'c@web.de'
-        );
+        $email = (new WelcomeEmail())->withTo('c@web.de');
 
         $mailer->send($email);
 
@@ -74,15 +67,10 @@ final class MailerEventsTest extends WPTestCase
             }
         );
 
-        $mailer = new Mailer(
-            new WPMailTransport(),
-            new FilesystemRenderer(),
-            $this->getEventDispatcher()
-        );
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), $this->getEventDispatcher());
 
-        $email = (new WelcomeEmail())->withTo(
-            'c@web.de'
-        )->withHtmlBody('foo');
+        $email = (new WelcomeEmail())->withTo('c@web.de')
+            ->withHtmlBody('foo');
         $mailer->send($email);
 
         $data = $this->getSentMails()[0];
@@ -100,18 +88,13 @@ final class MailerEventsTest extends WPTestCase
         add_action(EmailWasSent::class, function (EmailWasSent $sent_email) use (&$count) {
             $this->assertSame('foo', $sent_email->email()->htmlBody());
             $this->assertTrue($sent_email->envelope()->recipients()->has('c@web.de'));
-            $count++;
+            ++$count;
         });
 
-        $mailer = new Mailer(
-            new WPMailTransport(),
-            new FilesystemRenderer(),
-            $this->getEventDispatcher()
-        );
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), $this->getEventDispatcher());
 
-        $email = (new WelcomeEmail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        )->withHtmlBody('foo');
+        $email = (new WelcomeEmail())->withTo('Calvin Alkan <c@web.de>')
+            ->withHtmlBody('foo');
         $mailer->send($email);
 
         $this->assertSame(1, $count, 'Message event not fired.');
@@ -130,8 +113,7 @@ final class MailerEventsTest extends WPTestCase
     private function getSentMails(): array
     {
         global $phpmailer;
+
         return $phpmailer->mock_sent;
     }
-
 }
-

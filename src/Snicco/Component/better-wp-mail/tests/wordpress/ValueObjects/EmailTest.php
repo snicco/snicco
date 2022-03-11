@@ -14,9 +14,11 @@ use function dirname;
 use function file_get_contents;
 use function fopen;
 
+/**
+ * @internal
+ */
 final class EmailTest extends WPTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -128,7 +130,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_returnPath(): void
+    public function test_return_path(): void
     {
         $email = new Email();
 
@@ -142,7 +144,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_replyTo(): void
+    public function test_reply_to(): void
     {
         $email = new Email();
 
@@ -197,11 +199,7 @@ final class EmailTest extends WPTestCase
 
         $this->assertCount(0, $email->attachments());
 
-        $email = $email->addAttachment(
-            $this->attachment_dir . '/php-elephant.jpg',
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addAttachment($this->attachment_dir . '/php-elephant.jpg', 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -215,7 +213,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_attachBinary(): void
+    public function test_attach_binary(): void
     {
         $email = new Email();
 
@@ -223,11 +221,7 @@ final class EmailTest extends WPTestCase
 
         $contents = file_get_contents($this->attachment_dir . '/php-elephant.jpg');
 
-        $email = $email->addBinaryAttachment(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryAttachment($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -243,11 +237,7 @@ final class EmailTest extends WPTestCase
 
         $contents = fopen($this->attachment_dir . '/php-elephant.jpg', 'r');
 
-        $email = $email->addBinaryAttachment(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryAttachment($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -267,11 +257,7 @@ final class EmailTest extends WPTestCase
 
         $this->assertCount(0, $email->attachments());
 
-        $email = $email->addEmbed(
-            $this->attachment_dir . '/php-elephant.jpg',
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addEmbed($this->attachment_dir . '/php-elephant.jpg', 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -285,7 +271,7 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_embedBinary(): void
+    public function test_embed_binary(): void
     {
         $email = new Email();
 
@@ -293,11 +279,7 @@ final class EmailTest extends WPTestCase
 
         $contents = file_get_contents($this->attachment_dir . '/php-elephant.jpg');
 
-        $email = $email->addBinaryEmbed(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryEmbed($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -313,11 +295,7 @@ final class EmailTest extends WPTestCase
 
         $contents = fopen($this->attachment_dir . '/php-elephant.jpg', 'r');
 
-        $email = $email->addBinaryEmbed(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryEmbed($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -354,7 +332,7 @@ final class EmailTest extends WPTestCase
     {
         $email = new Email();
 
-        $this->assertSame(null, $email->htmlTemplate());
+        $this->assertNull($email->htmlTemplate());
 
         $email = $email->withHtmlTemplate('foobar.php');
 
@@ -368,7 +346,7 @@ final class EmailTest extends WPTestCase
     {
         $email = new Email();
 
-        $this->assertSame(null, $email->textTemplate());
+        $this->assertNull($email->textTemplate());
 
         $email = $email->withTextTemplate('foobar.txt');
 
@@ -378,10 +356,10 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_htmlBody(): void
+    public function test_html_body(): void
     {
         $email = new Email();
-        $this->assertSame(null, $email->htmlBody());
+        $this->assertNull($email->htmlBody());
 
         $email = $email->withHtmlBody('<h1>Foo</h1>');
 
@@ -391,10 +369,10 @@ final class EmailTest extends WPTestCase
     /**
      * @test
      */
-    public function test_textBody(): void
+    public function test_text_body(): void
     {
         $email = new Email();
-        $this->assertSame(null, $email->textBody());
+        $this->assertNull($email->textBody());
 
         $email = $email->withTextBody('Foo');
 
@@ -410,7 +388,8 @@ final class EmailTest extends WPTestCase
         $this->assertSame('Foo', $email->textBody());
         $this->assertSame('<h1>Foo</h1>', $email->htmlBody());
 
-        $email = (new Email())->withHtmlBody('<h1>Foo</h1>')->withTextBody('Foo custom');
+        $email = (new Email())->withHtmlBody('<h1>Foo</h1>')
+            ->withTextBody('Foo custom');
         $this->assertSame('Foo custom', $email->textBody());
         $this->assertSame('<h1>Foo</h1>', $email->htmlBody());
     }
@@ -426,18 +405,29 @@ final class EmailTest extends WPTestCase
 
         $email = $email->addContext('foo', 'bar');
 
-        $this->assertSame(['foo' => 'bar'], $email->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $email->context());
 
         $email = $email->addContext('foo', 'baz');
 
-        $this->assertSame(['foo' => 'baz'], $email->context());
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $email->context());
 
         $email = $email->addContext('bar', 'biz');
 
-        $this->assertSame(['foo' => 'baz', 'bar' => 'biz'], $email->context());
+        $this->assertSame([
+            'foo' => 'baz',
+            'bar' => 'biz',
+        ], $email->context());
 
-        $email = $email->withContext(['new' => 'foo']);
-        $this->assertSame(['new' => 'foo'], $email->context());
+        $email = $email->withContext([
+            'new' => 'foo',
+        ]);
+        $this->assertSame([
+            'new' => 'foo',
+        ], $email->context());
     }
 
     /**
@@ -449,16 +439,29 @@ final class EmailTest extends WPTestCase
 
         $this->assertSame([], $email->customHeaders());
 
-        $email = $email->addCustomHeaders(['X-FOO' => 'BAR']);
+        $email = $email->addCustomHeaders([
+            'X-FOO' => 'BAR',
+        ]);
 
-        $this->assertSame(['X-FOO' => 'BAR'], $email->customHeaders());
+        $this->assertSame([
+            'X-FOO' => 'BAR',
+        ], $email->customHeaders());
 
-        $email = $email->addCustomHeaders(['X-BAZ' => 'BIZ']);
+        $email = $email->addCustomHeaders([
+            'X-BAZ' => 'BIZ',
+        ]);
 
-        $this->assertSame(['X-FOO' => 'BAR', 'X-BAZ' => 'BIZ'], $email->customHeaders());
+        $this->assertSame([
+            'X-FOO' => 'BAR',
+            'X-BAZ' => 'BIZ',
+        ], $email->customHeaders());
 
-        $email = $email->withCustomHeaders(['X-NEW' => 'FOO']);
-        $this->assertSame(['X-NEW' => 'FOO'], $email->customHeaders());
+        $email = $email->withCustomHeaders([
+            'X-NEW' => 'FOO',
+        ]);
+        $this->assertSame([
+            'X-NEW' => 'FOO',
+        ], $email->customHeaders());
     }
 
     /**
@@ -500,5 +503,4 @@ final class EmailTest extends WPTestCase
 
         $email->addContext('images', 'foo');
     }
-
 }

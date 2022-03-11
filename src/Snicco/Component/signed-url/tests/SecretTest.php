@@ -8,9 +8,11 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\SignedUrl\Secret;
 
+/**
+ * @internal
+ */
 final class SecretTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -33,7 +35,7 @@ final class SecretTest extends TestCase
     /**
      * @test
      */
-    public function test_fromHexEncoded(): void
+    public function test_from_hex_encoded(): void
     {
         $secret = Secret::generate();
 
@@ -69,5 +71,4 @@ final class SecretTest extends TestCase
         $this->assertSame($secret->asString(), $secret_new->asString());
         $this->assertSame($bytes, $secret_new->asBytes());
     }
-
 }

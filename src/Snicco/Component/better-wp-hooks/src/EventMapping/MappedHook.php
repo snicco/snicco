@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPHooks\EventMapping;
 
 use Snicco\Component\EventDispatcher\Event;

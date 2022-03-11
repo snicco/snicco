@@ -8,13 +8,16 @@ use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
 use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
+use WP_UnitTest_Factory;
 use WP_User;
 
 use function array_merge;
 
+/**
+ * @internal
+ */
 final class MailBoxTest extends WPTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,7 +43,7 @@ final class MailBoxTest extends WPTestCase
         $address = Mailbox::create('Calvin Alkan <calvin@web.de>');
         $this->assertSame('calvin@web.de', $address->address());
         $this->assertSame('Calvin Alkan <calvin@web.de>', $address->toString());
-        $this->assertSame('Calvin Alkan <calvin@web.de>', (string )$address);
+        $this->assertSame('Calvin Alkan <calvin@web.de>', (string) $address);
         $this->assertSame('Calvin Alkan', $address->name());
     }
 
@@ -69,12 +72,18 @@ final class MailBoxTest extends WPTestCase
      */
     public function test_from_array_with_names_keys(): void
     {
-        $address = Mailbox::create(['name' => 'Calvin Alkan', 'email' => 'c@web.de']);
+        $address = Mailbox::create([
+            'name' => 'Calvin Alkan',
+            'email' => 'c@web.de',
+        ]);
         $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
         $this->assertSame('Calvin Alkan', $address->name());
 
-        $address = Mailbox::create(['email' => 'c@web.de', 'name' => 'Calvin Alkan',]);
+        $address = Mailbox::create([
+            'email' => 'c@web.de',
+            'name' => 'Calvin Alkan',
+        ]);
         $this->assertSame('c@web.de', $address->address());
         $this->assertSame('Calvin Alkan <c@web.de>', $address->toString());
         $this->assertSame('Calvin Alkan', $address->name());
@@ -155,9 +164,7 @@ final class MailBoxTest extends WPTestCase
     public function test_exception_if_no_valid_argument(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            '$address has to be string,array or an instance of WP_User. Got [integer].'
-        );
+        $this->expectExceptionMessage('$address has to be string,array or an instance of WP_User. Got [integer].');
 
         Mailbox::create(1);
     }
@@ -168,7 +175,7 @@ final class MailBoxTest extends WPTestCase
     public function test_custom_validation_function_can_be_set(): void
     {
         Mailbox::$email_validator = function (string $email): bool {
-            return $email === 'calvin@web.de';
+            return 'calvin@web.de' === $email;
         };
 
         // ok
@@ -188,7 +195,6 @@ final class MailBoxTest extends WPTestCase
     public function test_exception_if_validation_function_does_not_return_bool(): void
     {
         Mailbox::$email_validator = function () {
-            //
         };
 
         $this->expectException(LogicException::class);
@@ -199,9 +205,17 @@ final class MailBoxTest extends WPTestCase
 
     private function createAdmin(array $data): WP_User
     {
-        return $this->factory()->user->create_and_get(
-            array_merge($data, ['role' => 'administrator'])
-        );
-    }
+        /** @var WP_UnitTest_Factory $factory */
+        $factory = $this->factory();
 
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => 'administrator',
+        ]));
+
+        if (! $user instanceof WP_User) {
+            throw new InvalidArgumentException('Must be WP_USER');
+        }
+
+        return $user;
+    }
 }

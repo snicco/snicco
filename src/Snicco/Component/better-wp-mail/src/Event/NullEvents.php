@@ -6,7 +6,6 @@ namespace Snicco\Component\BetterWPMail\Event;
 
 final class NullEvents implements MailEvents
 {
-
     public function fireSending(SendingEmail $sending_email): void
     {
         // Do nothing
@@ -16,5 +15,4 @@ final class NullEvents implements MailEvents
     {
         // Do nothing
     }
-
 }

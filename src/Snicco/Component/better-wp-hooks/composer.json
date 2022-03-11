@@ -1,35 +1,35 @@
 {
-  "name": "sniccowp/better-wp-hooks",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
+    "name": "sniccowp/better-wp-hooks",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "ext-json": "*",
+        "sniccowp/better-wp-api": "dev-master",
+        "sniccowp/event-dispatcher": "dev-master"
+    },
+    "require-dev": {
+        "lucatume/wp-browser": "~3.1.4",
+        "phpunit/phpunit": "9.5.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\BetterWPHooks\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\BetterWPHooks\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
     }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "ext-json": "*",
-    "sniccowp/event-dispatcher": "dev-master",
-    "sniccowp/better-wp-api": "dev-master"
-  },
-  "require-dev": {
-    "lucatume/wp-browser": "~3.1.3",
-    "phpunit/phpunit": "9.5.13"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\BetterWPHooks\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\BetterWPHooks\\Tests\\": "tests"
-    }
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true
-  }
 }

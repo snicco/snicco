@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Debug;
 
 use FilesystemIterator;
@@ -30,7 +29,6 @@ use function is_file;
 
 final class DebugBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/debug-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -54,7 +52,6 @@ final class DebugBundle implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        //
     }
 
     public function alias(): string
@@ -66,16 +63,13 @@ final class DebugBundle implements Bundle
     {
         $config->prepend(HttpErrorHandlingOption::KEY . '.' . HttpErrorHandlingOption::DISPLAYERS, [
             WhoopsJsonDisplayer::class,
-            WhoopsHtmlDisplayer::class
+            WhoopsHtmlDisplayer::class,
         ]);
 
         $defaults = require dirname(__DIR__) . '/config/debug.php';
 
-        if (!is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
-            $copied = copy(
-                dirname(__DIR__) . '/config/debug.php',
-                $to
-            );
+        if (! is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
+            $copied = copy(dirname(__DIR__) . '/config/debug.php', $to);
             if (false === $copied) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not copy default debug.php config.');
@@ -84,7 +78,7 @@ final class DebugBundle implements Bundle
         }
 
         $defaults = array_merge($defaults, [
-            DebugOption::APPLICATION_PATHS => $this->allDirectoriesExpectVendor($kernel->directories())
+            DebugOption::APPLICATION_PATHS => $this->allDirectoriesExpectVendor($kernel->directories()),
         ]);
 
         $config->set('debug', array_replace($defaults, $config->getArray('debug', [])));
@@ -93,43 +87,54 @@ final class DebugBundle implements Bundle
     private function registerHttpDebugServices(Kernel $kernel): void
     {
         // private
-        $kernel->container()->factory(Run::class, function () {
-            $whoops = new Run();
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
-            return $whoops;
-        });
+        $kernel->container()
+            ->factory(Run::class, function () {
+                $whoops = new Run();
+                $whoops->allowQuit(false);
+                $whoops->writeToOutput(false);
 
-        $kernel->container()->shared(PrettyPageHandler::class, function () use ($kernel) {
-            $handler = new FilterablePrettyPageHandler();
-            $handler->handleUnconditionally(true);
+                return $whoops;
+            });
 
-            $handler->setEditor($kernel->config()->getString('debug.' . DebugOption::EDITOR));
+        $kernel->container()
+            ->shared(PrettyPageHandler::class, function () use ($kernel) {
+                $handler = new FilterablePrettyPageHandler();
+                $handler->handleUnconditionally(true);
 
-            $handler->setApplicationRootPath($kernel->directories()->baseDir());
+                $handler->setEditor($kernel->config()->getString('debug.' . DebugOption::EDITOR));
 
-            $handler->setApplicationPaths(
-                $kernel->config()->getListOfStrings('debug.' . DebugOption::APPLICATION_PATHS)
-            );
-            return $handler;
-        });
+                $handler->setApplicationRootPath($kernel->directories()->baseDir());
 
-        $kernel->container()->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
-            $whoops = $kernel->container()->make(Run::class);
-            $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
-            return new WhoopsHtmlDisplayer($whoops);
-        });
+                $handler->setApplicationPaths(
+                    $kernel->config()
+                        ->getListOfStrings('debug.' . DebugOption::APPLICATION_PATHS)
+                );
 
-        $kernel->container()->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
-            $whoops = $kernel->container()->make(Run::class);
+                return $handler;
+            });
 
-            $handler = new JsonResponseHandler();
-            $handler->addTraceToOutput(true);
-            $handler->setJsonApi(true);
+        $kernel->container()
+            ->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
+                $whoops = $kernel->container()
+                    ->make(Run::class);
+                $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
 
-            $whoops->pushHandler($handler);
-            return new WhoopsJsonDisplayer($whoops);
-        });
+                return new WhoopsHtmlDisplayer($whoops);
+            });
+
+        $kernel->container()
+            ->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
+                $whoops = $kernel->container()
+                    ->make(Run::class);
+
+                $handler = new JsonResponseHandler();
+                $handler->addTraceToOutput(true);
+                $handler->setJsonApi(true);
+
+                $whoops->pushHandler($handler);
+
+                return new WhoopsJsonDisplayer($whoops);
+            });
     }
 
     /**
@@ -141,11 +146,11 @@ final class DebugBundle implements Bundle
         $dirs = [];
 
         /**
-         * @var string $name
+         * @var string      $name
          * @var SplFileInfo $file_info
          */
         foreach ($iterator as $name => $file_info) {
-            if ($file_info->isDir() && $file_info->getBasename() !== 'vendor') {
+            if ($file_info->isDir() && 'vendor' !== $file_info->getBasename()) {
                 $dirs[] = $name;
             }
         }

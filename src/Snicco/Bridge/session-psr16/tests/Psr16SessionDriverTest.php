@@ -21,9 +21,11 @@ use Snicco\Component\TestableClock\TestClock;
 use function sleep;
 use function time;
 
+/**
+ * @internal
+ */
 final class Psr16SessionDriverTest extends TestCase
 {
-
     use SessionDriverTests;
 
     /**
@@ -31,21 +33,16 @@ final class Psr16SessionDriverTest extends TestCase
      */
     public function test_exception_if_cache_cant_delete_ids(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public function deleteMultiple($keys)
             {
                 return false;
             }
-
         };
 
         $driver = new Psr16SessionDriver($cache, 10);
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
 
         $this->expectException(CouldNotDestroySessions::class);
         $this->expectExceptionMessage('Cant destroy session ids [id1]');
@@ -58,21 +55,16 @@ final class Psr16SessionDriverTest extends TestCase
      */
     public function a_custom_exception_is_thrown_if_the_cache_throws_an_invalid_key_exception(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public function deleteMultiple($keys)
             {
                 throw new Exception('bad key');
             }
-
         };
 
         $driver = new Psr16SessionDriver($cache, 10);
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
 
         $this->expectException(CouldNotDestroySessions::class);
         $this->expectExceptionMessage('Cant destroy session ids [id1]');
@@ -97,13 +89,11 @@ final class Psr16SessionDriverTest extends TestCase
      */
     public function test_exception_if_cache_returns_false_for_save(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public function set($key, $value, $ttl = null)
             {
                 return false;
             }
-
         };
 
         $driver = new Psr16SessionDriver($cache, 10);
@@ -111,10 +101,7 @@ final class Psr16SessionDriverTest extends TestCase
         $this->expectException(CouldNotWriteSessionContent::class);
         $this->expectExceptionMessage('id1');
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
     }
 
     /**
@@ -122,13 +109,11 @@ final class Psr16SessionDriverTest extends TestCase
      */
     public function test_exception_if_cache_throws_exception_for_set(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public function set($key, $value, $ttl = null)
             {
                 throw new Exception('cant save');
             }
-
         };
 
         $driver = new Psr16SessionDriver($cache, 10);
@@ -136,10 +121,7 @@ final class Psr16SessionDriverTest extends TestCase
         $this->expectException(CouldNotWriteSessionContent::class);
         $this->expectExceptionMessage('id1');
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
     }
 
     /**
@@ -147,13 +129,11 @@ final class Psr16SessionDriverTest extends TestCase
      */
     public function test_exception_if_reading_throws_an_exception_in_the_cache_driver(): void
     {
-        $cache = new class extends ArrayCachePool {
-
+        $cache = new class() extends ArrayCachePool {
             public function get($key, $default = null)
             {
                 throw new Exception('cant read');
             }
-
         };
 
         $driver = new Psr16SessionDriver($cache, 10);
@@ -188,7 +168,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => true, 'data' => 'string', 'user_id' => null, 'hashed_validator' => 'val'],
+            [
+                'last_activity' => true,
+                'data' => 'string',
+                'user_id' => null,
+                'hashed_validator' => 'val',
+            ],
             10
         );
 
@@ -207,7 +192,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => 10, 'data' => true, 'user_id' => null, 'hashed_validator' => 'val'],
+            [
+                'last_activity' => 10,
+                'data' => true,
+                'user_id' => null,
+                'hashed_validator' => 'val',
+            ],
             10
         );
 
@@ -226,7 +216,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => 10, 'data' => 'string', 'user_id' => null, 'hashed_validator' => true],
+            [
+                'last_activity' => 10,
+                'data' => 'string',
+                'user_id' => null,
+                'hashed_validator' => true,
+            ],
             10
         );
 
@@ -245,7 +240,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $cache->set(
             'id1',
-            ['last_activity' => 10, 'data' => 'string', 'user_id' => true, 'hashed_validator' => 'val'],
+            [
+                'last_activity' => 10,
+                'data' => 'string',
+                'user_id' => true,
+                'hashed_validator' => 'val',
+            ],
             10
         );
 
@@ -267,5 +267,4 @@ final class Psr16SessionDriverTest extends TestCase
     {
         return new Psr16SessionDriver(new ArrayCachePool(), $this->idleTimeout());
     }
-
 }

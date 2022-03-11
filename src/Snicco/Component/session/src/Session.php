@@ -13,7 +13,6 @@ use Snicco\Component\Session\SessionManager\SessionManager;
  */
 interface Session extends ImmutableSession, MutableSession
 {
-
     /**
      * Release all lifecycle events and clear them afterwards.
      *
@@ -22,9 +21,9 @@ interface Session extends ImmutableSession, MutableSession
     public function releaseEvents(): array;
 
     /**
-     * This method is not meant to be used directly by clients.
-     * Sessions have to be saved through the {@see SessionManager}
-     * After a session has been saved any state changing method has to throw {@see SessionIsLocked}
+     * This method is not meant to be used directly by clients. Sessions have to
+     * be saved through the {@see SessionManager} After a session has been saved
+     * any state changing method has to throw {@see SessionIsLocked}.
      */
     public function saveUsing(
         SessionDriver $driver,
@@ -32,5 +31,4 @@ interface Session extends ImmutableSession, MutableSession
         string $hashed_validator,
         int $current_timestamp
     ): void;
-
 }

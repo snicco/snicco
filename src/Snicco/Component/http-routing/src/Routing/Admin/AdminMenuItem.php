@@ -10,23 +10,33 @@ use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
+use function count;
 use function mb_convert_case;
 
 final class AdminMenuItem
 {
+    public const PAGE_TITLE = 'page_title';
 
-    const PAGE_TITLE = 'page_title';
-    const MENU_TITLE = 'menu_title';
-    const ICON = 'icon';
-    const CAPABILITY = 'capability';
-    const POSITION = 'position';
+    public const MENU_TITLE = 'menu_title';
+
+    public const ICON = 'icon';
+
+    public const CAPABILITY = 'capability';
+
+    public const POSITION = 'position';
 
     private string $page_title;
+
     private string $menu_title;
+
     private string $menu_slug;
+
     private ?string $capability;
+
     private ?string $icon;
+
     private ?int $position;
+
     private ?string $parent_slug;
 
     public function __construct(
@@ -60,10 +70,7 @@ final class AdminMenuItem
         $this->position = $position;
 
         if (null !== $parent_slug) {
-            Assert::stringNotEmpty(
-                $parent_slug,
-                '$parent_slug has to be null or non empty string.'
-            );
+            Assert::stringNotEmpty($parent_slug, '$parent_slug has to be null or non empty string.');
         }
         $this->parent_slug = $parent_slug;
     }
@@ -78,9 +85,8 @@ final class AdminMenuItem
      *     capability?: string,
      *     position?: int
      * } $attributes
-     *
      */
-    final public static function fromRoute(
+    public static function fromRoute(
         Route $route,
         array $attributes = [],
         ?string $parent_slug = null
@@ -119,41 +125,42 @@ final class AdminMenuItem
         );
     }
 
-    final function pageTitle(): string
+    public function pageTitle(): string
     {
         return $this->page_title;
     }
 
-    final function menuTitle(): string
+    public function menuTitle(): string
     {
         return $this->menu_title;
     }
 
-    final function slug(): UrlPath
+    public function slug(): UrlPath
     {
         return UrlPath::fromString($this->menu_slug);
     }
 
-    final function position(): ?int
+    public function position(): ?int
     {
         return $this->position;
     }
 
-    final function requiredCapability(): ?string
+    public function requiredCapability(): ?string
     {
         return $this->capability;
     }
 
-    final function icon(): ?string
+    public function icon(): ?string
     {
         return $this->icon;
     }
 
     public function parentSlug(): UrlPath
     {
-        if (!$this->parent_slug) {
-            throw new LogicException("Menu item [$this->menu_slug] does not have a parent item.");
+        if (! $this->parent_slug) {
+            throw new LogicException("Menu item [{$this->menu_slug}] does not have a parent item.");
         }
+
         return UrlPath::fromString($this->parent_slug);
     }
 
@@ -174,5 +181,4 @@ final class AdminMenuItem
 
         return implode(' ', $parts);
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Routing;
 
 use FastRoute\BadRouteException;
@@ -36,22 +35,31 @@ use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
 use function serialize;
 
 /**
- * The Router class is a facade that glues together all parts of the Routing system.
+ * The Router class is a facade that glues together all parts of the Routing
+ * system.
  */
 final class Router
 {
-
     private UrlGenerationContext $context;
+
     private AdminArea $admin_area;
+
     private UrlEncoder $url_encoder;
+
     private RouteCache $route_cache;
+
     private RouteLoader $route_loader;
+
     private RouteConditionFactory $condition_factory;
 
     private ?Configurator $routing_configurator = null;
+
     private ?UrlMatcher $url_matcher = null;
+
     private ?UrlGenerator $url_generator = null;
+
     private ?Routes $routes = null;
+
     private ?AdminMenu $admin_menu = null;
 
     /**
@@ -77,44 +85,43 @@ final class Router
 
     public function urlMatcher(): UrlMatcher
     {
-        if (!isset($this->url_matcher)) {
+        if (! isset($this->url_matcher)) {
             $this->url_matcher = new AdminRouteMatcher(
                 new FastRouteDispatcher(
                     $this->routes(),
                     $this->routeData()['url_matcher'],
                     $this->condition_factory,
-                ), $this->admin_area
+                ),
+                $this->admin_area
             );
         }
+
         return $this->url_matcher;
     }
 
     public function urlGenerator(): UrlGenerator
     {
-        if (!isset($this->url_generator)) {
+        if (! isset($this->url_generator)) {
             $this->url_generator = new LazyGenerator(function () {
-                return new Generator(
-                    $this->routes(),
-                    $this->context,
-                    $this->admin_area,
-                    $this->url_encoder,
-                );
+                return new Generator($this->routes(), $this->context, $this->admin_area, $this->url_encoder,);
             });
         }
+
         return $this->url_generator;
     }
 
     public function routes(): Routes
     {
-        if (!isset($this->routes)) {
+        if (! isset($this->routes)) {
             $this->routes = new SerializedRouteCollection($this->routeData()['route_collection']);
         }
+
         return $this->routes;
     }
 
     public function adminMenu(): AdminMenu
     {
-        if (!isset($this->admin_menu)) {
+        if (! isset($this->admin_menu)) {
             $this->admin_menu = new CachedAdminMenu($this->routeData()['admin_menu']);
         }
 
@@ -123,11 +130,10 @@ final class Router
 
     private function routingConfigurator(): Configurator
     {
-        if (!isset($this->routing_configurator)) {
-            $this->routing_configurator = new Configurator(
-                $this->admin_area->urlPrefix(),
-            );
+        if (! isset($this->routing_configurator)) {
+            $this->routing_configurator = new Configurator($this->admin_area->urlPrefix(),);
         }
+
         return $this->routing_configurator;
     }
 
@@ -136,7 +142,7 @@ final class Router
      */
     private function routeData(): array
     {
-        if (!isset($this->route_data)) {
+        if (! isset($this->route_data)) {
             $data = $this->route_cache->get(function () {
                 return $this->loadRoutes();
             });
@@ -166,6 +172,7 @@ final class Router
         foreach ($routes as $route) {
             $serialized_routes[$route->getName()] = serialize($route);
             $path = $syntax->convert($route);
+
             try {
                 $collector->addRoute($route->getMethods(), $path, $route->getName());
             } catch (BadRouteException $e) {
@@ -185,5 +192,4 @@ final class Router
             'admin_menu' => $menu,
         ];
     }
-
 }

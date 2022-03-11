@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\EventDispatcher\Tests\ListenerFactory;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
 
+/**
+ * @internal
+ */
 final class NewableListenerFactoryTest extends TestCase
 {
-
     /**
      * @test
      *
@@ -27,5 +28,4 @@ final class NewableListenerFactoryTest extends TestCase
         );
         $factory->create('Bogus', 'foo_event');
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use mysqli_result;
@@ -13,9 +12,11 @@ use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 
 use const MYSQLI_ASSOC;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      *
@@ -24,7 +25,7 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
     public function test_unprepared_with_read(): void
     {
         $this->better_wpdb->insert('test_table', [
-            'test_string' => 'foo'
+            'test_string' => 'foo',
         ]);
 
         $result = $this->better_wpdb->unprepared("select * from test_table where test_string = 'foo'");
@@ -43,7 +44,7 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
     public function test_unprepared_with_and_placeholders_throws(): void
     {
         $this->better_wpdb->insert('test_table', [
-            'test_string' => 'foo'
+            'test_string' => 'foo',
         ]);
 
         $this->expectException(QueryException::class);
@@ -56,7 +57,7 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
     public function test_unprepared_with_writes_returns_bool_true(): void
     {
         $res = $this->better_wpdb->unprepared("insert into test_table (test_string) values ('foo')");
-        $this->assertSame(true, $res);
+        $this->assertTrue($res);
     }
 
     /**
@@ -82,6 +83,4 @@ final class BetterWPDB_unprepared_Test extends BetterWPDBTestCase
         $this->assertSame([], $first->bindings);
         $this->assertTrue($first->end > $first->start);
     }
-
-
 }

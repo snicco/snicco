@@ -10,8 +10,8 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 
 final class EncryptedDriver implements UserSessionsDriver
 {
-
     private SessionDriver $driver;
+
     private SessionEncryptor $encryptor;
 
     public function __construct(SessionDriver $driver, SessionEncryptor $encryptor)
@@ -65,7 +65,7 @@ final class EncryptedDriver implements UserSessionsDriver
 
     public function destroyAll(): void
     {
-        if (!$this->driver instanceof UserSessionsDriver) {
+        if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
         $this->driver->destroyAll();
@@ -73,7 +73,7 @@ final class EncryptedDriver implements UserSessionsDriver
 
     public function destroyAllForUserId($user_id): void
     {
-        if (!$this->driver instanceof UserSessionsDriver) {
+        if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
         $this->driver->destroyAllForUserId($user_id);
@@ -81,7 +81,7 @@ final class EncryptedDriver implements UserSessionsDriver
 
     public function destroyAllForUserIdExcept(string $selector, $user_id): void
     {
-        if (!$this->driver instanceof UserSessionsDriver) {
+        if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
         $this->driver->destroyAllForUserIdExcept($selector, $user_id);
@@ -89,9 +89,10 @@ final class EncryptedDriver implements UserSessionsDriver
 
     public function getAllForUserId($user_id): iterable
     {
-        if (!$this->driver instanceof UserSessionsDriver) {
+        if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
+
         return $this->driver->getAllForUserId($user_id);
     }
 }

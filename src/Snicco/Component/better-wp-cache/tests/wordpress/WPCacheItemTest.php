@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPCache\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -12,9 +11,11 @@ use Snicco\Component\BetterWPCache\WPCacheItem;
 
 use function time;
 
+/**
+ * @internal
+ */
 final class WPCacheItemTest extends WPTestCase
 {
-
     /**
      * @test
      *
@@ -52,5 +53,4 @@ final class WPCacheItemTest extends WPTestCase
         $item->expiresAfter($internal);
         $this->assertEqualsWithDelta(time() + 2, $item->expirationTimestamp(), 0.1);
     }
-
 }

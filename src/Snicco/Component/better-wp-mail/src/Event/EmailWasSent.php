@@ -9,8 +9,8 @@ use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 
 final class EmailWasSent
 {
-
     private Email $email;
+
     private Envelope $envelope;
 
     public function __construct(Email $email, Envelope $envelope)
@@ -28,5 +28,4 @@ final class EmailWasSent
     {
         return $this->envelope;
     }
-
 }

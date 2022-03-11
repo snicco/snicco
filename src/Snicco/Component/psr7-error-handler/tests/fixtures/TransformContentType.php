@@ -10,14 +10,11 @@ use Throwable;
 
 final class TransformContentType implements ExceptionTransformer
 {
-
     public function transform(Throwable $e): Throwable
     {
-        return HttpException::fromPrevious(
-            500,
-            $e,
-            ['content-type' => 'application/json', 'X-Foo' => 'BAR']
-        );
+        return HttpException::fromPrevious(500, $e, [
+            'content-type' => 'application/json',
+            'X-Foo' => 'BAR',
+        ]);
     }
-
 }

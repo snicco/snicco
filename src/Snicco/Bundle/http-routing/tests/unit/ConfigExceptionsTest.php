@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Tests\unit;
 
 use InvalidArgumentException;
@@ -27,10 +26,12 @@ use stdClass;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class ConfigExceptionsTest extends TestCase
 {
     use BundleTestHelpers;
-
 
     /**
      * @test
@@ -41,7 +42,7 @@ final class ConfigExceptionsTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
-                RoutingOption::HOST => ''
+                RoutingOption::HOST => '',
             ]);
         });
 
@@ -59,11 +60,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(RoutingOption::WP_ADMIN_PREFIX);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, '');
@@ -80,11 +77,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(RoutingOption::WP_LOGIN_PATH);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::WP_LOGIN_PATH, '');
@@ -101,14 +94,12 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(RoutingOption::ROUTE_DIRECTORIES);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, ['foo' => 'bar']);
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, [
+                'foo' => 'bar',
+            ]);
         });
 
         $kernel->boot();
@@ -122,11 +113,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(__DIR__ . '/bogus');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, [__DIR__, __DIR__ . '/bogus']);
@@ -143,11 +130,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(__DIR__ . '/bogus');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing.' . RoutingOption::API_ROUTE_DIRECTORIES, [__DIR__, __DIR__ . '/bogus']);
@@ -165,16 +148,12 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('must be a non-empty-string if API routes are used.');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('routing', [
                 RoutingOption::HOST => 'snicco.com',
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus']
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus'],
             ]);
         });
 
@@ -189,11 +168,7 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(MiddlewareOption::GROUPS);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo']);
@@ -210,14 +185,12 @@ final class ConfigExceptionsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Got [string] for key [foo]');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => 'bar']);
+            $config->set('middleware.' . MiddlewareOption::GROUPS, [
+                'foo' => 'bar',
+            ]);
         });
 
         $kernel->boot();
@@ -233,14 +206,12 @@ final class ConfigExceptionsTest extends TestCase
             "Middleware group [foo] has to contain only strings.\nGot [integer] at index [1]."
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('middleware.' . MiddlewareOption::GROUPS, ['foo' => ['bar', 1]]);
+            $config->set('middleware.' . MiddlewareOption::GROUPS, [
+                'foo' => ['bar', 1],
+            ]);
         });
 
         $kernel->boot();
@@ -256,16 +227,15 @@ final class ConfigExceptionsTest extends TestCase
             'middleware.middleware_aliases has to be an array of string => middleware-class pairs'
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::ALIASES,
-                ['foo' => MiddlewareOne::class, MiddlewareTwo::class]
+                [
+                    'foo' => MiddlewareOne::class,
+                    MiddlewareTwo::class,
+                ]
             );
         });
 
@@ -278,21 +248,14 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_for_middleware_alias_non_middleware_class(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Middleware alias [foo] has to resolve to a middleware class.'
-        );
+        $this->expectExceptionMessage('Middleware alias [foo] has to resolve to a middleware class.');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set(
-                'middleware.' . MiddlewareOption::ALIASES,
-                ['foo' => stdClass::class]
-            );
+            $config->set('middleware.' . MiddlewareOption::ALIASES, [
+                'foo' => stdClass::class,
+            ]);
         });
 
         $kernel->boot();
@@ -308,20 +271,12 @@ final class ConfigExceptionsTest extends TestCase
             MiddlewareOption::PRIORITY_LIST . " has to be a list of middleware class-strings.\nGot [stdClass]."
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::PRIORITY_LIST,
-                [
-                    MiddlewareOne::class,
-                    MiddlewareTwo::class,
-                    stdClass::class,
-                ]
+                [MiddlewareOne::class, MiddlewareTwo::class, stdClass::class]
             );
         });
 
@@ -338,22 +293,10 @@ final class ConfigExceptionsTest extends TestCase
             MiddlewareOption::ALWAYS_RUN . " can only contain [frontend,api,admin,global].\nGot [foo]."
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set(
-                'middleware.' . MiddlewareOption::ALWAYS_RUN,
-                [
-                    'frontend',
-                    'admin',
-                    'api',
-                    'foo'
-                ]
-            );
+            $config->set('middleware.' . MiddlewareOption::ALWAYS_RUN, ['frontend', 'admin', 'api', 'foo']);
         });
 
         $kernel->boot();
@@ -365,24 +308,14 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_if_kernel_middleware_not_all_middleware_interface(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'middleware.kernel_middleware has to be a list of middleware class-strings'
-        );
+        $this->expectExceptionMessage('middleware.kernel_middleware has to be a list of middleware class-strings');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set(
                 'middleware.' . MiddlewareOption::KERNEL_MIDDLEWARE,
-                [
-                    RoutingMiddleware::class,
-                    RouteRunner::class,
-                    stdClass::class,
-                ]
+                [RoutingMiddleware::class, RouteRunner::class, stdClass::class]
             );
         });
 
@@ -399,19 +332,10 @@ final class ConfigExceptionsTest extends TestCase
             HttpErrorHandlingOption::DISPLAYERS . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [stdClass]."
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set(
-                'http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS,
-                [
-                    stdClass::class,
-                ]
-            );
+            $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [stdClass::class]);
         });
 
         $kernel->boot();
@@ -427,19 +351,10 @@ final class ConfigExceptionsTest extends TestCase
             HttpErrorHandlingOption::TRANSFORMERS . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [stdClass]."
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set(
-                'http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS,
-                [
-                    stdClass::class,
-                ]
-            );
+            $config->set('http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS, [stdClass::class]);
         });
 
         $kernel->boot();
@@ -455,19 +370,10 @@ final class ConfigExceptionsTest extends TestCase
             HttpErrorHandlingOption::REQUEST_LOG_CONTEXT . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [stdClass]."
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set(
-                'http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT,
-                [
-                    stdClass::class,
-                ]
-            );
+            $config->set('http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT, [stdClass::class]);
         });
 
         $kernel->boot();
@@ -485,18 +391,14 @@ final class ConfigExceptionsTest extends TestCase
             )
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => LogLevel::ERROR,
-                    stdClass::class => LogLevel::CRITICAL
-                ]
+                    stdClass::class => LogLevel::CRITICAL,
+                ],
             ]);
         });
         $kernel->boot();
@@ -512,17 +414,13 @@ final class ConfigExceptionsTest extends TestCase
             '[bogus] is not a valid PSR-3 log-level for exception class ' . HttpException::class
         );
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => 'bogus',
-                ]
+                ],
             ]);
         });
         $kernel->boot();

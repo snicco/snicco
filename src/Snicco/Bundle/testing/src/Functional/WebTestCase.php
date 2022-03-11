@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Functional;
 
 use Closure;
@@ -43,11 +42,11 @@ use function array_merge;
 
 abstract class WebTestCase extends WPTestCase
 {
-
     use CreateWordPressUsers;
     use AuthenticateWithWordPress;
 
     private ?Kernel $kernel = null;
+
     private ?Browser $browser = null;
 
     /**
@@ -69,7 +68,7 @@ abstract class WebTestCase extends WPTestCase
     {
         parent::setUp();
         $this->extensions = array_map(function (string $class) {
-            return new $class;
+            return new $class();
         }, $this->extensions());
         $this->setUpExtensions();
     }
@@ -117,18 +116,23 @@ abstract class WebTestCase extends WPTestCase
 
         $kernel = $this->getBootedKernel();
 
-        if (!$kernel->usesBundle(SessionBundle::ALIAS)) {
+        if (! $kernel->usesBundle(SessionBundle::ALIAS)) {
             throw new LogicException('You are not using the session-bundle in your bundles.php config.');
         }
 
-        $cookie_name = $kernel->container()->make(SessionConfig::class)->cookieName();
+        $cookie_name = $kernel->container()
+            ->make(SessionConfig::class)->cookieName();
 
-        $session_manager = $kernel->container()->make(SessionManager::class);
+        $session_manager = $kernel->container()
+            ->make(SessionManager::class);
         $session = $session_manager->start(new CookiePool($this->cookies));
         $session->put($data);
         $session_manager->save($session);
 
-        $this->withCookies([$cookie_name => $session->id()->asString()]);
+        $this->withCookies([
+            $cookie_name => $session->id()
+                ->asString(),
+        ]);
 
         return $session->id();
     }
@@ -142,16 +146,16 @@ abstract class WebTestCase extends WPTestCase
 
         foreach ($middleware as $class) {
             $kernel->afterRegister(function (Kernel $kernel) use ($class) {
-                $kernel->container()->instance(
-                    $class,
-                    new class extends Middleware {
-
-                        protected function handle(Request $request, NextMiddleware $next): ResponseInterface
-                        {
-                            return $next($request);
+                $kernel->container()
+                    ->instance(
+                        $class,
+                        new class() extends Middleware {
+                            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+                            {
+                                return $next($request);
+                            }
                         }
-                    }
-                );
+                    );
             });
         }
     }
@@ -160,28 +164,31 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(
-                HttpErrorHandler::class,
-                new TestErrorHandler()
-            );
+            $kernel->container()
+                ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
     }
 
     final protected function getEventDispatcher(): TestableEventDispatcher
     {
-        return $this->getBootedKernel()->container()->make(TestableEventDispatcher::class);
+        return $this->getBootedKernel()
+            ->container()
+            ->make(TestableEventDispatcher::class);
     }
 
     final protected function getMailTransport(): FakeTransport
     {
-        $transport = $this->getBootedKernel()->container()->make(Transport::class);
+        $transport = $this->getBootedKernel()
+            ->container()
+            ->make(Transport::class);
         Assert::isInstanceOf($transport, FakeTransport::class);
+
         return $transport;
     }
 
-    final  protected function getKernel(): Kernel
+    final protected function getKernel(): Kernel
     {
-        if (!isset($this->kernel)) {
+        if (! isset($this->kernel)) {
             $this->kernel = ($this->createKernel())(Environment::testing());
         }
 
@@ -192,21 +199,23 @@ abstract class WebTestCase extends WPTestCase
      * @template T of object
      *
      * @param class-string<T> $id
-     * @param T $instance
+     * @param T               $instance
      */
     final protected function swapInstance(string $id, object $instance): void
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
         $kernel->afterRegister(function (Kernel $kernel) use ($id, $instance) {
-            $kernel->container()->instance($id, $instance);
+            $kernel->container()
+                ->instance($id, $instance);
         });
     }
 
     final protected function getBrowser(): Browser
     {
-        if (!isset($this->browser)) {
+        if (! isset($this->browser)) {
             $this->browser = $this->createBrowser();
         }
+
         return $this->browser;
     }
 
@@ -214,15 +223,17 @@ abstract class WebTestCase extends WPTestCase
     {
         $factory = $this->factory();
         Assert::isInstanceOf($factory, WP_UnitTest_Factory::class);
+
         return $factory->user;
     }
 
     final protected function getBootedKernel(): Kernel
     {
         $kernel = $this->getKernel();
-        if (!$kernel->booted()) {
+        if (! $kernel->booted()) {
             $kernel->boot();
         }
+
         return $kernel;
     }
 
@@ -237,13 +248,17 @@ abstract class WebTestCase extends WPTestCase
         }
 
         $this->withServerVariables([
-            'HTTP_HOST' => $kernel->config()->getString('routing.' . RoutingOption::HOST),
-            'HTTPS' => $kernel->config()->getBoolean('routing.' . RoutingOption::USE_HTTPS)
+            'HTTP_HOST' => $kernel->config()
+                ->getString('routing.' . RoutingOption::HOST),
+            'HTTPS' => $kernel->config()
+                ->getBoolean('routing.' . RoutingOption::USE_HTTPS),
         ]);
 
         return new Browser(
-            $kernel->container()->make(HttpKernel::class),
-            $kernel->container()->make(Psr17FactoryDiscovery::class),
+            $kernel->container()
+                ->make(HttpKernel::class),
+            $kernel->container()
+                ->make(Psr17FactoryDiscovery::class),
             AdminAreaPrefix::fromString($kernel->config()->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX)),
             UrlPath::fromString($kernel->config()->getString('routing.' . RoutingOption::API_PREFIX)),
             $this->server,
@@ -270,16 +285,16 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getKernel();
         if ($kernel->booted()) {
-            throw new LogicException("Method [$__METHOD__] can not be used if the kernel was already booted.");
+            throw new LogicException("Method [{$__METHOD__}] can not be used if the kernel was already booted.");
         }
+
         return $kernel;
     }
 
     private function assertBrowserNotCreated(string $__METHOD__): void
     {
         if (isset($this->browser)) {
-            throw new LogicException("Method [$__METHOD__] can not be used if the browser was already created.");
+            throw new LogicException("Method [{$__METHOD__}] can not be used if the browser was already created.");
         }
     }
-
 }

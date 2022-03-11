@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Middleware;
 
 use LogicException;
@@ -15,12 +14,11 @@ use Snicco\Component\Session\ImmutableSession;
 use function sprintf;
 
 /**
- * This middleware can be used on a per-route basis to allow access to a "write" session for GET requests.
- * It must run BEFORE the StatefulRequest middleware.
+ * This middleware can be used on a per-route basis to allow access to a "write"
+ * session for GET requests. It must run BEFORE the StatefulRequest middleware.
  */
 final class AllowMutableSessionForReadVerbs implements MiddlewareInterface
 {
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($request->getAttribute(ImmutableSession::class)) {

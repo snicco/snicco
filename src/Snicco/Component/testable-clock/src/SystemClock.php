@@ -9,7 +9,6 @@ use DateTimeZone;
 
 final class SystemClock implements Clock
 {
-
     private DateTimeZone $timezone;
 
     public function __construct(?DateTimeZone $timezone = null)
@@ -19,7 +18,8 @@ final class SystemClock implements Clock
 
     public function currentTimestamp(): int
     {
-        return $this->currentTime()->getTimestamp();
+        return $this->currentTime()
+            ->getTimestamp();
     }
 
     public function currentTime(): DateTimeImmutable
@@ -31,5 +31,4 @@ final class SystemClock implements Clock
     {
         return new self(new DateTimeZone('UTC'));
     }
-
 }

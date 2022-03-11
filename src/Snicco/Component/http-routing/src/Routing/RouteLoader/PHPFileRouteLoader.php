@@ -25,12 +25,12 @@ use function preg_match;
 
 use const PATHINFO_FILENAME;
 
-
 final class PHPFileRouteLoader implements RouteLoader
 {
-
     public const VERSION_FLAG = '-v';
+
     public const FRONTEND_ROUTE_FILENAME = 'frontend';
+
     public const ADMIN_ROUTE_FILENAME = 'admin';
 
     // Match all files that end with ".php" and don't start with an underscore.
@@ -52,7 +52,6 @@ final class PHPFileRouteLoader implements RouteLoader
     /**
      * @param string[] $route_directories
      * @param string[] $api_route_directories
-     * @param RouteLoadingOptions $options
      */
     public function __construct(array $route_directories, array $api_route_directories, RouteLoadingOptions $options)
     {
@@ -79,6 +78,7 @@ final class PHPFileRouteLoader implements RouteLoader
             // because users are expected to register the fallback route there.
             if (self::FRONTEND_ROUTE_FILENAME === $name) {
                 $frontend_routes = $path;
+
                 continue;
             }
 
@@ -156,7 +156,6 @@ final class PHPFileRouteLoader implements RouteLoader
      *
      * @throws ReflectionException
      * @psalm-suppress UnresolvableInclude
-     *
      */
     private function requireFile(string $file, array $attributes = [], bool $is_admin_file = false): Closure
     {
@@ -164,23 +163,16 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $closure = require $file;
 
-        Assert::isInstanceOf(
-            $closure,
-            Closure::class,
-            "Route file [$file] did not return a closure."
-        );
+        Assert::isInstanceOf($closure, Closure::class, "Route file [{$file}] did not return a closure.");
 
-        $this->validateClosureTypeHint(
-            $closure,
-            $file,
-            $is_admin_file
-        );
+        $this->validateClosureTypeHint($closure, $file, $is_admin_file);
 
         return $closure;
     }
 
     /**
      * @param string[] $route_directories
+     *
      * @return array<string,string>
      */
     private function getFiles(array $route_directories): array
@@ -222,14 +214,12 @@ final class PHPFileRouteLoader implements RouteLoader
         foreach ($attributes as $key => $value) {
             switch ($key) {
                 case RoutingConfigurator::MIDDLEWARE_KEY:
-                    Assert::isArray(
-                        $value,
-                        'Middleware for route-loading options has to be an array of strings.'
-                    );
+                    Assert::isArray($value, 'Middleware for route-loading options has to be an array of strings.');
                     Assert::allString(
                         $value,
                         'Middleware for route-loading options has to be an array of strings.'
                     );
+
                     break;
                 case RoutingConfigurator::PREFIX_KEY:
                     Assert::string($value);
@@ -241,27 +231,24 @@ final class PHPFileRouteLoader implements RouteLoader
                             RoutingConfigurator::PREFIX_KEY
                         )
                     );
+
                     break;
                 case RoutingConfigurator::NAMESPACE_KEY:
                     Assert::stringNotEmpty(
                         $value,
-                        sprintf(
-                            '[%s] has to be a non-empty string.',
-                            RoutingConfigurator::NAMESPACE_KEY
-                        )
+                        sprintf('[%s] has to be a non-empty string.', RoutingConfigurator::NAMESPACE_KEY)
                     );
+
                     break;
                 case RoutingConfigurator::NAME_KEY:
                     Assert::stringNotEmpty(
                         $value,
-                        sprintf(
-                            '[%s] has to be a non-empty string.',
-                            RoutingConfigurator::NAME_KEY
-                        )
+                        sprintf('[%s] has to be a non-empty string.', RoutingConfigurator::NAME_KEY)
                     );
+
                     break;
-                default;
-                    throw new InvalidArgumentException("The option [$key] is not supported.");
+                default:
+                    throw new InvalidArgumentException("The option [{$key}] is not supported.");
             }
         }
     }
@@ -279,11 +266,12 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $param = $params[0] ?? null;
 
-        if (!$param instanceof ReflectionParameter || !$param->getType() instanceof ReflectionNamedType) {
+        if (! $param instanceof ReflectionParameter || ! $param->getType() instanceof ReflectionNamedType) {
             throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
         }
 
-        $name = $param->getType()->getName();
+        $name = $param->getType()
+            ->getName();
 
         Assert::oneOf(
             $name,
@@ -291,11 +279,11 @@ final class PHPFileRouteLoader implements RouteLoader
         );
 
         if ($is_admin_file) {
-            if ($name === WebRoutingConfigurator::class) {
+            if (WebRoutingConfigurator::class === $name) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
         } else {
-            if ($name === AdminRoutingConfigurator::class) {
+            if (AdminRoutingConfigurator::class === $name) {
                 throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
             }
         }
@@ -314,8 +302,10 @@ final class PHPFileRouteLoader implements RouteLoader
 
         if (1 === $res) {
             Assert::keyExists($match, 1);
+
             return [Str::beforeFirst($filename, self::VERSION_FLAG), $match[1]];
         }
+
         return [$filename, null];
     }
 }

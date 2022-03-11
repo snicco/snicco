@@ -8,18 +8,16 @@ use Snicco\Component\Session\ValueObject\SessionId;
 
 interface ImmutableSession
 {
-
     public function id(): SessionId;
 
     /**
-     * Indicates if this session was newly created and has not been persisted yet.
-     *
-     * @return bool
+     * Indicates if this session was newly created and has not been persisted
+     * yet.
      */
     public function isNew(): bool;
 
     /**
-     * @return string|int|null Return null if no user id has been set.
+     * @return int|string|null return null if no user id has been set
      */
     public function userId();
 
@@ -44,7 +42,7 @@ interface ImmutableSession
     public function has(string $key): bool;
 
     /**
-     * Check if the value for the key is truthy. {@see filter_var()}
+     * Check if the value for the key is truthy. {@see filter_var()}.
      */
     public function boolean(string $key, bool $default = false): bool;
 
@@ -52,6 +50,7 @@ interface ImmutableSession
      * Get the previous input of a user, typically during a form submission.
      *
      * @param mixed $default
+     *
      * @return mixed
      */
     public function oldInput(string $key = null, $default = null);
@@ -60,8 +59,6 @@ interface ImmutableSession
 
     /**
      * Return all USER-PROVIDED entries in the session.
-     *
-     * @return array
      */
     public function all(): array;
 
@@ -86,13 +83,11 @@ interface ImmutableSession
 
     /**
      * Get a value form the session with dot notation.
-     * $session->get('user.name', 'calvin')
+     * $session->get('user.name', 'calvin').
      *
      * @param mixed $default
      *
      * @return mixed
      */
     public function get(string $key, $default = null);
-
-
 }

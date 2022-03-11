@@ -14,29 +14,35 @@ use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
-class JsonToArrayTest extends MiddlewareTestCase
+/**
+ * @internal
+ */
+final class JsonToArrayTest extends MiddlewareTestCase
 {
-
     /**
      * @test
      */
     public function read_verbs_are_not_processed(): void
     {
         $request = $this->jsonRequest();
-        $request->getBody()->write('{"bar":"foo"}');
+        $request->getBody()
+            ->write('{"bar":"foo"}');
 
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(null, $this->receivedRequest()->getParsedBody());
+        $this->assertNull($this->receivedRequest()->getParsedBody());
 
         $request = $this->jsonRequest('POST');
-        $request->getBody()->write('{"bar":"foo"}');
+        $request->getBody()
+            ->write('{"bar":"foo"}');
 
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(['bar' => 'foo'], $this->receivedRequest()->getParsedBody());
+        $this->assertSame([
+            'bar' => 'foo',
+        ], $this->receivedRequest()->getParsedBody());
     }
 
     /**
@@ -51,7 +57,7 @@ class JsonToArrayTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(null, $this->receivedRequest()->getParsedBody());
+        $this->assertNull($this->receivedRequest()->getParsedBody());
     }
 
     /**
@@ -73,18 +79,17 @@ class JsonToArrayTest extends MiddlewareTestCase
      */
     public function json_exceptions_are_caught_and_transformed(): void
     {
-        $request = $this->jsonRequest()->withMethod('POST');
-        $request->getBody()->write('{"bar":"foo",}');
+        $request = $this->jsonRequest()
+            ->withMethod('POST');
+        $request->getBody()
+            ->write('{"bar":"foo",}');
 
         try {
             $this->runMiddleware(new JsonToArray(), $request);
             $this->fail('Invalid Json did not throw exception');
         } catch (HttpException $e) {
             $this->assertSame(400, $e->statusCode());
-            $this->assertStringStartsWith(
-                'Cant decode json body',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('Cant decode json body', $e->getMessage());
         }
     }
 
@@ -97,13 +102,17 @@ class JsonToArrayTest extends MiddlewareTestCase
         $std->foo = 'bar';
         $json = json_encode($std, JSON_THROW_ON_ERROR);
 
-        $request = $this->jsonRequest()->withMethod('POST');
-        $request->getBody()->write($json);
+        $request = $this->jsonRequest()
+            ->withMethod('POST');
+        $request->getBody()
+            ->write($json);
 
         $response = $this->runMiddleware(new JsonToArray(), $request);
 
         $response->assertNextMiddlewareCalled();
-        $this->assertSame(['foo' => 'bar'], $this->receivedRequest()->getParsedBody());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $this->receivedRequest()->getParsedBody());
     }
 
     /**
@@ -111,8 +120,10 @@ class JsonToArrayTest extends MiddlewareTestCase
      */
     public function non_arrays_thrown_an_exception(): void
     {
-        $request = $this->jsonRequest()->withMethod('POST');
-        $request->getBody()->write(json_encode('foo', JSON_THROW_ON_ERROR));
+        $request = $this->jsonRequest()
+            ->withMethod('POST');
+        $request->getBody()
+            ->write(json_encode('foo', JSON_THROW_ON_ERROR));
 
         try {
             $this->runMiddleware(new JsonToArray(), $request);
@@ -131,8 +142,10 @@ class JsonToArrayTest extends MiddlewareTestCase
      */
     public function non_string_keys_at_the_root_level_will_throw_an_exception(): void
     {
-        $request = $this->jsonRequest()->withMethod('POST');
-        $request->getBody()->write(json_encode(['foobar'], JSON_THROW_ON_ERROR));
+        $request = $this->jsonRequest()
+            ->withMethod('POST');
+        $request->getBody()
+            ->write(json_encode(['foobar'], JSON_THROW_ON_ERROR));
 
         try {
             $this->runMiddleware(new JsonToArray(), $request);
@@ -151,5 +164,4 @@ class JsonToArrayTest extends MiddlewareTestCase
         return $this->frontendRequest('/foo', [], $method)
             ->withAddedHeader('Content-Type', 'application/json');
     }
-
 }

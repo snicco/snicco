@@ -10,8 +10,8 @@ use function hash_hmac;
 
 final class HMAC
 {
+    private Secret $secret;
 
-    protected Secret $secret;
     private string $hash_algo;
 
     public function __construct(Secret $secret, string $hash_algo = 'sha256')
@@ -33,7 +33,7 @@ final class HMAC
             throw new RuntimeException('Could not generate a hash.');
             // @codeCoverageIgnoreEnd
         }
+
         return $hashed;
     }
-
 }

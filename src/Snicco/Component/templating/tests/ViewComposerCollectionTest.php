@@ -14,9 +14,11 @@ use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
 
-class ViewComposerCollectionTest extends TestCase
+/**
+ * @internal
+ */
+final class ViewComposerCollectionTest extends TestCase
 {
-
     private ViewComposerFactory $factory;
 
     protected function setUp(): void
@@ -36,12 +38,16 @@ class ViewComposerCollectionTest extends TestCase
         $view = new TestView('foo_view');
 
         $collection->addComposer('foo_view', function (View $view) {
-            return $view->with(['foo' => 'baz']);
+            return $view->with([
+                'foo' => 'baz',
+            ]);
         });
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'baz'], $view->context());
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $view->context());
     }
 
     /**
@@ -54,7 +60,9 @@ class ViewComposerCollectionTest extends TestCase
         $view = new TestView('foo_view');
 
         $collection->addComposer('bar_view', function (View $view) {
-            return $view->with(['foo' => 'baz']);
+            return $view->with([
+                'foo' => 'baz',
+            ]);
         });
 
         $view = $collection->compose($view);
@@ -72,16 +80,23 @@ class ViewComposerCollectionTest extends TestCase
         $view = new TestView('foo_view');
 
         $collection->addComposer('foo_view', function (View $view) {
-            return $view->with(['foo' => 'bar']);
+            return $view->with([
+                'foo' => 'bar',
+            ]);
         });
 
         $collection->addComposer('foo_view', function (View $view) {
-            return $view->with(['bar' => 'baz']);
+            return $view->with([
+                'bar' => 'baz',
+            ]);
         });
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'bar', 'bar' => 'baz'], $view->context());
+        $this->assertSame([
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ], $view->context());
     }
 
     /**
@@ -92,17 +107,23 @@ class ViewComposerCollectionTest extends TestCase
         $collection = $this->newViewComposerCollection();
 
         $collection->addComposer(['view_one', 'view_two'], function (View $view) {
-            return $view->with(['foo' => 'bar']);
+            return $view->with([
+                'foo' => 'bar',
+            ]);
         });
 
         $view1 = new TestView('view_one');
 
         $view1 = $collection->compose($view1);
-        $this->assertSame(['foo' => 'bar'], $view1->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view1->context());
 
         $view2 = new TestView('view_two');
         $view2 = $collection->compose($view2);
-        $this->assertSame(['foo' => 'bar'], $view2->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view2->context());
     }
 
     /**
@@ -115,12 +136,16 @@ class ViewComposerCollectionTest extends TestCase
         $view = new TestView('foo_view');
 
         $collection->addComposer('foo_view', function (View $view) {
-            return $view->with(['foo' => 'baz']);
+            return $view->with([
+                'foo' => 'baz',
+            ]);
         });
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'baz'], $view->context());
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $view->context());
     }
 
     /**
@@ -149,7 +174,9 @@ class ViewComposerCollectionTest extends TestCase
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'baz'], $view->context());
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $view->context());
     }
 
     /**
@@ -174,11 +201,7 @@ class ViewComposerCollectionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            sprintf(
-                'Class [%s] does not implement [%s]',
-                ComposerWithoutInterface::class,
-                ViewComposer::class
-            )
+            sprintf('Class [%s] does not implement [%s]', ComposerWithoutInterface::class, ViewComposer::class)
         );
 
         $collection = $this->newViewComposerCollection();
@@ -197,12 +220,16 @@ class ViewComposerCollectionTest extends TestCase
         $view = $view->with('foo', 'bar');
 
         $collection->addComposer('foo_view', function (View $view) {
-            return $view->with(['foo' => 'baz']);
+            return $view->with([
+                'foo' => 'baz',
+            ]);
         });
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'bar'], $view->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view->context());
     }
 
     /**
@@ -216,12 +243,16 @@ class ViewComposerCollectionTest extends TestCase
         $view = new TestView('foo_view');
 
         $collection->addComposer('foo_view', function (View $view) {
-            return $view->with(['foo' => 'baz']);
+            return $view->with([
+                'foo' => 'baz',
+            ]);
         });
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'baz'], $view->context());
+        $this->assertSame([
+            'foo' => 'baz',
+        ], $view->context());
     }
 
     /**
@@ -232,20 +263,28 @@ class ViewComposerCollectionTest extends TestCase
         $collection = $this->newViewComposerCollection();
 
         $collection->addComposer('foo*', function (View $view) {
-            return $view->with(['foo' => 'bar']);
+            return $view->with([
+                'foo' => 'bar',
+            ]);
         });
 
         $view = new TestView('foo');
         $view = $collection->compose($view);
-        $this->assertSame(['foo' => 'bar'], $view->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view->context());
 
         $view = new TestView('foobar');
         $view = $collection->compose($view);
-        $this->assertSame(['foo' => 'bar'], $view->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view->context());
 
         $view = new TestView('foobiz');
         $view = $collection->compose($view);
-        $this->assertSame(['foo' => 'bar'], $view->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view->context());
 
         $view = new TestView('bar');
         $view = $collection->compose($view);
@@ -258,39 +297,39 @@ class ViewComposerCollectionTest extends TestCase
     public function global_context_can_be_a_closure(): void
     {
         $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
-        $global_context->add('foo', fn() => 'bar');
+        $global_context->add('foo', fn () => 'bar');
 
         $view = new TestView('foo_view');
 
         $view = $collection->compose($view);
 
-        $this->assertSame(['foo' => 'bar'], $view->context());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view->context());
     }
 
     private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewComposerCollection
     {
         return new ViewComposerCollection($this->factory, $global_view_context);
     }
-
 }
 
 class TestComposer implements ViewComposer
 {
-
     public function compose(View $view): View
     {
-        return $view->with(['foo' => 'baz']);
+        return $view->with([
+            'foo' => 'baz',
+        ]);
     }
-
 }
 
 class ComposerWithoutInterface
 {
-
     public function compose(View $view): View
     {
-        return $view->with(['foo' => 'baz']);
+        return $view->with([
+            'foo' => 'baz',
+        ]);
     }
-
 }
-

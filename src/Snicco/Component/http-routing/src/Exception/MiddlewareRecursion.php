@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Exception;
 
 use InvalidArgumentException;
@@ -29,7 +28,7 @@ final class MiddlewareRecursion extends InvalidArgumentException
         $this->first_duplicate = $first_duplicate;
         $collapsed = implode('->', $build_trace) . '->' . $first_duplicate;
 
-        parent::__construct("Detected middleware recursion: $collapsed", 0, $prev);
+        parent::__construct("Detected middleware recursion: {$collapsed}", 0, $prev);
     }
 
     /**
@@ -44,10 +43,7 @@ final class MiddlewareRecursion extends InvalidArgumentException
     {
         $trace = $this->build_trace;
         array_unshift($trace, $first);
-        return new self(
-            $trace,
-            $this->first_duplicate,
-            $this
-        );
+
+        return new self($trace, $this->first_duplicate, $this);
     }
 }

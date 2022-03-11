@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting;
 
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -14,13 +13,17 @@ use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 
+use Webmozart\Assert\Assert;
+
 use function array_unique;
 use function class_exists;
 use function count;
 
 final class Psr17FactoryDiscovery
 {
-
+    /**
+     * @var array<string,object>
+     */
     private array $factories = [];
 
     /**
@@ -63,7 +66,7 @@ final class Psr17FactoryDiscovery
                 'uploaded_file' => '\GuzzleHttp\Psr7\HttpFactory',
                 'stream' => '\GuzzleHttp\Psr7\HttpFactory',
                 'response' => '\GuzzleHttp\Psr7\HttpFactory',
-            ]
+            ],
         ];
     }
 
@@ -97,44 +100,49 @@ final class Psr17FactoryDiscovery
      *
      * @param class-string<T> $class
      *
-     * @return T
-     *
      * @throws ReflectionException
+     *
+     * @return T
      */
     private function getFactory(string $class): object
     {
         if (isset($this->factories[$class])) {
-            /** @var T $factory */
-            $factory = $this->factories[$class];
-            return $factory;
+            $f = $this->factories[$class];
+            Assert::isInstanceOf($f, $class);
+
+            return $f;
         }
 
         switch ($class) {
             case ServerRequestFactoryInterface::class :
                 $index = 'server_request';
+
                 break;
             case UploadedFileFactoryInterface::class:
                 $index = 'uploaded_file';
+
                 break;
             case StreamFactoryInterface::class:
                 $index = 'stream';
+
                 break;
             case UriFactoryInterface::class:
                 $index = 'uri';
+
                 break;
             default:
                 $index = 'response';
         }
 
         foreach ($this->check_for_classes as $marker_class => $factory_classes) {
-            if (!class_exists($marker_class)) {
+            if (! class_exists($marker_class)) {
                 continue;
             }
 
-            /**
-             * @psalm-suppress ArgumentTypeCoercion
-             */
-            $instance = (new ReflectionClass($factory_classes[$index]))->newInstance();
+            /** @var class-string $instance_class */
+            $instance_class = $factory_classes[$index];
+
+            $instance = (new ReflectionClass($instance_class))->newInstance();
 
             if (1 === count(array_unique($factory_classes))) {
                 $this->factories[UriFactoryInterface::class] = $instance;
@@ -145,8 +153,11 @@ final class Psr17FactoryDiscovery
             } else {
                 $this->factories[$class] = $instance;
             }
+            /**
+             * @psalm-var  T $instance
+             */
+            Assert::isInstanceOf($instance, $class);
 
-            /** @var T */
             return $instance;
         }
 

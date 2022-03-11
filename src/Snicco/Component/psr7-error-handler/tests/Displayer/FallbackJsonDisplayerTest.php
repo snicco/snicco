@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Psr7ErrorHandler\Tests\Displayer;
 
 use Exception;
@@ -12,9 +11,11 @@ use Snicco\Component\Psr7ErrorHandler\Displayer\FallbackJsonDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Identifier\SplHashIdentifier;
 use Snicco\Component\Psr7ErrorHandler\Information\InformationProviderWithTransformation;
 
+/**
+ * @internal
+ */
 final class FallbackJsonDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -41,5 +42,4 @@ final class FallbackJsonDisplayerTest extends TestCase
     {
         $this->assertSame('application/json', (new FallbackJsonDisplayer())->supportedContentType());
     }
-
 }

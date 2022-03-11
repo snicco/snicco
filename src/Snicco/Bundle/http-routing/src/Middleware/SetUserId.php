@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
@@ -13,7 +12,6 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
 final class SetUserId extends Middleware
 {
-
     private BetterWPAPI $wp;
 
     public function __construct(BetterWPAPI $wp = null)
@@ -24,6 +22,7 @@ final class SetUserId extends Middleware
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $user_id = $this->wp->currentUserId();
+
         return $next($request->withUserId($user_id));
     }
 }

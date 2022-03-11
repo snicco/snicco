@@ -11,10 +11,11 @@ use Snicco\Component\Session\ValueObject\SessionLottery;
 
 /**
  * @psalm-suppress MixedArgumentTypeCoercion
+ *
+ * @internal
  */
 final class SessionConfigTest extends TestCase
 {
-
     private array $defaults;
 
     protected function setUp(): void
@@ -36,7 +37,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testFromDefaults(): void
+    public function test_from_defaults(): void
     {
         $config = SessionConfig::fromDefaults('my_cookie');
 
@@ -58,7 +59,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testCookiePath(): void
+    public function test_cookie_path(): void
     {
         $config = new SessionConfig($this->defaults);
         $this->assertSame('/', $config->cookiePath());
@@ -71,7 +72,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testCookieName(): void
+    public function test_cookie_name(): void
     {
         $config = new SessionConfig($this->defaults);
         $this->assertSame('my_session_cookie', $config->cookieName());
@@ -84,7 +85,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testCookieDomain(): void
+    public function test_cookie_domain(): void
     {
         $config = new SessionConfig($this->defaults);
         $this->assertNull($config->cookieDomain());
@@ -98,7 +99,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testSameSite(): void
+    public function test_same_site(): void
     {
         $this->defaults['same_site'] = 'lax';
         $this->assertSame('Lax', (new SessionConfig($this->defaults))->sameSite());
@@ -124,35 +125,35 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testOnlyHttp(): void
+    public function test_only_http(): void
     {
         unset($this->defaults['http_only']);
-        $this->assertSame(true, (new SessionConfig($this->defaults))->onlyHttp());
+        $this->assertTrue((new SessionConfig($this->defaults))->onlyHttp());
 
         $this->defaults['http_only'] = false;
 
-        $this->assertSame(false, (new SessionConfig($this->defaults))->onlyHttp());
+        $this->assertFalse((new SessionConfig($this->defaults))->onlyHttp());
     }
 
     /**
      * @test
      */
-    public function testOnlySecure(): void
+    public function test_only_secure(): void
     {
         unset($this->defaults['secure']);
-        $this->assertSame(true, (new SessionConfig($this->defaults))->onlySecure());
+        $this->assertTrue((new SessionConfig($this->defaults))->onlySecure());
 
         $this->defaults['secure'] = false;
 
-        $this->assertSame(false, (new SessionConfig($this->defaults))->onlySecure());
+        $this->assertFalse((new SessionConfig($this->defaults))->onlySecure());
     }
 
     /**
      * @test
      */
-    public function testAbsoluteLifetime(): void
+    public function test_absolute_lifetime(): void
     {
-        $this->assertSame(null, (new SessionConfig($this->defaults))->absoluteLifetimeInSec());
+        $this->assertNull((new SessionConfig($this->defaults))->absoluteLifetimeInSec());
         $this->defaults['absolute_lifetime_in_sec'] = 10;
         $this->assertSame(10, (new SessionConfig($this->defaults))->absoluteLifetimeInSec());
     }
@@ -160,7 +161,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testIdleTimeout(): void
+    public function test_idle_timeout(): void
     {
         $this->assertSame(10, (new SessionConfig($this->defaults))->idleTimeoutInSec());
         $this->defaults['idle_timeout_in_sec'] = 20;
@@ -176,7 +177,7 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testRotationInterval(): void
+    public function test_rotation_interval(): void
     {
         $this->defaults['rotation_interval_in_sec'] = 20;
         $this->assertSame(20, (new SessionConfig($this->defaults))->rotationInterval());
@@ -188,30 +189,19 @@ final class SessionConfigTest extends TestCase
     /**
      * @test
      */
-    public function testGcLottery(): void
+    public function test_gc_lottery(): void
     {
         $this->defaults['garbage_collection_percentage'] = 5;
-        $this->assertInstanceOf(
-            SessionLottery::class,
-            (new SessionConfig($this->defaults))->gcLottery()
-        );
+        $this->assertInstanceOf(SessionLottery::class, (new SessionConfig($this->defaults))->gcLottery());
 
         $this->defaults['garbage_collection_percentage'] = 0;
-        $this->assertInstanceOf(
-            SessionLottery::class,
-            (new SessionConfig($this->defaults))->gcLottery()
-        );
+        $this->assertInstanceOf(SessionLottery::class, (new SessionConfig($this->defaults))->gcLottery());
 
         $this->defaults['garbage_collection_percentage'] = 100;
-        $this->assertInstanceOf(
-            SessionLottery::class,
-            (new SessionConfig($this->defaults))->gcLottery()
-        );
+        $this->assertInstanceOf(SessionLottery::class, (new SessionConfig($this->defaults))->gcLottery());
 
         $this->expectException(InvalidArgumentException::class);
         unset($this->defaults['garbage_collection_percentage']);
         (new SessionConfig($this->defaults));
     }
-
-
 }

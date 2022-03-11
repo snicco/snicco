@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\SignedUrl\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -11,6 +10,9 @@ use function dirname;
 use function ob_get_clean;
 use function ob_start;
 
+/**
+ * @internal
+ */
 final class GenerateScripTest extends TestCase
 {
     /**
@@ -20,7 +22,7 @@ final class GenerateScripTest extends TestCase
     {
         ob_start();
         require_once dirname(__DIR__) . '/bin/generate-signed-url-secret.php';
-        $res = (string)ob_get_clean();
+        $res = (string) ob_get_clean();
 
         $this->assertStringContainsString("Store the following secret securely outside your webroot.\n", $res);
         $this->assertStringContainsString("You should NEVER commit is secret into VCS.\n", $res);

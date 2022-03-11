@@ -12,9 +12,11 @@ use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
 use function dirname;
 
-class ViewRoutesTest extends HttpRunnerTestCase
+/**
+ * @internal
+ */
+final class ViewRoutesTest extends HttpRunnerTestCase
 {
-
     private string $view;
 
     protected function setUp(): void
@@ -29,10 +31,7 @@ class ViewRoutesTest extends HttpRunnerTestCase
     public function view_routes_work(): void
     {
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->view(
-                '/foo',
-                $this->view
-            );
+            $configurator->view('/foo', $this->view);
         });
 
         $request = $this->frontendRequest('/foo');
@@ -60,13 +59,11 @@ class ViewRoutesTest extends HttpRunnerTestCase
     public function the_default_values_can_be_customized_for_view_routes(): void
     {
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->view(
-                '/foo',
-                $this->view,
-                ['greet' => 'Calvin'],
-                200,
-                ['X-FOO' => 'BAR']
-            );
+            $configurator->view('/foo', $this->view, [
+                'greet' => 'Calvin',
+            ], 200, [
+                'X-FOO' => 'BAR',
+            ]);
         });
 
         $request = $this->frontendRequest('/foo');
@@ -90,4 +87,3 @@ class ViewRoutesTest extends HttpRunnerTestCase
         $this->assertInstanceOf(Route::class, $view_data['request']->routingResult()->route());
     }
 }
-

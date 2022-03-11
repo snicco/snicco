@@ -14,7 +14,6 @@ use Snicco\Component\Session\ValueObject\SessionCookie;
 
 interface SessionManager
 {
-
     /**
      * @throws CouldNotReadSessionContent
      */
@@ -26,7 +25,7 @@ interface SessionManager
     public function toCookie(ImmutableSession $session): SessionCookie;
 
     /**
-     * @throws CouldNotWriteSessionContent If the session can't be saved.
+     * @throws CouldNotWriteSessionContent if the session can't be saved
      */
     public function save(Session $session): void;
 
@@ -34,5 +33,4 @@ interface SessionManager
      * @throws CouldNotDestroySessions
      */
     public function gc(): void;
-
 }

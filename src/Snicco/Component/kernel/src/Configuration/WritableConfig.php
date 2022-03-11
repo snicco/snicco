@@ -20,7 +20,6 @@ use function range;
 
 final class WritableConfig extends Config
 {
-
     private array $items;
 
     public function __construct(?array $items = null)
@@ -34,12 +33,12 @@ final class WritableConfig extends Config
     }
 
     /**
-     * Extend the configuration with the given values.
-     * Existing values have priority.
+     * Extend the configuration with the given values. Existing values have
+     * priority.
      *
      * @note This method does not work for multidimensional arrays. The existing config has to be an array of scalars.
      *
-     * @param ?scalar|array<?scalar> $extend_with
+     * @param array<?scalar>|?scalar $extend_with
      */
     public function extend(string $key, $extend_with): void
     {
@@ -47,10 +46,11 @@ final class WritableConfig extends Config
 
         if (null === $existing_config) {
             $this->set($key, $extend_with);
+
             return;
         }
 
-        if (!is_array($existing_config)) {
+        if (! is_array($existing_config)) {
             return;
         }
 
@@ -66,24 +66,24 @@ final class WritableConfig extends Config
     /**
      * @param scalar|scalar[] $value
      *
-     * @throws LogicException If key is missing or not a numerical array.
-     * @throws LogicException If value has a different type than the list values.
+     * @throws LogicException if key is missing or not a numerical array
+     * @throws LogicException if value has a different type than the list values
      */
     public function append(string $key, $value): void
     {
-        if (!$this->has($key)) {
-            throw new LogicException("Cant append to missing config key [$key].");
+        if (! $this->has($key)) {
+            throw new LogicException("Cant append to missing config key [{$key}].");
         }
         $current = $this->get($key);
 
         Assert::isArray($current);
-        Assert::isList($current, "Cant append to key [$key] because its not a list.");
+        Assert::isList($current, "Cant append to key [{$key}] because its not a list.");
 
         $type = count($current) ? gettype($current[0]) : null;
 
         foreach (Arr::toArray($value) as $item) {
             if (($actual = gettype($item)) !== $type && (null !== $type)) {
-                throw new LogicException("Expected scalar type [$type].\nGot [$actual].");
+                throw new LogicException("Expected scalar type [{$type}].\nGot [{$actual}].");
             }
             $current[] = $item;
         }
@@ -109,7 +109,7 @@ final class WritableConfig extends Config
      */
     public function setIfMissing(string $key, $value): void
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             $this->set($key, $value);
         }
     }
@@ -120,18 +120,18 @@ final class WritableConfig extends Config
      *
      * @param scalar|scalar[] $value
      *
-     * @throws LogicException If key is missing or not a numerical array.
-     * @throws LogicException If value has a different type than the list values.
+     * @throws LogicException if key is missing or not a numerical array
+     * @throws LogicException if value has a different type than the list values
      */
     public function prepend(string $key, $value): void
     {
-        if (!$this->has($key)) {
-            throw new LogicException("Cant prepend to missing config key [$key].");
+        if (! $this->has($key)) {
+            throw new LogicException("Cant prepend to missing config key [{$key}].");
         }
         $current = $this->get($key);
 
         Assert::isArray($current);
-        Assert::isList($current, "Cant prepend to key [$key] because its not a list.");
+        Assert::isList($current, "Cant prepend to key [{$key}] because its not a list.");
 
         $type = count($current) ? gettype($current[0]) : null;
 
@@ -139,7 +139,7 @@ final class WritableConfig extends Config
 
         foreach (Arr::toArray($value) as $item) {
             if (($actual = gettype($item)) !== $type && (null !== $type)) {
-                throw new LogicException("Expected scalar type [$type].\nGot [$actual].");
+                throw new LogicException("Expected scalar type [{$type}].\nGot [{$actual}].");
             }
             array_unshift($current, $item);
         }
@@ -149,6 +149,7 @@ final class WritableConfig extends Config
 
     /**
      * @param mixed $default
+     *
      * @return mixed
      */
     public function get(string $key, $default = null)
@@ -174,10 +175,11 @@ final class WritableConfig extends Config
         $current = $exiting_config;
 
         foreach ($extend_with as $key => $value) {
-            if (!isset($current[$key])) {
+            if (! isset($current[$key])) {
                 $current[$key] = $value;
             }
         }
+
         return $current;
     }
 
@@ -194,5 +196,4 @@ final class WritableConfig extends Config
 
         return array_keys($array) === range(0, count($array) - 1);
     }
-
 }

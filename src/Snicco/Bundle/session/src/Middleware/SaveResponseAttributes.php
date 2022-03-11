@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Middleware;
 
 use LogicException;
@@ -15,14 +14,13 @@ use Snicco\Component\Session\MutableSession;
 
 final class SaveResponseAttributes extends Middleware
 {
-
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 
         $session = $request->getAttribute(MutableSession::class);
 
-        if (!$session instanceof MutableSession) {
+        if (! $session instanceof MutableSession) {
             throw new LogicException('No mutable session has been set on the request.');
         }
 

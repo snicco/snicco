@@ -8,5 +8,4 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 
 final class WPMail extends Email
 {
-
 }

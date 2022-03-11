@@ -10,16 +10,17 @@ use Closure;
 use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 
+use function is_array;
+
 final class GlobalViewContext
 {
-
     /**
      * @var array<string,mixed>
      */
     private array $context = [];
 
     /**
-     * @param mixed|Closure():mixed $context
+     * @param Closure():mixed|mixed $context
      */
     public function add(string $name, $context): void
     {
@@ -49,7 +50,6 @@ final class GlobalViewContext
     private function getArrayAccess(array $context): ArrayAccess
     {
         return new class($context) implements ArrayAccess {
-
             private array $context;
 
             public function __construct(array $context)
@@ -62,16 +62,17 @@ final class GlobalViewContext
              */
             public function offsetExists($offset): bool
             {
-                return Arr::has($this->context, (string)$offset);
+                return Arr::has($this->context, (string) $offset);
             }
 
             /**
              * @param mixed $offset
+             *
              * @return mixed
              */
             public function offsetGet($offset)
             {
-                return Arr::get($this->context, (string)$offset);
+                return Arr::get($this->context, (string) $offset);
             }
 
             /**
@@ -97,5 +98,4 @@ final class GlobalViewContext
             }
         };
     }
-
 }

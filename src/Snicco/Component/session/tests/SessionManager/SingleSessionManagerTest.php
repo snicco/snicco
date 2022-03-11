@@ -13,9 +13,11 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\TestableClock\TestClock;
 
+/**
+ * @internal
+ */
 final class SingleSessionManagerTest extends TestCase
 {
-
     use SessionHelpers;
 
     /**
@@ -49,7 +51,7 @@ final class SingleSessionManagerTest extends TestCase
     /**
      * @test
      */
-    public function test_toCookie(): void
+    public function test_to_cookie(): void
     {
         $manager = new SingleSessionSessionManager($this->getSessionManager());
 
@@ -68,7 +70,7 @@ final class SingleSessionManagerTest extends TestCase
             'cookie_name' => 'test',
             'idle_timeout_in_sec' => 10,
             'rotation_interval_in_sec' => 20,
-            'garbage_collection_percentage' => 0
+            'garbage_collection_percentage' => 0,
         ]);
 
         $manager = new SingleSessionSessionManager($this->getSessionManager($config));
@@ -77,10 +79,9 @@ final class SingleSessionManagerTest extends TestCase
 
         $cookie = $manager->toCookie($session1);
         $this->assertSame('test', $cookie->name());
-        $this->assertSame(null, $cookie->lifetime());
+        $this->assertNull($cookie->lifetime());
         $this->assertSame(0, $cookie->expiryTimestamp());
     }
-
 
     /**
      * @test
@@ -93,7 +94,7 @@ final class SingleSessionManagerTest extends TestCase
             'cookie_name' => 'test',
             'idle_timeout_in_sec' => 10,
             'rotation_interval_in_sec' => 20,
-            'garbage_collection_percentage' => 100
+            'garbage_collection_percentage' => 100,
         ]);
 
         $manager = new SingleSessionSessionManager($this->getSessionManager($config, $driver));
@@ -115,5 +116,4 @@ final class SingleSessionManagerTest extends TestCase
         $this->expectException(BadSessionID::class);
         $driver->read($old_id->selector());
     }
-
 }

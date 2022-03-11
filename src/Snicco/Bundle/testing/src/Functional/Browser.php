@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Testing\Functional;
 
 use BadMethodCallException;
@@ -31,13 +30,18 @@ use const UPLOAD_ERR_OK;
 
 final class Browser extends AbstractBrowser
 {
-
     private HttpKernel $http_kernel;
+
     private Psr17FactoryDiscovery $psr17_factories;
+
     private UploadedFileFactoryInterface $file_factory;
+
     private ServerRequestFactoryInterface $request_factory;
+
     private StreamFactoryInterface $stream_factory;
+
     private AdminAreaPrefix $admin_area_prefix;
+
     private UrlPath $api_prefix;
 
     /**
@@ -76,6 +80,24 @@ final class Browser extends AbstractBrowser
         return new AssertableDOM($this->getCrawler());
     }
 
+    /**
+     * @return never
+     */
+    public function getRequest()
+    {
+        throw new BadMethodCallException(__METHOD__ . ' is not implemented since psr7 requests are immutable.');
+    }
+
+    public function getResponse(): AssertableResponse
+    {
+        $response = parent::getResponse();
+        Assert::isInstanceOf($response, Response::class);
+
+        /** @var Response $response */
+
+        return new AssertableResponse($response);
+    }
+
     protected function doRequest(object $request): Response
     {
         Assert::isInstanceOf($request, Request::class);
@@ -92,7 +114,7 @@ final class Browser extends AbstractBrowser
         /** @var Response $response */
 
         return new \Symfony\Component\BrowserKit\Response(
-            (string)$response->getBody(),
+            (string) $response->getBody(),
             $response->getStatusCode(),
             $response->getHeaders()
         );
@@ -131,30 +153,14 @@ final class Browser extends AbstractBrowser
 
         parse_str($psr_server_request->getUri()->getQuery(), $query);
 
-        if (strpos($psr_server_request->getUri()->getPath(), $this->admin_area_prefix->asString()) === 0) {
+        if (0 === strpos($psr_server_request->getUri()->getPath(), $this->admin_area_prefix->asString())) {
             $type = Request::TYPE_ADMIN_AREA;
-        } elseif (strpos($psr_server_request->getUri()->getPath(), $this->api_prefix->asString()) === 0) {
+        } elseif (0 === strpos($psr_server_request->getUri()->getPath(), $this->api_prefix->asString())) {
             $type = Request::TYPE_API;
         } else {
             $type = Request::TYPE_FRONTEND;
         }
+
         return Request::fromPsr($psr_server_request->withQueryParams($query), $type);
     }
-
-    /** @return never */
-    public function getRequest()
-    {
-        throw new BadMethodCallException(__METHOD__ . ' is not implemented since psr7 requests are immutable.');
-    }
-
-    public function getResponse(): AssertableResponse
-    {
-        $response = parent::getResponse();
-        Assert::isInstanceOf($response, Response::class);
-
-        /** @var Response $response */
-
-        return new AssertableResponse($response);
-    }
-
 }

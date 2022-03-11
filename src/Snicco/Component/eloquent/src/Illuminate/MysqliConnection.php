@@ -14,6 +14,8 @@ use Snicco\Component\Eloquent\Mysqli\MysqliDriverInterface;
 use Snicco\Component\Eloquent\Mysqli\PDOAdapter;
 use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
 
+use function is_array;
+
 /**
  * @psalm-internal Snicco\Component\Eloquent
  * @psalm-suppress PropertyNotSetInConstructor
@@ -22,8 +24,8 @@ use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {
-
     public const CONNECTION_NAME = 'wp_mysqli_connection';
+
     private MysqliDriverInterface $mysqli_driver;
 
     public function __construct(MysqliDriverInterface $mysqli_driver, WPDatabaseSettingsAPI $wp)
@@ -41,7 +43,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             'password' => $wp->dbPassword(),
             'charset' => $wp->dbCharset(),
             // important. Don't set this to an empty string as it is by default in WordPress.
-            'collation' => !empty($wp->dbCollate()) ? $wp->dbCollate() : null,
+            'collation' => ! empty($wp->dbCollate()) ? $wp->dbCollate() : null,
             'prefix' => $wp->tablePrefix(),
             'name' => self::CONNECTION_NAME,
         ]);
@@ -58,26 +60,27 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run a select statement and return a single result.
      *
      * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo can be ignored.
+     * @param array  $bindings
+     * @param bool   $useReadPdo can be ignored
+     *
+     * @throws QueryException
      *
      * @return mixed
-     * @throws QueryException
      */
     public function selectOne($query, $bindings = [], $useReadPdo = true)
     {
         $result = $this->select($query, $bindings);
+
         return array_shift($result);
     }
 
     /**
-     * Run a select statement against the database and return a set of rows
+     * Run a select statement against the database and return a set of rows.
      *
      * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo
+     * @param array  $bindings
+     * @param bool   $useReadPdo
      *
-     * @return array
      * @throws QueryException
      */
     public function select($query, $bindings = [], $useReadPdo = true): array
@@ -86,15 +89,15 @@ final class MysqliConnection extends IlluminateMysqlConnection
             if ($this->pretending) {
                 return [];
             }
+
             return $this->mysqli_driver->doSelect($query, $bindings);
         });
     }
 
     /**
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
-     * @return array
      * @throws QueryException
      */
     public function selectFromWriteConnection($query, $bindings = []): array
@@ -106,9 +109,8 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an insert statement against the database.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
-     * @return bool
      * @throws QueryException
      */
     public function insert($query, $bindings = []): bool
@@ -120,9 +122,8 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Execute an SQL statement and return the boolean result.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
-     * @return bool
      * @throws QueryException
      */
     public function statement($query, $bindings = []): bool
@@ -131,6 +132,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             if ($this->pretending) {
                 return true;
             }
+
             return $this->mysqli_driver->doStatement($query, $bindings);
         });
     }
@@ -139,9 +141,8 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an update statement against the database.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
-     * @return int
      * @throws QueryException
      */
     public function update($query, $bindings = []): int
@@ -153,9 +154,8 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an SQL statement and get the number of rows affected.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
-     * @return int
      * @throws QueryException
      */
     public function affectingStatement($query, $bindings = []): int
@@ -173,9 +173,8 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run a delete statement against the database.
      *
      * @param string $query
-     * @param array $bindings
+     * @param array  $bindings
      *
-     * @return int
      * @throws QueryException
      */
     public function delete($query, $bindings = []): int
@@ -188,7 +187,6 @@ final class MysqliConnection extends IlluminateMysqlConnection
      *
      * @param string $query
      *
-     * @return bool
      * @throws QueryException
      */
     public function unprepared($query): bool
@@ -197,29 +195,29 @@ final class MysqliConnection extends IlluminateMysqlConnection
             if ($this->pretending) {
                 return true;
             }
+
             return $this->mysqli_driver->doUnprepared($query);
         });
     }
 
     /**
-     * Run a select statement against the database and returns a generator.
-     * I don't believe that this is currently possible like it is with laravel,
-     * since mysqli_driver does not use PDO.
-     * Every mysqli_driver method seems to be iterating over the result array.
+     * Run a select statement against the database and returns a generator. I
+     * don't believe that this is currently possible like it is with laravel,
+     * since mysqli_driver does not use PDO. Every mysqli_driver method seems to
+     * be iterating over the result array.
      *
      * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo
-     *
-     * @return Generator
+     * @param array  $bindings
+     * @param bool   $useReadPdo
      */
     public function cursor($query, $bindings = [], $useReadPdo = true): Generator
     {
-        /** @var mysqli_result|array $result */
+        /** @var array|mysqli_result $result */
         $result = $this->run($query, $bindings, function ($query, $bindings) {
             if ($this->pretending) {
                 return [];
             }
+
             return $this->mysqli_driver->doCursorSelect($query, $bindings);
         });
 
@@ -236,8 +234,9 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * Run an SQL statement through the mysqli_driver class.
      *
      * @template T
-     * @param string $query
-     * @param array $bindings
+     *
+     * @param string                   $query
+     * @param array                    $bindings
      * @param Closure(string,array): T $callback
      *
      * @return T
@@ -264,14 +263,11 @@ final class MysqliConnection extends IlluminateMysqlConnection
 
     /**
      * Reconnect to the database if a PDO connection is missing.
-     *
-     * @return void
      */
     protected function reconnectIfMissingConnection()
     {
-        if (!$this->mysqli_driver->isStillConnected()) {
+        if (! $this->mysqli_driver->isStillConnected()) {
             $this->mysqli_driver->reconnect();
         }
     }
-
 }

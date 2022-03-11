@@ -9,7 +9,6 @@ use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
 class FalseRouteCondition extends RouteCondition
 {
-
     public function isSatisfied(Request $request): bool
     {
         return false;
@@ -19,5 +18,4 @@ class FalseRouteCondition extends RouteCondition
     {
         return [];
     }
-
 }

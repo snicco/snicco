@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\HttpRouting\Tests\Routing\Cache;
 
 use PHPUnit\Framework\TestCase;
@@ -12,9 +11,11 @@ use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;
 use function is_file;
 use function unlink;
 
+/**
+ * @internal
+ */
 final class FileRouteCacheTest extends TestCase
 {
-
     private string $test_cache_file;
 
     protected function setUp(): void
@@ -41,16 +42,20 @@ final class FileRouteCacheTest extends TestCase
 
         $res = $cache->get(function () {
             return [
-                'route_collection' => ['foo' => 'bar'],
+                'route_collection' => [
+                    'foo' => 'bar',
+                ],
                 'url_matcher' => [],
-                'admin_menu' => []
+                'admin_menu' => [],
             ];
         });
 
         $this->assertSame([
-            'route_collection' => ['foo' => 'bar'],
+            'route_collection' => [
+                'foo' => 'bar',
+            ],
             'url_matcher' => [],
-            'admin_menu' => []
+            'admin_menu' => [],
         ], $res);
 
         $this->assertTrue(is_file($this->test_cache_file));
@@ -67,9 +72,11 @@ final class FileRouteCacheTest extends TestCase
 
         $cache->get(function () {
             return [
-                'route_collection' => ['foo' => 'bar'],
+                'route_collection' => [
+                    'foo' => 'bar',
+                ],
                 'url_matcher' => [],
-                'admin_menu' => []
+                'admin_menu' => [],
             ];
         });
 
@@ -77,9 +84,11 @@ final class FileRouteCacheTest extends TestCase
 
         $this->assertSame(
             [
-                'route_collection' => ['foo' => 'bar'],
+                'route_collection' => [
+                    'foo' => 'bar',
+                ],
                 'url_matcher' => [],
-                'admin_menu' => []
+                'admin_menu' => [],
             ],
             $cache->get(function () {
                 throw new RuntimeException('Data not loaded from cache.');
@@ -96,5 +105,4 @@ final class FileRouteCacheTest extends TestCase
             }
         }
     }
-
 }

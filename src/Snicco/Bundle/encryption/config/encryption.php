@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Snicco\Bundle\Encryption\Option\EncryptionOption;
 
 return [
-
     /*
      * The value of this option is HIGHLY SENSITIVE. Please read the following instructions carefully.
      *
@@ -21,8 +20,7 @@ return [
      *          a) Only run your plugin if a separate constant is set along the lines of define("MY_PLUGIN_CACHE_DIR_IS_SECURE, true")
      *          b) Implement a custom config cache class that will only load the data if ABSPATH is defined.
      *
-     * This value SHOULD NEVER EVER EVER EVER be committed into version control. 
+     * This value SHOULD NEVER EVER EVER EVER be committed into version control.
      */
-    EncryptionOption::KEY_ASCII => 'this-key-will-throw-an-exception'
-
+    EncryptionOption::KEY_ASCII => 'this-key-will-throw-an-exception',
 ];

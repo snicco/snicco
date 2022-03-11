@@ -10,7 +10,6 @@ use Snicco\Component\EventDispatcher\Event;
 
 class FooEvent implements Event
 {
-
     use ClassAsName;
     use ClassAsPayload;
 
@@ -20,5 +19,4 @@ class FooEvent implements Event
     {
         $this->val = $val;
     }
-
 }

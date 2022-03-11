@@ -8,8 +8,6 @@ use Snicco\Bridge\Blade\BladeComponent;
 
 class Alert extends BladeComponent
 {
-
-
     public string $type;
 
     public string $message;
@@ -27,7 +25,6 @@ class Alert extends BladeComponent
 
     public function isUppercaseFoo(string $foo): bool
     {
-        return $foo === 'FOO';
+        return 'FOO' === $foo;
     }
-
 }

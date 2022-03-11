@@ -54,7 +54,6 @@ final class Cookie
      *    http_only?: bool,
      *    same_site: 'Lax'|'Strict'|'None'
      * } $properties
-     *
      */
     public function __construct(string $name, string $value, ?array $properties = null)
     {
@@ -79,6 +78,7 @@ final class Cookie
     {
         $cookie = clone $this;
         $cookie->properties['http_only'] = false;
+
         return $cookie;
     }
 
@@ -86,6 +86,7 @@ final class Cookie
     {
         $cookie = clone $this;
         $cookie->properties['http_only'] = true;
+
         return $cookie;
     }
 
@@ -115,27 +116,25 @@ final class Cookie
     }
 
     /**
-     * @psalm-param  'Lax'|'Strict'|'None'|'None; Secure' $same_site
+     * @param 'Lax'|'None'|'None; Secure'|'Strict' $same_site
      */
     public function withSameSite(string $same_site): Cookie
     {
         $same_site = ucwords($same_site);
 
-        if ($same_site === 'None; Secure') {
+        if ('None; Secure' === $same_site) {
             $same_site = 'None';
         }
 
-        if (!in_array($same_site, ['Lax', 'Strict', 'None'])) {
-            throw new LogicException(
-                "The value [$same_site] is not supported for the SameSite cookie."
-            );
+        if (! in_array($same_site, ['Lax', 'Strict', 'None'], true)) {
+            throw new LogicException("The value [{$same_site}] is not supported for the SameSite cookie.");
         }
 
         $cookie = clone $this;
 
         $cookie->properties['same_site'] = $same_site;
 
-        if ($same_site === 'None') {
+        if ('None' === $same_site) {
             $cookie->properties['secure'] = true;
         }
 
@@ -143,14 +142,12 @@ final class Cookie
     }
 
     /**
-     * @param 0|positive-int|DateTimeImmutable $timestamp
+     * @param 0|DateTimeImmutable|positive-int $timestamp
      */
     public function withExpiryTimestamp($timestamp): Cookie
     {
-        if (!is_int($timestamp) && !$timestamp instanceof DateTimeImmutable) {
-            throw new InvalidArgumentException(
-                '$timestamp must be an integer or DataTimeInterface'
-            );
+        if (! is_int($timestamp) && ! $timestamp instanceof DateTimeImmutable) {
+            throw new InvalidArgumentException('$timestamp must be an integer or DataTimeInterface');
         }
 
         $timestamp = $timestamp instanceof DateTimeInterface
@@ -163,5 +160,4 @@ final class Cookie
 
         return $cookie;
     }
-
 }

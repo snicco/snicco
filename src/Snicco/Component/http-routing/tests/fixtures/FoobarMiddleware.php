@@ -10,12 +10,11 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 
 class FoobarMiddleware extends Middleware
 {
-
     private string $val;
 
     public function __construct(string $foo = null, string $bar = null)
     {
-        if (!$foo && !$bar) {
+        if (! $foo && ! $bar) {
             $this->val = 'foobar_middleware';
         } else {
             $this->val = $foo . '_' . ($bar ?: 'foobar_middleware');
@@ -26,8 +25,9 @@ class FoobarMiddleware extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()->write(':' . $this->val);
+        $response->getBody()
+            ->write(':' . $this->val);
+
         return $response;
     }
-
 }

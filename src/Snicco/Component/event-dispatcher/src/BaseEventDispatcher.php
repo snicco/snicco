@@ -27,16 +27,15 @@ use function sprintf;
 
 final class BaseEventDispatcher implements EventDispatcher
 {
-
     private ListenerFactory $listener_factory;
 
     /**
-     * @var array<string, array<string, Closure|array{0:class-string, 1:string}>>
+     * @var array<string, array<string, array{0:class-string, 1:string}|Closure>>
      */
     private array $listeners = [];
 
     /**
-     * @var array<string, array<Closure|array{0:class-string, 1:string}>>
+     * @var array<string, array<array{0:class-string, 1:string}|Closure>>
      */
     private array $listener_cache = [];
 
@@ -55,10 +54,7 @@ final class BaseEventDispatcher implements EventDispatcher
             if ($original_event instanceof StoppablePsrEvent && $original_event->isPropagationStopped()) {
                 break;
             }
-            $this->callListener(
-                $listener,
-                $event,
-            );
+            $this->callListener($listener, $event,);
         }
 
         return $original_event;
@@ -68,28 +64,30 @@ final class BaseEventDispatcher implements EventDispatcher
     {
         $this->resetListenerCache($event_name);
 
-        if (is_null($listener)) {
+        if (null === $listener) {
             unset($this->listeners[$event_name]);
+
             return;
         }
 
-        if (!isset($this->listeners[$event_name])) {
+        if (! isset($this->listeners[$event_name])) {
             return;
         }
 
         $id = $this->parseListenerId($this->validatedListener($listener));
 
-        if (!isset($this->listeners[$event_name][$id])) {
+        if (! isset($this->listeners[$event_name][$id])) {
             return;
         }
 
         $listener = $this->listeners[$event_name][$id];
 
-        if (!$listener instanceof Closure && in_array(Unremovable::class, (array)class_implements($listener[0]))) {
-            throw CantRemoveListener::thatIsMarkedAsUnremovable(
-                $listener,
-                $event_name
-            );
+        if (! $listener instanceof Closure && in_array(
+            Unremovable::class,
+            (array) class_implements($listener[0]),
+            true
+        )) {
+            throw CantRemoveListener::thatIsMarkedAsUnremovable($listener, $event_name);
         }
 
         unset($this->listeners[$event_name][$id]);
@@ -97,17 +95,9 @@ final class BaseEventDispatcher implements EventDispatcher
 
     public function subscribe(string $event_subscriber): void
     {
-        if (!in_array(
-            EventSubscriber::class,
-            (array)class_implements($event_subscriber),
-            true
-        )) {
+        if (! in_array(EventSubscriber::class, (array) class_implements($event_subscriber), true)) {
             throw new InvalidArgumentException(
-                sprintf(
-                    '[%s] does not implement [%s].',
-                    $event_subscriber,
-                    EventSubscriber::class
-                )
+                sprintf('[%s] does not implement [%s].', $event_subscriber, EventSubscriber::class)
             );
         }
 
@@ -123,8 +113,10 @@ final class BaseEventDispatcher implements EventDispatcher
     {
         if ($event_name instanceof Closure) {
             $this->listen(ClosureTypeHint::first($event_name), $event_name);
+
             return;
-        } elseif (null === $listener) {
+        }
+        if (null === $listener) {
             throw new InvalidArgumentException('$listener can not be null if first $event_name is not a closure.');
         }
 
@@ -142,24 +134,24 @@ final class BaseEventDispatcher implements EventDispatcher
         if ($event instanceof Event) {
             return $event;
         }
+
         return GenericEvent::fromObject($event);
     }
 
     /**
-     * @return array<Closure|array{0: class-string, 1:string}>
+     * @return array<array{0: class-string, 1:string}|Closure>
      */
     private function getListenersForEvent(string $event_name, bool $include_reflection = true): array
     {
         if (isset($this->listener_cache[$event_name])) {
             return $this->listener_cache[$event_name];
-        } else {
-            $listeners = $this->listeners[$event_name] ?? [];
+        }
+        $listeners = $this->listeners[$event_name] ?? [];
 
-            /** @var array<Closure|array{0: class-string, 1:string}> $listeners */
-            $listeners = $include_reflection
+        /** @var array<array{0: class-string, 1:string}|Closure> $listeners */
+        $listeners = $include_reflection
                 ? $this->mergeReflectionListeners($event_name, $listeners)
                 : $listeners;
-        }
 
         $this->listener_cache[$event_name] = $listeners;
 
@@ -168,7 +160,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
     private function mergeReflectionListeners(string $event_name, array $listeners): array
     {
-        if (!class_exists($event_name)) {
+        if (! class_exists($event_name)) {
             return $listeners;
         }
 
@@ -179,7 +171,6 @@ final class BaseEventDispatcher implements EventDispatcher
             // @codeCoverageIgnoreEnd
             : $interfaces;
 
-
         foreach ($interfaces as $interface) {
             $listeners = array_merge($listeners, $this->getListenersForEvent($interface, false));
         }
@@ -189,11 +180,12 @@ final class BaseEventDispatcher implements EventDispatcher
         if ($parent && (new ReflectionClass($parent))->isAbstract()) {
             $listeners = array_merge($listeners, $this->getListenersForEvent($parent, false));
         }
+
         return $listeners;
     }
 
     /**
-     * @param Closure|array{0:class-string, 1:string} $listener
+     * @param array{0:class-string, 1:string}|Closure $listener
      *
      * @psalm-suppress MixedAssignment
      */
@@ -204,13 +196,11 @@ final class BaseEventDispatcher implements EventDispatcher
 
         if ($listener instanceof Closure) {
             $listener(...$payload);
+
             return;
         }
 
-        $instance = $this->listener_factory->create(
-            $listener[0],
-            $event->name()
-        );
+        $instance = $this->listener_factory->create($listener[0], $event->name());
 
         call_user_func_array([$instance, $listener[1]], $payload);
     }
@@ -221,7 +211,7 @@ final class BaseEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param Closure|array{0:class-string, 1:string} $validated_listener
+     * @param array{0:class-string, 1:string}|Closure $validated_listener
      */
     private function parseListenerId($validated_listener): string
     {
@@ -233,8 +223,9 @@ final class BaseEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param Closure|class-string|array{0:class-string, 1:string} $listener
-     * @return Closure|array{0: class-string, 1:string}
+     * @param array{0:class-string, 1:string}|class-string|Closure $listener
+     *
+     * @return array{0: class-string, 1:string}|Closure
      *
      * @psalm-suppress DocblockTypeContradiction
      * @psalm-suppress MixedArgument
@@ -246,31 +237,31 @@ final class BaseEventDispatcher implements EventDispatcher
         }
 
         if (is_string($listener)) {
-            if (!class_exists($listener)) {
+            if (! class_exists($listener)) {
                 throw InvalidListener::becauseListenerClassDoesntExist($listener);
             }
 
             $invokable = method_exists($listener, '__invoke');
 
-            if (!$invokable) {
+            if (! $invokable) {
                 throw InvalidListener::becauseListenerCantBeInvoked($listener);
             }
 
             return [$listener, '__invoke'];
         }
 
-        if (!is_array($listener)) {
+        if (! is_array($listener)) {
             throw new InvalidListener('Listeners must be a string, array or closure.');
         }
 
-        if (!class_exists($listener[0])) {
+        if (! class_exists($listener[0])) {
             throw InvalidListener::becauseListenerClassDoesntExist($listener[0]);
         }
 
-        if (!method_exists($listener[0], $listener[1])) {
+        if (! method_exists($listener[0], $listener[1])) {
             throw InvalidListener::becauseProvidedClassMethodDoesntExist($listener);
         }
+
         return $listener;
     }
-
 }

@@ -14,7 +14,6 @@ use function urlencode;
  */
 final class Cookies
 {
-
     /**
      * @var array<string,Cookie>
      */
@@ -24,6 +23,7 @@ final class Cookies
     {
         $new = clone $this;
         $new->response_cookies[$cookie->name] = $cookie;
+
         return $new;
     }
 
@@ -74,5 +74,4 @@ final class Cookies
 
         return $header;
     }
-
 }

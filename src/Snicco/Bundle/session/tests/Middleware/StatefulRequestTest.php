@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Tests\Middleware;
 
 use LogicException;
@@ -28,10 +27,13 @@ use function time;
 use function urldecode;
 use function urlencode;
 
+/**
+ * @internal
+ */
 final class StatefulRequestTest extends MiddlewareTestCase
 {
-
     private InMemoryDriver $session_driver;
+
     private TestLogger $logger;
 
     /**
@@ -94,8 +96,10 @@ final class StatefulRequestTest extends MiddlewareTestCase
         }
 
         $middleware = $this->getMiddleware('/foo/bar');
-        $this->runMiddleware($middleware, $this->frontendRequest('/foo/bar/baz'))->assertNextMiddlewareCalled();
-        $this->runMiddleware($middleware, $this->frontendRequest('/foo/bar/bam'))->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $this->frontendRequest('/foo/bar/baz'))
+            ->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $this->frontendRequest('/foo/bar/bam'))
+            ->assertNextMiddlewareCalled();
     }
 
     /**
@@ -107,7 +111,8 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $this->runMiddleware($m, $this->frontendRequest());
 
-        $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $session);
         $this->assertInstanceOf(ReadOnlySession::class, $session);
     }
@@ -128,13 +133,16 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $this->assertCount(1, $this->session_driver->all());
 
-        $request = $this->frontendRequest()->withCookieParams([
-            'test_cookie' => $session->id()->asString()
-        ]);
+        $request = $this->frontendRequest()
+            ->withCookieParams([
+                'test_cookie' => $session->id()
+                    ->asString(),
+            ]);
         $response = $this->runMiddleware($this->getMiddleware(), $request);
         $response->assertNextMiddlewareCalled();
 
-        $received_session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $received_session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $received_session);
         $this->assertSame('bar', $received_session->get('foo'));
     }
@@ -148,7 +156,8 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $this->runMiddleware($m, $this->frontendRequest());
 
-        $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $session);
         $this->assertInstanceOf(ReadOnlySession::class, $session);
         $this->assertNotInstanceOf(MutableSession::class, $session);
@@ -164,11 +173,13 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $this->runMiddleware($m, $this->frontendRequest('/foo', [], 'POST'));
 
-        $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $session);
         $this->assertInstanceOf(ReadOnlySession::class, $session);
 
-        $mutable_session = $this->receivedRequest()->getAttribute(MutableSession::class);
+        $mutable_session = $this->receivedRequest()
+            ->getAttribute(MutableSession::class);
         $this->assertInstanceOf(MutableSession::class, $mutable_session);
     }
 
@@ -185,13 +196,15 @@ final class StatefulRequestTest extends MiddlewareTestCase
             $session->put('foo', 'bar');
             /** @var ImmutableSession $immutable_session */
             $immutable_session = $request->getAttribute(ImmutableSession::class);
+
             return $response->withAddedHeader('s-id', $immutable_session->id()->asString());
         });
 
         $response = $this->runMiddleware($m, $this->frontendRequest('/foo', [], 'POST'));
         $response->assertNextMiddlewareCalled();
 
-        $response = $response->assertableResponse()->getPsrResponse();
+        $response = $response->assertableResponse()
+            ->getPsrResponse();
         $cookies = $response->cookies();
 
         $headers = $cookies->toHeaders();
@@ -206,19 +219,22 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $this->assertSame('', $cookie->expires);
         $this->assertSame(urlencode($response->getHeaderLine('s-id')), $cookie->value);
 
-        $request_with_cookie = $this->frontendRequest()->withCookieParams([
-            'test_cookie' => urldecode($cookie->value)
-        ]);
+        $request_with_cookie = $this->frontendRequest()
+            ->withCookieParams([
+                'test_cookie' => urldecode($cookie->value),
+            ]);
 
         $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
             /** @var ImmutableSession $session */
             $session = $request->getAttribute(ImmutableSession::class);
-            return $response->withAddedHeader('X-FOO', (string)$session->get('foo'));
+
+            return $response->withAddedHeader('X-FOO', (string) $session->get('foo'));
         });
 
         $response = $this->runMiddleware($this->getMiddleware(), $request_with_cookie);
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertHeader('X-FOO', 'bar');
+        $response->assertableResponse()
+            ->assertHeader('X-FOO', 'bar');
     }
 
     /**
@@ -232,7 +248,8 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->getMiddleware(), $this->frontendRequest());
 
-        $response = $response->assertableResponse()->getPsrResponse();
+        $response = $response->assertableResponse()
+            ->getPsrResponse();
         $cookies = $response->cookies();
 
         $headers = $cookies->toHeaders();
@@ -283,7 +300,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $response->assertNextMiddlewareCalled();
 
         $this->logger->hasError([
-            'message' => 'Garbage collection failed.'
+            'message' => 'Garbage collection failed.',
         ]);
     }
 
@@ -296,10 +313,12 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         $this->runMiddleware(
             $m,
-            $this->frontendRequest()->withAttribute(StatefulRequest::ALLOW_WRITE_SESSION_FOR_READ_VERBS, true)
+            $this->frontendRequest()
+                ->withAttribute(StatefulRequest::ALLOW_WRITE_SESSION_FOR_READ_VERBS, true)
         );
 
-        $session = $this->receivedRequest()->getAttribute(MutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(MutableSession::class);
         $this->assertInstanceOf(MutableSession::class, $session);
     }
 
@@ -310,12 +329,10 @@ final class StatefulRequestTest extends MiddlewareTestCase
     {
         $m = $this->getMiddleware();
 
-        $this->runMiddleware(
-            $m,
-            $this->frontendRequest()->withUserId(1)
-        );
+        $this->runMiddleware($m, $this->frontendRequest()->withUserId(1));
 
-        $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $session);
         $this->assertSame(1, $session->userId());
     }
@@ -335,14 +352,16 @@ final class StatefulRequestTest extends MiddlewareTestCase
         $session->setUserId(12);
         $manager->save($session);
 
-
-        $request = $this->frontendRequest()->withCookieParams([
-            'test_cookie' => $session->id()->asString()
-        ]);
+        $request = $this->frontendRequest()
+            ->withCookieParams([
+                'test_cookie' => $session->id()
+                    ->asString(),
+            ]);
         $this->runMiddleware($this->getMiddleware(), $request->withUserId(1));
 
         /** @var ImmutableSession $session */
-        $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertSame(12, $session->userId(), 'Session user id should have priority over request user id.');
     }
 
@@ -353,14 +372,12 @@ final class StatefulRequestTest extends MiddlewareTestCase
     {
         $m = $this->getMiddleware();
 
-        $this->runMiddleware(
-            $m,
-            $this->frontendRequest()->withUserId(0)
-        );
+        $this->runMiddleware($m, $this->frontendRequest()->withUserId(0));
 
-        $session = $this->receivedRequest()->getAttribute(ImmutableSession::class);
+        $session = $this->receivedRequest()
+            ->getAttribute(ImmutableSession::class);
         $this->assertInstanceOf(ImmutableSession::class, $session);
-        $this->assertSame(null, $session->userId());
+        $this->assertNull($session->userId());
     }
 
     private function getMiddleware(string $cookie_path = '/', Clock $clock = null): StatefulRequest
@@ -376,5 +393,4 @@ final class StatefulRequestTest extends MiddlewareTestCase
 
         return new StatefulRequest($manager, $this->logger, $cookie_path);
     }
-
 }

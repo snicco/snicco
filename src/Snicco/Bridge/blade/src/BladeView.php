@@ -15,14 +15,15 @@ use function is_array;
  */
 final class BladeView implements View
 {
-
     private \Illuminate\View\View $illuminate_view;
 
     /**
      * @var array<string,mixed>
      */
     private array $context;
+
     private string $name;
+
     private string $path;
 
     public function __construct(\Illuminate\View\View $illuminate_view)
@@ -46,29 +47,39 @@ final class BladeView implements View
     {
         try {
             $view = $this->cloneView();
-            return $view->with($this->context)->render();
+
+            return $view->with($this->context)
+                ->render();
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
                 "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e,
             );
         }
     }
 
     /**
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
+     *
+     * @return static
+     *
      * @psalm-mutation-free
      */
     public function with($key, $value = null): View
     {
         $new = clone $this;
-        $context = is_array($key) ? $key : [$key => $value];
+        $context = is_array($key) ? $key : [
+            $key => $value,
+        ];
         /**
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
             $new->context[$key] = $value;
         }
+
         return $new;
     }
 
@@ -97,5 +108,4 @@ final class BladeView implements View
             $this->illuminate_view->getPath()
         );
     }
-
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Middleware;
 
 use Closure;
-use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,6 +14,8 @@ use Snicco\Component\HttpRouting\Reflector;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
+use Webmozart\Assert\Assert;
+
 use function array_map;
 use function call_user_func;
 use function is_string;
@@ -22,24 +23,23 @@ use function strtolower;
 
 final class MiddlewarePipeline
 {
-
     private HttpErrorHandler $error_handler;
+
     private MiddlewareFactory $middleware_factory;
+
     private ContainerInterface $container;
 
     /**
-     * @var array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>>
+     * @var array<class-string<MiddlewareInterface>|MiddlewareBlueprint|MiddlewareInterface>
      */
     private array $middleware = [];
 
     private ?Request $current_request = null;
 
     /**
-     * @var Closure(Request):ResponseInterface $request_handler
-     * @psalm-var Closure(Request=):ResponseInterface $request_handler
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @var Closure(Request):ResponseInterface|null
      */
-    private Closure $request_handler;
+    private ?Closure $request_handler = null;
 
     public function __construct(ContainerInterface $container, HttpErrorHandler $error_handler)
     {
@@ -52,11 +52,12 @@ final class MiddlewarePipeline
     {
         $new = clone $this;
         $new->current_request = $request;
+
         return $new;
     }
 
     /**
-     * @param array<MiddlewareInterface|MiddlewareBlueprint|class-string<MiddlewareInterface>> $middleware
+     * @param array<class-string<MiddlewareInterface>|MiddlewareBlueprint|MiddlewareInterface> $middleware
      */
     public function through(array $middleware): MiddlewarePipeline
     {
@@ -69,33 +70,34 @@ final class MiddlewarePipeline
 
         $new = clone $this;
         $new->middleware = $middleware;
+
         return $new;
     }
 
     /**
      * @param Closure(Request):ResponseInterface $request_handler
-     * @psalm-param Closure(Request=):ResponseInterface $request_handler
      */
     public function then(Closure $request_handler): Response
     {
         $new = clone $this;
         $new->request_handler = $request_handler;
+
         return $new->run();
     }
 
     private function run(): Response
     {
-        if (!isset($this->current_request)) {
-            throw new LogicException(
-                'You cant run a middleware pipeline twice without calling send() first.'
-            );
-        }
+        Assert::notNull(
+            $this->current_request,
+            'You cant run a middleware pipeline twice without calling send() first.'
+        );
+        Assert::notNull($this->request_handler);
 
         $stack = $this->lazyNext();
 
         $response = $stack($this->current_request);
 
-        unset($this->current_request);
+        $this->current_request = null;
 
         return $response;
     }
@@ -123,6 +125,8 @@ final class MiddlewarePipeline
         $middleware = array_shift($this->middleware);
 
         if (null === $middleware) {
+            Assert::notNull($this->request_handler);
+
             return call_user_func($this->request_handler, $request);
         }
 
@@ -150,19 +154,18 @@ final class MiddlewarePipeline
     private function convertStrings(array $constructor_args): array
     {
         return array_map(function ($value) {
-            if (strtolower($value) === 'true') {
+            if ('true' === strtolower($value)) {
                 return true;
             }
-            if (strtolower($value) === 'false') {
+            if ('false' === strtolower($value)) {
                 return false;
             }
 
             if (is_numeric($value)) {
-                return intval($value);
+                return (int) $value;
             }
 
             return $value;
         }, $constructor_args);
     }
-
 }

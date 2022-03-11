@@ -7,11 +7,7 @@ use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController
 use Snicco\Component\HttpRouting\Tests\Routing\RouteLoader\PHPFileRouteLoaderTest;
 
 return function (WebRoutingConfigurator $router) {
-    $router->get(
-        'web1',
-        PHPFileRouteLoaderTest::WEB_PATH,
-        RoutingTestController::class
-    );
+    $router->get('web1', PHPFileRouteLoaderTest::WEB_PATH, RoutingTestController::class);
 
     if (PHPFileRouteLoaderTest::$web_include_partial) {
         $router->include(__DIR__ . '/_partial.php');

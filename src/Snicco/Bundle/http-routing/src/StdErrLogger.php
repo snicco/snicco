@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\HttpRouting;
 
 use DateTimeInterface;
@@ -15,7 +14,6 @@ use function explode;
 use function get_class;
 use function gettype;
 use function implode;
-use function is_null;
 use function is_object;
 use function is_scalar;
 use function is_string;
@@ -25,7 +23,6 @@ use function sprintf;
 use function strpos;
 use function strtoupper;
 use function strtr;
-use function strval;
 
 use const PHP_EOL;
 
@@ -38,7 +35,6 @@ use const PHP_EOL;
  */
 final class StdErrLogger extends AbstractLogger
 {
-
     private string $channel;
 
     public function __construct(string $channel = 'request')
@@ -48,34 +44,30 @@ final class StdErrLogger extends AbstractLogger
 
     public function log($level, $message, array $context = [])
     {
-        $level = (string)$level;
+        $level = (string) $level;
 
-        /**
-         * @var array<string> $additional
-         */
+        /** @var array<string> $additional */
         $additional = [];
 
-        /**
-         * @var array<string,string> $replacements
-         */
+        /** @var array<string,string> $replacements */
         $replacements = [];
 
-        /**
-         * @var Throwable|null $exception
-         */
+        /** @var Throwable|null $exception */
         $exception = null;
 
         /**
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
-            if (strpos($message, "{{$key}}") !== false) {
+            if (false !== strpos($message, "{{$key}}")) {
                 $replacements["{{$key}}"] = $this->valueToString($value);
+
                 continue;
             }
 
             if ('exception' === $key && $value instanceof Throwable) {
                 $exception = $value;
+
                 continue;
             }
 
@@ -95,7 +87,7 @@ final class StdErrLogger extends AbstractLogger
 
             foreach ($additional as $key => $value) {
                 if (is_string($key)) {
-                    $message .= "'$key' => " . $value;
+                    $message .= "'{$key}' => " . $value;
                 } else {
                     $message .= $value;
                 }
@@ -122,15 +114,19 @@ final class StdErrLogger extends AbstractLogger
     private function valueToString($value): string
     {
         if (is_scalar($value)) {
-            return (string)$value;
-        } elseif ($value instanceof DateTimeInterface) {
+            return (string) $value;
+        }
+        if ($value instanceof DateTimeInterface) {
             return $value->format('d-M-Y H:i:s e');
-        } elseif (is_object($value)) {
+        }
+        if (is_object($value)) {
             if (method_exists($value, '__toString')) {
-                return (string)$value;
+                return (string) $value;
             }
+
             return 'object ' . get_class($value);
         }
+
         return gettype($value);
     }
 
@@ -138,7 +134,7 @@ final class StdErrLogger extends AbstractLogger
     {
         $previous = $exception->getPrevious();
 
-        $message = $this->exceptionToString($exception, is_null($previous));
+        $message = $this->exceptionToString($exception, null === $previous);
 
         if ($previous instanceof Throwable) {
             $message .= "\n\tCaused by: " . $this->exceptionToString($previous, true);
@@ -152,7 +148,7 @@ final class StdErrLogger extends AbstractLogger
         $message = get_class($e) .
             ' "' . $e->getMessage() . '"' .
             ' in ' . $e->getFile() .
-            ':' . strval($e->getLine());
+            ':' . (string) ($e->getLine());
 
         if ($include_trace) {
             $exploded = explode('#', $e->getTraceAsString());
@@ -161,8 +157,7 @@ final class StdErrLogger extends AbstractLogger
 
             $message .= "\n\tStack trace: \n" . $trace;
         }
+
         return $message;
     }
-
 }
-

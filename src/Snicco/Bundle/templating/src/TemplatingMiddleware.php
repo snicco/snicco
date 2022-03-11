@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Templating;
 
 use Psr\Http\Message\ResponseInterface;
@@ -34,15 +33,14 @@ final class TemplatingMiddleware extends Middleware
     {
         $response = $next($request);
 
-        if (!$response instanceof ViewResponse) {
+        if (! $response instanceof ViewResponse) {
             return $response;
         }
 
-        $body = $this->getViewEngine()->render($response->view(), $response->viewData());
+        $body = $this->getViewEngine()
+            ->render($response->view(), $response->viewData());
 
-        return (new Response($response))->withBody(
-            $this->responseFactory()->createStream($body)
-        );
+        return (new Response($response))->withBody($this->responseFactory()->createStream($body));
     }
 
     private function getViewEngine(): ViewEngine

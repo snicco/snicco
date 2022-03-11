@@ -19,14 +19,18 @@ use function preg_replace;
 use function trim;
 use function unlink;
 
-class BladeTestCase extends TestCase
+abstract class BladeTestCase extends TestCase
 {
-
     protected string $blade_cache;
+
     protected string $blade_views;
+
     protected ViewEngine $view_engine;
+
     protected ViewComposerCollection $composers;
+
     protected GlobalViewContext $global_view_context;
+
     protected BladeStandalone $blade;
 
     /**
@@ -48,10 +52,7 @@ class BladeTestCase extends TestCase
         $this->blade_cache = __DIR__ . '/fixtures/cache';
         $this->blade_views = __DIR__ . '/fixtures/views';
 
-        $this->composers = new ViewComposerCollection(
-            null,
-            $global_view_context = new GlobalViewContext()
-        );
+        $this->composers = new ViewComposerCollection(null, $global_view_context = new GlobalViewContext());
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
         $this->blade = $blade;
@@ -68,7 +69,7 @@ class BladeTestCase extends TestCase
 
     protected function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace("/\r|\n|\t|\s{2,}/", '', $actual);
+        $actual = preg_replace("/\r|\n|\t|\\s{2,}/", '', $actual);
 
         if (null === $actual) {
             throw new RuntimeException('preg_replace failed in test case assertion.');
@@ -84,5 +85,4 @@ class BladeTestCase extends TestCase
             unlink($file->getRealPath());
         }
     }
-
 }

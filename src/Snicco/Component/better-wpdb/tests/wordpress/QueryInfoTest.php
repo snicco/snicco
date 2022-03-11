@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -10,9 +9,11 @@ use Snicco\Component\BetterWPDB\QueryInfo;
 
 use function microtime;
 
+/**
+ * @internal
+ */
 final class QueryInfoTest extends WPTestCase
 {
-
     /**
      * @test
      */
@@ -53,6 +54,4 @@ final class QueryInfoTest extends WPTestCase
         $this->assertSame('insert into test (`foo`,`bar`) values (?,?)', $query_info->sql_with_placeholders);
         $this->assertSame("insert into test (`foo`,`bar`) values ('baz',null)", $query_info->sql);
     }
-
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
 use InvalidArgumentException;
@@ -11,9 +10,11 @@ use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use Snicco\Component\BetterWPDB\Tests\fixtures\TestLogger;
 use stdClass;
 
+/**
+ * @internal
+ */
 final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
 {
-
     /**
      * @test
      */
@@ -78,5 +79,4 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
     }
-
 }

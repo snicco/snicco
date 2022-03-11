@@ -16,11 +16,10 @@ use function is_file;
 
 final class BladeViewFactory implements ViewFactory
 {
-
     private IlluminateViewFactory $view_factory;
 
     /**
-     * @var string[] $view_directories
+     * @var string[]
      */
     private array $view_directories;
 
@@ -35,14 +34,13 @@ final class BladeViewFactory implements ViewFactory
 
     /**
      * @interal
+     *
      * @throws ViewNotFound
      */
     public function make(string $view): BladeView
     {
         try {
-            $view = $this->view_factory->first(
-                [$this->normalizeNames($view)]
-            );
+            $view = $this->view_factory->first([$this->normalizeNames($view)]);
             /** @var View $view */
             return new BladeView($view);
         } catch (InvalidArgumentException $e) {
@@ -52,7 +50,7 @@ final class BladeViewFactory implements ViewFactory
 
     private function normalizeNames(string $name): string
     {
-        if (!is_file($name)) {
+        if (! is_file($name)) {
             return $name;
         }
 
@@ -66,7 +64,7 @@ final class BladeViewFactory implements ViewFactory
     {
         foreach ($this->view_directories as $view_directory) {
             if (Str::startsWith($path, $view_directory)) {
-                return (string)Str::of($path)
+                return (string) Str::of($path)
                     ->after($view_directory)
                     ->replace('/', '.')
                     ->ltrim('.')
@@ -79,5 +77,4 @@ final class BladeViewFactory implements ViewFactory
         return $path;
         // @codeCoverageIgnoreEnd
     }
-
 }

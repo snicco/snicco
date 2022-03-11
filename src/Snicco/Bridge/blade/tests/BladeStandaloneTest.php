@@ -14,9 +14,11 @@ use Snicco\Bridge\Blade\DummyApplication;
 use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
+/**
+ * @internal
+ */
 final class BladeStandaloneTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -32,10 +34,7 @@ final class BladeStandaloneTest extends BladeTestCase
      */
     public function a_dummy_application_is_put_into_the_container(): void
     {
-        $this->assertInstanceOf(
-            DummyApplication::class,
-            Container::getInstance()->make(Application::class)
-        );
+        $this->assertInstanceOf(DummyApplication::class, Container::getInstance()->make(Application::class));
     }
 
     /**
@@ -64,14 +63,10 @@ final class BladeStandaloneTest extends BladeTestCase
         $config['foo'] = 'bar';
         Container::getInstance()['config'] = $config;
 
-        $this->composers = new ViewComposerCollection(
-            null,
-            new GlobalViewContext()
-        );
+        $this->composers = new ViewComposerCollection(null, new GlobalViewContext());
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
 
         $this->assertSame('bar', $config['foo']);
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\BetterWPMail\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -11,10 +10,14 @@ use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 use Snicco\Component\BetterWPMail\Testing\WPMail;
 
 use function add_filter;
+use function count;
 use function dirname;
 use function get_option;
 use function wp_mail;
 
+/**
+ * @internal
+ */
 final class FakeTransportTest extends WPTestCase
 {
     /**
@@ -29,7 +32,7 @@ final class FakeTransportTest extends WPTestCase
             return 'bogus';
         });
 
-        if (get_option('home') !== 'bogus') {
+        if ('bogus' !== get_option('home')) {
             throw new RuntimeException('Could not update home url in test setup.');
         }
 
@@ -51,14 +54,15 @@ final class FakeTransportTest extends WPTestCase
             return 'https://www.foobar.com';
         });
 
-        if (get_option('home') !== 'https://www.foobar.com') {
+        if ('https://www.foobar.com' !== get_option('home')) {
             throw new RuntimeException('Could not update home url in test setup.');
         }
 
         wp_mail('calvin@web.de', 'subject', 'message');
 
         $fake_transport->assertSent(WPMail::class, function (WPMail $WPMail): bool {
-            return $WPMail->from()->has('wordpress@foobar.com');
+            return $WPMail->from()
+                ->has('wordpress@foobar.com');
         });
     }
 
@@ -76,5 +80,4 @@ final class FakeTransportTest extends WPTestCase
             return 1 === count($mail->attachments());
         });
     }
-
 }

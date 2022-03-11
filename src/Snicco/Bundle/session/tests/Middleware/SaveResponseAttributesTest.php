@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session\Tests\Middleware;
 
 use LogicException;
@@ -19,37 +18,39 @@ use Snicco\Component\Session\SessionManager\FactorySessionManager;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
+/**
+ * @internal
+ */
 final class SaveResponseAttributesTest extends MiddlewareTestCase
 {
-
     private Request $request;
+
     private Session $session;
 
     protected function setUp(): void
     {
         parent::setUp();
         $session_manager = new FactorySessionManager(
-            SessionConfig::mergeDefaults('test_cookie', ['garbage_collection_percentage' => 0]),
+            SessionConfig::mergeDefaults('test_cookie', [
+                'garbage_collection_percentage' => 0,
+            ]),
             new InMemoryDriver(),
             new JsonSerializer()
         );
-        $this->request = $this->frontendRequest()->withAttribute(
-            MutableSession::class,
-            $this->session = $session_manager->start(new CookiePool([]))
-        );
+        $this->request = $this->frontendRequest()
+            ->withAttribute(MutableSession::class, $this->session = $session_manager->start(new CookiePool([])));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function errors_are_added_to_the_session(): void
     {
         $middleware = new SaveResponseAttributes();
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withErrors([
-                'foo' => [
-                    'bar',
-                    'baz',
-                ],
+                'foo' => ['bar', 'baz'],
             ], 'name1');
         });
 
@@ -60,21 +61,23 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
 
         $this->assertSame([
             'name1' => [
-                'foo' => [
-                    'bar',
-                    'baz',
-                ],
-            ]
+                'foo' => ['bar', 'baz'],
+            ],
         ], $errors);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function flash_messages_are_added(): void
     {
         $middleware = new SaveResponseAttributes();
 
         $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withFlashMessages(['foo' => 'bar', 'baz' => 'biz']);
+            return $response->withFlashMessages([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ]);
         });
 
         $response = $this->runMiddleware($middleware, $this->request);
@@ -92,7 +95,10 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         $middleware = new SaveResponseAttributes();
 
         $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withOldInput(['foo' => 'bar', 'baz' => 'biz']);
+            return $response->withOldInput([
+                'foo' => 'bar',
+                'baz' => 'biz',
+            ]);
         });
 
         $response = $this->runMiddleware($middleware, $this->request);
@@ -113,5 +119,4 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
         $this->expectExceptionMessage('No mutable session');
         $this->runMiddleware($middleware, $this->frontendRequest());
     }
-
 }

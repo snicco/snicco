@@ -10,6 +10,11 @@ use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 
+use function count;
+
+/**
+ * @internal
+ */
 final class RuntimeRouteCollectionTest extends TestCase
 {
     /**
@@ -38,7 +43,7 @@ final class RuntimeRouteCollectionTest extends TestCase
         $count = 0;
         foreach ($routes as $route) {
             $this->assertInstanceOf(Route::class, $route);
-            $count++;
+            ++$count;
         }
         $this->assertSame(2, $count);
     }
@@ -74,5 +79,4 @@ final class RuntimeRouteCollectionTest extends TestCase
 
         new RouteCollection([$r1, $r2]);
     }
-
 }

@@ -8,16 +8,14 @@ use Snicco\Component\Templating\Exception\BadViewComposer;
 
 interface ViewComposerFactory
 {
-
     /**
      * @template T of ViewComposer
      *
      * @param class-string<T> $composer
      *
-     * @return T
-     *
      * @throws BadViewComposer
+     *
+     * @return T
      */
     public function create(string $composer): ViewComposer;
-
 }

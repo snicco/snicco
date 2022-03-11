@@ -19,6 +19,7 @@ use stdClass;
 use Webmozart\Assert\Assert;
 
 use function array_keys;
+use function is_array;
 use function is_string;
 use function json_encode;
 
@@ -26,8 +27,8 @@ use const JSON_THROW_ON_ERROR;
 
 final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
 {
-
     private Psr17ResponseFactory $psr_response;
+
     private Psr17StreamFactory $psr_stream;
 
     public function __construct(Psr17ResponseFactory $response, Psr17StreamFactory $stream)
@@ -39,9 +40,10 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     public function delegate(bool $should_headers_be_sent = true): DelegatedResponse
     {
         $response = new DelegatedResponse($this->createResponse());
-        if (!$should_headers_be_sent) {
+        if (! $should_headers_be_sent) {
             $response = $response->withoutSendingHeaders();
         }
+
         return $response;
     }
 
@@ -49,6 +51,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     {
         Assert::range($code, 100, 599);
         $psr_response = $this->psr_response->createResponse($code, $reasonPhrase);
+
         return new Response($psr_response);
     }
 
@@ -73,7 +76,8 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
     }
 
     /**
-     * @param string|array|Response|Psr7Response|stdClass|JsonSerializable|Responsable $response
+     * @param array|JsonSerializable|Psr7Response|Responsable|Response|stdClass|string $response
+     *
      * @throws JsonException
      */
     public function toResponse($response): Response
@@ -98,9 +102,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         }
 
         if ($response instanceof Responsable) {
-            return $this->toResponse(
-                $response->toResponsable()
-            );
+            return $this->toResponse($response->toResponsable());
         }
 
         throw new InvalidArgumentException('Invalid response returned by a route.');
@@ -111,8 +113,8 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         Assert::allString(array_keys($data));
 
         /** @var array<string,mixed> $data */
-
         $response = new ViewResponse($view, $this->createResponse());
+
         return $response->withViewData($data);
     }
 
@@ -124,6 +126,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
 
     /**
      * @param mixed $data
+     *
      * @throws JsonException
      */
     public function json($data, int $status_code = 200, int $options = 0, int $depth = 512): Response
@@ -131,15 +134,14 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         /** @var string $stream */
         $stream = json_encode($data, $options | JSON_THROW_ON_ERROR, $depth);
 
-        return $this->createResponse($status_code)->withJson(
-            $this->createStream($stream)
-        );
+        return $this->createResponse($status_code)
+            ->withJson($this->createStream($stream));
     }
 
     public function redirect(string $location, int $status_code = 302): RedirectResponse
     {
         $psr = $this->createResponse($status_code);
+
         return (new RedirectResponse($psr))->to($location);
     }
-
 }

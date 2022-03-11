@@ -9,27 +9,12 @@ use Snicco\Component\StrArr\Arr;
 
 class CountryFactory extends Factory
 {
-
     public function definition()
     {
         return [
             'name' => $this->faker->country(),
             'continent' => $this->continent(),
         ];
-    }
-
-    private function continent()
-    {
-        $continents = [
-            'Asia',
-            'Africa',
-            'Europe',
-            'Australia',
-            'North America',
-            'South America',
-            'Antarctica.',
-        ];
-        return Arr::random($continents)[0];
     }
 
     /**
@@ -44,4 +29,10 @@ class CountryFactory extends Factory
         });
     }
 
+    private function continent()
+    {
+        $continents = ['Asia', 'Africa', 'Europe', 'Australia', 'North America', 'South America', 'Antarctica.'];
+
+        return Arr::random($continents)[0];
+    }
 }

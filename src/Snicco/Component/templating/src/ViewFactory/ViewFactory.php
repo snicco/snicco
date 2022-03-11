@@ -9,10 +9,8 @@ use Snicco\Component\Templating\View\View;
 
 interface ViewFactory
 {
-
     /**
      * @throws ViewNotFound
      */
     public function make(string $view): View;
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Psr7ErrorHandler\Displayer;
 
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
@@ -13,7 +12,6 @@ use const JSON_THROW_ON_ERROR;
 
 final class FallbackJsonDisplayer implements ExceptionDisplayer
 {
-
     public function display(ExceptionInformation $exception_information): string
     {
         return json_encode([
@@ -22,8 +20,8 @@ final class FallbackJsonDisplayer implements ExceptionDisplayer
                     'identifier' => $exception_information->identifier(),
                     'title' => $exception_information->safeTitle(),
                     'details' => $exception_information->safeDetails(),
-                ]
-            ]
+                ],
+            ],
         ], JSON_THROW_ON_ERROR);
     }
 

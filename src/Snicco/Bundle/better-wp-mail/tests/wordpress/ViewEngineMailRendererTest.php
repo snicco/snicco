@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\BetterWPMailDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -24,6 +23,9 @@ use Snicco\Component\Templating\ViewEngine;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class ViewEngineMailRendererTest extends WPTestCase
 {
     use BundleTestHelpers;
@@ -39,16 +41,21 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $transport = $this->getTransport($kernel);
         $mailer = $this->getMailer($kernel);
 
-        $email = (new Email())->withTo('c@web.de')->withHtmlTemplate('html-template');
-        $email = $email->withContext(['mail_content' => 'FOO', 'extra' => 'extra-bar']);
+        $email = (new Email())->withTo('c@web.de')
+            ->withHtmlTemplate('html-template');
+        $email = $email->withContext([
+            'mail_content' => 'FOO',
+            'extra' => 'extra-bar',
+        ]);
 
         $mailer->send($email);
 
         $transport->assertSent(Email::class, function (Email $email) {
-            $this->assertStringContainsString('<h1>FOO</h1>', (string)$email->htmlBody());
-            $this->assertStringContainsString('extra-bar', (string)$email->htmlBody());
-            $this->assertStringContainsString('FOO', (string)$email->textBody());
-            $this->assertStringContainsString('extra-bar', (string)$email->textBody());
+            $this->assertStringContainsString('<h1>FOO</h1>', (string) $email->htmlBody());
+            $this->assertStringContainsString('extra-bar', (string) $email->htmlBody());
+            $this->assertStringContainsString('FOO', (string) $email->textBody());
+            $this->assertStringContainsString('extra-bar', (string) $email->textBody());
+
             return true;
         });
 
@@ -61,6 +68,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $transport->assertSent(Email::class, function (Email $email) {
             $this->assertSame('<h1>BAR</h1>', $email->htmlBody());
             $this->assertSame('BAR', $email->textBody());
+
             return true;
         });
     }
@@ -75,7 +83,8 @@ final class ViewEngineMailRendererTest extends WPTestCase
 
         $mailer = $this->getMailer($kernel);
 
-        $email = (new Email())->withTo('c@web.de')->withHtmlTemplate('other-template');
+        $email = (new Email())->withTo('c@web.de')
+            ->withHtmlTemplate('other-template');
         $email = $email->withContext('mail_content', 'FOO');
 
         $this->expectException(CouldNotRenderMailContent::class);
@@ -96,14 +105,13 @@ final class ViewEngineMailRendererTest extends WPTestCase
 
         $mailer = $this->getMailer($kernel);
 
-        $email = (new Email())->withTo('c@web.de')->withHtmlTemplate('html-template');
+        $email = (new Email())->withTo('c@web.de')
+            ->withHtmlTemplate('html-template');
         // mail content var is not set.
         $email = $email->withContext('foo', 'bar');
 
         $this->expectException(CouldNotRenderMailContent::class);
-        $this->expectExceptionMessage(
-            'Error rendering view [html-template].'
-        );
+        $this->expectExceptionMessage('Error rendering view [html-template].');
 
         $mailer->send($email);
     }
@@ -130,45 +138,35 @@ final class ViewEngineMailRendererTest extends WPTestCase
 
     private function getKernel(): Kernel
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [
-                    BetterWPMailBundle::class,
-                    TemplatingBundle::class
-                ]
+                Environment::ALL => [BetterWPMailBundle::class, TemplatingBundle::class],
             ]);
             $config->set('mail', [
-                MailOption::RENDERER => [
-                    ViewEngineMailRenderer::class
-                ]
+                MailOption::RENDERER => [ViewEngineMailRenderer::class],
             ]);
             $config->set('templating', [
-                TemplatingOption::DIRECTORIES => [
-                    $this->fixturesDir() . '/templates'
-                ]
+                TemplatingOption::DIRECTORIES => [$this->fixturesDir() . '/templates'],
             ]);
         });
+
         return $kernel;
     }
 
+    /**
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedInferredReturnType
+     */
     private function getTransport(Kernel $kernel): FakeTransport
     {
-        /**
-         * @var FakeTransport $transport
-         */
-        $transport = $kernel->container()->get(Transport::class);
-        return $transport;
+        return $kernel->container()
+            ->get(Transport::class);
     }
 
     private function getMailer(Kernel $kernel): Mailer
     {
-        return $kernel->container()->make(Mailer::class);
+        return $kernel->container()
+            ->make(Mailer::class);
     }
-
-
 }

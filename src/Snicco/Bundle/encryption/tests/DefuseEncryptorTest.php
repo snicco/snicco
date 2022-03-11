@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Encryption\Tests;
 
 use Defuse\Crypto\Key;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Encryption\DefuseEncryptor;
 
+/**
+ * @internal
+ */
 final class DefuseEncryptorTest extends TestCase
 {
-
     /**
      * @test
      */
-    public function test_randomKey(): void
+    public function test_random_key(): void
     {
         $key = DefuseEncryptor::randomAsciiKey();
 
@@ -42,5 +43,4 @@ final class DefuseEncryptorTest extends TestCase
         $plaintext = $encryptor->decrypt($ciphertext, true);
         $this->assertSame('foo', $plaintext);
     }
-
 }

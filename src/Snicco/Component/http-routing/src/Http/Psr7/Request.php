@@ -33,20 +33,21 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 final class Request implements ServerRequestInterface
 {
-
     public const TYPE_FRONTEND = 'frontend';
+
     public const TYPE_ADMIN_AREA = 'admin';
+
     public const TYPE_API = 'api';
 
     private ServerRequestInterface $psr_request;
 
     /**
-     * @var "frontend"|"admin"|"api"
+     * @var "admin"|"api"|"frontend"
      */
     private string $type;
 
     /**
-     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     * @param self::TYPE_ADMIN_AREA|self::TYPE_API|self::TYPE_FRONTEND $type
      */
     public function __construct(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND)
     {
@@ -63,25 +64,27 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * @param self::TYPE_FRONTEND|self::TYPE_ADMIN_AREA|self::TYPE_API $type
+     * @param mixed $value
+     *
+     * @return never
+     */
+    public function __set(string $name, $value)
+    {
+        throw new BadMethodCallException(
+            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", self::class)
+        );
+    }
+
+    /**
+     * @param self::TYPE_ADMIN_AREA|self::TYPE_API|self::TYPE_FRONTEND $type
      */
     public static function fromPsr(ServerRequestInterface $psr_request, string $type = self::TYPE_FRONTEND): Request
     {
         if ($psr_request instanceof Request) {
             return $psr_request;
         }
-        return new self($psr_request, $type);
-    }
 
-    /**
-     * @param mixed $value
-     * @return never
-     */
-    final public function __set(string $name, $value)
-    {
-        throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [$name] on immutable class [%s]", self::class)
-        );
+        return new self($psr_request, $type);
     }
 
     public function userAgent(): ?string
@@ -90,29 +93,32 @@ final class Request implements ServerRequestInterface
         if (false === $user_agent || '' === $user_agent) {
             return null;
         }
+
         return $user_agent;
     }
 
     /**
-     * Returns schema + host + path
+     * Returns schema + host + path.
      */
     public function url(): string
     {
-        $full = (string)$this->getUri();
+        $full = (string) $this->getUri();
+
         return Str::pregReplace($full, '/\?.*/', '');
     }
 
     /**
-     * Returns the value of a received cookie or $default if no cookie with the given name
-     * exists.
+     * Returns the value of a received cookie or $default if no cookie with the
+     * given name exists.
      *
-     * If multiple cookie headers have been sent for $name only the first one will be returned.
+     * If multiple cookie headers have been sent for $name only the first one
+     * will be returned.
      */
     public function cookie(string $name, ?string $default = null): ?string
     {
-        /** @var array<string,string|non-empty-list<string>> $cookies */
+        /** @var array<string,non-empty-list<string>|string> $cookies */
         $cookies = $this->getCookieParams();
-        if (!isset($cookies[$name])) {
+        if (! isset($cookies[$name])) {
             return $default;
         }
         if (is_array($cookies[$name])) {
@@ -120,22 +126,24 @@ final class Request implements ServerRequestInterface
         } else {
             $cookie = $cookies[$name];
         }
+
         return $cookie;
     }
 
     public function routingResult(): RoutingResult
     {
         $res = $this->getAttribute(RoutingResult::class);
-        if (!$res instanceof RoutingResult) {
+        if (! $res instanceof RoutingResult) {
             return RoutingResult::noMatch();
         }
+
         return $res;
     }
 
     /**
      * @note The full url is not urldecoded here.
      */
-    function fullUrlIs(string ...$patterns): bool
+    public function fullUrlIs(string ...$patterns): bool
     {
         $url = $this->fullUrl();
 
@@ -150,7 +158,8 @@ final class Request implements ServerRequestInterface
 
     public function fullUrl(): string
     {
-        return $this->getUri()->__toString();
+        return $this->getUri()
+            ->__toString();
     }
 
     public function pathIs(string ...$patterns): bool
@@ -169,34 +178,41 @@ final class Request implements ServerRequestInterface
     public function decodedPath(): string
     {
         $path = $this->path();
+
         return implode(
             '/',
             array_map(function ($part) {
                 // Make sure that %2F stays %2F
-                return rawurldecode(strtr($part, ['%2F' => '%252F']));
+                return rawurldecode(strtr($part, [
+                    '%2F' => '%252F',
+                ]));
             }, explode('/', $path))
         );
     }
 
     public function path(): string
     {
-        $path = $this->getUri()->getPath();
+        $path = $this->getUri()
+            ->getPath();
         if ('' === $path) {
             $path = '/';
         }
+
         return $path;
     }
 
     /**
-     * A request is considered secure when the scheme is set to "https".
-     * If your site runs behind a reverse proxy you have to make sure that your reverse proxy is
-     * configured correctly for setting the HTTP_X_FORWARDED_PROTO header. It's not
-     * possible to configure trusted proxies because if this is not configured at the server
-     * level the entire WP application will misbehave anyway.
+     * A request is considered secure when the scheme is set to "https". If your
+     * site runs behind a reverse proxy you have to make sure that your reverse
+     * proxy is configured correctly for setting the HTTP_X_FORWARDED_PROTO
+     * header. It's not possible to configure trusted proxies because if this is
+     * not configured at the server level the entire WP application will
+     * misbehave anyway.
      */
     public function isSecure(): bool
     {
-        return 'https' === $this->getUri()->getScheme();
+        return 'https' === $this->getUri()
+            ->getScheme();
     }
 
     public function isToFrontend(): bool
@@ -217,9 +233,10 @@ final class Request implements ServerRequestInterface
     public function ip(): ?string
     {
         $ip = $this->server('REMOTE_ADDR');
-        if (!is_string($ip)) {
+        if (! is_string($ip)) {
             return null;
         }
+
         return $ip;
     }
 
@@ -273,7 +290,7 @@ final class Request implements ServerRequestInterface
 
     public function isMethodSafe(): bool
     {
-        return in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
+        return in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE'], true);
     }
 
     public function isAjax(): bool
@@ -283,7 +300,7 @@ final class Request implements ServerRequestInterface
 
     public function isXmlHttpRequest(): bool
     {
-        return 'XMLHttpRequest' == $this->getHeaderLine('X-Requested-With');
+        return 'XMLHttpRequest' === $this->getHeaderLine('X-Requested-With');
     }
 
     public function isSendingJson(): bool
@@ -305,10 +322,7 @@ final class Request implements ServerRequestInterface
 
     public function accepts(string $content_type): bool
     {
-        return $this->matchesType(
-            $content_type,
-            $this->getHeaderLine('accept')
-        );
+        return $this->matchesType($content_type, $this->getHeaderLine('accept'));
     }
 
     /**
@@ -328,10 +342,11 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_GET).
-     * Supports 'dot' notation and accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_GET). Supports 'dot' notation and
+     * accessing nested values with * wildcards.
      *
      * @param mixed $default
+     *
      * @return mixed
      */
     public function query(?string $key = null, $default = null)
@@ -341,12 +356,14 @@ final class Request implements ServerRequestInterface
         if (null === $key) {
             return $query;
         }
+
         return Arr::dataGet($query, $key, $default);
     }
 
     public function queryString(): string
     {
-        $qs = $this->getUri()->getQuery();
+        $qs = $this->getUri()
+            ->getQuery();
 
         while (Str::endsWith($qs, '&') || Str::endsWith($qs, '=')) {
             $qs = mb_substr($qs, 0, -1);
@@ -356,13 +373,14 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_POST).
-     * Supports 'dot' notation and accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_POST). Supports 'dot' notation and
+     * accessing nested values with * wildcards.
      *
      * @param mixed $default
-     * @return mixed
      *
-     * @throws RuntimeException If parsed body is not an array.
+     * @throws RuntimeException if parsed body is not an array
+     *
+     * @return mixed
      */
     public function post(?string $key = null, $default = null)
     {
@@ -372,13 +390,14 @@ final class Request implements ServerRequestInterface
             return $default;
         }
 
-        if (!is_array($parsed_body)) {
+        if (! is_array($parsed_body)) {
             throw new RuntimeException(sprintf('%s can not be used if parsed body is not an array.', __METHOD__));
         }
 
         if (null === $key) {
             return $parsed_body;
         }
+
         return Arr::dataGet($parsed_body, $key, $default);
     }
 
@@ -389,8 +408,8 @@ final class Request implements ServerRequestInterface
 
     public function all(): array
     {
-        $post = (array)$this->post();
-        $query = (array)$this->query();
+        $post = (array) $this->post();
+        $query = (array) $this->query();
 
         if ($this->isReadVerb()) {
             return $query + $post;
@@ -401,15 +420,14 @@ final class Request implements ServerRequestInterface
 
     public function realMethod(): string
     {
-        /** @var string $method */
         $method = Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
+        Assert::stringNotEmpty($method);
+
         return $method;
     }
 
     /**
      * @param string|string[] $keys
-     *
-     * @psalm-suppress MixedAssignment
      */
     public function only($keys): array
     {
@@ -417,10 +435,11 @@ final class Request implements ServerRequestInterface
 
         $input = $this->inputSource();
 
-        $placeholder = new stdClass;
+        $placeholder = new stdClass();
         $keys = Arr::toArray($keys);
 
         foreach ($keys as $key) {
+            /** @var mixed $value */
             $value = Arr::dataGet($input, $key, $placeholder);
 
             if ($value !== $placeholder) {
@@ -464,25 +483,21 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * @param string|non-empty-array<string> $keys
+     * @param non-empty-array<string>|string $keys
      */
     public function hasAny($keys): bool
     {
-        return Arr::hasAny(
-            $this->inputSource(),
-            $keys
-        );
+        return Arr::hasAny($this->inputSource(), $keys);
     }
 
     /**
      * Will return falls if any of the provided keys is missing.
      *
      * @param string|string[] $keys
-     *
      */
     public function missing($keys): bool
     {
-        return !$this->has($keys);
+        return ! $this->has($keys);
     }
 
     /**
@@ -649,11 +664,12 @@ final class Request implements ServerRequestInterface
     {
         /** @var mixed $id */
         $id = $this->getAttribute('snicco.user_id');
-        if (!is_int($id) && null !== $id) {
+        if (! is_int($id) && null !== $id) {
             throw new InvalidArgumentException(
                 sprintf("snicco.user_id must be integer or null.\nGot [%s].", gettype($id))
             );
         }
+
         return $id;
     }
 
@@ -667,17 +683,19 @@ final class Request implements ServerRequestInterface
 
     public function routeIs(string $route_name): bool
     {
-        $route = $this->routingResult()->route();
+        $route = $this->routingResult()
+            ->route();
         if (null === $route) {
             return false;
         }
+
         return $route->getName() === $route_name;
     }
 
     /**
      * @return static
      */
-    protected function new(ServerRequestInterface $new_psr_request)
+    private function new(ServerRequestInterface $new_psr_request)
     {
         return new self($new_psr_request, $this->type);
     }
@@ -689,15 +707,15 @@ final class Request implements ServerRequestInterface
 
     private function matchesType(string $match_against, string $accept_header): bool
     {
-        if ($accept_header === '*/*' || $accept_header === '*') {
+        if ('*/*' === $accept_header || '*' === $accept_header) {
             return true;
         }
 
         $tok = strtok($match_against, '/');
 
-        if (false == $tok) {
+        if (false === $tok) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not parse accept header [$match_against].");
+            throw new RuntimeException("Could not parse accept header [{$match_against}].");
             // @codeCoverageIgnoreEnd
         }
 
@@ -710,14 +728,12 @@ final class Request implements ServerRequestInterface
 
     private function inputSource(): array
     {
-        $input = in_array($this->realMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])
+        $input = in_array($this->realMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'], true)
             ? $this->getParsedBody()
             : $this->getQueryParams();
 
-        if (!is_array($input)) {
-            throw new RuntimeException(
-                sprintf('%s can only be used if the parsed body is an array.', __METHOD__)
-            );
+        if (! is_array($input)) {
+            throw new RuntimeException(sprintf('%s can only be used if the parsed body is an array.', __METHOD__));
         }
 
         return $input;
@@ -734,11 +750,10 @@ final class Request implements ServerRequestInterface
         if ([] === $value) {
             return true;
         }
-        if ('' === trim((string)$value)) {
+        if ('' === trim((string) $value)) {
             return true;
         }
 
         return false;
     }
-
 }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Encryption;
 
 use Defuse\Crypto\Crypto;
@@ -10,7 +9,6 @@ use Defuse\Crypto\Key;
 
 final class DefuseEncryptor
 {
-
     private Key $key;
 
     public function __construct(Key $key)
@@ -32,5 +30,4 @@ final class DefuseEncryptor
     {
         return Key::createNewRandomKey()->saveToAsciiSafeString();
     }
-
 }

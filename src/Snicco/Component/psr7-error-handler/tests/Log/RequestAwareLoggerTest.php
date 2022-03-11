@@ -16,10 +16,13 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestAwareLogger;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 
+/**
+ * @internal
+ */
 final class RequestAwareLoggerTest extends TestCase
 {
-
     private ServerRequestInterface $request;
+
     private TestLogger $test_logger;
 
     protected function setUp(): void
@@ -161,12 +164,7 @@ final class RequestAwareLoggerTest extends TestCase
      */
     public function request_context_can_be_added_to_the_log_entry(): void
     {
-        $logger = new RequestAwareLogger(
-            $this->test_logger,
-            [],
-            new PathLogContext(),
-            new MethodLogContext(),
-        );
+        $logger = new RequestAwareLogger($this->test_logger, [], new PathLogContext(), new MethodLogContext(),);
 
         $info = new ExceptionInformation(
             403,
@@ -186,33 +184,31 @@ final class RequestAwareLoggerTest extends TestCase
                 'context' => [
                     'exception' => $e,
                     'identifier' => 'foo_id',
-                    'path' => $this->request->getUri()->getPath(),
+                    'path' => $this->request->getUri()
+                        ->getPath(),
                     'method' => $this->request->getMethod(),
                 ],
             ])
         );
     }
-
 }
 
 class PathLogContext implements RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['path'] = $information->serverRequest()->getUri()->getPath();
+
         return $context;
     }
-
 }
 
 class MethodLogContext implements RequestLogContext
 {
-
     public function add(array $context, ExceptionInformation $information): array
     {
         $context['method'] = $information->serverRequest()->getMethod();
+
         return $context;
     }
-
 }

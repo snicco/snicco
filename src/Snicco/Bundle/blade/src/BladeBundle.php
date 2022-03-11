@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Blade;
 
 use RuntimeException;
@@ -19,7 +18,6 @@ use function is_dir;
 
 final class BladeBundle implements Bundle
 {
-
     public const ALIAS = 'sniccowp/blade-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -29,27 +27,29 @@ final class BladeBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        //
     }
 
     public function register(Kernel $kernel): void
     {
-        if (!$kernel->usesBundle('sniccowp/templating-bundle')) {
+        if (! $kernel->usesBundle('sniccowp/templating-bundle')) {
             throw new RuntimeException(BladeBundle::ALIAS . ' needs sniccowp/templating-bundle to run.');
         }
 
         $container = $kernel->container();
         $container->shared(BladeViewFactory::class, function () use ($kernel) {
-            $composers = $kernel->container()->make(ViewComposerCollection::class);
+            $composers = $kernel->container()
+                ->make(ViewComposerCollection::class);
 
-            $dir = $kernel->directories()->cacheDir() . '/blade';
-            if (!is_dir($dir)) {
+            $dir = $kernel->directories()
+                ->cacheDir() . '/blade';
+            if (! is_dir($dir)) {
                 mkdir($dir, 0775);
             }
 
             $blade = new BladeStandalone(
                 $dir,
-                $kernel->config()->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES),
+                $kernel->config()
+                    ->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES),
                 $composers
             );
 

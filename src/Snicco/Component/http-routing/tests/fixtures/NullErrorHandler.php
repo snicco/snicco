@@ -16,7 +16,6 @@ use Throwable;
  */
 final class NullErrorHandler implements HttpErrorHandler
 {
-
     /**
      * @throws Throwable
      */
@@ -24,5 +23,4 @@ final class NullErrorHandler implements HttpErrorHandler
     {
         throw $e;
     }
-
 }

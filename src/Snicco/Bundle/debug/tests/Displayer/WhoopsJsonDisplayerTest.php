@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Debug\Tests\Displayer;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Debug\Displayer\WhoopsJsonDisplayer;
 use Whoops\Run;
 
+/**
+ * @internal
+ */
 final class WhoopsJsonDisplayerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -20,6 +21,4 @@ final class WhoopsJsonDisplayerTest extends TestCase
         $displayer = new WhoopsJsonDisplayer(new Run());
         $this->assertTrue($displayer->isVerbose());
     }
-
-
 }

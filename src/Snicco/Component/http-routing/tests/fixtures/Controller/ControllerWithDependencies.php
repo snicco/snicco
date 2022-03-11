@@ -9,7 +9,6 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
 class ControllerWithDependencies
 {
-
     private Foo $foo;
 
     public function __construct(Foo $foo)
@@ -21,5 +20,4 @@ class ControllerWithDependencies
     {
         return $this->foo->value . '_controller';
     }
-
 }

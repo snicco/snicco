@@ -16,6 +16,9 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
+/**
+ * @internal
+ */
 final class BundleTestHelpersTest extends TestCase
 {
     use BundleTestHelpers;
@@ -33,11 +36,6 @@ final class BundleTestHelpersTest extends TestCase
     {
         $this->bundle_test->removeDirectoryRecursive(__DIR__ . '/tmp');
         parent::tearDown();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return $this->fixtures_dir;
     }
 
     /**
@@ -96,32 +94,26 @@ final class BundleTestHelpersTest extends TestCase
     {
         $this->directories = $this->bundle_test->setUpDirectories();
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
-        $this->assertSame(['bootstrappers' => []], $kernel->config()->getArray('app'));
+        $this->assertSame([
+            'bootstrappers' => [],
+        ], $kernel->config()->getArray('app'));
     }
 
     /**
      * @test
      */
-    public function test_assertCanBeResolved_can_pass(): void
+    public function test_assert_can_be_resolved_can_pass(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle1::class]
+                Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
 
@@ -133,18 +125,14 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCanBeResolved_can_fail(): void
+    public function test_assert_can_be_resolved_can_fail(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle1::class]
+                Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
 
@@ -161,23 +149,20 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertCanBeResolved_fails_for_other_instance(): void
+    public function test_assert_can_be_resolved_fails_for_other_instance(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle2::class]
+                Environment::ALL => [TestingBundleBundle2::class],
             ]);
         });
         $kernel->boot();
 
         try {
             $this->assertCanBeResolved(ServiceA::class, $kernel);
+
             throw new RuntimeException('Assertion should have failed.');
         } catch (AssertionFailedError $e) {
             $this->assertStringContainsString('instance ', $e->getMessage());
@@ -187,14 +172,10 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotBound_can_pass(): void
+    public function test_assert_not_bound_can_pass(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertNotBound(ServiceA::class, $kernel);
@@ -204,17 +185,13 @@ final class BundleTestHelpersTest extends TestCase
     /**
      * @test
      */
-    public function test_assertNotBound_can_fail(): void
+    public function test_assert_not_bound_can_fail(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [TestingBundleBundle1::class]
+                Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
         $kernel->boot();
@@ -233,19 +210,14 @@ final class BundleTestHelpersTest extends TestCase
     public function error_handling_can_be_disabled(): void
     {
         $this->directories = $this->bundle_test->setUpDirectories();
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $this->bundle_test->withoutHttpErrorHandling($kernel);
         $kernel->boot();
 
-        /**
-         * @var HttpErrorHandler $handler
-         */
-        $handler = $kernel->container()->get(HttpErrorHandler::class);
+        /** @var HttpErrorHandler $handler */
+        $handler = $kernel->container()
+            ->get(HttpErrorHandler::class);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('foo');
@@ -253,28 +225,28 @@ final class BundleTestHelpersTest extends TestCase
         $handler->handle(new RuntimeException('foo'), new ServerRequest('GET', '/'));
     }
 
+    protected function fixturesDir(): string
+    {
+        return $this->fixtures_dir;
+    }
 }
 
 class ServiceA
 {
-
     private ServiceB $b;
 
     public function __construct(ServiceB $b)
     {
         $this->b = $b;
     }
-
 }
 
 class ServiceB
 {
-
 }
 
 class TestingBundleBundle1 implements Bundle
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -286,7 +258,8 @@ class TestingBundleBundle1 implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(ServiceA::class, fn() => new ServiceA(new ServiceB()));
+        $kernel->container()
+            ->shared(ServiceA::class, fn () => new ServiceA(new ServiceB()));
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -301,7 +274,6 @@ class TestingBundleBundle1 implements Bundle
 
 class TestingBundleBundle2 implements Bundle
 {
-
     public function shouldRun(Environment $env): bool
     {
         return true;
@@ -313,7 +285,8 @@ class TestingBundleBundle2 implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(ServiceA::class, fn() => new ServiceB());
+        $kernel->container()
+            ->shared(ServiceA::class, fn () => new ServiceB());
     }
 
     public function bootstrap(Kernel $kernel): void

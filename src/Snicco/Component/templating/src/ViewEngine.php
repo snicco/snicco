@@ -9,11 +9,11 @@ use Snicco\Component\Templating\Exception\ViewNotFound;
 use Snicco\Component\Templating\View\View;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
+use function get_class;
 use function implode;
 
 final class ViewEngine
 {
-
     /**
      * @var ViewFactory[]
      */
@@ -27,7 +27,7 @@ final class ViewEngine
     /**
      * Renders a view's content as a string.
      *
-     * @param string|string[] $view
+     * @param string|string[]      $view
      * @param array<string, mixed> $context
      *
      * @throws ViewNotFound
@@ -35,21 +35,25 @@ final class ViewEngine
      */
     public function render($view, array $context = []): string
     {
-        $view = $this->make($view)->with($context);
+        $view = $this->make($view)
+            ->with($context);
+
         return $view->render();
     }
 
     /**
      * @param string|string[] $view
-     * @throws ViewNotFound When no view can be created with any view factory.
+     *
+     * @throws ViewNotFound when no view can be created with any view factory
      */
     public function make($view): View
     {
-        return $this->createFirstMatchingView((array)$view);
+        return $this->createFirstMatchingView((array) $view);
     }
 
     /**
      * @param string[] $views
+     *
      * @throws ViewNotFound
      */
     private function createFirstMatchingView(array $views): View
@@ -59,7 +63,6 @@ final class ViewEngine
                 try {
                     return $view_factory->make($view);
                 } catch (ViewNotFound $e) {
-                    //
                 }
             }
         }
@@ -68,14 +71,10 @@ final class ViewEngine
             sprintf(
                 "None of the used view factories can render the any of the views [%s].\nTried with:\n%s",
                 implode(',', $views),
-                implode(
-                    "\n",
-                    array_map(function (ViewFactory $v) {
-                        return get_class($v);
-                    }, $this->view_factories)
-                )
+                implode("\n", array_map(function (ViewFactory $v) {
+                    return get_class($v);
+                }, $this->view_factories))
             )
         );
     }
-
 }

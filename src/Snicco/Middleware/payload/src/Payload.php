@@ -11,11 +11,11 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Webmozart\Assert\Assert;
 
+use function in_array;
 use function strpos;
 
 abstract class Payload extends Middleware
 {
-
     /**
      * @var string[]
      */
@@ -40,36 +40,36 @@ abstract class Payload extends Middleware
 
     final public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        if (!$this->shouldParseRequest($request)) {
+        if (! $this->shouldParseRequest($request)) {
             return $next($request);
         }
 
         $request = $request->withParsedBody($this->parse($request->getBody()));
+
         return $next($request);
     }
 
     /**
-     * @return array<string,mixed>
-     *
      * @throws CantParseRequestBody
+     *
+     * @return array<string,mixed>
      */
     abstract protected function parse(StreamInterface $stream): array;
 
     private function shouldParseRequest(Request $request): bool
     {
-        if (!in_array($request->getMethod(), $this->methods, true)) {
+        if (! in_array($request->getMethod(), $this->methods, true)) {
             return false;
         }
 
         $content_type = $request->getHeaderLine('content-type');
 
         foreach ($this->content_types as $allowedType) {
-            if (strpos($content_type, $allowedType) === 0) {
+            if (0 === strpos($content_type, $allowedType)) {
                 return true;
             }
         }
 
         return false;
     }
-
 }

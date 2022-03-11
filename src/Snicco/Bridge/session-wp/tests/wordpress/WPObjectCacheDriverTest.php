@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bridge\SessionWP\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
@@ -16,6 +15,9 @@ use Snicco\Component\TestableClock\TestClock;
 
 use function sleep;
 
+/**
+ * @internal
+ */
 final class WPObjectCacheDriverTest extends WPTestCase
 {
     use SessionDriverTests;
@@ -34,5 +36,4 @@ final class WPObjectCacheDriverTest extends WPTestCase
     {
         sleep($seconds);
     }
-
 }

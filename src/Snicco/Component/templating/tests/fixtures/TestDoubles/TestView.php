@@ -8,11 +8,11 @@ use BadMethodCallException;
 use Snicco\Component\Templating\View\PHPView;
 use Snicco\Component\Templating\View\View;
 
+use function is_array;
 use function sprintf;
 
 class TestView implements View
 {
-
     /**
      * @var array<string,mixed>
      */
@@ -26,6 +26,11 @@ class TestView implements View
     }
 
     /**
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
+     *
+     * @return static
+     *
      * @psalm-mutation-free
      */
     public function with($key, $value = null): View
@@ -36,6 +41,7 @@ class TestView implements View
         } else {
             $new->context[$key] = $value;
         }
+
         return $new;
     }
 

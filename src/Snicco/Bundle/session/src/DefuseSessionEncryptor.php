@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bundle\Session;
 
 use Snicco\Bundle\Encryption\DefuseEncryptor;
@@ -10,7 +9,6 @@ use Snicco\Component\Session\SessionEncryptor;
 
 final class DefuseSessionEncryptor implements SessionEncryptor
 {
-
     private DefuseEncryptor $defuse;
 
     public function __construct(DefuseEncryptor $defuse)

@@ -6,7 +6,5 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\TestDependencies;
 
 final class Foo
 {
-
     public string $value = 'foo';
-
 }

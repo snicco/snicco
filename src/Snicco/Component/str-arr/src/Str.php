@@ -57,7 +57,6 @@ use const PREG_RECURSION_LIMIT_ERROR;
 
 class Str
 {
-
     /**
      * @var array<string,string>
      */
@@ -69,7 +68,7 @@ class Str
     public static function containsAll(string $subject, array $needles): bool
     {
         foreach ($needles as $needle) {
-            if (!self::contains($subject, $needle)) {
+            if (! self::contains($subject, $needle)) {
                 return false;
             }
         }
@@ -84,8 +83,8 @@ class Str
      */
     public static function contains(string $subject, $needles): bool
     {
-        foreach ((array)$needles as $needle) {
-            if ($needle !== '' && mb_strpos($subject, $needle) !== false) {
+        foreach ((array) $needles as $needle) {
+            if ('' !== $needle && false !== mb_strpos($subject, $needle)) {
                 return true;
             }
         }
@@ -108,10 +107,11 @@ class Str
     }
 
     /**
-     * Generates a random secret with the passed bytes as strength.
-     * The output is hex encoded and will have TWICE the length as $strength.
+     * Generates a random secret with the passed bytes as strength. The output
+     * is hex encoded and will have TWICE the length as $strength.
      *
      * @param positive-int $bytes
+     *
      * @throws Exception
      */
     public static function random(int $bytes = 16): string
@@ -120,7 +120,7 @@ class Str
     }
 
     /**
-     * "snicco_wp-framework" => "SniccoWpFramework"
+     * "snicco_wp-framework" => "SniccoWpFramework".
      */
     public static function studly(string $value): string
     {
@@ -132,32 +132,33 @@ class Str
 
         $parts = explode(' ', str_replace(['-', '_'], ' ', $value));
 
-        $parts = array_map(fn($string) => self::ucfirst($string), $parts);
+        $parts = array_map(fn ($string) => self::ucfirst($string), $parts);
 
         return self::$studly_cache[$key] = implode('', $parts);
     }
 
     public static function ucfirst(string $subject, ?string $encoding = null): string
     {
-        if ($encoding === null) {
+        if (null === $encoding) {
             $encoding = mb_internal_encoding();
-            if (!is_string($encoding)) {
+            if (! is_string($encoding)) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Internal multi-byte encoding not set.');
                 // @codeCoverageIgnoreEnd
             }
         }
+
         return mb_strtoupper(mb_substr($subject, 0, 1, $encoding), $encoding) . mb_substr(
-                $subject,
-                1,
-                null,
-                $encoding
-            );
+            $subject,
+            1,
+            null,
+            $encoding
+        );
     }
 
     public static function doesNotEndWith(string $subject, string $string): bool
     {
-        return !self::endsWith($subject, $string);
+        return ! self::endsWith($subject, $string);
     }
 
     /**
@@ -190,9 +191,10 @@ class Str
         $res = substr($subject, $position + strlen($search));
         if (false === $res) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("substr returned false for subject [$subject].");
+            throw new RuntimeException("substr returned false for subject [{$subject}].");
             // @codeCoverageIgnoreEnd
         }
+
         return $res;
     }
 
@@ -204,11 +206,12 @@ class Str
         if ('' === $needle) {
             return false;
         }
-        return strncmp($subject, $needle, strlen($needle)) === 0;
+
+        return 0 === strncmp($subject, $needle, strlen($needle));
     }
 
     /**
-     * Str::betweenLast('xayyy', 'x', 'y') => 'xayy'
+     * Str::betweenLast('xayyy', 'x', 'y') => 'xayy'.
      */
     public static function betweenLast(string $subject, string $from, string $to): string
     {
@@ -241,11 +244,11 @@ class Str
 
     public static function afterFirst(string $subject, string $search): string
     {
-        return $search === '' ? $subject : array_reverse(explode($search, $subject, 2))[0];
+        return '' === $search ? $subject : array_reverse(explode($search, $subject, 2))[0];
     }
 
     /**
-     * Str::betweenFirst('xayyy', 'x', 'y') => 'a'
+     * Str::betweenFirst('xayyy', 'x', 'y') => 'a'.
      */
     public static function betweenFirst(string $subject, string $from, string $to): string
     {
@@ -267,7 +270,7 @@ class Str
 
         $result = strstr($subject, $search, true);
 
-        return $result === false ? $subject : $result;
+        return false === $result ? $subject : $result;
     }
 
     /**
@@ -280,7 +283,7 @@ class Str
         // If the given value is an exact match we can of course return true right
         // from the beginning. Otherwise, we will translate asterisks and do an
         // actual pattern match against the two strings to see if they match.
-        if ($pattern == $subject) {
+        if ($pattern === $subject) {
             return true;
         }
 
@@ -291,7 +294,7 @@ class Str
         // pattern such as "library/*", making any string check convenient.
         $pattern = str_replace('\*', '.*', $pattern);
 
-        if (preg_match('#^' . $pattern . '\z#u', $subject) === 1) {
+        if (1 === preg_match('#^' . $pattern . '\z#u', $subject)) {
             return true;
         }
 
@@ -300,13 +303,13 @@ class Str
 
     public static function replaceFirst(string $search, string $replace, string $subject): string
     {
-        if ($search === '') {
+        if ('' === $search) {
             return $subject;
         }
 
         $position = strpos($subject, $search);
 
-        if ($position !== false) {
+        if (false !== $position) {
             return substr_replace($subject, $replace, $position, strlen($search));
         }
 
@@ -314,7 +317,7 @@ class Str
     }
 
     /**
-     * @param string $subject Regex delimiters will not be added.
+     * @param string $subject regex delimiters will not be added
      * @psalm-pure
      */
     public static function pregReplace(string $subject, string $pattern, string $replace): string
@@ -327,28 +330,33 @@ class Str
             switch ($code) {
                 case PREG_INTERNAL_ERROR:
                     $message = 'Internal Error';
+
                     break;
                 case PREG_BACKTRACK_LIMIT_ERROR:
                     $message = 'Backtrack limit was exhausted';
+
                     break;
                 case PREG_RECURSION_LIMIT_ERROR:
                     $message = 'Recursion limit was exhausted';
+
                     break;
                 case PREG_BAD_UTF8_ERROR:
                     $message = 'Malformed UTF-8 data';
+
                     break;
                 case PREG_BAD_UTF8_OFFSET_ERROR:
                     $message = 'Offset didn\'t correspond to the begin of a valid UTF-8 code point';
+
                     break;
                 default:
                     $message = 'Unknown Error';
             }
 
             throw new RuntimeException(
-                "preg_replace failed. $message\nPattern: [$pattern]\nReplacement: [$pattern].\nSubject: [$subject]."
+                "preg_replace failed. {$message}\nPattern: [{$pattern}]\nReplacement: [{$pattern}].\nSubject: [{$subject}]."
             );
         }
+
         return $res;
     }
-
 }
