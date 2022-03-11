@@ -67,7 +67,7 @@ final class WPMailTransport implements Transport
             // Don't set attachments here since WordPress only adds attachments by file path. Really?
             $success = $this->wp->mail($to, $email->subject(), $message, $headers, []);
 
-            if (false === $success) {
+            if (! $success) {
                 throw new CantSendEmailWithWPMail('Could not sent the mail with wp_mail().');
             }
         } catch (Exception $e) {

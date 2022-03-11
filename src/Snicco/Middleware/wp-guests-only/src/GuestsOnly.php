@@ -28,7 +28,7 @@ final class GuestsOnly extends Middleware
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        if (false === $this->wp->isUserLoggedIn()) {
+        if (! $this->wp->isUserLoggedIn()) {
             return $next($request);
         }
 

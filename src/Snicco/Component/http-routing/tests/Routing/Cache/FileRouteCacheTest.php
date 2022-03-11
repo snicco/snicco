@@ -96,7 +96,7 @@ final class FileRouteCacheTest extends TestCase
     {
         if (is_file($this->test_cache_file)) {
             $res = unlink($this->test_cache_file);
-            if (false === $res) {
+            if (! $res) {
                 throw new RuntimeException('Cant remove cache file.');
             }
         }

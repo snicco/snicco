@@ -279,7 +279,7 @@ final class SessionBundle implements Bundle
 
         $copied = copy(dirname(__DIR__) . '/config/session.php', $destination);
 
-        if (false === $copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not copy the default session config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd

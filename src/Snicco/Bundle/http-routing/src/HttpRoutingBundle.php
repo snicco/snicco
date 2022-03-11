@@ -71,7 +71,6 @@ use function array_replace;
 use function class_exists;
 use function class_implements;
 use function copy;
-use function count;
 use function dirname;
 use function gettype;
 use function implode;
@@ -350,7 +349,7 @@ final class HttpRoutingBundle implements Bundle
 
         $provider = $container[ExceptionInformationProvider::class] ?? null;
 
-        if ($provider) {
+        if (null !== $provider) {
             return $provider;
         }
 
@@ -403,7 +402,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
 
         $api_dirs = $config->getListOfStrings(RoutingOption::key(RoutingOption::API_ROUTE_DIRECTORIES));
 
-        if (count($api_dirs)) {
+        if ([] !== $api_dirs) {
             $prefix = $config->getString(RoutingOption::key(RoutingOption::API_PREFIX));
             if ('' === $prefix) {
                 throw new InvalidArgumentException(
@@ -700,7 +699,7 @@ new $class(), $config->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHa
 
         $copied = copy(dirname(__DIR__) . "/config/{$namespace}.php", $destination);
 
-        if (false === $copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not copy default routing.php config to path {$destination}");
             // @codeCoverageIgnoreEnd

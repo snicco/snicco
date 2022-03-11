@@ -10,7 +10,6 @@ use mysqli_result;
 use mysqli_sql_exception;
 use mysqli_stmt;
 
-use function count;
 use function is_float;
 use function is_int;
 use function sprintf;
@@ -120,7 +119,7 @@ final class MysqliDriver implements MysqliDriverInterface
         try {
             $res = $this->mysqli->commit();
 
-            if (false === $res) {
+            if (! $res) {
                 throw $this->lastException();
             }
 
@@ -135,7 +134,7 @@ final class MysqliDriver implements MysqliDriverInterface
         try {
             $res = $this->mysqli->begin_transaction();
 
-            if (false === $res) {
+            if (! $res) {
                 throw $this->lastException();
             }
 
@@ -177,7 +176,7 @@ final class MysqliDriver implements MysqliDriverInterface
         try {
             $res = $this->mysqli->rollback();
 
-            if (false === $res) {
+            if (! $res) {
                 throw $this->lastException();
             }
 
@@ -203,7 +202,7 @@ final class MysqliDriver implements MysqliDriverInterface
             throw new QueryException($sql, $bindings, $this->lastException());
         }
 
-        if (! count($bindings)) {
+        if ([] === $bindings) {
             return $stmt;
         }
 
@@ -260,7 +259,7 @@ final class MysqliDriver implements MysqliDriverInterface
         try {
             $success = $stmt->execute();
 
-            if (false === $success) {
+            if (! $success) {
                 throw $this->lastException();
             }
         } catch (mysqli_sql_exception $e) {

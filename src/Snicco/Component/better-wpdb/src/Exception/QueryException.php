@@ -34,7 +34,7 @@ class QueryException extends RuntimeException
 
         $message .= "\nBindings: [" . implode(', ', $bindings) . ']';
 
-        parent::__construct($message, ($prev) ? (int) $prev->getCode() : 0, $prev);
+        parent::__construct($message, (null !== $prev) ? (int) $prev->getCode() : 0, $prev);
     }
 
     /**

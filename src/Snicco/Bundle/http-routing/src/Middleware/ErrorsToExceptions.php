@@ -34,7 +34,7 @@ final class ErrorsToExceptions implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         set_error_handler(function (int $level, string $message, string $file = '', int $line = 0): bool {
-            if ($this->throw_at & $level) {
+            if (($this->throw_at & $level) !== 0) {
                 throw new ErrorException($message, 0, $level, $file, $line);
             }
             // Don't pass the deprecation to PHPs native error handler since it will display them with display errors set to one.

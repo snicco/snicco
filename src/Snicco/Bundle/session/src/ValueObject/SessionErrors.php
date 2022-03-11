@@ -53,7 +53,7 @@ final class SessionErrors
     {
         $messages = $this->errors[$namespace][$key] ?? [];
 
-        return count($messages) > 0;
+        return [] !== $messages;
     }
 
     /**

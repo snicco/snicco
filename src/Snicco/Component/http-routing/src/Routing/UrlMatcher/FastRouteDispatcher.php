@@ -168,7 +168,7 @@ final class FastRouteDispatcher implements UrlMatcher
             }
         }
 
-        if (count($allowed_methods)) {
+        if ([] !== $allowed_methods) {
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
 
@@ -183,7 +183,7 @@ final class FastRouteDispatcher implements UrlMatcher
             }
         }
 
-        if (count($allowed_methods)) {
+        if ([] !== $allowed_methods) {
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
 
@@ -214,7 +214,7 @@ final class FastRouteDispatcher implements UrlMatcher
         // We allowed FastRoute to match optional segments with and without trailing slash because
         // fast route natively only supports optional segments with no trailing slash.
         // Because of this we need to check explicitly here.
-        $has_optional_segments = count($route->getOptionalSegmentNames()) > 0;
+        $has_optional_segments = [] !== $route->getOptionalSegmentNames();
         $request_has_trailing = Str::endsWith($request->path(), '/');
         $route_needs_trailing = Str::endsWith($route->getPattern(), '/');
 

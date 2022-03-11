@@ -13,7 +13,7 @@ final class CouldNotReadSessionContent extends RuntimeException
     {
         return new CouldNotReadSessionContent(
             "Cant read session content for session [{$id}] with driver [{$driver}].",
-            (int) ($previous ? $previous->getCode() : 0),
+            (int) (null !== $previous ? $previous->getCode() : 0),
             $previous
         );
     }

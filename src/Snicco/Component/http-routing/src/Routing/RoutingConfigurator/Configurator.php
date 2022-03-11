@@ -24,7 +24,6 @@ use Webmozart\Assert\Assert;
 use function array_merge;
 use function array_pop;
 use function array_reverse;
-use function count;
 use function gettype;
 use function is_string;
 use function trim;
@@ -335,7 +334,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function validateThatAdminRouteHasNoSegments(Route $route): void
     {
-        if (count($route->getSegmentNames())) {
+        if ([] !== $route->getSegmentNames()) {
             throw BadRouteConfiguration::becauseAdminRouteHasSegments($route->getName());
         }
     }
@@ -376,21 +375,19 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             $parent_slug = $this->menu_items[$parent_name];
         }
 
-        if ($parent_slug instanceof AdminMenuItem) {
-            if ($parent_slug->isChild()) {
-                /** @var Route $parent_route */
-                $parent_name = $parent_route->getName();
+        if ($parent_slug instanceof AdminMenuItem && $parent_slug->isChild()) {
+            /** @var Route $parent_route */
+            $parent_name = $parent_route->getName();
 
-                throw new BadRouteConfiguration(
-                    sprintf(
-                        'Can not use route [%s] as a parent for route [%s] because [%s] is already a child of parent slug [%s].',
-                        $parent_name,
-                        $route->getName(),
-                        $parent_name,
-                        (string) $parent_slug->parentSlug()
-                    )
-                );
-            }
+            throw new BadRouteConfiguration(
+                sprintf(
+                    'Can not use route [%s] as a parent for route [%s] because [%s] is already a child of parent slug [%s].',
+                    $parent_name,
+                    $route->getName(),
+                    $parent_name,
+                    (string) $parent_slug->parentSlug()
+                )
+            );
         }
 
         if ($parent_slug) {
@@ -513,7 +510,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupPrefix(UrlPath $path): UrlPath
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return $path;
         }
 
@@ -523,7 +520,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupName(string $route_name): string
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return $route_name;
         }
 
@@ -539,7 +536,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupNamespace(): string
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return '';
         }
 
@@ -549,7 +546,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function addGroupAttributes(Route $route): void
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return;
         }
 
@@ -561,7 +558,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function updateGroupStack(RouteGroup $group): void
     {
         $current = $this->currentGroup();
-        if ($current) {
+        if (null !== $current) {
             $group = $group->mergeWith($current);
         }
 
@@ -570,7 +567,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function currentGroup(): ?RouteGroup
     {
-        if (! count($this->group_stack)) {
+        if ([] === $this->group_stack) {
             return null;
         }
 

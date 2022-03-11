@@ -116,7 +116,7 @@ final class BetterWPAPITest extends WPTestCase
         }, 10, 3);
 
         add_filter('filter1', function (stdClass $class) {
-            $this->assertTrue(isset($class->foo));
+            $this->assertTrue(property_exists($class, 'foo') && null !== $class->foo);
             $class->bar = 'bar';
 
             return $class;
@@ -144,7 +144,7 @@ final class BetterWPAPITest extends WPTestCase
         }, 10, 3);
 
         add_filter('filter1', function (stdClass $class) {
-            $this->assertTrue(isset($class->foo));
+            $this->assertTrue(property_exists($class, 'foo') && null !== $class->foo);
 
             return new TestWPAPI();
         }, 10, 3);

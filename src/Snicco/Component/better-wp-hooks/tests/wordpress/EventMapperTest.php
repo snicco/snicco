@@ -246,10 +246,10 @@ final class EventMapperTest extends WPTestCase
         $this->event_mapper->map('filter', EventFilterWithNoArgs::class);
 
         $this->dispatcher->listen(function (EventFilterWithNoArgs $event) {
-            $event->filterable_value = $event->filterable_value . 'bar';
+            $event->filterable_value .= 'bar';
         });
         $this->dispatcher->listen(function (EventFilterWithNoArgs $event) {
-            $event->filterable_value = $event->filterable_value . 'baz';
+            $event->filterable_value .= 'baz';
         });
 
         $final_value = apply_filters('filter', 'foo');
@@ -269,10 +269,10 @@ final class EventMapperTest extends WPTestCase
         $this->event_mapper->map('filter', EventFilterWithNoArgs::class, 5);
 
         $this->dispatcher->listen(function (EventFilterWithNoArgs $event) {
-            $event->filterable_value = $event->filterable_value . 'bar';
+            $event->filterable_value .= 'bar';
         });
         $this->dispatcher->listen(function (EventFilterWithNoArgs $event) {
-            $event->filterable_value = $event->filterable_value . 'baz';
+            $event->filterable_value .= 'baz';
         });
 
         $final_value = apply_filters('filter', 'foo');
@@ -293,11 +293,11 @@ final class EventMapperTest extends WPTestCase
         $this->event_mapper->map('filter', EventFilter2::class, 7);
 
         $this->dispatcher->listen(function (EventFilter1 $event) {
-            $event->foo = $event->foo . $event->bar;
+            $event->foo .= $event->bar;
         });
 
         $this->dispatcher->listen(function (EventFilter2 $event) {
-            $event->foo = $event->foo . $event->bar;
+            $event->foo .= $event->bar;
         });
 
         $final_value = apply_filters('filter', 'foo', 'bar');

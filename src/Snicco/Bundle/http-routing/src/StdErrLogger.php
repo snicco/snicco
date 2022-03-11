@@ -8,7 +8,6 @@ use DateTimeInterface;
 use Psr\Log\AbstractLogger;
 use Throwable;
 
-use function count;
 use function error_log;
 use function explode;
 use function get_class;
@@ -59,7 +58,7 @@ final class StdErrLogger extends AbstractLogger
          * @var mixed $value
          */
         foreach ($context as $key => $value) {
-            if (false !== strpos($message, (string) "{{$key}}")) {
+            if (false !== strpos($message, "{{$key}}")) {
                 $replacements["{{$key}}"] = $this->valueToString($value);
 
                 continue;
@@ -78,11 +77,11 @@ final class StdErrLogger extends AbstractLogger
             $additional[$key] = $value;
         }
 
-        if (count($replacements)) {
+        if ([] !== $replacements) {
             $message = strtr($message, $replacements);
         }
 
-        if (count($additional)) {
+        if ([] !== $additional) {
             $message .= "\n\tContext: [";
 
             foreach ($additional as $key => $value) {
@@ -97,11 +96,7 @@ final class StdErrLogger extends AbstractLogger
             $message .= ']';
         }
 
-        if ($exception) {
-            $exception_string = $this->formatException($exception);
-        } else {
-            $exception_string = '';
-        }
+        $exception_string = null !== $exception ? $this->formatException($exception) : '';
 
         $entry = sprintf('%s %s %s', $this->channel . '.' . strtoupper($level), $message, $exception_string);
 
@@ -134,7 +129,7 @@ final class StdErrLogger extends AbstractLogger
     {
         $previous = $exception->getPrevious();
 
-        $message = $this->exceptionToString($exception, null === $previous);
+        $message = $this->exceptionToString($exception, ! $previous instanceof Throwable);
 
         if ($previous instanceof Throwable) {
             $message .= "\n\tCaused by: " . $this->exceptionToString($previous, true);

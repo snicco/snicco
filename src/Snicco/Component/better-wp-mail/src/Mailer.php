@@ -94,17 +94,17 @@ final class Mailer
             $mail = $mail->withTextBody($text);
         }
 
-        if (! count($mail->from())) {
+        if (0 === count($mail->from())) {
             $from = $this->default_config->getFrom();
             $mail = $mail->withFrom($from);
         }
 
-        if (! count($mail->replyTo())) {
+        if (0 === count($mail->replyTo())) {
             $reply_to = $this->default_config->getReplyTo();
             $mail = $mail->withReplyTo($reply_to);
         }
 
-        if (null === $mail->textBody() && null === $mail->htmlBody() && ! count($mail->attachments())) {
+        if (null === $mail->textBody() && null === $mail->htmlBody() && [] === $mail->attachments()) {
             throw new LogicException('An email must have a text or an HTML body or attachments.');
         }
 
@@ -119,14 +119,14 @@ final class Mailer
     // listeners that might fire later.
     private function determineSender(Email $mail): Mailbox
     {
-        if ($sender = $mail->sender()) {
+        if (($sender = $mail->sender()) !== null) {
             return $sender;
         }
 
         $from = $mail->from()
             ->toArray();
 
-        if (count($from)) {
+        if ([] !== $from) {
             return $from[0];
         }
 

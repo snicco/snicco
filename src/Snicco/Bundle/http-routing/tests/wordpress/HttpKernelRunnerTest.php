@@ -137,7 +137,7 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
-        $dispatcher->assertDispatched(fn (ResponseSent $event) => false === $event->body_sent);
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => ! $event->body_sent);
 
         $dispatcher->assertDispatched('test_emitter', function (Response $response) {
             $body = (string) $response->getBody();

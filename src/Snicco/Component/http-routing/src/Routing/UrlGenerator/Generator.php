@@ -129,13 +129,10 @@ final class Generator implements UrlGenerator
 
     private function isValidUrl(string $path): bool
     {
-        if (preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path)) {
-            if (false !== filter_var($path, FILTER_VALIDATE_URL)) {
-                return true;
-            }
-        }
-
-        return false;
+        return preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path) && false !== filter_var(
+            $path,
+            FILTER_VALIDATE_URL
+        );
     }
 
     /**

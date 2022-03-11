@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\Admin;
 
 use RuntimeException;
 
-use function count;
 use function unserialize;
 
 final class CachedAdminMenu implements AdminMenu
@@ -40,7 +39,7 @@ final class CachedAdminMenu implements AdminMenu
      */
     private function getItems(): array
     {
-        if (count($this->hydrated_items)) {
+        if ([] !== $this->hydrated_items) {
             return $this->hydrated_items;
         }
 

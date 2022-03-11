@@ -66,7 +66,7 @@ final class BundleTest
 
         if (! is_dir($fixtures_dir)) {
             $res = mkdir($fixtures_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create base directory');
                 // @codeCoverageIgnoreEnd
@@ -77,7 +77,7 @@ final class BundleTest
 
         if (! is_dir($config_dir)) {
             $res = mkdir($config_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create config directory');
                 // @codeCoverageIgnoreEnd
@@ -97,7 +97,7 @@ final class BundleTest
 
         if (! is_dir($cache_dir)) {
             $res = mkdir($cache_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create cache directory');
                 // @codeCoverageIgnoreEnd
@@ -108,7 +108,7 @@ final class BundleTest
 
         if (! is_dir($log_dir)) {
             $res = mkdir($log_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create log directory');
                 // @codeCoverageIgnoreEnd
@@ -159,7 +159,7 @@ final class BundleTest
 
         foreach ($files as $file) {
             $res = unlink($file);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException("Could not remove test fixture file [{$file}].");
                 // @codeCoverageIgnoreEnd
@@ -191,7 +191,7 @@ final class BundleTest
 
         foreach ($files as $file) {
             $res = unlink($file);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException("Could not remove test fixture file [{$file}].");
                 // @codeCoverageIgnoreEnd
@@ -202,7 +202,7 @@ final class BundleTest
 
         foreach ($dirs as $dir) {
             $res = rmdir($dir);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException("Could not remove test directory [{$dir}].");
                 // @codeCoverageIgnoreEnd

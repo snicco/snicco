@@ -43,7 +43,9 @@ final class EncryptionBundle implements Bundle
             $this->validateKey($config, $config_key);
         } catch (BadFormatException $e) {
             throw new InvalidArgumentException(
-                "Your encryption key is not valid.\nPlease generate a correct key by following the instructions in the encryption.php config file.\nMessage: {$e->getMessage()}"
+                "Your encryption key is not valid.\nPlease generate a correct key by following the instructions in the encryption.php config file.\nMessage: {$e->getMessage()}",
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -90,7 +92,7 @@ final class EncryptionBundle implements Bundle
 
         $copied = copy(dirname(__DIR__) . '/config/encryption.php', $destination);
 
-        if (false === $copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd

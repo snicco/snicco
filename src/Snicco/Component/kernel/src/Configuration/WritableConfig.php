@@ -79,7 +79,7 @@ final class WritableConfig extends Config
         Assert::isArray($current);
         Assert::isList($current, "Cant append to key [{$key}] because its not a list.");
 
-        $type = count($current) ? gettype($current[0]) : null;
+        $type = isset($current[0]) ? gettype($current[0]) : null;
 
         foreach (Arr::toArray($value) as $item) {
             if (($actual = gettype($item)) !== $type && (null !== $type)) {
@@ -133,7 +133,7 @@ final class WritableConfig extends Config
         Assert::isArray($current);
         Assert::isList($current, "Cant prepend to key [{$key}] because its not a list.");
 
-        $type = count($current) ? gettype($current[0]) : null;
+        $type = isset($current[0]) ? gettype($current[0]) : null;
 
         $value = Arr::toArray($value);
 

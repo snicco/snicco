@@ -121,13 +121,8 @@ final class Request implements ServerRequestInterface
         if (! isset($cookies[$name])) {
             return $default;
         }
-        if (is_array($cookies[$name])) {
-            $cookie = $cookies[$name][0];
-        } else {
-            $cookie = $cookies[$name];
-        }
 
-        return $cookie;
+        return is_array($cookies[$name]) ? $cookies[$name][0] : $cookies[$name];
     }
 
     public function routingResult(): RoutingResult
@@ -683,7 +678,7 @@ rawurldecode(strtr($part, [
     {
         $route = $this->routingResult()
             ->route();
-        if (null === $route) {
+        if (! $route instanceof \Snicco\Component\HttpRouting\Routing\Route\Route) {
             return false;
         }
 
@@ -748,10 +743,7 @@ rawurldecode(strtr($part, [
         if ([] === $value) {
             return true;
         }
-        if ('' === trim((string) $value)) {
-            return true;
-        }
 
-        return false;
+        return '' === trim((string) $value);
     }
 }

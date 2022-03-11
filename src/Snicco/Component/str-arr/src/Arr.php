@@ -30,6 +30,7 @@ use function array_intersect_key;
 use function array_key_exists;
 use function array_rand;
 use function array_shift;
+use function array_values;
 use function count;
 use function explode;
 use function gettype;
@@ -160,7 +161,7 @@ class Arr
         $keys = (array) $keys;
         self::checkAllStringKeys($keys, 'forget');
 
-        if (0 === count($keys)) {
+        if ([] === $keys) {
             return;
         }
 
@@ -187,7 +188,7 @@ class Arr
                 }
             }
 
-            if (count($parts)) {
+            if ([] !== $parts) {
                 unset($array[array_shift($parts)]);
             }
         }
@@ -283,7 +284,7 @@ class Arr
             $array = &$array[$key];
         }
 
-        if (count($keys)) {
+        if ([] !== $keys) {
             $array[array_shift($keys)] = $value;
         }
 
@@ -532,6 +533,9 @@ class Arr
      */
     private static function arrayItems(iterable $array): array
     {
+        if (is_array($array)) {
+            return array_values($array);
+        }
         $res = [];
         foreach ($array as $item) {
             $res[] = $item;
