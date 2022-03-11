@@ -15,8 +15,9 @@ use function is_array;
 use function method_exists;
 
 /**
- * The test methods in this class are copied from https://github.com/php-cache/integration-tests/blob/master/src/ We
- * can't extend the provided test case because we already need to extend WPTestCase.
+ * The test methods in this class are copied from
+ * https://github.com/php-cache/integration-tests/blob/master/src/
+ * We can't extend the provided test case because we already need to extend WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
  *
@@ -224,8 +225,8 @@ final class TaggingIntegrationTest extends WPTestCase
     }
 
     /**
-     * The tag must be removed whenever we remove an item. If not, when creating a new item with the same key will get
-     * the same tags.
+     * The tag must be removed whenever we remove an item. If not, when creating
+     * a new item with the same key will get the same tags.
      *
      * @test
      */

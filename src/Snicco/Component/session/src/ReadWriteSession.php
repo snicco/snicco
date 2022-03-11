@@ -28,7 +28,8 @@ use function is_int;
 use function is_string;
 
 /**
- * You should depend on {@see MutableSession} or {@see ImmutableSession} depending on your use case.
+ * You should depend on {@see MutableSession} or {@see ImmutableSession}
+ * depending on your use case.
  *
  * @psalm-internal Snicco
  */

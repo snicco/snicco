@@ -27,8 +27,9 @@ final class TransactionsTest extends WPTestCase
     use WPDBTestHelpers;
 
     /**
-     * We use a separate mysqli connection to verify that our transactions indeed work as expected since the same mysqli
-     * instance will always have access to the data inside the transaction.
+     * We use a separate mysqli connection to verify that our transactions
+     * indeed work as expected since the same mysqli instance will always have
+     * access to the data inside the transaction.
      */
     private mysqli $verification_connection;
 

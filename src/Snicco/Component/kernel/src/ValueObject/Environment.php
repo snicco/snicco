@@ -12,7 +12,8 @@ use function in_array;
 use const PHP_SAPI;
 
 /**
- * This class is an immutable value object that represent the environment the application is running in.
+ * This class is an immutable value object that represent the environment the
+ * application is running in.
  *
  * @psalm-immutable
  */

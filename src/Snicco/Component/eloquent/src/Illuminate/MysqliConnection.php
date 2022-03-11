@@ -201,9 +201,10 @@ final class MysqliConnection extends IlluminateMysqlConnection
     }
 
     /**
-     * Run a select statement against the database and returns a generator. I don't believe that this is currently
-     * possible like it is with laravel, since mysqli_driver does not use PDO. Every mysqli_driver method seems to be
-     * iterating over the result array.
+     * Run a select statement against the database and returns a generator. I
+     * don't believe that this is currently possible like it is with laravel,
+     * since mysqli_driver does not use PDO. Every mysqli_driver method seems to
+     * be iterating over the result array.
      *
      * @param string $query
      * @param array  $bindings

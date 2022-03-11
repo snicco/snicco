@@ -16,8 +16,9 @@ use function is_int;
 use function sprintf;
 
 /**
- * This class needs to double-check every method call to mysqli for errors because by default WordPress configures
- * mysqli to not throw exceptions and also sets the mysql mode to non-strict.
+ * This class needs to double-check every method call to mysqli for errors
+ * because by default WordPress configures mysqli to not throw exceptions and
+ * also sets the mysql mode to non-strict.
  *
  * @psalm-internal Snicco\Component\Eloquent
  *

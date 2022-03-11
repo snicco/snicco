@@ -50,7 +50,8 @@ final class FastRouteSyntaxConverter
     }
 
     /**
-     * This method makes sure that /foo/{bar?}/{baz?} becomes /foo[/{bar}[/{baz}]].
+     * This method makes sure that /foo/{bar?}/{baz?} becomes
+     * /foo[/{bar}[/{baz}]].
      *
      * @param string[] $optional_segment_names
      */

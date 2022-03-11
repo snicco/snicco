@@ -49,7 +49,8 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class with the provided priority.
+     * Map a WordPress hook to a dedicated event class with the provided
+     * priority.
      *
      * @param class-string<MappedHook> $map_to_event_class
      */
@@ -60,8 +61,8 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE any other callbacks are
-     * run for the hook.
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be
+     * dispatched BEFORE any other callbacks are run for the hook.
      *
      * @param class-string<MappedHook> $map_to_event_class
      */
@@ -72,8 +73,8 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all other callbacks are run
-     * for the hook.
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be
+     * dispatched AFTER all other callbacks are run for the hook.
      *
      * @param class-string<MappedHook> $map_to
      */

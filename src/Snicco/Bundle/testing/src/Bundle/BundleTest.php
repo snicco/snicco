@@ -168,7 +168,8 @@ final class BundleTest
     }
 
     /**
-     * This method will remove the provided directory recursively. You have been warnded.
+     * This method will remove the provided directory recursively.
+     * You have been warned.
      */
     public function removeDirectoryRecursive(string $directory): void
     {

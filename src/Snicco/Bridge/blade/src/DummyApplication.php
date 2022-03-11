@@ -9,9 +9,10 @@ use Closure;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
- * Blade is not 100% decoupled from laravel and in some rare cases relies on an Application instance being present. This
- * class fulfills that role. When rendering BladeComponents the getNamespace method will be called where have to return
- * an empty string.
+ * Blade is not 100% decoupled from laravel and in some rare cases relies on an
+ * Application instance being present. This class fulfills that role. When
+ * rendering BladeComponents the getNamespace method will be called where have
+ * to return an empty string.
  *
  * @psalm-internal Snicco\Bridge\Blade
  *

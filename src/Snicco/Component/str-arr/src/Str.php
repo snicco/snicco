@@ -107,8 +107,8 @@ class Str
     }
 
     /**
-     * Generates a random secret with the passed bytes as strength. The output is hex encoded and will have TWICE the
-     * length as $strength.
+     * Generates a random secret with the passed bytes as strength. The output
+     * is hex encoded and will have TWICE the length as $strength.
      *
      * @param positive-int $bytes
      *

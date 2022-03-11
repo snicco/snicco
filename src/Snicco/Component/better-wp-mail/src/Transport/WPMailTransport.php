@@ -80,8 +80,9 @@ final class WPMailTransport implements Transport
     }
 
     /**
-     * We want to throw a {@link CantSendEmail} to confirm with the interface. Throwing explicit exceptions we also
-     * allow a far better usage for clients since they would have to create their own hook callbacks otherwise.
+     * We want to throw a {@link CantSendEmail} to confirm with the interface.
+     * Throwing explicit exceptions we also allow a far better usage for clients
+     * since they would have to create their own hook callbacks otherwise.
      */
     private function handleFailure(): Closure
     {
@@ -96,8 +97,9 @@ final class WPMailTransport implements Transport
     }
 
     /**
-     * WordPress fires this action just before sending the mail with the global php mailer. SMTP plugins should also
-     * include this filter in order to not break plugins that need it. Here we directly configure the underlying
+     * WordPress fires this action just before sending the mail with the global
+     * php mailer. SMTP plugins should also include this filter in order to not
+     * break plugins that need it. Here we directly configure the underlying
      * PHPMailer instance which has all the options we need.
      */
     private function justInTimeConfiguration(Email $mail): Closure

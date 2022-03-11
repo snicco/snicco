@@ -33,7 +33,8 @@ final class WritableConfig extends Config
     }
 
     /**
-     * Extend the configuration with the given values. Existing values have priority.
+     * Extend the configuration with the given values. Existing values have
+     * priority.
      *
      * @note This method does not work for multidimensional arrays. The existing config has to be an array of scalars.
      *

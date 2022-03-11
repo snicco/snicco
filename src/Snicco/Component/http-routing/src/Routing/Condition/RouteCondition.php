@@ -13,7 +13,8 @@ abstract class RouteCondition
     abstract public function isSatisfied(Request $request): bool;
 
     /**
-     * Get an array of arguments that will be merged with the url segments and passed to the controller.
+     * Get an array of arguments that will be merged with the url segments and
+     * passed to the controller.
      *
      * @return array<string,string>
      */

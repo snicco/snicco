@@ -61,9 +61,10 @@ interface WebRoutingConfigurator extends RoutingConfigurator
     public function match(array $verbs, string $name, string $path, $action = Route::DELEGATE): Route;
 
     /**
-     * Creates a fallback route that will match ALL web requests. Request to the admin dashboard are never matched. The
-     * fallback route has to be the last route that is registered in the application. Attempting to register another
-     * route after the fallback route will throw a.
+     * Creates a fallback route that will match ALL web requests. Request to the
+     * admin dashboard are never matched. The fallback route has to be the last
+     * route that is registered in the application. Attempting to register
+     * another route after the fallback route will throw a.
      *
      * {@see BadRouteConfiguration}.
      *
@@ -78,8 +79,9 @@ interface WebRoutingConfigurator extends RoutingConfigurator
     ): Route;
 
     /**
-     * This method will create an internal route that will return an instance of {@see ViewResponse} Its the users'
-     * responsibility when and where this response is transformed into an actual response with content.
+     * This method will create an internal route that will return an instance of
+     * {@see ViewResponse} Its the users' responsibility when and where this
+     * response is transformed into an actual response with content.
      *
      * @param array<string,scalar> $data
      * @param array<string,string> $headers
