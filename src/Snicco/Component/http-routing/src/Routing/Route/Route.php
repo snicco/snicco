@@ -399,9 +399,9 @@ final class Route
         Assert::stringNotEmpty($controller[1], 'Expected controller method to be a string.');
 
         if (! class_exists($controller[0])) {
-            $controller[0] = ! empty($this->namespace)
-                ? $this->namespace . '\\' . $controller[0]
-                : $controller[0];
+            $controller[0] = empty($this->namespace)
+                ? $controller[0]
+                : $this->namespace . '\\' . $controller[0];
 
             if (! class_exists($controller[0])) {
                 throw new InvalidArgumentException(

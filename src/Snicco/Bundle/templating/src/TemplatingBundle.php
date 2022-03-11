@@ -85,7 +85,7 @@ final class TemplatingBundle implements Bundle
 
         $copied = copy(dirname(__DIR__) . '/config/templating.php', $destination);
 
-        if (false === $copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
             // @codeCoverageIgnoreEnd

@@ -15,7 +15,6 @@ use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 use Snicco\Component\BetterWPMail\WPMailAPI;
 
 use function count;
-use function func_get_args;
 use function get_class;
 use function is_array;
 use function is_string;
@@ -43,17 +42,25 @@ final class FakeTransport implements Transport
 
     public function interceptWordPressEmails(): void
     {
-        $this->wp->addFilter('pre_wp_mail', /** @psalm-suppress MixedArgumentTypeCoercion */ function (): bool {
-            $args = func_get_args();
-            if (! isset($args[1]) || ! is_array($args[1])) {
-                // @codeCoverageIgnoreStart
-                throw new RuntimeException('pre_wp_mail did not receive correct arguments');
-                // @codeCoverageIgnoreEnd
-            }
-            $this->recordWPMail($args[1]);
+        $this->wp->addFilter(
+            'pre_wp_mail',
+            /**
+             * @param mixed[] $args
+             */
+            function (...$args): bool {
+                if (! isset($args[1]) || ! is_array($args[1])) {
+                    // @codeCoverageIgnoreStart
+                    throw new RuntimeException('pre_wp_mail did not receive correct arguments');
+                    // @codeCoverageIgnoreEnd
+                }
+                /** @psalm-suppress MixedArgumentTypeCoercion */
+                $this->recordWPMail($args[1]);
 
-            return false;
-        }, PHP_INT_MAX, 1000);
+                return false;
+            },
+            PHP_INT_MAX,
+            1000
+        );
     }
 
     public function reset(): void
@@ -232,15 +239,15 @@ final class FakeTransport implements Transport
 
         $recipients = new MailboxList($to);
 
-        if (count($carbon_copies)) {
+        if ([] !== $carbon_copies) {
             $wp_mail = $wp_mail->withCc($carbon_copies);
             $recipients = $recipients->merge($carbon_copies);
         }
-        if (count($blind_carbon_copies)) {
+        if ([] !== $blind_carbon_copies) {
             $wp_mail = $wp_mail->withBcc($blind_carbon_copies);
             $recipients = $recipients->merge($blind_carbon_copies);
         }
-        if (count($reply_to)) {
+        if ([] !== $reply_to) {
             $wp_mail = $wp_mail->withReplyTo($reply_to);
         }
 

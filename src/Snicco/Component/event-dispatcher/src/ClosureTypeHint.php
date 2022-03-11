@@ -11,8 +11,6 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 
-use function count;
-
 /**
  * @psalm-internal Snicco\Component\EventDispatcher
  *
@@ -29,7 +27,7 @@ final class ClosureTypeHint
 
         $parameters = $reflection->getParameters();
 
-        if (! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
+        if ([] === $parameters || ! $parameters[0] instanceof ReflectionParameter) {
             throw InvalidListener::becauseTheClosureDoesntHaveATypeHintedObject();
         }
 

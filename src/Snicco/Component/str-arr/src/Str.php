@@ -294,11 +294,7 @@ class Str
         // pattern such as "library/*", making any string check convenient.
         $pattern = str_replace('\*', '.*', $pattern);
 
-        if (1 === preg_match('#^' . $pattern . '\z#u', $subject)) {
-            return true;
-        }
-
-        return false;
+        return 1 === preg_match('#^' . $pattern . '\z#u', $subject);
     }
 
     public static function replaceFirst(string $search, string $replace, string $subject): string

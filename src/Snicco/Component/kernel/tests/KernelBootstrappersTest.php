@@ -197,7 +197,7 @@ class Bootstrap2 implements Bootstrapper
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (true === ! $container->make(BundleInfo::class)->booted) {
+        if (! $container->make(BundleInfo::class)->booted) {
             throw new RuntimeException('Bootstrapper bootstrapped before bundle');
         }
         $container->make(self::class)->booted = true;

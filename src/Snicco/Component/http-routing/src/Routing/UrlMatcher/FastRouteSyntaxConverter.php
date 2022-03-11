@@ -8,7 +8,6 @@ use RuntimeException;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\StrArr\Str;
 
-use function count;
 use function preg_match;
 use function preg_quote;
 use function preg_replace_callback;
@@ -60,7 +59,7 @@ final class FastRouteSyntaxConverter
         array $optional_segment_names,
         bool $match_only_trailing
     ): string {
-        if (! count($optional_segment_names)) {
+        if ([] === $optional_segment_names) {
             return $url_pattern;
         }
 
@@ -131,8 +130,7 @@ final class FastRouteSyntaxConverter
         $l1 = strlen($url);
         $url = rtrim($url, ']');
         $l2 = strlen($url);
-        $url .= '[/]' . str_repeat(']', $l1 - $l2);
 
-        return $url;
+        return $url . ('[/]' . str_repeat(']', $l1 - $l2));
     }
 }

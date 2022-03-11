@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PhpCsFixer\Fixer\Alias\NoMixedEchoPrintFixer;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
+use PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer;
 use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
 use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
@@ -131,6 +132,8 @@ return static function (ContainerConfigurator $configurator): void {
             'imports_order' => ['class', 'function', 'const'],
         ],
     ]);
+
+    $services->set(FullyQualifiedStrictTypesFixer::class);
 
     $services->set(GlobalNamespaceImportFixer::class)->call('configure', [
         [

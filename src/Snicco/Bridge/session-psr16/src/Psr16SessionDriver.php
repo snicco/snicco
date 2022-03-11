@@ -70,7 +70,7 @@ final class Psr16SessionDriver implements SessionDriver
             throw CouldNotDestroySessions::forSessionIDs($selectors, get_class($this->cache), $e);
         }
 
-        if (true !== $res) {
+        if (! $res) {
             throw CouldNotDestroySessions::forSessionIDs($selectors, get_class($this->cache));
         }
     }
@@ -167,7 +167,7 @@ final class Psr16SessionDriver implements SessionDriver
             throw CouldNotWriteSessionContent::forId($selector, get_class($this->cache), $e);
         }
 
-        if (true !== $res) {
+        if (! $res) {
             throw CouldNotWriteSessionContent::forId($selector, get_class($this->cache));
         }
     }

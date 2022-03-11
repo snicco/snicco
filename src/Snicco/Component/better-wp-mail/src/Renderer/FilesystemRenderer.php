@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Renderer;
 
-use function count;
-
 final class FilesystemRenderer implements MailRenderer
 {
     /**
@@ -29,6 +27,6 @@ final class FilesystemRenderer implements MailRenderer
         }
         $intersect = array_intersect([$extension], ['txt', 'php', 'html']);
 
-        return count($intersect) > 0;
+        return [] !== $intersect;
     }
 }

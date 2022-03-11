@@ -198,12 +198,10 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         unset($this->deferred_items[$key]);
 
         $deleted = $this->wp_object_cache->cacheDelete($key, $this->wp_cache_group);
-        if (false === $deleted) {
-            // Deleting a value that doesn't exist should return true in the psr-interface.
-            // The wp object cache will return false for deleting missing keys.
-            if (! $this->internalHas($key)) {
-                $deleted = true;
-            }
+        // Deleting a value that doesn't exist should return true in the psr-interface.
+        // The wp object cache will return false for deleting missing keys.
+        if (! $deleted && ! $this->internalHas($key)) {
+            $deleted = true;
         }
 
         return $deleted;
@@ -238,7 +236,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
      */
     private function internalGet(string $key): WPCacheItem
     {
-        if ($item = $this->internalGetDeferred($key)) {
+        if (($item = $this->internalGetDeferred($key)) !== null) {
             return $item;
         }
 

@@ -35,7 +35,7 @@ final class Psr16Storage implements SignedUrlStorage
         if ($new < 1) {
             $res = $this->cache->delete($key);
 
-            if (true !== $res) {
+            if (! $res) {
                 throw new UnavailableStorage(
                     "Could not delete signed url with id [{$identifier}] from the cache.\nCache key [{$key}]."
                 );
@@ -47,7 +47,7 @@ final class Psr16Storage implements SignedUrlStorage
 
             $res = $this->cache->set($key, $data, $ttl);
 
-            if (true !== $res) {
+            if (! $res) {
                 throw new UnavailableStorage("Could not decrement usage for signed url.\nCache key: [{$key}].");
             }
         }
@@ -66,7 +66,7 @@ final class Psr16Storage implements SignedUrlStorage
 
         $res = $this->cache->set($key, $data, $ttl);
 
-        if (true !== $res) {
+        if (! $res) {
             $path = $signed_url->protects();
 
             throw new UnavailableStorage("Could not save signed url for path [{$path}].\nCache key: [{$key}].");

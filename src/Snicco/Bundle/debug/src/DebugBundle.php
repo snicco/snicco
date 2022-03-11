@@ -70,7 +70,7 @@ final class DebugBundle implements Bundle
 
         if (! is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
             $copied = copy(dirname(__DIR__) . '/config/debug.php', $to);
-            if (false === $copied) {
+            if (! $copied) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not copy default debug.php config.');
                 // @codeCoverageIgnoreEnd

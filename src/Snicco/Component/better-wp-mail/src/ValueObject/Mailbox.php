@@ -106,9 +106,11 @@ final class Mailbox
 
     public function toString(): string
     {
-        return ($name = $this->name())
-            ? ($name . ' <' . $this->address() . '>')
-            : $this->address();
+        if ('' === $this->name) {
+            return $this->address;
+        }
+
+        return sprintf('%s <%s>', $this->name, $this->address);
     }
 
     public function name(): string

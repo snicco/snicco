@@ -21,7 +21,6 @@ use Snicco\Component\StrArr\Arr;
 use function array_diff;
 use function array_merge;
 use function array_unique;
-use function count;
 use function filter_var;
 use function is_array;
 use function is_int;
@@ -193,7 +192,7 @@ final class ReadWriteSession implements Session
         $old = $this->oldInput($key);
 
         return null === $key
-            ? is_array($old) && count($old) > 0
+            ? is_array($old) && [] !== $old
             : null !== $old;
     }
 
@@ -426,7 +425,7 @@ final class ReadWriteSession implements Session
             return true;
         }
 
-        return count($this->oldFlashes()) > 0;
+        return [] !== $this->oldFlashes();
     }
 
     /**

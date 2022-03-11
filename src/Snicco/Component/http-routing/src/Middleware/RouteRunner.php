@@ -13,8 +13,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing;
 
-use function count;
-
 final class RouteRunner extends Middleware
 {
     private MiddlewarePipeline $pipeline;
@@ -45,7 +43,7 @@ final class RouteRunner extends Middleware
         $result = $request->routingResult();
         $route = $result->route();
 
-        if (! $route) {
+        if (! $route instanceof \Snicco\Component\HttpRouting\Routing\Route\Route) {
             return $this->delegate($request);
         }
 
@@ -72,7 +70,7 @@ final class RouteRunner extends Middleware
     {
         $middleware = $this->middleware_resolver->resolveForRequestWithoutRoute($request);
 
-        if (! count($middleware)) {
+        if ([] === $middleware) {
             return $this->responseFactory()
                 ->delegate();
         }

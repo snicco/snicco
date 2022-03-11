@@ -282,10 +282,8 @@ final class PHPFileRouteLoader implements RouteLoader
             if (WebRoutingConfigurator::class === $name) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
-        } else {
-            if (AdminRoutingConfigurator::class === $name) {
-                throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
-            }
+        } elseif (AdminRoutingConfigurator::class === $name) {
+            throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
         }
     }
 

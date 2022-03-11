@@ -52,7 +52,7 @@ class Bundle2 implements Bundle
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (false === $container[Bundle1::class]->booted) {
+        if (! $container[Bundle1::class]->booted) {
             throw new RuntimeException('bundle1 should have been booted first');
         }
         $container[self::class]->booted = true;

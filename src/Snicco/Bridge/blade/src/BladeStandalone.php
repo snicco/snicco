@@ -90,12 +90,9 @@ final class BladeStandalone
                 $expression = 'administrator';
             }
             $user = $wp->currentUser();
-            if (! empty($user->roles) && is_array($user->roles)
-                && in_array($expression, $user->roles, true)) {
-                return true;
-            }
 
-            return false;
+            return ! empty($user->roles) && is_array($user->roles)
+                && in_array($expression, $user->roles, true);
         });
     }
 

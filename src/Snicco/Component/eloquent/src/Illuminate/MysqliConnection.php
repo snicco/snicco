@@ -41,7 +41,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             'password' => $wp->dbPassword(),
             'charset' => $wp->dbCharset(),
             // important. Don't set this to an empty string as it is by default in WordPress.
-            'collation' => ! empty($wp->dbCollate()) ? $wp->dbCollate() : null,
+            'collation' => empty($wp->dbCollate()) ? null : $wp->dbCollate(),
             'prefix' => $wp->tablePrefix(),
             'name' => self::CONNECTION_NAME,
         ]);

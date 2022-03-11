@@ -15,7 +15,6 @@ use ReflectionParameter;
 
 use function class_exists;
 use function class_implements;
-use function count;
 use function in_array;
 use function interface_exists;
 use function is_string;
@@ -45,7 +44,7 @@ final class Reflector
         $class_exists = class_exists($class_string);
         $interface_exists = interface_exists($expected_interface);
 
-        if (false === $interface_exists) {
+        if (! $interface_exists) {
             throw new InvalidArgumentException("Interface [{$expected_interface}] does not exist.");
         }
 
@@ -77,7 +76,7 @@ final class Reflector
 
         $parameters = $reflection->getParameters();
 
-        if (! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
+        if ([] === $parameters || ! $parameters[0] instanceof ReflectionParameter) {
             return null;
         }
 

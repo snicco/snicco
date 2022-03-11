@@ -37,7 +37,7 @@ final class Envelope
             // @codeCoverageIgnoreEnd
         }
 
-        if (! count($recipients)) {
+        if (0 === count($recipients)) {
             throw new InvalidArgumentException('An envelope must have at least one recipient.');
         }
 

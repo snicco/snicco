@@ -438,13 +438,13 @@ final class EventDispatcherTest extends TestCase
         $dispatcher->listen(
             FilterableEvent::class,
             function (FilterableEvent $event) {
-                $event->val = $event->val . ':Filter1:';
+                $event->val .= ':Filter1:';
             }
         );
         $dispatcher->listen(
             FilterableEvent::class,
             function (FilterableEvent $event) {
-                $event->val = $event->val . 'Filter2';
+                $event->val .= 'Filter2';
             }
         );
 

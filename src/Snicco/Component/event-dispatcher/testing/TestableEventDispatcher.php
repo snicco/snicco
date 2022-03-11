@@ -103,7 +103,7 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         $event_names = is_array($event_names) ? $event_names : [$event_names];
 
-        if (! count($event_names)) {
+        if ([] === $event_names) {
             throw new InvalidArgumentException('$event_names cant be an empty array.');
         }
 
@@ -189,15 +189,11 @@ final class TestableEventDispatcher implements EventDispatcher
             return true;
         }
 
-        if (count($this->dont_fake)) {
+        if ([] !== $this->dont_fake) {
             return ! in_array($event_name, $this->dont_fake, true);
         }
 
-        if (in_array($event_name, $this->events_to_fake, true)) {
-            return true;
-        }
-
-        return false;
+        return in_array($event_name, $this->events_to_fake, true);
     }
 
     /**
@@ -208,7 +204,7 @@ final class TestableEventDispatcher implements EventDispatcher
         $passed = [];
 
         foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
-            if (! $callback_condition) {
+            if (null === $callback_condition) {
                 $passed[] = $event;
 
                 continue;

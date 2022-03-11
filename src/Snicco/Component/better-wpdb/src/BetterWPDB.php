@@ -507,7 +507,7 @@ final class BetterWPDB
                 /** @var array<scalar|null> $bindings */
                 $this->log(new QueryInfo($start, $end, $sql, $bindings));
 
-                $inserted = $inserted + $stmt->affected_rows;
+                $inserted += $stmt->affected_rows;
             }
 
             return $inserted;
